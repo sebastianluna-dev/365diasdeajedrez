@@ -1,88 +1,27 @@
 .new-course {
   flex: none;
 
-  /* The size and the rounding: the centring, the backdrop, the surface and
-     the entry and exit motion are set by `.platform-dialog`. */
-  /* Wider than the study dialog: the eight content-type cards want three
-     columns to keep the list short. */
-  & .new-course__dialog {
-    width: min(720px, calc(100vw - 32px));
-    border-radius: 8px;
-  }
-
-  /* The form is the dialog's whole content: head, body and footer band stack
-     with no gap of their own; each sets its padding. */
+  /* The popup's strip (the name, the cross) is `PlatformPopup`'s; the
+     content under it is this form, which pads itself to the strip's 24px:
+     body and footer band stack with no gap of their own. */
   & .new-course__form {
     gap: 0;
-  }
-
-  & .new-course__head {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--platform-space-5);
-    padding: var(--platform-space-8) var(--platform-space-8) 0;
-  }
-
-  /* A dark tile with a white rook: the course's mark, next to the study
-     dialog's knight. */
-  & .new-course__tile {
-    flex: none;
-    width: 56px;
-    height: 56px;
-    border-radius: 8px;
-    background: var(--platform-text) url("/pieces/w-rook.svg") center / 30px no-repeat;
-  }
-
-  & .new-course__heading {
-    flex: 1;
-    min-width: 0;
-  }
-
-  & .new-course__title {
-    margin: 0;
-    font-size: var(--platform-type-2xl);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-  }
-
-  & .new-course__subtitle {
-    margin: var(--platform-space-1) 0 0;
-    font-size: var(--platform-type-lg);
-    color: var(--platform-text-muted);
-    text-wrap: pretty;
-  }
-
-  & .new-course__close {
-    flex: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    margin: calc(-1 * var(--platform-space-2)) calc(-1 * var(--platform-space-2)) 0 0;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-subtle);
-    cursor: pointer;
-  }
-
-  & .new-course__close:hover {
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text);
-  }
-
-  & .new-course__close-icon {
-    width: 20px;
-    height: 20px;
   }
 
   & .new-course__body {
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-6);
-    padding: var(--platform-space-8) var(--platform-space-8) var(--platform-space-8);
+    padding: var(--platform-space-6);
+  }
+
+  /* The first line of the body: what the form asks for, and what it leaves
+     to the course's record, in grey. */
+  & .new-course__subtitle {
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
   }
 
   /* The band at the bottom: sunk a shade, with the note on one side and the
@@ -93,7 +32,7 @@
     justify-content: space-between;
     gap: var(--platform-space-4);
     flex-wrap: wrap;
-    padding: var(--platform-space-5) var(--platform-space-8);
+    padding: var(--platform-space-5) var(--platform-space-6);
     border-top: 1px solid var(--platform-border);
     background: var(--platform-bg);
   }

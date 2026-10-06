@@ -3,7 +3,6 @@
 import { useState } from "react";
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import { STUDY_KIND_CARDS } from "@/constants/platform/study-kind-cards.const";
-import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
 import { PlatformChoiceCards } from "@/components/platform/shared/platform-choice-cards/platform-choice-cards.comp";
 import {
   PlatformForm,
@@ -13,8 +12,6 @@ import {
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
 interface NewStudyFormProps {
-  /** The id its heading takes, so the dialog around it is named by it (`aria-labelledby`). */
-  titleId?: string;
   kinds: StudyKindOption[];
   /** Where the form posts: the server action, or a stub in Storybook. */
   action: (formData: FormData) => void | Promise<void>;
@@ -24,36 +21,26 @@ interface NewStudyFormProps {
 }
 
 /**
- * The creation form itself, with no dialog and no server action of its own:
- * `NewStudy` mounts it inside its `<dialog>` with `createStudy`, and the story
- * mounts it with a stub. Head, fields and a footer band; the submit stays off
- * until the study has a name, which is the one thing it needs.
+ * The creation form itself, with no popup and no server action of its own:
+ * `NewStudy` mounts it inside its `PlatformPopup` with `createStudy`, and the
+ * story mounts it with a stub. The strip with the name and the cross is the
+ * popup's; under it, the subtitle, the fields and a footer band. The submit
+ * stays off until the study has a name, which is the one thing it needs; the
+ * name is the first control, so the popup opens on it.
  */
-export function NewStudyForm({ titleId, kinds, action, onClose, onSubmit }: NewStudyFormProps) {
+export function NewStudyForm({ kinds, action, onClose, onSubmit }: NewStudyFormProps) {
   const [name, setName] = useState("");
 
   return (
     <PlatformForm action={action} className="new-study__form" onSubmit={onSubmit} autoComplete="off">
-      <header className="new-study__head">
-        <span className="new-study__tile" aria-hidden="true" />
-        <div className="new-study__heading">
-          <h2 id={titleId} className="new-study__title">
-            Nuevo estudio
-          </h2>
-          <p className="new-study__subtitle">Agrupa partidas y análisis bajo un mismo tema.</p>
-        </div>
-        <button type="button" className="new-study__close" onClick={onClose} aria-label="Cerrar">
-          <XmarkIcon className="new-study__close-icon" />
-        </button>
-      </header>
-
       <div className="new-study__body">
+        <p className="new-study__subtitle">Agrupa partidas y análisis bajo un mismo tema.</p>
+
         <PlatformFormField name="name" label="Nombre" messages={{ valueMissing: "Ponle un nombre al estudio." }}>
           <input
             type="text"
             maxLength={120}
             required
-            autoFocus
             placeholder="Nacional Abierto 2026"
             value={name}
             onChange={(event) => setName(event.target.value)}

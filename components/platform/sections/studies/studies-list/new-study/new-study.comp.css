@@ -30,84 +30,25 @@
     background: var(--platform-surface-sunken);
   }
 
-  /* The size and the rounding: the centring, the backdrop, the surface and
-     the entry and exit motion are set by `.platform-dialog`. */
-  & .new-study__dialog {
-    width: min(600px, calc(100vw - 32px));
-    border-radius: 8px;
-  }
-
-  /* The form is the dialog's whole content: head, body and footer band stack
-     with no gap of their own; each sets its padding. */
+  /* The popup's strip (the name, the cross) is `PlatformPopup`'s; the
+     content under it is this form, which pads itself to the strip's 24px:
+     body and footer band stack with no gap of their own. */
   & .new-study__form {
     gap: 0;
-  }
-
-  & .new-study__head {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--platform-space-5);
-    padding: var(--platform-space-8) var(--platform-space-8) 0;
-  }
-
-  /* A dark tile with a white knight: the study's mark. */
-  & .new-study__tile {
-    flex: none;
-    width: 56px;
-    height: 56px;
-    border-radius: 8px;
-    background: var(--platform-text) url("/pieces/w-knight.svg") center / 30px no-repeat;
-  }
-
-  & .new-study__heading {
-    flex: 1;
-    min-width: 0;
-  }
-
-  & .new-study__title {
-    margin: 0;
-    font-size: var(--platform-type-2xl);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-  }
-
-  & .new-study__subtitle {
-    margin: var(--platform-space-1) 0 0;
-    font-size: var(--platform-type-lg);
-    color: var(--platform-text-muted);
-  }
-
-  & .new-study__close {
-    flex: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    margin: calc(-1 * var(--platform-space-2)) calc(-1 * var(--platform-space-2)) 0 0;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-subtle);
-    cursor: pointer;
-  }
-
-  & .new-study__close:hover {
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text);
-  }
-
-  & .new-study__close-icon {
-    width: 20px;
-    height: 20px;
   }
 
   & .new-study__body {
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-6);
-    padding: var(--platform-space-8) var(--platform-space-8) var(--platform-space-8);
+    padding: var(--platform-space-6);
+  }
+
+  /* The first line of the body: what a study is for, in grey. */
+  & .new-study__subtitle {
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    color: var(--platform-text-muted);
   }
 
   /* The piece on a kind's card, from the same set the board draws. */
@@ -138,7 +79,7 @@
     justify-content: space-between;
     gap: var(--platform-space-4);
     flex-wrap: wrap;
-    padding: var(--platform-space-5) var(--platform-space-8);
+    padding: var(--platform-space-5) var(--platform-space-6);
     border-top: 1px solid var(--platform-border);
     background: var(--platform-bg);
   }
