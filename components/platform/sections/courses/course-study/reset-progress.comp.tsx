@@ -49,7 +49,7 @@ export function ResetProgress({ courseId, name, completedLessons, chapterId }: R
 
   return (
     <div className="reset-progress">
-      <button type="button" className="reset-progress__open" onClick={() => confirmRef.current?.open()}>
+      <button type="button" className="reset-progress__open" onClick={(event) => confirmRef.current?.open(event)}>
         {label}
       </button>
 

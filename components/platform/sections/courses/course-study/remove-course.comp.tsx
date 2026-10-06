@@ -35,7 +35,7 @@ export function RemoveCourse({ courseId, courseName, completedLessons }: RemoveC
 
   return (
     <div className="remove-course">
-      <button type="button" className="remove-course__open" onClick={() => confirmRef.current?.open()}>
+      <button type="button" className="remove-course__open" onClick={(event) => confirmRef.current?.open(event)}>
         Quitar de mis cursos
       </button>
 

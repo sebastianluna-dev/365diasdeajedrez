@@ -80,6 +80,7 @@ One action, one verb, on every screen. The three that are easy to mix up were se
 Two rules go with them:
 
 - **The text of a hint or an error uses the verb of the button it is about**: «Si la eliminas…» under «Eliminar partida», «Un autor no se elimina: se quita de cada curso».
+- **«Eliminar» asks first, and so does a «Quitar» that takes progress along**: through [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup), opened on top of whatever popup is open, with the verb on its button and, when the server requires it, a box to tick. Nothing destroys on one press (the destructive actions still without it are listed in `IMPROVEMENTS.md`).
 - **While a form is on its way, its button says what is happening**: a gerund and «…» (`pendingLabel="Eliminando…"`). The one exception is a form with several submit buttons that share a label, which passes the resting label so the text does not change on every row at once (the attendance list); the test names it.
 
 «Borrador» is a draft — a course's status — and has nothing to do with «borrar».

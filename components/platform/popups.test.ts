@@ -28,8 +28,7 @@ const PIECES = new Set([
  * An entry leaves the list the day its file stops writing one; a file that is
  * not here and writes one fails.
  */
-const PENDING: Record<string, string> = {
-};
+const PENDING: Record<string, string> = {};
 
 function filesOf(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {

@@ -10,7 +10,14 @@ import "./platform-confirm-popup.comp.css";
 
 /** What whoever draws the trigger gets: opening, and closing it from outside. */
 export interface PlatformConfirmPopupHandle {
-  open: () => void;
+  /**
+   * `showModal()`. Given the click, the trigger takes the focus first, as
+   * `PlatformPopup.open` does, so that cancelling brings the focus back to a
+   * card's cross and not to `<body>` (Safari, and Firefox on a Mac, do not
+   * focus a pressed button). A red word inside an open popup needs no event:
+   * the popup's focus trap already has it.
+   */
+  open: (event?: { currentTarget: HTMLElement }) => void;
   close: () => void;
   isOpen: () => boolean;
 }
@@ -129,9 +136,11 @@ export function PlatformConfirmPopup({
   useImperativeHandle(
     ref,
     () => ({
-      open: () => {
+      open: (event) => {
         const dialog = dialogRef.current;
-        if (dialog && !dialog.open) dialog.showModal();
+        if (!dialog || dialog.open) return;
+        event?.currentTarget.focus();
+        dialog.showModal();
       },
       close: () => dialogRef.current?.close(),
       isOpen: () => dialogRef.current?.open ?? false,

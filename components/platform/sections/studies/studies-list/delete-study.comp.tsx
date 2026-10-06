@@ -34,7 +34,8 @@ interface DeleteStudyProps {
 
 /** What a host that draws its own trigger gets: the way to open the confirmation. */
 export interface DeleteStudyHandle {
-  open: () => void;
+  /** Given the click, the trigger takes the focus first, so cancelling brings it back there. */
+  open: (event?: { currentTarget: HTMLElement }) => void;
 }
 
 /**
@@ -44,7 +45,7 @@ export interface DeleteStudyHandle {
  */
 export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "icon", ref, onDone }: DeleteStudyProps) {
   const confirm = useRef<PlatformConfirmPopupHandle>(null);
-  useImperativeHandle(ref, () => ({ open: () => confirm.current?.open() }), []);
+  useImperativeHandle(ref, () => ({ open: (event) => confirm.current?.open(event) }), []);
 
   // Same condition as the server: the box is only required when there is
   // something to lose. If the client let it submit without it where the server
@@ -72,13 +73,13 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
           type="button"
           className="delete-study__open"
           title={`Eliminar «${name}»`}
-          onClick={() => confirm.current?.open()}
+          onClick={(event) => confirm.current?.open(event)}
         >
           <XmarkIcon className="delete-study__open-icon" />
           <span className="delete-study__open-label">Eliminar «{name}»</span>
         </button>
       ) : trigger === "button" ? (
-        <button type="button" className="delete-study__open-wide" onClick={() => confirm.current?.open()}>
+        <button type="button" className="delete-study__open-wide" onClick={(event) => confirm.current?.open(event)}>
           Eliminar estudio
         </button>
       ) : null}

@@ -153,10 +153,20 @@
     box-shadow: inset 0 1px 0 var(--platform-track);
   }
 
+  /* The note gives way: it wraps before a button does. */
   & .platform-confirm-popup__note {
+    flex: 1 1 auto;
+    min-width: 0;
     margin-right: auto;
     font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
+  }
+
+  /* A button keeps its words on one line: «Eliminar estudio» split in two
+     read as two buttons. */
+  & .platform-confirm-popup__foot .platform-button {
+    flex: none;
+    white-space: nowrap;
   }
 
   @media (width < 640px) {
