@@ -1,9 +1,17 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { GearIcon } from "@/components/icons/gear-icon.comp";
-import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
+import {
+  PlatformConfirmPopup,
+  type PlatformConfirmPopupHandle,
+} from "@/components/platform/shared/platform-confirm-popup/platform-confirm-popup.comp";
 import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
+import {
+  PlatformPopup,
+  type PlatformPopupHandle,
+} from "@/components/platform/shared/platform-popup/platform-popup.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
 import { GAME_ANALYSIS_MODE_LABELS } from "@/constants/platform/study-codes.const";
@@ -44,7 +52,7 @@ export interface GameSettingsGame {
   /**
    * Whether some class shows the game. Deleting it leaves that block of the
    * class empty, so the server asks for an explicit confirmation
-   * (`confirmClassBlocks`) and the dialog asks for it before sending.
+   * (`confirmClassBlocks`) and the confirmation asks for it before sending.
    */
   citedInClass?: boolean;
 }
@@ -89,183 +97,149 @@ const CONFIRMATIONS: Record<Destructive, { question: string; detail: string; sub
   },
 };
 
+/** What deleting a game a class shows takes with it, to be agreed to before the button works. */
+const CLASS_BLOCKS_ACKNOWLEDGEMENT =
+  "Esta partida se usa en el contenido de alguna clase. Entiendo que esos bloques se quedarán vacíos.";
+
 /**
- * The gear at the end of a game's row and the dialog it opens, as Lichess
+ * The gear at the end of a game's row and the popup it opens, as Lichess
  * keeps them behind a study's chapter: the game's name, which side its board
  * opens from, how a reader goes through it and a comment pinned at the head
- * of its notation; and the three things that destroy — its annotations, its variations,
- * the game itself —, each behind a confirmation of its own inside the same
- * dialog, because none of them can be undone. A game some class shows asks
- * for one thing more before it is deleted: a box that says the class's block
+ * of its notation; and the three things that destroy — its annotations, its
+ * variations, the game itself —, each behind a confirmation, because none of
+ * them can be undone. The three share one `PlatformConfirmPopup`, mounted as
+ * a sibling of the settings and opened on top of them with the words of the
+ * step pressed; the settings wait beneath. A game some class shows asks for
+ * one thing more before it is deleted: a box that says the class's block
  * will be left empty.
  */
 export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const nameRef = useRef<HTMLInputElement>(null);
-  const [confirming, setConfirming] = useState<Destructive | null>(null);
+  const popup = useRef<PlatformPopupHandle>(null);
+  const confirm = useRef<PlatformConfirmPopupHandle>(null);
+  /** The step the confirmation asks about: the last red word pressed. */
+  const [pending, setPending] = useState<Destructive>("annotations");
   // The same condition as the server: only a game some class shows needs the
   // box ticked. Sent without it, the action would bounce instead of deleting.
-  const [emptiesClass, setEmptiesClass] = useState(false);
-  const needsClassConfirmation = confirming === "game" && game.citedInClass === true;
-  const titleId = useId();
+  const needsClassConfirmation = pending === "game" && game.citedInClass === true;
 
-  /** Opens on the name, which is what one comes to change, and not on the close button the browser would pick. */
-  const open = () => {
-    dialogRef.current?.showModal();
-    nameRef.current?.focus();
-  };
-
-  /** Out of a confirmation, whichever way: nothing stays half agreed to. */
-  const leaveConfirmation = () => {
-    setConfirming(null);
-    setEmptiesClass(false);
-  };
-
-  const close = () => {
-    dialogRef.current?.close();
-    leaveConfirmation();
-  };
-
-  /** A clean-up: the server rewrites the PGN, and the game on screen is loaded again with it. */
-  const clear = async (run: (gameId: string) => Promise<void>) => {
-    await run(game.id);
-    if (isCurrent) window.location.reload();
-    else close();
+  /** The words first, then the popup: it is named by them, and read as it opens. */
+  const ask = (step: Destructive) => {
+    flushSync(() => setPending(step));
+    confirm.current?.open();
   };
 
   const destroy = (formData: FormData) => {
-    if (confirming === "annotations") return clear(actions.clearAnnotations);
-    if (confirming === "variations") return clear(actions.clearVariations);
+    if (pending === "annotations") return actions.clearAnnotations(game.id);
+    if (pending === "variations") return actions.clearVariations(game.id);
     return actions.remove(game.id, formData);
   };
 
-  const confirmation = confirming ? CONFIRMATIONS[confirming] : null;
+  /**
+   * After a clean-up: the server rewrote the PGN, and the game on screen is
+   * loaded again with it; any other game's settings just close. After a
+   * deletion the action has sent the browser on, and closing is harmless.
+   */
+  const done = () => {
+    if (pending !== "game" && isCurrent) window.location.reload();
+    else popup.current?.close();
+  };
+
+  const confirmation = CONFIRMATIONS[pending];
 
   return (
     <div className="game-settings">
-      <button type="button" className="game-settings__open" aria-label={`Ajustes de «${game.name}»`} onClick={open}>
+      <button
+        type="button"
+        className="game-settings__open"
+        aria-label={`Ajustes de «${game.name}»`}
+        onClick={(event) => popup.current?.open(event)}
+      >
         <GearIcon variant="duotone-solid" className="game-settings__open-icon" />
       </button>
 
-      <dialog
-        ref={dialogRef}
-        className="platform-dialog game-settings__dialog"
-        aria-labelledby={titleId}
-        onClose={leaveConfirmation}
-      >
-        <header className="game-settings__head">
-          <h2 id={titleId} className="game-settings__title">
-            Ajustes de la partida
-          </h2>
-          <button type="button" className="game-settings__close" onClick={close} aria-label="Cerrar">
-            <XmarkIcon className="game-settings__close-icon" />
+      {/* The popup opens on the name, the first control of the content, which
+          is what one comes to change. */}
+      <PlatformPopup ref={popup} title="Ajustes de la partida" size="sm">
+        <PlatformForm
+          action={(formData) => actions.save(game.id, formData)}
+          className="game-settings__form"
+          onSubmit={() => popup.current?.close()}
+          autoComplete="off"
+        >
+          <PlatformFormField
+            name="title"
+            label="Nombre"
+            info="Si lo dejas vacío, la partida se nombra por sus jugadores."
+          >
+            {/* Keyed by the saved name: reopened after a save, the field starts from what was saved. */}
+            <input
+              key={game.title ?? ""}
+              type="text"
+              maxLength={120}
+              defaultValue={game.title ?? ""}
+              placeholder={game.name}
+            />
+          </PlatformFormField>
+          <div className="game-settings__pair">
+            {/* One select each, so fields and not groups: the field gives
+                the select its `name` and the `id` its label points at. */}
+            <PlatformFormField name="orientationCode" label="Orientación">
+              <PlatformSelect defaultValue={game.orientationCode} options={ORIENTATION_OPTIONS} />
+            </PlatformFormField>
+            <PlatformFormField name="analysisModeCode" label="Modo de análisis">
+              <PlatformSelect
+                defaultValue={game.analysisModeCode ?? ""}
+                emptyOption="Análisis normal"
+                options={ANALYSIS_MODE_OPTIONS}
+              />
+            </PlatformFormField>
+          </div>
+          <PlatformFormField
+            name="pinnedComment"
+            label="Comentario fijo"
+            info="Se muestra al principio de la notación, antes de las jugadas, a quien abra la partida."
+          >
+            <textarea
+              key={game.pinnedComment ?? ""}
+              maxLength={1000}
+              rows={3}
+              defaultValue={game.pinnedComment ?? ""}
+            />
+          </PlatformFormField>
+          <div className="game-settings__actions">
+            <SubmitButton className="platform-button platform-button_variant_ink" pendingLabel="Guardando…">
+              Guardar
+            </SubmitButton>
+          </div>
+        </PlatformForm>
+
+        {/* What destroys, apart from what saves and under a rule: three words
+            in the danger ink, each opening the confirmation with its words. */}
+        <div className="game-settings__danger">
+          <button type="button" className="game-settings__destroy" onClick={() => ask("annotations")}>
+            Eliminar anotaciones
           </button>
-        </header>
+          <button type="button" className="game-settings__destroy" onClick={() => ask("variations")}>
+            Eliminar variantes
+          </button>
+          <button type="button" className="game-settings__destroy" onClick={() => ask("game")}>
+            Eliminar partida
+          </button>
+        </div>
+      </PlatformPopup>
 
-        {confirmation ? (
-          <form action={destroy} className="game-settings__confirm">
-            <p className="game-settings__question">{confirmation.question}</p>
-            <p className="game-settings__detail">
-              «{game.name}». {confirmation.detail} Esta acción no se puede deshacer.
-            </p>
-            {needsClassConfirmation && (
-              <label className="game-settings__cited">
-                <input
-                  type="checkbox"
-                  name="confirmClassBlocks"
-                  value="yes"
-                  className="game-settings__cited-check"
-                  checked={emptiesClass}
-                  onChange={(event) => setEmptiesClass(event.target.checked)}
-                />
-                <span>
-                  Esta partida se usa en el contenido de alguna clase. Entiendo que esos bloques se quedarán vacíos.
-                </span>
-              </label>
-            )}
-            <div className="game-settings__actions">
-              <button type="button" className="platform-button" onClick={leaveConfirmation}>
-                Cancelar
-              </button>
-              <SubmitButton
-                className="platform-button platform-button_variant_danger"
-                disabled={needsClassConfirmation && !emptiesClass}
-                pendingLabel="Eliminando…"
-              >
-                {confirmation.submit}
-              </SubmitButton>
-            </div>
-          </form>
-        ) : (
-          <>
-            <PlatformForm
-              action={(formData) => actions.save(game.id, formData)}
-              className="game-settings__form"
-              onSubmit={close}
-              autoComplete="off"
-            >
-              <PlatformFormField
-                name="title"
-                label="Nombre"
-                info="Si lo dejas vacío, la partida se nombra por sus jugadores."
-              >
-                {/* Keyed by the saved name: reopened after a save, the field starts from what was saved. */}
-                <input
-                  ref={nameRef}
-                  key={game.title ?? ""}
-                  type="text"
-                  maxLength={120}
-                  defaultValue={game.title ?? ""}
-                  placeholder={game.name}
-                />
-              </PlatformFormField>
-              <div className="game-settings__pair">
-                {/* One select each, so fields and not groups: the field gives
-                    the select its `name` and the `id` its label points at. */}
-                <PlatformFormField name="orientationCode" label="Orientación">
-                  <PlatformSelect defaultValue={game.orientationCode} options={ORIENTATION_OPTIONS} />
-                </PlatformFormField>
-                <PlatformFormField name="analysisModeCode" label="Modo de análisis">
-                  <PlatformSelect
-                    defaultValue={game.analysisModeCode ?? ""}
-                    emptyOption="Análisis normal"
-                    options={ANALYSIS_MODE_OPTIONS}
-                  />
-                </PlatformFormField>
-              </div>
-              <PlatformFormField
-                name="pinnedComment"
-                label="Comentario fijo"
-                info="Se muestra al principio de la notación, antes de las jugadas, a quien abra la partida."
-              >
-                <textarea
-                  key={game.pinnedComment ?? ""}
-                  maxLength={1000}
-                  rows={3}
-                  defaultValue={game.pinnedComment ?? ""}
-                />
-              </PlatformFormField>
-              <div className="game-settings__actions">
-                <SubmitButton className="platform-button platform-button_variant_ink" pendingLabel="Guardando…">
-                  Guardar
-                </SubmitButton>
-              </div>
-            </PlatformForm>
-
-            <div className="game-settings__danger">
-              <button type="button" className="game-settings__destroy" onClick={() => setConfirming("annotations")}>
-                Eliminar anotaciones
-              </button>
-              <button type="button" className="game-settings__destroy" onClick={() => setConfirming("variations")}>
-                Eliminar variantes
-              </button>
-              <button type="button" className="game-settings__destroy" onClick={() => setConfirming("game")}>
-                Eliminar partida
-              </button>
-            </div>
-          </>
-        )}
-      </dialog>
+      <PlatformConfirmPopup
+        ref={confirm}
+        subject={game.name}
+        title={confirmation.question}
+        description={`«${game.name}». ${confirmation.detail}`}
+        acknowledgement={
+          needsClassConfirmation ? { name: "confirmClassBlocks", label: CLASS_BLOCKS_ACKNOWLEDGEMENT } : undefined
+        }
+        action={destroy}
+        confirmLabel={confirmation.submit}
+        onDone={done}
+      />
     </div>
   );
 }

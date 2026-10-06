@@ -1,50 +1,55 @@
 ---
-description: "The confirmation dialog for deleteStudy: a cross on the card, a text button on the empty study page or a word in the game aside, with a checkbox that is required exactly when the server requires it."
+description: "The confirmation for deleteStudy, on PlatformConfirmPopup: a cross on the card, a text button on the empty study page or no trigger beside the board, with a box that is required exactly when the server requires it."
 ---
 
 # `DeleteStudy`
 
-|            |                                                                                                                                                                                                                                                                                                                                                                               |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/studies-list/delete-study.comp.tsx`                                                                                                                                                                                                                                                                                                     |
-| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                              |
-| Stylesheet | `delete-study.comp.css` → block `.delete-study`                                                                                                                                                                                                                                                                                                                               |
-| Used by    | [`StudyCard`](/components/platform/sections/studies/studies-list/study-card) (icon trigger), [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (button trigger), [`StudySettings`](/components/platform/sections/studies/game-view/study-settings) (no trigger: opened from «Eliminar estudio» at the foot of the study's form) |
-| Writes     | `deleteStudy()` · `services/studies/studies.actions.ts`                                                                                                                                                                                                                                                                                                                       |
+Also exports the type `DeleteStudyHandle`.
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-list/delete-study.comp.tsx`                                                                                                                                                                                                                                                                                                                   |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                            |
+| Stylesheet | `delete-study.comp.css` → block `.delete-study`                                                                                                                                                                                                                                                                                                                                             |
+| Used by    | [`StudyCard`](/components/platform/sections/studies/studies-list/study-card) (icon trigger), [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (button trigger), [`StudySettings`](/components/platform/sections/studies/game-view/study-settings) (no trigger: opened from «Eliminar estudio» at the foot of the study's form, on top of it) |
+| Composes   | [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup), which draws the whole confirmation                                                                                                                                                                                                                                                                            |
+| Uses       | `XmarkIcon` from `components/icons/`                                                                                                                                                                                                                                                                                                                                                        |
+| Writes     | `deleteStudy()` · `services/studies/studies.actions.ts`                                                                                                                                                                                                                                                                                                                                     |
 
 ## Purpose
 
-Deleting a study deletes its games, and with them variations, comments and arrows; a study whose games are cited in classes leaves those blocks empty. The dialog says exactly what will be lost and, when there is something to lose, requires a checkbox before the button enables. The same dialog is opened from two places with a different trigger.
+Deleting a study deletes its games, and with them variations, comments and arrows; a study whose games are cited in classes leaves those blocks empty. The confirmation says exactly what will be lost and, when there is something to lose, requires a box before the button enables. Since 2026-10-06 this piece is only the words and the triggers: the popup, the disc, the box, the note and the buttons are [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup)'s. The same confirmation is opened from three places with a different trigger.
 
 ## Props
 
-| Prop             | Type                           | Required              | Meaning                                                                                                                                                                                        |
-| ---------------- | ------------------------------ | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`             | `string`                       | yes                   | Study to delete; bound into the action.                                                                                                                                                        |
-| `name`           | `string`                       | yes                   | For the title ("¿Eliminar «…»?") and the trigger's tooltip.                                                                                                                                    |
-| `gameCount`      | `number`                       | yes                   | Drives the description.                                                                                                                                                                        |
-| `citedGameCount` | `number`                       | yes                   | Games cited in class blocks; drives the warning text.                                                                                                                                          |
-| `trigger`        | `"icon" \| "button" \| "none"` | no · default `"icon"` | `icon` is the card's cross; `button` the boxed text button of the empty study page; `none` draws no trigger, and the host opens the dialog through `ref`. The trigger changes, not the dialog. |
-| `ref`            | `Ref<DeleteStudyHandle>`       | no                    | `{ open() }`: how a host that draws its own trigger — «Eliminar estudio» in the study's form — opens the dialog.                                                                               |
+| Prop             | Type                           | Required              | Meaning                                                                                                                                                                                                                                                                           |
+| ---------------- | ------------------------------ | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`             | `string`                       | yes                   | Study to delete; bound into the action.                                                                                                                                                                                                                                           |
+| `name`           | `string`                       | yes                   | The confirmation's `subject` («¿Eliminar «…»?») and the trigger's tooltip.                                                                                                                                                                                                        |
+| `gameCount`      | `number`                       | yes                   | Drives the description.                                                                                                                                                                                                                                                           |
+| `citedGameCount` | `number`                       | yes                   | Games cited in class blocks; drives the box's label.                                                                                                                                                                                                                              |
+| `trigger`        | `"icon" \| "button" \| "none"` | no · default `"icon"` | `icon` is the card's cross; `button` the boxed text button of the empty study page; `none` draws no trigger, and the host opens the confirmation through `ref`. The trigger changes, not the confirmation.                                                                        |
+| `ref`            | `Ref<DeleteStudyHandle>`       | no                    | `{ open() }`: how a host that draws its own trigger — «Eliminar estudio» in the study's form — opens the confirmation.                                                                                                                                                            |
+| `onDone`         | `() => void`                   | no                    | Called once the study is deleted, after the confirmation closed: where a host that opened it over a popup closes that popup (`StudySettings` closes the study's form). Never on cancel. Alone, from a card or the study page, it is omitted: the action's redirect does the rest. |
 
 ## Behaviour
 
-- `needsConfirmation = gameCount > 0 || citedGameCount > 0`, **the same condition as the server**. If the client let the form submit without the checkbox where the server requires it, the action would bounce to `?error=confirmStudyDelete` instead of deleting.
-- The checkbox **is** the field the server reads (`name="confirmDelete" value="yes"`): unticked it is not sent, so the flag only arrives when it should. `confirmed` is local state so the submit button can be disabled until it is ticked.
-- The form is `<form action={deleteStudy.bind(null, id)}>` inside a native `<dialog>`; `onClose` resets the checkbox so reopening starts clean. The dialog is named by its question, «¿Eliminar «…»?» (`aria-labelledby`, with the id from `useId`).
+- `needsConfirmation = gameCount > 0 || citedGameCount > 0`, **the same condition as the server**: only then is the `acknowledgement` passed, and `PlatformConfirmPopup` keeps the button off until its box is ticked. If the client let the form submit without the box where the server requires it, the action would bounce to `?error=confirmStudyDelete` instead of deleting.
+- The box **is** the field the server reads (`name="confirmDelete" value="yes"`, which the piece sends only while it is checked), so the flag only arrives when it should; the piece resets the tick on every close.
+- The action is `deleteStudy.bind(null, id)`, the piece's `action`: it redirects to the studies list, which takes the popup away; opened over the study's form, the piece's `onDone` is this `onDone`, and the host closes the form with it.
 - Copy adapts to counts: singular/plural for games and for cited games.
 
 ## Markup & styling
 
-Block `.delete-study` (185 lines).
+Block `.delete-study` (60 lines): the triggers alone.
 
-**Elements:** `.delete-study__open`, `.delete-study__open-label` (visually hidden text of the cross), `.delete-study__open-wide`, `.delete-study__dialog`, `.delete-study__form`, `.delete-study__head`, `.delete-study__icon`, `.delete-study__heading`, `.delete-study__title`, `.delete-study__description`, `.delete-study__confirm`, `.delete-study__checkbox`, `.delete-study__warning`, `.delete-study__actions`, `.delete-study__note`, `.delete-study__cancel`, `.delete-study__submit`
+**Elements:** `.delete-study__open` (the card's cross), `.delete-study__open-icon` (`XmarkIcon`, 14px), `.delete-study__open-label` (visually hidden text of the cross), `.delete-study__open-wide` (the boxed text button)
 
-**Other classes it renders:** `.platform-dialog`.
+**Other classes it renders:** `PlatformConfirmPopup`'s.
 
-**Tokens:** `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-danger-soft`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+**Tokens:** `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-text-muted`, `--platform-text-subtle`
 
-**Breakpoints:** `(width < 640px)` stacks the action row.
+No media queries.
 
 ## Usage
 
@@ -62,7 +67,14 @@ import { DeleteStudy } from "@/components/platform/sections/studies/studies-list
 />;
 ```
 
+Over the study's form, from `components/platform/sections/studies/game-view/study-settings.comp.tsx`:
+
+```tsx
+<DeleteStudy ref={deleteRef} trigger="none" … onDone={() => editRef.current?.close()} />
+```
+
 ## Related
 
+- [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup), which draws it.
 - [`GameSettings`](/components/platform/shared/game-settings), where a game is deleted, with the same extra confirmation when a class shows it.
 - The action's confirmation rule in `services/studies/studies.actions.ts`.

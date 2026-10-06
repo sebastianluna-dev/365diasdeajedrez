@@ -10,6 +10,10 @@ const ACTIONS: GameSettingsActions = {
   remove: fn(async () => {}).mockName("deleteStudyGame"),
 };
 
+/** The confirmation's element, to query inside it: the red word beneath says the same words as its button. */
+const confirmationOf = (canvasElement: HTMLElement) =>
+  canvasElement.querySelector<HTMLElement>(".platform-confirm-popup") ?? canvasElement;
+
 const meta = {
   title: "platform/shared/GameSettings",
   component: GameSettings,
@@ -17,11 +21,12 @@ const meta = {
     docs: {
       description: {
         component: `
-The gear at the end of a game's row in \`GameList\` and the dialog it opens:
+The gear at the end of a game's row in \`GameList\` and the popup it opens:
 the game's name, which side its board opens from, how a reader goes through
 it and a comment pinned at the head of its notation; and the three things that destroy —
 its annotations, its variations, the game itself —, each behind a
-confirmation of its own inside the same dialog, because none can be undone. What they do are server actions
+confirmation, a \`PlatformConfirmPopup\` opened on top of the settings with the words of
+the step pressed, because none can be undone. What they do are server actions
 it is given already bound to the study; here they are spies and nothing is
 saved.
 
@@ -53,19 +58,21 @@ Reference page: [Components › GameSettings](/components/platform/shared/game-s
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** The gear alone, as a row of the list ends: the dialog is closed. */
+/** The gear alone, as a row of the list ends: the popup is closed. */
 export const Closed: Story = { name: "El engrane" };
 
-/** The dialog, opened by the story: the name to change and, under a rule, the three ways to destroy. */
+/** The popup, opened by the story: the name to change, focused, and, under a rule, the three ways to destroy. */
 export const Open: Story = {
   name: "Los ajustes abiertos",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: "Ajustes de «Una celada en la apertura»" }));
-    // The dialog fades in: it is there at once and visible a moment later.
+    // The popup fades in: it is there at once and visible a moment later.
     const dialog = await canvas.findByRole("dialog", { name: "Ajustes de la partida" });
     await waitFor(() => expect(dialog).toBeVisible());
-    await expect(canvas.getByRole("textbox", { name: "Nombre" })).toHaveValue("Una celada en la apertura");
+    const name = canvas.getByRole("textbox", { name: "Nombre" });
+    await expect(name).toHaveValue("Una celada en la apertura");
+    await expect(name).toHaveFocus();
   },
 };
 
@@ -80,7 +87,7 @@ export const Unnamed: Story = {
   },
 };
 
-/** A game set for Black, with its next moves hidden and a comment pinned: the dialog opens on what was saved. */
+/** A game set for Black, with its next moves hidden and a comment pinned: the popup opens on what was saved. */
 export const WithSettings: Story = {
   name: "Con ajustes guardados",
   args: {
@@ -106,19 +113,31 @@ export const WithSettings: Story = {
   },
 };
 
-/** «Eliminar variantes» pressed: the dialog asks first, and only its own button calls the action. */
+/** «Eliminar variantes» pressed: the confirmation opens on top of the settings, with its question, and nothing is called yet. */
 export const Confirming: Story = {
   name: "La confirmación antes de eliminar",
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: "Ajustes de «Una celada en la apertura»" }));
     await userEvent.click(await canvas.findByRole("button", { name: "Eliminar variantes" }));
-    const question = canvas.getByText("¿Eliminar las variantes?");
+    const question = canvas.getByRole("dialog", { name: "¿Eliminar las variantes?" });
     await waitFor(() => expect(question).toBeVisible());
+    await expect(canvas.getByRole("dialog", { name: "Ajustes de la partida" })).toBeVisible();
     await expect(args.actions.clearVariations).not.toHaveBeenCalled();
+  },
+};
 
-    await userEvent.click(canvas.getByRole("button", { name: "Eliminar variantes" }));
+/** Confirmed: only the confirmation's own button calls the action, and both popups close once it settles. */
+export const Confirmed: Story = {
+  name: "Las variantes eliminadas",
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "Ajustes de «Una celada en la apertura»" }));
+    await userEvent.click(await canvas.findByRole("button", { name: "Eliminar variantes" }));
+    // The red word beneath says the same words: the confirmation's button is the one.
+    await userEvent.click(within(confirmationOf(canvasElement)).getByRole("button", { name: "Eliminar variantes" }));
     await expect(args.actions.clearVariations).toHaveBeenCalledWith("g1");
+    await waitFor(() => expect(canvas.getByRole("dialog", { name: "Ajustes de la partida" })).not.toBeVisible());
   },
 };
 
@@ -138,11 +157,12 @@ export const DeletingCited: Story = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: "Ajustes de «Una celada en la apertura»" }));
     await userEvent.click(await canvas.findByRole("button", { name: "Eliminar partida" }));
-    const submit = canvas.getByRole("button", { name: "Eliminar partida" });
+    const confirmation = within(confirmationOf(canvasElement));
+    const submit = confirmation.getByRole("button", { name: "Eliminar partida" });
     await waitFor(() => expect(submit).toBeVisible());
     await expect(submit).toBeDisabled();
 
-    await userEvent.click(canvas.getByRole("checkbox"));
+    await userEvent.click(confirmation.getByRole("checkbox"));
     await expect(submit).toBeEnabled();
     await userEvent.click(submit);
     await waitFor(() => expect(args.actions.remove).toHaveBeenCalled());

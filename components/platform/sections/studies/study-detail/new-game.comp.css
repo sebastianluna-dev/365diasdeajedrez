@@ -5,40 +5,28 @@
     font-size: var(--platform-type-lg);
   }
 
-  & .new-game__dialog {
-    width: min(620px, calc(100vw - 32px));
-  }
-
-  & .new-game__head {
-    padding: var(--platform-space-8) var(--platform-space-8) 0;
-  }
-
-  & .new-game__title {
-    margin: 0;
-    font-size: var(--platform-type-2xl);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-
+  /* The popup's content pads itself: the strip above it is `PlatformPopup`'s.
+     The subtitle is the content's first line, under the strip's rule. */
   & .new-game__subtitle {
-    margin: var(--platform-space-2) 0 0;
+    margin: 0;
+    padding: var(--platform-space-5) var(--platform-space-6) 0;
     font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
-  /* On a phone the four tabs are wider than the dialog: the row scrolls
+  /* On a phone the four tabs are wider than the popup: the row scrolls
      sideways, as the viewer's tools do, rather than breaking each tab. */
   & .new-game__tabs {
     display: flex;
     gap: var(--platform-space-1);
     overflow-x: auto;
     scrollbar-width: none;
-    margin: var(--platform-space-5) var(--platform-space-8) 0;
+    margin: var(--platform-space-5) var(--platform-space-6) 0;
     box-shadow: inset 0 -1px 0 var(--platform-track);
   }
 
   /* On one line each: with four tabs, a wider side padding broke «Pegar PGN»
-     and its neighbours over two lines in the dialog's 620px. */
+     and its neighbours over two lines in the popup's 600px. */
   & .new-game__tab {
     padding: var(--platform-space-3);
     white-space: nowrap;
@@ -70,7 +58,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-4);
-    padding: var(--platform-space-6) var(--platform-space-8) 0;
+    padding: var(--platform-space-6) var(--platform-space-6) 0;
   }
 
   /* The PGN in the monospace face and a size under the form's, so its lines
@@ -110,7 +98,7 @@
     flex-direction: column;
     gap: var(--platform-space-3);
     /* The list grows with the classes attended: it scrolls inside so the
-       dialog's foot does not run off the screen. */
+       popup's foot does not run off the screen. */
     max-height: 320px;
     overflow: auto;
   }
@@ -173,8 +161,8 @@
     display: flex;
     align-items: center;
     gap: var(--platform-space-3);
-    margin: var(--platform-space-2) calc(-1 * var(--platform-space-8)) 0;
-    padding: var(--platform-space-6) var(--platform-space-8);
+    margin: var(--platform-space-2) calc(-1 * var(--platform-space-6)) 0;
+    padding: var(--platform-space-6);
     box-shadow: inset 0 1px 0 var(--platform-track);
   }
 

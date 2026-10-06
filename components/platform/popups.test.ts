@@ -29,11 +29,6 @@ const PIECES = new Set([
  * not here and writes one fails.
  */
 const PENDING: Record<string, string> = {
-  "components/platform/sections/studies/studies-list/delete-study.comp.tsx": "step 3 of the popups series",
-  "components/platform/sections/studies/study-detail/edit-study.comp.tsx": "step 3 of the popups series",
-  "components/platform/sections/studies/study-detail/new-game.comp.tsx": "step 6 of the popups series",
-  "components/platform/shared/edit-game/edit-game.comp.tsx": "step 6 of the popups series",
-  "components/platform/shared/game-settings/game-settings.comp.tsx": "step 4 of the popups series",
 };
 
 function filesOf(directory: string): string[] {

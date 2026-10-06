@@ -29,41 +29,29 @@
     height: 22px;
   }
 
-  & .edit-game__dialog {
-    width: min(680px, calc(100vw - 32px));
-  }
-
-  & .edit-game__head {
-    padding: var(--platform-space-8) var(--platform-space-8) 0;
-  }
-
-  & .edit-game__title {
-    margin: 0;
-    font-size: var(--platform-type-2xl);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-
+  /* The popup's content pads itself: the strip above it is `PlatformPopup`'s.
+     The subtitle is the content's first line, under the strip's rule. */
   & .edit-game__subtitle {
-    margin: var(--platform-space-2) 0 0;
+    margin: 0;
+    padding: var(--platform-space-5) var(--platform-space-6) 0;
     font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
     text-wrap: pretty;
   }
 
   & .edit-game__body {
-    padding: var(--platform-space-6) var(--platform-space-8) 0;
+    padding: var(--platform-space-5) var(--platform-space-6) 0;
   }
 
   /* The two buttons, at the end of the row. That the data go to the PGN's
-     headers is said once, under the dialog's title. */
+     headers is said once, under the strip. */
   & .edit-game__actions {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: var(--platform-space-3);
     margin-top: var(--platform-space-6);
-    padding: var(--platform-space-6) var(--platform-space-8);
+    padding: var(--platform-space-6);
     box-shadow: inset 0 1px 0 var(--platform-track);
   }
 }

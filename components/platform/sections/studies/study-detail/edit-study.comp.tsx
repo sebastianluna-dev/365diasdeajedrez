@@ -1,9 +1,13 @@
 "use client";
 
-import { useId, useImperativeHandle, useRef, type Ref } from "react";
+import { useImperativeHandle, useRef, type Ref } from "react";
 import { updateStudy } from "@/services/studies/studies.actions";
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
+import {
+  PlatformPopup,
+  type PlatformPopupHandle,
+} from "@/components/platform/shared/platform-popup/platform-popup.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import "./edit-study.comp.css";
@@ -25,24 +29,27 @@ interface EditStudyProps {
   canChangeKind: boolean;
   /**
    * `button` is the boxed button of the empty study page. `none` draws no
-   * trigger: whoever mounts it opens the dialog through `ref` (the three
+   * trigger: whoever mounts it opens the popup through `ref` (the three
    * bars in the head of the study's card beside the board, `StudySettings`).
    */
   trigger?: "button" | "none";
   ref?: Ref<EditStudyHandle>;
   /**
-   * With it the dialog offers «Eliminar estudio» at its foot: pressed, the
-   * dialog closes and this is called, which is where the host opens the
-   * confirmation (`DeleteStudy`). Without it — a study that is never deleted,
-   * a screen with its own delete button — the foot is not drawn.
+   * With it the popup offers «Eliminar estudio» at its foot: pressed, this is
+   * called, which is where the host opens the confirmation (`DeleteStudy`)
+   * on top of the form, which stays open beneath it until the host closes
+   * it (`close()`) once the study is gone. Without it — a study that is never
+   * deleted, a screen with its own delete button — the foot is not drawn.
    */
   onDelete?: () => void;
 }
 
-/** What a host that draws its own trigger gets: the way to open the dialog. */
-export interface EditStudyHandle {
-  open: () => void;
-}
+/**
+ * What a host that draws its own trigger gets: the popup's own handle.
+ * `open(event)` takes the click so the focus returns to the trigger on
+ * closing; `close()` is for the host that deleted the study from the foot.
+ */
+export type EditStudyHandle = PlatformPopupHandle;
 
 export function EditStudy({
   id,
@@ -56,35 +63,39 @@ export function EditStudy({
   ref,
   onDelete,
 }: EditStudyProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const titleId = useId();
-  useImperativeHandle(ref, () => ({ open: () => dialogRef.current?.showModal() }), []);
+  const popup = useRef<PlatformPopupHandle>(null);
+  useImperativeHandle(
+    ref,
+    () => ({
+      open: (event) => popup.current?.open(event),
+      close: () => popup.current?.close(),
+      isOpen: () => popup.current?.isOpen() ?? false,
+    }),
+    [],
+  );
 
   const selected = kinds.some((kind) => kind.code === kindCode) ? kindCode : kinds[0]?.code;
 
   return (
     <div className="edit-study">
       {trigger === "button" && (
-        <button type="button" className="edit-study__open" onClick={() => dialogRef.current?.showModal()}>
+        <button type="button" className="edit-study__open" onClick={(event) => popup.current?.open(event)}>
           Editar datos
         </button>
       )}
 
-      <dialog ref={dialogRef} className="platform-dialog edit-study__dialog" aria-labelledby={titleId}>
+      <PlatformPopup ref={popup} title="Editar el estudio" size="sm">
         {/* On the platform's form, like «Nuevo estudio»: the same fields, and
-            the same messages when the browser rejects one on saving. */}
+            the same messages when the browser rejects one on saving. The name
+            is the first control, so the popup opens on it. */}
         <PlatformForm
           action={updateStudy.bind(null, id)}
           className="edit-study__form"
-          onSubmit={() => dialogRef.current?.close()}
+          onSubmit={() => popup.current?.close()}
           autoComplete="off"
         >
-          <h2 id={titleId} className="edit-study__title">
-            Editar el estudio
-          </h2>
-
           <PlatformFormField name="name" label="Nombre" messages={{ valueMissing: "Ponle un nombre al estudio." }}>
-            <input type="text" defaultValue={name} maxLength={120} required autoFocus />
+            <input type="text" defaultValue={name} maxLength={120} required />
           </PlatformFormField>
 
           {/* A few lines, as on creation: what the study is for can take more
@@ -118,7 +129,7 @@ export function EditStudy({
           {/* The two buttons alone at the row's end: a note beside them was
               squeezed into three lines. */}
           <div className="edit-study__actions">
-            <button type="button" className="platform-button" onClick={() => dialogRef.current?.close()}>
+            <button type="button" className="platform-button" onClick={() => popup.current?.close()}>
               Cancelar
             </button>
             <SubmitButton className="platform-button platform-button_variant_ink">Guardar</SubmitButton>
@@ -126,22 +137,16 @@ export function EditStudy({
         </PlatformForm>
 
         {/* What destroys, apart from what saves and under a rule, as in a
-            game's settings. It only leads to the confirmation. */}
+            game's settings. It only leads to the confirmation, which opens
+            on top of this popup; this one stays open beneath. */}
         {onDelete && (
           <div className="edit-study__danger">
-            <button
-              type="button"
-              className="edit-study__destroy"
-              onClick={() => {
-                dialogRef.current?.close();
-                onDelete();
-              }}
-            >
+            <button type="button" className="edit-study__destroy" onClick={onDelete}>
               Eliminar estudio
             </button>
           </div>
         )}
-      </dialog>
+      </PlatformPopup>
     </div>
   );
 }
