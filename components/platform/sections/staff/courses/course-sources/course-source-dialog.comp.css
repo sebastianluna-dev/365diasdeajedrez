@@ -1,78 +1,28 @@
 .course-source-dialog {
   flex: none;
 
-  /* «Añadir fuente», in the card's header, is the platform's button; the
+  /* «Agregar fuente», in the card's header, is the platform's button; the
      «Editar» of a row is the platform's row action. Neither is drawn here. */
 
-  /* The size and the rounding: the centring, the backdrop, the surface and
-     the entry and exit motion are set by `.platform-dialog`. */
-  & .course-source-dialog__dialog {
-    width: min(640px, calc(100vw - 32px));
-    border-radius: 8px;
-  }
-
-  /* The form is the dialog's whole content: head, body and footer band stack
-     with no gap of their own; each sets its padding. */
+  /* The popup's strip (the name, the cross) is `PlatformPopup`'s; the
+     content under it is this form, which pads itself to the strip's 24px:
+     body and footer band stack with no gap of their own. */
   & .course-source-dialog__form {
     gap: 0;
-  }
-
-  & .course-source-dialog__head {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--platform-space-5);
-    padding: var(--platform-space-8) var(--platform-space-8) 0;
-  }
-
-  & .course-source-dialog__heading {
-    flex: 1;
-    min-width: 0;
-  }
-
-  & .course-source-dialog__title {
-    margin: 0;
-    font-size: var(--platform-type-2xl);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-  }
-
-  & .course-source-dialog__subtitle {
-    margin: var(--platform-space-1) 0 0;
-    font-size: var(--platform-type-lg);
-    color: var(--platform-text-muted);
-  }
-
-  & .course-source-dialog__close {
-    flex: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    margin: calc(-1 * var(--platform-space-2)) calc(-1 * var(--platform-space-2)) 0 0;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-subtle);
-    cursor: pointer;
-  }
-
-  & .course-source-dialog__close:hover {
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text);
-  }
-
-  & .course-source-dialog__close-icon {
-    width: 20px;
-    height: 20px;
   }
 
   & .course-source-dialog__body {
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-5);
-    padding: var(--platform-space-6) var(--platform-space-8) var(--platform-space-8);
+    padding: var(--platform-space-6);
+  }
+
+  /* The first line of the body: what a source is, in grey. */
+  & .course-source-dialog__subtitle {
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    color: var(--platform-text-muted);
   }
 
   /* Year and edition are short: they share a row. */
@@ -86,37 +36,20 @@
     }
   }
 
-  /* The band at the bottom: sunk a shade, with removing on one side, when a
-     source is being edited, and the buttons on the other. What is optional
-     each field says beside its label, so the band no longer says «Sólo el
-     tipo es obligatorio.». */
+  /* The band at the bottom: sunk a shade, with «Eliminar fuente» on one
+     side, when a source is being edited (the platform's red row action,
+     which only leads to the confirmation), and the buttons on the other.
+     What is optional each field says beside its label, so the band no longer
+     says «Sólo el tipo es obligatorio.». */
   & .course-source-dialog__foot {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--platform-space-4);
     flex-wrap: wrap;
-    padding: var(--platform-space-5) var(--platform-space-8);
+    padding: var(--platform-space-5) var(--platform-space-6);
     border-top: 1px solid var(--platform-border);
     background: var(--platform-bg);
-  }
-
-  /* Removing sits apart from saving, at the band's other end, and only
-     turns red when it is about to be pressed. */
-  & .course-source-dialog__remove {
-    padding: var(--platform-space-2) 0;
-    border: 0;
-    background: transparent;
-    color: var(--platform-text-muted);
-    font-family: inherit;
-    font-size: var(--platform-type-lg);
-    font-weight: 600;
-    cursor: pointer;
-    transition: color 150ms;
-  }
-
-  & .course-source-dialog__remove:hover {
-    color: var(--platform-danger);
   }
 
   & .course-source-dialog__actions {

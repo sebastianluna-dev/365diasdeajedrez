@@ -31,9 +31,6 @@ const PIECES = new Set([
 const PENDING: Record<string, string> = {
   "components/platform/sections/courses/course-study/remove-course.comp.tsx": "step 5 of the popups series",
   "components/platform/sections/courses/course-study/reset-progress.comp.tsx": "step 5 of the popups series",
-  "components/platform/sections/staff/courses/authors-manager/authors-manager.comp.tsx": "step 8 of the popups series",
-  "components/platform/sections/staff/courses/course-sources/course-source-dialog.comp.tsx":
-    "step 8 of the popups series",
   "components/platform/sections/studies/studies-list/delete-study.comp.tsx": "step 3 of the popups series",
   "components/platform/sections/studies/study-detail/edit-study.comp.tsx": "step 3 of the popups series",
   "components/platform/sections/studies/study-detail/new-game.comp.tsx": "step 6 of the popups series",

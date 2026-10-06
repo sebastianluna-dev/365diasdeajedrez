@@ -85,12 +85,17 @@ export async function saveCourseSource(courseId: string, formData: FormData): Pr
   revalidatePath(detailPath);
 }
 
-export async function deleteCourseSource(courseId: string, formData: FormData): Promise<void> {
+/**
+ * Deletes one source of the course. Both ids come bound from the source's
+ * popup (`deleteCourseSource.bind(null, courseId, source.id)`): the
+ * confirmation's form sends nothing else, so `formData` is not read.
+ */
+export async function deleteCourseSource(courseId: string, sourceId: string, formData: FormData): Promise<void> {
+  void formData;
   const staff = await requireStaff();
   const detailPath = staffRoutes.courseDetail(courseId);
   if (!(await allowAction(`${staff.user.id}:course-source`, 60, 60_000))) fail(detailPath, "throttled");
 
-  const { sourceId } = readIds(formData, "sourceId");
   if (!sourceId) fail(detailPath, "invalid");
 
   // Scoped to the course, like the update: nothing of another course goes.

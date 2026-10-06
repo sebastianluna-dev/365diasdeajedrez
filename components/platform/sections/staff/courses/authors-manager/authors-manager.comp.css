@@ -1,66 +1,17 @@
 .authors-manager {
   flex: none;
 
-  /* The size and the rounding: the centring, the backdrop, the surface and
-     the entry and exit motion are set by `.platform-dialog`. */
-  & .authors-manager__dialog {
-    width: min(560px, calc(100vw - 32px));
-    border-radius: 8px;
-  }
+  /* The popup's strip (the name, which follows the view, and the cross) is
+     `PlatformPopup`'s; the content under it pads itself to the strip's 24px. */
 
-  & .authors-manager__head {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--platform-space-5);
-    padding: var(--platform-space-8) var(--platform-space-8) 0;
-  }
-
-  & .authors-manager__heading {
-    flex: 1;
-    min-width: 0;
-  }
-
-  & .authors-manager__title {
-    margin: 0;
-    font-size: var(--platform-type-2xl);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    color: var(--platform-text);
-  }
-
+  /* The first line of the list: who the authors are, in grey. */
   & .authors-manager__subtitle {
-    margin: var(--platform-space-1) 0 0;
+    margin: 0;
     font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
-  & .authors-manager__close {
-    flex: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    margin: calc(-1 * var(--platform-space-2)) calc(-1 * var(--platform-space-2)) 0 0;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-subtle);
-    cursor: pointer;
-  }
-
-  & .authors-manager__close:hover {
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text);
-  }
-
-  & .authors-manager__close-icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  /* The form is the rest of the dialog: body and footer band stack with no
+  /* The form is the rest of the popup: body and footer band stack with no
      gap of their own; each sets its padding. */
   & .authors-manager__form {
     gap: 0;
@@ -70,14 +21,14 @@
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-5);
-    padding: var(--platform-space-6) var(--platform-space-8) var(--platform-space-8);
+    padding: var(--platform-space-6);
   }
 
   & .authors-manager__form .platform-form__field > textarea {
     min-height: 92px;
   }
 
-  /* A long list scrolls inside the dialog instead of pushing the footer out. */
+  /* A long list scrolls inside the popup instead of pushing the footer out. */
   & .authors-manager__list {
     display: flex;
     flex-direction: column;
@@ -192,7 +143,7 @@
     justify-content: space-between;
     gap: var(--platform-space-4);
     flex-wrap: wrap;
-    padding: var(--platform-space-5) var(--platform-space-8);
+    padding: var(--platform-space-5) var(--platform-space-6);
     border-top: 1px solid var(--platform-border);
     background: var(--platform-bg);
   }

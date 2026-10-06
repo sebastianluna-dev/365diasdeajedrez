@@ -1,6 +1,14 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import {
+  PlatformConfirmPopup,
+  type PlatformConfirmPopupHandle,
+} from "@/components/platform/shared/platform-confirm-popup/platform-confirm-popup.comp";
+import {
+  PlatformPopup,
+  type PlatformPopupHandle,
+} from "@/components/platform/shared/platform-popup/platform-popup.comp";
 import type { CatalogOption } from "@/services/staff-courses/staff-courses.types";
 import { deleteCourseSource, saveCourseSource } from "@/services/staff-sources/staff-sources.actions";
 import type { CourseSourceAdmin } from "@/services/staff-sources/staff-sources.types";
@@ -9,27 +17,26 @@ import { CourseSourceForm } from "./course-source-form.comp";
 
 interface CourseSourceDialogProps {
   courseId: string;
-  /** The source to edit; without it the dialog adds a new one. */
+  /** The source to edit; without it the popup adds a new one. */
   source?: CourseSourceAdmin;
   sourceTypes: CatalogOption[];
 }
 
 /**
- * The button and the native `<dialog>` that add or edit one source of the
- * course: «Agregar fuente» in the panel's header, «Editar» on each row, where
- * the source is also removed. The form is remounted on every opening, so an
- * abandoned edit never shows up the next time.
+ * The button and the popup that add or edit one source of the course:
+ * «Agregar fuente» in the panel's header, «Editar» on each row, where the
+ * source is also deleted, through a confirmation opened on top of the popup.
+ * The form is remounted on every closing, so an abandoned edit never shows
+ * up the next time.
  */
 export function CourseSourceDialog({ courseId, source, sourceTypes }: CourseSourceDialogProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const popup = useRef<PlatformPopupHandle>(null);
+  const confirm = useRef<PlatformConfirmPopupHandle>(null);
+  // Bumped on closing, not on the click that opens: `open()` focuses the
+  // form it finds, and one remounted in the same click would take that
+  // focus away with it.
   const [opening, setOpening] = useState(0);
-  const titleId = useId();
   const isEdit = source !== undefined;
-
-  const open = () => {
-    setOpening((count) => count + 1);
-    dialogRef.current?.showModal();
-  };
 
   return (
     <div className="course-source-dialog">
@@ -39,25 +46,42 @@ export function CourseSourceDialog({ courseId, source, sourceTypes }: CourseSour
         // the one button of the card.
         className={isEdit ? "platform-row-action" : "platform-button platform-button_size_compact"}
         aria-label={isEdit ? `Editar la fuente «${source.originalTitle ?? source.sourceTypeLabel}»` : undefined}
-        onClick={open}
+        onClick={(event) => popup.current?.open(event)}
       >
         {isEdit ? "Editar" : "Agregar fuente"}
       </button>
 
-      <dialog ref={dialogRef} className="platform-dialog course-source-dialog__dialog" aria-labelledby={titleId}>
+      <PlatformPopup
+        ref={popup}
+        title={isEdit ? "Editar fuente" : "Nueva fuente"}
+        size="lg"
+        onClose={() => setOpening((count) => count + 1)}
+      >
         <CourseSourceForm
           key={opening}
-          titleId={titleId}
           source={source}
           sourceTypes={sourceTypes}
           action={saveCourseSource.bind(null, courseId)}
-          deleteAction={deleteCourseSource.bind(null, courseId)}
-          onClose={() => dialogRef.current?.close()}
+          onDelete={isEdit ? () => confirm.current?.open() : undefined}
+          onClose={() => popup.current?.close()}
           // The browser validates the fields before the submit event fires,
-          // so the dialog does not close with a bad URL in it.
-          onSubmit={() => dialogRef.current?.close()}
+          // so the popup does not close with a bad URL in it.
+          onSubmit={() => popup.current?.close()}
         />
-      </dialog>
+      </PlatformPopup>
+
+      {/* A sibling of the popup, never inside it: it stacks on top, and when
+          the source is gone it closes the popup beneath through `onDone`. */}
+      {isEdit && (
+        <PlatformConfirmPopup
+          ref={confirm}
+          subject={source.originalTitle ?? source.sourceTypeLabel}
+          description="Se elimina la fuente del curso."
+          action={deleteCourseSource.bind(null, courseId, source.id)}
+          confirmLabel="Eliminar fuente"
+          onDone={() => popup.current?.close()}
+        />
+      )}
     </div>
   );
 }
