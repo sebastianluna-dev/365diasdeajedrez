@@ -193,12 +193,18 @@
     /* The right padding puts the mark's centre on `--mark-center`: half of
        the 18px mark short of it. */
     padding: var(--platform-space-4) calc(var(--mark-center) - 9px) var(--platform-space-4) var(--platform-space-4);
-    /* Barely tinted: a whole column of rows in the accent's wash reads as a
-       warning, and what this is saying is only "these belong together". */
+    /* The pale rose of a whole list of rows (see the token). */
     background: var(--platform-accent-mist);
     color: var(--platform-text);
-    font-size: var(--platform-type-sm);
+    /* 16px from 1536px wide, 15px under it (Sebastian's call, 2026-10-06).
+       Written as the lesson's own sizes and not left to the scale's step at
+       1536px, which this page does not take (`platform-page_scale_base`). */
+    font-size: var(--platform-type-md);
     line-height: 1.35;
+
+    @media (width < 1536px) {
+      font-size: var(--platform-type-sm);
+    }
   }
 
   /* The thread that strings the marks together: the lessons of a chapter are
