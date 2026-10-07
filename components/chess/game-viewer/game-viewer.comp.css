@@ -158,7 +158,9 @@
 
   /* Four keys, each its own square: they are pressed one after another, and a
      stretched button is a target one has to aim at. White on the page's grey,
-     with no line around it: the white alone sets it off. */
+     with no line around it: the white alone sets it off. The icon is in the
+     muted grey of every neutral icon on white (2026-10-07: in the text's ink
+     the keys read black). */
   & .game-viewer__nav-button {
     flex: none;
     width: 48px;
@@ -169,7 +171,7 @@
     border: 0;
     border-radius: 8px;
     background: var(--platform-surface);
-    color: var(--platform-text);
+    color: var(--platform-text-muted);
     cursor: pointer;
   }
 

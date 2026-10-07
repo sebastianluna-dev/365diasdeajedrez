@@ -44,13 +44,13 @@ The card is the study: its name heads it, with three bars at the end of the row 
 
 ## Markup & styling
 
-Block `.study-aside` (80 lines): a column of cards (`flex`, the scale's `space-6` between them). The card is white on the page's grey over a light shadow, with no outline, like every box of the game view; the sharing card (`ShareCollection` in its compact layout) matches.
+Block `.study-aside` (86 lines): a column of cards (`flex`, the scale's `space-6` between them). The card is white on the page's grey over a light shadow, with no outline, like every box of the game view; the sharing card (`ShareCollection` in its compact layout) matches.
 
 **Elements:** `.study-aside__card`, `.study-aside__head`, `.study-aside__name`, `.study-aside__new`
 
 **The head is one row** (2026-10-05): the study's name and, at its end, the three bars that open its form, level with the name. Under the name there used to be a row of words — «Editar datos», «Eliminar» — and beside it the number of games; the owner asked for a button instead (a menu of two items first, then the bars that open the form at once) and found the count beside the point in a head. The bars fall in the column of the gears of the rows under them: the head is inset more than the list, and the button's negative right margin is the difference, written with the scale's own steps so it holds at 1536px too (measured at 1400 and 1600px: same x).
 
-**Other selectors it styles:** `.new-game__open`, the «Nueva partida» trigger in its slot, drawn as a line of the card, its «+» the button's own `PlusIcon` (a `::before` until 2026-10-07): by its own class and not by `.platform-button`, because the dialog it opens lives in the same slot and its «Cancelar» and «Agregar partida» took that look until 2026-10-05; `.study-settings` in the head (its margins).
+**Other selectors it styles:** `.new-game__open`, the «Nueva partida» trigger in its slot, drawn as a line of the card, its «+» the button's own `PlusIcon` (a `::before` until 2026-10-07), kept in the accent's ink with its word, since the platform's button draws a neutral icon in the muted grey: by its own class and not by `.platform-button`, because the dialog it opens lives in the same slot and its «Cancelar» and «Agregar partida» took that look until 2026-10-05; `.study-settings` in the head (its margins).
 
 **Tokens:** `--platform-accent-ink`, `--platform-accent-wash`, `--platform-border`, `--platform-surface`, `--platform-text-subtle`
 

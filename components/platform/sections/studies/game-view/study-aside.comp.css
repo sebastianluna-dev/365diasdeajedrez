@@ -77,4 +77,10 @@
     background: var(--platform-accent-wash);
     color: var(--platform-accent-ink);
   }
+
+  /* An icon on white is the muted grey only when it is neutral; this one is
+     the accent's, like its word. */
+  & .study-aside__new .new-game__open .platform-button__icon {
+    color: inherit;
+  }
 }

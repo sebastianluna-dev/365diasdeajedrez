@@ -572,8 +572,10 @@ html body.platform-theme[data-scroll-locked] {
   cursor: pointer;
 }
 
-/* The icon, on either side or alone: Classic Solid, in the word's colour. On
-   its side the padding is 4px shorter, so that the whole reads centred. One
+/* The icon, on either side or alone: Classic Solid. On a white button it is
+   drawn in the muted grey, a step under its word (see THE ICON'S INK, after
+   the variants). On its side the padding is 4px shorter, so that the whole
+   reads centred. One
    icon per button, never two: on the left it says what it does, on the right
    where it leads. The `:has()` is wrapped in `:where()` so that it weighs one
    class: the sizes and the square, written later, win over it by order. */
@@ -581,6 +583,7 @@ html body.platform-theme[data-scroll-locked] {
   flex: none;
   width: 18px;
   height: 18px;
+  color: var(--platform-text-muted);
 }
 
 .platform-button:where(:has(> .platform-button__icon:first-child)) {
@@ -715,19 +718,10 @@ html body.platform-theme[data-scroll-locked] {
    whole (the danger one beside it); under the pointer it takes the danger's
    colours, a warning before the click. Chosen by Sebastian on 2026-10-07,
    among six ways of grading the three actions of a game's settings. */
-.platform-button_variant_caution > .platform-button__icon {
-  color: var(--platform-text-muted);
-}
-
 .platform-button_variant_caution:hover {
   background: var(--platform-danger-soft);
   box-shadow: inset 0 0 0 1px var(--platform-danger);
   color: var(--platform-danger);
-}
-
-.platform-button_variant_caution:hover > .platform-button__icon,
-.platform-button_variant_caution:disabled > .platform-button__icon {
-  color: inherit;
 }
 
 .platform-button_variant_caution:active {
@@ -771,6 +765,25 @@ html body.platform-theme[data-scroll-locked] {
   background: transparent;
   box-shadow: none;
   color: var(--platform-text-faint);
+}
+
+/* THE ICON'S INK. A neutral icon on white is drawn in the muted grey, a step
+   under its word: in the word's ink an icon, solid and compact, weighed more
+   than the word beside it (2026-10-07, when the board's keys read black). It
+   is the platform's one grey for an icon on white, the quiet one's at rest
+   too. It follows the word under the pointer, while the menu it opens is
+   open and when disabled; on a fill (primary, soft, ink), on the danger one,
+   which is red, and on the quiet one, which has a colour of its own, it is
+   always the word's. */
+.platform-button:hover > .platform-button__icon,
+.platform-button[aria-expanded="true"] > .platform-button__icon,
+.platform-button:disabled > .platform-button__icon,
+.platform-button_variant_accent > .platform-button__icon,
+.platform-button_variant_soft > .platform-button__icon,
+.platform-button_variant_ink > .platform-button__icon,
+.platform-button_variant_danger > .platform-button__icon,
+.platform-button_variant_quiet > .platform-button__icon {
+  color: inherit;
 }
 
 /* Loading: disabled so it cannot be pressed twice, but in its own colours,
