@@ -247,12 +247,14 @@ export interface ChapterView {
 }
 
 /**
- * What the column beside a lesson shows: the course, the chapter and its
- * lessons. It is read by the CHAPTER's layout and not by the lesson's page, so
- * moving from one lesson to the next does not fetch it again — and it carries
- * no PGN, which is the weight the lesson's own page goes for.
+ * What the column beside a lesson shows: the course, and every chapter of it
+ * with its lessons, as a table of contents one scrolls through (2026-10-06;
+ * it used to be the open chapter alone). It is read by the CHAPTER's layout
+ * and not by the lesson's page, so moving from one lesson to the next of the
+ * chapter does not fetch it again — and it carries no PGN, which is the
+ * weight the lesson's own page goes for.
  */
-export interface ChapterOutline {
+export interface CourseOutline {
   courseId: string;
   courseName: string;
   courseHref: string;
@@ -260,14 +262,20 @@ export interface ChapterOutline {
   courseThumbnail?: string;
   /** The student asked to see only the priority lines of this course. */
   onlyPriorityLessons: boolean;
-  chapterId: string;
-  chapterName: string;
-  chapterHref: string;
   /**
-   * The lessons of the chapter, in reading order and already filtered by the
-   * student's preferences — the same list «anterior»/«siguiente» walk, so the
-   * column and the buttons never disagree.
+   * The chapters with at least one lesson to show, in reading order. Their
+   * lessons are already filtered by the student's preferences — the same
+   * list «anterior»/«siguiente» walk, so the column and the buttons never
+   * disagree — and a chapter the filter empties is left out.
    */
+  chapters: OutlineChapter[];
+}
+
+/** A chapter as the column beside a lesson lists it: its name, its page and its lessons. */
+export interface OutlineChapter {
+  id: string;
+  name: string;
+  href: string;
   lessons: LessonSibling[];
 }
 

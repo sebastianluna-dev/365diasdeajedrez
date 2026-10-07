@@ -11,7 +11,7 @@ import { isCourseId } from "./course-rules";
 import {
   courseContentInclude,
   courseDetailInclude,
-  mapChapterOutline,
+  mapCourseOutline,
   mapChapterView,
   mapCourseDetail,
   mapCourseLevel,
@@ -21,7 +21,7 @@ import {
   type UserCourseState,
 } from "./courses.mapper";
 import type {
-  ChapterOutline,
+  CourseOutline,
   ChapterView,
   CourseDetail,
   CourseLevelItem,
@@ -330,9 +330,10 @@ export async function resolveCourseReference(
  * PGNs of the chapter (which `getChapterView` does read, to show the moves of
  * each lesson) nor the lesson being read, which is not known here.
  */
-export async function getChapterOutline(courseId: string, chapterOrder: number): Promise<ChapterOutline | null> {
+/** The column beside a lesson: the whole course. Null when the course or that chapter of it does not exist. */
+export async function getCourseOutline(courseId: string, chapterOrder: number): Promise<CourseOutline | null> {
   const [course, progress] = await Promise.all([getPublishedCourse(courseId), getCourseProgressState(courseId)]);
-  return course ? mapChapterOutline(course, chapterOrder, progress) : null;
+  return course ? mapCourseOutline(course, chapterOrder, progress) : null;
 }
 
 export async function getChapterView(courseId: string, chapterOrder: number): Promise<ChapterView | null> {

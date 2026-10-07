@@ -2,17 +2,22 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, waitFor, within } from "storybook/test";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { platformRoutes } from "@/lib/platform-routes";
-import type { LessonSibling } from "@/services/courses/courses.types";
+import type { LessonSibling, OutlineChapter } from "@/services/courses/courses.types";
 import { OutlineList } from "./outline-list.comp";
 
 const COURSE = "finales-de-torres";
 const CHAPTER = 2;
 
-const href = (lessonId: string) => platformRoutes.lessonDetail(COURSE, CHAPTER, lessonId);
+const href = (lessonId: string, chapter = CHAPTER) => platformRoutes.lessonDetail(COURSE, chapter, lessonId);
 
 /** One lesson of the chapter, by its id and name. */
-function lesson(id: string, name: string, statusCode: LessonSibling["statusCode"]): LessonSibling {
-  return { id, name, href: href(id), statusCode };
+function lesson(id: string, name: string, statusCode: LessonSibling["statusCode"], chapter = CHAPTER): LessonSibling {
+  return { id, name, href: href(id, chapter), statusCode };
+}
+
+/** A chapter of the course, by its order, name and lessons. */
+function chapter(order: number, name: string, lessons: LessonSibling[]): OutlineChapter {
+  return { id: `capitulo-${order}`, name, href: platformRoutes.chapterDetail(COURSE, order), lessons };
 }
 
 const { COMPLETED, IN_PROGRESS, NOT_STARTED } = PROGRESS_STATUS;
@@ -27,6 +32,16 @@ const LESSONS: LessonSibling[] = [
   lesson("peon-de-torre", "Torre y peón de torre", NOT_STARTED),
   lesson("repaso", "Repaso: ocho finales para resolver", NOT_STARTED),
 ];
+
+/** The chapters around it: one before, all done, and one after, not started. */
+const FIRST_CHAPTER = chapter(1, "Rey y peones: lo que hay que saber antes", [
+  lesson("oposicion", "La oposición", COMPLETED, 1),
+  lesson("cuadrado", "La regla del cuadrado", COMPLETED, 1),
+]);
+const LAST_CHAPTER = chapter(3, "Torre contra pieza menor", [
+  lesson("torre-alfil", "Torre contra alfil: la esquina buena", NOT_STARTED, 3),
+  lesson("torre-caballo", "Torre contra caballo", NOT_STARTED, 3),
+]);
 
 /** A long chapter: sixteen lessons, the first twelve done. */
 const LONG_CHAPTER: LessonSibling[] = [
@@ -56,18 +71,21 @@ const meta = {
     docs: {
       description: {
         component: `
-The rows of the column beside a lesson, and the only client piece of it: it
-marks the lesson being read from the pathname — that row is not a link, it
+The course's table of contents beside a lesson — every chapter, its head
+with a ring of how much of it is done, and its lessons — and the only client
+piece of the column. Each chapter is a section, and its head stays stuck to
+the top of the column while its lessons run under it, until the next
+chapter's head pushes it away. It marks the lesson being read from the pathname — that row is not a link, it
 carries \`aria-current="page"\` and is painted in the accent — and every
 lesson carries its stop on the dotted thread, the filled check once it is
 done and an empty ring while it is not (in progress counts as not done). On
 every change of pathname it brings the lesson being read back into view when
-the column's scroll leaves it cut off, under the chapter's sticky head.
+the column's scroll leaves it cut off, under its chapter's sticky head.
 
 The list has no stylesheet of its own: it imports the column's
 (\`lesson-outline.comp.css\`), and the story mounts it where \`LessonOutline\`
-does, in the column's scroller under the chapter's head — which the decorator draws
-as plain markup, since \`LessonOutline\` imports a server action. Storybook's
+does, in the column's scroller, which the decorator draws as plain markup,
+since \`LessonOutline\` imports a server action. Storybook's
 router reports the lesson's path.
 
 Source: \`components/platform/sections/courses/lesson-view/outline-list.comp.tsx\`.
@@ -76,12 +94,14 @@ Reference page: [Components › OutlineList](/components/platform/sections/cours
       },
     },
   },
-  args: { lessons: LESSONS },
+  args: {
+    chapters: [FIRST_CHAPTER, chapter(2, "Finales de torre que hay que saber", LESSONS), LAST_CHAPTER],
+  },
   argTypes: {
-    lessons: {
+    chapters: {
       control: "object",
       description:
-        "`LessonSibling[]` (`id`, `name`, `href`, `statusCode`) in reading order; the row whose `href` is the pathname is the one being read.",
+        "`OutlineChapter[]` (`id`, `name`, `href`, `lessons`) in reading order, each lesson a `LessonSibling` (`id`, `name`, `href`, `statusCode`); the row whose `href` is the pathname is the one being read.",
     },
   },
   decorators: [
@@ -99,9 +119,6 @@ Reference page: [Components › OutlineList](/components/platform/sections/cours
           style={{ position: "static", width: "100%", maxWidth: 360, height }}
         >
           <div className="lesson-outline__body" style={height ? { overflow: "auto" } : undefined}>
-            <div data-sticky-head="" className="lesson-outline__chapter">
-              <span className="lesson-outline__chapter-name">Finales de torre que hay que saber</span>
-            </div>
             <Story />
           </div>
         </nav>
@@ -113,7 +130,7 @@ Reference page: [Components › OutlineList](/components/platform/sections/cours
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Midway through a chapter: two lessons done, the third being read (still in progress, so its ring is empty), and one done ahead of its turn. */
+/** The whole course, three chapters each under its head with its ring: in the second, two lessons done, the third being read (still in progress, so its ring is empty), and one done ahead of its turn. */
 export const MidChapter: Story = {};
 
 /** Going back to a lesson already done: the row being read carries its check, drawn on the accent. */
@@ -121,9 +138,9 @@ export const RereadingADoneLesson: Story = {
   parameters: { nextjs: { navigation: { pathname: href("philidor") } } },
 };
 
-/** A long chapter in a column that scrolls: the lesson being read, thirteenth of sixteen, is brought into view on mount and lands next to last. */
+/** A long course in a column that scrolls: the lesson being read, thirteenth of the long second chapter, is brought into view on mount and lands next to last, under its chapter's head stuck to the top. */
 export const LongChapter: Story = {
-  args: { lessons: LONG_CHAPTER },
+  args: { chapters: [FIRST_CHAPTER, chapter(2, "Finales que hay que saber", LONG_CHAPTER), LAST_CHAPTER] },
   parameters: {
     columnHeight: 440,
     nextjs: { navigation: { pathname: href("leccion-13") } },

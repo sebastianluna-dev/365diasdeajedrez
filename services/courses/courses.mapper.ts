@@ -9,7 +9,7 @@ import { formatEloRange } from "./level-rules";
 import type {
   ChapterLessonItem,
   ChapterLink,
-  ChapterOutline,
+  CourseOutline,
   ChapterView,
   CourseChapterItem,
   CourseContentTypeItem,
@@ -21,6 +21,7 @@ import type {
   CourseProgressSummary,
   CourseSummary,
   LessonSibling,
+  OutlineChapter,
   LessonView,
   MyCourseItem,
 } from "./courses.types";
@@ -495,22 +496,38 @@ export function mapChapterView(
  * no lesson is named here, because the column is the same for every lesson of
  * the chapter and the segment that draws it does not know which one is open.
  */
-export function mapChapterOutline(
+/**
+ * The column beside a lesson: every chapter of the course with the lessons it
+ * shows. Null when the course has no chapter of that order, which is what the
+ * chapter's layout answers with a 404.
+ */
+export function mapCourseOutline(
   course: CourseWithContent,
   chapterOrder: number,
   state: UserCourseState,
-): ChapterOutline | null {
-  const chapter = course.chapters.find((candidate) => candidate.order === chapterOrder);
-  if (!chapter) return null;
+): CourseOutline | null {
+  if (!course.chapters.some((candidate) => candidate.order === chapterOrder)) return null;
 
-  const lessons: LessonSibling[] = flattenLessons(course, state)
-    .filter((candidate) => candidate.chapterId === chapter.id)
-    .map((candidate) => ({
-      id: candidate.id,
-      name: candidate.name,
-      href: platformRoutes.lessonDetail(course.id, chapter.order, candidate.id),
-      statusCode: asStatus(state.lessonStatus.get(candidate.id)),
-    }));
+  const visible = flattenLessons(course, state);
+  // In reading order, the one the lessons follow: the introduction first and
+  // the closing last, wherever their order numbers put them.
+  const chapters: OutlineChapter[] = sortByRole(
+    course.chapters.map((chapter) => ({ ...chapter, roleCode: chapter.role?.code })),
+  )
+    .map((chapter) => ({
+      id: chapter.id,
+      name: chapter.name,
+      href: platformRoutes.chapterDetail(course.id, chapter.order),
+      lessons: visible
+        .filter((candidate) => candidate.chapterId === chapter.id)
+        .map((candidate): LessonSibling => ({
+          id: candidate.id,
+          name: candidate.name,
+          href: platformRoutes.lessonDetail(course.id, chapter.order, candidate.id),
+          statusCode: asStatus(state.lessonStatus.get(candidate.id)),
+        })),
+    }))
+    .filter((chapter) => chapter.lessons.length > 0);
 
   return {
     courseId: course.id,
@@ -518,10 +535,7 @@ export function mapChapterOutline(
     courseHref: platformRoutes.courseDetail(course.id),
     courseThumbnail: thumbnailOf(course),
     onlyPriorityLessons: state.onlyPriorityLessons,
-    chapterId: chapter.id,
-    chapterName: chapter.name,
-    chapterHref: platformRoutes.chapterDetail(course.id, chapter.order),
-    lessons,
+    chapters,
   };
 }
 

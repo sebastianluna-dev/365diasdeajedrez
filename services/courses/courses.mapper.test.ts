@@ -5,6 +5,7 @@ import {
   mapChapterView,
   mapCourseDetail,
   mapCourseLevel,
+  mapCourseOutline,
   mapCourseProgress,
   mapCourseSources,
   mapCourseSummary,
@@ -547,5 +548,28 @@ describe("los niveles del curso", () => {
   it("un curso sin niveles no tiene ninguno, y sigue siendo un curso", () => {
     const bare = { ...COURSE, sources: [] } as unknown as CourseWithDetail;
     expect(mapCourseDetail(bare, state()).levels).toEqual([]);
+  });
+});
+
+describe("la columna junto a una lección", () => {
+  it("trae todos los capítulos del curso, cada uno con sus lecciones en orden", () => {
+    const outline = mapCourseOutline(COURSE, 2, state());
+    expect(outline?.chapters.map((chapter) => chapter.id)).toEqual(["cap-1", "cap-2"]);
+    expect(outline?.chapters[1]?.lessons.map((lesson) => lesson.id)).toEqual(["l4", "l5", "l6"]);
+    expect(outline?.chapters[1]?.lessons[0]?.href).toBe("/cursos/10000009/2/l4");
+  });
+
+  it("con el filtro encendido, cada capítulo trae sólo lo que se ve", () => {
+    const outline = mapCourseOutline(COURSE, 1, state({ onlyPriorityLessons: true }));
+    expect(outline?.chapters.map((chapter) => chapter.lessons.map((lesson) => lesson.id))).toEqual([["l1"], ["l4"]]);
+  });
+
+  it("marca lo aprendido en cada lección", () => {
+    const outline = mapCourseOutline(COURSE, 1, state({ lessonStatus: completed("l5") }));
+    expect(outline?.chapters[1]?.lessons[1]?.statusCode).toBe(PROGRESS_STATUS.COMPLETED);
+  });
+
+  it("no existe para un capítulo que el curso no tiene", () => {
+    expect(mapCourseOutline(COURSE, 9, state())).toBeNull();
   });
 });

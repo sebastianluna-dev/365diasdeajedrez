@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { LessonFrame } from "@/components/platform/sections/courses/lesson-view/lesson-frame.comp";
 import { isCourseId } from "@/services/courses/course-rules";
-import { getChapterOutline } from "@/services/courses/courses.service";
+import { getCourseOutline } from "@/services/courses/courses.service";
 import "./lesson-page.css";
 
 interface LessonLayoutProps {
@@ -10,7 +10,8 @@ interface LessonLayoutProps {
 }
 
 /**
- * The lesson's screen, minus the lesson: the column of lessons of the chapter.
+ * The lesson's screen, minus the lesson: the column with every chapter of the
+ * course and its lessons.
  *
  * It hangs from the CHAPTER and not from the lesson, and that is the whole
  * reason the lessons live at `/cursos/<id>/<capítulo>/<lección>`: a layout is
@@ -26,7 +27,7 @@ export default async function LessonLayout({ params, children }: LessonLayoutPro
   const order = Number(chapterOrder);
   if (!isCourseId(courseRef) || !Number.isInteger(order)) notFound();
 
-  const outline = await getChapterOutline(courseRef, order);
+  const outline = await getCourseOutline(courseRef, order);
   if (!outline) notFound();
 
   return (

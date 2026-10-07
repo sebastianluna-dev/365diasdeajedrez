@@ -11,7 +11,7 @@ description: "The lesson's screen: the column of the chapter's lessons and, besi
 | Stylesheet | `lesson-frame.comp.css` → block `.lesson-frame`                                     |
 | Used by    | `app/(platform)/cursos/[courseRef]/[chapterOrder]/(lesson)/layout.tsx`              |
 | Composes   | [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline) |
-| Uses       | `ChapterOutline` from `services/courses/courses.types`                              |
+| Uses       | `CourseOutline` from `services/courses/courses.types`                               |
 
 ## Purpose
 
@@ -23,10 +23,10 @@ It takes `children` because it is a container and nothing else — the exception
 
 ## Props
 
-| Prop       | Type             | Required | Meaning                                                                                                                                 |
-| ---------- | ---------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `outline`  | `ChapterOutline` | yes      | The course, the chapter and its lessons: what the column lists. It names no lesson, because the layout does not know which one is open. |
-| `children` | `ReactNode`      | yes      | The lesson's own segment.                                                                                                               |
+| Prop       | Type            | Required | Meaning                                                                                                                                    |
+| ---------- | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `outline`  | `CourseOutline` | yes      | The course, its chapters and their lessons: what the column lists. It names no lesson, because the layout does not know which one is open. |
+| `children` | `ReactNode`     | yes      | The lesson's own segment.                                                                                                                  |
 
 ## Markup & styling
 
@@ -47,7 +47,7 @@ No modifiers.
 From `app/(platform)/cursos/[courseRef]/[chapterOrder]/(lesson)/layout.tsx`:
 
 ```tsx
-const outline = await getChapterOutline(courseRef, order);
+const outline = await getCourseOutline(courseRef, order);
 if (!outline) notFound();
 
 <div className="platform-page lesson-page platform-page_width_full platform-page_height_screen platform-page_scale_base">

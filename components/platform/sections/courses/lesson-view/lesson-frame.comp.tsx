@@ -1,10 +1,10 @@
-import type { ChapterOutline } from "@/services/courses/courses.types";
+import type { CourseOutline } from "@/services/courses/courses.types";
 import { LessonOutline } from "./lesson-outline.comp";
 import "./lesson-frame.comp.css";
 
 interface LessonFrameProps {
-  /** The chapter around the lesson: what the column lists. */
-  outline: ChapterOutline;
+  /** The course around the lesson: what the column lists. */
+  outline: CourseOutline;
   /** The lesson itself, which is what changes underneath. */
   children: React.ReactNode;
 }
