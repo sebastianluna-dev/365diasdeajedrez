@@ -336,10 +336,22 @@
 }
 
 /* The global focus of globals.css is an orange meant for a dark background;
-   the platform's is the selection's blue, which no error shares. */
+   on the platform's light one the accent's ink is used, which does contrast:
+   studying, moving around, reading one's progress, the focus is the brand's. */
 .platform-theme :focus-visible {
-  outline: 2px solid var(--platform-selection);
+  outline: 2px solid var(--platform-accent-ink);
   outline-offset: 2px;
+}
+
+/* Inside a form it is the selection's blue: there the accent is the very red
+   of an error in the light theme, and a red ring on a field being filled in
+   read as a field in trouble (2026-10-06). So is a field one types in,
+   wherever it is (a search); and the pieces that hold a value draw it
+   themselves, for the controls tied to a form from outside it. An invalid
+   field still draws its own red ring (`PlatformForm`). */
+.platform-theme form :focus-visible,
+.platform-theme :is(input, textarea):focus-visible {
+  outline-color: var(--platform-selection);
 }
 
 /* globals.css paints the `body` with the public site's dark palette, and that

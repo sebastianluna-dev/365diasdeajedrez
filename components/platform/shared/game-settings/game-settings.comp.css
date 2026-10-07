@@ -27,7 +27,7 @@
   }
 
   & .game-settings__open:focus-visible {
-    outline: 2px solid var(--platform-selection);
+    outline: 2px solid var(--platform-accent);
     outline-offset: -2px;
   }
 

@@ -71,7 +71,7 @@
   }
 
   & .course-card__link:focus-visible::after {
-    outline: 2px solid var(--platform-selection);
+    outline: 2px solid var(--platform-accent-ink);
     outline-offset: 2px;
   }
 

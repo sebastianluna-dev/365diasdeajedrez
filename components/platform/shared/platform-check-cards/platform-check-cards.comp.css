@@ -40,6 +40,7 @@
   /* The platform's own ring stays, and the border joins it in its blue. */
   & .platform-check-cards__card:focus-visible {
     border-color: var(--platform-selection);
+    outline-color: var(--platform-selection);
   }
 
   /* A chosen one sinks: the neutral fill, pressed in, and no colour but its

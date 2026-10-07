@@ -29,6 +29,11 @@
     border-color: var(--platform-border-strong);
   }
 
+  /* A form control's ring is the selection's blue wherever it is drawn. */
+  & .platform-switch__control:focus-visible {
+    outline-color: var(--platform-selection);
+  }
+
   & .platform-switch__control[data-state="checked"] {
     background: var(--platform-surface);
     box-shadow: var(--platform-shadow-lift);

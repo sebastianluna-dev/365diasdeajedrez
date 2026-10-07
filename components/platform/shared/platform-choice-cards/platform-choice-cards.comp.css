@@ -31,6 +31,7 @@
      selection's border, so a pale ring would be all that says where the focus is. */
   & .platform-choice-cards__card:focus-visible {
     border-color: var(--platform-selection);
+    outline-color: var(--platform-selection);
   }
 
   /* The chosen one: the selection's border and wash, and its description in

@@ -39,6 +39,12 @@
     background: var(--platform-selection-wash);
   }
 
+  /* A form control's ring is the selection's blue even where the box is tied
+     to its form from outside it (the lesson editor's aside). */
+  & .platform-checkbox__box:focus-visible {
+    outline-color: var(--platform-selection);
+  }
+
   & .platform-checkbox__indicator {
     display: flex;
   }
