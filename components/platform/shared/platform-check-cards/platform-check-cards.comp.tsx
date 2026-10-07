@@ -86,7 +86,7 @@ function CheckCards({
           className="platform-check-cards__card"
         >
           <Checkbox.Indicator className="platform-check-cards__mark" forceMount>
-            <CheckIcon className="platform-check-cards__mark-icon" />
+            <CheckIcon variant="classic-solid" className="platform-check-cards__mark-icon" />
           </Checkbox.Indicator>
           {option.icon && (
             <span className="platform-check-cards__icon" aria-hidden="true">

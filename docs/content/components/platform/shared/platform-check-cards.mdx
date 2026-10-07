@@ -36,7 +36,7 @@ It is a sibling of `PlatformChoiceCards` and not a mode of it: a radio group is 
 ## Behaviour
 
 - A chosen card carries `data-state="checked"` from the primitive; the stylesheet gives it the accent border and wash, paints its description in the accent ink and fills the mark in its corner.
-- The mark (`Checkbox.Indicator` with `forceMount`) is always in the DOM: an empty ring when off, the accent disc with the tick when on, so nothing shifts on toggle.
+- The mark (`Checkbox.Indicator` with `forceMount`) is always in the DOM: an empty ring when off, the accent disc with the tick when on (`CheckIcon` in Classic Solid), so nothing shifts on toggle.
 - Clicking anywhere on a card toggles it; Space toggles the focused one; Tab moves between cards.
 - Uncontrolled by default (`defaultValue`); with `value` the parent owns the set, which the «Nuevo curso» form uses to keep its submit off until one card is chosen.
 - **It starts again from what was saved.** The cards are mounted under the set they open with (`savedValueKey(defaultValue)`, in `components/platform/shared/saved-value-key.ts`), so a save that changed the set mounts them anew from it. React resets a `<form action>` when its action finishes, and the primitive answers the form's `reset` by going back to the value it had when it was MOUNTED. On a form that stays on screen after saving, that is the value from before the save: until 2026-09-28 the control showed what had just been replaced, the page had to be reloaded to see what was stored, and saving again without reloading sent the old value and undid the change. The key ignores the order of the set, and is constant for a controlled group.
