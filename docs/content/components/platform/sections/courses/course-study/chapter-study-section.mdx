@@ -36,7 +36,7 @@ The lessons of one chapter. Each card shows **the game whole** — «1.e4 c5 2.C
 - **A lesson is not numbered**: its card is headed by its name. `lesson.order` is still in the model, the real one with the filter on too, but no page draws it.
 - A learned lesson carries that same check in its header band, in the same accent.
 - With only the priority ones asked for and none in the chapter, the list says so and how many «Todo» would show.
-- At the foot, the neighbour chapters, each by its name and cut short when it does not fit: «← Los años de aprendizaje (1957–1959)».
+- **Before the list and at its foot**, the neighbour chapters, each by its name and cut short when it does not fit: «← Los años de aprendizaje (1957–1959)». The ones before the list came on 2026-10-07, so a long chapter can be left without going down to its last lesson; they are not drawn over the empty notice, where the two would sit one right above the other. Both are drawn by one function (`Neighbours`), and each `<nav>` has a name of its own — «Capítulos vecinos, antes de la lista» and «Capítulos vecinos, al final de la lista» — since two landmarks of one name cannot be told apart.
 - The moves are read by the service for this chapter alone (`gameMoves` over `lessonPgnOf`): the course is loaded without the PGN of its lessons, which is most of its weight.
 
 The previous chapter page had an «Agregar al Move Trainer» button. It is no longer here, and on 2026-10-03 Sebastian decided it does not come back for now: a course's «Repasar» is the way back to what was learned, and the chapter is still added from the trainer's home.

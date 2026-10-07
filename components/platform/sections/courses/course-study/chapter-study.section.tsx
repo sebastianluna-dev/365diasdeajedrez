@@ -39,6 +39,11 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
       errorCode={errorCode}
     >
       <div className="chapter-study">
+        {/* Before the list too, so a long chapter can be left without going
+            down to its last lesson (2026-10-07). Not over the empty notice:
+            there the two would sit one right above the other. */}
+        {chapter.lessons.length > 0 && <Neighbours chapter={chapter} label="Capítulos vecinos, antes de la lista" />}
+
         {chapter.lessons.length === 0 ? (
           <p className="chapter-study__empty">
             {course.onlyPriorityLessons
@@ -100,25 +105,36 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
           </ol>
         )}
 
-        {(chapter.previous || chapter.next) && (
-          <nav className="chapter-study__neighbours" aria-label="Capítulos vecinos">
-            {chapter.previous ? (
-              <Link href={chapter.previous.href} className="chapter-study__neighbour">
-                <span aria-hidden="true">←</span>
-                <span className="chapter-study__neighbour-name">{chapter.previous.name}</span>
-              </Link>
-            ) : (
-              <span />
-            )}
-            {chapter.next && (
-              <Link href={chapter.next.href} className="chapter-study__neighbour">
-                <span className="chapter-study__neighbour-name">{chapter.next.name}</span>
-                <span aria-hidden="true">→</span>
-              </Link>
-            )}
-          </nav>
-        )}
+        <Neighbours chapter={chapter} label="Capítulos vecinos, al final de la lista" />
       </div>
     </CourseStudyFrame>
+  );
+}
+
+/**
+ * The chapters before and after this one, each a button named after where it
+ * leads. Drawn before and after the list of lessons: each `<nav>` carries a
+ * name of its own, since two landmarks of one name cannot be told apart.
+ */
+function Neighbours({ chapter, label }: { chapter: ChapterView; label: string }) {
+  if (!chapter.previous && !chapter.next) return null;
+
+  return (
+    <nav className="chapter-study__neighbours" aria-label={label}>
+      {chapter.previous ? (
+        <Link href={chapter.previous.href} className="chapter-study__neighbour">
+          <span aria-hidden="true">←</span>
+          <span className="chapter-study__neighbour-name">{chapter.previous.name}</span>
+        </Link>
+      ) : (
+        <span />
+      )}
+      {chapter.next && (
+        <Link href={chapter.next.href} className="chapter-study__neighbour">
+          <span className="chapter-study__neighbour-name">{chapter.next.name}</span>
+          <span aria-hidden="true">→</span>
+        </Link>
+      )}
+    </nav>
   );
 }
