@@ -116,7 +116,7 @@ export function CourseEditorSection({
 
             {/* What the course teaches, as one-line cards in two columns, with
                 the name alone: several at once, and the action refuses to save none. */}
-            <FormFieldset legend="Contenido (selecciona al menos uno)">
+            <FormFieldset legend="Contenido">
               <PlatformCheckCards
                 name="contentTypeCodes"
                 defaultValue={course.contentTypeCodes}

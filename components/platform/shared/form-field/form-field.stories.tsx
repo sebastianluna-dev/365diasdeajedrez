@@ -146,7 +146,7 @@ export const FieldsetOptional: Story = {
  */
 export const Fieldset: Story = {
   render: () => (
-    <FormFieldset legend="Contenido (selecciona al menos uno)">
+    <FormFieldset legend="Contenido">
       <PlatformCheckCards
         name="contentTypeCodes"
         defaultValue={[CONTENT_TYPE.ENDGAMES]}
