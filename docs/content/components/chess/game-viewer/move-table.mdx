@@ -40,9 +40,11 @@ The hard part, deciding the order of rows and blocks and when Black's move has t
 
 ## Markup & styling
 
-Block `.move-table` (208 lines). The evaluations are in `--platform-text-muted`, not a lighter grey: the cell turns to `--platform-surface-neutral` under the pointer, a fill where the subtle grey falls under 4.5:1. On the active move they take its accent and stay behind it by their weight (500 against the move's 700), not by an opacity.
+Block `.move-table` (212 lines). The evaluations are in `--platform-text-muted`, not a lighter grey: the cell turns to `--platform-surface-neutral` under the pointer, a fill where the subtle grey falls under 4.5:1. On the active move they take its accent and stay behind it by their weight (500 against the move's 700), not by an opacity.
 
 **Elements:** `.move-table__row`, `.move-table__number`, `.move-table__cell`, `.move-table__move`, `.move-table__nag`, `.move-table__sr` (the NAGs in words, visually hidden), `.move-table__eval`, `.move-table__ellipsis`, `.move-table__comment`, `.move-table__line`, `.move-table__inline`, `.move-table__inline-comment`
+
+**The block is `position: relative`** (2026-10-06): it is the containing block of `.move-table__sr`, the words read and not seen, which are `position: absolute`. Without it they were placed against the body, escaped the panel's own scroll and stretched the page by the length of the game — which is what gave the full-window lesson a scrollbar.
 
 **Modifiers and states:** `.move-table__comment_kind_pinned` (the owner's note: keeps its line breaks), `.move-table__cell_side_white`, `.move-table__cell_side_black`, `.move-table__move_state_active`, `.move-table__inline_state_active`
 

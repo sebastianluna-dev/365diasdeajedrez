@@ -45,9 +45,11 @@ The tree carries no editing logic. It reports a right click when asked to and no
 
 ## Markup & styling
 
-Block `.move-tree` (120 lines).
+Block `.move-tree` (125 lines).
 
 **Elements:** `.move-tree__line` (a run of the main line), `.move-tree__comment` (a paragraph of the lesson), `.move-tree__variation` (a line that was not played), `.move-tree__bracket`, `.move-tree__aside` (what a variation is proposed for, inside its paragraph), `.move-tree__move`, `.move-tree__sr` (a move's NAGs in words, visually hidden)
+
+**The block is `position: relative`** (2026-10-06): it is the containing block of `.move-tree__sr`, the words read and not seen, which are `position: absolute`. Without it they were placed against the body, escaped the panel's own scroll and stretched the page by the length of the game — which is what gave the full-window lesson a scrollbar.
 
 **Modifiers and states:** `.move-tree__comment_kind_pinned` (the owner's note heading the text: keeps its line breaks), `.move-tree__move_active`
 

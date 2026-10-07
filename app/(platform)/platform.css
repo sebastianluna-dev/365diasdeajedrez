@@ -457,6 +457,16 @@ html body.platform-theme[data-scroll-locked] {
   }
 }
 
+/* While the page IS the window, the document itself never scrolls and shows
+   no scrollbar (Sebastian's call, 2026-10-06): what is longer than the window
+   scrolls inside its own column (the lessons, the notes). The same widths and
+   heights as above, where the page fills the window. */
+@media (width >= 1280px) and (height > 620px) {
+  :root:has(.platform-page_height_screen) {
+    overflow: hidden;
+  }
+}
+
 .platform-page {
   display: flex;
   flex-direction: column;

@@ -6,6 +6,11 @@
   font-size: var(--move-tree-font-size, var(--platform-type-lg));
   color: var(--platform-text);
   word-break: break-word;
+  /* The containing block of the words read and not seen (`__sr`, absolute):
+     without a positioned ancestor they were placed against the body, escaped
+     the panel's scroller and stretched the page under a lesson by the length
+     of the game, which is what gave the full-window lesson a scrollbar. */
+  position: relative;
 
   /* The lesson is read: a run of moves, then what is said about the last one
      of them, then what could have been played instead. Each is a paragraph,

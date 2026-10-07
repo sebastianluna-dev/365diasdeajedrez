@@ -5,6 +5,10 @@
   font-size: var(--move-tree-font-size, var(--platform-type-sm));
   line-height: 1.4;
   color: var(--platform-text);
+  /* The containing block of the words read and not seen (`__sr`, absolute),
+     so they stay inside the panel's scroller instead of stretching the page
+     (see `.move-tree`). */
+  position: relative;
   /* Indentation step per variation level. */
   --move-table-step: 15px;
 
