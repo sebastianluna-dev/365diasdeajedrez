@@ -3,12 +3,14 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { userEvent } from "storybook/test";
 import { ArrowRightIcon } from "@/components/icons/arrow-right-icon.comp";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
+import { CodeBranchIcon } from "@/components/icons/code-branch-icon.comp";
+import { CommentXmarkIcon } from "@/components/icons/comment-xmark-icon.comp";
 import { GearIcon } from "@/components/icons/gear-icon.comp";
 import { PlusIcon } from "@/components/icons/plus-icon.comp";
 import { SpinnerIcon } from "@/components/icons/spinner-icon.comp";
 import { TrashCanIcon } from "@/components/icons/trash-can-icon.comp";
 
-const VARIANTS = ["secondary", "accent", "soft", "ink", "danger"] as const;
+const VARIANTS = ["secondary", "accent", "soft", "ink", "danger", "caution"] as const;
 const SIZES = ["lg", "md", "sm"] as const;
 
 type Variant = (typeof VARIANTS)[number];
@@ -29,6 +31,7 @@ const WORD: Record<Variant, string> = {
   soft: "Continuar",
   ink: "Crear curso",
   danger: "Eliminar",
+  caution: "Eliminar variantes",
 };
 
 /** The classes a screen writes for a variant, a size and a square; the secondary medium one is the bare block. */
@@ -73,7 +76,8 @@ const meta = {
 \`.platform-button\`, the platform's button (only the platform's: the public
 site has its own): a global class of \`app/(platform)/platform.css\`, written
 straight into the markup. Three decisions: the variant (\`_variant_accent\`,
-\`_variant_soft\`, \`_variant_ink\`, \`_variant_danger\`, \`_variant_quiet\`;
+\`_variant_soft\`, \`_variant_ink\`, \`_variant_danger\`, \`_variant_caution\`,
+\`_variant_quiet\`;
 the bare block is the secondary one), the size (\`_size_lg\` 48px, the bare block 40px, \`_size_sm\`
 32px) and an icon (\`.platform-button__icon\`, on the left, on the right, or
 alone in a square: \`_shape_square\`). Radius 8px, bold type, the same states in
@@ -191,6 +195,39 @@ export const IconOnly: Story = {
           ))}
         </div>
       ))}
+    </div>
+  ),
+};
+
+/**
+ * The row of what destroys at the foot of a popup of settings, as «Ajustes de la partida» has it: small pills, graded —
+ * what clears part of the game in the caution variant, grey until pointed at; what leaves nothing in the danger one.
+ */
+export const DestroyRow: Story = {
+  name: "Pills at the foot of settings",
+  render: () => (
+    <div style={ROW}>
+      <button
+        type="button"
+        className="platform-button platform-button_variant_caution platform-button_size_sm platform-button_shape_pill"
+      >
+        <CommentXmarkIcon variant="classic-solid" className="platform-button__icon" />
+        Eliminar anotaciones
+      </button>
+      <button
+        type="button"
+        className="platform-button platform-button_variant_caution platform-button_size_sm platform-button_shape_pill"
+      >
+        <CodeBranchIcon variant="classic-solid" className="platform-button__icon" />
+        Eliminar variantes
+      </button>
+      <button
+        type="button"
+        className="platform-button platform-button_variant_danger platform-button_size_sm platform-button_shape_pill"
+      >
+        <TrashCanIcon variant="classic-solid" className="platform-button__icon" />
+        Eliminar partida
+      </button>
     </div>
   ),
 };

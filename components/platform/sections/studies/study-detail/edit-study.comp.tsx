@@ -2,6 +2,7 @@
 
 import { useImperativeHandle, useRef, type Ref } from "react";
 import { updateStudy } from "@/services/studies/studies.actions";
+import { TrashCanIcon } from "@/components/icons/trash-can-icon.comp";
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import {
@@ -145,7 +146,12 @@ export function EditStudy({
             on top of this popup; this one stays open beneath. */}
         {onDelete && (
           <div className="edit-study__danger">
-            <button type="button" className="edit-study__destroy" onClick={onDelete}>
+            <button
+              type="button"
+              className="platform-button platform-button_variant_danger platform-button_size_sm platform-button_shape_pill"
+              onClick={onDelete}
+            >
+              <TrashCanIcon variant="classic-solid" className="platform-button__icon" />
               Eliminar estudio
             </button>
           </div>

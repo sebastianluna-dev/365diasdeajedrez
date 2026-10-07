@@ -27,28 +27,13 @@
     gap: var(--platform-space-3);
   }
 
-  /* What destroys, apart from what saves and under a rule: three words in the
-     danger ink, each opening the confirmation on top of the settings. */
+  /* What destroys, apart from what saves and under a rule: three pills of the
+     platform's button, each opening the confirmation on top of the settings. */
   & .game-settings__danger {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--platform-space-2) var(--platform-space-5);
+    gap: var(--platform-space-2);
     padding: var(--platform-space-4) var(--platform-space-6) var(--platform-space-5);
     border-top: 1px solid var(--platform-border);
-  }
-
-  & .game-settings__destroy {
-    padding: var(--platform-space-1) 0;
-    border: 0;
-    background: transparent;
-    font-family: inherit;
-    font-size: var(--platform-type-sm);
-    font-weight: 700;
-    color: var(--platform-danger);
-    cursor: pointer;
-  }
-
-  & .game-settings__destroy:hover {
-    text-decoration: underline;
   }
 }

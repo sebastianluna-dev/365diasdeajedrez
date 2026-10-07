@@ -2,7 +2,10 @@
 
 import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import { CodeBranchIcon } from "@/components/icons/code-branch-icon.comp";
+import { CommentXmarkIcon } from "@/components/icons/comment-xmark-icon.comp";
 import { GearIcon } from "@/components/icons/gear-icon.comp";
+import { TrashCanIcon } from "@/components/icons/trash-can-icon.comp";
 import {
   PlatformConfirmPopup,
   type PlatformConfirmPopupHandle,
@@ -213,16 +216,33 @@ export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
           </div>
         </PlatformForm>
 
-        {/* What destroys, apart from what saves and under a rule: three words
-            in the danger ink, each opening the confirmation with its words. */}
+        {/* What destroys, apart from what saves and under a rule: three
+            pills, each opening the confirmation with its words. Graded: the
+            two that clear part of the game are grey until pointed at
+            (caution); the one that leaves nothing is red (danger). */}
         <div className="game-settings__danger">
-          <button type="button" className="game-settings__destroy" onClick={() => ask("annotations")}>
+          <button
+            type="button"
+            className="platform-button platform-button_variant_caution platform-button_size_sm platform-button_shape_pill"
+            onClick={() => ask("annotations")}
+          >
+            <CommentXmarkIcon variant="classic-solid" className="platform-button__icon" />
             Eliminar anotaciones
           </button>
-          <button type="button" className="game-settings__destroy" onClick={() => ask("variations")}>
+          <button
+            type="button"
+            className="platform-button platform-button_variant_caution platform-button_size_sm platform-button_shape_pill"
+            onClick={() => ask("variations")}
+          >
+            <CodeBranchIcon variant="classic-solid" className="platform-button__icon" />
             Eliminar variantes
           </button>
-          <button type="button" className="game-settings__destroy" onClick={() => ask("game")}>
+          <button
+            type="button"
+            className="platform-button platform-button_variant_danger platform-button_size_sm platform-button_shape_pill"
+            onClick={() => ask("game")}
+          >
+            <TrashCanIcon variant="classic-solid" className="platform-button__icon" />
             Eliminar partida
           </button>
         </div>

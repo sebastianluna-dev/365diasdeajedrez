@@ -20,26 +20,11 @@
     margin-top: var(--platform-space-1);
   }
 
-  /* What destroys, under the form and a rule: a word in the danger ink that
-     leads to its own confirmation, as in a game's settings. */
+  /* What destroys, under the form and a rule: the platform's danger button
+     as a pill, which leads to its own confirmation, as in a game's settings. */
   & .edit-study__danger {
     display: flex;
     padding: var(--platform-space-4) var(--platform-space-6) var(--platform-space-5);
     border-top: 1px solid var(--platform-border);
-  }
-
-  & .edit-study__destroy {
-    padding: var(--platform-space-1) 0;
-    border: 0;
-    background: transparent;
-    font-family: inherit;
-    font-size: var(--platform-type-sm);
-    font-weight: 700;
-    color: var(--platform-danger);
-    cursor: pointer;
-  }
-
-  & .edit-study__destroy:hover {
-    text-decoration: underline;
   }
 }

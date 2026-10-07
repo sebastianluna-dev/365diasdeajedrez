@@ -548,7 +548,9 @@ html body.platform-theme[data-scroll-locked] {
    and again and for the action of a page, 40 (the bare block) for the rest,
    32 (`_size_sm`) inside a header or a toolbar. A button with only an icon is
    a square of the same height (`_shape_square`). The pill is not a button: it
-   is kept for what is chosen or switched on (a filter, an option). */
+   is kept for what is chosen or switched on (a filter, an option), with one
+   exception, the row of what destroys at the foot of a popup of settings
+   (`_shape_pill`, 2026-10-07). */
 .platform-button {
   display: inline-flex;
   align-items: center;
@@ -707,6 +709,37 @@ html body.platform-theme[data-scroll-locked] {
   color: color-mix(in srgb, var(--platform-danger) 40%, var(--platform-surface));
 }
 
+/* THE CAUTION one: what takes part of something away and leaves the rest — a
+   game's annotations, its variations. At rest it is the secondary, its icon
+   in the muted grey, so that the only red of its row is what destroys the
+   whole (the danger one beside it); under the pointer it takes the danger's
+   colours, a warning before the click. Chosen by Sebastian on 2026-10-07,
+   among six ways of grading the three actions of a game's settings. */
+.platform-button_variant_caution > .platform-button__icon {
+  color: var(--platform-text-muted);
+}
+
+.platform-button_variant_caution:hover {
+  background: var(--platform-danger-soft);
+  box-shadow: inset 0 0 0 1px var(--platform-danger);
+  color: var(--platform-danger);
+}
+
+.platform-button_variant_caution:hover > .platform-button__icon,
+.platform-button_variant_caution:disabled > .platform-button__icon {
+  color: inherit;
+}
+
+.platform-button_variant_caution:active {
+  background: color-mix(in srgb, var(--platform-danger) 14%, var(--platform-danger-soft));
+}
+
+.platform-button_variant_caution:disabled {
+  background: var(--platform-surface);
+  box-shadow: inset 0 0 0 1px var(--platform-border);
+  color: var(--platform-text-faint);
+}
+
 /* THE QUIET one, for a button that is only an icon and sits in a head, a
    strip or a row — close, settings, more options, a calendar's arrows: no box
    until the pointer comes, and then not a grey of its own but a shade of its
@@ -847,6 +880,19 @@ html body.platform-theme[data-scroll-locked] {
   width: 32px;
 }
 
+/* A PILL, for one place only: the row of what destroys at the foot of a popup
+   of settings («Eliminar anotaciones», «Eliminar partida»), in the small
+   size. Its round ends eat into the air beside the word, so it takes a step
+   more on either side than the small size gives. */
+.platform-button.platform-button_shape_pill {
+  padding: 0 var(--platform-space-4);
+  border-radius: 1000px;
+}
+
+.platform-button.platform-button_shape_pill:where(:has(> .platform-button__icon:first-child)) {
+  padding-left: var(--platform-space-3);
+}
+
 /* THE ACTION OF A ROW. «Editar» beside a chapter, «Quitar» beside an author,
    «Eliminar» beside an exercise: what is done to ONE item of a list.
    
@@ -908,6 +954,11 @@ html body.platform-theme[data-scroll-locked] {
    stylesheet and not all of them solve it the same way: it is fixed by hand
    here — `inset: 0` plus `margin: auto` centres on both axes — so it depends on nobody. */
 .platform-dialog {
+  /* A popup is a surface of its own, on white: what tints the row it is
+     opened from (the current game's, which hands its quiet buttons the
+     accent's ink) stays outside, or the popup's cross came out rose. */
+  --quiet-ink: initial;
+
   position: fixed;
   inset: 0;
   margin: auto;
