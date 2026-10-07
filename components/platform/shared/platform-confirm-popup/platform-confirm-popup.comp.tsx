@@ -5,6 +5,7 @@ import { Checkbox } from "radix-ui";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
 import { CircleMinusIcon } from "@/components/icons/circle-minus-icon.comp";
 import { TrashCanIcon } from "@/components/icons/trash-can-icon.comp";
+import { TriangleExclamationIcon } from "@/components/icons/triangle-exclamation-icon.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import "./platform-confirm-popup.comp.css";
 
@@ -41,9 +42,9 @@ export type PlatformConfirmVerb = "Eliminar" | "Quitar";
 
 export interface PlatformConfirmPopupProps {
   /**
-   * «Eliminar» (the default) destroys: the bin, and the foot says it cannot
+   * «Eliminar» (the default) destroys: the bin, and a warning that it cannot
    * be undone. «Quitar» takes something out of where it is: the minus, and no
-   * note unless `note` gives one.
+   * warning unless `note` gives one.
    */
   verb?: PlatformConfirmVerb;
   /** What is destroyed or taken out, by its name: the title reads «¿{verb} «{subject}»?». */
@@ -59,7 +60,10 @@ export interface PlatformConfirmPopupProps {
   /** What else goes or stays, one line each, drawn as a list. */
   consequences?: string[];
   acknowledgement?: PlatformConfirmAcknowledgement;
-  /** The foot's note. By verb when absent (see `verb`); `null` draws none. */
+  /**
+   * The warning under what goes, in the danger colour with a triangle. By verb
+   * when absent (see `verb`); `null` draws none.
+   */
   note?: string | null;
   /**
    * The form's action: the server action, already bound
@@ -131,6 +135,7 @@ export function PlatformConfirmPopup({
   const [acknowledged, setAcknowledged] = useState(false);
   const titleId = useId();
   const descriptionId = useId();
+  const warningId = useId();
   const checkId = useId();
 
   useImperativeHandle(
@@ -151,7 +156,7 @@ export function PlatformConfirmPopup({
   // The same gate as the server's: the box is only required when there is
   // something to agree to, and the button waits for it.
   const blocked = acknowledgement !== undefined && !acknowledged;
-  const footNote = note === undefined ? NOTES[verb] : note;
+  const warning = note === undefined ? NOTES[verb] : note;
   const Icon = verb === "Eliminar" ? TrashCanIcon : CircleMinusIcon;
 
   /**
@@ -174,7 +179,7 @@ export function PlatformConfirmPopup({
       ref={dialogRef}
       className="platform-dialog platform-confirm-popup"
       aria-labelledby={titleId}
-      aria-describedby={descriptionId}
+      aria-describedby={warning ? `${descriptionId} ${warningId}` : descriptionId}
       onClose={() => {
         // Nothing stays half agreed to.
         setAcknowledged(false);
@@ -206,6 +211,17 @@ export function PlatformConfirmPopup({
           </ul>
         )}
 
+        {/* Under what goes and what stays, the last thing read before
+            deciding (2026-10-07: it was a note in the foot, beside the two
+            buttons, where a long confirming label squeezed it into a column
+            of one word a line). Part of the dialog's description. */}
+        {warning && (
+          <p id={warningId} className="platform-confirm-popup__warning">
+            <TriangleExclamationIcon variant="classic-solid" className="platform-confirm-popup__warning-icon" />
+            {warning}
+          </p>
+        )}
+
         {acknowledgement && (
           <label htmlFor={checkId} className="platform-confirm-popup__acknowledgement">
             {/* The box IS the field the server requires: the primitive's hidden
@@ -227,7 +243,6 @@ export function PlatformConfirmPopup({
         )}
 
         <div className="platform-confirm-popup__foot">
-          {footNote && <span className="platform-confirm-popup__note">{footNote}</span>}
           <button type="button" className="platform-button" onClick={() => dialogRef.current?.close()}>
             Cancelar
           </button>
