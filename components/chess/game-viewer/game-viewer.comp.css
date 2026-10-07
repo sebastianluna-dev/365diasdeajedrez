@@ -190,14 +190,6 @@
     cursor: default;
   }
 
-  /* "Next" is what gets pressed 90 % of the time: it goes in the text colour
-     so it can be found without reading the icons. Once there is nowhere to
-     go it fades like the rest — emphasis on a button that does nothing is
-     what makes it look broken. */
-  & .game-viewer__nav-button.game-viewer__nav-button_emphasis_strong:not(:disabled) {
-    color: var(--platform-text);
-  }
-
   & .game-viewer__nav-icon {
     width: 20px;
     height: 20px;

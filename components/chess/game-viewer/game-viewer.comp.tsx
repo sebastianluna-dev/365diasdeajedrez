@@ -550,7 +550,7 @@ export function GameViewer({
         onPointerUp={stopRepeat}
         onPointerLeave={stopRepeat}
         onPointerCancel={stopRepeat}
-        className="game-viewer__nav-button game-viewer__nav-button_emphasis_strong"
+        className="game-viewer__nav-button"
       >
         <ChevronRightIcon variant="classic-solid" className="game-viewer__nav-icon" />
       </button>
