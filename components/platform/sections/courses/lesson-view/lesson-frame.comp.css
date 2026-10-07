@@ -11,11 +11,12 @@
 
   display: grid;
   grid-template-columns: calc(var(--outline-width) - 40px) minmax(0, 1fr);
-  /* The board is given the same air on its three sides: 40 to the column of
-     lessons, 40 to the bar above it (the frame's top padding) and 40 to the
-     panel of text (`--viewer-column-gap`). */
+  /* 48 between the column of lessons and the board; 24 between the board and
+     the panel of text (`--viewer-column-gap`), the same as above it (the
+     shell's top padding): the board and its notes read as one piece, as in
+     the design the lesson was drawn after (2026-10-06; it was 48). */
   gap: var(--platform-space-6) var(--platform-space-12);
-  --viewer-column-gap: var(--platform-space-12);
+  --viewer-column-gap: var(--platform-space-6);
   /* It fills the page, which fills the window: nothing here scrolls but the
      column of lessons and the panel of text, each on its own. */
   flex: 1;

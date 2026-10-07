@@ -95,9 +95,11 @@
      edge. */
   & .platform-shell__content:has(> .platform-page_height_screen) {
     height: calc(100vh - 70px);
-    /* 40 under the bar, which is the air the board is given on every side;
-       at the foot, only enough to keep the buttons off the edge. */
-    padding-top: var(--platform-space-12);
+    /* As little air under the bar as at the foot, 24px: the board starts
+       close under it, as in the design the lesson was drawn after, and every
+       px given here is a px the board, measured by the height, loses
+       (2026-10-06; it was 48). */
+    padding-top: var(--platform-space-6);
     padding-bottom: var(--platform-space-6);
     overflow: hidden;
   }
