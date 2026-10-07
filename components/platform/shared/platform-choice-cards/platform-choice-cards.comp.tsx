@@ -48,6 +48,9 @@ export function PlatformChoiceCards({ options, ...rootProps }: PlatformChoiceCar
     <RadioGroup.Root key={savedValueKey(rootProps.defaultValue)} className="platform-choice-cards" {...rootProps}>
       {options.map((option) => (
         <RadioGroup.Item key={option.value} value={option.value} className="platform-choice-cards__card">
+          {/* Drawn from the card's own `data-state`: a ring that thickens, the
+              mark of a radio, always mounted so nothing shifts on choosing. */}
+          <span className="platform-choice-cards__mark" aria-hidden="true" />
           {option.icon && (
             <span className="platform-choice-cards__icon" aria-hidden="true">
               {option.icon}

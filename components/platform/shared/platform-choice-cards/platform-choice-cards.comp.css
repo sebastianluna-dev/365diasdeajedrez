@@ -6,12 +6,14 @@
 
   /* The whole card is the radio: a button with `role="radio"`. */
   & .platform-choice-cards__card {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: var(--platform-space-2);
     min-width: 0;
-    padding: var(--platform-space-4) var(--platform-space-5);
+    /* Room on the right for the mark. */
+    padding: var(--platform-space-4) var(--platform-space-12) var(--platform-space-4) var(--platform-space-5);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: var(--platform-surface-soft);
@@ -46,6 +48,28 @@
     cursor: default;
   }
 
+  /* The mark in the corner: an empty ring, and on the chosen card the same
+     ring thickened in the accent around a white heart. A circle, the mark of a
+     radio; `PlatformCheckCards` draws a square for its several. */
+  & .platform-choice-cards__mark {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--platform-border-strong);
+    border-radius: 50%;
+    background: var(--platform-surface);
+    transition:
+      border-color 140ms ease-out,
+      border-width 160ms ease-out;
+  }
+
+  & .platform-choice-cards__card[data-state="checked"] .platform-choice-cards__mark {
+    border-width: 6px;
+    border-color: var(--platform-accent);
+  }
+
   & .platform-choice-cards__icon {
     display: flex;
     margin-bottom: var(--platform-space-1);
@@ -73,5 +97,11 @@
     font-size: var(--platform-type-md);
     line-height: 1.4;
     color: var(--platform-text-muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .platform-choice-cards__mark {
+      transition: none;
+    }
   }
 }

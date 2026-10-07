@@ -20,34 +20,34 @@
     padding: var(--platform-space-4) var(--platform-space-12) var(--platform-space-4) var(--platform-space-5);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
-    background: var(--platform-surface-soft);
+    /* Raised a hair off what it rests on: it is something to press. */
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-lift);
     color: var(--platform-text);
     font-family: inherit;
     text-align: left;
     cursor: pointer;
     transition:
       background-color 140ms ease-out,
-      border-color 140ms ease-out;
+      border-color 140ms ease-out,
+      box-shadow 140ms ease-out;
   }
 
   & .platform-check-cards__card:hover {
     border-color: var(--platform-border-strong);
   }
 
-  /* The platform's own ring stays: a card that is already chosen has the
-     accent's border, so a pale ring would be all that says where the focus is. */
+  /* The platform's own ring stays, and the border joins it in the accent. */
   & .platform-check-cards__card:focus-visible {
     border-color: var(--platform-accent);
   }
 
-  /* A chosen one: accent border and wash, and its description in the accent ink. */
+  /* A chosen one sinks: the neutral fill, pressed in, and no accent but its
+     box, so a form of several chosen cards is not a wall of red. On that grey
+     fill the description stays in the muted grey, the one that reads on it. */
   & .platform-check-cards__card[data-state="checked"] {
-    border-color: var(--platform-accent);
-    background: var(--platform-accent-wash);
-  }
-
-  & .platform-check-cards__card[data-state="checked"] .platform-check-cards__description {
-    color: var(--platform-accent-ink);
+    background: var(--platform-surface-neutral);
+    box-shadow: var(--platform-shadow-inset);
   }
 
   & .platform-check-cards__card[data-disabled] {
@@ -55,8 +55,10 @@
     cursor: default;
   }
 
-  /* The mark in the corner: an empty ring on a card that is off, the accent
-     disc with the tick on one that is on. Always mounted, so nothing shifts. */
+  /* The mark in the corner: an empty box on a card that is off, the accent
+     box with the tick on one that is on. Always mounted, so nothing shifts.
+     A square and not a circle: a round mark reads as a radio, as something
+     of which only one is chosen, which is what `PlatformChoiceCards` draws. */
   & .platform-check-cards__mark {
     position: absolute;
     top: 14px;
@@ -67,8 +69,9 @@
     width: 20px;
     height: 20px;
     border: 1.5px solid var(--platform-border-strong);
-    border-radius: 50%;
+    border-radius: 4px;
     background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-inset);
     color: transparent;
     transition:
       background-color 140ms ease-out,
@@ -79,6 +82,7 @@
   & .platform-check-cards__card[data-state="checked"] .platform-check-cards__mark {
     border-color: var(--platform-accent);
     background: var(--platform-accent);
+    box-shadow: none;
     color: var(--platform-on-accent);
   }
 
@@ -104,10 +108,6 @@
     font-weight: 600;
     font-variant-numeric: tabular-nums;
     color: var(--platform-text);
-  }
-
-  & .platform-check-cards__card[data-state="checked"] .platform-check-cards__meta {
-    color: var(--platform-accent-ink);
   }
 
   & .platform-check-cards__description {
@@ -160,12 +160,6 @@
   &.platform-check-cards_layout_line .platform-check-cards__meta {
     font-size: var(--platform-type-lg);
     font-weight: 400;
-    color: inherit;
-  }
-
-  /* And chosen too: the rule of the stacked layout paints the fact in the
-     accent's ink, which on a line would break the sentence in two. */
-  &.platform-check-cards_layout_line .platform-check-cards__card[data-state="checked"] .platform-check-cards__meta {
     color: inherit;
   }
 
