@@ -110,27 +110,31 @@
   }
 
   /* The tags at the left and the button at the right, on one line. */
+  /* The button alone on its row, at the right: the tag is the lesson's, under
+     its moves, and not something beside the way in. */
   & .chapter-study__lesson-foot {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--platform-space-3);
+    justify-content: flex-end;
   }
 
+  /* Right under the moves, closer to them than the body's gap: it says
+     something about them. */
   & .chapter-study__tags {
     display: flex;
     flex-wrap: wrap;
     gap: var(--platform-space-2);
-    margin: 0;
+    margin: calc(-1 * var(--platform-space-2)) 0 0;
   }
 
   & .chapter-study__tag {
     display: inline-flex;
     align-items: center;
-    height: 24px;
+    /* A small tag, as Chessable draws its own (2026-10-07): 20px high with
+       4px corners — the radius the corners' rule keeps for what measures 20px
+       or less. */
+    height: 20px;
     padding: 0 var(--platform-space-2);
-    border-radius: 8px;
+    border-radius: 4px;
     background: var(--platform-surface-neutral);
     color: var(--platform-text-muted);
     font-size: var(--platform-type-xs);

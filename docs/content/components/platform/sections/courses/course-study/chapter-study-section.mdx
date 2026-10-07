@@ -29,10 +29,10 @@ The lessons of one chapter. Each card shows **the game whole** — «1.e4 c5 2.C
 
 - **The chapter is not repeated here**: its name is at the head of the page, in the frame, and the page is the list of its lessons. It carried a summary with the name, the «Prioridad» tag and the description until 2026-09-28.
 - **No figure is drawn here**: neither the chapter nor a lesson has a percentage or a bar, and the frame draws none of the course either. A learned lesson has its check; how far the chapter is, is the count on its card in [`CourseStudySection`](/components/platform/sections/courses/course-study/course-study-section).
-- **A lesson carries one tag at most**, «Prioridad», the staff's mark. Where the lesson is for the student is not written in words: the one it left off at — the one the header's «Aprender» opens (`lesson.isNext`) — is told by its tinted band, and a learned one by the check beside its name. The four words it used to carry («Aprendida», «Siguiente», «Empezada», «Pendiente») are gone.
+- **A lesson carries one tag at most**, «Prioridad», the staff's mark: right under its moves, 20px high with 4px corners, as Chessable draws its own (2026-10-07; it sat in the foot beside the button, 24px high with 8px corners, and read as a loose piece of the band's rose). Where the lesson is for the student is not written in words: the one it left off at — the one the header's «Aprender» opens (`lesson.isNext`) — is told by its tinted band, and a learned one by the check beside its name. The four words it used to carry («Aprendida», «Siguiente», «Empezada», «Pendiente») are gone.
 - **The button is «Ver» on every card, and quiet**: no fill, outlined in grey (`--platform-border-strong`). The next lesson's is no different: the filled «Aprender» is the course's, at the head of the page.
 - **The band is set into the card**: the card has `--platform-space-2` (8px) of white padding and the band, rounded on its four corners, does not touch the card's edges.
-- **The card**, top to bottom: a band with the name and the check of a learned lesson; the moves; and a foot with the tags at the left and the button at the right. **A lesson says no minutes**: what it is worth is read by opening it.
+- **The card**, top to bottom: a band with the name and the check of a learned lesson; the moves; the tag, right under them (`margin-top` of minus `--platform-space-2`, so it sits closer to the moves than the body's gap); and a foot with the button alone, at the right. **A lesson says no minutes**: what it is worth is read by opening it.
 - **A lesson is not numbered**: its card is headed by its name. `lesson.order` is still in the model, the real one with the filter on too, but no page draws it.
 - A learned lesson carries that same check in its header band, in the same accent.
 - With only the priority ones asked for and none in the chapter, the list says so and how many «Todo» would show.
@@ -43,7 +43,7 @@ The previous chapter page had an «Agregar al Move Trainer» button. It is no lo
 
 ## Markup & styling
 
-Block `.chapter-study` (207 lines). The lessons are one column of cards: a band with the name set into the card, under it the moves of the game, and a foot with the tags and the button.
+Block `.chapter-study` (211 lines). The lessons are one column of cards: a band with the name set into the card, under it the moves of the game and their tag, and a foot with the button.
 
 **Elements:** `.chapter-study__empty`, `.chapter-study__lesson`, `.chapter-study__lessons`, `.chapter-study__lesson-head`, `.chapter-study__name`, `.chapter-study__done`, `.chapter-study__done-icon`, `.chapter-study__lesson-body`, `.chapter-study__moves`, `.chapter-study__result`, `.chapter-study__description-text`, `.chapter-study__lesson-foot`, `.chapter-study__tag`, `.chapter-study__tags`, `.chapter-study__open`, `.chapter-study__neighbours`, `.chapter-study__neighbour`, `.chapter-study__neighbour-name`
 

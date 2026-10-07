@@ -78,16 +78,17 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
                       lesson.description && <p className="chapter-study__description-text">{lesson.description}</p>
                     )}
 
-                    <div className="chapter-study__lesson-foot">
-                      {/* Only the staff's mark: where the lesson is for the
-                          student is told by its check and by the band of the
-                          one that comes next, not by a word. */}
+                    {/* Only the staff's mark, right under what it is about, and
+                        not beside the button: where the lesson is for the student
+                        is told by its check and by the band of the one that comes
+                        next, not by a word. */}
+                    {lesson.isPriority && (
                       <p className="chapter-study__tags">
-                        {lesson.isPriority && (
-                          <span className="chapter-study__tag chapter-study__tag_tone_accent">Prioridad</span>
-                        )}
+                        <span className="chapter-study__tag chapter-study__tag_tone_accent">Prioridad</span>
                       </p>
+                    )}
 
+                    <div className="chapter-study__lesson-foot">
                       <Link href={lesson.href} className="chapter-study__open" aria-label={`Ver «${lesson.name}»`}>
                         Ver
                       </Link>

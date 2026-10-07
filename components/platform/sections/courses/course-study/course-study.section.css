@@ -53,9 +53,12 @@
   & .course-study__tag {
     display: inline-flex;
     align-items: center;
-    height: 24px;
+    /* A small tag, as Chessable draws its own (2026-10-07): 20px high with
+       4px corners — the radius the corners' rule keeps for what measures 20px
+       or less. */
+    height: 20px;
     padding: 0 var(--platform-space-2);
-    border-radius: 8px;
+    border-radius: 4px;
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);
     font-size: var(--platform-type-xs);
