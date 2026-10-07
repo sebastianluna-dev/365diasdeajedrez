@@ -35,8 +35,13 @@
   }
 
   /* The current one, besides the background, carries a rule on the left: in a
-     list of games that look alike, colour alone is not enough to find it. */
+     list of games that look alike, colour alone is not enough to find it. On
+     its wash the gear's quiet button takes the accent's ink, as the name, the
+     players and the result do: a grey shade under the pointer did not show on
+     the rose. */
   & .game-list__row.game-list__row_state_active {
+    --quiet-ink: var(--platform-accent-ink);
+
     background: var(--platform-accent-wash);
     box-shadow: inset 3px 0 0 var(--platform-accent);
   }
@@ -195,8 +200,7 @@
     color: var(--platform-accent-ink);
   }
 
-  /* The gear closes the row, inside the card like the grip. It stays grey on
-     the current game too: its own colour is for the pointer (game-settings). */
+  /* The gear closes the row, inside the card like the grip. */
   & .game-settings {
     margin-right: var(--platform-space-1);
   }

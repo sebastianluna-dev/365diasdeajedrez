@@ -51,7 +51,7 @@ Block `.syllabus-list`. Three bands under their headings; the middle one is a fr
 
 **Modifiers and states:** `.syllabus-list__row_state_dragging` (lifted, with the card's shadow), `.syllabus-list__row_kind_new`, `.syllabus-list__number_kind_new`, `.syllabus-list__piece_kind_intro`, `_kind_closing`, `.syllabus-list__menu_state_closing`, `.syllabus-list__menu-item_variant_danger` («Eliminar»), and `.syllabus-list__menu-item[aria-disabled="true"]` («Subir» on the first row, «Bajar» on the last, drawn like a disabled row action)
 
-**Other classes it renders:** `.platform-button` — «Editar» is the platform's quiet button, given a row's padding by `.syllabus-list__edit` (see [Styling](/ui/styling)).
+**Other classes it renders:** `.platform-button` — «Editar» is the platform's secondary button, given a row's padding by `.syllabus-list__edit`, and the three dots its quiet small square (see [Styling](/ui/styling)). `.syllabus-list__fixed` is tinted with the accent's wash and sets `--quiet-ink: var(--platform-accent-ink)`, so its three dots and their shade under the pointer are rose (see [Styling → Buttons](/ui/styling#buttons)).
 
 The row's only inline style is the `transform` dnd-kit measures frame by frame while it travels; it is geometry, not styling.
 

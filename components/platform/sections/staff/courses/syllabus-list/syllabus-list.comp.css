@@ -323,8 +323,11 @@
   }
 
   /* The introduction and the closing live outside the numbered block, tinted:
-     their place is not their order, and nothing is dragged onto them. */
+     their place is not their order, and nothing is dragged onto them. On the
+     tint the «more» button's quiet shade is the accent's. */
   & .syllabus-list__fixed {
+    --quiet-ink: var(--platform-accent-ink);
+
     display: flex;
     align-items: center;
     gap: var(--platform-space-3);

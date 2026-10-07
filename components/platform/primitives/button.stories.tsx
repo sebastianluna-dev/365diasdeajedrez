@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { userEvent } from "storybook/test";
 import { ArrowRightIcon } from "@/components/icons/arrow-right-icon.comp";
@@ -72,8 +73,8 @@ const meta = {
 \`.platform-button\`, the platform's button (only the platform's: the public
 site has its own): a global class of \`app/(platform)/platform.css\`, written
 straight into the markup. Three decisions: the variant (\`_variant_accent\`,
-\`_variant_soft\`, \`_variant_ink\`, \`_variant_danger\`; the bare block is the
-secondary one), the size (\`_size_lg\` 48px, the bare block 40px, \`_size_sm\`
+\`_variant_soft\`, \`_variant_ink\`, \`_variant_danger\`, \`_variant_quiet\`;
+the bare block is the secondary one), the size (\`_size_lg\` 48px, the bare block 40px, \`_size_sm\`
 32px) and an icon (\`.platform-button__icon\`, on the left, on the right, or
 alone in a square: \`_shape_square\`). Radius 8px, bold type, the same states in
 every variant. A row's action written as a word is \`platform-row-action\`.
@@ -188,6 +189,53 @@ export const IconOnly: Story = {
               <GearIcon variant="classic-solid" className="platform-button__icon" />
             </button>
           ))}
+        </div>
+      ))}
+    </div>
+  ),
+};
+
+/** What the quiet one is laid on, by name, and what its container sets. */
+const SURFACES: { name: string; style: CSSProperties }[] = [
+  { name: "Blanco", style: { background: "var(--platform-surface)" } },
+  { name: "Gris", style: { background: "var(--platform-bg)" } },
+  {
+    name: "Tinte del acento",
+    style: {
+      background: "var(--platform-accent-wash)",
+      color: "var(--platform-accent-ink)",
+      ["--quiet-ink" as string]: "var(--platform-accent-ink)",
+    },
+  },
+];
+
+/**
+ * The quiet one on each background, at rest and lit (as under the pointer, or while its menu is open): a shade of its
+ * own ink over whatever is under it, so it shows on grey and on rose alike; on the accent's tint the container hands it
+ * the accent's ink with `--quiet-ink`.
+ */
+export const QuietOnBackgrounds: Story = {
+  name: "Quiet on each background",
+  render: () => (
+    <div style={GRID}>
+      {SURFACES.map(({ name, style }) => (
+        <div key={name} style={{ ...ROW, ...style, padding: 12, borderRadius: 8 }}>
+          <span style={{ minWidth: 140 }}>{name}</span>
+          <button
+            type="button"
+            className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square"
+            aria-label="Ajustes"
+          >
+            <GearIcon variant="classic-solid" className="platform-button__icon" />
+          </button>
+          <button
+            type="button"
+            className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square"
+            aria-label="Ajustes"
+            aria-expanded="true"
+          >
+            <GearIcon variant="classic-solid" className="platform-button__icon" />
+          </button>
         </div>
       ))}
     </div>

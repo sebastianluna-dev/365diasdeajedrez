@@ -40,11 +40,11 @@ The games of a study or of a chapter's collection, beside the board, to jump bet
 
 ## Markup & styling
 
-Block `.game-list` (209 lines), the `<ul>` itself.
+Block `.game-list` (213 lines), the `<ul>` itself.
 
 **Elements:** `.game-list__row`, `.game-list__grip`, `.game-list__item`, `.game-list__main`, `.game-list__name`, `.game-list__players`, `.game-list__result`
 
-**Modifiers and states:** `.game-list__row_state_active` (the current game: wash, rule and accent ink, grip included), `.game-list__row_state_dragging` (lifted, with the card's shadow)
+**Modifiers and states:** `.game-list__row_state_active` (the current game: wash, rule and accent ink, grip included; it sets `--quiet-ink: var(--platform-accent-ink)`, so the gear of [`GameSettings`](/components/platform/shared/game-settings) is rose too and its shade under the pointer shows on the wash, which the quiet button's old grey did not — see [Styling → Buttons](/ui/styling#buttons)), `.game-list__row_state_dragging` (lifted, with the card's shadow)
 
 **Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-bg`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle` (the players, on the card's white), `--platform-type-sm`, `--platform-type-xs`, `--platform-space-0-5`, `--platform-space-1`, `--platform-space-2`, `--platform-space-3`
 
