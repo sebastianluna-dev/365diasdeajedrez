@@ -100,10 +100,10 @@
   --platform-accent-soft: light-dark(#f8e2e2, #3a2415);
   /* An even fainter wash: the active menu item. */
   --platform-accent-wash: light-dark(#fcf0f0, #2a1c13);
-  /* Barely tinted, for a whole list of rows: the wash is a colour, and a
-     column of it would read as a warning. This one has to look like paper
-     that happens to be warm. */
-  --platform-accent-mist: light-dark(#f8f4f4, #221a15);
+  /* The rows of a whole list, the lessons beside a lesson: a pale rose, as
+     light as the wash, chosen by Sebastian on 2026-10-06 over the warm paper
+     grey it was (#f8f4f4). */
+  --platform-accent-mist: light-dark(#fdf2f2, #221a15);
 
   /* WHAT IS CHOSEN AND WHERE THE FOCUS IS: a blue of its own, and not the
      accent. In the light theme the accent is the very red of an error
