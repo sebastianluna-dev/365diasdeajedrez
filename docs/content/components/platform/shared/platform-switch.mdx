@@ -1,0 +1,71 @@
+---
+description: "An on/off that takes effect the moment it is pressed, on Radix's Switch primitive: the whole row is the switch, grey and sunk when off, a white card lifted with the knob on the accent when on."
+---
+
+# `PlatformSwitch`
+
+|            |                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-switch/platform-switch.comp.tsx`                                               |
+| Kind       | Client Component                                                                                                    |
+| Stylesheet | `platform-switch.comp.css` → block `.platform-switch`                                                               |
+| Story      | `platform-switch.stories.tsx` (`platform/shared/PlatformSwitch`)                                                    |
+| Used by    | [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline) («Sólo lecciones de prioridad») |
+| Uses       | `Switch` from `radix-ui`; `savedValueKey`                                                                           |
+
+## Purpose
+
+An on/off that **takes effect the moment it is pressed**, with no button to save it: the lesson outline's «Sólo lecciones de prioridad», which until 2026-10-06 was a button drawn as a checkbox. What is saved with a form's button is a [`PlatformCheckbox`](/components/platform/shared/platform-checkbox), not this: a switch promises that pressing it is the whole act.
+
+The whole row is the switch (the «C» of the 2026-10-06 checkbox study): it needs the width of a column, so it goes where a setting has a line of its own, not in a toolbar. The game viewer's engine toggle, a pill in a crowded head drawn by `components/chess` for the site too, keeps its own.
+
+## Props
+
+| Prop              | Type                         | Required | Meaning                                                                                                 |
+| ----------------- | ---------------------------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| `label`           | `string`                     | yes      | What is switched on, at the left of the row. It is the switch's name (`aria-labelledby`).               |
+| `hint`            | `string`                     | no       | A line under the label: what switching it on does. It is the switch's description (`aria-describedby`). |
+| `name`            | `string`                     | no       | Name of the hidden native checkbox, for a switch inside a form.                                         |
+| `form`            | `string`                     | no       | Id of the form it belongs to, when it is drawn outside it.                                              |
+| `checked`         | `boolean`                    | no       | Controlled state.                                                                                       |
+| `defaultChecked`  | `boolean`                    | no       | Initial state.                                                                                          |
+| `onCheckedChange` | `(checked: boolean) => void` | no       | Called with the new state: where the effect is set off (the outline submits its form here).             |
+| `disabled`        | `boolean`                    | no       |                                                                                                         |
+| `className`       | `string`                     | no       | The host's class for the row, to lay it out where it goes.                                              |
+
+## Behaviour
+
+- The row is the primitive's button (`role="switch"`): a click anywhere on it switches it; Space and Enter from the keyboard.
+- It does not save anything by itself. `onCheckedChange` is where the host acts; the outline's `PriorityLessonsFilter` submits its form there (`requestSubmit()`), so the server action still writes the preference and draws the page again.
+- **It starts again from what was saved.** It is mounted under the value it opens with (`savedValueKey(defaultChecked)`): after the action, React resets the form and the primitive would go back to the value it was mounted with; a new value mounts it anew from that.
+
+## Markup & styling
+
+Block `.platform-switch`, holding the hidden native checkbox; the row is `.platform-switch__control`, the label and the hint at the left and the track at the right. **Off**, the row sinks into the neutral grey (`--platform-surface-neutral`) and the track is grey; **on**, it is the white of a card lifted off what holds it (`--platform-shadow-lift`) and the knob has crossed onto the accent. The hint is in the muted grey on the grey row and in the subtle one on the white, each the grey that reads on its fill.
+
+**Elements:** `.platform-switch__control` (the primitive's button), `.platform-switch__text`, `.platform-switch__label`, `.platform-switch__hint`, `.platform-switch__track`, `.platform-switch__thumb` (the primitive's thumb)
+
+**States (data attributes set by the primitive):** `[data-state="checked"]` on the row and the thumb, `[data-disabled]` on the row.
+
+**Tokens:** `--platform-accent`, `--platform-border`, `--platform-border-strong`, `--platform-shadow-lift`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries. The knob's slide and the colour transitions are off under `prefers-reduced-motion`.
+
+## Usage
+
+From `components/platform/sections/courses/lesson-view/priority-lessons-filter.comp.tsx`:
+
+```tsx
+<form ref={formRef} action={action} className="lesson-outline__filter">
+  <CurrentPathField name="returnTo" />
+  <PlatformSwitch
+    label="Sólo lecciones de prioridad"
+    defaultChecked={enabled}
+    onCheckedChange={() => formRef.current?.requestSubmit()}
+  />
+</form>
+```
+
+## Related
+
+- [`PlatformCheckbox`](/components/platform/shared/platform-checkbox), for a value saved with a form's button.

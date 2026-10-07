@@ -1,10 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CheckIcon } from "@/components/icons/check-icon.comp";
-import { CurrentPathField } from "@/components/platform/shared/current-path-field/current-path-field.comp";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { setOnlyPriorityLessons } from "@/services/courses/courses.actions";
 import { OutlineList } from "./outline-list.comp";
+import { PriorityLessonsFilter } from "./priority-lessons-filter.comp";
 import type { ChapterOutline } from "@/services/courses/courses.types";
 import "./lesson-outline.comp.css";
 
@@ -62,24 +61,14 @@ export function LessonOutline({ outline }: LessonOutlineProps) {
           <Link href={courseHref} className="lesson-outline__course-name">
             {courseName}
           </Link>
-
-          {/* A form and not a checkbox with an onChange: the preference is
-              saved and the page is drawn again, so there is no state to keep
-              nor JavaScript to send. Where it comes back to is the lesson
-              being read, which only the browser knows here. */}
-          <form
-            action={setOnlyPriorityLessons.bind(null, courseId, !onlyPriorityLessons)}
-            className="lesson-outline__filter"
-          >
-            <CurrentPathField name="returnTo" />
-            <button type="submit" aria-pressed={onlyPriorityLessons} className="lesson-outline__filter-button">
-              <span className="lesson-outline__filter-box" aria-hidden="true">
-                {onlyPriorityLessons && <CheckIcon className="lesson-outline__filter-check" />}
-              </span>
-              Sólo lecciones de prioridad
-            </button>
-          </form>
         </div>
+
+        {/* Under the image and the name, across the whole head: the switch's
+            row needs the width to say its words on one line. */}
+        <PriorityLessonsFilter
+          action={setOnlyPriorityLessons.bind(null, courseId, !onlyPriorityLessons)}
+          enabled={onlyPriorityLessons}
+        />
       </div>
 
       {/* What scrolls when the chapter is long. The course's head stays out of

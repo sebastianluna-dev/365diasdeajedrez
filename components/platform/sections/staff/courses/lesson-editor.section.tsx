@@ -15,6 +15,7 @@ import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./lesson-editor.section.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
+import { PlatformCheckbox } from "@/components/platform/shared/platform-checkbox/platform-checkbox.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
 
@@ -78,30 +79,21 @@ export function LessonEditorSection({
                   action would trample each other's fields — `updateLesson` reads ALL of
                   them and saving here would erase what is there. */}
               <div className="lesson-editor__stack">
-                <label className="lesson-editor__check">
-                  <input type="checkbox" name="isPriority" form={METADATA_FORM_ID} defaultChecked={lesson.isPriority} />
-                  <span>
-                    Lección de prioridad
-                    <span className="lesson-editor__check-hint">
-                      Entra en el recorrido corto de quien estudia con poco tiempo.
-                    </span>
-                  </span>
-                </label>
+                <PlatformCheckbox
+                  name="isPriority"
+                  form={METADATA_FORM_ID}
+                  defaultChecked={lesson.isPriority}
+                  label="Lección de prioridad"
+                  hint="Entra en el recorrido corto de quien estudia con poco tiempo."
+                />
 
-                <label className="lesson-editor__check">
-                  <input
-                    type="checkbox"
-                    name="isTrainable"
-                    form={METADATA_FORM_ID}
-                    defaultChecked={lesson.isTrainable}
-                  />
-                  <span>
-                    Se puede entrenar de memoria
-                    <span className="lesson-editor__check-hint">
-                      Se entrena la línea principal del PGN; las variantes siguen en el modo estudiar.
-                    </span>
-                  </span>
-                </label>
+                <PlatformCheckbox
+                  name="isTrainable"
+                  form={METADATA_FORM_ID}
+                  defaultChecked={lesson.isTrainable}
+                  label="Se puede entrenar de memoria"
+                  hint="Se entrena la línea principal del PGN; las variantes siguen en el modo estudiar."
+                />
 
                 <FormField label="Bando que entrena el alumno">
                   <PlatformSelect

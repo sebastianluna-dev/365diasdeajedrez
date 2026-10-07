@@ -1,0 +1,104 @@
+/* A row that is the switch. Off, it sinks into the neutral grey; on, it is
+   the white of a card lifted off what holds it, and its knob has crossed into
+   the accent. */
+.platform-switch {
+  /* Holds the hidden native checkbox the primitive positions beside the row. */
+  position: relative;
+
+  & .platform-switch__control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-3);
+    width: 100%;
+    padding: var(--platform-space-3) var(--platform-space-4);
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition:
+      background-color 140ms ease-out,
+      border-color 140ms ease-out,
+      box-shadow 140ms ease-out;
+  }
+
+  & .platform-switch__control:hover {
+    border-color: var(--platform-border-strong);
+  }
+
+  & .platform-switch__control[data-state="checked"] {
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-lift);
+  }
+
+  & .platform-switch__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+    min-width: 0;
+  }
+
+  & .platform-switch__label {
+    font-size: var(--platform-type-md);
+    line-height: 1.4;
+  }
+
+  /* On the grey of a row that is off the subtle grey falls under 4.5:1; the
+     muted one does not. On the white of one that is on, the subtle one. */
+  & .platform-switch__hint {
+    font-size: var(--platform-type-xs);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .platform-switch__control[data-state="checked"] .platform-switch__hint {
+    color: var(--platform-text-subtle);
+  }
+
+  & .platform-switch__track {
+    flex: none;
+    position: relative;
+    width: 40px;
+    height: 22px;
+    border-radius: 1000px;
+    background: var(--platform-text-faint);
+    transition: background-color 160ms ease-out;
+  }
+
+  & .platform-switch__control[data-state="checked"] .platform-switch__track {
+    background: var(--platform-accent);
+  }
+
+  & .platform-switch__thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-lift);
+    transition: transform 160ms ease-out;
+  }
+
+  & .platform-switch__thumb[data-state="checked"] {
+    transform: translateX(18px);
+  }
+
+  & .platform-switch__control[data-disabled] {
+    color: var(--platform-text-faint);
+    cursor: default;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .platform-switch__control,
+    & .platform-switch__track,
+    & .platform-switch__thumb {
+      transition: none;
+    }
+  }
+}

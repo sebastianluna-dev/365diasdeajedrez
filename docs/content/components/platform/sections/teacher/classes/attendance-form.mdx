@@ -4,14 +4,15 @@ description: "Class attendance as one checkbox per participant, submitted whole 
 
 # `AttendanceForm`
 
-|            |                                                                                                           |
-| ---------- | --------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/teacher/classes/attendance-form.comp.tsx`                                   |
-| Kind       | Server Component                                                                                          |
-| Stylesheet | `attendance-form.comp.css` → block `.attendance-form`                                                     |
-| Used by    | [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section) |
-| Writes     | `markAttendance()`, `removeParticipant()` · `services/teacher-classes/teacher-classes.actions.ts`         |
-| Uses       | `TeacherClassParticipant` from `services/teacher-classes/teacher-classes.types`                           |
+|            |                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/attendance-form.comp.tsx`                                                          |
+| Kind       | Server Component                                                                                                                 |
+| Stylesheet | `attendance-form.comp.css` → block `.attendance-form`                                                                            |
+| Used by    | [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section)                        |
+| Writes     | `markAttendance()`, `removeParticipant()` · `services/teacher-classes/teacher-classes.actions.ts`                                |
+| Composes   | [`PlatformCheckbox`](/components/platform/shared/platform-checkbox), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `TeacherClassParticipant` from `services/teacher-classes/teacher-classes.types`                                                  |
 
 ## Purpose
 
@@ -26,15 +27,15 @@ Marking a student as present records their activity (and with it their statistic
 
 ## Behaviour
 
-- `<form action={markAttendance.bind(null, classId)}>` with `name="attended" value={userId}` checkboxes and a "Guardar asistencia" submit.
+- `<form action={markAttendance.bind(null, classId)}>` with one [`PlatformCheckbox`](/components/platform/shared/platform-checkbox) per participant (`name="attended" value={userId}`, the student's name as its label) and a "Guardar asistencia" submit.
 - Each row shows "Pago registrado" or "Sin pago registrado".
 - "Quitar" is a submit button with `formAction={removeParticipant.bind(null, classId, participant.userId)}`, rendered only for a participant who left no trace (no attendance, no payment); the server rejects the others anyway. The student is **bound** to the action, not sent as the button's `name`: React leaves a button that has an action of its own out of the form's data, so until 2026-10-02, when it was `name="studentId"`, the id never reached the server and «Quitar» always answered with `participantLocked`.
 
 ## Markup & styling
 
-Block `.attendance-form` (70 lines).
+Block `.attendance-form` (63 lines).
 
-**Elements:** `.attendance-form__empty`, `.attendance-form__list`, `.attendance-form__item`, `.attendance-form__check`, `.attendance-form__name`, `.attendance-form__meta`
+**Elements:** `.attendance-form__empty`, `.attendance-form__list`, `.attendance-form__item`, `.attendance-form__check` (the class on each checkbox row: it takes what the row leaves), `.attendance-form__meta`
 
 **Other classes it renders:** `.platform-row-action` (and `_variant_danger` where the action destroys): «Editar», «Eliminar» and «Quitar» are the platform's row actions, written as words at the end of the row they belong to — see [Styling](/ui/styling).
 No modifiers.

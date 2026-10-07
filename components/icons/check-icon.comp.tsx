@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * The tick of what is chosen: the select, the check cards, the move menu and
- * the lesson outline's filter. Font Awesome's `check`, in Duotone Light (the
+ * The tick of what is chosen: the select, the check cards, the checkbox, the
+ * confirmation's acknowledgement and the move menu. Font Awesome's `check`, in Duotone Light (the
  * default), Duotone Solid, Classic Solid or Classic Light, as `variant` says.
  * Its Duotone Solid drawing is a single layer, drawn at full strength: at 40 %
  * it would read as switched off.

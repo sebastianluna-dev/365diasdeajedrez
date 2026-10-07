@@ -1,0 +1,88 @@
+/* One box and its text. Ticked, the box keeps its outline and takes the
+   accent in it: the border, a wash inside and the tick in the accent's ink,
+   lighter than a filled box down a long list of them. */
+.platform-checkbox {
+  /* Holds the hidden native checkbox the primitive positions beside the box. */
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--platform-space-3);
+  color: var(--platform-text);
+  cursor: pointer;
+
+  & .platform-checkbox__box {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    /* On the first line of the label, whose line is taller than the box. */
+    margin-top: var(--platform-space-0-5);
+    padding: 0;
+    border: 1.5px solid var(--platform-border-strong);
+    border-radius: 4px;
+    background: var(--platform-surface);
+    color: var(--platform-accent-ink);
+    cursor: pointer;
+    transition:
+      background-color 140ms ease-out,
+      border-color 140ms ease-out;
+  }
+
+  &:hover .platform-checkbox__box,
+  & .platform-checkbox__box[data-state="checked"] {
+    border-color: var(--platform-accent);
+  }
+
+  & .platform-checkbox__box[data-state="checked"] {
+    background: var(--platform-accent-wash);
+  }
+
+  & .platform-checkbox__indicator {
+    display: flex;
+  }
+
+  & .platform-checkbox__icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  & .platform-checkbox__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    min-width: 0;
+  }
+
+  & .platform-checkbox__label {
+    font-size: var(--platform-type-lg);
+    line-height: 1.4;
+  }
+
+  /* The muted grey and not the subtle one: the row goes on a white panel as
+     often as on the grey canvas, and only the muted grey reads on both. */
+  & .platform-checkbox__hint {
+    font-size: var(--platform-type-sm);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  /* Switched off: the row says it in its grey, and the pointer stops promising. */
+  &:has(.platform-checkbox__box[data-disabled]) {
+    color: var(--platform-text-faint);
+    cursor: default;
+  }
+
+  &:has(.platform-checkbox__box[data-disabled]) .platform-checkbox__box {
+    border-color: var(--platform-border);
+    cursor: default;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .platform-checkbox__box {
+      transition: none;
+    }
+  }
+}

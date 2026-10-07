@@ -38,6 +38,8 @@
   & .lesson-outline__course {
     flex: none;
     display: flex;
+    /* The image and the name on one line, the filter on its own under them. */
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--platform-space-4);
     padding: var(--platform-space-4);
@@ -77,61 +79,11 @@
   }
 
   /* What of the course is learned, where the course is named: the same
-     per-course setting the chapter's page offers, drawn as the checkbox it
-     always was. */
+     per-course setting the chapter's page offers, as a switch across the
+     whole head. */
   & .lesson-outline__filter {
+    flex: 1 0 100%;
     margin: 0;
-  }
-
-  & .lesson-outline__filter-button {
-    display: flex;
-    align-items: center;
-    gap: var(--platform-space-2);
-    width: 100%;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    font-family: inherit;
-    font-size: inherit;
-    text-align: left;
-    /* Smaller than the list it sits over: it is a setting, not one more
-       thing to read. */
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text);
-    cursor: pointer;
-  }
-
-  /* The words do not change under the pointer: a setting that lights up as a
-     whole reads as something about to be said, and what is pressed here is
-     the box. The box is what answers. */
-  & .lesson-outline__filter-button:hover .lesson-outline__filter-box {
-    box-shadow: inset 0 0 0 2px var(--platform-text-muted);
-  }
-
-  & .lesson-outline__filter-box {
-    flex: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    /* Barely rounded: on a box of 18px the platform's 8 is all but a circle,
-       and a checkbox that reads as a circle reads as a radio — as something
-       one of which is chosen, which is not what this is. */
-    border-radius: 4px;
-    box-shadow: inset 0 0 0 2px var(--platform-border-strong);
-    color: var(--platform-on-accent);
-  }
-
-  /* Pressed: the box is filled and carries the tick. */
-  & .lesson-outline__filter-button[aria-pressed="true"] .lesson-outline__filter-box {
-    background: var(--platform-accent);
-    box-shadow: inset 0 0 0 2px var(--platform-accent);
-  }
-
-  & .lesson-outline__filter-check {
-    width: 11px;
-    height: 11px;
   }
 
   /* Everything under the course scrolls, and only this. */

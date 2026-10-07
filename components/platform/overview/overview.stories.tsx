@@ -91,6 +91,8 @@ import { GameList } from "@/components/platform/shared/game-list/game-list.comp"
 import { GameSettings } from "@/components/platform/shared/game-settings/game-settings.comp";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
 import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
+import { PlatformCheckbox } from "@/components/platform/shared/platform-checkbox/platform-checkbox.comp";
+import { PlatformSwitch } from "@/components/platform/shared/platform-switch/platform-switch.comp";
 import { PlatformChoiceCards } from "@/components/platform/shared/platform-choice-cards/platform-choice-cards.comp";
 import { PlatformDatePicker } from "@/components/platform/shared/platform-date-picker/platform-date-picker.comp";
 import { PlatformError } from "@/components/platform/shared/platform-error/platform-error.comp";
@@ -839,6 +841,23 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   { value: "INTERMEDIATE", label: "Intermedio", description: "Quien ya juega torneos." },
                 ]}
               />
+            </Tile>
+            <Tile name="PlatformCheckbox" docs="platform-shared-platformcheckbox" width={400} height={152}>
+              <div className="overview__stack">
+                <PlatformCheckbox
+                  name="isPriority"
+                  defaultChecked
+                  label="Lección de prioridad"
+                  hint="Entra en el recorrido corto de quien estudia con poco tiempo."
+                />
+                <PlatformCheckbox name="isTrainable" label="Se puede entrenar de memoria" />
+              </div>
+            </Tile>
+            <Tile name="PlatformSwitch" docs="platform-shared-platformswitch" width={400} height={168}>
+              <div className="overview__stack">
+                <PlatformSwitch label="Sólo lecciones de prioridad" defaultChecked />
+                <PlatformSwitch label="Módulo de análisis" hint="Apagado, no gasta batería." />
+              </div>
             </Tile>
             <Tile name="FormFieldset" docs="platform-shared-formfield" width={400} height={248}>
               <FormFieldset legend="Tipos de contenido">

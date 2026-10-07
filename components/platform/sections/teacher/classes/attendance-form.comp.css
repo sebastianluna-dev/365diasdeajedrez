@@ -28,16 +28,9 @@
     padding-bottom: 0;
   }
 
+  /* The student's checkbox takes what the row leaves. */
   & .attendance-form__check {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--platform-space-2);
     flex: 1 1 220px;
-  }
-
-  & .attendance-form__name {
-    font-size: var(--platform-type-lg);
-    color: var(--platform-text);
   }
 
   & .attendance-form__meta {

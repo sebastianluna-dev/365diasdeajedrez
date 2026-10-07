@@ -17,6 +17,12 @@ describe("savedValueKey", () => {
     expect(savedValueKey(["ab"])).not.toBe(savedValueKey(["a", "b"]));
   });
 
+  it("tells a ticked box from an unticked one, and both from a value that spells them", () => {
+    expect(savedValueKey(true)).not.toBe(savedValueKey(false));
+    expect(savedValueKey(true)).not.toBe(savedValueKey("true"));
+    expect(savedValueKey(false)).not.toBe(savedValueKey(undefined));
+  });
+
   it("is one and the same for a control whose parent holds the value", () => {
     expect(savedValueKey(undefined)).toBe("");
   });

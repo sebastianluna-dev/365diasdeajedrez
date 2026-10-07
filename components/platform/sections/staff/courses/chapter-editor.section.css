@@ -9,34 +9,9 @@
     gap: var(--platform-space-4);
   }
 
-  /* The checkbox on top and its explanation under the text, as in the
-     lesson's: a setting with consequences, told by its short sentence. */
-  & .chapter-editor__check {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--platform-space-3);
-    font-size: var(--platform-type-lg);
-    color: var(--platform-text);
-    cursor: pointer;
-  }
-
-  & .chapter-editor__check input {
-    margin-top: var(--platform-space-0-5);
-    flex: none;
-  }
-
   /* Under the facts: where the duration comes from, now that it is not typed. */
   & .chapter-editor__note {
     margin: var(--platform-space-3) 0 0;
-    font-size: var(--platform-type-sm);
-    line-height: 1.5;
-    color: var(--platform-text-subtle);
-    text-wrap: pretty;
-  }
-
-  & .chapter-editor__check-hint {
-    display: block;
-    margin-top: var(--platform-space-1);
     font-size: var(--platform-type-sm);
     line-height: 1.5;
     color: var(--platform-text-subtle);

@@ -27,31 +27,6 @@
     justify-content: flex-end;
   }
 
-  /* The checkbox on top and its explanation under the text, not beside it:
-     they are settings with consequences and the short sentence is what tells them. */
-  & .lesson-editor__check {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--platform-space-3);
-    font-size: var(--platform-type-lg);
-    color: var(--platform-text);
-    cursor: pointer;
-  }
-
-  & .lesson-editor__check input {
-    margin-top: var(--platform-space-0-5);
-    flex: none;
-  }
-
-  & .lesson-editor__check-hint {
-    display: block;
-    margin-top: var(--platform-space-1);
-    font-size: var(--platform-type-sm);
-    line-height: 1.5;
-    color: var(--platform-text-subtle);
-    text-wrap: pretty;
-  }
-
   /* The way out for a lesson whose content is its own PGN: said in words,
      because it is a state nobody chose and the button alone would not explain
      what it is about to do. */

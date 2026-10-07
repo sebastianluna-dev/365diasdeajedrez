@@ -14,7 +14,7 @@ description: "The list of lessons of the column: it marks the one being read fro
 
 ## Purpose
 
-The rows of the column, and the only client piece of it.
+The rows of the column, and one of its two client pieces (the other is the filter's switch, [`PriorityLessonsFilter`](/components/platform/sections/courses/lesson-view/priority-lessons-filter)).
 
 Client because of one thing: **which lesson is open**. The column lives in the chapter's layout, and a layout is not rendered again when one moves within it — that is the whole point, the list is not fetched between lessons — so the server cannot mark the row. `usePathname` does, and it does it the instant the link is followed, before the lesson's own PGN has arrived: the row lights up first and the board follows.
 

@@ -1,7 +1,7 @@
 // The key a form control is mounted under, taken from the value it opens with.
 //
 // WHY A CONTROL NEEDS ONE. React resets a `<form action={…}>` once its action
-// finishes, and Radix's form primitives — Checkbox, RadioGroup, Select — answer
+// finishes, and Radix's form primitives — Checkbox, RadioGroup, Select, Switch — answer
 // the form's `reset` event by going back to the value they had WHEN THEY WERE
 // MOUNTED. On a form that stays on screen after saving, that is the value from
 // before the save: the control showed what had just been replaced, the page
@@ -26,8 +26,10 @@ const SEPARATOR = "\u0001";
  * sends it in catalog order, and a remount because of the order alone would
  * throw away what is being chosen for nothing.
  */
-export function savedValueKey(defaultValue: string | readonly string[] | undefined): string {
+export function savedValueKey(defaultValue: string | boolean | readonly string[] | undefined): string {
   if (defaultValue === undefined) return "";
   if (typeof defaultValue === "string") return defaultValue;
+  // A single box: ticked or not, as two keys no value of the other kinds is.
+  if (typeof defaultValue === "boolean") return `${SEPARATOR}${defaultValue}`;
   return [...defaultValue].sort().join(SEPARATOR);
 }

@@ -13,6 +13,7 @@ import {
 } from "@/components/platform/shared/platform-popup/platform-popup.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
+import { PlatformCheckbox } from "@/components/platform/shared/platform-checkbox/platform-checkbox.comp";
 import "./new-game.comp.css";
 
 type Tab = "pgn" | "fen" | "blank" | "class";
@@ -164,26 +165,15 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
             <ul className="new-game__list">
               {classGames.map((game) => (
                 <li key={game.id}>
-                  <label className="new-game__pick">
-                    <input
-                      type="checkbox"
-                      className="new-game__checkbox"
-                      checked={picked.includes(game.id)}
-                      onChange={(event) =>
-                        setPicked((current) =>
-                          event.target.checked ? [...current, game.id] : current.filter((id) => id !== game.id),
-                        )
-                      }
-                    />
-                    <span className="new-game__pick-text">
-                      <span className="new-game__pick-name">
-                        {game.white} – {game.black}
-                      </span>
-                      <span className="new-game__pick-meta">
-                        Clase del {game.classDateLabel} · {game.className}
-                      </span>
-                    </span>
-                  </label>
+                  <PlatformCheckbox
+                    checked={picked.includes(game.id)}
+                    onCheckedChange={(checked) =>
+                      setPicked((current) => (checked ? [...current, game.id] : current.filter((id) => id !== game.id)))
+                    }
+                    label={`${game.white} – ${game.black}`}
+                    hint={`Clase del ${game.classDateLabel} · ${game.className}`}
+                    className="new-game__pick"
+                  />
                 </li>
               ))}
             </ul>

@@ -1,0 +1,72 @@
+---
+description: "The platform's single checkbox, on Radix's Checkbox primitive: a box, its label and an optional hint, the whole row the label; ticked, the box keeps its outline and takes the accent in it."
+---
+
+# `PlatformCheckbox`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-checkbox/platform-checkbox.comp.tsx`                                                                                                                                                                                                                                                                                                                                                  |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Stylesheet | `platform-checkbox.comp.css` → block `.platform-checkbox`                                                                                                                                                                                                                                                                                                                                                                  |
+| Story      | `platform-checkbox.stories.tsx` (`platform/shared/PlatformCheckbox`)                                                                                                                                                                                                                                                                                                                                                       |
+| Used by    | [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section) (priority, trainable), [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section) (priority), [`AttendanceForm`](/components/platform/sections/teacher/classes/attendance-form) (one per student), [`NewGame`](/components/platform/sections/studies/study-detail/new-game) (a class's games) |
+| Uses       | `Checkbox` from `radix-ui`; `CheckIcon` (Classic Solid) from `components/icons/`; `savedValueKey`                                                                                                                                                                                                                                                                                                                          |
+
+## Purpose
+
+One box and what it says. It replaced, on 2026-10-06, the browser's own checkboxes the platform still had: they changed size and colour with each browser and ignored the dark theme. A setting with consequences says them in a `hint` under the label, as the editors' «Lección de prioridad» does.
+
+It is for a value **saved with a form's button**. What takes effect the moment it is pressed is a [`PlatformSwitch`](/components/platform/shared/platform-switch); several choices drawn as cards are [`PlatformCheckCards`](/components/platform/shared/platform-check-cards). The confirmation of a destruction keeps its own box, in the danger colour ([`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup)).
+
+## Props
+
+| Prop              | Type                         | Required | Meaning                                                                                                          |
+| ----------------- | ---------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
+| `label`           | `string`                     | yes      | What is ticked, beside the box. It is the box's name (`aria-labelledby`).                                        |
+| `hint`            | `string`                     | no       | A line under the label: what ticking it does. It is the box's description (`aria-describedby`), not its name.    |
+| `name`            | `string`                     | no       | Name of the hidden native checkbox.                                                                              |
+| `value`           | `string`                     | no       | What it submits when ticked; `"on"` when left out. The attendance sends each student's id under one `name`.      |
+| `form`            | `string`                     | no       | Id of the form it belongs to, when it is drawn outside it (the lesson editor's aside).                           |
+| `checked`         | `boolean`                    | no       | Controlled state.                                                                                                |
+| `defaultChecked`  | `boolean`                    | no       | Initial state.                                                                                                   |
+| `onCheckedChange` | `(checked: boolean) => void` | no       | Called with the new state.                                                                                       |
+| `disabled`        | `boolean`                    | no       |                                                                                                                  |
+| `className`       | `string`                     | no       | The host's class on the whole row, to lay it out in a list or draw it as a card (`NewGame`'s `.new-game__pick`). |
+
+## Behaviour
+
+- The whole row is a `<label>` for the box, so a click anywhere on it ticks it; Space ticks it from the keyboard.
+- Inside a form, or tied to one by `form`, it submits through the hidden native checkbox the primitive keeps in sync: `formCheckbox()` reads a single one, `formData.getAll(name)` a list of them.
+- **It starts again from what was saved.** It is mounted under the value it opens with (`savedValueKey(defaultChecked)`), so a save that changed it mounts it anew from it, instead of the form's reset taking it back to what it showed when the page was loaded. See [`PlatformCheckCards`](/components/platform/shared/platform-check-cards) for why.
+
+## Markup & styling
+
+Block `.platform-checkbox`, a flex row: the box on the first line of the text, the label and the hint piled up beside it. Ticked, the box keeps its outline and **takes the accent in it**: the accent's border, its wash inside and the tick in its ink (the «B» of the 2026-10-06 checkbox study), lighter than a filled box down a list of students. Under the pointer the empty box's border turns to the accent.
+
+**Elements:** `.platform-checkbox__box` (the primitive's button), `.platform-checkbox__indicator`, `.platform-checkbox__icon`, `.platform-checkbox__text`, `.platform-checkbox__label`, `.platform-checkbox__hint`
+
+**States (data attributes set by the primitive):** `[data-state="checked"]`, `[data-disabled]` on the box; the row reads the second with `:has()` to grey its text.
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-border`, `--platform-border-strong`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`
+
+The hint is in the muted grey, which reads on the white of a panel and on the grey of the canvas alike. No media queries; the colour transition is off under `prefers-reduced-motion`.
+
+## Usage
+
+From `components/platform/sections/staff/courses/lesson-editor.section.tsx`:
+
+```tsx
+<PlatformCheckbox
+  name="isPriority"
+  form={METADATA_FORM_ID}
+  defaultChecked={lesson.isPriority}
+  label="Lección de prioridad"
+  hint="Entra en el recorrido corto de quien estudia con poco tiempo."
+/>
+```
+
+## Related
+
+- [`PlatformSwitch`](/components/platform/shared/platform-switch), for what takes effect at once.
+- [`PlatformCheckCards`](/components/platform/shared/platform-check-cards), several choices drawn as cards.

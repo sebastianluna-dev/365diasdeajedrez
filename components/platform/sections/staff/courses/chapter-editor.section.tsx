@@ -9,6 +9,7 @@ import { StaffEditorLayout } from "./staff-editor.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./chapter-editor.section.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
+import { PlatformCheckbox } from "@/components/platform/shared/platform-checkbox/platform-checkbox.comp";
 
 interface ChapterEditorSectionProps {
   chapter: ChapterAdminDetail;
@@ -71,16 +72,12 @@ export function ChapterEditorSection({ chapter, errorCode }: ChapterEditorSectio
               <textarea name="description" defaultValue={chapter.description ?? ""} maxLength={1000} />
             </FormField>
 
-            <label className="chapter-editor__check">
-              <input type="checkbox" name="isPriority" defaultChecked={chapter.isPriority} />
-              <span>
-                Capítulo de prioridad
-                <span className="chapter-editor__check-hint">
-                  Entra entero en el recorrido corto de quien estudia con poco tiempo: todas sus lecciones, estén
-                  marcadas o no.
-                </span>
-              </span>
-            </label>
+            <PlatformCheckbox
+              name="isPriority"
+              defaultChecked={chapter.isPriority}
+              label="Capítulo de prioridad"
+              hint="Entra entero en el recorrido corto de quien estudia con poco tiempo: todas sus lecciones, estén marcadas o no."
+            />
 
             <div className="chapter-editor__submit">
               <SubmitButton className="platform-button">Guardar</SubmitButton>

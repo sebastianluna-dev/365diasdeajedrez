@@ -2,6 +2,7 @@ import { markAttendance, removeParticipant } from "@/services/teacher-classes/te
 import type { TeacherClassParticipant } from "@/services/teacher-classes/teacher-classes.types";
 import "./attendance-form.comp.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
+import { PlatformCheckbox } from "@/components/platform/shared/platform-checkbox/platform-checkbox.comp";
 
 interface AttendanceFormProps {
   classId: string;
@@ -23,10 +24,13 @@ export function AttendanceForm({ classId, participants }: AttendanceFormProps) {
       <ul className="attendance-form__list">
         {participants.map((participant) => (
           <li key={participant.userId} className="attendance-form__item">
-            <label className="attendance-form__check">
-              <input type="checkbox" name="attended" value={participant.userId} defaultChecked={participant.attended} />
-              <span className="attendance-form__name">{participant.displayName}</span>
-            </label>
+            <PlatformCheckbox
+              name="attended"
+              value={participant.userId}
+              defaultChecked={participant.attended}
+              label={participant.displayName}
+              className="attendance-form__check"
+            />
 
             <span className="attendance-form__meta">
               {participant.hasPayment ? "Pago registrado" : "Sin pago registrado"}
