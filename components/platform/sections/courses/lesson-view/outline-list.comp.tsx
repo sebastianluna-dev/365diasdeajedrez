@@ -81,9 +81,10 @@ function Gauge({ chapter }: { chapter: OutlineChapter }) {
  *
  * Keeping the place in the list is no longer anyone's job either: the element
  * is never unmounted while one moves within a chapter, so its scroll stays
- * where it was. What is still needed is bringing the lesson being read into
- * view when the list's place leaves it cut off — at once on arriving, since
- * smoothly it would sweep through every chapter above it.
+ * where it was. What is still needed is where it opens — on arriving, the
+ * lesson's chapter at the top, at once, since smoothly it would sweep through
+ * every chapter above it — and, after that, bringing the lesson being read
+ * into view when the list's place leaves it cut off.
  */
 export function OutlineList({ chapters }: OutlineListProps) {
   const pathname = usePathname();
@@ -113,7 +114,23 @@ export function OutlineList({ chapters }: OutlineListProps) {
 
     const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const behavior: ScrollBehavior = calm || !arrived.current ? "auto" : "smooth";
+    const arriving = !arrived.current;
     arrived.current = true;
+
+    // On arriving, the column opens on the lesson's CHAPTER: its head at the
+    // top, its lessons under it. The browser stops the scroll short where the
+    // course ends, so a last chapter too short to fill the column simply
+    // shows what is above it too. Only when the lesson being read would be
+    // left under the bottom edge is the row brought up instead — and then the
+    // chapter's head is still the first thing in view, stuck to the top.
+    const section = current.closest("section");
+    if (arriving && section) {
+      const sectionTop = (section.getBoundingClientRect().top - scrollerBox.top) / zoom;
+      if (bottom - sectionTop <= visible) {
+        scroller.scrollTo({ top: scroller.scrollTop + sectionTop, behavior });
+        return;
+      }
+    }
 
     if (top < covered + TOP_MARGIN) {
       // Cut off at the top, or hidden under the chapter: bring it out.
