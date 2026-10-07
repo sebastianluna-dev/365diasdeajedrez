@@ -150,11 +150,11 @@ export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
     <div className="game-settings">
       <button
         type="button"
-        className="game-settings__open"
+        className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square game-settings__open"
         aria-label={`Ajustes de «${game.name}»`}
         onClick={(event) => popup.current?.open(event)}
       >
-        <GearIcon variant="duotone-solid" className="game-settings__open-icon" />
+        <GearIcon variant="classic-solid" className="platform-button__icon" />
       </button>
 
       {/* The popup opens on the name, the first control of the content, which

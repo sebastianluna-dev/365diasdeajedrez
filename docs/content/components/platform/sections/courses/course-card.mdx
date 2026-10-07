@@ -33,7 +33,7 @@ It lives at the root of `sections/courses/` from when two sections used it.
 ## Behaviour
 
 - **The whole card is the link**, through the title's: `.course-card__link::after` is stretched over the card, so there is one link to announce and not a link around another. The focus ring is drawn on that `::after`, around the card.
-- The button at the foot is a `<span aria-hidden="true">`: it is the card's link, which the title already names. «Continuar» is the filled accent one (`_emphasis_strong`); the rest are outlined.
+- The button at the foot is a `<span aria-hidden="true">`: it is the card's link, which the title already names. It is the platform's button: «Continuar» the soft one (`_variant_soft`), the rest the quiet secondary one.
 - The dots sit above the stretched link (`.course-card__levels`, `z-index: 1`) because they open a tip of their own. The wrapper is only rendered for a course with levels.
 - The description is clamped to two lines: the card says what the course is about, the information page tells it.
 - What the course teaches is a line of text under it, not tags: the content types' long names, in catalog order, joined by « · », and «por» with the authors after them. The short names are the tags of the staff's catalog ([`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section)).

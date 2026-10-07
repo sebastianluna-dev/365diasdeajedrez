@@ -156,13 +156,13 @@ function RowMenu({ item, deleteAction, deleteFieldName, steps }: RowMenuProps) {
       <button
         ref={buttonRef}
         type="button"
-        className="syllabus-list__more"
+        className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square syllabus-list__more"
         aria-label={`Más opciones de «${item.name}»`}
         aria-haspopup={isMenu ? "menu" : undefined}
         aria-expanded={open}
         onClick={() => setOpen((wasOpen) => !wasOpen)}
       >
-        <EllipsisIcon variant="duotone-solid" />
+        <EllipsisIcon variant="classic-solid" className="platform-button__icon" />
       </button>
 
       {lingering.value && (

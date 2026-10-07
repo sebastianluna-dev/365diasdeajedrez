@@ -91,7 +91,11 @@ export function ExerciseMovePicker({ pgn, onPick }: ExerciseMovePickerProps) {
         <button type="button" className="platform-button" onClick={markEnd}>
           Marcar el final aquí
         </button>
-        <button type="button" className="exercise-move-picker__close" onClick={() => setIsOpen(false)}>
+        <button
+          type="button"
+          className="platform-row-action exercise-move-picker__close"
+          onClick={() => setIsOpen(false)}
+        >
           Cerrar el tablero
         </button>
       </div>

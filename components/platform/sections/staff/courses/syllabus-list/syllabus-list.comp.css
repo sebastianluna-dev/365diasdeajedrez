@@ -242,28 +242,6 @@
     width: 32px;
   }
 
-  & .syllabus-list__more {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-subtle);
-    cursor: pointer;
-    transition: 150ms;
-    transition-property: background-color, color;
-  }
-
-  & .syllabus-list__more:hover,
-  & .syllabus-list__more[aria-expanded="true"] {
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text);
-  }
-
   & .syllabus-list__menu {
     position: absolute;
     top: calc(100% + 6px);
@@ -413,8 +391,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     & .syllabus-list__grip,
-    & .syllabus-list__add,
-    & .syllabus-list__more {
+    & .syllabus-list__add {
       transition: none;
     }
 

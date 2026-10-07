@@ -89,29 +89,6 @@
     text-transform: capitalize;
   }
 
-  & .platform-date-picker__nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-muted);
-    cursor: pointer;
-  }
-
-  & .platform-date-picker__nav:hover {
-    background: var(--platform-bg);
-    color: var(--platform-text);
-  }
-
-  & .platform-date-picker__nav-icon {
-    width: 14px;
-    height: 14px;
-  }
-
   & .platform-date-picker__nav-icon_direction_back {
     transform: rotate(180deg);
   }

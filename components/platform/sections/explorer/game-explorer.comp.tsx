@@ -1,5 +1,9 @@
 "use client";
 
+import { BackwardStepIcon } from "@/components/icons/backward-step-icon.comp";
+import { ChevronLeftIcon } from "@/components/icons/chevron-left-icon.comp";
+import { ChevronRightIcon } from "@/components/icons/chevron-right-icon.comp";
+import { ForwardStepIcon } from "@/components/icons/forward-step-icon.comp";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ChessBoard } from "@/components/chess/chess-board.comp";
 import { ArrowsRotateIcon } from "@/components/icons/arrows-rotate-icon.comp";
@@ -106,51 +110,51 @@ export function GameExplorer() {
         <div className="game-explorer__controls">
           <button
             type="button"
-            className="game-explorer__control"
+            className="platform-button platform-button_shape_square game-explorer__control"
             onClick={goToStart}
             disabled={index === 0}
             aria-label="Ir a la posición inicial"
           >
-            ⏮
+            <BackwardStepIcon variant="classic-solid" className="platform-button__icon" />
           </button>
           <button
             type="button"
-            className="game-explorer__control"
+            className="platform-button platform-button_shape_square game-explorer__control"
             onClick={goToPrevious}
             disabled={index === 0}
             aria-label="Jugada anterior"
           >
-            ‹
+            <ChevronLeftIcon variant="classic-solid" className="platform-button__icon" />
           </button>
           <button
             type="button"
-            className="game-explorer__control"
+            className="platform-button platform-button_shape_square game-explorer__control"
             onClick={goToNext}
             disabled={index === sans.length}
             aria-label="Jugada siguiente"
           >
-            ›
+            <ChevronRightIcon variant="classic-solid" className="platform-button__icon" />
           </button>
           <button
             type="button"
-            className="game-explorer__control"
+            className="platform-button platform-button_shape_square game-explorer__control"
             onClick={goToEnd}
             disabled={index === sans.length}
             aria-label="Ir al final de la línea"
           >
-            ⏭
+            <ForwardStepIcon variant="classic-solid" className="platform-button__icon" />
           </button>
           <button
             type="button"
-            className="game-explorer__control"
+            className="platform-button platform-button_shape_square game-explorer__control"
             onClick={() => setFlipped((previous) => !previous)}
             aria-label="Girar el tablero"
           >
-            <ArrowsRotateIcon />
+            <ArrowsRotateIcon variant="classic-solid" className="platform-button__icon" />
           </button>
           <button
             type="button"
-            className="game-explorer__control game-explorer__control_align_end"
+            className="platform-button game-explorer__control game-explorer__control_align_end"
             onClick={reset}
             disabled={sans.length === 0}
           >

@@ -43,11 +43,11 @@ export function StudySettings({ study, kinds }: StudySettingsProps) {
     <div className="study-settings">
       <button
         type="button"
-        className="study-settings__open"
+        className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square study-settings__open"
         aria-label={`Editar el estudio «${study.name}»`}
         onClick={(event) => editRef.current?.open(event)}
       >
-        <BarsIcon variant="duotone-solid" className="study-settings__open-icon" />
+        <BarsIcon variant="classic-solid" className="platform-button__icon" />
       </button>
 
       <EditStudy

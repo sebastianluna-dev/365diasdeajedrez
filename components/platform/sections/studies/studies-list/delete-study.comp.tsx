@@ -71,11 +71,11 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
       {trigger === "icon" ? (
         <button
           type="button"
-          className="delete-study__open"
+          className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square delete-study__open"
           title={`Eliminar «${name}»`}
           onClick={(event) => confirm.current?.open(event)}
         >
-          <XmarkIcon className="delete-study__open-icon" />
+          <XmarkIcon variant="classic-solid" className="platform-button__icon" />
           <span className="delete-study__open-label">Eliminar «{name}»</span>
         </button>
       ) : trigger === "button" ? (

@@ -707,6 +707,32 @@ html body.platform-theme[data-scroll-locked] {
   color: color-mix(in srgb, var(--platform-danger) 40%, var(--platform-surface));
 }
 
+/* THE QUIET one, for a button that is only an icon and sits in a head, a
+   strip or a toolbar — close, settings, more options, a calendar's arrows:
+   no box until the pointer comes, then the soft grey of the canvas. A menu it
+   opens keeps it lit while open (`aria-expanded`). */
+.platform-button_variant_quiet {
+  background: transparent;
+  box-shadow: none;
+  color: var(--platform-text-muted);
+}
+
+.platform-button_variant_quiet:hover,
+.platform-button_variant_quiet[aria-expanded="true"] {
+  background: var(--platform-surface-neutral);
+  color: var(--platform-text);
+}
+
+.platform-button_variant_quiet:active {
+  background: var(--platform-surface-sunken);
+}
+
+.platform-button_variant_quiet:disabled {
+  background: transparent;
+  box-shadow: none;
+  color: var(--platform-text-faint);
+}
+
 /* Loading: disabled so it cannot be pressed twice, but in its own colours,
    since it is not refused — it is working. Written after every variant's
    disabled look, which it undoes. */
@@ -733,6 +759,12 @@ html body.platform-theme[data-scroll-locked] {
   background: var(--platform-text);
   box-shadow: none;
   color: var(--platform-surface);
+}
+
+.platform-button_variant_quiet[aria-busy="true"]:disabled {
+  background: transparent;
+  box-shadow: none;
+  color: var(--platform-text-muted);
 }
 
 .platform-button_variant_danger[aria-busy="true"]:disabled {

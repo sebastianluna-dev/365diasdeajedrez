@@ -2,40 +2,6 @@
   flex: none;
   display: flex;
 
-  /* The gear at the end of a game's row. Always drawn, quiet: it is the only
-     way to the game's settings, and on a touch screen nothing would bring it
-     out. A control's drawing, so the muted grey, 3:1 and more on the white of
-     the card, on the grey of a hovered row and on the current row's wash. */
-  & .game-settings__open {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-muted);
-    cursor: pointer;
-  }
-
-  /* Grey until it is pointed at, then the accent, with no box behind it: on
-     the current row's wash a grey box read as a second button. */
-  & .game-settings__open:hover {
-    color: var(--platform-accent-ink);
-  }
-
-  & .game-settings__open:focus-visible {
-    outline: 2px solid var(--platform-accent);
-    outline-offset: -2px;
-  }
-
-  & .game-settings__open-icon {
-    width: 20px;
-    height: 20px;
-  }
-
   /* The popup's content pads itself: the strip above it is `PlatformPopup`'s,
      and the confirmation is `PlatformConfirmPopup`'s. */
   & .game-settings__form {

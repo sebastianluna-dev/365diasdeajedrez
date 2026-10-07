@@ -1,34 +1,4 @@
 .study-settings {
   flex: none;
   display: flex;
-
-  /* Three bars at the end of the head, drawn like the gear of a game's row
-     under it: the muted grey, no box, and the accent under the pointer. */
-  & .study-settings__open {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-muted);
-    cursor: pointer;
-  }
-
-  & .study-settings__open:hover {
-    color: var(--platform-accent-ink);
-  }
-
-  & .study-settings__open:focus-visible {
-    outline: 2px solid var(--platform-accent);
-    outline-offset: -2px;
-  }
-
-  & .study-settings__open-icon {
-    width: 20px;
-    height: 20px;
-  }
 }

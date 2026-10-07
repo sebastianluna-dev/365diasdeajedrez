@@ -253,22 +253,28 @@ export function PlatformDatePicker({
           <div className="platform-date-picker__head">
             <button
               type="button"
-              className="platform-date-picker__nav"
+              className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square platform-date-picker__nav"
               aria-label="Mes anterior"
               onClick={() => moveFocus(addMonths(focused, -1))}
             >
-              <AngleRightIcon className="platform-date-picker__nav-icon platform-date-picker__nav-icon_direction_back" />
+              <AngleRightIcon
+                variant="classic-solid"
+                className="platform-button__icon platform-date-picker__nav-icon platform-date-picker__nav-icon_direction_back"
+              />
             </button>
             <span id={captionId} className="platform-date-picker__caption" aria-live="polite">
               {MONTHS_ES[month.getMonth()]} {month.getFullYear()}
             </span>
             <button
               type="button"
-              className="platform-date-picker__nav"
+              className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square platform-date-picker__nav"
               aria-label="Mes siguiente"
               onClick={() => moveFocus(addMonths(focused, 1))}
             >
-              <AngleRightIcon className="platform-date-picker__nav-icon" />
+              <AngleRightIcon
+                variant="classic-solid"
+                className="platform-button__icon platform-date-picker__nav-icon"
+              />
             </button>
           </div>
 

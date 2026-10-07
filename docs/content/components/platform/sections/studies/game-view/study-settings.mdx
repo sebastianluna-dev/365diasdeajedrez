@@ -34,13 +34,13 @@ What its owner does to the study itself — change its name, its description or 
 - **Deleting is in the form, and the confirmation on top of it.** When `study.permissions.canDelete`, `EditStudy` gets `onDelete` and draws «Eliminar estudio» at its foot, in the danger ink under a rule, as a game's settings draw what destroys. Pressed, [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study)'s confirmation opens over the form, which stays open beneath (until 2026-10-06 the form closed first and the confirmation took its place). Cancelling leaves the form as it was; deleting closes the confirmation and then, through `DeleteStudy`'s `onDone`, the form (`editRef.current?.close()`), each `close()` returning the focus a step back. The two are mounted as siblings, never one inside the other. "Mis partidas" has no such foot.
 - **It receives the study and decides what it offers**; `StudyAside` mounts it only for whoever may edit the study.
 - **Focus.** A native `<dialog>` returns the focus, on closing, to whatever had it when it opened, and a click does not focus a button in Safari, nor in Firefox on a Mac: `PlatformPopup.open(event)` focuses the trigger before opening, so the button gets the focus back and it does not land on `<body>`. The bars only pass the click on.
-- The button is named «Editar el estudio «study»»; its icon is the bars in Duotone Solid, 20px in a 28px box, in the muted grey and in the accent under the pointer — drawn like the gear of a game's row under it, and in the same column.
+- The button is named «Editar el estudio «study»»; it is the platform's quiet button, a small square (`platform-button_variant_quiet platform-button_size_sm platform-button_shape_square`, 32px), its icon the bars in Classic Solid — drawn like the gear of a game's row under it, and in the same column (2026-10-07; it was its own 28px button, the accent under the pointer).
 
 ## Markup & styling
 
-Block `.study-settings` (34 lines): the button and nothing else.
+Block `.study-settings` (4 lines): the button and nothing else.
 
-**Elements:** `.study-settings__open`, `.study-settings__open-icon`
+**Elements:** `.study-settings__open` (only a hook: the look is the button's)
 
 **Tokens:** `--platform-accent-ink`, `--platform-text-muted`, `--platform-accent`
 

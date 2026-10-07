@@ -50,11 +50,11 @@ export function EditGame({ action, values, results, titleHint, label = "Editar",
       {trigger === "icon" ? (
         <button
           type="button"
-          className="edit-game__open"
+          className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square edit-game__open"
           aria-label="Editar los datos de la partida"
           onClick={(event) => popup.current?.open(event)}
         >
-          <PenToSquareIcon className="edit-game__open-icon" />
+          <PenToSquareIcon variant="classic-solid" className="platform-button__icon" />
         </button>
       ) : (
         <button

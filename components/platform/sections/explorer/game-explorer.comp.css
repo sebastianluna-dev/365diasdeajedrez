@@ -18,31 +18,6 @@
     gap: var(--platform-space-2);
   }
 
-  & .game-explorer__control {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 38px;
-    height: 34px;
-    padding: 0 var(--platform-space-3);
-    border: 1px solid var(--platform-border);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    color: var(--platform-text);
-    font: inherit;
-    font-size: var(--platform-type-lg);
-    cursor: pointer;
-  }
-
-  & .game-explorer__control:hover:not(:disabled) {
-    border-color: var(--platform-accent);
-  }
-
-  & .game-explorer__control:disabled {
-    opacity: 0.4;
-    cursor: default;
-  }
-
   & .game-explorer__control_align_end {
     margin-left: auto;
   }

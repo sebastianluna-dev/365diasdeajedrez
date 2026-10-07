@@ -2,32 +2,6 @@
 .delete-study {
   margin-left: auto;
 
-  /* The card's cross: a quiet 28px box that turns to the danger colour under
-     the pointer. */
-  & .delete-study__open {
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    border: 1px solid var(--platform-border);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    color: var(--platform-text-subtle);
-    cursor: pointer;
-  }
-
-  & .delete-study__open:hover {
-    border-color: var(--platform-danger);
-    color: var(--platform-danger);
-  }
-
-  & .delete-study__open-icon {
-    width: 14px;
-    height: 14px;
-  }
-
   /* The cross is decorative; the real name is read by the screen reader, which
      otherwise would announce nothing. */
   & .delete-study__open-label {

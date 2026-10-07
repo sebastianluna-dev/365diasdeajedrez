@@ -99,11 +99,11 @@ export function PlatformPopup({ title, ref, size = "md", onClose, children }: Pl
         </h2>
         <button
           type="button"
-          className="platform-popup__close"
+          className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square platform-popup__close"
           onClick={() => dialogRef.current?.close()}
           aria-label="Cerrar"
         >
-          <XmarkIcon className="platform-popup__close-icon" />
+          <XmarkIcon variant="classic-solid" className="platform-button__icon" />
         </button>
       </header>
       {children}
