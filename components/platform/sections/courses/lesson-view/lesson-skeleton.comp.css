@@ -3,11 +3,15 @@
    of the lesson are the same box and nothing moves when one replaces the
    other. */
 .lesson-skeleton {
-  /* It IS the frame's second column, where the viewer will be, so it takes
-     over the two tracks the viewer draws — the board and the panel of text —
-     and says so with the element's own two classes, which is what wins over
-     the column layout `.lesson-frame__main` gives it. */
-  &.lesson-frame__main {
+  /* The board and the panel of text, drawn ONE LEVEL IN from the frame's
+     column and not on it, as the viewer draws its own (`.game-viewer__layout`).
+     The board's ceiling is `100cqh` of that column, a size container, and a
+     container's units are read against the nearest container ABOVE the
+     element that uses them: on the column itself they found none, fell back
+     to the window's height, and the board of the skeleton came out bounded
+     by the width alone — 761px where the lesson's is 704 at 1600×900, so
+     every change of lesson flashed a bigger board (fixed 2026-10-07). */
+  & .lesson-skeleton__layout {
     display: grid;
     grid-template-columns: minmax(0, var(--viewer-board-max, 600px)) minmax(320px, 1fr);
     column-gap: var(--viewer-column-gap, var(--platform-space-6));
@@ -18,6 +22,9 @@
      the bar of buttons will need — the board alone would make the row shorter
      than the real one and the panel beside it would end higher than it ends. */
   & .lesson-skeleton__board {
+    /* A whole number of eights, as the viewer's board card is: the board it
+       holds and the one that replaces it are the same width to the pixel. */
+    width: round(down, 100%, 8px);
     margin-bottom: var(--viewer-panel-trim, 0px);
   }
 

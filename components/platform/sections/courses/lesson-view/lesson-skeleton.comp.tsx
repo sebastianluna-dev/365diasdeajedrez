@@ -17,11 +17,15 @@ import "./lesson-skeleton.comp.css";
 export function LessonSkeleton() {
   return (
     <div className="lesson-frame__main lesson-skeleton" aria-busy="true">
-      <div className="lesson-skeleton__board">
-        <BoardSkeleton label="Cargando la lección" />
-      </div>
+      {/* The two tracks one level in, where the viewer draws its own: see the
+          stylesheet for why it cannot be the column itself. */}
+      <div className="lesson-skeleton__layout">
+        <div className="lesson-skeleton__board">
+          <BoardSkeleton label="Cargando la lección" />
+        </div>
 
-      <div className="lesson-skeleton__panel" aria-hidden="true" />
+        <div className="lesson-skeleton__panel" aria-hidden="true" />
+      </div>
     </div>
   );
 }
