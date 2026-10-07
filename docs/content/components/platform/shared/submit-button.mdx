@@ -32,6 +32,8 @@ Everything a `<button>` takes except `type`, plus:
 
 `useFormStatus().pending` is true from the submit until the action settles, for the nearest `<form>`. While pending the button is `disabled` (no double submit), carries `aria-busy` and shows `pendingLabel`. A form with several of these — the attendance form, the author list — disables them all together, which is the point. No state of its own.
 
+Drawn as the platform's button (its `className` includes `platform-button`), the pending state is the button's **loading** state (2026-10-07): a turning ring (`SpinnerIcon` in Classic Solid, `.platform-button__icon platform-button__spinner`, still under `prefers-reduced-motion`) before the gerund, and the variant's own colours instead of its disabled tone, since `.platform-button[aria-busy="true"]:disabled` undoes it — the button is working, not refused. A row action written as a word (`platform-row-action`) shows the gerund alone. See [Styling › Buttons](/ui/styling#buttons).
+
 ## Markup & styling
 
 Renders `<button type="submit">` with the class it is given. The disabled look (`opacity`, `cursor: not-allowed`, no hover change) is the platform button's, in `platform.css`; custom classes such as `.chapter-games__remove` style their own disabled state or inherit the default cursor.

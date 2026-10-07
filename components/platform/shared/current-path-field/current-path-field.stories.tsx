@@ -12,7 +12,7 @@ function SentForm({ name }: { name: string }) {
   return (
     <form action={send} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 12 }}>
       <CurrentPathField name={name} />
-      <button type="submit" className="platform-button platform-button_size_compact">
+      <button type="submit" className="platform-button platform-button_size_sm">
         Enviar el formulario
       </button>
       <output>{sent ?? "Nada enviado todavía."}</output>

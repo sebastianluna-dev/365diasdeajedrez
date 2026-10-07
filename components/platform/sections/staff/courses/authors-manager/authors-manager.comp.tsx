@@ -55,7 +55,7 @@ export function AuthorsManager({ authors, label = "Autores", size = "regular" }:
     <div className="authors-manager">
       <button
         type="button"
-        className={`platform-button${size === "compact" ? " platform-button_size_compact" : ""}`}
+        className={`platform-button${size === "compact" ? " platform-button_size_sm" : ""}`}
         onClick={(event) => popup.current?.open(event)}
       >
         {label}

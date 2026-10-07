@@ -50,7 +50,7 @@ function CourseSourceSample({ sourceTypes, source }: CourseSourceArgs) {
     <div className="course-source-dialog">
       <button
         type="button"
-        className={isEdit ? "platform-row-action" : "platform-button platform-button_size_compact"}
+        className={isEdit ? "platform-row-action" : "platform-button platform-button_size_sm"}
         onClick={(event) => popup.current?.open(event)}
       >
         {isEdit ? "Editar" : "Agregar fuente"}

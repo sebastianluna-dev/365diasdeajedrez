@@ -531,84 +531,139 @@ html body.platform-theme[data-scroll-locked] {
   color: var(--platform-text);
 }
 
-/* THE BUTTON OF THE PLATFORM IS QUIET. A line of the strong border, the
-   surface behind it and the word in ink; under the pointer the surface goes
-   to the canvas's own grey and the line stays. Most screens have several
-   things one can do and only one of them is the reason the screen exists:
-   a page of red blocks says they are all that reason.
+/* THE PLATFORM'S BUTTON (2026-10-07): one piece, three decisions — what it is
+   for (the variant), where it sits (the size) and whether it carries an icon
+   and on which side. Only the platform's: the public site has its own.
 
-   The outline goes in `box-shadow` and not in `border` on purpose: the
-   button then measures exactly the same with it and without it, so a row of
-   buttons of different variants lines up. */
+   The bare block is the SECONDARY one, and the medium size. It is quiet: a
+   line of the strong border, the surface behind it and the word in ink. Most
+   screens have several things one can do and only one of them is the reason
+   the screen exists; a page of red blocks says they are all that reason.
+
+   The outline goes in `box-shadow` and not in `border` on purpose: the button
+   then measures exactly the same with it and without it, so a row of buttons
+   of different variants lines up.
+
+   Three heights and nothing else: 48 (`_size_lg`) for what is pressed again
+   and again and for the action of a page, 40 (the bare block) for the rest,
+   32 (`_size_sm`) inside a header or a toolbar. A button with only an icon is
+   a square of the same height (`_shape_square`). The pill is not a button: it
+   is kept for what is chosen or switched on (a filter, an option). */
 .platform-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--platform-space-2);
-  padding: var(--platform-space-3) var(--platform-space-6);
+  height: 40px;
+  padding: 0 var(--platform-space-5);
   border: 0;
   border-radius: 8px;
   background: var(--platform-surface);
   box-shadow: inset 0 0 0 1px var(--platform-border-strong);
   color: var(--platform-text);
-  font-size: var(--platform-type-lg);
-  font-weight: 700;
   font-family: inherit;
+  font-size: var(--platform-type-md);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
   cursor: pointer;
 }
 
+/* The icon, on either side or alone: Classic Solid, in the word's colour. On
+   its side the padding is 4px shorter, so that the whole reads centred. One
+   icon per button, never two: on the left it says what it does, on the right
+   where it leads. The `:has()` is wrapped in `:where()` so that it weighs one
+   class: the sizes and the square, written later, win over it by order. */
+.platform-button__icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+
+.platform-button:where(:has(> .platform-button__icon:first-child)) {
+  padding-left: var(--platform-space-4);
+}
+
+.platform-button:where(:has(> .platform-button__icon:last-child)) {
+  padding-right: var(--platform-space-4);
+}
+
+/* STATES. Under the pointer the quiet ones take a soft fill and the filled
+   ones go a tone darker; pressed, a tone more. Disabled is a light tone of
+   the same colour — not the whole button at 60 % — and does not answer the
+   pointer. Loading (`aria-busy`, set by `SubmitButton` while its form is on
+   its way) keeps the button's own look, says its gerund with «…» and a
+   turning ring, and cannot be pressed again. */
 .platform-button:hover {
   background: var(--platform-bg);
   color: var(--platform-text);
 }
 
-/* Disabled covers both "not allowed yet" and "on its way" (`SubmitButton` while
-   the form is pending): same look, no hover reaction. */
+.platform-button:active {
+  background: var(--platform-surface-sunken);
+}
+
 .platform-button:disabled {
-  opacity: 0.6;
+  background: var(--platform-surface);
+  box-shadow: inset 0 0 0 1px var(--platform-border);
+  color: var(--platform-text-faint);
   cursor: not-allowed;
 }
 
-.platform-button:disabled:hover {
-  background: var(--platform-surface);
-}
-
-/* THE ACCENT BUTTON, for the few places where one action IS the screen:
-   signing in, adding the course one is reading about, starting to study.
-   Raised on a hard edge, as the button of the blog's header, and it sinks
-   onto it while it is held down — the platform's one button that moves. */
+/* THE PRIMARY one, for the few places where one action IS the screen:
+   signing in, adding the course one is reading about, starting to study. Flat
+   since 2026-10-07: the hard edge it stood on, and sank onto while held, is
+   gone. */
 .platform-button_variant_accent {
   background: var(--platform-accent);
-  box-shadow: 0 4px 0 var(--platform-accent-deep);
+  box-shadow: none;
   color: var(--platform-on-accent);
-  transition: 80ms;
-  transition-property: transform, box-shadow, background-color;
 }
 
 .platform-button_variant_accent:hover {
-  background: var(--platform-accent-bright);
+  background: var(--platform-accent-hover);
   color: var(--platform-on-accent);
 }
 
 .platform-button_variant_accent:active {
-  transform: translateY(4px);
-  box-shadow: 0 0 0 var(--platform-accent-deep);
+  background: var(--platform-accent-deep);
 }
 
-.platform-button_variant_accent:disabled:hover {
-  background: var(--platform-accent);
+.platform-button_variant_accent:disabled {
+  background: color-mix(in srgb, var(--platform-accent) 40%, var(--platform-surface));
+  box-shadow: none;
+  color: var(--platform-on-accent);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .platform-button_variant_accent {
-    transition: none;
-  }
+/* THE SOFT one: what matters without being the screen's reason, a step under
+   the primary. The accent's tint, written in its ink. */
+.platform-button_variant_soft {
+  background: var(--platform-accent-soft);
+  box-shadow: none;
+  color: var(--platform-accent-ink);
 }
 
-/* The ink button: the dark one, for the action of a dialog whose page already
-   has its accent one. Same box as the primary, only the colours change. */
+.platform-button_variant_soft:hover {
+  background: color-mix(in srgb, var(--platform-accent) 10%, var(--platform-accent-soft));
+  color: var(--platform-accent-ink);
+}
+
+.platform-button_variant_soft:active {
+  background: color-mix(in srgb, var(--platform-accent) 18%, var(--platform-accent-soft));
+}
+
+.platform-button_variant_soft:disabled {
+  background: var(--platform-accent-wash);
+  box-shadow: none;
+  color: color-mix(in srgb, var(--platform-accent-ink) 40%, var(--platform-surface));
+}
+
+/* THE INK one: the dark one, for the action of a popup whose page already has
+   its primary. Same box, only the colours change. */
 .platform-button_variant_ink {
   background: var(--platform-text);
+  box-shadow: none;
   color: var(--platform-surface);
 }
 
@@ -617,12 +672,19 @@ html body.platform-theme[data-scroll-locked] {
   color: var(--platform-surface);
 }
 
-.platform-button_variant_ink:disabled:hover {
-  background: var(--platform-text);
+.platform-button_variant_ink:active {
+  background: color-mix(in srgb, var(--platform-text) 74%, var(--platform-surface));
 }
 
+.platform-button_variant_ink:disabled {
+  background: color-mix(in srgb, var(--platform-text) 40%, var(--platform-surface));
+  box-shadow: none;
+  color: var(--platform-surface);
+}
+
+/* THE DANGER one: what destroys or takes away. Outlined in the danger colour,
+   filled with it under the pointer. */
 .platform-button_variant_danger {
-  padding: var(--platform-space-3) var(--platform-space-6);
   background: var(--platform-surface);
   box-shadow: inset 0 0 0 1px var(--platform-danger);
   color: var(--platform-danger);
@@ -630,17 +692,120 @@ html body.platform-theme[data-scroll-locked] {
 
 .platform-button_variant_danger:hover {
   background: var(--platform-danger);
+  box-shadow: none;
   color: var(--platform-surface);
 }
 
-/* Like the accent and ink ones, it keeps its resting look while disabled.
-   The base's `:disabled:hover` gives the surface back but not the colour, so
-   without this the hover above wrote the word in the surface, on the surface:
-   «Quitar de mis cursos» vanished under the pointer while its form was
-   pending. */
-.platform-button_variant_danger:disabled:hover {
+.platform-button_variant_danger:active {
+  background: color-mix(in srgb, var(--platform-danger) 82%, var(--platform-text));
+  color: var(--platform-surface);
+}
+
+.platform-button_variant_danger:disabled {
   background: var(--platform-surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--platform-danger) 40%, var(--platform-surface));
+  color: color-mix(in srgb, var(--platform-danger) 40%, var(--platform-surface));
+}
+
+/* Loading: disabled so it cannot be pressed twice, but in its own colours,
+   since it is not refused — it is working. Written after every variant's
+   disabled look, which it undoes. */
+.platform-button[aria-busy="true"]:disabled {
+  background: var(--platform-surface);
+  box-shadow: inset 0 0 0 1px var(--platform-border-strong);
+  color: var(--platform-text);
+  cursor: progress;
+}
+
+.platform-button_variant_accent[aria-busy="true"]:disabled {
+  background: var(--platform-accent);
+  box-shadow: none;
+  color: var(--platform-on-accent);
+}
+
+.platform-button_variant_soft[aria-busy="true"]:disabled {
+  background: var(--platform-accent-soft);
+  box-shadow: none;
+  color: var(--platform-accent-ink);
+}
+
+.platform-button_variant_ink[aria-busy="true"]:disabled {
+  background: var(--platform-text);
+  box-shadow: none;
+  color: var(--platform-surface);
+}
+
+.platform-button_variant_danger[aria-busy="true"]:disabled {
+  background: var(--platform-surface);
+  box-shadow: inset 0 0 0 1px var(--platform-danger);
   color: var(--platform-danger);
+}
+
+/* The ring that turns while it loads. */
+.platform-button__spinner {
+  animation: platform-button-spin 900ms linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .platform-button__spinner {
+    animation: none;
+  }
+}
+
+/* SIZES. They change the box and the type alone, and come after every
+   variant, so they also win over a variant that sets its own padding. */
+.platform-button_size_lg {
+  height: 48px;
+  padding: 0 var(--platform-space-6);
+  font-size: var(--platform-type-lg);
+}
+
+.platform-button_size_lg .platform-button__icon {
+  width: 20px;
+  height: 20px;
+}
+
+.platform-button_size_lg:where(:has(> .platform-button__icon:first-child)) {
+  padding-left: var(--platform-space-5);
+}
+
+.platform-button_size_lg:where(:has(> .platform-button__icon:last-child)) {
+  padding-right: var(--platform-space-5);
+}
+
+.platform-button_size_sm {
+  gap: var(--platform-space-1);
+  height: 32px;
+  padding: 0 var(--platform-space-3);
+  font-size: var(--platform-type-xs);
+}
+
+.platform-button_size_sm .platform-button__icon {
+  width: 16px;
+  height: 16px;
+}
+
+.platform-button_size_sm:where(:has(> .platform-button__icon:first-child)) {
+  padding-left: var(--platform-space-2);
+}
+
+.platform-button_size_sm:where(:has(> .platform-button__icon:last-child)) {
+  padding-right: var(--platform-space-2);
+}
+
+/* ONLY AN ICON: a square of the button's own height, its name in
+   `aria-label`. Last, so it wins over the padding an icon's side asks for. */
+.platform-button.platform-button_shape_square {
+  width: 40px;
+  padding: 0;
+}
+
+.platform-button_size_lg.platform-button_shape_square {
+  width: 48px;
+}
+
+.platform-button_size_sm.platform-button_shape_square {
+  width: 32px;
 }
 
 /* THE ACTION OF A ROW. «Editar» beside a chapter, «Quitar» beside an author,
@@ -692,14 +857,11 @@ html body.platform-theme[data-scroll-locked] {
   text-decoration: none;
 }
 
-/* A smaller box for the same button, for a card's header, where it shares the
-   line with the title and must not stand taller than it. It changes the size
-   alone, and comes after every variant so that it also shrinks the two that
-   set their own padding. */
-.platform-button_size_compact {
-  padding: var(--platform-space-2) var(--platform-space-4);
-  font-size: var(--platform-type-lg);
-  white-space: nowrap;
+/* @keyframes cannot be nested: the button's loading ring. */
+@keyframes platform-button-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Modal dialog. The native `<dialog>` already brings focus trapping, closing

@@ -392,7 +392,7 @@ function ScaleSample({ label, px, style }: { label: string; px: number | undefin
     <div className="overview__stack" style={style}>
       <span className="overview__caption">{label}</span>
       <span style={{ fontSize: `var(${LG})` }}>Siguiente lección · {px}px</span>
-      <button type="button" className="platform-button platform-button_size_compact">
+      <button type="button" className="platform-button platform-button_size_sm">
         Aprender
       </button>
     </div>
@@ -411,7 +411,7 @@ function MotionReplay() {
       <div>
         <button
           type="button"
-          className="platform-button platform-button_size_compact"
+          className="platform-button platform-button_size_sm"
           onClick={() => setPlays((count) => count + 1)}
         >
           Reproducir
@@ -469,7 +469,7 @@ function MoveMenuTile() {
   const close = () => setOpen(false);
   return (
     <div className="overview__menu-frame">
-      <button type="button" className="platform-button platform-button_size_compact" onClick={() => setOpen(true)}>
+      <button type="button" className="platform-button platform-button_size_sm" onClick={() => setOpen(true)}>
         Abrir el menú de 8. Dxb7
       </button>
       {open && (
@@ -494,7 +494,7 @@ function PopupTrigger() {
     <>
       <button
         type="button"
-        className="platform-button platform-button_size_compact"
+        className="platform-button platform-button_size_sm"
         onClick={(event) => popup.current?.open(event)}
       >
         Abrir el popup
@@ -523,7 +523,7 @@ function ConfirmTrigger() {
     <>
       <button
         type="button"
-        className="platform-button platform-button_size_compact"
+        className="platform-button platform-button_size_sm"
         onClick={(event) => popup.current?.open(event)}
       >
         Editar el estudio
@@ -729,7 +729,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 <button type="button" className="platform-button platform-button_variant_danger">
                   Eliminar
                 </button>
-                <button type="button" className="platform-button platform-button_size_compact">
+                <button type="button" className="platform-button platform-button_size_sm">
                   Gestionar
                 </button>
                 <button type="button" className="platform-button" disabled>
@@ -1405,7 +1405,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               <SectionDialog
                 block="course-source-dialog"
                 label="Agregar fuente"
-                buttonClassName="platform-button platform-button_size_compact"
+                buttonClassName="platform-button platform-button_size_sm"
                 title="Nueva fuente"
                 size="lg"
                 form={(close) => (

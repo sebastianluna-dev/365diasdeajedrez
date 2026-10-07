@@ -22,7 +22,7 @@ export async function ContinueStudyingSection() {
           />
           <Link
             href={continueStudying.href}
-            className="platform-button platform-button_variant_accent continue-studying__cta"
+            className="platform-button platform-button_variant_accent platform-button_size_lg continue-studying__cta"
           >
             Continuar
           </Link>

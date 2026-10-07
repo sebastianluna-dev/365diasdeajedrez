@@ -21,7 +21,7 @@ export function PlatformError({
       <button
         type="button"
         onClick={retry}
-        className="platform-button platform-button_variant_accent platform-error__retry"
+        className="platform-button platform-button_variant_accent platform-button_size_lg platform-error__retry"
       >
         Reintentar
       </button>

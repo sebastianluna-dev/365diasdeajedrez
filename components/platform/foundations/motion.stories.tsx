@@ -130,7 +130,7 @@ function PageEntrance() {
       </div>
       <Spec>{spec}</Spec>
       <div className="foundations__actions">
-        <button type="button" className="platform-button platform-button_size_compact" onClick={() => setRun(run + 1)}>
+        <button type="button" className="platform-button platform-button_size_sm" onClick={() => setRun(run + 1)}>
           Replay
         </button>
       </div>
@@ -164,7 +164,7 @@ function DialogMotion() {
       <div className="foundations__actions">
         <button
           type="button"
-          className="platform-button platform-button_size_compact"
+          className="platform-button platform-button_size_sm"
           onClick={(event) => popup.current?.open(event)}
         >
           Open the popup

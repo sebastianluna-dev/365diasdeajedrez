@@ -97,7 +97,7 @@ export const WithAction: Story = {
     meta: undefined,
     description: undefined,
     action: (
-      <button type="button" className="platform-button platform-button_size_compact">
+      <button type="button" className="platform-button platform-button_size_sm">
         Agregar fuente
       </button>
     ),

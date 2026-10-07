@@ -26,6 +26,8 @@ This component takes no props.
 
 `useFormStatus().pending` is true from the submit until the action settles. While pending the button is `disabled` (no double submit) and reads "Entrando…"; otherwise "Entrar". No state of its own.
 
+It is the platform's primary button, large (`platform-button_variant_accent platform-button_size_lg`), and pending it is that button's loading state: `aria-busy`, the turning ring before «Entrando…» and the accent kept (2026-10-07; it used to fade to 60 %). See [Styling › Buttons](/ui/styling#buttons).
+
 ## Markup & styling
 
 Renders `<button type="submit" className="platform-button login__submit">`. The look comes from the platform button in `app/(platform)/platform.css` and the `login__submit` element in the section's sheet; the disabled state is the platform button's.

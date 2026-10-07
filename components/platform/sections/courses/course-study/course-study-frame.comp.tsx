@@ -94,7 +94,7 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
             {course.learnHref && (
               <Link
                 href={course.learnHref}
-                className="platform-button platform-button_variant_accent course-study-frame__learn"
+                className="platform-button platform-button_variant_accent platform-button_size_lg course-study-frame__learn"
               >
                 Aprender
               </Link>

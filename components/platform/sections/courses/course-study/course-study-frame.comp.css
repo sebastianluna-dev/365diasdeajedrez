@@ -85,7 +85,6 @@
     gap: var(--platform-space-3);
   }
 
-  & .course-study-frame__learn,
   & .course-study-frame__review {
     display: flex;
     align-items: center;
@@ -97,11 +96,9 @@
     font-weight: 800;
   }
 
-  /* «Aprender» is the platform's accent button — raised on its hard edge and
-     sinking onto it while held — which this page had copied into itself
-     before the button had a variant of its own. It is one of the few places
-     that earn the accent: the reason the screen exists. The frame only says
-     how big it is. */
+  /* «Aprender» is the platform's primary button, large (`_size_lg`): one of
+     the few places that earn the accent, the reason the screen exists. Its
+     size is the button's, so the frame says nothing about it. */
 
   /* Written in the cream that goes on the ink, not in the surface: the ink is
      dark in both themes, and the dark theme's surface on it does not read. */

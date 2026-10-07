@@ -90,11 +90,6 @@
     margin-top: var(--platform-space-1);
   }
 
-  & .login__submit:disabled {
-    opacity: 0.6;
-    cursor: progress;
-  }
-
   & .login__help {
     font-size: var(--platform-type-md);
     line-height: 1.5;

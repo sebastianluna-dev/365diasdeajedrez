@@ -44,7 +44,7 @@ export function CourseSourceDialog({ courseId, source, sourceTypes }: CourseSour
         type="button"
         // On a row it is the action of that row; in the panel's header it is
         // the one button of the card.
-        className={isEdit ? "platform-row-action" : "platform-button platform-button_size_compact"}
+        className={isEdit ? "platform-row-action" : "platform-button platform-button_size_sm"}
         aria-label={isEdit ? `Editar la fuente «${source.originalTitle ?? source.sourceTypeLabel}»` : undefined}
         onClick={(event) => popup.current?.open(event)}
       >

@@ -159,16 +159,10 @@
   /* A link when the course is added and the button of a form when it is
      not: the width is set, and not flexed, so it measures the same in the
      side column — a flex COLUMN, where `flex: 1` would take its height. */
-  /* The accent button of the platform, which this page had copied into itself
-     before the button had a variant of its own: adding the course is what the
-     page is for. Only its size is said here. */
+  /* The platform's primary button, large: adding the course is what the page
+     is for. Only its width is said here. */
   & .course-info__cta {
     width: 100%;
-    box-sizing: border-box;
-    height: 50px;
-    padding: 0 var(--platform-space-6);
-    font-size: var(--platform-type-lg);
-    font-weight: 800;
   }
 
   /* --- Chapters ------------------------------------------------------------- */

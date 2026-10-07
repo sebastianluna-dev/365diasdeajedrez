@@ -27,11 +27,11 @@ An author is editorial content, not a restricted domain whose code the logic com
 
 ### `AuthorsManager`
 
-| Prop      | Type                     | Required | Meaning                                                                                                                |
-| --------- | ------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `authors` | `AuthorAdminRow[]`       | yes      | `{ id, name, slug, bio?, photo?, courseCount }[]` from `listAuthors()`, by name.                                       |
-| `label`   | `string`                 | no       | What the button says. «Autores» by default; «Gestionar» in the card whose title already says it.                       |
-| `size`    | `"regular" \| "compact"` | no       | `compact` shrinks the trigger for a card's header; the catalog's is the regular size. Both are the soft accent button. |
+| Prop      | Type                     | Required | Meaning                                                                                                                                                                           |
+| --------- | ------------------------ | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `authors` | `AuthorAdminRow[]`       | yes      | `{ id, name, slug, bio?, photo?, courseCount }[]` from `listAuthors()`, by name.                                                                                                  |
+| `label`   | `string`                 | no       | What the button says. «Autores» by default; «Gestionar» in the card whose title already says it.                                                                                  |
+| `size`    | `"regular" \| "compact"` | no       | `compact` draws the trigger in the button's small size (`platform-button_size_sm`, 32px) for a card's header; the catalog's is the regular size. Both are the soft accent button. |
 
 ### `AuthorForm`
 
@@ -80,7 +80,7 @@ Block `.authors-manager`: the list view's body and subtitle, the rows, the form'
 
 **Other selectors it styles:** `.platform-form__field > textarea` (a shorter textarea).
 
-**Other classes it renders:** `.platform-popup` (on `.platform-dialog`), `.platform-button`, `.platform-button_size_compact`, `.platform-form`, `.platform-notice`.
+**Other classes it renders:** `.platform-popup` (on `.platform-dialog`), `.platform-button`, `.platform-button_size_sm`, `.platform-form`, `.platform-notice`.
 
 Block `.author-avatar`: **modifiers** `.author-avatar_size_{small,medium,large}`, `.author-avatar_shape_{tile,circle}`, `.author-avatar_tone_{ink,soft}`, `.author-avatar_kind_photo`; **element** `.author-avatar__image`.
 
