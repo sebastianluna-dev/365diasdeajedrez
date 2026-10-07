@@ -17,7 +17,7 @@ function lesson(id: string, name: string, statusCode: LessonSibling["statusCode"
 
 /** A chapter of the course, by its order, name and lessons. */
 function chapter(order: number, name: string, lessons: LessonSibling[]): OutlineChapter {
-  return { id: `capitulo-${order}`, name, href: platformRoutes.chapterDetail(COURSE, order), lessons };
+  return { id: `capitulo-${order}`, name, lessons };
 }
 
 const { COMPLETED, IN_PROGRESS, NOT_STARTED } = PROGRESS_STATUS;

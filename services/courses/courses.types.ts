@@ -271,11 +271,10 @@ export interface CourseOutline {
   chapters: OutlineChapter[];
 }
 
-/** A chapter as the column beside a lesson lists it: its name, its page and its lessons. */
+/** A chapter as the column beside a lesson lists it: its name and its lessons (its name is not a link). */
 export interface OutlineChapter {
   id: string;
   name: string;
-  href: string;
   lessons: LessonSibling[];
 }
 

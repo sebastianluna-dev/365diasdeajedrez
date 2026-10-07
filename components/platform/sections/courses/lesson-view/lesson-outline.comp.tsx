@@ -30,20 +30,19 @@ export function LessonOutline({ outline }: LessonOutlineProps) {
   return (
     <nav className="lesson-outline" aria-label="Lecciones del curso">
       {/* The course's head: its image, its name and what of it is being
-          learned. The image and the name lead to the course; the filter is a
-          form, so it cannot live inside that link. */}
+          learned. The name is the head's one link, to the course; the filter
+          is a form, so it cannot live inside that link. */}
       <div className="lesson-outline__course">
+        {/* The image is not a link: the title beside it is the head's one. */}
         {courseThumbnail && (
-          <Link href={courseHref} className="lesson-outline__cover-link" aria-hidden="true" tabIndex={-1}>
-            <Image
-              src={courseThumbnail}
-              alt=""
-              width={144}
-              height={144}
-              sizes={THUMBNAIL_SIZES}
-              className="lesson-outline__cover"
-            />
-          </Link>
+          <Image
+            src={courseThumbnail}
+            alt=""
+            width={144}
+            height={144}
+            sizes={THUMBNAIL_SIZES}
+            className="lesson-outline__cover"
+          />
         )}
 
         <div className="lesson-outline__course-text">

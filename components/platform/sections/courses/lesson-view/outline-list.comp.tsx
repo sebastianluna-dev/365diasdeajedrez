@@ -202,10 +202,12 @@ export function OutlineList({ chapters }: OutlineListProps) {
           {/* `data-sticky-head`: what the effect above measures to know how
               much of the top of the column this covers. */}
           <div data-sticky-head="" className="lesson-outline__chapter">
-            {/* One line, cut with an ellipsis: the whole name under the pointer. */}
-            <Link href={chapter.href} className="lesson-outline__chapter-name" title={chapter.name}>
+            {/* A name, not a link: the column's one way out is the course's
+                title. One line, cut with an ellipsis: the whole name under
+                the pointer. */}
+            <span className="lesson-outline__chapter-name" title={chapter.name}>
               {chapter.name}
-            </Link>
+            </span>
             <Gauge chapter={chapter} />
           </div>
 

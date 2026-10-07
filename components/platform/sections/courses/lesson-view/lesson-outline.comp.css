@@ -46,12 +46,8 @@
     box-shadow: inset 0 -1px 0 var(--platform-border);
   }
 
-  & .lesson-outline__cover-link {
-    flex: none;
-    display: block;
-  }
-
   & .lesson-outline__cover {
+    flex: none;
     display: block;
     width: 72px;
     height: 72px;
@@ -83,8 +79,11 @@
     }
   }
 
+  /* The head's one link: under the pointer it is underlined and keeps its
+     colour, as a link in running text. */
   & .lesson-outline__course-name:hover {
-    color: var(--platform-accent-ink);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
   }
 
   /* What of the course is learned, under the course's name: the same
@@ -139,10 +138,6 @@
     @media (width < 1536px) {
       font-size: var(--platform-type-lg);
     }
-  }
-
-  & .lesson-outline__chapter-name:hover {
-    color: var(--platform-accent-ink);
   }
 
   /* How much of the chapter is done, on a ring: a number alone is read as a

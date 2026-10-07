@@ -1259,7 +1259,6 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                       {
                         id: "capitulo-2",
                         name: "Finales de torre",
-                        href: "#",
                         lessons: [
                           {
                             id: "lucena",

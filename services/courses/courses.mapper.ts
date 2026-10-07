@@ -517,7 +517,6 @@ export function mapCourseOutline(
     .map((chapter) => ({
       id: chapter.id,
       name: chapter.name,
-      href: platformRoutes.chapterDetail(course.id, chapter.order),
       lessons: visible
         .filter((candidate) => candidate.chapterId === chapter.id)
         .map((candidate): LessonSibling => ({
