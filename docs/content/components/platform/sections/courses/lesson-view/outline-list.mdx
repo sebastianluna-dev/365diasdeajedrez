@@ -28,6 +28,7 @@ Keeping the place in the list is no longer anyone's job either. The element is n
 
 ## Behaviour
 
+- Each row's name is drawn on one line and cut with an ellipsis when it does not fit (`lesson-outline.comp.css`); the whole name is the name's `title`, read on hover (2026-10-06).
 - The row whose `href` is the current pathname is not a link — it leads where one already is — and carries `aria-current="page"`, which is what says so to a screen reader and what the stylesheet paints in the accent.
 - **It brings the lesson being read back into view when it is cut off**, smoothly, on every change of pathname: above the fold it goes to the top of the list — **under the chapter, not under the top edge**, since the chapter's name is stuck there and what it covers is not room to be seen from (it is found by `[data-sticky-head]` and measured); below the fold, far enough to leave a row's height under it, so it lands as the next to last one in view rather than pressed against the edge. A rect would carry any zoom on an ancestor and `scrollTop` would not, so the distances cross over with `currentCSSZoom` (1 since the platform lost its zoom on 2026-10-02). Under `prefers-reduced-motion` the scroll is instant.
 - It reaches the scroller through its own `parentElement`, which is the `.lesson-outline__body` it is mounted in, so nothing has to hand it a ref and the column around it stays a Server Component.

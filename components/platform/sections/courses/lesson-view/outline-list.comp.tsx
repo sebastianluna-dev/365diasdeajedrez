@@ -97,12 +97,17 @@ export function OutlineList({ lessons }: OutlineListProps) {
                 is, and `aria-current` is what says so to a screen reader. */}
             {isCurrent ? (
               <span className="lesson-outline__lesson lesson-outline__lesson_state_current" aria-current="page">
-                <span className="lesson-outline__name">{lesson.name}</span>
+                {/* One line, cut with an ellipsis: the whole name under the pointer. */}
+                <span className="lesson-outline__name" title={lesson.name}>
+                  {lesson.name}
+                </span>
                 {mark(isCompleted)}
               </span>
             ) : (
               <Link href={lesson.href} className="lesson-outline__lesson">
-                <span className="lesson-outline__name">{lesson.name}</span>
+                <span className="lesson-outline__name" title={lesson.name}>
+                  {lesson.name}
+                </span>
                 {mark(isCompleted)}
               </Link>
             )}

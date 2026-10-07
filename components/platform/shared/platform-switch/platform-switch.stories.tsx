@@ -28,6 +28,11 @@ Reference page: [Components › PlatformSwitch](/components/platform/shared/plat
     hint: { control: "text", description: "A line under the label: what switching it on does." },
     defaultChecked: { control: "boolean" },
     disabled: { control: "boolean" },
+    layout: {
+      control: "inline-radio",
+      options: ["row", "inline"],
+      description: "`inline`: no card, a smaller switch, for a setting under a heading.",
+    },
     tone: {
       control: "inline-radio",
       options: ["selection", "accent"],
@@ -68,6 +73,11 @@ export const WithHint: Story = {
 /** The accent's tone, for a setting of a screen one studies on: on, the track is the brand's red. */
 export const AccentTone: Story = {
   args: { tone: "accent" },
+};
+
+/** Inline, in the accent's tone: the label and a smaller switch with no card, as under the lesson outline's course name. */
+export const Inline: Story = {
+  args: { layout: "inline", tone: "accent" },
 };
 
 /** Switched off: the label in the faint grey, and the pointer no longer promises. */

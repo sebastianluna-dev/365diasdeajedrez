@@ -104,6 +104,38 @@
     background: var(--platform-accent);
   }
 
+  /* Inline: no card, the label at the size of a note and a smaller switch,
+     for a setting tucked under a heading. */
+  &.platform-switch_layout_inline .platform-switch__control,
+  &.platform-switch_layout_inline .platform-switch__control[data-state="checked"] {
+    justify-content: flex-start;
+    gap: var(--platform-space-3);
+    width: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  &.platform-switch_layout_inline .platform-switch__label {
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-muted);
+  }
+
+  &.platform-switch_layout_inline .platform-switch__track {
+    width: 32px;
+    height: 18px;
+  }
+
+  &.platform-switch_layout_inline .platform-switch__thumb {
+    width: 12px;
+    height: 12px;
+  }
+
+  &.platform-switch_layout_inline .platform-switch__thumb[data-state="checked"] {
+    transform: translateX(14px);
+  }
+
   & .platform-switch__control[data-disabled] {
     color: var(--platform-text-faint);
     cursor: default;

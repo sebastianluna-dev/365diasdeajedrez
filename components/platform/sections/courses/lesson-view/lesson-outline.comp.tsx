@@ -15,8 +15,8 @@ interface LessonOutlineProps {
 /** The square image is drawn at 72px, at twice that for a dense screen. */
 const THUMBNAIL_SIZES = "144px";
 
-/** The gauge is drawn on a 36-unit box; the ring's radius leaves room for its stroke. */
-const GAUGE_RADIUS = 15;
+/** The gauge is drawn on a 36-unit box; the ring's radius leaves room for its stroke (3), and no more, so «100%» fits inside. */
+const GAUGE_RADIUS = 16;
 const GAUGE_LENGTH = 2 * Math.PI * GAUGE_RADIUS;
 
 /**
@@ -61,14 +61,14 @@ export function LessonOutline({ outline }: LessonOutlineProps) {
           <Link href={courseHref} className="lesson-outline__course-name">
             {courseName}
           </Link>
-        </div>
 
-        {/* Under the image and the name, across the whole head: the switch's
-            row needs the width to say its words on one line. */}
-        <PriorityLessonsFilter
-          action={setOnlyPriorityLessons.bind(null, courseId, !onlyPriorityLessons)}
-          enabled={onlyPriorityLessons}
-        />
+          {/* Under the name, beside the image, as a small switch: a setting
+              of the column, not one more thing to read. */}
+          <PriorityLessonsFilter
+            action={setOnlyPriorityLessons.bind(null, courseId, !onlyPriorityLessons)}
+            enabled={onlyPriorityLessons}
+          />
+        </div>
       </div>
 
       {/* What scrolls when the chapter is long. The course's head stays out of
@@ -77,7 +77,8 @@ export function LessonOutline({ outline }: LessonOutlineProps) {
         {/* `data-sticky-head`: what `OutlineList` measures to know how much of
             the top of the list this covers. */}
         <div data-sticky-head="" className="lesson-outline__chapter">
-          <Link href={chapterHref} className="lesson-outline__chapter-name">
+          {/* One line, cut with an ellipsis: the whole name under the pointer. */}
+          <Link href={chapterHref} className="lesson-outline__chapter-name" title={chapterName}>
             {chapterName}
           </Link>
 

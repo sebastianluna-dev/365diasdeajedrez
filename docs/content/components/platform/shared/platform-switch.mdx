@@ -32,6 +32,7 @@ The whole row is the switch (the «C» of the 2026-10-06 checkbox study): it nee
 | `onCheckedChange` | `(checked: boolean) => void` | no       | Called with the new state: where the effect is set off (the outline submits its form here).                                                                                                                                                                           |
 | `disabled`        | `boolean`                    | no       |                                                                                                                                                                                                                                                                       |
 | `tone`            | `"selection" \| "accent"`    | no       | The colour of a switch that is on and of its focus ring. `selection` (default) is the blue of filling in a form; `accent` the brand's red, for a setting of a screen one studies on, outside any form to fill in — the lesson outline's priority filter (2026-10-06). |
+| `layout`          | `"row" \| "inline"`          | no       | `row` (default): the whole row is a card, grey when off and lifted when on. `inline`: the label and a smaller switch on the line they sit on, with no card, for a setting tucked under a heading — the lesson outline's filter (2026-10-06).                          |
 | `className`       | `string`                     | no       | The host's class for the row, to lay it out where it goes.                                                                                                                                                                                                            |
 
 ## Behaviour
@@ -46,7 +47,7 @@ Block `.platform-switch`, holding the hidden native checkbox; the row is `.platf
 
 **Elements:** `.platform-switch__control` (the primitive's button), `.platform-switch__text`, `.platform-switch__label`, `.platform-switch__hint`, `.platform-switch__track`, `.platform-switch__thumb` (the primitive's thumb)
 
-**Modifiers:** `.platform-switch_tone_accent` on the block (`tone="accent"`): the track of a switch that is on and the focus ring in the accent (`--platform-accent`, `--platform-accent-ink`) instead of the selection's blue.
+**Modifiers:** `.platform-switch_tone_accent` on the block (`tone="accent"`): the track of a switch that is on and the focus ring in the accent (`--platform-accent`, `--platform-accent-ink`) instead of the selection's blue. `.platform-switch_layout_inline` on the block (`layout="inline"`): no padding, border, fill nor shadow on the row in either state, the label at `--platform-type-xs` in the muted grey, a 32×18 track and a 12px knob.
 
 **States (data attributes set by the primitive):** `[data-state="checked"]` on the row and the thumb, `[data-disabled]` on the row.
 

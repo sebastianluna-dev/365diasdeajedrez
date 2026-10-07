@@ -25,6 +25,12 @@ interface PlatformSwitchProps {
    * lesson outline's priority filter).
    */
   tone?: "selection" | "accent";
+  /**
+   * `row` (default): the whole row is a card, grey when off and lifted when
+   * on. `inline`: the label and a smaller switch on the line they sit on, with
+   * no card, for a setting tucked under a heading (the lesson outline's filter).
+   */
+  layout?: "row" | "inline";
   /** The host's class for the row, to lay it out where it goes. */
   className?: string;
 }
@@ -44,14 +50,19 @@ export function PlatformSwitch(props: PlatformSwitchProps) {
   return <Row key={savedValueKey(props.defaultChecked)} {...props} />;
 }
 
-function Row({ label, hint, tone = "selection", className, ...rootProps }: PlatformSwitchProps) {
+function Row({ label, hint, tone = "selection", layout = "row", className, ...rootProps }: PlatformSwitchProps) {
   const labelId = useId();
   const hintId = useId();
 
   return (
     // Holds the hidden native checkbox the primitive positions beside the row.
     <div
-      className={["platform-switch", tone === "accent" && "platform-switch_tone_accent", className]
+      className={[
+        "platform-switch",
+        tone === "accent" && "platform-switch_tone_accent",
+        layout === "inline" && "platform-switch_layout_inline",
+        className,
+      ]
         .filter(Boolean)
         .join(" ")}
     >
