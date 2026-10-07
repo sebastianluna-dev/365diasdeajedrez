@@ -71,13 +71,14 @@
     border-color: var(--platform-danger);
   }
 
-  /* An invalid field's border is already red before the focus arrives, so the
-     pale ring would be all that says where the focus is: it takes the colour
-     of the platform's own ring. */
+  /* An invalid field keeps its error with the focus: the ring is the error's
+     red, drawn strong, and not the selection's blue, which would say all is
+     well around a field that is not. The ring outside the red border is what
+     says where the focus is. */
   & .platform-form__field[data-invalid] > input:focus,
   & .platform-form__field[data-invalid] > textarea:focus,
   & .platform-form__field[data-invalid] .platform-select__trigger:focus-visible {
-    outline-color: var(--platform-selection);
+    outline-color: var(--platform-danger);
   }
 
   & .platform-form__hint {
@@ -136,7 +137,7 @@
   }
 
   & .platform-form__field[data-invalid] .platform-form__frame:has(> textarea:focus) {
-    outline-color: var(--platform-selection);
+    outline-color: var(--platform-danger);
   }
 
   /* No handle: the textarea grows with its text, from three lines to where

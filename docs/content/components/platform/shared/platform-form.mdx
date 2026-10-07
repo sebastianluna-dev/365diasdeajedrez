@@ -70,7 +70,7 @@ Block `.platform-form`, the root being the `<form>`. Native controls are styled 
 
 **Modifiers:** `.platform-form__field_with_info`. A field with an "i" is a one-column grid where the control and the "i" share the second row, the "i" at its end and centred; the input keeps room for it (`padding-right`, the scale's `space-12`). The "i" is the control's sibling, outside the label, so the label names the input alone. It is how [`FormField`](/components/platform/shared/form-field)'s `info` looks, for forms not on `PlatformForm` yet.
 
-**States:** `.platform-form__field[data-invalid]` turns the control's border red.
+**States:** `.platform-form__field[data-invalid]` turns the control's border red, and with the focus its ring red too (`--platform-danger`, drawn strong): an invalid field keeps saying so while it is being fixed, instead of taking the selection's blue, which would say all is well (2026-10-06).
 
 **Tokens:** `--platform-border`, `--platform-danger`, `--platform-selection`, `--platform-selection-soft`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
