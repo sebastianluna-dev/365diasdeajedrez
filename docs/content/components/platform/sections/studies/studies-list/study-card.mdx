@@ -1,5 +1,5 @@
 ---
-description: "One study in the library of «Mis estudios»: its board — where its first game ends — on the left, and beside it its kind (or where it comes from), its name in two lines at most, its games and how long ago it was touched; the whole card is the link, and the delete cross still works above it."
+description: "One study in the library of «Mis estudios», as a cover: its board — where its first game ends — across the top, and under it its kind (or where it comes from), its name in two lines at most, its games and how long ago it was touched; the whole card is the link, and the delete cross still works above it."
 ---
 
 # `StudyCard`
@@ -15,7 +15,7 @@ description: "One study in the library of «Mis estudios»: its board — where 
 
 ## Purpose
 
-A study as the library shows it (2026-10-07: the «Biblioteca» direction, card «T1», which the owner chose among three directions and then five cards). A study is recognised by its board, as on Lichess: the card opens with a 120px thumbnail of where the study's first game ends (88px on a phone; 92px until the grid went from three columns to two, the same day), and beside it says, from top to bottom:
+A study as the library shows it (2026-10-07: the «Biblioteca» direction, card «T2», the «cover», which the owner chose among three directions and then five cards). A study is recognised by its board, as on Lichess: the card opens with its board across its whole width, where the study's first game ends, and under it says, from top to bottom:
 
 - **what it is**, with its icon, in the accent's ink — «Mis partidas» (`UserIcon`), «Estudio» (`BookOpenIcon`), «Torneo» (`TrophyIcon`), «Colección» (`BooksIcon`) — or, for a study that is not theirs, **where it comes from**, in grey: the teacher who shared it (`ChalkboardUserIcon`), the course (`GraduationCapIcon`), «Tus clases» (`UsersIcon`);
 - **its name**, in two lines at most: a library is scanned;
@@ -35,19 +35,20 @@ It replaced a card with the site's logo mark as its tile, the description and th
 
 - **The board** is `boardFen` seen from `boardOrientation`, both from the mapper: the final position of the study's first game in the aside's order (`finalFenOf` over its PGN; `studySummaryInclude` takes that one game), from the side that game is set to open from. A study without games shows the starting position. The class-games card shows the latest class's game.
 - **Under the pointer** the shadow grows (`--platform-shadow-card` to `--platform-shadow-lift`); nothing moves.
-- **The cross.** `permissions.canDelete` renders the [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) cross in the top right corner, raised above the stretched link with `z-index`; it comes out when the card is pointed at or holds the focus, and is always drawn where nothing hovers (`(hover: none)`). A study that cannot be deleted («Mis partidas», what was received) has none. The «Sólo lectura» pill of the old card went: what is not theirs is in its own block, «Recibido», and says where it comes from.
+- **The card went through four shapes the same day.** First «T1», the board beside the text, at 92px in four columns and then in three; then 120px in two; the owner then took the cover. Beside the text the board read as an icon.
+- **The cross.** `permissions.canDelete` renders the [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) cross over the board's top right corner, on a white tile of its own (the quiet button is drawn for a white ground and was lost on the squares), raised above the stretched link with `z-index`; it comes out when the card is pointed at or holds the focus, and is always drawn where nothing hovers (`(hover: none)`). A study that cannot be deleted («Mis partidas», what was received) has none. The «Sólo lectura» pill of the old card went: what is not theirs is in its own block, «Recibido», and says where it comes from.
 
 ## Markup & styling
 
-Block `.study-card` (132 lines).
+Block `.study-card` (129 lines).
 
 **Elements:** `.study-card__board`, `.study-card__body`, `.study-card__kind`, `.study-card__kind-icon`, `.study-card__kind-label`, `.study-card__name`, `.study-card__meta`, `.study-card__actions`
 
 **Modifiers:** `.study-card__kind_received` (where a study that is not theirs comes from, in grey).
 
-**Tokens:** `--platform-accent-ink`, `--platform-shadow-card`, `--platform-shadow-lift`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, the type and space scales.
+**Tokens:** `--platform-accent-ink`, `--platform-shadow-card` (the card and the cross's tile), `--platform-shadow-lift`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, the type and space scales.
 
-**Breakpoints:** `(width < 640px)` shrinks the board to 88px; `(hover: none)` always draws the cross.
+**Breakpoints:** `(hover: none)` always draws the cross; the board takes the card's width, which the grid sets.
 
 ## Usage
 

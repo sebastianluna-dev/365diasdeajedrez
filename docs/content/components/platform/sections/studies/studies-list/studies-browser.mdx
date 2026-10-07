@@ -20,7 +20,7 @@ The body of «Mis estudios», rebuilt on 2026-10-07 in the «Biblioteca» direct
 From top to bottom:
 
 1. **The bar**: the search at the start, the tabs beside it, the order at the end (on a phone each takes a line of its own).
-2. **Their own studies**, in a grid of two columns (the owner's call: four, what fitted in the page's 1240px, and then three both read crowded), each card wide enough for a 120px board, headed by the dashed slot that creates one (`NewStudy` with `trigger="slot"`, the same popup as the page's button).
+2. **Their own studies**, in a grid of covers — four across the page's 1240px, three under 1024px, two on a phone —, headed by the dashed slot that creates one (`NewStudy` with `trigger="slot"`, the same popup as the page's button).
 3. **«Recibido»**, with its count: what reaches them ready-made and cannot be touched, in a block of its own.
 
 It is a Client Component because it filters; everything it renders arrived from the server in one read, and nothing is fetched or written here.
@@ -43,7 +43,7 @@ It is a Client Component because it filters; everything it renders arrived from 
 
 ## Markup & styling
 
-Block `.studies-browser` (210 lines).
+Block `.studies-browser` (215 lines).
 
 **Elements:** `.studies-browser__bar`, `.studies-browser__search` (the box: border, and the focus a form's field takes — the selection's border and its pale ring), `.studies-browser__search-icon`, `.studies-browser__search-input`, `.studies-browser__tabs`, `.studies-browser__tab`, `.studies-browser__tab-count`, `.studies-browser__sort` (the box around the select, which the bar lays out), `.studies-browser__status` (the live region, out of sight), `.studies-browser__group`, `.studies-browser__group-title`, `.studies-browser__group-count`, `.studies-browser__grid`, `.studies-browser__item` (the animated wrapper of each card)
 
@@ -51,7 +51,7 @@ Block `.studies-browser` (210 lines).
 
 **Tokens:** `--platform-border`, `--platform-selection`, `--platform-selection-soft`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, the type and space scales.
 
-**Breakpoints:** `(width < 640px)` puts the search and the tabs on lines of their own and the grid in one column; `(prefers-reduced-motion: reduce)` removes the entrance.
+**Breakpoints:** `(width < 1024px)` takes the grid to three columns; `(width < 640px)` puts the search and the tabs on lines of their own and the grid in two columns; `(prefers-reduced-motion: reduce)` removes the entrance.
 
 ## Usage
 

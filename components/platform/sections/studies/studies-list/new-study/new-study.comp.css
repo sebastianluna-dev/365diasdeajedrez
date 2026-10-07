@@ -6,11 +6,13 @@
     display: flex;
   }
 
-  /* The slot of what does not exist yet: dashed, the cell's whole size, as
-     tall as a card, and lit only when it is about to be pressed. */
+  /* The slot of what does not exist yet: dashed, the cell's whole size — as
+     tall as the covers beside it —, and lit only when it is about to be
+     pressed. */
   & .new-study__slot {
     flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: var(--platform-space-2);

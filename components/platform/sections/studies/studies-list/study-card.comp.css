@@ -3,9 +3,9 @@
      the link. Anything else that must be pressed sits above it. */
   position: relative;
   display: flex;
-  align-items: flex-start;
-  gap: var(--platform-space-4);
-  padding: var(--platform-space-3);
+  flex-direction: column;
+  gap: var(--platform-space-3);
+  padding: var(--platform-space-3) var(--platform-space-3) var(--platform-space-4);
   border-radius: 8px;
   /* White on the page's grey, over a light shadow; under the pointer the
      shadow grows, and nothing moves. */
@@ -24,27 +24,20 @@
     outline-offset: 2px;
   }
 
-  /* The study's board, where its first game ends: a thumbnail, so the
-     diagram's own width cap and caption do not apply. 120px since the grid
-     went to two columns (it was 92px in three). */
+  /* The study's board, where its first game ends, across the card's whole
+     width like a cover (card «T2», 2026-10-07: beside the text, at 92px and
+     then at 120px, it read as an icon). The diagram's own width cap does not
+     reach it: a card is narrower. */
   & .study-card__board {
-    flex: none;
     display: block;
-    width: 120px;
-
-    @media (width < 640px) {
-      width: 88px;
-    }
   }
 
   & .study-card__body {
-    flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-1);
-    /* Clear of the cross, which sits over the top right corner. */
-    padding-right: var(--platform-space-6);
+    padding: 0 var(--platform-space-1);
   }
 
   /* What it is — or, when it is not theirs, where it comes from —, in the
@@ -106,15 +99,19 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* The cross, in the top right corner and above the stretched link. Out of
-     the way until the card is reached: what one comes here for is to open a
-     study. A screen that is touched has no pointer to bring it out, so there
-     it is always drawn. */
+  /* The cross, over the board's top right corner and above the stretched
+     link, on a white tile of its own: the quiet button is drawn for a white
+     ground, and on the squares it was lost. Out of the way until the card is
+     reached: what one comes here for is to open a study. A screen that is
+     touched has no pointer to bring it out, so there it is always drawn. */
   & .study-card__actions {
     position: absolute;
     z-index: 1;
-    top: var(--platform-space-2);
-    right: var(--platform-space-2);
+    top: var(--platform-space-5);
+    right: var(--platform-space-5);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
     opacity: 0;
     transition: opacity 120ms ease-out;
   }

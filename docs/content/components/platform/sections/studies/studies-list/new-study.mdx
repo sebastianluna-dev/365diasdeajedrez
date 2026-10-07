@@ -29,7 +29,7 @@ Creating a study is three fields, so it lives in a modal on the list page rather
 
 ## Behaviour
 
-- **Two triggers** since 2026-10-07, when «Mis estudios» became a library (the «Biblioteca» design the owner chose). The page's button is the platform's **primary** button with `PlusIcon` (`platform-button_variant_accent`; until then a quiet white one, «the page's one action, by the title, so it does not need to shout»): in the library, creating is what the head is for. The grid's **slot** (`trigger="slot"`) is a dashed cell as tall as a card, «+ Nuevo estudio» in grey, lit with the accent's wash and border under the pointer; 56px tall on a phone.
+- **Two triggers** since 2026-10-07, when «Mis estudios» became a library (the «Biblioteca» design the owner chose). The page's button is the platform's **primary** button with `PlusIcon` (`platform-button_variant_accent`; until then a quiet white one, «the page's one action, by the title, so it does not need to shout»): in the library, creating is what the head is for. The grid's **slot** (`trigger="slot"`) is a dashed cell as tall as the covers beside it, the «+» over «Nuevo estudio», in grey, lit with the accent's wash and border under the pointer; 56px tall on a phone.
 - The form is a `PlatformForm` with `action={createStudy}` and `autoComplete="off"`: the subtitle «Agrupa partidas y análisis bajo un mismo tema.» as its first line, `name` (required, max 120, controlled so the submit can watch it, with its own `valueMissing` text; the first control, so the popup opens on it), `description` (a textarea, max 500, which says «Opcional» by itself: `PlatformFormField` reads that it has no `required`) and `kindCode`, a `PlatformChoiceCards` inside a `PlatformFormGroup` over `kinds` with the first one chosen. Each card's description and piece come from `constants/platform/study-kind-cards.const.ts`; a kind missing there renders with its label alone. A footer band carries "Podrás cambiarlo todo después." and the buttons.
 - **Crear estudio** stays disabled until the name has a character that is not a space. It was the first form moved to the Radix pieces.
 - The popup is `PlatformPopup` at `md` (600px), named «Nuevo estudio» by its strip; a trigger opens it with `open(event)`, so the focus returns to it on closing. Its motion and its frame are the popup's: this stylesheet draws nothing of the shell.
@@ -39,7 +39,7 @@ Creating a study is three fields, so it lives in a modal on the list page rather
 
 ## Markup & styling
 
-Block `.new-study` (112 lines): the slot, the body's padding and spacing (24px, to the strip's edge), the subtitle, the pieces on the cards and the footer band. The shell (frame, strip, cross, width) is `PlatformPopup`'s; the fields' and controls' look come from `.platform-form` and `.platform-choice-cards`.
+Block `.new-study` (114 lines): the slot, the body's padding and spacing (24px, to the strip's edge), the subtitle, the pieces on the cards and the footer band. The shell (frame, strip, cross, width) is `PlatformPopup`'s; the fields' and controls' look come from `.platform-form` and `.platform-choice-cards`.
 
 **Elements:** `.new-study__open` (the button, only a hook), `.new-study__slot`, `.new-study__slot-icon`, `.new-study__form`, `.new-study__body`, `.new-study__subtitle`, `.new-study__piece`, `.new-study__foot`, `.new-study__note`, `.new-study__actions`
 
