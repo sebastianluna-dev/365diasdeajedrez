@@ -21,19 +21,24 @@
   flex: 1;
   min-height: 0;
 
+  /* What the board's footer takes under it: the 48px of its buttons and the
+     card's gap above them. */
+  --lesson-board-footer: calc(48px + var(--platform-space-4));
+
   /* The board is measured by the HEIGHT that is left, not by the width: on a
      full window it is what one looks at, and a board that runs past the
-     bottom edge is a board nobody sees whole. It takes ALL of it save what
-     the bar under it needs — 48 of buttons and the 14 of its gap — and the
-     frame's own padding, now 40 above and 20 below. No ceiling: the height is
-     the board's. The floor keeps it from becoming a stamp on a short screen,
-     where the page goes back to scrolling anyway. */
-  --viewer-board-max: max(320px, calc(100vh - 192px));
+     bottom edge is a board nobody sees whole. It takes ALL of its column's
+     height save its footer, read off the column itself (`100cqh`, the main
+     column being a size container): until 2026-10-06 it was the window's
+     height minus a sum of the bar, the shell's padding and the footer, and
+     when those grew the buttons were cut off at the bottom. No ceiling: the
+     height is the board's. The floor keeps it from becoming a stamp. */
+  --viewer-board-max: max(320px, calc(100cqh - var(--lesson-board-footer)));
 
   /* The panel of text ends where the board ends: the row of buttons under it
      is the board's, and the notation running down beside them left the two
-     columns finishing at different heights. 48 of buttons and 14 of gap. */
-  --viewer-panel-trim: 62px;
+     columns finishing at different heights. */
+  --viewer-panel-trim: var(--lesson-board-footer);
 
   /* Said out loud because the column beside it is out of the flow (fixed to
      the window) and does not take the first track by itself. */
@@ -44,6 +49,11 @@
     gap: var(--platform-space-6);
     min-width: 0;
     min-height: 0;
+    /* A size container, so the board can read the height it is given
+       (`cqh`): the grid stretches this column to the frame's height, which
+       is the window's less the bar, so its height never depends on what it
+       holds. */
+    container-type: size;
   }
 
   /* Below the width the design was drawn at there is no room for three
@@ -59,6 +69,9 @@
     & .lesson-frame__main {
       grid-column: 1;
       order: -1;
+      /* The page scrolls here and the column is as tall as what it holds:
+         a size container would measure nothing and collapse to no height. */
+      container-type: normal;
     }
   }
 }
