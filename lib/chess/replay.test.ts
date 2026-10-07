@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { uciLineSteps, uciLineToSan } from "./replay";
+import { finalFenOf, uciLineSteps, uciLineToSan } from "./replay";
 
 describe("uciLineToSan", () => {
   const START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -46,5 +46,20 @@ describe("uciLineSteps", () => {
 
   it("corta donde corta la línea, sin posiciones inventadas", () => {
     expect(uciLineSteps(START, ["e2e4", "e2e4"]).map((step) => step.san)).toEqual(["e4"]);
+  });
+});
+
+describe("finalFenOf", () => {
+  it("is where the main line ends, variations aside", () => {
+    expect(finalFenOf("1. e4 (1. d4 d5) 1... e5 2. Nf3 *")).toBe(
+      "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
+    );
+  });
+
+  it("is the starting position of a game with no moves, or of one that cannot be read", () => {
+    expect(finalFenOf("")).toBe("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    expect(finalFenOf('[SetUp "1"]\n[FEN "8/8/4k3/8/4P3/4K3/8/8 w - - 0 1"]\n\n*')).toBe(
+      "8/8/4k3/8/4P3/4K3/8/8 w - - 0 1",
+    );
   });
 });

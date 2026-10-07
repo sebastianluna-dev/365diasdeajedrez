@@ -1,47 +1,53 @@
 ---
-description: "One study in the list, in the manner of a lichess study card: a tile with the logo mark in an accent border, the name, a byline (kind, game count, origin, how long ago), the description and the first four games; the whole card is the link, and the delete cross still works above it."
+description: "One study in the library of «Mis estudios»: its board — where its first game ends — on the left, and beside it its kind (or where it comes from), its name in two lines at most, its games and how long ago it was touched; the whole card is the link, and the delete cross still works above it."
 ---
 
 # `StudyCard`
 
-|            |                                                                                        |
-| ---------- | -------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/studies-list/study-card.comp.tsx`                |
-| Kind       | Server Component                                                                       |
-| Stylesheet | `study-card.comp.css` → block `.study-card`                                            |
-| Used by    | [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser) |
-| Composes   | [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study)       |
-| Uses       | `StudySummary` from `services/studies/studies.types`; `LogoMarkIcon`                   |
+|            |                                                                                                                                                                                                     |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-list/study-card.comp.tsx`                                                                                                                             |
+| Kind       | Server Component                                                                                                                                                                                    |
+| Stylesheet | `study-card.comp.css` → block `.study-card`                                                                                                                                                         |
+| Used by    | [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser)                                                                                                              |
+| Composes   | [`StaticDiagram`](/components/chess/static-diagram) (the board), [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study)                                                   |
+| Uses       | `StudySummary`, `StudyOrigin` from `services/studies/studies.types`; `DATABASE_KIND`; `UserIcon`, `BookOpenIcon`, `TrophyIcon`, `BooksIcon`, `GraduationCapIcon`, `ChalkboardUserIcon`, `UsersIcon` |
 
 ## Purpose
 
-A study as a card, in the manner of a lichess study card: a tile with the site's logo mark (`LogoMarkIcon`, the wordmark's two squares) in accent on the card's surface, inside an accent border, the name, one byline and the first games inside. The byline states the kind, the size, **where it comes from** for what is not the student's (the course that brings it or the teacher who handed it out; without that, two read-only collections would be indistinguishable) and how long ago it was touched ("hace 3 meses", the exact date in the tooltip). Under it, up to four games as the study page names them (a title, or "Blancas – Negras") and "y n más".
+A study as the library shows it (2026-10-07: the «Biblioteca» direction, card «T1», which the owner chose among three directions and then five cards). A study is recognised by its board, as on Lichess: the card opens with a 92px thumbnail of where the study's first game ends (72px on a phone), and beside it says, from top to bottom:
 
-**The whole card is the link.** The name is the only `<a>`; its `::after` is stretched over the card (`position: absolute; inset: 0`), so a click anywhere goes to the study's first game (`href`; the study's empty page when it has none) while the markup keeps one link with the study's name. The delete cross sits in `.study-card__actions`, raised above it with `z-index`, so it is still what gets pressed. Keyboard focus on the link outlines the card (`:has(:focus-visible)`).
+- **what it is**, with its icon, in the accent's ink — «Mis partidas» (`UserIcon`), «Estudio» (`BookOpenIcon`), «Torneo» (`TrophyIcon`), «Colección» (`BooksIcon`) — or, for a study that is not theirs, **where it comes from**, in grey: the teacher who shared it (`ChalkboardUserIcon`), the course (`GraduationCapIcon`), «Tus clases» (`UsersIcon`);
+- **its name**, in two lines at most: a library is scanned;
+- **how many games and how long ago** it was touched («3 partidas · anteayer», the exact date in the tooltip).
+
+It replaced a card with the site's logo mark as its tile, the description and the first four games listed by name: tall cards in two columns, all of them with the same tile. The description and the games are still what the [search](/components/platform/sections/studies/studies-list/studies-browser) finds.
+
+**The whole card is the link.** The name is the only `<a>`; its `::after` is stretched over the card (`position: absolute; inset: 0`), so a click anywhere goes to the study's first game (`href`; the study's empty page when it has none) while the markup keeps one link with the study's name. The board is `aria-hidden`: the name says what the study is. Keyboard focus on the link draws the accent's ring around the card (`:has(:focus-visible)`), the ring of everything outside a form.
 
 ## Props
 
-| Prop    | Type           | Required | Meaning                                                                                                                                                                                                               |
-| ------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `study` | `StudySummary` | yes      | `id`, `name`, `href`, `description?`, `kindLabel`, `courseName?`, `sharedByName?`, `gameCount`, `citedGameCount`, `updatedAtLabel`, `updatedAgoLabel`, `previewGames`, `permissions: { canEditGames, canDelete, … }`. |
+| Prop    | Type           | Required | Meaning                                                                                                                                                                                                                                            |
+| ------- | -------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `study` | `StudySummary` | yes      | `id`, `name`, `href`, `kindCode`, `kindLabel`, `origin?`, `boardFen`, `boardOrientation`, `gameCount`, `citedGameCount`, `updatedAtLabel`, `updatedAgoLabel`, `permissions: { canDelete, … }`. The rest (`searchText`, `updatedAt`) is the list's. |
 
 ## Behaviour
 
-- **Hover** tints the card with the faint accent (`--platform-accent-wash`) and draws its edge in the accent (`--platform-accent`; at rest the border is transparent, the card has no outline), like the active chip of the filter above; the shadow does not grow, so nothing lifts or moves. The "Sólo lectura" pill follows: on the hovered card its fill turns `--platform-accent-soft`, because the grey pill vanished against the wash; its text stays `--platform-text-muted` in both states (the accent ink measured 3.75:1 on that fill, under AA for its `--platform-type-xs` (14px) text; the muted grey passes on both fills), and the byline darkens to `--platform-text-muted` so it keeps AA contrast on the tint.
-- `permissions.canDelete` renders the [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) cross with the counts it needs for its warning; otherwise, a read-only study shows the "Sólo lectura" mark. An editable study that cannot be deleted ("Mis partidas") shows neither.
-- Game count, the two date labels and `previewGames` come from the mapper: the preview is the study's first four games in the aside's order (`studySummaryInclude`, `take: 4`), and the total is counted by the service in one grouped query, because the include's own relation count is taken by the cited games.
+- **The board** is `boardFen` seen from `boardOrientation`, both from the mapper: the final position of the study's first game in the aside's order (`finalFenOf` over its PGN; `studySummaryInclude` takes that one game), from the side that game is set to open from. A study without games shows the starting position. The class-games card shows the latest class's game.
+- **Under the pointer** the shadow grows (`--platform-shadow-card` to `--platform-shadow-lift`); nothing moves.
+- **The cross.** `permissions.canDelete` renders the [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) cross in the top right corner, raised above the stretched link with `z-index`; it comes out when the card is pointed at or holds the focus, and is always drawn where nothing hovers (`(hover: none)`). A study that cannot be deleted («Mis partidas», what was received) has none. The «Sólo lectura» pill of the old card went: what is not theirs is in its own block, «Recibido», and says where it comes from.
 
 ## Markup & styling
 
-Block `.study-card`.
+Block `.study-card` (131 lines).
 
-**Elements:** `.study-card__tile`, `.study-card__mark`, `.study-card__body`, `.study-card__head`, `.study-card__name`, `.study-card__actions`, `.study-card__readonly`, `.study-card__meta`, `.study-card__kind` (no style of its own: the byline reads as one line), `.study-card__origin`, `.study-card__dot`, `.study-card__description`, `.study-card__games`, `.study-card__game`
+**Elements:** `.study-card__board`, `.study-card__body`, `.study-card__kind`, `.study-card__kind-icon`, `.study-card__kind-label`, `.study-card__name`, `.study-card__meta`, `.study-card__actions`
 
-**Modifiers:** `.study-card__game_more` (the "y n más" row, without bullet).
+**Modifiers:** `.study-card__kind_received` (where a study that is not theirs comes from, in grey).
 
-**Tokens:** `--platform-accent`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+**Tokens:** `--platform-accent-ink`, `--platform-shadow-card`, `--platform-shadow-lift`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, the type and space scales.
 
-No media queries.
+**Breakpoints:** `(width < 640px)` shrinks the board to 72px; `(hover: none)` always draws the cross.
 
 ## Usage
 
@@ -57,5 +63,6 @@ import { StudyCard } from "./study-card.comp";
 
 ## Related
 
+- [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser), the library the card lives in.
 - [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section), where the name leads.
 - `services/studies/study-rules.ts` decides the permissions.

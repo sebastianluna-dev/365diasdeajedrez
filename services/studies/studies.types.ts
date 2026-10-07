@@ -11,8 +11,27 @@ export interface StudySummary {
   updatedAtLabel: string;
   /** How long ago it was last touched: "hace 3 meses". */
   updatedAgoLabel: string;
-  /** The first games, as the card lists them: a title, or "Blancas – Negras". At most four. */
-  previewGames: string[];
+  /** The same moment as an ISO string, for the list to sort by recency. */
+  updatedAt: string;
+  /**
+   * The position the card's board shows: where the study's first game ends
+   * (`finalFenOf`), the starting one for a study with no games.
+   */
+  boardFen: string;
+  /** Which side the card's board is seen from: the first game's orientation. */
+  boardOrientation: "white" | "black";
+  /**
+   * Everything the list's search matches against, folded (`foldForSearch`):
+   * the name, the description, where it comes from and every game's title,
+   * players and event.
+   */
+  searchText: string;
+  /**
+   * Where a study that is not theirs comes from, for the card to say it: a
+   * course, the teacher who shared it, or the classes they attended. Absent on
+   * their own.
+   */
+  origin?: StudyOrigin;
   /** Name of the course when the database belongs to a course (read-only). */
   courseName?: string;
   isCourseStudy: boolean;
@@ -27,6 +46,13 @@ export interface StudySummary {
   /** Games of this study cited in some class; a warning is given before deleting. */
   citedGameCount: number;
   href: string;
+}
+
+/** Where a study that reached the viewer comes from. */
+export interface StudyOrigin {
+  code: "COURSE" | "TEACHER" | "CLASSES";
+  /** What the card writes: the course's name, the teacher's, or «Tus clases». */
+  label: string;
 }
 
 /** A student a collection was shared with. */
@@ -97,6 +123,8 @@ export interface ClassGameItem {
   eco?: string;
   playedAtLabel?: string;
   className: string;
+  /** The class's date as an ISO string: the class-games card's recency. */
+  classDate: string;
   classDateLabel: string;
   /** The same date as a distance: "hace 3 meses". */
   classDateAgoLabel: string;

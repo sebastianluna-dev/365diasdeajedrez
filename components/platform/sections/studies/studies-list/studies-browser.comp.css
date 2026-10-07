@@ -1,36 +1,140 @@
 .studies-browser {
+  /* The live status is out of sight but absolute: positioned here, it cannot
+     stretch the page. */
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--platform-space-10);
+  gap: var(--platform-space-6);
 
-  & .studies-browser__filters {
+  /* One bar: the search at the start, the tabs beside it, the order at the
+     end. On a phone each takes a line of its own, the order last. */
+  & .studies-browser__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-3) var(--platform-space-4);
+
+    @media (width < 640px) {
+      gap: var(--platform-space-3);
+    }
+  }
+
+  /* The platform's control on white, with the glass inside it: the field is
+     the box, so the box takes the focus the way a form's field does — the
+     selection's border and its pale ring. */
+  & .studies-browser__search {
+    flex: 0 1 320px;
+    min-width: 0;
     display: flex;
     align-items: center;
     gap: var(--platform-space-2);
-    flex-wrap: wrap;
+    padding: 0 var(--platform-space-3);
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    color: var(--platform-text-muted);
+    cursor: text;
+
+    @media (width < 640px) {
+      flex: 1 1 100%;
+    }
   }
 
-  & .studies-browser__chip {
-    padding: var(--platform-space-2) var(--platform-space-4);
-    border: 1px solid var(--platform-border);
-    border-radius: 1000px;
-    background: var(--platform-surface);
-    /* The lighter grey: with the heavier weight the muted one read too dark. */
+  & .studies-browser__search:has(.studies-browser__search-input:focus) {
+    outline: 2px solid var(--platform-selection-soft);
+    border-color: var(--platform-selection);
+  }
+
+  & .studies-browser__search-icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+  }
+
+  & .studies-browser__search-input {
+    flex: 1;
+    min-width: 0;
+    padding: var(--platform-space-2) 0;
+    border: 0;
+    background: transparent;
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: var(--platform-type-lg);
+  }
+
+  & .studies-browser__search-input::placeholder {
     color: var(--platform-text-subtle);
+  }
+
+  /* The box shows the focus, so the input itself draws none. */
+  & .studies-browser__search-input:focus-visible {
+    outline: none;
+  }
+
+  /* The tabs scroll sideways where they do not fit, rather than wrap. */
+  & .studies-browser__tabs {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    gap: var(--platform-space-1);
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    @media (width < 640px) {
+      flex: 1 1 100%;
+    }
+  }
+
+  /* A tab is a word and its count; the chosen one is filled with the ink, a
+     weight the red button of the head does not compete with. */
+  & .studies-browser__tab {
+    flex: none;
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-2) var(--platform-space-3);
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text-muted);
     font-family: inherit;
     font-size: var(--platform-type-sm);
-    /* One weight in both states, the dashboard's period chips' one: the
-       active chip is told by its colour and its border, not by going bold,
-       which widened it and shifted the row. */
     font-weight: 600;
-    cursor: pointer;
     white-space: nowrap;
+    cursor: pointer;
   }
 
-  & .studies-browser__chip.studies-browser__chip_state_active {
-    border-color: var(--platform-accent);
-    background: var(--platform-accent-wash);
-    color: var(--platform-accent-ink);
+  & .studies-browser__tab:hover {
+    background: color-mix(in srgb, var(--platform-text) 6%, transparent);
+    color: var(--platform-text);
+  }
+
+  & .studies-browser__tab[aria-pressed="true"] {
+    background: var(--platform-text);
+    color: var(--platform-surface);
+  }
+
+  & .studies-browser__tab-count {
+    font-size: var(--platform-type-xs);
+    font-variant-numeric: tabular-nums;
+    opacity: 0.75;
+  }
+
+  /* At the end of the bar; where it wraps, at the end of its own line. */
+  & .studies-browser__sort {
+    flex: none;
+    margin-left: auto;
+  }
+
+  /* Read out, not drawn. */
+  & .studies-browser__status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   & .studies-browser__group {
@@ -40,26 +144,39 @@
   }
 
   & .studies-browser__group-title {
-    margin: 0;
-    font-size: var(--platform-type-lg);
+    display: flex;
+    align-items: baseline;
+    gap: var(--platform-space-2);
+    margin: var(--platform-space-2) 0 0;
+    font-size: var(--platform-type-xs);
     font-weight: 700;
-    letter-spacing: -0.01em;
-    color: var(--platform-text);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--platform-text-muted);
   }
 
+  & .studies-browser__group-count {
+    font-weight: 600;
+    color: var(--platform-text-subtle);
+  }
+
+  /* As many columns of 280px as fit: four in the page's 1240px, three under
+     1280px, one on a phone. */
   & .studies-browser__grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--platform-space-8);
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--platform-space-4);
 
-    @media (width < 1024px) {
-      grid-template-columns: 1fr;
+    @media (width < 640px) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--platform-space-3);
     }
   }
 
   /* Each card comes in with a fade and a short rise, one after another: the
      delay grows with the card's index, which the component sets. The group
-     remounts when the filter changes, so the entrance plays again then. */
+     remounts when the tab or the order changes, so the entrance plays again
+     then. */
   & .studies-browser__item {
     display: flex;
     animation: studies-browser-item-in 260ms ease-out both;

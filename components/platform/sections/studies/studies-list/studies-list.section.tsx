@@ -1,13 +1,15 @@
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
-import type { StudySummary } from "@/services/studies/studies.types";
+import type { StudyKindOption, StudySummary } from "@/services/studies/studies.types";
 import { StudiesBrowser } from "./studies-browser.comp";
 
 interface StudiesListSectionProps {
   /** `getUserStudies()`, read by the page alongside the kinds so both travel at once. */
   studies: StudySummary[];
+  /** The kinds the viewer can create, for the grid's «Nuevo estudio» slot. */
+  kinds: StudyKindOption[];
 }
 
-export function StudiesListSection({ studies }: StudiesListSectionProps) {
+export function StudiesListSection({ studies, kinds }: StudiesListSectionProps) {
   if (studies.length === 0) {
     return (
       <EmptyState
@@ -25,6 +27,7 @@ export function StudiesListSection({ studies }: StudiesListSectionProps) {
     <StudiesBrowser
       own={studies.filter((study) => study.permissions.canEditGames)}
       received={studies.filter((study) => !study.permissions.canEditGames)}
+      kinds={kinds}
     />
   );
 }

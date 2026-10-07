@@ -89,6 +89,18 @@ export function replayGame(pgn: string): ReplayPositions {
   return replayGameDetailed(pgn).positions;
 }
 
+/**
+ * Where a game's main line ends, as a FEN: the position a thumbnail of the game
+ * shows (the cards of «Mis estudios»). A PGN that cannot be read, or that has
+ * no moves, gives its starting position; one cut short by an illegal move, the
+ * last position reached.
+ */
+export function finalFenOf(pgn: string): string {
+  const positions = replayGame(pgn);
+  // The list is never empty, so the fallback is only there for the types.
+  return (positions.at(-1) ?? positions[0]).fen;
+}
+
 /** Turn colour encoded in a FEN. */
 export function turnColor(fen: string): "white" | "black" {
   return fen.split(" ")[1] === "b" ? "black" : "white";

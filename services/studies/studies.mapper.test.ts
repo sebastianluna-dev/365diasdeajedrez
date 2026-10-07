@@ -132,21 +132,37 @@ function summary(overrides: Partial<StudySummaryRow> = {}): StudySummaryRow {
 }
 
 describe("mapStudySummary", () => {
-  it("lista las primeras partidas por su título o por sus jugadores", () => {
+  it("shows on its board where the first game ends, from the side that game is seen", () => {
     const row = summary({
-      games: [
-        { id: "g1", title: "La Inmortal", white: "Anderssen", black: "Kieseritzky" },
-        { id: "g2", title: null, white: "Luna, Sebastián", black: "Cervantes, Andrea" },
-      ],
+      games: [{ id: "g1", pgn: "1. e4 e5 2. Nf3 *", orientation: { code: "BLACK" } }],
     });
-    expect(mapStudySummary(row, "owner", 12).previewGames).toEqual([
+    const view = mapStudySummary(row, "owner", 12);
+    expect(view.boardFen).toBe("rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2");
+    expect(view.boardOrientation).toBe("black");
+  });
+
+  it("shows the starting position, from White, for a study with no games", () => {
+    const view = mapStudySummary(summary(), "owner", 0);
+    expect(view.boardFen).toBe("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    expect(view.boardOrientation).toBe("white");
+  });
+
+  it("searches its name, its description and its games' names, without case or accents", () => {
+    const view = mapStudySummary(summary({ name: "Ataques", description: "Clásicos" }), "owner", 2, undefined, [
+      "Garri Kaspárov",
       "La Inmortal",
-      "Luna, Sebastián – Cervantes, Andrea",
     ]);
+    expect(view.searchText).toBe("ataques clasicos garri kasparov la inmortal");
+  });
+
+  it("says where a study that is not theirs comes from", () => {
+    const shared = summary({ shares: [{ teacher: { displayName: "GM Profesor Demo" } }] });
+    expect(mapStudySummary(shared, "student", 1).origin).toEqual({ code: "TEACHER", label: "GM Profesor Demo" });
+    expect(mapStudySummary(summary(), "owner", 1).origin).toBeUndefined();
   });
 
   it("enlaza a la primera partida, y al estudio sólo cuando no tiene ninguna", () => {
-    const withGames = summary({ games: [{ id: "g1", title: null, white: "A", black: "B" }] });
+    const withGames = summary({ games: [{ id: "g1", pgn: "", orientation: null }] });
     expect(mapStudySummary(withGames, "owner", 1).href).toBe("/estudios/study-1/partidas/g1");
     expect(mapStudySummary(summary(), "owner", 0).href).toBe("/estudios/study-1");
   });

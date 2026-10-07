@@ -1,3 +1,5 @@
+import { finalFenOf } from "@/lib/chess/replay";
+import { foldForSearch } from "@/lib/fold-for-search";
 import { formatRelativeSpanish } from "@/lib/format-relative-spanish";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import type { Prisma } from "@/lib/platform-db/generated/client";
@@ -13,9 +15,6 @@ import type {
   StudySummary,
 } from "./studies.types";
 
-/** Games a card lists, like lichess's study cards do with their chapters. */
-export const STUDY_PREVIEW_SIZE = 4;
-
 export const studySummaryInclude = {
   kind: true,
   course: { select: { name: true } },
@@ -28,13 +27,13 @@ export const studySummaryInclude = {
   // a relation is counted once per include, and this slot is the cited ones;
   // the service brings the totals in one query and hands them to the mapper.
   _count: { select: { games: { where: { classBlocks: { some: {} } } } } },
-  // The first games, for the card to list what is inside. The same order as the
-  // game page's aside, so the card and the aside agree on what comes first; the
-  // first one's id is where the card links to.
+  // The first game, in the same order as the game page's aside: its id is where
+  // the card links to, and where it ends is the position the card's board
+  // shows. Until 2026-10-07 the card listed the first four games by name.
   games: {
-    take: STUDY_PREVIEW_SIZE,
+    take: 1,
     orderBy: [{ order: "asc" }, { playedAt: "desc" }, { createdAt: "asc" }],
-    select: { id: true, title: true, white: true, black: true },
+    select: { id: true, pgn: true, orientation: { select: { code: true } } },
   },
 } satisfies Prisma.GameDatabaseInclude;
 
@@ -110,8 +109,17 @@ export function mapStudySummary(
   viewerId: string | null,
   gameCount: number,
   now: Date = new Date(),
+  /** Every game's title, players and event, for the list's search (the service reads them). */
+  gameTerms: string[] = [],
 ): StudySummary {
   const isOwner = row.userId === viewerId;
+  const [first] = row.games;
+  const sharedByName = isOwner ? undefined : (row.shares[0]?.teacher?.displayName ?? undefined);
+  const origin = row.course
+    ? { code: "COURSE" as const, label: row.course.name }
+    : sharedByName
+      ? { code: "TEACHER" as const, label: sharedByName }
+      : undefined;
 
   return {
     id: row.id,
@@ -122,10 +130,15 @@ export function mapStudySummary(
     gameCount,
     updatedAtLabel: formatSpanishDate(row.updatedAt),
     updatedAgoLabel: formatRelativeSpanish(row.updatedAt, now),
-    previewGames: row.games.map((game) => game.title || `${game.white} – ${game.black}`),
+    updatedAt: row.updatedAt.toISOString(),
+    // An empty study: an empty PGN ends where it starts, the initial position.
+    boardFen: finalFenOf(first?.pgn ?? ""),
+    boardOrientation: orientationCodeOf(first?.orientation ?? null) === BOARD_ORIENTATION.BLACK ? "black" : "white",
+    searchText: foldForSearch([row.name, row.description, origin?.label, ...gameTerms].filter(Boolean).join(" ")),
+    origin,
     courseName: row.course?.name,
     isCourseStudy: row.courseId !== null,
-    sharedByName: isOwner ? undefined : (row.shares[0]?.teacher?.displayName ?? undefined),
+    sharedByName,
     permissions: studyPermissionsOf({ kindCode: row.kind.code, isOwner }),
     citedGameCount: row._count.games,
     // Straight to the first game: a study is read on its game page, and the

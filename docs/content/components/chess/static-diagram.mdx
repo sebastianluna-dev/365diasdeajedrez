@@ -4,14 +4,14 @@ description: "A position as a 64-cell CSS grid with the piece SVGs, rendered on 
 
 # `StaticDiagram`
 
-|            |                                                                                                                                                                                        |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/chess/static-diagram.comp.tsx`                                                                                                                                             |
-| Kind       | Server Component                                                                                                                                                                       |
-| Stylesheet | `static-diagram.comp.css` → block `.static-diagram`                                                                                                                                    |
-| Story      | `static-diagram.stories.tsx` (`chess/StaticDiagram`): a class's position at full size, flipped, without a caption, inside a blog article and in a phone's column                       |
-| Used by    | [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`ChessDiagramBlockRenderer`](/components/site/sections/blog/article-content/blocks/chess-diagram-block) |
-| Uses       | `parseFenPlacement` from `lib/parse-fen-placement`                                                                                                                                     |
+|            |                                                                                                                                                                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/static-diagram.comp.tsx`                                                                                                                                                                                                                                                              |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                        |
+| Stylesheet | `static-diagram.comp.css` → block `.static-diagram`                                                                                                                                                                                                                                                     |
+| Story      | `static-diagram.stories.tsx` (`chess/StaticDiagram`): a class's position at full size, flipped, without a caption, inside a blog article and in a phone's column                                                                                                                                        |
+| Used by    | [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`ChessDiagramBlockRenderer`](/components/site/sections/blog/article-content/blocks/chess-diagram-block), [`StudyCard`](/components/platform/sections/studies/studies-list/study-card) (a thumbnail of the study's board) |
+| Uses       | `parseFenPlacement` from `lib/parse-fen-placement`                                                                                                                                                                                                                                                      |
 
 ## Purpose
 

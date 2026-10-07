@@ -2,6 +2,7 @@
 // course's card), so they are pure and import nothing from the server.
 
 import { generateSlug, uniqueSlug } from "@/lib/generate-slug";
+import { foldForSearch } from "@/lib/fold-for-search";
 
 /**
  * What an author without a photo is drawn with: the first character of their
@@ -38,11 +39,6 @@ export function authorTone(name: string): AuthorTone {
 export function authorSlugFor(name: string, takenByOthers: Iterable<string>): string {
   const base = generateSlug(name);
   return base ? uniqueSlug(base, takenByOthers) : "";
-}
-
-/** Lower case and without accents, to compare what is typed with a name. */
-function foldForSearch(text: string): string {
-  return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
 }
 
 /**

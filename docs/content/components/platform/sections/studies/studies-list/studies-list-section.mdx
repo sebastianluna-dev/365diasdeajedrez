@@ -11,7 +11,7 @@ description: "Splits the student's studies by ownership (editable versus receive
 | Stylesheet | none: the browser and the cards paint everything                                                                                                |
 | Used by    | `/estudios`                                                                                                                                     |
 | Composes   | [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser), [`EmptyState`](/components/platform/shared/empty-state) |
-| Uses       | `StudySummary` from `services/studies/studies.types`                                                                                            |
+| Uses       | `StudySummary`, `StudyKindOption` from `services/studies/studies.types`                                                                         |
 
 ## Purpose
 
@@ -19,13 +19,14 @@ The body of "Mis estudios". The page resolves the identity in the DAL first and 
 
 ## Props
 
-| Prop      | Type             | Required | Meaning                                                                  |
-| --------- | ---------------- | -------- | ------------------------------------------------------------------------ |
-| `studies` | `StudySummary[]` | yes      | `getUserStudies()`, read by the page in parallel with `getStudyKinds()`. |
+| Prop      | Type                | Required | Meaning                                                                                                        |
+| --------- | ------------------- | -------- | -------------------------------------------------------------------------------------------------------------- |
+| `studies` | `StudySummary[]`    | yes      | `getUserStudies()`, read by the page in parallel with `getStudyKinds()`.                                       |
+| `kinds`   | `StudyKindOption[]` | yes      | `getStudyKinds()`: the kinds the viewer can create, handed to the browser for the grid's «Nuevo estudio» slot. |
 
 ## Behaviour
 
-No studies at all renders an [`EmptyState`](/components/platform/shared/empty-state) ("Todavía no tienes estudios"); otherwise the list is partitioned on `permissions.canEditGames` and passed to the client browser. The "Nuevo estudio" button is not here: the page mounts [`NewStudy`](/components/platform/sections/studies/studies-list/new-study) in its header with the kinds the viewer may create.
+No studies at all renders an [`EmptyState`](/components/platform/shared/empty-state) ("Todavía no tienes estudios"); otherwise the list is partitioned on `permissions.canEditGames` and passed to the client browser. The page mounts [`NewStudy`](/components/platform/sections/studies/studies-list/new-study) in its header with the kinds the viewer may create, and hands the same kinds here for the browser's slot.
 
 ## Markup & styling
 
@@ -38,7 +39,7 @@ From `app/(platform)/estudios/page.tsx`:
 ```tsx
 import { StudiesListSection } from "@/components/platform/sections/studies/studies-list/studies-list.section";
 
-<StudiesListSection />;
+<StudiesListSection studies={studies} kinds={kinds} />;
 ```
 
 ## Related

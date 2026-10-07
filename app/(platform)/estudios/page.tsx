@@ -27,7 +27,7 @@ export default async function StudiesPage({ searchParams }: StudiesPageProps) {
   const errorMessage = studentErrorMessage(error);
 
   return (
-    <div className="platform-page studies-page">
+    <div className="platform-page platform-page_width_wide studies-page">
       <header className="studies-page__head">
         <div className="platform-page__head">
           <h1 className="platform-page__title">Mis estudios</h1>
@@ -41,7 +41,7 @@ export default async function StudiesPage({ searchParams }: StudiesPageProps) {
 
       {errorMessage && <PlatformNotice message={errorMessage} />}
 
-      <StudiesListSection studies={studies} />
+      <StudiesListSection studies={studies} kinds={kinds} />
     </div>
   );
 }

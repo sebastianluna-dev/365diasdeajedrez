@@ -3,53 +3,37 @@
      the link. Anything else that must be pressed sits above it. */
   position: relative;
   display: flex;
-  gap: var(--platform-space-5);
-  padding: var(--platform-space-6) var(--platform-space-6);
-  background: var(--platform-surface);
-  /* No outline at rest: the card is white on the page's grey. The border is
-     there, transparent, for the hover to colour it without moving anything. */
-  border: 1px solid transparent;
+  align-items: flex-start;
+  gap: var(--platform-space-4);
+  padding: var(--platform-space-3);
   border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition:
-    background-color 140ms ease-out,
-    border-color 140ms ease-out;
+  /* White on the page's grey, over a light shadow; under the pointer the
+     shadow grows, and nothing moves. */
+  background: var(--platform-surface);
+  box-shadow: var(--platform-shadow-card);
+  transition: box-shadow 160ms ease-out;
 
-  /* Hovering tints the card with the faint accent and turns its outline
-     accent, like the active chip of the filter above; the shadow does not
-     grow, so nothing lifts or moves. */
   &:hover {
-    background: var(--platform-accent-wash);
-    border-color: var(--platform-accent);
+    box-shadow: var(--platform-shadow-lift);
   }
 
   /* The keyboard focus of the stretched link is shown on the card, which is
-     what it covers. */
+     what it covers: outside a form, the accent's ring. */
   &:has(.study-card__name:focus-visible) {
-    outline: 2px solid var(--platform-accent);
+    outline: 2px solid var(--platform-accent-ink);
     outline-offset: 2px;
   }
 
-  /* The study's tile: the wordmark's two squares (the site's logo mark), in
-     accent on the card's own surface, inside an accent border. The mark fills
-     the box and is clipped by the rounding, like the wordmark's corner is. */
-  & .study-card__tile {
+  /* The study's board, where its first game ends: a thumbnail, so the
+     diagram's own width cap and caption do not apply. */
+  & .study-card__board {
     flex: none;
     display: block;
-    box-sizing: border-box;
-    width: 46px;
-    height: 46px;
-    border: 2px solid var(--platform-accent);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    color: var(--platform-accent);
-    overflow: hidden;
-  }
+    width: 92px;
 
-  & .study-card__mark {
-    display: block;
-    width: 100%;
-    height: 100%;
+    @media (width < 640px) {
+      width: 72px;
+    }
   }
 
   & .study-card__body {
@@ -57,22 +41,52 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-2);
+    gap: var(--platform-space-1);
+    /* Clear of the cross, which sits over the top right corner. */
+    padding-right: var(--platform-space-6);
   }
 
-  & .study-card__head {
+  /* What it is — or, when it is not theirs, where it comes from —, in the
+     accent's ink with its icon; what came from someone else in grey. */
+  & .study-card__kind {
     display: flex;
-    align-items: flex-start;
-    gap: var(--platform-space-3);
+    align-items: center;
+    gap: var(--platform-space-1);
+    min-width: 0;
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--platform-accent-ink);
   }
 
-  & .study-card__name {
-    flex: 1;
+  & .study-card__kind.study-card__kind_received {
+    color: var(--platform-text-muted);
+  }
+
+  & .study-card__kind-icon {
+    flex: none;
+    width: 13px;
+    height: 13px;
+  }
+
+  & .study-card__kind-label {
     min-width: 0;
-    font-size: var(--platform-type-xl);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Two lines at most: a library is scanned. */
+  & .study-card__name {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    font-size: var(--platform-type-md);
     font-weight: 700;
-    letter-spacing: -0.015em;
-    line-height: 1.25;
+    line-height: 1.3;
     color: var(--platform-text);
     text-decoration: none;
   }
@@ -84,112 +98,34 @@
     border-radius: inherit;
   }
 
-  /* Above the stretched link, so the cross is what gets pressed. */
-  & .study-card__actions {
-    position: relative;
-    z-index: 1;
-    flex: none;
-  }
-
-  & .study-card__readonly {
-    flex: none;
-    padding: var(--platform-space-1) var(--platform-space-2);
-    border-radius: 1000px;
-    background: var(--platform-surface-neutral);
-    font-size: var(--platform-type-xs);
-    /* The muted grey and not the subtle one: at 13px the subtle one fell
-       under AA on the pill, and the muted one passes on both of its fills. */
-    color: var(--platform-text-muted);
-    transition: background-color 140ms ease-out;
-  }
-
-  /* On the hovered card the grey pill vanished against the accent wash: it
-     takes the soft accent fill. The text stays the muted grey, because the
-     accent ink measured 3.75:1 on that fill, under AA for text this small. */
-  &:hover .study-card__readonly {
-    background: var(--platform-accent-soft);
-  }
-
   & .study-card__meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--platform-space-2);
-    margin: 0;
-    font-size: var(--platform-type-md);
+    font-size: var(--platform-type-xs);
+    line-height: 1.3;
     color: var(--platform-text-subtle);
-    transition: color 140ms ease-out;
+    font-variant-numeric: tabular-nums;
   }
 
-  /* A step darker on the tint, where the subtle grey fell just under AA. */
-  &:hover .study-card__meta {
-    color: var(--platform-text-muted);
+  /* The cross, in the top right corner and above the stretched link. Out of
+     the way until the card is reached: what one comes here for is to open a
+     study. A screen that is touched has no pointer to bring it out, so there
+     it is always drawn. */
+  & .study-card__actions {
+    position: absolute;
+    z-index: 1;
+    top: var(--platform-space-2);
+    right: var(--platform-space-2);
+    opacity: 0;
+    transition: opacity 120ms ease-out;
   }
 
-  /* Which course or teacher it comes from, when it is not yours. */
-  & .study-card__origin {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  &:hover .study-card__actions,
+  &:focus-within .study-card__actions {
+    opacity: 1;
   }
 
-  & .study-card__dot {
-    color: var(--platform-text-faint);
-  }
-
-  & .study-card__description {
-    margin: 0;
-    font-size: var(--platform-type-lg);
-    line-height: 1.45;
-    color: var(--platform-text-muted);
-    text-wrap: pretty;
-  }
-
-  /* The first games, one per line with a hollow bullet, like the chapters on
-     a lichess study card. */
-  & .study-card__games {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-1);
-    margin: var(--platform-space-2) 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  & .study-card__game {
-    display: flex;
-    align-items: center;
-    gap: var(--platform-space-3);
-    min-width: 0;
-    font-size: var(--platform-type-lg);
-    color: var(--platform-text-muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  & .study-card__game::before {
-    content: "";
-    flex: none;
-    width: 10px;
-    height: 10px;
-    border: 1.5px solid var(--platform-text-faint);
-    border-radius: 50%;
-  }
-
-  & .study-card__game_more {
-    color: var(--platform-text-subtle);
-    font-size: var(--platform-type-sm);
-  }
-
-  /* On the accent's wash of the hovered card the subtle grey falls under
-     4.5:1; the muted one does not. */
-  &:hover .study-card__game_more {
-    color: var(--platform-text-muted);
-  }
-
-  & .study-card__game_more::before {
-    border-color: transparent;
+  @media (hover: none) {
+    & .study-card__actions {
+      opacity: 1;
+    }
   }
 }

@@ -1,5 +1,8 @@
 import { cache } from "react";
+import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
 import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
+import { finalFenOf } from "@/lib/chess/replay";
+import { foldForSearch } from "@/lib/fold-for-search";
 import { getTeacherContext } from "@/lib/platform-auth/roles";
 import { formatRelativeSpanish } from "@/lib/format-relative-spanish";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
@@ -13,7 +16,6 @@ import {
   mapStudyDetail,
   mapStudySummary,
   studyDetailInclude,
-  STUDY_PREVIEW_SIZE,
   studySummaryInclude,
 } from "./studies.mapper";
 import { creatableKinds, STUDY_GAMES_PAGE_SIZE, studyPermissionsOf } from "./study-rules";
@@ -47,10 +49,10 @@ export async function getUserStudies(): Promise<StudySummary[]> {
   const db = getPlatformDb();
   const [where, user] = await Promise.all([getListedDatabasesWhere(), getCurrentUser()]);
 
-  // The three reads are independent, so they travel together: the totals are
-  // scoped by the same visibility `where` instead of by the ids of the first
-  // query, and the class games only need the viewer.
-  const [rows, totals, classGames] = await Promise.all([
+  // The four reads are independent, so they travel together: the totals and the
+  // games' names are scoped by the same visibility `where` instead of by the ids
+  // of the first query, and the class games only need the viewer.
+  const [rows, totals, gameNames, classGames] = await Promise.all([
     db.gameDatabase.findMany({
       where,
       // "Mis partidas" first: it is the only one that is always there and where what
@@ -67,11 +69,26 @@ export async function getUserStudies(): Promise<StudySummary[]> {
       where: { database: where },
       _count: { _all: true },
     }),
+    // What the list's search matches inside a study: every game's names, a few
+    // short columns per game, never its PGN.
+    db.game.findMany({
+      where: { database: where },
+      select: { databaseId: true, title: true, white: true, black: true, event: true },
+    }),
     getClassGamesSummary(),
   ]);
   const totalOf = new Map(totals.map((total) => [total.databaseId, total._count._all]));
+  const termsOf = new Map<string, string[]>();
+  for (const game of gameNames) {
+    const terms = termsOf.get(game.databaseId) ?? [];
+    for (const term of [game.title, game.white, game.black, game.event]) if (term) terms.push(term);
+    termsOf.set(game.databaseId, terms);
+  }
 
-  const studies = rows.map((row) => mapStudySummary(row, user.id, totalOf.get(row.id) ?? 0));
+  const now = new Date();
+  const studies = rows.map((row) =>
+    mapStudySummary(row, user.id, totalOf.get(row.id) ?? 0, now, [...new Set(termsOf.get(row.id))]),
+  );
   // At the end of the list and only if there is something: an empty "class games"
   // card would be noise for whoever has not been to one yet.
   return classGames ? [...studies, classGames] : studies;
@@ -250,6 +267,7 @@ const getClassGameItems = cache(async (): Promise<ClassGameItem[]> => {
       eco: block.game.eco ?? undefined,
       playedAtLabel: block.game.playedAt ? formatSpanishDate(block.game.playedAt) : undefined,
       className: block.class.title,
+      classDate: block.class.scheduledAt.toISOString(),
       classDateLabel: formatSpanishDate(block.class.scheduledAt),
       classDateAgoLabel: formatRelativeSpanish(block.class.scheduledAt),
       href: platformRoutes.classDetail(block.classId),
@@ -263,6 +281,12 @@ async function getClassGamesSummary(): Promise<StudySummary | null> {
   const items = await getClassGameItems();
   const [latest] = items;
   if (!latest) return null;
+  // The board of the card: where the latest class's game ends, as a study's
+  // card shows its first game.
+  const game = await getPlatformDb().game.findUnique({
+    where: { id: latest.id },
+    select: { pgn: true, orientation: { select: { code: true } } },
+  });
 
   return {
     id: CLASS_GAMES_ID,
@@ -273,7 +297,17 @@ async function getClassGamesSummary(): Promise<StudySummary | null> {
     gameCount: items.length,
     updatedAtLabel: latest.classDateLabel,
     updatedAgoLabel: latest.classDateAgoLabel,
-    previewGames: items.slice(0, STUDY_PREVIEW_SIZE).map((item) => `${item.white} – ${item.black}`),
+    updatedAt: latest.classDate,
+    boardFen: finalFenOf(game?.pgn ?? ""),
+    boardOrientation: game?.orientation?.code === BOARD_ORIENTATION.BLACK ? "black" : "white",
+    searchText: foldForSearch(
+      [
+        "Partidas de mis clases",
+        "Tus clases",
+        ...items.flatMap((item) => [item.white, item.black, item.className]),
+      ].join(" "),
+    ),
+    origin: { code: "CLASSES", label: "Tus clases" },
     isCourseStudy: false,
     // It is not a database: there is nothing to edit or delete.
     permissions: studyPermissionsOf({ kindCode: DATABASE_KIND.COLLECTION, isOwner: false }),

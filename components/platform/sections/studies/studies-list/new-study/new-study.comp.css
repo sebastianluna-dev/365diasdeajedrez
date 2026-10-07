@@ -1,6 +1,49 @@
 .new-study {
   flex: none;
 
+  /* In the grid it is a cell: it fills it, and the slot fills it too. */
+  &.new-study_trigger_slot {
+    display: flex;
+  }
+
+  /* The slot of what does not exist yet: dashed, the cell's whole size, as
+     tall as a card, and lit only when it is about to be pressed. */
+  & .new-study__slot {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--platform-space-2);
+    min-height: 116px;
+    padding: var(--platform-space-4);
+    border: 1.5px dashed var(--platform-border-strong);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: var(--platform-type-md);
+    font-weight: 700;
+    cursor: pointer;
+    transition: 150ms;
+    transition-property: border-color, background-color, color;
+
+    @media (width < 640px) {
+      min-height: 56px;
+    }
+  }
+
+  & .new-study__slot:hover {
+    border-color: var(--platform-accent);
+    background: var(--platform-accent-wash);
+    color: var(--platform-accent-ink);
+  }
+
+  & .new-study__slot-icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+  }
+
   /* The popup's strip (the name, the cross) is `PlatformPopup`'s; the
      content under it is this form, which pads itself to the strip's 24px:
      body and footer band stack with no gap of their own. */
