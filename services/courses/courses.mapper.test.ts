@@ -123,27 +123,49 @@ describe("con el filtro encendido", () => {
     expect(view?.hiddenLessons).toBe(2);
   });
 
-  it("y también las que el alumno ya tocó, aunque no sean prioritarias", () => {
-    // It is half of the rule that avoids the filter's worst effect.
+  it("y nada más: una lección empezada o terminada que no es de prioridad no se ve", () => {
+    // Until 2026-10-07 the touched ones passed too; a list of priority lessons
+    // with others among them, untagged, read as a mistake.
     const view = mapChapterView(COURSE, "cap-1", state({ onlyPriorityLessons: true, lessonStatus: completed("l3") }));
-    expect(view?.lessons.map((lesson) => lesson.id)).toEqual(["l1", "l3"]);
+    expect(view?.lessons.map((lesson) => lesson.id)).toEqual(["l1"]);
+    expect(view?.hiddenLessons).toBe(2);
   });
 
   it("el número de orden de cada lección es el REAL, sin renumerar", () => {
-    const view = mapChapterView(COURSE, "cap-2", state({ onlyPriorityLessons: true, lessonStatus: completed("l6") }));
-    expect(view?.lessons.map((lesson) => lesson.order)).toEqual([1, 3]);
+    const course = {
+      ...COURSE,
+      chapters: [
+        chapter("cap-3", 1, [
+          { id: "x1", order: 1 },
+          { id: "x2", order: 2, priority: true },
+          { id: "x3", order: 3, priority: true },
+        ]),
+      ],
+    } as unknown as CourseWithDetail;
+    const view = mapChapterView(course, "cap-3", state({ onlyPriorityLessons: true }));
+    expect(view?.lessons.map((lesson) => lesson.order)).toEqual([2, 3]);
   });
 
-  it("el porcentaje NUNCA retrocede al encenderlo", () => {
-    // Two completed out of six (33 %). When filtering, the two priority ones plus
-    // the two done remain: the done ones keep counting above and below.
+  it("el progreso cuenta sólo las de prioridad mientras está encendido", () => {
+    // Two non-priority lessons done out of six (33 %). With the filter on the
+    // path is the two priority ones, none of them done: the figure drops to 0,
+    // and comes back when the filter goes off. That is the price of showing
+    // nothing but priority lessons (2026-10-07).
     const status = completed("l2", "l3");
     const antes = mapCourseProgress(COURSE, state({ lessonStatus: status }));
     const despues = mapCourseProgress(COURSE, state({ onlyPriorityLessons: true, lessonStatus: status }));
 
     expect(antes.completedLessons).toBe(2);
-    expect(despues.completedLessons).toBe(2);
-    expect(despues.percent).toBeGreaterThanOrEqual(antes.percent);
+    expect(despues.completedLessons).toBe(0);
+    expect(despues.totalLessons).toBe(2);
+    expect(despues.percent).toBe(0);
+
+    const conUnaDePrioridad = mapCourseProgress(
+      COURSE,
+      state({ onlyPriorityLessons: true, lessonStatus: completed("l1", "l2") }),
+    );
+    expect(conUnaDePrioridad.completedLessons).toBe(1);
+    expect(conUnaDePrioridad.percent).toBe(50);
   });
 
   it("los minutos se cuentan sobre las mismas lecciones que se enseñan", () => {

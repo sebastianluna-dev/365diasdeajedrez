@@ -130,14 +130,15 @@ function isAdded(state: UserCourseState): boolean {
 /**
  * Whether the lesson is part of the path the student asked to see.
  *
- * With the filter on, the priority ones **and the ones already touched** pass.
- * That second half is what avoids the filter's worst effect: without it,
- * enabling it would hide already completed lessons and the done counter would
- * GO DOWN. With it, the percentage never goes backwards and "I already did it"
- * never becomes "where is it?".
- *
- * A lesson is priority by its own mark or by its chapter's: a chapter the
- * staff marked is priority whole, and would otherwise open onto an empty list.
+ * With the filter on, only the priority ones pass: a lesson is priority by its
+ * own mark or by its chapter's — a chapter the staff marked is priority whole,
+ * and would otherwise open onto an empty list. Having opened or finished a
+ * lesson does NOT keep it in view (Sebastian's call, 2026-10-07): until then
+ * the touched ones passed too, so that switching the filter on never hid what
+ * was done, but a list of priority lessons with others among them, untagged,
+ * read as a mistake. The price is known: while the filter is on, the course's
+ * progress counts the priority lessons only, so a student who had done other
+ * lessons sees the figure drop, and come back when the filter goes off.
  */
 function isVisible(
   lesson: { id: string; isPriority: boolean },
@@ -145,7 +146,7 @@ function isVisible(
   state: UserCourseState,
 ): boolean {
   if (!state.onlyPriorityLessons) return true;
-  return lesson.isPriority || chapter.isPriority || state.lessonStatus.has(lesson.id);
+  return lesson.isPriority || chapter.isPriority;
 }
 
 /**

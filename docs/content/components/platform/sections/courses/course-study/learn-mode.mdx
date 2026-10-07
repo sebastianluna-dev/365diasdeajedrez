@@ -14,7 +14,7 @@ description: "What of the course is learned: everything, or only what the staff 
 
 ## Purpose
 
-The course's one setting, «Aprender»: «Todo» or «Prioridad». With «Prioridad» on, what stays in view is every lesson marked as priority, every lesson of a chapter marked as priority, and any lesson the student already touched. It replaces `PriorityFilter`, the switch the old course and chapter pages had; the rule it sets (`UserCourseSettings.onlyPriorityLessons`) is the same.
+The course's one setting, «Aprender»: «Todo» or «Prioridad». With «Prioridad» on, what stays in view is every lesson marked as priority and every lesson of a chapter marked as priority — **and nothing else**: since 2026-10-07 a lesson the student opened or finished no longer stays in view for that alone, because a list of priority lessons with others among them, untagged, read as a mistake. The price: while it is on, the course's progress counts the priority lessons only, so the figure can drop when it is switched on and comes back when it is switched off. It replaces `PriorityFilter`, the switch the old course and chapter pages had; the rule it sets (`UserCourseSettings.onlyPriorityLessons`) is the same.
 
 It is a **lens**: it writes the settings row and not a single progress row, so switching it is free and reversible. It is per course, which is why it shows on every page of the course.
 
@@ -31,7 +31,7 @@ It is a **lens**: it writes the settings row and not a single progress row, so s
 
 - Each option is a `<form action={setOnlyPriorityLessons.bind(null, courseId, value)}>` with a hidden `returnTo`, and not one form with two radios: a preference is saved and the page is drawn again, so there is no state to keep and nothing to hydrate. The value is bound because a checkbox cannot transmit "false".
 - The pressed one carries `aria-pressed="true"`; the two are a `role="group"` labelled by «Aprender».
-- With the filter on, a note says what it hides: «56 lecciones ocultas. Las que ya empezaste siguen a la vista.»
+- With the filter on, a note says what it hides and what follows from it: «56 lecciones ocultas. El progreso cuenta sólo las de prioridad.»
 
 ## Markup & styling
 

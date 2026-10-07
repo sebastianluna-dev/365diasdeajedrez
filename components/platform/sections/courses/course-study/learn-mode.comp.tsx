@@ -47,8 +47,10 @@ export function LearnMode({ courseId, onlyPriority, hiddenLessons, returnTo }: L
 
       {onlyPriority && hiddenLessons > 0 && (
         <p className="learn-mode__note">
-          {hiddenLessons} {hiddenLessons === 1 ? "lección oculta" : "lecciones ocultas"}. Las que ya empezaste siguen a
-          la vista.
+          {/* What the filter hides, and what follows from it: with it on, the
+              course's progress counts the priority lessons only. */}
+          {hiddenLessons} {hiddenLessons === 1 ? "lección oculta" : "lecciones ocultas"}. El progreso cuenta sólo las de
+          prioridad.
         </p>
       )}
     </div>
