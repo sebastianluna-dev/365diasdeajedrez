@@ -134,6 +134,21 @@ function writtenPairs(): Written[] {
 }
 
 describe("the platform's tokens", () => {
+  it("keep the base scale where a page asks for it, value for value", () => {
+    // `.platform-page_scale_base` repeats the base type and space scale under
+    // the large-screen step, for the lesson: a page cannot read the base values
+    // back once the step replaced them, so a scale changed in `:root` alone
+    // would leave that page on the old one.
+    const css = readFileSync(join(ROOT, TOKENS_FILE), "utf8");
+    const page = /\.platform-page_scale_base\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
+    const kept = new Map(
+      [...page.matchAll(/(--platform-[a-z0-9-]+)\s*:\s*([^;]+);/g)].map((m) => [m[1], m[2]?.trim()]),
+    );
+    expect(kept.size).toBeGreaterThan(20);
+    const drifted = [...kept].filter(([name, value]) => TOKENS.get(name ?? "") !== value);
+    expect(drifted).toEqual([]);
+  });
+
   it("are found", () => {
     // A renamed file or a reshaped `:root` would leave the rules below watching nothing.
     expect(TOKENS.size).toBeGreaterThan(40);

@@ -30,7 +30,7 @@ export default async function LessonLayout({ params, children }: LessonLayoutPro
   if (!outline) notFound();
 
   return (
-    <div className="platform-page lesson-page platform-page_width_full platform-page_height_screen">
+    <div className="platform-page lesson-page platform-page_width_full platform-page_height_screen platform-page_scale_base">
       <LessonFrame outline={outline}>{children}</LessonFrame>
     </div>
   );

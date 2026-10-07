@@ -294,6 +294,39 @@
   }
 }
 
+/* A page that keeps the base scale on large screens too: the lesson, whose
+   board, column and notes were sized to it (2026-10-06, Sebastian's call).
+   The values are the base ones of `:root`, repeated, since a page cannot read
+   them back once the step above has replaced them; platform-tokens.test.ts
+   checks the two lists stay the same. The bar is outside the page and keeps
+   the step, so it does not change size from one screen to the next. */
+@media (width >= 1536px) {
+  .platform-page_scale_base {
+    --platform-type-2xs: 12px;
+    --platform-type-xs: 14px;
+    --platform-type-sm: 15px;
+    --platform-type-md: 16px;
+    --platform-type-lg: 17px;
+    --platform-type-xl: 20px;
+    --platform-type-2xl: 24px;
+    --platform-type-3xl: 32px;
+    --platform-type-4xl: 44px;
+    --platform-type-5xl: 52px;
+    --platform-space-0-5: 2px;
+    --platform-space-1: 4px;
+    --platform-space-2: 8px;
+    --platform-space-3: 12px;
+    --platform-space-4: 16px;
+    --platform-space-5: 20px;
+    --platform-space-6: 24px;
+    --platform-space-8: 32px;
+    --platform-space-10: 40px;
+    --platform-space-12: 48px;
+    --platform-space-16: 64px;
+    --platform-space-24: 96px;
+  }
+}
+
 :root[data-theme="light"] {
   color-scheme: light;
 }
