@@ -15,7 +15,7 @@ description: "One study in the library of «Mis estudios»: its board — where 
 
 ## Purpose
 
-A study as the library shows it (2026-10-07: the «Biblioteca» direction, card «T1», which the owner chose among three directions and then five cards). A study is recognised by its board, as on Lichess: the card opens with a 92px thumbnail of where the study's first game ends (72px on a phone), and beside it says, from top to bottom:
+A study as the library shows it (2026-10-07: the «Biblioteca» direction, card «T1», which the owner chose among three directions and then five cards). A study is recognised by its board, as on Lichess: the card opens with a 120px thumbnail of where the study's first game ends (88px on a phone; 92px until the grid went from three columns to two, the same day), and beside it says, from top to bottom:
 
 - **what it is**, with its icon, in the accent's ink — «Mis partidas» (`UserIcon`), «Estudio» (`BookOpenIcon`), «Torneo» (`TrophyIcon`), «Colección» (`BooksIcon`) — or, for a study that is not theirs, **where it comes from**, in grey: the teacher who shared it (`ChalkboardUserIcon`), the course (`GraduationCapIcon`), «Tus clases» (`UsersIcon`);
 - **its name**, in two lines at most: a library is scanned;
@@ -39,7 +39,7 @@ It replaced a card with the site's logo mark as its tile, the description and th
 
 ## Markup & styling
 
-Block `.study-card` (131 lines).
+Block `.study-card` (132 lines).
 
 **Elements:** `.study-card__board`, `.study-card__body`, `.study-card__kind`, `.study-card__kind-icon`, `.study-card__kind-label`, `.study-card__name`, `.study-card__meta`, `.study-card__actions`
 
@@ -47,7 +47,7 @@ Block `.study-card` (131 lines).
 
 **Tokens:** `--platform-accent-ink`, `--platform-shadow-card`, `--platform-shadow-lift`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, the type and space scales.
 
-**Breakpoints:** `(width < 640px)` shrinks the board to 72px; `(hover: none)` always draws the cross.
+**Breakpoints:** `(width < 640px)` shrinks the board to 88px; `(hover: none)` always draws the cross.
 
 ## Usage
 

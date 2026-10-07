@@ -25,14 +25,15 @@
   }
 
   /* The study's board, where its first game ends: a thumbnail, so the
-     diagram's own width cap and caption do not apply. */
+     diagram's own width cap and caption do not apply. 120px since the grid
+     went to two columns (it was 92px in three). */
   & .study-card__board {
     flex: none;
     display: block;
-    width: 92px;
+    width: 120px;
 
     @media (width < 640px) {
-      width: 72px;
+      width: 88px;
     }
   }
 
