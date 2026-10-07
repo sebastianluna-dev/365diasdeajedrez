@@ -1,7 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Back one move, in the game viewer. Font Awesome's `chevron-left`, in Duotone
+ * Back one move, in the game viewer, in Classic Solid. Font Awesome's `chevron-left`, in Duotone
  * Light (the default), Duotone Solid, Classic Solid or Classic Light, as
  * `variant` says. Its Duotone Solid drawing is a single layer, drawn at full
  * strength: at 40 % it would read as switched off.

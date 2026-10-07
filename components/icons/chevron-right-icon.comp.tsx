@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Forward one move, in the game viewer; also the arrow after the site's call
- * to log in. Font Awesome's `chevron-right`, in Duotone Light (the default),
+ * Forward one move, in the game viewer (in Classic Solid); also the arrow
+ * after the site's call to log in. Font Awesome's `chevron-right`, in Duotone Light (the default),
  * Duotone Solid, Classic Solid or Classic Light, as `variant` says. Its
  * Duotone Solid drawing is a single layer, drawn at full strength: at 40 % it
  * would read as switched off.

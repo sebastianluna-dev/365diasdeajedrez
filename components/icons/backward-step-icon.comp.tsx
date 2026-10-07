@@ -1,7 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * To the first move, in the game viewer, which draws it in Duotone Solid. Font
+ * To the first move, in the game viewer, which draws it in Classic Solid. Font
  * Awesome's `backward-step`, in Duotone Light (the default), Duotone Solid,
  * Classic Solid or Classic Light, as `variant` says.
  *

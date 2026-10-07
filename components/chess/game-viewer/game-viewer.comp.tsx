@@ -524,7 +524,7 @@ export function GameViewer({
         disabled={atStart}
         className="game-viewer__nav-button"
       >
-        <BackwardStepIcon variant="duotone-solid" className="game-viewer__nav-icon" />
+        <BackwardStepIcon variant="classic-solid" className="game-viewer__nav-icon" />
       </button>
       <button
         type="button"
@@ -537,7 +537,7 @@ export function GameViewer({
         onPointerCancel={stopRepeat}
         className="game-viewer__nav-button"
       >
-        <ChevronLeftIcon className="game-viewer__nav-icon" />
+        <ChevronLeftIcon variant="classic-solid" className="game-viewer__nav-icon" />
       </button>
       <button
         type="button"
@@ -552,7 +552,7 @@ export function GameViewer({
         onPointerCancel={stopRepeat}
         className="game-viewer__nav-button game-viewer__nav-button_emphasis_strong"
       >
-        <ChevronRightIcon className="game-viewer__nav-icon" />
+        <ChevronRightIcon variant="classic-solid" className="game-viewer__nav-icon" />
       </button>
       <button
         type="button"
@@ -561,7 +561,7 @@ export function GameViewer({
         disabled={atEnd}
         className="game-viewer__nav-button"
       >
-        <ForwardStepIcon variant="duotone-solid" className="game-viewer__nav-icon" />
+        <ForwardStepIcon variant="classic-solid" className="game-viewer__nav-icon" />
       </button>
       {/* Flipping the board is an action on the game, not a viewer setting:
           it goes with the buttons the game is traversed with. */}
