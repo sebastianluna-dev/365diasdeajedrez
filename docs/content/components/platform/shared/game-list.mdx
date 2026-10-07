@@ -36,19 +36,19 @@ The games of a study or of a chapter's collection, beside the board, to jump bet
 - **Reordering**, only with `onReorder`. Each row is dragged by its grip and, from the keyboard, picked up on the grip with space and moved with the arrows, through [`SortableDnd`](/components/platform/shared/sortable-dnd), which opens the gap where the row would land and says everything out loud in Spanish. The order is applied at once and the whole list goes to `onReorder` in a transition (`useSortableRows`); new `games` from the server replace it during render.
 - **No «Subir» and «Bajar».** The list had two arrows at the end of each row for a few hours on 2026-10-03, to move a row one place without dragging (WCAG 2.5.7). The owner took them out the same day: with a grip already there they read as noise. A pointer therefore reorders only by dragging — a known gap for whoever cannot hold a drag —; the keyboard still moves a row from its grip. `SyllabusList` keeps its «Subir» and «Bajar», in its row menu.
 - **The row is the card.** The link fills the row and the grip sits inside it, before the name, so the current game's mark — the accent's wash and a 3px rule on the row's left edge — takes the grip in: the grip reads as part of the game it moves and not as something beside the card (2026-10-03; before, the mark was on the link alone and the grip was left outside it). A hovered row takes the page's grey whole, too.
-- **The grip stays out of the way** until its row is hovered or holds the focus (`:focus-within`): what one comes here for is to jump between games, not to sort them. Where nothing hovers — a touch screen, `(hover: none)` — it is always drawn, since nothing there would ever bring it out. It is drawn in the muted grey, and in the accent's ink on the current row.
+- **The grip is always there, but faint**, as in the staff's tables ([`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list)): the strong border's grey at rest, and the subtle grey — a control's 3:1 (WCAG 1.4.11), on the hovered row's grey too — when its row is hovered or holds the focus (`:focus-within`); on the current game the same two steps are the accent's, `--platform-accent-faint` and its ink. Until 2026-10-07 it was hidden (`opacity: 0`) until the row was reached, and always drawn on a touch screen; the owner asked for it always in sight, quieter, as the staff's tables have it. What one comes here for is to jump between games, not to sort them, so it stays faint.
 
 ## Markup & styling
 
-Block `.game-list` (213 lines), the `<ul>` itself.
+Block `.game-list` (205 lines), the `<ul>` itself.
 
 **Elements:** `.game-list__row`, `.game-list__grip`, `.game-list__item`, `.game-list__main`, `.game-list__name`, `.game-list__players`, `.game-list__result`
 
 **Modifiers and states:** `.game-list__row_state_active` (the current game: wash, rule and accent ink, grip included; it sets `--quiet-ink: var(--platform-accent-ink)`, so the gear of [`GameSettings`](/components/platform/shared/game-settings) is rose too and its shade under the pointer shows on the wash, which the quiet button's old grey did not — see [Styling → Buttons](/ui/styling#buttons)), `.game-list__row_state_dragging` (lifted, with the card's shadow)
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-bg`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle` (the players, on the card's white), `--platform-type-sm`, `--platform-type-xs`, `--platform-space-0-5`, `--platform-space-1`, `--platform-space-2`, `--platform-space-3`
+**Tokens:** `--platform-accent`, `--platform-accent-faint`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-bg`, `--platform-border-strong`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle` (the players, on the card's white), `--platform-type-sm`, `--platform-type-xs`, `--platform-space-0-5`, `--platform-space-1`, `--platform-space-2`, `--platform-space-3`
 
-No width media queries; `(hover: none)` draws the handles, and `(prefers-reduced-motion: reduce)` drops their fade.
+No media queries: the grip's fade is a colour's, which is not motion.
 
 ## Usage
 

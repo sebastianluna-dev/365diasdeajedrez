@@ -75,19 +75,30 @@
     border: 0;
     border-radius: 8px;
     background: transparent;
-    /* A control's drawing, so 3:1 at least (WCAG 1.4.11), on the grey of a
-       hovered row as on white: the muted grey. It is only seen when the row
-       is pointed at or has the focus, or on a touch screen. */
-    color: var(--platform-text-muted);
+    /* Always there, but faint, as in the staff's tables (2026-10-07; until
+       then it was hidden until its row was reached): what one comes here for
+       is to jump between games, not to sort them. */
+    color: var(--platform-border-strong);
     touch-action: none;
     cursor: grab;
-    /* Out of the way until its row is reached: what one comes here for is to
-       jump between games, not to sort them. */
-    opacity: 0;
-    transition: opacity 150ms;
+    transition: color 150ms;
   }
 
+  /* On the current game's wash a neutral grey disappears: the accent's own. */
   & .game-list__row_state_active .game-list__grip {
+    color: var(--platform-accent-faint);
+  }
+
+  /* Pointed at, or reached with the keyboard, the grip is drawn as a control
+     is (3:1 at least, WCAG 1.4.11, on the hovered row's grey too): the subtle
+     grey, and the accent's ink on the current game. */
+  & .game-list__row:hover .game-list__grip,
+  & .game-list__row:focus-within .game-list__grip {
+    color: var(--platform-text-subtle);
+  }
+
+  & .game-list__row_state_active:hover .game-list__grip,
+  & .game-list__row_state_active:focus-within .game-list__grip {
     color: var(--platform-accent-ink);
   }
 
@@ -98,19 +109,6 @@
   & .game-list__grip:focus-visible {
     outline: 2px solid var(--platform-accent);
     outline-offset: -2px;
-  }
-
-  & .game-list__row:hover .game-list__grip,
-  & .game-list__row:focus-within .game-list__grip {
-    opacity: 1;
-  }
-
-  /* A screen that is touched has no hover to bring it out, so there it is
-     always drawn: an invisible grip is one nobody knows to hold. */
-  @media (hover: none) {
-    & .game-list__grip {
-      opacity: 1;
-    }
   }
 
   & .game-list__item {
@@ -203,11 +201,5 @@
   /* The gear closes the row, inside the card like the grip. */
   & .game-settings {
     margin-right: var(--platform-space-1);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    & .game-list__grip {
-      transition: none;
-    }
   }
 }

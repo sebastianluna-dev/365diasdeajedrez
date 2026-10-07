@@ -30,8 +30,9 @@ brought into the middle on arrival. A row is the game's name, small and on two
 lines at most, who played it in a smaller line under it, and how it ended; the row is the card, so the current game's
 wash and rule take its grip in. With \`settings\` each row ends in a gear
 that opens the game's settings (\`GameSettings\`).
-With \`onReorder\` a row is dragged by its grip (which comes out when the row
-is hovered or holds the focus) or moved with the keyboard from the grip; here
+With \`onReorder\` a row is dragged by its grip (always there, faint, and
+darker when the row is hovered or holds the focus) or moved with the keyboard
+from the grip; here
 the action is a spy listed in the Actions panel and nothing is saved.
 
 Source: \`components/platform/shared/game-list/game-list.comp.tsx\`.
