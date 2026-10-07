@@ -92,56 +92,107 @@ export function OutlineList({ chapters }: OutlineListProps) {
   const arrived = useRef(false);
 
   useEffect(() => {
-    const current = listRef.current?.querySelector<HTMLElement>('[aria-current="page"]');
-    const scroller = listRef.current?.parentElement;
-    if (!current || !scroller) return;
+    const list = listRef.current;
+    const current = list?.querySelector<HTMLElement>('[aria-current="page"]');
+    const scroller = list?.parentElement;
+    if (!list || !current || !scroller) return;
 
-    // A rect carries the page's zoom; `scrollTop` and `clientHeight` are in
-    // the scroller's own px, so the distances cross over before being used.
-    const zoom = scroller.currentCSSZoom || 1;
-    const scrollerBox = scroller.getBoundingClientRect();
-    const rowBox = current.getBoundingClientRect();
-    const top = (rowBox.top - scrollerBox.top) / zoom;
-    const bottom = (rowBox.bottom - scrollerBox.top) / zoom;
-    const rowHeight = rowBox.height / zoom;
-    const visible = scroller.clientHeight;
+    /** Where the row and its chapter are now, in the scroller's own px. */
+    const measure = () => {
+      // A rect carries the page's zoom; `scrollTop` and `clientHeight` are in
+      // the scroller's own px, so the distances cross over before being used.
+      const zoom = scroller.currentCSSZoom || 1;
+      const scrollerTop = scroller.getBoundingClientRect().top;
+      const rowBox = current.getBoundingClientRect();
+      const section = current.closest("section");
+      // The row's chapter is stuck to the top of the column while one is in
+      // it, so the top of the column is not where a row can be seen from:
+      // what that head covers is not room.
+      const stickyHead = section?.querySelector<HTMLElement>("[data-sticky-head]");
+      return {
+        top: (rowBox.top - scrollerTop) / zoom,
+        bottom: (rowBox.bottom - scrollerTop) / zoom,
+        rowHeight: rowBox.height / zoom,
+        sectionTop: section ? (section.getBoundingClientRect().top - scrollerTop) / zoom : null,
+        covered: stickyHead ? stickyHead.getBoundingClientRect().height / zoom : 0,
+        visible: scroller.clientHeight,
+      };
+    };
 
-    // The row's chapter is stuck to the top of the column while one is in it,
-    // so the top of the column is not where a row can be seen from: what that
-    // head covers is not room.
-    const stickyHead = current.closest("section")?.querySelector<HTMLElement>("[data-sticky-head]");
-    const covered = stickyHead ? stickyHead.getBoundingClientRect().height / zoom : 0;
-
-    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const behavior: ScrollBehavior = calm || !arrived.current ? "auto" : "smooth";
-    const arriving = !arrived.current;
-    arrived.current = true;
-
-    // On arriving, the column opens on the lesson's CHAPTER: its head at the
-    // top, its lessons under it. The browser stops the scroll short where the
-    // course ends, so a last chapter too short to fill the column simply
-    // shows what is above it too. Only when the lesson being read would be
-    // left under the bottom edge is the row brought up instead — and then the
-    // chapter's head is still the first thing in view, stuck to the top.
-    const section = current.closest("section");
-    if (arriving && section) {
-      const sectionTop = (section.getBoundingClientRect().top - scrollerBox.top) / zoom;
-      if (bottom - sectionTop <= visible) {
-        scroller.scrollTo({ top: scroller.scrollTop + sectionTop, behavior });
-        return;
+    /** Brings the row out when it is cut off, at either edge. */
+    const reveal = (behavior: ScrollBehavior) => {
+      const { top, bottom, rowHeight, covered, visible } = measure();
+      if (top < covered + TOP_MARGIN) {
+        // Cut off at the top, or hidden under the chapter: bring it out.
+        scroller.scrollTo({ top: scroller.scrollTop + top - covered - TOP_MARGIN, behavior });
+      } else if (bottom > visible) {
+        // Cut off at the bottom: bring it up far enough to leave a row under
+        // it, so it lands as the next to last one in view and not pressed
+        // against the edge.
+        const missing = bottom - visible;
+        scroller.scrollTo({ top: scroller.scrollTop + missing + rowHeight, behavior });
       }
-    }
+    };
 
-    if (top < covered + TOP_MARGIN) {
-      // Cut off at the top, or hidden under the chapter: bring it out.
-      scroller.scrollTo({ top: scroller.scrollTop + top - covered - TOP_MARGIN, behavior });
-    } else if (bottom > visible) {
-      // Cut off at the bottom: bring it up far enough to leave a row under it,
-      // so it lands as the next to last one in view and not pressed against
-      // the edge.
-      const missing = bottom - visible;
-      scroller.scrollTo({ top: scroller.scrollTop + missing + rowHeight, behavior });
+    /**
+     * On arriving, the column opens on the lesson's CHAPTER: its head at the
+     * top, its lessons under it, at once. The browser stops the scroll short
+     * where the course ends, so a last chapter too short to fill the column
+     * simply shows what is above it too. Only when the lesson being read
+     * would be left under the bottom edge is the row brought up instead — and
+     * then the chapter's head is still the first thing in view, stuck there.
+     */
+    const openOnChapter = () => {
+      const { bottom, sectionTop, visible } = measure();
+      if (sectionTop !== null && bottom - sectionTop <= visible) {
+        scroller.scrollTo({ top: scroller.scrollTop + sectionTop, behavior: "auto" });
+      } else {
+        reveal("auto");
+      }
+    };
+
+    if (arrived.current) {
+      const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      reveal(calm ? "auto" : "smooth");
+      return;
     }
+    arrived.current = true;
+    openOnChapter();
+
+    // The column may still be settling when it is first drawn — a font, a
+    // stylesheet or an image arriving late changes the height of what is
+    // above the chapter, and the chapter is left a few px off the top with a
+    // slice of the one before showing. So it is put back each time the list
+    // changes size, until the person scrolls it themselves or two seconds go by.
+    let settled = false;
+    const observer = new ResizeObserver(() => {
+      if (!settled) openOnChapter();
+    });
+    const settle = () => {
+      settled = true;
+      observer.disconnect();
+      scroller.removeEventListener("wheel", settle);
+      scroller.removeEventListener("touchstart", settle);
+      scroller.removeEventListener("keydown", settle);
+      scroller.removeEventListener("pointerdown", settle);
+    };
+    observer.observe(list);
+    scroller.addEventListener("wheel", settle, { passive: true });
+    scroller.addEventListener("touchstart", settle, { passive: true });
+    scroller.addEventListener("keydown", settle);
+    scroller.addEventListener("pointerdown", settle);
+    void document.fonts.ready.then(() => {
+      if (!settled) openOnChapter();
+    });
+    const timer = window.setTimeout(settle, 2000);
+
+    return () => {
+      window.clearTimeout(timer);
+      // Undone before it settled (React's development double run, or a move
+      // in the first instants): the next run is still an arrival.
+      if (!settled) arrived.current = false;
+      settle();
+    };
   }, [pathname]);
 
   return (
