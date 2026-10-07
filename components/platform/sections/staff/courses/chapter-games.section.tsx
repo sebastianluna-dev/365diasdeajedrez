@@ -76,7 +76,10 @@ export function ChapterGamesSection({ chapter, games, errorCode, importReport }:
                 {game.lessonCount === 0 && (
                   <form action={deleteChapterGame.bind(null, chapter.courseId, chapter.id)}>
                     <input type="hidden" name="gameId" value={game.id} />
-                    <SubmitButton className="chapter-games__remove" pendingLabel="Quitando…">
+                    <SubmitButton
+                      className="platform-button platform-button_size_sm chapter-games__remove"
+                      pendingLabel="Quitando…"
+                    >
                       Quitar
                     </SubmitButton>
                   </form>

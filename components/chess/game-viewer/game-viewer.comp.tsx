@@ -643,13 +643,17 @@ export function GameViewer({
         <div className="game-viewer__onwards">
           {atEnd ? (
             <form action={onwards.finish}>
-              <button type="submit" className="game-viewer__onwards-button">
+              <button type="submit" className="platform-button platform-button_size_lg game-viewer__onwards-button">
                 {onwards.finishLabel}
               </button>
             </form>
           ) : (
             onwards.skipHref && (
-              <Link href={onwards.skipHref} title={onwards.skipTitle} className="game-viewer__onwards-button">
+              <Link
+                href={onwards.skipHref}
+                title={onwards.skipTitle}
+                className="platform-button platform-button_size_lg game-viewer__onwards-button"
+              >
                 {onwards.skipLabel}
               </Link>
             )

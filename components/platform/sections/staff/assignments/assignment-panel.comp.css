@@ -61,23 +61,6 @@
     color: var(--platform-accent-ink);
   }
 
-  & .assignment-panel__end {
-    padding: var(--platform-space-1) var(--platform-space-3);
-    border: 1px solid var(--platform-border);
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-muted);
-    font-family: inherit;
-    font-size: var(--platform-type-sm);
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  & .assignment-panel__end:hover {
-    color: var(--platform-text);
-    border-color: var(--platform-border-strong);
-  }
-
   & .assignment-panel__history {
     width: 100%;
     padding-top: var(--platform-space-4);

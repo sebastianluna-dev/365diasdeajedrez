@@ -137,7 +137,10 @@ export function LessonEditorSection({
                   action={deleteLesson.bind(null, lesson.courseId, lesson.chapterId)}
                 >
                   <input type="hidden" name="lessonId" value={lesson.id} />
-                  <SubmitButton className="lesson-editor__delete" pendingLabel="Eliminando…">
+                  <SubmitButton
+                    className="platform-button platform-button_variant_danger lesson-editor__delete"
+                    pendingLabel="Eliminando…"
+                  >
                     Eliminar lección
                   </SubmitButton>
                 </form>

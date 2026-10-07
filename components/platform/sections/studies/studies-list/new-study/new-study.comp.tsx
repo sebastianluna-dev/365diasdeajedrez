@@ -1,5 +1,6 @@
 "use client";
 
+import { PlusIcon } from "@/components/icons/plus-icon.comp";
 import { useRef, useState } from "react";
 import { createStudy } from "@/services/studies/studies.actions";
 import type { StudyKindOption } from "@/services/studies/studies.types";
@@ -30,7 +31,8 @@ export function NewStudy({ kinds }: NewStudyProps) {
     <div className="new-study">
       {/* Not the accent platform button: a quiet pill, with the sign drawn by
           the stylesheet, because the page's title is what leads here. */}
-      <button type="button" className="new-study__open" onClick={(event) => popup.current?.open(event)}>
+      <button type="button" className="platform-button new-study__open" onClick={(event) => popup.current?.open(event)}>
+        <PlusIcon variant="classic-solid" className="platform-button__icon" />
         Nuevo estudio
       </button>
 

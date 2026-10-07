@@ -100,7 +100,10 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
               </Link>
             )}
             {course.reviewCount > 0 ? (
-              <Link href={course.reviewHref} className="course-study-frame__review">
+              <Link
+                href={course.reviewHref}
+                className="platform-button platform-button_variant_ink platform-button_size_lg course-study-frame__review"
+              >
                 Repasar
                 <span
                   className="course-study-frame__review-count"
@@ -111,7 +114,10 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
               </Link>
             ) : (
               course.isReviewUpToDate && (
-                <span className="course-study-frame__review course-study-frame__review_state_off" aria-disabled="true">
+                <span
+                  className="platform-button platform-button_size_lg course-study-frame__review course-study-frame__review_state_off"
+                  aria-disabled="true"
+                >
                   Repasar
                   <span className="course-study-frame__review-status">Al día</span>
                 </span>

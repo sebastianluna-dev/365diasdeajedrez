@@ -109,7 +109,10 @@ export function MyCourseCard({ course }: MyCourseCardProps) {
       <div className="my-course-card__actions">
         {MOVE_TRAINER_ENABLED &&
           (course.reviewCount > 0 ? (
-            <Link href={course.reviewHref} className="my-course-card__review">
+            <Link
+              href={course.reviewHref}
+              className="platform-button platform-button_variant_ink platform-button_size_sm my-course-card__review"
+            >
               Repasar
               <span
                 className="my-course-card__review-count"
@@ -119,20 +122,26 @@ export function MyCourseCard({ course }: MyCourseCardProps) {
               </span>
             </Link>
           ) : (
-            <span className="my-course-card__review my-course-card__review_state_off" aria-disabled="true">
+            <span
+              className="platform-button platform-button_size_sm my-course-card__review my-course-card__review_state_off"
+              aria-disabled="true"
+            >
               Repasar
               {course.isReviewUpToDate && <span className="my-course-card__review-status">Al día</span>}
             </span>
           ))}
 
-        {/* The platform's quiet button, the one «Ver detalle» uses on the
-            dashboard: the card only gives it its size. */}
+        {/* The platform's quiet button, small, as «Repasar» is the ink one:
+            the card only gives them a common width, so the rows line up. */}
         {course.learnHref ? (
-          <Link href={course.learnHref} className="platform-button my-course-card__learn">
+          <Link href={course.learnHref} className="platform-button platform-button_size_sm my-course-card__learn">
             Aprender
           </Link>
         ) : (
-          <span className="platform-button my-course-card__learn my-course-card__learn_state_off" aria-disabled="true">
+          <span
+            className="platform-button platform-button_size_sm my-course-card__learn my-course-card__learn_state_off"
+            aria-disabled="true"
+          >
             Aprender
           </span>
         )}

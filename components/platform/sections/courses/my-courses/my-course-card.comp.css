@@ -120,32 +120,13 @@
     gap: var(--platform-space-3);
   }
 
+  /* The platform's buttons, small: «Repasar» the ink one, «Aprender» the
+     quiet one — not the accent: a list of courses is a column of these rows,
+     and a red block on each turned the page into a row of buttons. The card
+     gives them a common width alone, so the rows line up. */
   & .my-course-card__review,
   & .my-course-card__learn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--platform-space-3);
     min-width: 120px;
-    height: 36px;
-    padding: 0 var(--platform-space-6);
-    box-sizing: border-box;
-    border-radius: 8px;
-    font-size: var(--platform-type-sm);
-    font-weight: 700;
-    white-space: nowrap;
-  }
-
-  /* Written in the cream that goes on the ink, not in the surface: the ink is
-     dark in both themes, and the dark theme's surface on it does not read. */
-  & .my-course-card__review {
-    background: var(--platform-ink);
-    color: var(--platform-on-ink);
-  }
-
-  & .my-course-card__review:hover {
-    background: color-mix(in srgb, var(--platform-ink) 84%, var(--platform-on-ink));
-    color: var(--platform-on-ink);
   }
 
   & .my-course-card__review-count {
@@ -178,16 +159,6 @@
     color: var(--platform-success-ink);
     font-size: var(--platform-type-xs);
     font-weight: 800;
-  }
-
-  /* «Aprender» is the platform's default button, the quiet one. Not the
-     accent filled, and not the accent outlined either: a list of courses is
-     a column of these rows, and a red block on each one turned the page into
-     a row of buttons. The card only gives it its size, so what the button
-     looks like stays written in one place. */
-  & .my-course-card__learn {
-    padding: 0 var(--platform-space-6);
-    font-size: var(--platform-type-sm);
   }
 
   /* One that leads nowhere keeps its place, so the rows line up: the line

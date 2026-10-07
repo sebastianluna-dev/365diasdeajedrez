@@ -28,25 +28,6 @@
     height: 14px;
   }
 
-  /* The same confirmation with another trigger: on the study page the button
-     carries text, because there is room there and it competes with nothing. */
-  & .delete-study__open-wide {
-    padding: var(--platform-space-3) var(--platform-space-5);
-    border: 1px solid var(--platform-border);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    color: var(--platform-text-muted);
-    font-family: inherit;
-    font-size: var(--platform-type-lg);
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  & .delete-study__open-wide:hover {
-    border-color: var(--platform-danger);
-    color: var(--platform-danger);
-  }
-
   /* The cross is decorative; the real name is read by the screen reader, which
      otherwise would announce nothing. */
   & .delete-study__open-label {

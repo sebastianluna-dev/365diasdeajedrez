@@ -416,7 +416,10 @@ export function SyllabusList({
                 autoComplete="off"
               />
               {/* Out of sight while the field is empty (`:placeholder-shown`): Enter adds too. */}
-              <SubmitButton className="syllabus-list__new-submit" pendingLabel="Agregando…">
+              <SubmitButton
+                className="platform-button platform-button_variant_soft platform-button_size_sm syllabus-list__new-submit"
+                pendingLabel="Agregando…"
+              >
                 Agregar
               </SubmitButton>
             </form>

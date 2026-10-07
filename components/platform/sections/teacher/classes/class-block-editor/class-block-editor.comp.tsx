@@ -1,5 +1,7 @@
 "use client";
 
+import { ArrowDownIcon } from "@/components/icons/arrow-down-icon.comp";
+import { ArrowUpIcon } from "@/components/icons/arrow-up-icon.comp";
 import { useState } from "react";
 import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { CLASS_BLOCK_KIND, type ClassBlockKindCode } from "@/constants/platform/class-codes.const";
@@ -74,11 +76,11 @@ export function ClassBlockEditor({ classId, blocks, options, initialGameId }: Cl
                   <input type="hidden" name="direction" value="up" />
                   <button
                     type="submit"
-                    className="class-block-editor__control"
+                    className="platform-button platform-button_size_sm platform-button_shape_square class-block-editor__control"
                     aria-label="Subir bloque"
                     disabled={index === 0}
                   >
-                    ↑
+                    <ArrowUpIcon variant="classic-solid" className="platform-button__icon" />
                   </button>
                 </form>
 
@@ -87,11 +89,11 @@ export function ClassBlockEditor({ classId, blocks, options, initialGameId }: Cl
                   <input type="hidden" name="direction" value="down" />
                   <button
                     type="submit"
-                    className="class-block-editor__control"
+                    className="platform-button platform-button_size_sm platform-button_shape_square class-block-editor__control"
                     aria-label="Bajar bloque"
                     disabled={index === blocks.length - 1}
                   >
-                    ↓
+                    <ArrowDownIcon variant="classic-solid" className="platform-button__icon" />
                   </button>
                 </form>
 

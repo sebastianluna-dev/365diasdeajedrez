@@ -90,7 +90,7 @@ export function CourseCard({ course, levels }: CourseCardProps) {
 
           {/* Not a link of its own: it is the card's, which the title names. */}
           <span
-            className={`course-card__cta${isUnderway ? " course-card__cta_emphasis_strong" : ""}`}
+            className={`platform-button${isUnderway ? " platform-button_variant_soft" : ""} course-card__cta`}
             aria-hidden="true"
           >
             {course.isAdded ? course.ctaLabel : "Ver curso"}

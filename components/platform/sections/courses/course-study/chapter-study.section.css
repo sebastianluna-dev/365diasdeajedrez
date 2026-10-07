@@ -146,25 +146,10 @@
     color: var(--platform-accent-ink);
   }
 
-  /* Quiet, and the same on every card: no fill, outlined in grey. */
+  /* The platform's button, the same quiet one on every card. Only its place
+     is said here. */
   & .chapter-study__open {
     flex: none;
-    display: flex;
-    align-items: center;
-    height: 42px;
-    padding: 0 var(--platform-space-6);
-    border: 1px solid var(--platform-border-strong);
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text);
-    font-size: var(--platform-type-md);
-    font-weight: 700;
-    transition: background-color 150ms;
-  }
-
-  & .chapter-study__open:hover {
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text);
   }
 
   /* --- The chapters on either side ------------------------------------------ */
@@ -201,11 +186,5 @@
   & .chapter-study__neighbour:hover {
     background: var(--platform-surface-soft);
     color: var(--platform-text);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    & .chapter-study__open {
-      transition: none;
-    }
   }
 }

@@ -58,7 +58,10 @@ export function ShareCollection({ studyId, shares, students, layout = "panel" }:
 
               <form action={unshareStudyWithStudent.bind(null, studyId)}>
                 <input type="hidden" name="studentId" value={share.userId} />
-                <SubmitButton className="share-collection__remove" pendingLabel="Quitando…">
+                <SubmitButton
+                  className="platform-button platform-button_size_sm share-collection__remove"
+                  pendingLabel="Quitando…"
+                >
                   Quitar
                 </SubmitButton>
               </form>

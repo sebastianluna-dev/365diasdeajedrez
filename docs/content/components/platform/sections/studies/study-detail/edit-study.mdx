@@ -45,7 +45,7 @@ Editing a study's own data, in a [`PlatformPopup`](/components/platform/shared/p
 
 ## Markup & styling
 
-Block `.edit-study` (61 lines): the boxed trigger and the content. Until 2026-10-05 it also had an `inline` trigger, a word in the row of actions under the study's name beside the board; that row became [`StudySettings`](/components/platform/sections/studies/game-view/study-settings), three bars that open this popup through its handle and hand it `onDelete`.
+Block `.edit-study` (45 lines): the boxed trigger and the content. Until 2026-10-05 it also had an `inline` trigger, a word in the row of actions under the study's name beside the board; that row became [`StudySettings`](/components/platform/sections/studies/game-view/study-settings), three bars that open this popup through its handle and hand it `onDelete`.
 
 **Elements:** `.edit-study__open`, `.edit-study__form` (the content's padding), `.edit-study__kind` (the line for a kind that stays), `.edit-study__actions`, `.edit-study__danger`, `.edit-study__destroy` (the foot with «Eliminar estudio», only with `onDelete`). The fields are `PlatformForm`'s and draw themselves; the strip, the width and the frame are `PlatformPopup`'s.
 

@@ -79,7 +79,11 @@ export function EditStudy({
   return (
     <div className="edit-study">
       {trigger === "button" && (
-        <button type="button" className="edit-study__open" onClick={(event) => popup.current?.open(event)}>
+        <button
+          type="button"
+          className="platform-button edit-study__open"
+          onClick={(event) => popup.current?.open(event)}
+        >
           Editar datos
         </button>
       )}

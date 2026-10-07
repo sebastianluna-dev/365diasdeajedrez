@@ -139,7 +139,11 @@ export function GameReview({ pgn, canEdit, white, black, currentPath, onSelectPa
         <span className="game-review__note">
           Profundidad {runner.depth} · {canEdit ? "guardada en la partida" : "no se guarda: la partida no es tuya"}
         </span>
-        <button type="button" className="game-review__again" onClick={() => runner.start(pgn)}>
+        <button
+          type="button"
+          className="platform-button platform-button_size_sm game-review__again"
+          onClick={() => runner.start(pgn)}
+        >
           Volver a evaluar
         </button>
       </div>

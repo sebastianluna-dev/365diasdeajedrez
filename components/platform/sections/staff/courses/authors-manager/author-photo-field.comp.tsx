@@ -59,7 +59,12 @@ export function AuthorPhotoField({ authorName, defaultValue }: AuthorPhotoFieldP
 
       <div className="authors-manager__photo-actions">
         {hasPhoto && (
-          <button type="button" className="authors-manager__photo-remove" onClick={clear} disabled={isUploading}>
+          <button
+            type="button"
+            className="platform-row-action authors-manager__photo-remove"
+            onClick={clear}
+            disabled={isUploading}
+          >
             Quitar
           </button>
         )}

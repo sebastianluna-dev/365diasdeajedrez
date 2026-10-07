@@ -119,22 +119,6 @@
     gap: var(--platform-space-2);
   }
 
-  & .authors-manager__photo-remove {
-    padding: var(--platform-space-2) var(--platform-space-3);
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-subtle);
-    font-family: inherit;
-    font-size: var(--platform-type-md);
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  & .authors-manager__photo-remove:hover {
-    color: var(--platform-text);
-  }
-
   /* The band at the bottom: sunk a shade, with the note on one side and the
      buttons on the other. */
   & .authors-manager__foot {

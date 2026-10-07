@@ -92,23 +92,10 @@
     flex-wrap: wrap;
   }
 
-  /* Remove does not compete with the one that uploads: no box until you get close. */
+  /* Remove does not compete with the one that uploads: it is a word, the
+     platform's row action (`.platform-row-action`), at the row's end. */
   & .image-upload__remove {
     margin-left: auto;
-    padding: var(--platform-space-2) var(--platform-space-3);
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-subtle);
-    font-family: inherit;
-    font-size: var(--platform-type-lg);
-    font-weight: 600;
-    cursor: pointer;
-    transition: color 150ms;
-  }
-
-  & .image-upload__remove:hover {
-    color: var(--platform-danger);
   }
 
   /* Only what has just happened. There is no line here the rest of the time:
@@ -127,10 +114,5 @@
 
   & .image-upload__note_state_error {
     color: var(--platform-danger);
-  }
-
-  & .image-upload__remove:disabled {
-    opacity: 0.55;
-    cursor: default;
   }
 }

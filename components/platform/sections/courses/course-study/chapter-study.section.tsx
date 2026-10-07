@@ -94,7 +94,11 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
                     )}
 
                     <div className="chapter-study__lesson-foot">
-                      <Link href={lesson.href} className="chapter-study__open" aria-label={`Ver «${lesson.name}»`}>
+                      <Link
+                        href={lesson.href}
+                        className="platform-button chapter-study__open"
+                        aria-label={`Ver «${lesson.name}»`}
+                      >
                         Ver
                       </Link>
                     </div>

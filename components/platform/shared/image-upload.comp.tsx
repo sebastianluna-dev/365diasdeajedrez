@@ -146,7 +146,12 @@ export function ImageUpload({ action, defaultValue, label, aspectRatio = "21:9" 
         </button>
 
         {url && (
-          <button type="button" className="image-upload__remove" disabled={isUploading} onClick={() => void clear()}>
+          <button
+            type="button"
+            className="platform-row-action image-upload__remove"
+            disabled={isUploading}
+            onClick={() => void clear()}
+          >
             Quitar
           </button>
         )}

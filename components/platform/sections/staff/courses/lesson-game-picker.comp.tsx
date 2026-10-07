@@ -52,7 +52,10 @@ export function LessonGamePicker({ courseId, chapterId, lessonId, game, candidat
 
           <form action={save}>
             {/* Without `gameId` the action unlinks. */}
-            <SubmitButton className="lesson-game-picker__change" pendingLabel="Desvinculando…">
+            <SubmitButton
+              className="platform-button platform-button_size_sm lesson-game-picker__change"
+              pendingLabel="Desvinculando…"
+            >
               Desvincular
             </SubmitButton>
           </form>
@@ -108,7 +111,10 @@ export function LessonGamePicker({ courseId, chapterId, lessonId, game, candidat
 
               <form action={save}>
                 <input type="hidden" name="gameId" value={candidate.id} />
-                <SubmitButton className="lesson-game-picker__link" pendingLabel="Vinculando…">
+                <SubmitButton
+                  className="platform-button platform-button_size_sm lesson-game-picker__link"
+                  pendingLabel="Vinculando…"
+                >
                   Vincular
                 </SubmitButton>
               </form>

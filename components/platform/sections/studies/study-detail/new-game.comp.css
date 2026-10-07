@@ -1,10 +1,4 @@
 .new-game {
-  & .new-game__open {
-    padding: var(--platform-space-3) var(--platform-space-6);
-    border-radius: 8px;
-    font-size: var(--platform-type-lg);
-  }
-
   /* The popup's content pads itself: the strip above it is `PlatformPopup`'s.
      The subtitle is the content's first line, under the strip's rule. */
   & .new-game__subtitle {

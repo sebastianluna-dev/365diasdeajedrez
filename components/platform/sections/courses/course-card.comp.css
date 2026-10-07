@@ -148,26 +148,12 @@
     color: var(--platform-text-subtle);
   }
 
+  /* The platform's button, drawn and not a link of its own (the card is the
+     link). The course in progress is the one the list is opened for: its
+     button is the soft one, the accent's tint (2026-10-07; it was filled with
+     the accent, a wall of red on a list of courses under way). */
   & .course-card__cta {
     flex: none;
-    display: flex;
-    align-items: center;
-    height: 40px;
-    padding: 0 var(--platform-space-5);
-    border: 1px solid var(--platform-border-strong);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    font-size: var(--platform-type-sm);
-    font-weight: 800;
-    white-space: nowrap;
-  }
-
-  /* The course in progress is the one the list is opened for: its button is
-     the only filled one. */
-  & .course-card__cta_emphasis_strong {
-    color: var(--platform-on-accent);
-    border-color: transparent;
-    background: var(--platform-accent);
   }
 
   @media (prefers-reduced-motion: reduce) {

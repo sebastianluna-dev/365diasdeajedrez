@@ -85,31 +85,12 @@
     gap: var(--platform-space-3);
   }
 
+  /* «Aprender» and «Repasar» are the platform's buttons, large (`_size_lg`):
+     the primary one, one of the few places that earn the accent, and the ink
+     one under it. Their size is the button's; the frame says nothing about
+     it. The count goes inside «Repasar», after the word. */
   & .course-study-frame__review {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     gap: var(--platform-space-3);
-    height: 50px;
-    border-radius: 8px;
-    font-size: var(--platform-type-lg);
-    font-weight: 800;
-  }
-
-  /* «Aprender» is the platform's primary button, large (`_size_lg`): one of
-     the few places that earn the accent, the reason the screen exists. Its
-     size is the button's, so the frame says nothing about it. */
-
-  /* Written in the cream that goes on the ink, not in the surface: the ink is
-     dark in both themes, and the dark theme's surface on it does not read. */
-  & .course-study-frame__review {
-    background: var(--platform-ink);
-    color: var(--platform-on-ink);
-  }
-
-  & .course-study-frame__review:hover {
-    background: color-mix(in srgb, var(--platform-ink) 84%, var(--platform-on-ink));
-    color: var(--platform-on-ink);
   }
 
   & .course-study-frame__review-count {

@@ -1,5 +1,6 @@
 "use client";
 
+import { PlusIcon } from "@/components/icons/plus-icon.comp";
 import { useRef, useState, useTransition } from "react";
 import { PGN_MAX_GAMES } from "@/constants/platform/content-limits.const";
 import { copyClassGamesToStudy, createStudyGame, importPgnGames } from "@/services/studies/studies.actions";
@@ -53,6 +54,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
   return (
     <div className="new-game">
       <button type="button" className="platform-button new-game__open" onClick={(event) => popup.current?.open(event)}>
+        <PlusIcon variant="classic-solid" className="platform-button__icon" />
         Nueva partida
       </button>
 

@@ -1,5 +1,7 @@
 "use client";
 
+import { ArrowDownIcon } from "@/components/icons/arrow-down-icon.comp";
+import { ArrowUpIcon } from "@/components/icons/arrow-up-icon.comp";
 import { useState } from "react";
 import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import {
@@ -126,11 +128,11 @@ export function ExerciseEditor({ courseId, chapterId, lessonId, exercises, modes
                   <input type="hidden" name="direction" value="up" />
                   <button
                     type="submit"
-                    className="exercise-editor__control"
+                    className="platform-button platform-button_size_sm platform-button_shape_square exercise-editor__control"
                     aria-label="Subir ejercicio"
                     disabled={index === 0}
                   >
-                    ↑
+                    <ArrowUpIcon variant="classic-solid" className="platform-button__icon" />
                   </button>
                 </form>
                 <form action={moveExercise.bind(null, courseId, chapterId, lessonId)}>
@@ -138,11 +140,11 @@ export function ExerciseEditor({ courseId, chapterId, lessonId, exercises, modes
                   <input type="hidden" name="direction" value="down" />
                   <button
                     type="submit"
-                    className="exercise-editor__control"
+                    className="platform-button platform-button_size_sm platform-button_shape_square exercise-editor__control"
                     aria-label="Bajar ejercicio"
                     disabled={index === exercises.length - 1}
                   >
-                    ↓
+                    <ArrowDownIcon variant="classic-solid" className="platform-button__icon" />
                   </button>
                 </form>
                 {/* The arrows above are controls, drawn as keys; these two are

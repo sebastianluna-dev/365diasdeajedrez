@@ -392,21 +392,10 @@
     box-shadow: 0 2px 0 var(--platform-selection);
   }
 
+  /* The platform's soft button, small: adding what is typed is what matters
+     on this line without being the page's reason. */
   & .syllabus-list__new-submit {
     flex: none;
-    padding: var(--platform-space-2) var(--platform-space-4);
-    border: 0;
-    border-radius: 8px;
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
-    font-family: inherit;
-    font-size: var(--platform-type-md);
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  & .syllabus-list__new-submit:hover:not(:disabled) {
-    background: var(--platform-accent-wash);
   }
 
   /* Nothing typed, nothing to add: the button waits out of sight. */

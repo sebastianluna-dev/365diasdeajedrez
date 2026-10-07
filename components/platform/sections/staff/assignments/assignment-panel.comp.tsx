@@ -117,7 +117,10 @@ export function AssignmentPanel(props: AssignmentPanelProps) {
 
               <form action={endAssignment.bind(null, assignment.assignmentId)}>
                 <input type="hidden" name="returnTo" value={returnTo} />
-                <SubmitButton className="assignment-panel__end" pendingLabel="Terminando…">
+                <SubmitButton
+                  className="platform-button platform-button_size_sm assignment-panel__end"
+                  pendingLabel="Terminando…"
+                >
                   Terminar
                 </SubmitButton>
               </form>

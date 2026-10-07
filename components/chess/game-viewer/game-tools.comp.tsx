@@ -1,5 +1,6 @@
 "use client";
 
+import { SpinnerIcon } from "@/components/icons/spinner-icon.comp";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { commentTextAt, parseEditableGame, serializeGame, setCommentText, setNags } from "@/lib/chess/pgn-edit";
 import {
@@ -317,7 +318,11 @@ export function GameTools({
               <span className="game-tools__share-label">FEN de esta posición</span>
               <span className="game-tools__share-value game-tools__share-value_kind_code">{fen}</span>
             </div>
-            <button type="button" className="game-tools__share-button" onClick={() => void copy(fen, "fen")}>
+            <button
+              type="button"
+              className="platform-button platform-button_size_sm game-tools__share-button"
+              onClick={() => void copy(fen, "fen")}
+            >
               {copied === "fen" ? "Copiado" : "Copiar"}
             </button>
           </div>
@@ -327,7 +332,11 @@ export function GameTools({
               <span className="game-tools__share-label">PGN completo</span>
               <span className="game-tools__share-value">Con cabeceras, comentarios y signos</span>
             </div>
-            <button type="button" className="game-tools__share-button" onClick={() => void copy(pgn, "pgn")}>
+            <button
+              type="button"
+              className="platform-button platform-button_size_sm game-tools__share-button"
+              onClick={() => void copy(pgn, "pgn")}
+            >
               {copied === "pgn" ? "Copiado" : "Copiar"}
             </button>
           </div>
@@ -344,7 +353,7 @@ export function GameTools({
             <button
               type="button"
               disabled={plainPgn === null}
-              className="game-tools__share-button"
+              className="platform-button platform-button_size_sm game-tools__share-button"
               onClick={() => plainPgn && void copy(plainPgn, "plain")}
             >
               {copied === "plain" ? "Copiado" : "Copiar"}
@@ -355,17 +364,25 @@ export function GameTools({
             <button
               type="button"
               disabled={exporting !== null}
-              className="game-tools__export-button"
+              aria-busy={exporting === "image" || undefined}
+              className="platform-button game-tools__export-button"
               onClick={() => void exportImage()}
             >
+              {exporting === "image" && (
+                <SpinnerIcon variant="classic-solid" className="platform-button__icon platform-button__spinner" />
+              )}
               {exporting === "image" ? "Generando…" : "Posición (PNG)"}
             </button>
             <button
               type="button"
               disabled={exporting !== null}
-              className="game-tools__export-button"
+              aria-busy={exporting === "gif" || undefined}
+              className="platform-button game-tools__export-button"
               onClick={() => void exportGif()}
             >
+              {exporting === "gif" && (
+                <SpinnerIcon variant="classic-solid" className="platform-button__icon platform-button__spinner" />
+              )}
               {exporting === "gif" ? "Generando…" : "Partida (GIF)"}
             </button>
           </div>

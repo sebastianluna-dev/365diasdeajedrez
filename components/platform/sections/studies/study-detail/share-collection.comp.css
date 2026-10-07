@@ -80,24 +80,10 @@
     color: var(--platform-text-subtle);
   }
 
+  /* The platform's button, small (`.platform-button_size_sm`): a row's way
+     out of the collection. Only its place is said here. */
   & .share-collection__remove {
     flex: none;
-    padding: var(--platform-space-2) var(--platform-space-3);
-    border: 1px solid var(--platform-border);
-    border-radius: 1000px;
-    background: transparent;
-    color: var(--platform-text-muted);
-    font-family: inherit;
-    font-size: var(--platform-type-sm);
-    font-weight: 600;
-    cursor: pointer;
-    transition: 150ms;
-    transition-property: background-color, border-color, color;
-  }
-
-  & .share-collection__remove:hover {
-    border-color: var(--platform-danger);
-    color: var(--platform-danger);
   }
 
   & .share-collection__empty {

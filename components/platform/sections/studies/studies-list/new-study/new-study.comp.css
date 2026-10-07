@@ -1,35 +1,6 @@
 .new-study {
   flex: none;
 
-  /* The trigger: a quiet pill with the sign in front, quieter than the
-     accent button because it is the page's one action and sits by the
-     title. White, because it rests on the canvas; grey on hover. */
-  & .new-study__open {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--platform-space-2);
-    padding: var(--platform-space-4) var(--platform-space-6);
-    border: 0;
-    border-radius: 8px;
-    background: var(--platform-surface);
-    color: var(--platform-text);
-    font-family: inherit;
-    font-size: var(--platform-type-lg);
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    cursor: pointer;
-  }
-
-  & .new-study__open::before {
-    content: "+";
-    font-size: var(--platform-type-xl);
-    line-height: 1;
-  }
-
-  & .new-study__open:hover {
-    background: var(--platform-surface-sunken);
-  }
-
   /* The popup's strip (the name, the cross) is `PlatformPopup`'s; the
      content under it is this form, which pads itself to the strip's 24px:
      body and footer band stack with no gap of their own. */

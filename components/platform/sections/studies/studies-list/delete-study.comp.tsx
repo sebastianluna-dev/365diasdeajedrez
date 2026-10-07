@@ -79,7 +79,11 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
           <span className="delete-study__open-label">Eliminar «{name}»</span>
         </button>
       ) : trigger === "button" ? (
-        <button type="button" className="delete-study__open-wide" onClick={(event) => confirm.current?.open(event)}>
+        <button
+          type="button"
+          className="platform-button platform-button_variant_danger delete-study__open-wide"
+          onClick={(event) => confirm.current?.open(event)}
+        >
           Eliminar estudio
         </button>
       ) : null}
