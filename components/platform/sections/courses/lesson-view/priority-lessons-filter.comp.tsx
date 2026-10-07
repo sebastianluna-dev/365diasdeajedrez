@@ -26,6 +26,9 @@ export function PriorityLessonsFilter({ action, enabled }: PriorityLessonsFilter
       <PlatformSwitch
         label="Sólo lecciones de prioridad"
         defaultChecked={enabled}
+        // A setting of the screen one studies on, not a form being filled in:
+        // the brand's red, like the rest of the outline.
+        tone="accent"
         onCheckedChange={() => formRef.current?.requestSubmit()}
       />
     </form>

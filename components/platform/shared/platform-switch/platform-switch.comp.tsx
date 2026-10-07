@@ -18,6 +18,13 @@ interface PlatformSwitchProps {
   defaultChecked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
   disabled?: boolean;
+  /**
+   * The colour of a switch that is on and of its focus ring. `selection`
+   * (default) is the blue of filling in a form; `accent` the brand's red, for
+   * a setting of a screen one studies on, outside any form to fill in (the
+   * lesson outline's priority filter).
+   */
+  tone?: "selection" | "accent";
   /** The host's class for the row, to lay it out where it goes. */
   className?: string;
 }
@@ -37,13 +44,17 @@ export function PlatformSwitch(props: PlatformSwitchProps) {
   return <Row key={savedValueKey(props.defaultChecked)} {...props} />;
 }
 
-function Row({ label, hint, className, ...rootProps }: PlatformSwitchProps) {
+function Row({ label, hint, tone = "selection", className, ...rootProps }: PlatformSwitchProps) {
   const labelId = useId();
   const hintId = useId();
 
   return (
     // Holds the hidden native checkbox the primitive positions beside the row.
-    <div className={className ? `platform-switch ${className}` : "platform-switch"}>
+    <div
+      className={["platform-switch", tone === "accent" && "platform-switch_tone_accent", className]
+        .filter(Boolean)
+        .join(" ")}
+    >
       <Switch.Root
         aria-labelledby={labelId}
         aria-describedby={hint ? hintId : undefined}

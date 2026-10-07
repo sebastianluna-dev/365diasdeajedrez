@@ -4,14 +4,14 @@ description: "An on/off that takes effect the moment it is pressed, on Radix's S
 
 # `PlatformSwitch`
 
-|            |                                                                                                                     |
-| ---------- | ------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/platform-switch/platform-switch.comp.tsx`                                               |
-| Kind       | Client Component                                                                                                    |
-| Stylesheet | `platform-switch.comp.css` → block `.platform-switch`                                                               |
-| Story      | `platform-switch.stories.tsx` (`platform/shared/PlatformSwitch`)                                                    |
-| Used by    | [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline) («Sólo lecciones de prioridad») |
-| Uses       | `Switch` from `radix-ui`; `savedValueKey`                                                                           |
+|            |                                                                                                                                                            |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-switch/platform-switch.comp.tsx`                                                                                      |
+| Kind       | Client Component                                                                                                                                           |
+| Stylesheet | `platform-switch.comp.css` → block `.platform-switch`                                                                                                      |
+| Story      | `platform-switch.stories.tsx` (`platform/shared/PlatformSwitch`)                                                                                           |
+| Used by    | [`PriorityLessonsFilter`](/components/platform/sections/courses/lesson-view/priority-lessons-filter) («Sólo lecciones de prioridad», in the accent's tone) |
+| Uses       | `Switch` from `radix-ui`; `savedValueKey`                                                                                                                  |
 
 ## Purpose
 
@@ -21,17 +21,18 @@ The whole row is the switch (the «C» of the 2026-10-06 checkbox study): it nee
 
 ## Props
 
-| Prop              | Type                         | Required | Meaning                                                                                                 |
-| ----------------- | ---------------------------- | -------- | ------------------------------------------------------------------------------------------------------- |
-| `label`           | `string`                     | yes      | What is switched on, at the left of the row. It is the switch's name (`aria-labelledby`).               |
-| `hint`            | `string`                     | no       | A line under the label: what switching it on does. It is the switch's description (`aria-describedby`). |
-| `name`            | `string`                     | no       | Name of the hidden native checkbox, for a switch inside a form.                                         |
-| `form`            | `string`                     | no       | Id of the form it belongs to, when it is drawn outside it.                                              |
-| `checked`         | `boolean`                    | no       | Controlled state.                                                                                       |
-| `defaultChecked`  | `boolean`                    | no       | Initial state.                                                                                          |
-| `onCheckedChange` | `(checked: boolean) => void` | no       | Called with the new state: where the effect is set off (the outline submits its form here).             |
-| `disabled`        | `boolean`                    | no       |                                                                                                         |
-| `className`       | `string`                     | no       | The host's class for the row, to lay it out where it goes.                                              |
+| Prop              | Type                         | Required | Meaning                                                                                                                                                                                                                                                               |
+| ----------------- | ---------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `label`           | `string`                     | yes      | What is switched on, at the left of the row. It is the switch's name (`aria-labelledby`).                                                                                                                                                                             |
+| `hint`            | `string`                     | no       | A line under the label: what switching it on does. It is the switch's description (`aria-describedby`).                                                                                                                                                               |
+| `name`            | `string`                     | no       | Name of the hidden native checkbox, for a switch inside a form.                                                                                                                                                                                                       |
+| `form`            | `string`                     | no       | Id of the form it belongs to, when it is drawn outside it.                                                                                                                                                                                                            |
+| `checked`         | `boolean`                    | no       | Controlled state.                                                                                                                                                                                                                                                     |
+| `defaultChecked`  | `boolean`                    | no       | Initial state.                                                                                                                                                                                                                                                        |
+| `onCheckedChange` | `(checked: boolean) => void` | no       | Called with the new state: where the effect is set off (the outline submits its form here).                                                                                                                                                                           |
+| `disabled`        | `boolean`                    | no       |                                                                                                                                                                                                                                                                       |
+| `tone`            | `"selection" \| "accent"`    | no       | The colour of a switch that is on and of its focus ring. `selection` (default) is the blue of filling in a form; `accent` the brand's red, for a setting of a screen one studies on, outside any form to fill in — the lesson outline's priority filter (2026-10-06). |
+| `className`       | `string`                     | no       | The host's class for the row, to lay it out where it goes.                                                                                                                                                                                                            |
 
 ## Behaviour
 
@@ -45,9 +46,11 @@ Block `.platform-switch`, holding the hidden native checkbox; the row is `.platf
 
 **Elements:** `.platform-switch__control` (the primitive's button), `.platform-switch__text`, `.platform-switch__label`, `.platform-switch__hint`, `.platform-switch__track`, `.platform-switch__thumb` (the primitive's thumb)
 
+**Modifiers:** `.platform-switch_tone_accent` on the block (`tone="accent"`): the track of a switch that is on and the focus ring in the accent (`--platform-accent`, `--platform-accent-ink`) instead of the selection's blue.
+
 **States (data attributes set by the primitive):** `[data-state="checked"]` on the row and the thumb, `[data-disabled]` on the row.
 
-**Tokens:** `--platform-border`, `--platform-border-strong`, `--platform-selection`, `--platform-shadow-lift`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-border`, `--platform-border-strong`, `--platform-selection`, `--platform-shadow-lift`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
 
 No media queries. The knob's slide and the colour transitions are off under `prefers-reduced-motion`.
 

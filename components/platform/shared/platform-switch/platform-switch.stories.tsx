@@ -28,6 +28,11 @@ Reference page: [Components › PlatformSwitch](/components/platform/shared/plat
     hint: { control: "text", description: "A line under the label: what switching it on does." },
     defaultChecked: { control: "boolean" },
     disabled: { control: "boolean" },
+    tone: {
+      control: "inline-radio",
+      options: ["selection", "accent"],
+      description: "`accent` for a setting outside any form to fill in.",
+    },
   },
   decorators: [
     (Story) => (
@@ -58,6 +63,11 @@ export const WithHint: Story = {
       <PlatformSwitch {...args} defaultChecked={false} label="Módulo de análisis" hint="Apagado, no gasta batería." />
     </div>
   ),
+};
+
+/** The accent's tone, for a setting of a screen one studies on: on, the track is the brand's red. */
+export const AccentTone: Story = {
+  args: { tone: "accent" },
 };
 
 /** Switched off: the label in the faint grey, and the pointer no longer promises. */

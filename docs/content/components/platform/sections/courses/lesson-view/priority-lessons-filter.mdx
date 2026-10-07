@@ -17,6 +17,8 @@ description: "The lesson outline's «Sólo lecciones de prioridad»: a PlatformS
 
 The outline's filter, split off as the column's client leaf because a switch acts on `onCheckedChange`, a function the Server Component cannot hand over. It is still a form: pressing the switch calls `requestSubmit()` on it, the server action writes the preference and the page is drawn again, and where it comes back to is the lesson being read, which only the browser knows (`CurrentPathField`'s hidden `returnTo`).
 
+The switch is drawn in the accent's tone (`tone="accent"`): on, its track is the brand's red, and so is its focus ring. The selection's blue is for filling in a form, and this is a setting of the screen one studies on (2026-10-06).
+
 ## Props
 
 | Prop      | Type                                    | Required | Meaning                                                                        |

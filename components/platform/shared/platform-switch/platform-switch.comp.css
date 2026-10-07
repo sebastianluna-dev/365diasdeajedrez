@@ -94,6 +94,16 @@
     transform: translateX(18px);
   }
 
+  /* On a screen one studies on, the brand's red: the blue is for filling in a
+     form, and there the accent's red is not taken for an error. */
+  &.platform-switch_tone_accent .platform-switch__control:focus-visible {
+    outline-color: var(--platform-accent-ink);
+  }
+
+  &.platform-switch_tone_accent .platform-switch__control[data-state="checked"] .platform-switch__track {
+    background: var(--platform-accent);
+  }
+
   & .platform-switch__control[data-disabled] {
     color: var(--platform-text-faint);
     cursor: default;
