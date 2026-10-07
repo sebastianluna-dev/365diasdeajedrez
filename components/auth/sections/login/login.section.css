@@ -76,8 +76,8 @@
   }
 
   & .login__input:focus {
-    outline: 2px solid var(--platform-accent-soft);
-    border-color: var(--platform-accent);
+    outline: 2px solid var(--platform-selection-soft);
+    border-color: var(--platform-selection);
   }
 
   & .login__error {

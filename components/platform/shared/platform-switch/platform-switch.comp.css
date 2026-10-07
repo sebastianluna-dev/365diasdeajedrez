@@ -1,6 +1,6 @@
 /* A row that is the switch. Off, it sinks into the neutral grey; on, it is
-   the white of a card lifted off what holds it, and its knob has crossed into
-   the accent. */
+   the white of a card lifted off what holds it, and its knob has crossed onto
+   the selection's blue. */
 .platform-switch {
   /* Holds the hidden native checkbox the primitive positions beside the row. */
   position: relative;
@@ -70,7 +70,7 @@
   }
 
   & .platform-switch__control[data-state="checked"] .platform-switch__track {
-    background: var(--platform-accent);
+    background: var(--platform-selection);
   }
 
   & .platform-switch__thumb {

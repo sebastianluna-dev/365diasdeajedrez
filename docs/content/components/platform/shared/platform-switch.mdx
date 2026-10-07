@@ -1,5 +1,5 @@
 ---
-description: "An on/off that takes effect the moment it is pressed, on Radix's Switch primitive: the whole row is the switch, grey and sunk when off, a white card lifted with the knob on the accent when on."
+description: "An on/off that takes effect the moment it is pressed, on Radix's Switch primitive: the whole row is the switch, grey and sunk when off, a white card lifted with the knob on the selection's blue when on."
 ---
 
 # `PlatformSwitch`
@@ -41,13 +41,13 @@ The whole row is the switch (the «C» of the 2026-10-06 checkbox study): it nee
 
 ## Markup & styling
 
-Block `.platform-switch`, holding the hidden native checkbox; the row is `.platform-switch__control`, the label and the hint at the left and the track at the right. **Off**, the row sinks into the neutral grey (`--platform-surface-neutral`) and the track is grey; **on**, it is the white of a card lifted off what holds it (`--platform-shadow-lift`) and the knob has crossed onto the accent. The hint is in the muted grey on the grey row and in the subtle one on the white, each the grey that reads on its fill.
+Block `.platform-switch`, holding the hidden native checkbox; the row is `.platform-switch__control`, the label and the hint at the left and the track at the right. **Off**, the row sinks into the neutral grey (`--platform-surface-neutral`) and the track is grey; **on**, it is the white of a card lifted off what holds it (`--platform-shadow-lift`) and the knob has crossed onto the selection's blue (`--platform-selection`). The hint is in the muted grey on the grey row and in the subtle one on the white, each the grey that reads on its fill.
 
 **Elements:** `.platform-switch__control` (the primitive's button), `.platform-switch__text`, `.platform-switch__label`, `.platform-switch__hint`, `.platform-switch__track`, `.platform-switch__thumb` (the primitive's thumb)
 
 **States (data attributes set by the primitive):** `[data-state="checked"]` on the row and the thumb, `[data-disabled]` on the row.
 
-**Tokens:** `--platform-accent`, `--platform-border`, `--platform-border-strong`, `--platform-shadow-lift`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+**Tokens:** `--platform-border`, `--platform-border-strong`, `--platform-selection`, `--platform-shadow-lift`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
 
 No media queries. The knob's slide and the colour transitions are off under `prefers-reduced-motion`.
 

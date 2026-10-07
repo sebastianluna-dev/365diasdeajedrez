@@ -113,8 +113,8 @@
 
   & .course-authors__input:focus {
     outline: none;
-    border-color: var(--platform-accent);
-    box-shadow: 0 0 0 3px var(--platform-accent-soft);
+    border-color: var(--platform-selection);
+    box-shadow: 0 0 0 3px var(--platform-selection-soft);
   }
 
   & .course-authors__suggestions {
@@ -147,7 +147,7 @@
   & .course-authors__suggestion_state_first,
   & .course-authors__suggestion:hover,
   & .course-authors__suggestion:focus-visible {
-    background: var(--platform-accent-wash);
+    background: var(--platform-selection-wash);
   }
 
   & .course-authors__suggestion-name {

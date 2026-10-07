@@ -152,7 +152,7 @@
   }
 
   & .syllabus-list__grip:focus-visible {
-    outline: 2px solid var(--platform-accent);
+    outline: 2px solid var(--platform-selection);
     outline-offset: 2px;
   }
 
@@ -389,7 +389,7 @@
      ring is a rule under the text. */
   & .syllabus-list__new-input:focus {
     outline: none;
-    box-shadow: 0 2px 0 var(--platform-accent-ink);
+    box-shadow: 0 2px 0 var(--platform-selection);
   }
 
   & .syllabus-list__new-submit {

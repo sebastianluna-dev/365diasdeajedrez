@@ -24,8 +24,8 @@
   }
 
   & .platform-date-picker__trigger:focus-visible {
-    outline: 2px solid var(--platform-accent-soft);
-    border-color: var(--platform-accent);
+    outline: 2px solid var(--platform-selection-soft);
+    border-color: var(--platform-selection);
   }
 
   & .platform-date-picker__trigger[data-placeholder] {
@@ -162,32 +162,33 @@
   }
 
   & .platform-date-picker__day:hover:not(:disabled) {
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
+    background: var(--platform-selection-soft);
+    color: var(--platform-selection);
   }
 
   & .platform-date-picker__day:focus-visible {
-    outline: 2px solid var(--platform-accent);
+    outline: 2px solid var(--platform-selection);
     outline-offset: -2px;
   }
 
-  /* Today is underlined by a dot; the chosen day is the filled square. */
+  /* Today is underlined, in the text's ink: in the accent's red it read as a
+     day in trouble; the chosen day is the filled blue square. */
   & .platform-date-picker__day[aria-current="date"] {
     font-weight: 700;
-    box-shadow: inset 0 -3px 0 var(--platform-accent);
+    box-shadow: inset 0 -3px 0 var(--platform-text);
   }
 
   & .platform-date-picker__day.platform-date-picker__day_selected {
-    background: var(--platform-accent);
-    color: var(--platform-on-accent);
+    background: var(--platform-selection);
+    color: var(--platform-on-selection);
     font-weight: 700;
     box-shadow: none;
   }
 
-  /* The ring of a day is the accent, which is this one's fill: here it is
-     drawn in what is written on the accent, a step inside the edge. */
+  /* The ring of a day is the selection's blue, which is this one's fill: here
+     it is drawn in what is written on that blue, a step inside the edge. */
   & .platform-date-picker__day.platform-date-picker__day_selected:focus-visible {
-    outline-color: var(--platform-on-accent);
+    outline-color: var(--platform-on-selection);
     outline-offset: -4px;
   }
 

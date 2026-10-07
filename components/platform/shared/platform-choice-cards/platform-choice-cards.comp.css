@@ -28,19 +28,20 @@
   }
 
   /* The platform's own ring stays: a card that is already chosen has the
-     accent's border, so a pale ring would be all that says where the focus is. */
+     selection's border, so a pale ring would be all that says where the focus is. */
   & .platform-choice-cards__card:focus-visible {
-    border-color: var(--platform-accent);
+    border-color: var(--platform-selection);
   }
 
-  /* The chosen one: accent border and wash, and its description in the accent ink. */
+  /* The chosen one: the selection's border and wash, and its description in
+     its blue. Not the accent: in the light theme it is the red of an error. */
   & .platform-choice-cards__card[data-state="checked"] {
-    border-color: var(--platform-accent);
-    background: var(--platform-accent-wash);
+    border-color: var(--platform-selection);
+    background: var(--platform-selection-wash);
   }
 
   & .platform-choice-cards__card[data-state="checked"] .platform-choice-cards__description {
-    color: var(--platform-accent-ink);
+    color: var(--platform-selection);
   }
 
   & .platform-choice-cards__card[data-disabled] {
@@ -49,7 +50,7 @@
   }
 
   /* The mark in the corner: an empty ring, and on the chosen card the same
-     ring thickened in the accent around a white heart. A circle, the mark of a
+     ring thickened in the selection's blue around a white heart. A circle, the mark of a
      radio; `PlatformCheckCards` draws a square for its several. */
   & .platform-choice-cards__mark {
     position: absolute;
@@ -67,7 +68,7 @@
 
   & .platform-choice-cards__card[data-state="checked"] .platform-choice-cards__mark {
     border-width: 6px;
-    border-color: var(--platform-accent);
+    border-color: var(--platform-selection);
   }
 
   & .platform-choice-cards__icon {
@@ -90,7 +91,7 @@
   }
 
   & .platform-choice-cards__card[data-state="checked"] .platform-choice-cards__meta {
-    color: var(--platform-accent-ink);
+    color: var(--platform-selection);
   }
 
   & .platform-choice-cards__description {

@@ -105,6 +105,24 @@
      that happens to be warm. */
   --platform-accent-mist: light-dark(#f8f4f4, #221a15);
 
+  /* WHAT IS CHOSEN AND WHERE THE FOCUS IS: a blue of its own, and not the
+     accent. In the light theme the accent is the very red of an error
+     (`--platform-danger`), so a field with the focus and a field with an
+     error had the same border, and a ticked box read as a box in trouble
+     (2026-10-06). The accent stays for the brand — the main buttons, the
+     logo, where one is — and red on a control now only means an error.
+     The blue is the focus ring, the border of a field being typed in, a
+     ticked box, a chosen card, a switch that is on, a chosen day. It is
+     also its own ink: 6.8:1 on the white surface, 5.5:1 on its soft tint. */
+  --platform-selection: light-dark(#0a5fb4, #5aaeff);
+  /* Its pale tint: the ring around a field with the focus, a highlighted
+     option of a list, a day under the pointer. */
+  --platform-selection-soft: light-dark(#d9e9fb, #1d3048);
+  /* Fainter still: the fill of a chosen card. */
+  --platform-selection-wash: light-dark(#eef5fd, #17222f);
+  /* What is drawn on a fill of it: the tick in a box, a chosen day. */
+  --platform-on-selection: light-dark(#ffffff, #14100d);
+
   /* The grey of the accent's family: a grey that leans on it instead of a
      neutral one. It is what the marks of a lesson and the thread between them
      are drawn in — over the mist a neutral grey disappears, and a stop nobody
@@ -284,10 +302,10 @@
   color-scheme: dark;
 }
 
-/* The global focus of globals.css is an orange meant for a dark background; on
-   the platform's light one the accent's ink is used, which does contrast. */
+/* The global focus of globals.css is an orange meant for a dark background;
+   the platform's is the selection's blue, which no error shares. */
 .platform-theme :focus-visible {
-  outline: 2px solid var(--platform-accent-ink);
+  outline: 2px solid var(--platform-selection);
   outline-offset: 2px;
 }
 

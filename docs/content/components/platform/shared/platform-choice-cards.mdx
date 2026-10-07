@@ -35,8 +35,8 @@ When a choice has two to four options and each deserves a line of explanation, a
 
 ## Behaviour
 
-- The chosen card carries `data-state="checked"` from the primitive; the stylesheet gives it the accent border and wash and paints its description in the accent ink.
-- **A radio's mark in the corner** (2026-10-06): a 20px ring, always mounted so nothing shifts, that on the chosen card thickens to a 6px ring of the accent around the white of the surface. It is a plain `<span>` drawn from the card's own `data-state`. A circle, because only one is chosen; [`PlatformCheckCards`](/components/platform/shared/platform-check-cards) draws a square for its several, so the two read apart before a word is read.
+- The chosen card carries `data-state="checked"` from the primitive; the stylesheet gives it the selection's border and wash (`--platform-selection`, `--platform-selection-wash`) and paints its description in that blue.
+- **A radio's mark in the corner** (2026-10-06): a 20px ring, always mounted so nothing shifts, that on the chosen card thickens to a 6px ring of the selection's blue around the white of the surface. It is a plain `<span>` drawn from the card's own `data-state`. A circle, because only one is chosen; [`PlatformCheckCards`](/components/platform/shared/platform-check-cards) draws a square for its several, so the two read apart before a word is read.
 - Clicking anywhere on a card chooses it. Space chooses the focused one; Up/Down/Left/Right move the choice and wrap around.
 - **It starts again from what was saved.** The group is mounted under the value it opens with (`savedValueKey(defaultValue)`), so a save that changed the choice mounts it anew from it. React resets a `<form action>` when its action finishes, and the primitive answers the form's `reset` by going back to the value it had when it was MOUNTED. On a form that stays on screen after saving, that is the value from before the save: until 2026-09-28 the control showed what had just been replaced, the page had to be reloaded to see what was stored, and saving again without reloading sent the old value and undid the change.
 
@@ -48,7 +48,7 @@ Block `.platform-choice-cards`, a grid of `repeat(auto-fit, minmax(150px, 1fr))`
 
 **States (data attributes set by the primitive):** `[data-state="checked"]`, `[data-disabled]` on a card.
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-border`, `--platform-border-strong`, `--platform-surface`, `--platform-surface-soft`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`
+**Tokens:** `--platform-border`, `--platform-border-strong`, `--platform-selection`, `--platform-selection-wash`, `--platform-surface`, `--platform-surface-soft`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`
 
 No media queries: the grid reflows on its own. The mark's transition is off under `prefers-reduced-motion`.
 

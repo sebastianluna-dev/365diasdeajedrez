@@ -37,8 +37,8 @@
 
   & .courses-admin__search-input:focus {
     outline: none;
-    border-color: var(--platform-accent);
-    box-shadow: 0 0 0 3px var(--platform-accent-soft);
+    border-color: var(--platform-selection);
+    box-shadow: 0 0 0 3px var(--platform-selection-soft);
   }
 
   & .courses-admin__bar {

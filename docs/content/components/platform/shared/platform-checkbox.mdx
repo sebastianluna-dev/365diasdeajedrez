@@ -1,5 +1,5 @@
 ---
-description: "The platform's single checkbox, on Radix's Checkbox primitive: a box, its label and an optional hint, the whole row the label; ticked, the box keeps its outline and takes the accent in it."
+description: "The platform's single checkbox, on Radix's Checkbox primitive: a box, its label and an optional hint, the whole row the label; ticked, the box keeps its outline and takes the selection's blue in it."
 ---
 
 # `PlatformCheckbox`
@@ -42,13 +42,13 @@ It is for a value **saved with a form's button**. What takes effect the moment i
 
 ## Markup & styling
 
-Block `.platform-checkbox`, a flex row: the box on the first line of the text, the label and the hint piled up beside it. Ticked, the box keeps its outline and **takes the accent in it**: the accent's border, its wash inside and the tick in its ink (the «B» of the 2026-10-06 checkbox study), lighter than a filled box down a list of students. Under the pointer the empty box's border turns to the accent.
+Block `.platform-checkbox`, a flex row: the box on the first line of the text, the label and the hint piled up beside it. Ticked, the box keeps its outline and **takes the selection's blue in it**: its border, its wash inside and the tick in its ink (`--platform-selection`, `--platform-selection-wash`; not the accent, the red of an error in the light theme) (the «B» of the 2026-10-06 checkbox study), lighter than a filled box down a list of students. Under the pointer the empty box's border turns to that blue.
 
 **Elements:** `.platform-checkbox__box` (the primitive's button), `.platform-checkbox__indicator`, `.platform-checkbox__icon`, `.platform-checkbox__text`, `.platform-checkbox__label`, `.platform-checkbox__hint`
 
 **States (data attributes set by the primitive):** `[data-state="checked"]`, `[data-disabled]` on the box; the row reads the second with `:has()` to grey its text.
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-border`, `--platform-border-strong`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`
+**Tokens:** `--platform-border`, `--platform-border-strong`, `--platform-selection`, `--platform-selection-wash`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`
 
 The hint is in the muted grey, which reads on the white of a panel and on the grey of the canvas alike. No media queries; the colour transition is off under `prefers-reduced-motion`.
 

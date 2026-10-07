@@ -22,8 +22,8 @@
   }
 
   & .platform-select__trigger:focus-visible {
-    outline: 2px solid var(--platform-accent-soft);
-    border-color: var(--platform-accent);
+    outline: 2px solid var(--platform-selection-soft);
+    border-color: var(--platform-selection);
   }
 
   & .platform-select__trigger[data-placeholder] {
@@ -129,8 +129,8 @@
   }
 
   & .platform-select__item[data-highlighted] {
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
+    background: var(--platform-selection-soft);
+    color: var(--platform-selection);
   }
 
   & .platform-select__item[data-state="checked"] {

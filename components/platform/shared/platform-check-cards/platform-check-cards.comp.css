@@ -37,13 +37,13 @@
     border-color: var(--platform-border-strong);
   }
 
-  /* The platform's own ring stays, and the border joins it in the accent. */
+  /* The platform's own ring stays, and the border joins it in its blue. */
   & .platform-check-cards__card:focus-visible {
-    border-color: var(--platform-accent);
+    border-color: var(--platform-selection);
   }
 
-  /* A chosen one sinks: the neutral fill, pressed in, and no accent but its
-     box, so a form of several chosen cards is not a wall of red. On that grey
+  /* A chosen one sinks: the neutral fill, pressed in, and no colour but its
+     box, so a form of several chosen cards is not a wall of colour. On that grey
      fill the description stays in the muted grey, the one that reads on it. */
   & .platform-check-cards__card[data-state="checked"] {
     background: var(--platform-surface-neutral);
@@ -55,7 +55,7 @@
     cursor: default;
   }
 
-  /* The mark in the corner: an empty box on a card that is off, the accent
+  /* The mark in the corner: an empty box on a card that is off, the blue
      box with the tick on one that is on. Always mounted, so nothing shifts.
      A square and not a circle: a round mark reads as a radio, as something
      of which only one is chosen, which is what `PlatformChoiceCards` draws. */
@@ -80,10 +80,10 @@
   }
 
   & .platform-check-cards__card[data-state="checked"] .platform-check-cards__mark {
-    border-color: var(--platform-accent);
-    background: var(--platform-accent);
+    border-color: var(--platform-selection);
+    background: var(--platform-selection);
     box-shadow: none;
-    color: var(--platform-on-accent);
+    color: var(--platform-on-selection);
   }
 
   & .platform-check-cards__mark-icon {

@@ -151,6 +151,13 @@ export const TEXT_PAIRS: readonly (readonly [text: string, background: string])[
   ["accent", "surface"],
   // The move tree's current and hovered move, on the variations' fill.
   ["text-muted", "variation-soft"],
+  // What is chosen: the tick and a chosen day on the selection's fill, its
+  // blue as ink on the white, on its tint (a highlighted option, a day under
+  // the pointer) and on its wash (a chosen card's description).
+  ["on-selection", "selection"],
+  ["selection", "surface"],
+  ["selection", "selection-soft"],
+  ["selection", "selection-wash"],
 ];
 
 /**
@@ -165,6 +172,7 @@ export const COLOUR_GROUPS: readonly { name: string; pattern: RegExp }[] = [
   { name: "Text", pattern: /^text(-[a-z]+)*$/ },
   { name: "Accent", pattern: /^(on-accent|accent|accent-(?!on-ink$)[a-z-]+)$/ },
   { name: "Logo", pattern: /^logo(-[a-z]+)*$/ },
+  { name: "Selection", pattern: /^(selection(-[a-z]+)*|on-selection)$/ },
   { name: "Progress", pattern: /^(progress|track)$/ },
   { name: "Variations", pattern: /^variation(-[a-z]+)*$/ },
   { name: "Streak", pattern: /^flame(-[a-z]+)*$/ },

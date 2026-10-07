@@ -58,7 +58,7 @@ Block `.platform-field` (123 lines). The root is the `<label>` (or the `<fieldse
 
 **A field with `info`** (2026-10-05) is not a `<label>` around everything: the "i" is a button, and a button inside the label would put its own name and the tip's text into the input's. So the root is a `<div>`, the `<label>` (`.platform-field__body`) wraps the text and the control as always, and the "i" is the label's **sibling**. The stylesheet puts it inside the control all the same: the field is a one-column grid and the label gives up its box (`display: contents`), so the control and the "i" are placed in the same cell, the "i" at its end and centred, and the input keeps room for it (`padding-right`, the scale's `space-12`). It is where the staff's slug field had its "i", by hand, since before; the game's form first had it beside the label's text, and the owner preferred the slug's place, so that markup became this prop and [`CourseNameFields`](/components/platform/sections/staff/courses/course-name-fields) uses it too. Checked in the game's form and on the course editor: the input's name is the label alone and a click on the label focuses the input.
 
-**Tokens:** `--platform-accent`, `--platform-accent-soft`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+**Tokens:** `--platform-border`, `--platform-danger`, `--platform-selection`, `--platform-selection-soft`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
 
 No media queries.
 

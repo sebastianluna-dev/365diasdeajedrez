@@ -53,7 +53,7 @@
 
     &:focus-visible {
       outline: none;
-      border-color: var(--platform-accent);
+      border-color: var(--platform-selection);
       background: var(--platform-surface);
     }
   }

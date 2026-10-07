@@ -23,7 +23,7 @@
   }
 
   & .study-settings__open:focus-visible {
-    outline: 2px solid var(--platform-accent);
+    outline: 2px solid var(--platform-selection);
     outline-offset: -2px;
   }
 
