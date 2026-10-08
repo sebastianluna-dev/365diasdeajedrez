@@ -2,13 +2,10 @@ import { describe, expect, it } from "vitest";
 import {
   audienceRange,
   compactEloRange,
-  coursesOfLevel,
   formatEloRange,
   isLevelStretch,
-  joinNames,
   labelEloRange,
   reachableLevels,
-  resolveLevelFilter,
   shortEloRange,
 } from "./level-rules";
 
@@ -44,36 +41,6 @@ describe("shortEloRange", () => {
   it("lo dice en lo que cabe en una tarjeta", () => {
     expect(shortEloRange("800–1199")).toBe("Elo 800–1199");
     expect(shortEloRange("Menos de 800")).toBe("Elo menos de 800");
-  });
-});
-
-const LEVELS = [{ slug: "principiante" }, { slug: "intermedio" }];
-const COURSES = [
-  { id: "a", levels: [{ slug: "principiante" }, { slug: "intermedio" }] },
-  { id: "b", levels: [{ slug: "intermedio" }] },
-  { id: "c", levels: [] },
-];
-
-describe("resolveLevelFilter", () => {
-  it("encuentra el nivel del catálogo que nombra la URL", () => {
-    expect(resolveLevelFilter(LEVELS, "intermedio")).toEqual({ slug: "intermedio" });
-  });
-
-  it("ignora un nivel que el catálogo no tiene, y la ausencia de nivel", () => {
-    expect(resolveLevelFilter(LEVELS, "gran-maestro")).toBeUndefined();
-    expect(resolveLevelFilter(LEVELS, undefined)).toBeUndefined();
-    expect(resolveLevelFilter(LEVELS, "")).toBeUndefined();
-  });
-});
-
-describe("coursesOfLevel", () => {
-  it("deja los cursos dirigidos a ese nivel, tengan o no otros", () => {
-    expect(coursesOfLevel(COURSES, "principiante").map((course) => course.id)).toEqual(["a"]);
-    expect(coursesOfLevel(COURSES, "intermedio").map((course) => course.id)).toEqual(["a", "b"]);
-  });
-
-  it("sin nivel los devuelve todos, también los que no tienen ninguno", () => {
-    expect(coursesOfLevel(COURSES, undefined)).toHaveLength(3);
   });
 });
 
@@ -115,15 +82,6 @@ describe("audienceRange", () => {
 
   it("answers nothing for a course without levels", () => {
     expect(audienceRange([])).toBeUndefined();
-  });
-});
-
-describe("joinNames", () => {
-  it("joins the last one with «y»", () => {
-    expect(joinNames(["intermedio"])).toBe("intermedio");
-    expect(joinNames(["intermedio", "avanzado"])).toBe("intermedio y avanzado");
-    expect(joinNames(["principiante", "intermedio", "avanzado"])).toBe("principiante, intermedio y avanzado");
-    expect(joinNames([])).toBe("");
   });
 });
 

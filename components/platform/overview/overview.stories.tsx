@@ -56,11 +56,9 @@ import { useSchemeOnScreen } from "@/components/platform/foundations/use-scheme-
 import { MeetingAccess } from "@/components/platform/sections/classes/class-detail/meeting-access.comp";
 import { ClassCard } from "@/components/platform/sections/classes/classes-list/class-card.comp";
 import { CourseCard } from "@/components/platform/sections/courses/course-card.comp";
-import { LevelFilter } from "@/components/platform/sections/courses/course-catalog/level-filter.comp";
 import { LevelScale } from "@/components/platform/sections/courses/course-info/level-scale.comp";
 import { LessonSkeleton } from "@/components/platform/sections/courses/lesson-view/lesson-skeleton.comp";
 import { OutlineList } from "@/components/platform/sections/courses/lesson-view/outline-list.comp";
-import { LevelDots } from "@/components/platform/sections/courses/level-dots.comp";
 import { MyCourseCard } from "@/components/platform/sections/courses/my-courses/my-course-card.comp";
 import { StatsCards } from "@/components/platform/sections/dashboard/activity-stats/stats-cards.comp";
 import { ExplorerGames } from "@/components/platform/sections/explorer/explorer-games.comp";
@@ -1041,9 +1039,6 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             <Tile name="LocalDateTime" docs="platform-shared-localdatetime" width={400} height={88}>
               <LocalDateTime iso="2026-10-06T23:00:00.000Z" fallback="6 de octubre, 2026 · 23:00 h" />
             </Tile>
-            <Tile name="LevelDots" docs="platform-sections-courses-leveldots" width={400} height={96}>
-              <LevelDots scale={LEVEL_SCALE} levels={LEVEL_SCALE.slice(2, 4)} />
-            </Tile>
             <Tile
               name="AuthorAvatar"
               docs="platform-sections-staff-courses-authors-manager-authoravatar"
@@ -1158,9 +1153,8 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
           </Section>
 
           <Section title="Cards">
-            <Tile name="CourseCard" docs="platform-sections-courses-coursecard" width={400} height={496}>
+            <Tile name="CourseCard" docs="platform-sections-courses-coursecard" width={400} height={320}>
               <CourseCard
-                levels={LEVEL_SCALE}
                 course={{
                   id: "10000004",
                   name: "Planes en el medio juego",
@@ -1188,7 +1182,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 }}
               />
             </Tile>
-            <Tile name="MyCourseCard" docs="platform-sections-courses-my-courses-mycoursecard" width={720} height={192}>
+            <Tile name="MyCourseCard" docs="platform-sections-courses-my-courses-mycoursecard" width={440} height={320}>
               <MyCourseCard
                 course={{
                   id: "10000007",
@@ -1241,14 +1235,6 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
           <Section title="Navigation">
             <Tile name="StaffTabs" docs="platform-sections-staff-courses-stafftabs" surface width={480} height={160}>
               <StaffTabs tabs={courseTabs({ courseId: "4812", chapterCount: 6, gameCount: 148 })} />
-            </Tile>
-            <Tile
-              name="LevelFilter"
-              docs="platform-sections-courses-course-catalog-levelfilter"
-              width={400}
-              height={392}
-            >
-              <LevelFilter levels={LEVEL_SCALE} />
             </Tile>
             <Tile name="OutlineList" docs="platform-sections-courses-lesson-view-outlinelist" width={400} height={304}>
               {/* `position: static`: from 1280px the column's sheet pins .lesson-outline to the window. */}

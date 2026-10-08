@@ -75,6 +75,37 @@
     text-wrap: pretty;
   }
 
+  /* The figure at the end of the row, out of the way of the label. */
+  & .platform-checkbox__count {
+    flex: none;
+    margin-left: auto;
+    padding-left: var(--platform-space-2);
+    font-size: var(--platform-type-sm);
+    line-height: 1.6;
+    color: var(--platform-text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* THE ACCENT TONE: a filter of what is on the screen, outside any form. The
+     box takes the brand's red where a form's takes the blue (2026-10-07, the
+     owner's call: a filter never says an error, so its red cannot read as one). */
+  &.platform-checkbox_tone_accent .platform-checkbox__box {
+    color: var(--platform-accent-ink);
+  }
+
+  &.platform-checkbox_tone_accent:hover .platform-checkbox__box,
+  &.platform-checkbox_tone_accent .platform-checkbox__box[data-state="checked"] {
+    border-color: var(--platform-accent);
+  }
+
+  &.platform-checkbox_tone_accent .platform-checkbox__box[data-state="checked"] {
+    background: var(--platform-accent-wash);
+  }
+
+  &.platform-checkbox_tone_accent .platform-checkbox__box:focus-visible {
+    outline-color: var(--platform-accent-ink);
+  }
+
   /* Switched off: the row says it in its grey, and the pointer stops promising. */
   &:has(.platform-checkbox__box[data-disabled]) {
     color: var(--platform-text-faint);

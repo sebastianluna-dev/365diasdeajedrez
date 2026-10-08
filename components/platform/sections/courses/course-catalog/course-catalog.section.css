@@ -1,39 +1,6 @@
+/* The page's head and, under it, the catalog with its filters. */
 .course-catalog {
   display: flex;
   flex-direction: column;
-  gap: var(--platform-space-6);
-
-  & .course-catalog__head {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-1);
-  }
-
-  & .course-catalog__title {
-    margin: 0;
-    font-size: var(--platform-type-3xl);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-  }
-
-  & .course-catalog__summary {
-    margin: 0;
-    font-size: var(--platform-type-md);
-    color: var(--platform-text-muted);
-  }
-
-  /* Two cards to a row in the page's 960px, and as many as fit under it.
-     "Mis cursos" is a list of rows: there a course is the one already
-     chosen, and its card is another one. */
-  & .course-catalog__list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    gap: var(--platform-space-6);
-  }
-
-  @media (width < 768px) {
-    & .course-catalog__list {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
+  gap: var(--platform-space-8);
 }

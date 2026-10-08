@@ -1,101 +1,80 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ProgressIndicator } from "@/components/platform/shared/progress-indicator/progress-indicator.comp";
+import { BookOpenIcon } from "@/components/icons/book-open-icon.comp";
+import { SignalIcon } from "@/components/icons/signal-icon.comp";
 import { countLessons, formatDuration } from "@/services/courses/course-rules";
 import type { CourseLevelItem, CourseSummary } from "@/services/courses/courses.types";
-import { LevelDots } from "./level-dots.comp";
 import "./course-card.comp.css";
 
 interface CourseCardProps {
   course: CourseSummary;
-  /** Every level of the catalog, for the dots that say who the course is for. */
-  levels: CourseLevelItem[];
 }
 
-/** Two columns in the page's 960px: a card is a little over 470px wide. */
-const COVER_SIZES = "(max-width: 767px) 100vw, 480px";
+/** Three columns beside the filters in the wide page: a card is about 320px; one on a phone. */
+const COVER_SIZES = "(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 320px";
+
+/** «Intermedio», or the span «Principiante – Intermedio» of a course aimed at several. */
+export function levelSpan(levels: CourseLevelItem[]): string | undefined {
+  const [first] = levels;
+  const last = levels[levels.length - 1];
+  if (!first || !last) return undefined;
+  return first === last ? first.name : `${first.name} – ${last.name}`;
+}
 
 /**
- * A course as a card: its cover, its name with the dots of its levels, what
- * it is about, what it teaches and who signs it, and at the foot where the
- * student is in it.
+ * A course in the catalog, compact (2026-10-07, «K2a», the owner's choice
+ * among two rounds of variants): its cover; its name; under it its labels —
+ * who it is for, its level or span of levels, and what it teaches, one label
+ * per topic —; and how long it is. No description: that is the course's
+ * page, which the card leads to.
  *
- * It is the catalog's card: what a course is, for whoever is choosing one.
- * "Mis cursos" draws its own, `MyCourseCard`, which is about the progress.
- * The course says which it is here too: one the student added shows their
- * progress and leads to the course to study; one they have not shows how
- * long it is and leads to its information page, which is where it is added.
+ * It replaced a card with the description, the levels as dots and the
+ * progress at the foot: the catalog is for choosing, and «Mis cursos» is
+ * where the progress is.
  *
  * The whole card is the link, through the title's: its `::after` covers the
- * card, so there is one link to announce and not a link around another. The
- * dots sit above it, because they open a tip of their own.
+ * card. A course the student added leads to the course; one they have not, to
+ * its information page, which is where it is added.
  */
-export function CourseCard({ course, levels }: CourseCardProps) {
+export function CourseCard({ course }: CourseCardProps) {
+  const span = levelSpan(course.levels);
   const { progress } = course;
-  const isUnderway = course.isAdded && course.ctaLabel === "Continuar";
+  const image = course.cover ?? course.thumbnail;
 
   return (
     <article className="course-card">
       <div className="course-card__cover">
-        {course.cover && (
-          <Image src={course.cover} alt="" fill sizes={COVER_SIZES} className="course-card__cover-image" />
-        )}
+        {image && <Image src={image} alt="" fill sizes={COVER_SIZES} className="course-card__cover-image" />}
       </div>
 
       <div className="course-card__body">
-        <div className="course-card__heading">
-          <h2 className="course-card__name">
-            <Link href={course.isAdded ? course.href : course.infoHref} className="course-card__link">
-              {course.name}
-            </Link>
-          </h2>
-          {course.levels.length > 0 && (
-            <span className="course-card__levels">
-              <LevelDots scale={levels} levels={course.levels} />
-            </span>
-          )}
-        </div>
+        <h2 className="course-card__name">
+          <Link href={course.isAdded ? course.href : course.infoHref} className="course-card__link">
+            {course.name}
+          </Link>
+        </h2>
 
-        {course.description && <p className="course-card__description">{course.description}</p>}
-
-        {(course.contentTypes.length > 0 || course.authorNames.length > 0) && (
-          <p className="course-card__facts">
-            <span className="course-card__contents">
-              {course.contentTypes.map((contentType) => contentType.label).join(" · ")}
-            </span>
-            {course.authorNames.length > 0 && (
-              <span className="course-card__by">
-                por <span className="course-card__author">{course.authorNames.join(", ")}</span>
-              </span>
+        {(span || course.contentTypes.length > 0) && (
+          <ul className="course-card__labels" aria-label="Nivel y temas">
+            {span && (
+              <li className="course-card__label">
+                <SignalIcon variant="classic-solid" className="course-card__label-icon" />
+                {span}
+              </li>
             )}
-          </p>
+            {course.contentTypes.map((contentType) => (
+              <li key={contentType.code} className="course-card__label">
+                <BookOpenIcon variant="classic-solid" className="course-card__label-icon" />
+                {contentType.label}
+              </li>
+            ))}
+          </ul>
         )}
 
-        <div className="course-card__foot">
-          {course.isAdded ? (
-            <div className="course-card__progress">
-              <ProgressIndicator
-                layout="figure"
-                tone={course.isCompleted ? "success" : "progress"}
-                percent={progress.percent}
-                detail={`${progress.completedLessons} de ${countLessons(progress.totalLessons)}`}
-              />
-            </div>
-          ) : (
-            <p className="course-card__length">
-              {countLessons(progress.totalLessons)}
-              {progress.totalMinutes > 0 && ` · ${formatDuration(progress.totalMinutes)}`}
-            </p>
-          )}
-
-          {/* Not a link of its own: it is the card's, which the title names. */}
-          <span
-            className={`platform-button${isUnderway ? " platform-button_variant_soft" : ""} course-card__cta`}
-            aria-hidden="true"
-          >
-            {course.isAdded ? course.ctaLabel : "Ver curso"}
-          </span>
-        </div>
+        <p className="course-card__length">
+          {countLessons(progress.totalLessons)}
+          {progress.totalMinutes > 0 && ` · ${formatDuration(progress.totalMinutes)}`}
+        </p>
       </div>
     </article>
   );

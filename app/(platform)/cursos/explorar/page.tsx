@@ -16,7 +16,7 @@ export default async function CourseCatalogPage({ searchParams }: CourseCatalogP
   const [courses, levels, { nivel }] = await Promise.all([getCourseCatalog(), listCourseLevels(), searchParams]);
 
   return (
-    <div className="platform-page course-catalog-page">
+    <div className="platform-page platform-page_width_wide course-catalog-page">
       <CourseCatalogSection courses={courses} levels={levels} levelSlug={nivel} />
     </div>
   );

@@ -61,3 +61,8 @@ export const LabelOnly: Story = {
 export const Disabled: Story = {
   args: { disabled: true },
 };
+
+/** The accent tone with a count, as the catalog's filters draw it: ticked in the brand's red, outside any form. */
+export const FilterAccent: Story = {
+  args: { label: "Intermedio", hint: undefined, tone: "accent", count: 5, defaultChecked: true },
+};

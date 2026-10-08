@@ -1,100 +1,61 @@
 .my-courses {
   display: flex;
   flex-direction: column;
-  gap: var(--platform-space-6);
+  gap: var(--platform-space-8);
 
-  /* The list and, beside it, the day: the column drops under the list when
-     both do not fit. The room between them is the list's to give: the column
-     keeps its width. */
-  & .my-courses__layout {
+  /* The title and its line on the left, the way to the catalog on the right;
+     on a phone the button goes under them. */
+  & .my-courses__head {
     display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: var(--platform-space-6) var(--platform-space-12);
-  }
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--platform-space-6);
 
-  /* One course to a row: the card is as wide as the list. */
-  & .my-courses__list {
-    flex: 1 1 480px;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-4);
-  }
-
-  /* A width of its own, not a share of what is left: a wider gap, or a
-     longer name in the list, does not make it narrower. */
-  & .my-courses__aside {
-    flex: 0 0 240px;
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-4);
-  }
-
-  /* A slot for the next course, drawn like a row of the list: dashed, empty,
-     and lit only when it is about to be pressed. */
-  & .my-courses__explore {
-    min-height: 92px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--platform-space-4);
-    padding: var(--platform-space-4) var(--platform-space-6);
-    box-sizing: border-box;
-    border: 1.5px dashed var(--platform-border-strong);
-    border-radius: 8px;
-    color: var(--platform-text-muted);
-    transition: 150ms;
-    transition-property: border-color, color;
-  }
-
-  & .my-courses__explore:hover {
-    border-color: var(--platform-accent-ink);
-    color: var(--platform-accent-ink);
-  }
-
-  & .my-courses__explore-mark {
-    flex: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 1000px;
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
-    font-size: var(--platform-type-2xl);
-    font-weight: 600;
-  }
-
-  & .my-courses__explore-text {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-0-5);
-  }
-
-  & .my-courses__explore-label {
-    font-size: var(--platform-type-lg);
-    font-weight: 800;
-  }
-
-  & .my-courses__explore-hint {
-    font-size: var(--platform-type-sm);
-    line-height: 1.45;
-  }
-
-  /* Stacked, the day takes the width of the list. The list asks for 480px,
-     the column for 240 and the gap for 40: under that, plus the page's own
-     margins, the column is on a row of its own. */
-  @media (width < 1024px) {
-    & .my-courses__aside {
-      flex-basis: 100%;
+    @media (width < 640px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--platform-space-4);
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    & .my-courses__explore {
-      transition: none;
+  & .my-courses__explore {
+    flex: none;
+  }
+
+  /* The courses and, beside them, the streak's column, which keeps its width
+     and its own height, and stays in view while a long list scrolls past it;
+     under the courses below 1024px. Stretched to the list's height it left a
+     blank in the middle of the card. */
+  & .my-courses__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    align-items: start;
+    gap: var(--platform-space-6);
+
+    @media (width < 1024px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  /* Under the shell's bar (70px, as `scroll-padding-top` counts it), with air. */
+  & .streak-panel {
+    position: sticky;
+    top: calc(70px + var(--platform-space-6));
+
+    @media (width < 1024px) {
+      position: static;
+    }
+  }
+
+  /* Two covers to a row; one on a phone. */
+  & .my-courses__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--platform-space-4);
+
+    @media (width < 640px) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--platform-space-3);
     }
   }
 }

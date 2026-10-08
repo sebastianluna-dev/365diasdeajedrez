@@ -1,71 +1,59 @@
 ---
-description: "A course as a card, for the catalog: cover, name with the dots of its levels, what it teaches and who signs it, and at the foot the student's progress or, for a course not added, how long it is."
+description: "A course in the catalog, compact: its cover, its name, its labels — the level or span of levels it is for and one per topic it teaches — and how long it is; the whole card leads to the course or to its information page."
 ---
 
 # `CourseCard`
 
-|            |                                                                                                                                                                                    |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/course-card.comp.tsx`                                                                                                                        |
-| Kind       | Server Component                                                                                                                                                                   |
-| Stylesheet | `course-card.comp.css` → block `.course-card`                                                                                                                                      |
-| Story      | `course-card.stories.tsx` (`platform/sections/courses/CourseCard`): a course not added, under way, added and not started, finished, with a cover, and with only a name and lessons |
-| Used by    | [`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section)                                                                              |
-| Composes   | [`LevelDots`](/components/platform/sections/courses/level-dots), [`ProgressIndicator`](/components/platform/shared/progress-indicator)                                             |
-| Uses       | `CourseSummary`, `CourseLevelItem` from `services/courses/courses.types`; `countLessons`, `formatDuration` from `services/courses/course-rules`; `next/image`, `next/link`         |
+Also exports `levelSpan(levels)`: «Intermedio», or «Principiante – Intermedio» for a course aimed at several.
+
+|            |                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-card.comp.tsx`                                                                                                         |
+| Kind       | Server Component                                                                                                                                                    |
+| Stylesheet | `course-card.comp.css` → block `.course-card`                                                                                                                       |
+| Story      | `course-card.stories.tsx` (`platform/sections/courses/CourseCard`): two levels and two topics without a cover, with a cover, many topics, and minimal               |
+| Used by    | [`CatalogBrowser`](/components/platform/sections/courses/course-catalog/catalog-browser)                                                                            |
+| Uses       | `CourseSummary`, `CourseLevelItem` from `services/courses/courses.types`; `countLessons`, `formatDuration`; `SignalIcon`, `BookOpenIcon`; `next/image`, `next/link` |
 
 ## Purpose
 
-The card of the catalog (`/cursos/explorar`): what a course is, for whoever is choosing one. «Mis cursos» has its own, [`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card), which is about the progress. Here it is still the **course** that says which it is, not a prop:
+What a course is, for whoever is choosing one. Since 2026-10-07 it is compact («K2a», the owner's choice among two rounds of variants, with the level **and the topics** in its labels, which the owner asked for): the cover (21:9; the square picture cropped when there is none); the name, two lines at most; its labels — the level it is for with the signal (`levelSpan`: one name, or the span of a course aimed at several), and one per topic it teaches with the book, all in the same grey label —; and «24 lecciones · 6 h 15 min».
 
-- A course the student **added** (`course.isAdded`) shows their progress — percentage, «2 de 5 lecciones», a bar — and leads to the course to study (`course.href`, `/cursos/<id>`). Its button reads what the mapper decided: «Empezar», «Continuar» or «Repasar».
-- A course **not added** shows how long it is («61 lecciones · 20 h») and leads to its information page (`course.infoHref`, `/cursos/<slug>`), which is where it is added. Its button reads «Ver curso».
-
-It lives at the root of `sections/courses/` from when two sections used it.
+It replaced a card with the description, the levels as dots with a tip of their own (`LevelDots`, removed) and, at the foot, the student's progress or the course's length with «Ver curso»: the catalog is for choosing, and «Mis cursos» is where the progress is. The description is the course's page.
 
 ## Props
 
-| Prop     | Type                | Required | Meaning                                                                                                                                                                                      |
-| -------- | ------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `course` | `CourseSummary`     | yes      | `name`, `description?`, `cover?`, `contentTypes`, `levels`, `authorNames`, `isAdded`, `href`, `infoHref`, `ctaLabel`, `progress: { percent, completedLessons, totalLessons, totalMinutes }`. |
-| `levels` | `CourseLevelItem[]` | yes      | Every level of the catalog, the easiest first: the scale the dots are drawn over.                                                                                                            |
+| Prop     | Type            | Required | Meaning                                         |
+| -------- | --------------- | -------- | ----------------------------------------------- |
+| `course` | `CourseSummary` | yes      | The course as `mapCourseSummary` hands it over. |
 
 ## Behaviour
 
-- **The whole card is the link**, through the title's: `.course-card__link::after` is stretched over the card, so there is one link to announce and not a link around another. The focus ring is drawn on that `::after`, around the card.
-- The button at the foot is a `<span aria-hidden="true">`: it is the card's link, which the title already names. It is the platform's button: «Continuar» the soft one (`_variant_soft`), the rest the quiet secondary one.
-- The dots sit above the stretched link (`.course-card__levels`, `z-index: 1`) because they open a tip of their own. The wrapper is only rendered for a course with levels.
-- The description is clamped to two lines: the card says what the course is about, the information page tells it.
-- What the course teaches is a line of text under it, not tags: the content types' long names, in catalog order, joined by « · », and «por» with the authors after them. The short names are the tags of the staff's catalog ([`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section)).
-- **The progress is [`ProgressIndicator`](/components/platform/shared/progress-indicator)'s `figure`**: the percentage large, «9 de 24 lecciones» small at the other end and the bar under them, in `--platform-progress`, the blue a course's progress is drawn in. A finished course (`course.isCompleted`) passes `tone="success"` and the bar is green instead. It carries no check: that mark is drawn inside the course, not on its card. Until 2026-10-03 the card drew the same figure with rules of its own.
-- **The figure sits beside the button, not above it**: `.course-card__progress` is the foot's flexible part (`flex: 1; min-width: 0`) and only gives the figure the width the button leaves; the button is centred on it.
-- The cover is decorative (`alt=""`): the staff's covers carry the course's name drawn on them and the title is right under. Without a cover the box stays, in the ink colour.
+- **The whole card is the link**, through the title's: its `::after` covers the card. A course the student added leads to the course (`href`); one they have not, to its information page (`infoHref`), which is where it is added. Its keyboard focus rings the card in the accent.
+- The labels are a list (`aria-label="Nivel y temas"`); a course with neither has none.
+- Under the pointer the shadow grows; nothing moves.
 
 ## Markup & styling
 
-Block `.course-card` (162 lines).
+Block `.course-card` (108 lines).
 
-**Elements:** `.course-card__cover`, `.course-card__cover-image`, `.course-card__body`, `.course-card__heading`, `.course-card__name`, `.course-card__link`, `.course-card__levels`, `.course-card__description`, `.course-card__facts`, `.course-card__contents`, `.course-card__by`, `.course-card__author`, `.course-card__foot`, `.course-card__progress`, `.course-card__length`, `.course-card__cta`
+**Elements:** `.course-card__cover`, `.course-card__cover-image`, `.course-card__body`, `.course-card__name`, `.course-card__link`, `.course-card__labels`, `.course-card__label`, `.course-card__label-icon`, `.course-card__length`
 
-**Modifiers and states:** none of its own. The button at the foot is the platform's (`.platform-button`, drawn in a `<span>`, since the card is the link), the **soft** one (`_variant_soft`) on a course under way — it was filled with the accent until 2026-10-07, a wall of red on a list of courses being studied. `.course-card__cta` only places it.
+**Tokens:** `--platform-surface`, `--platform-surface-sunken`, `--platform-surface-neutral`, `--platform-shadow-card`, `--platform-shadow-lift`, `--platform-accent-ink`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, the type and space scales.
 
-**Tokens:** `--platform-accent`, `--platform-border`, `--platform-border-strong`, `--platform-ink`, `--platform-on-accent`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle` (the bar's tokens are `ProgressIndicator`'s), `--platform-accent-ink`
-
-No breakpoints of its own: the list that holds it decides the columns. The hover transition is off under `prefers-reduced-motion`.
+No media queries: the grid around it decides its width.
 
 ## Usage
 
-From `components/platform/sections/courses/course-catalog/course-catalog.section.tsx`:
+From `components/platform/sections/courses/course-catalog/catalog-browser.comp.tsx`:
 
 ```tsx
-import { CourseCard } from "../course-card.comp";
-
 {
-  courses.map((course) => <CourseCard key={course.id} course={course} levels={levels} />);
+  shown.map((course) => <CourseCard key={course.id} course={course} />);
 }
 ```
 
 ## Related
 
-- `services/courses/courses.mapper.ts` decides `isAdded`, `ctaLabel`, `href` and `infoHref`.
-- [`CourseInfoSection`](/components/platform/sections/courses/course-info/course-info-section), where a course that is not added leads.
+- [`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card), the card of a course the student already chose.
+- [`LevelScale`](/components/platform/sections/courses/course-info/level-scale), the level drawn on the course's information page.

@@ -6,7 +6,6 @@ const meta: MetaRecord = {
   "course-info": "course-info",
   "course-study": "course-study",
   "course-card": "CourseCard",
-  "level-dots": "LevelDots",
   "lesson-view": "lesson-view",
 };
 

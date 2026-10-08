@@ -111,31 +111,6 @@ const COURSE: CourseSummary = {
   infoHref: platformRoutes.courseInfo(COURSE_SLUG),
 };
 
-/** The same course once the student added it, at the progress given. */
-function added(completedLessons: number, completedMinutes: number): CourseSummary {
-  const { totalLessons, totalMinutes } = COURSE.progress;
-  const isCompleted = completedLessons === totalLessons;
-  return {
-    ...COURSE,
-    isAdded: true,
-    isCompleted,
-    ctaLabel: isCompleted ? "Repasar" : completedLessons > 0 ? "Continuar" : "Empezar",
-    progress: {
-      statusCode: isCompleted
-        ? PROGRESS_STATUS.COMPLETED
-        : completedLessons > 0
-          ? PROGRESS_STATUS.IN_PROGRESS
-          : PROGRESS_STATUS.NOT_STARTED,
-      completedLessons,
-      totalLessons,
-      percent: Math.round((completedLessons / totalLessons) * 100),
-      completedMinutes,
-      totalMinutes,
-      minutesPercent: Math.round((completedMinutes / totalMinutes) * 100),
-    },
-  };
-}
-
 const meta = {
   title: "platform/sections/courses/CourseCard",
   component: CourseCard,
@@ -144,12 +119,12 @@ const meta = {
     docs: {
       description: {
         component: `
-The card of «Explorar cursos»: what a course is, for whoever is choosing one —
-its cover, its name with the dots of its levels, two lines of what it is about,
-what it teaches and who signs it. The foot is the student's: a course they
-added shows their progress and leads to the course to study; one they have not
-shows how long it is and leads to its information page, where it is added. The
-whole card is the title's link.
+The card of «Explorar cursos», compact: what a course is, for whoever is
+choosing one — its cover, its name, and under it its labels, the level or span
+of levels it is for and one per topic it teaches, and how long it is. No
+description and no progress: those are the course's page and «Mis cursos». The
+whole card is the title's link: to the course once added, to its information
+page before.
 
 Invented data. The staff's covers are Cloudinary pictures; the story with a
 cover stands one of the board's pieces (\`public/pieces\`) in for it.
@@ -160,18 +135,14 @@ Reference page: [Components › CourseCard](/components/platform/sections/course
       },
     },
   },
-  args: { course: COURSE, levels: LEVELS },
+  args: { course: COURSE },
   argTypes: {
-    course: {
-      control: "object",
-      description: "The course as `mapCourseSummary` hands it over, with the student's progress.",
-    },
-    levels: { control: "object", description: "Every level of the catalog, the easiest first: the dots' scale." },
+    course: { control: "object", description: "The course as `mapCourseSummary` hands it over." },
   },
-  // One card of the catalog's grid: two to a row in the page's 960px.
+  // One card of the catalog's grid: three to a row beside the filters.
   decorators: [
     (Story) => (
-      <div style={{ maxWidth: 480 }}>
+      <div style={{ maxWidth: 320 }}>
         <Story />
       </div>
     ),
@@ -181,22 +152,28 @@ Reference page: [Components › CourseCard](/components/platform/sections/course
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** A course the student has not added: how long it is, and «Ver curso», which leads to its information page. */
-export const NotAdded: Story = {};
+/** A course of two levels and two topics, without a cover: the frame stays, in the sunken grey. */
+export const Default: Story = {};
 
-/** A course under way: the percentage, the lessons done and the bar, and the one filled button, «Continuar». */
-export const Underway: Story = { args: { course: added(9, 140) } };
-
-/** Added and not started: the empty track and «Empezar», outlined. */
-export const NotStarted: Story = { args: { course: added(0, 0) } };
-
-/** Finished: the bar full and in green, and «Repasar». */
-export const Completed: Story = { args: { course: added(24, 375) } };
-
-/** With a cover, cropped to 21:9 in its inset frame; without one the frame stays, in the ink colour. */
+/** With a cover, cropped to 21:9. */
 export const WithCover: Story = { args: { course: { ...COURSE, cover: "/pieces/w-knight.svg" } } };
 
-/** A course with only a name and lessons: no dots, no description, no facts row, no minutes. */
+/** One level and many topics: the labels wrap, a line each as they need. */
+export const ManyTopics: Story = {
+  args: {
+    course: {
+      ...COURSE,
+      levels: levelsOf(DEFAULT_LEVEL.BEGINNER),
+      contentTypes: [
+        STRATEGY,
+        PAWN_STRUCTURES,
+        { ...STRATEGY, code: "ENDGAMES", label: "Finales", shortLabel: "Finales" },
+      ],
+    },
+  },
+};
+
+/** A course with only a name and lessons: no labels and no minutes. */
 export const Minimal: Story = {
   args: {
     course: {

@@ -1,27 +1,36 @@
 .course-card {
+  /* The name's pseudo-element is stretched over this box: the whole card is
+     the link. */
   position: relative;
   display: flex;
   flex-direction: column;
+  gap: var(--platform-space-3);
+  padding: var(--platform-space-3) var(--platform-space-3) var(--platform-space-4);
   border-radius: 8px;
+  /* White on the page's grey, over a light shadow that grows under the
+     pointer; nothing moves. */
   background: var(--platform-surface);
-  box-shadow: 0 1px 3px rgba(22, 17, 13, 0.06);
-  color: var(--platform-text);
-  transition: box-shadow 150ms;
+  box-shadow: var(--platform-shadow-card);
+  transition: box-shadow 160ms ease-out;
 
-  &:hover,
-  &:focus-within {
-    box-shadow: 0 10px 28px rgba(22, 17, 13, 0.1);
+  &:hover {
+    box-shadow: var(--platform-shadow-lift);
   }
 
-  /* Inset in the card, with its own rounding: the cover is a picture hung in
-     it, not the card's top edge. */
+  /* The keyboard focus of the stretched link, on the card it covers: outside
+     a form, the accent's ring. */
+  &:has(.course-card__link:focus-visible) {
+    outline: 2px solid var(--platform-accent-ink);
+    outline-offset: 2px;
+  }
+
+  /* The course's cover, 21:9 as the staff makes it. */
   & .course-card__cover {
     position: relative;
-    margin: var(--platform-space-3) var(--platform-space-3) 0;
     aspect-ratio: 21 / 9;
-    overflow: hidden;
     border-radius: 8px;
-    background: var(--platform-ink);
+    overflow: hidden;
+    background: var(--platform-surface-sunken);
   }
 
   & .course-card__cover-image {
@@ -29,134 +38,71 @@
   }
 
   & .course-card__body {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-3);
-    padding: var(--platform-space-4) var(--platform-space-6) var(--platform-space-6);
+    gap: var(--platform-space-2);
+    padding: 0 var(--platform-space-1);
   }
 
-  & .course-card__heading {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--platform-space-4);
-  }
-
+  /* Two lines at most. */
   & .course-card__name {
-    flex: 1;
-    min-width: 0;
     margin: 0;
-    font-size: var(--platform-type-xl);
-    font-weight: 800;
-    line-height: 1.25;
-    letter-spacing: -0.01em;
-    text-wrap: balance;
+    font-size: var(--platform-type-md);
+    font-weight: 700;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
   }
 
   & .course-card__link {
-    color: inherit;
+    color: var(--platform-text);
+    text-decoration: none;
   }
 
-  /* The card is the link: the title's `::after` is stretched over it. */
   & .course-card__link::after {
     content: "";
     position: absolute;
     inset: 0;
-    border-radius: 8px;
+    border-radius: inherit;
   }
 
-  /* The focus ring goes around the card, which is what is pressed. */
-  & .course-card__link:focus-visible {
-    outline: none;
+  /* Who it is for and what it teaches, one grey label each: the level with
+     the signal, a topic with the book. */
+  & .course-card__labels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
-  & .course-card__link:focus-visible::after {
-    outline: 2px solid var(--platform-accent-ink);
-    outline-offset: 2px;
-  }
-
-  /* The dots of the levels. Above the stretched link: they open a tip of
-     their own. */
-  & .course-card__levels {
-    position: relative;
-    z-index: 1;
-    flex: none;
+  & .course-card__label {
     display: inline-flex;
-  }
-
-  /* Two lines and no more: the card says what the course is about, the
-     information page tells it. */
-  & .course-card__description {
-    margin: 0;
-    display: -webkit-box;
-    overflow: hidden;
-    font-size: var(--platform-type-md);
-    line-height: 1.5;
-    color: var(--platform-text-muted);
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
-
-  & .course-card__facts {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--platform-space-4);
-    margin: 0;
-    padding-top: var(--platform-space-3);
-    border-top: 1px solid var(--platform-border);
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-subtle);
-  }
-
-  & .course-card__contents {
-    min-width: 0;
-  }
-
-  & .course-card__by {
-    flex: none;
-    white-space: nowrap;
-  }
-
-  & .course-card__author {
-    font-weight: 700;
-    color: var(--platform-text-muted);
-  }
-
-  /* At the foot whatever the card holds, so the buttons of a row line up. */
-  & .course-card__foot {
-    display: flex;
     align-items: center;
-    gap: var(--platform-space-4);
-    margin-top: auto;
-    padding-top: var(--platform-space-1);
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-0-5) var(--platform-space-2);
+    border-radius: 4px;
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text-muted);
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+    line-height: 1.4;
   }
 
-  /* Beside the button, not above it: the progress takes the width the button
-     leaves. What it draws is ProgressIndicator's figure. */
-  & .course-card__progress {
-    flex: 1;
-    min-width: 0;
+  & .course-card__label-icon {
+    flex: none;
+    width: 11px;
+    height: 11px;
   }
 
   & .course-card__length {
-    flex: 1;
-    min-width: 0;
     margin: 0;
-    font-size: var(--platform-type-sm);
+    font-size: var(--platform-type-xs);
     color: var(--platform-text-subtle);
-  }
-
-  /* The platform's button, drawn and not a link of its own (the card is the
-     link). The course in progress is the one the list is opened for: its
-     button is the soft one, the accent's tint (2026-10-07; it was filled with
-     the accent, a wall of red on a list of courses under way). */
-  & .course-card__cta {
-    flex: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
+    font-variant-numeric: tabular-nums;
   }
 }

@@ -1,0 +1,207 @@
+.catalog-browser {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  align-items: start;
+  gap: var(--platform-space-8);
+
+  /* On a phone the column keeps only the search, above the courses; the
+     filters go behind «Filtros». */
+  @media (width < 768px) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--platform-space-4);
+  }
+
+  /* The filters stay in view while the courses scroll past, under the
+     shell's bar (70px, as `scroll-padding-top` counts it). */
+  & .catalog-browser__aside {
+    position: sticky;
+    top: calc(70px + var(--platform-space-6));
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-6);
+
+    @media (width < 768px) {
+      position: static;
+    }
+  }
+
+  & .catalog-browser__aside .catalog-browser__facets {
+    @media (width < 768px) {
+      display: none;
+    }
+  }
+
+  /* The platform's control on white with the glass inside; a search is not a
+     form, so its focus is the accent's. */
+  & .catalog-browser__search {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    padding: 0 var(--platform-space-3);
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    color: var(--platform-text-muted);
+    cursor: text;
+  }
+
+  & .catalog-browser__search:has(.catalog-browser__search-input:focus) {
+    outline: 2px solid var(--platform-accent-soft);
+    border-color: var(--platform-accent);
+  }
+
+  & .catalog-browser__search-icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+  }
+
+  & .catalog-browser__search-input {
+    flex: 1;
+    min-width: 0;
+    padding: var(--platform-space-2) 0;
+    border: 0;
+    background: transparent;
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: var(--platform-type-lg);
+  }
+
+  & .catalog-browser__search-input::placeholder {
+    color: var(--platform-text-subtle);
+  }
+
+  & .catalog-browser__search-input:focus-visible {
+    outline: none;
+  }
+
+  & .catalog-browser__facets {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-6);
+  }
+
+  & .catalog-browser__facet {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  & .catalog-browser__facet-title {
+    margin-bottom: var(--platform-space-1);
+    padding: 0;
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--platform-text-subtle);
+  }
+
+  /* A filter is a short line: the checkbox's label a step smaller than a
+     form's. */
+  & .catalog-browser__option .platform-checkbox__label {
+    font-size: var(--platform-type-sm);
+  }
+
+  /* The box on the smaller line: level with its first line again. */
+  & .catalog-browser__option .platform-checkbox__box {
+    margin-top: 0;
+  }
+
+  & .catalog-browser__results {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+    min-width: 0;
+  }
+
+  & .catalog-browser__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-2) var(--platform-space-4);
+  }
+
+  & .catalog-browser__count {
+    margin: 0;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Only where the column has no filters. */
+  & .catalog-browser__open {
+    display: none;
+    margin-left: auto;
+
+    @media (width < 768px) {
+      display: inline-flex;
+    }
+  }
+
+  /* What is filtered, a pill each that takes it off: the accent's tint, as
+     a filter that is on. */
+  & .catalog-browser__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .catalog-browser__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-1) var(--platform-space-2) var(--platform-space-1) var(--platform-space-3);
+    border: 0;
+    border-radius: 1000px;
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-family: inherit;
+    font-size: var(--platform-type-xs);
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  & .catalog-browser__chip:hover {
+    background: color-mix(in srgb, var(--platform-accent) 12%, var(--platform-accent-soft));
+  }
+
+  & .catalog-browser__chip-icon {
+    width: 11px;
+    height: 11px;
+  }
+
+  /* Three covers to a row beside the filters; two under 1024px; one on a
+     phone. */
+  & .catalog-browser__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--platform-space-4);
+
+    @media (width < 1024px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (width < 640px) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--platform-space-3);
+    }
+  }
+
+  /* The popup's content pads itself under the strip. */
+  & .catalog-browser__popup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-6);
+    padding: var(--platform-space-5) var(--platform-space-6) var(--platform-space-6);
+  }
+
+  & .catalog-browser__see {
+    align-self: stretch;
+  }
+}

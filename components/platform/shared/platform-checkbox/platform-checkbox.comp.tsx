@@ -23,6 +23,15 @@ interface PlatformCheckboxProps {
   disabled?: boolean;
   /** The host's class for the whole row, to lay it out in a list or a card. */
   className?: string;
+  /**
+   * The colour of a ticked box and of its focus ring. `selection` (default)
+   * is the blue of filling in a form; `accent` the brand's red, for a filter
+   * of what is on the screen, outside any form (the catalog's levels and
+   * topics): a filter is not a form and never says an error.
+   */
+  tone?: "selection" | "accent";
+  /** A figure at the row's end: how many items the option has («Intermedio 5»). */
+  count?: number;
 }
 
 /**
@@ -40,13 +49,26 @@ export function PlatformCheckbox(props: PlatformCheckboxProps) {
   return <Box key={savedValueKey(props.defaultChecked)} {...props} />;
 }
 
-function Box({ label, hint, className, onCheckedChange, ...rootProps }: PlatformCheckboxProps) {
+function Box({
+  label,
+  hint,
+  className,
+  tone = "selection",
+  count,
+  onCheckedChange,
+  ...rootProps
+}: PlatformCheckboxProps) {
   const id = useId();
   const labelId = useId();
   const hintId = useId();
 
   return (
-    <label htmlFor={id} className={className ? `platform-checkbox ${className}` : "platform-checkbox"}>
+    <label
+      htmlFor={id}
+      className={["platform-checkbox", tone === "accent" && "platform-checkbox_tone_accent", className]
+        .filter(Boolean)
+        .join(" ")}
+    >
       {/* Named by the label alone and described by the hint: the row's whole
           text would otherwise be the name. */}
       <Checkbox.Root
@@ -72,6 +94,12 @@ function Box({ label, hint, className, onCheckedChange, ...rootProps }: Platform
           </span>
         )}
       </span>
+
+      {count !== undefined && (
+        <span className="platform-checkbox__count" aria-hidden="true">
+          {count}
+        </span>
+      )}
     </label>
   );
 }

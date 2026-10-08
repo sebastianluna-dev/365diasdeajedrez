@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import { dayKey, startOfDay, streakLength, streakOf } from "@/lib/study-streak";
+import {
+  activityLevel,
+  dayKey,
+  longestStreak,
+  mondayOf,
+  startOfDay,
+  streakLength,
+  streakOf,
+  weeksUpTo,
+} from "@/lib/study-streak";
 
 const MX = "America/Mexico_City";
 
@@ -115,5 +124,44 @@ describe("streakOf", () => {
   it("sin actividad ayer ni hoy no hay racha", () => {
     expect(streakOf(["2026-03-12"], "2026-03-15")).toEqual({ days: 0, studiedToday: false });
     expect(streakOf([], "2026-03-15")).toEqual({ days: 0, studiedToday: false });
+  });
+});
+
+describe("longestStreak", () => {
+  it("is the longest run of consecutive days, wherever it falls", () => {
+    expect(longestStreak(["2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-05", "2026-10-06"])).toBe(4);
+  });
+
+  it("crosses the end of a month and ignores repeated days", () => {
+    expect(longestStreak(["2026-09-30", "2026-10-01", "2026-10-01", "2026-10-02"])).toBe(3);
+  });
+
+  it("is 0 without days", () => {
+    expect(longestStreak([])).toBe(0);
+  });
+});
+
+describe("mondayOf", () => {
+  it("is the Monday of the week, Sunday being its last day", () => {
+    expect(mondayOf("2026-10-07")).toBe("2026-10-05");
+    expect(mondayOf("2026-10-05")).toBe("2026-10-05");
+    expect(mondayOf("2026-10-11")).toBe("2026-10-05");
+    expect(mondayOf("2026-11-01")).toBe("2026-10-26");
+  });
+});
+
+describe("weeksUpTo", () => {
+  it("gives whole weeks, Monday to Sunday, the one of today last", () => {
+    const weeks = weeksUpTo("2026-10-07", 2);
+    expect(weeks).toEqual([
+      ["2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04"],
+      ["2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11"],
+    ]);
+  });
+});
+
+describe("activityLevel", () => {
+  it("weighs a day by how much was done in it", () => {
+    expect([0, 1, 2, 3, 4, 9].map(activityLevel)).toEqual([0, 1, 2, 2, 3, 3]);
   });
 });

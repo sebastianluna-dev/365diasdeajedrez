@@ -62,11 +62,12 @@ const meta = {
     docs: {
       description: {
         component: `
-A course of the student's as a row of «Mis cursos»: its square picture, its
-name, how far they are in it — the two counts as one line of text and the
-percentage on a ring — and «Aprender». Nothing of what the course is: that is
-the catalog's card. The card is not a link; the picture and the name lead to
-the course, and the button where it says.
+A course of the student's as a cover of «Mis cursos»: its cover across the
+top, its name, a bar of how far they are, and at the foot the percentage with
+the lessons and «Continuar» (or «Empezar»); finished, «Completado» in green
+where the button was. Nothing of what the course is: that is the catalog's
+card. The whole card leads to the course through its name; the button, to the
+lesson that comes next.
 
 «Repasar» belongs to the Move Trainer, which is switched off
 (\`MOVE_TRAINER_ENABLED\`), so no story draws it. Invented data.
@@ -85,10 +86,10 @@ Reference page: [Components › MyCourseCard](/components/platform/sections/cour
         "The course as `mapMyCourse` hands it over: the summary, `learnHref`, `reviewCount`, `isReviewUpToDate`, `reviewHref`.",
     },
   },
-  // The list of «Mis cursos», beside the streak's column: one course to a row.
+  // A cell of «Mis cursos»: two covers to a row beside the streak's column.
   decorators: [
     (Story) => (
-      <div style={{ maxWidth: 720 }}>
+      <div style={{ maxWidth: 440 }}>
         <Story />
       </div>
     ),
@@ -98,21 +99,21 @@ Reference page: [Components › MyCourseCard](/components/platform/sections/cour
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** A course under way: «36 de 61 lecciones · 720/1220 minutos», and 59% on the ring. */
+/** A course under way: the bar at 59 %, «59% · 36 de 61 lecciones» and «Continuar». */
 export const Underway: Story = {};
 
-/** Just added: nothing done, so the ring is its track alone, at 0%. */
+/** Just added: nothing done, the bar's track alone, and «Empezar». */
 export const NotStarted: Story = { args: { course: JUST_ADDED } };
 
-/** Finished: the ring whole and no other mark; «Aprender» still leads, to start it over. */
+/** Finished: the bar whole and green, and «Completado» where the button was. */
 export const Finished: Story = { args: { course: course(TOTAL_LESSONS, TOTAL_MINUTES) } };
 
-/** A course whose lessons say no minutes: the lessons alone. */
+/** A course whose lessons say no minutes: the card counts lessons, as always. */
 export const WithoutMinutes: Story = {
   args: { course: { ...UNDERWAY, progress: { ...UNDERWAY.progress, totalMinutes: 0, completedMinutes: 0 } } },
 };
 
-/** No lesson in view: «Aprender» keeps its place, switched off, so the rows of the list line up. */
+/** No lesson in view: «Sin lecciones todavía», and no button, since there is nothing to go on to. */
 export const WithoutLessons: Story = {
   args: {
     course: {
@@ -123,5 +124,5 @@ export const WithoutLessons: Story = {
   },
 };
 
-/** Without a picture: the square stays, in the ink colour, and still leads to the course. */
-export const WithoutPicture: Story = { args: { course: { ...UNDERWAY, thumbnail: undefined } } };
+/** Without a picture: the frame stays, in the sunken grey, and still leads to the course. */
+export const WithoutPicture: Story = { args: { course: { ...UNDERWAY, cover: undefined, thumbnail: undefined } } };

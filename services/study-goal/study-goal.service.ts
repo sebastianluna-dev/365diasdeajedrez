@@ -3,8 +3,8 @@ import { DEFAULT_GOAL_MINUTES } from "@/constants/platform/study-goal.const";
 import { STUDY_DAY_TIMEZONE } from "@/constants/platform/timezones.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
-import { dayKey, startOfDay, streakOf } from "@/lib/study-streak";
-import type { StudyGoal, StudyStreak } from "./study-goal.types";
+import { activityLevel, dayKey, longestStreak, mondayOf, startOfDay, streakOf, weeksUpTo } from "@/lib/study-streak";
+import type { StreakOverview, StudyGoal, StudyStreak } from "./study-goal.types";
 
 // Streak and daily goal: the two figures of the day. The dashboard shows both;
 // "Mis cursos", the streak.
@@ -15,6 +15,9 @@ import type { StudyGoal, StudyStreak } from "./study-goal.types";
 
 /** How far back to look for the streak. */
 const STREAK_WINDOW_DAYS = 400;
+
+/** Weeks the activity grid of «Mis cursos» shows: about four months. */
+const OVERVIEW_WEEKS = 16;
 
 /**
  * Days with activity, most recent to oldest, within the window.
@@ -28,22 +31,33 @@ const STREAK_WINDOW_DAYS = 400;
  * one would be glad to have.
  */
 async function activeDaysOf(userId: string, now: Date): Promise<Set<string>> {
+  return new Set((await activityByDayOf(userId, now)).keys());
+}
+
+/** How many things were done each day within the window, by day key. */
+async function activityByDayOf(userId: string, now: Date): Promise<Map<string, number>> {
   const since = new Date(now.getTime() - STREAK_WINDOW_DAYS * 24 * 60 * 60 * 1000);
   const rows = await getPlatformDb().userActivity.findMany({
     where: { userId, occurredAt: { gte: since } },
     select: { occurredAt: true },
     orderBy: { occurredAt: "desc" },
   });
-  return new Set(rows.map((row) => dayKey(row.occurredAt, STUDY_DAY_TIMEZONE)));
+  const counts = new Map<string, number>();
+  for (const row of rows) {
+    const day = dayKey(row.occurredAt, STUDY_DAY_TIMEZONE);
+    counts.set(day, (counts.get(day) ?? 0) + 1);
+  }
+  return counts;
 }
 
 /**
- * Minutes studied today: the estimated duration of the lessons they finished
- * today. Those without a duration count as zero, as in the course's progress.
+ * Minutes studied since the start of a day: the estimated duration of the
+ * lessons finished since then (today's, or this week's from its Monday).
+ * Those without a duration count as zero, as in the course's progress.
  */
-async function minutesTodayOf(userId: string, today: string): Promise<number> {
+async function minutesSince(userId: string, fromDay: string): Promise<number> {
   const rows = await getPlatformDb().lessonProgress.findMany({
-    where: { userId, completedAt: { gte: startOfDay(today, STUDY_DAY_TIMEZONE) } },
+    where: { userId, completedAt: { gte: startOfDay(fromDay, STUDY_DAY_TIMEZONE) } },
     select: { lesson: { select: { estimatedDuration: true } } },
   });
   return rows.reduce((total, row) => total + (row.lesson.estimatedDuration ?? 0), 0);
@@ -62,7 +76,7 @@ export const getStudyGoal = cache(async (): Promise<StudyGoal> => {
 
   const [streak, minutesToday, row] = await Promise.all([
     getStudyStreak(),
-    minutesTodayOf(user.id, today),
+    minutesSince(user.id, today),
     getPlatformDb().user.findUnique({ where: { id: user.id }, select: { dailyGoalMinutes: true } }),
   ]);
 
@@ -75,5 +89,35 @@ export const getStudyGoal = cache(async (): Promise<StudyGoal> => {
     // Capped at the top: the bar cannot overflow and "120 %" says nothing that
     // "45 of 30 minutes" does not already say.
     percent: goalMinutes === 0 ? 0 : Math.min(100, Math.round((minutesToday / goalMinutes) * 100)),
+  };
+});
+
+/**
+ * The streak column of «Mis cursos»: the streak, sixteen weeks of activity
+ * day by day, and the figures under them. One read of the activity log (the
+ * same window as the streak's) and one of this week's finished lessons.
+ */
+export const getStreakOverview = cache(async (): Promise<StreakOverview> => {
+  const user = await getCurrentUser();
+  const now = new Date();
+  const today = dayKey(now, STUDY_DAY_TIMEZONE);
+  const monday = mondayOf(today);
+  const [counts, minutesThisWeek] = await Promise.all([activityByDayOf(user.id, now), minutesSince(user.id, monday)]);
+
+  const weeks = weeksUpTo(today, OVERVIEW_WEEKS).map((week) =>
+    week.map((day) => {
+      const count = counts.get(day) ?? 0;
+      return { day, count, level: activityLevel(count), isToday: day === today, isFuture: day > today };
+    }),
+  );
+  const days = weeks.flat();
+
+  return {
+    streak: streakOf(counts.keys(), today),
+    weeks,
+    daysStudied: days.filter((day) => day.count > 0).length,
+    bestStreak: longestStreak(counts.keys()),
+    daysThisWeek: days.filter((day) => day.day >= monday && day.count > 0).length,
+    minutesThisWeek,
   };
 });

@@ -1,0 +1,191 @@
+/* The streak as a column: the figure, the last sixteen weeks in squares, and
+   four figures. White on the page's grey, like the cards beside it. */
+.streak-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-5);
+  padding: var(--platform-space-5);
+  border-radius: 8px;
+  background: var(--platform-surface);
+  box-shadow: var(--platform-shadow-card);
+
+  & .streak-panel__head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--platform-space-1);
+    padding-bottom: var(--platform-space-5);
+    border-bottom: 1px solid var(--platform-border);
+    text-align: center;
+  }
+
+  /* The figure beside the platform's flame, in its two colours. */
+  & .streak-panel__figure {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-4xl);
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .streak-panel__flame {
+    width: 44px;
+    height: 44px;
+    color: var(--platform-flame);
+  }
+
+  & .streak-panel__flame-core {
+    fill: var(--platform-flame-core);
+  }
+
+  /* No streak: the fire is a grey silhouette, hollow, as the streak card
+     draws it. */
+  & .streak-panel__figure_state_unlit .streak-panel__flame {
+    color: var(--platform-border-strong);
+  }
+
+  & .streak-panel__figure_state_unlit .streak-panel__flame-core {
+    fill: var(--platform-surface);
+  }
+
+  & .streak-panel__caption {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    font-weight: 400;
+    color: var(--platform-text-muted);
+  }
+
+  /* Whether today counts: in the success green once it does, a nudge in the
+     flame's tint while it does not. */
+  & .streak-panel__state {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+    margin: var(--platform-space-2) 0 0;
+    padding: var(--platform-space-1) var(--platform-space-3);
+    border-radius: 1000px;
+    font-size: var(--platform-type-xs);
+    font-weight: 700;
+  }
+
+  & .streak-panel__state_done {
+    background: var(--platform-success-soft);
+    color: var(--platform-success-ink);
+  }
+
+  & .streak-panel__state_todo {
+    background: var(--platform-accent-wash);
+    color: var(--platform-accent-ink);
+  }
+
+  & .streak-panel__state-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  & .streak-panel__activity {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+  }
+
+  & .streak-panel__title {
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--platform-text-subtle);
+  }
+
+  /* Sixteen columns of seven days, Monday at the top: the days are given in
+     order and fill the grid column by column. */
+  & .streak-panel__grid {
+    display: grid;
+    grid-template-rows: repeat(7, auto);
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: var(--platform-space-0-5);
+  }
+
+  & .streak-panel__day {
+    display: block;
+    aspect-ratio: 1;
+    border-radius: 4px;
+    background: var(--platform-track);
+  }
+
+  & .streak-panel__day_level_1 {
+    background: color-mix(in srgb, var(--platform-flame) 35%, var(--platform-surface));
+  }
+
+  & .streak-panel__day_level_2 {
+    background: color-mix(in srgb, var(--platform-flame) 65%, var(--platform-surface));
+  }
+
+  & .streak-panel__day_level_3 {
+    background: var(--platform-flame);
+  }
+
+  /* The days of this week still to come keep their place, empty. */
+  & .streak-panel__day_state_future {
+    background: transparent;
+  }
+
+  & .streak-panel__day_state_today {
+    box-shadow: 0 0 0 1.5px var(--platform-text);
+  }
+
+  & .streak-panel__legend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--platform-space-1);
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-text-subtle);
+  }
+
+  & .streak-panel__legend .streak-panel__day {
+    width: 10px;
+  }
+
+  & .streak-panel__figures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--platform-space-2);
+    margin: 0;
+  }
+
+  /* Each figure on the canvas's grey, the number over its name. On a fill the
+     muted grey, which keeps 4.5:1 there. */
+  & .streak-panel__stat {
+    display: flex;
+    flex-direction: column-reverse;
+    /* The number at the top, level with its neighbour's, whatever lines its
+       name takes. */
+    justify-content: flex-end;
+    gap: var(--platform-space-0-5);
+    padding: var(--platform-space-2) var(--platform-space-3);
+    border-radius: 8px;
+    background: var(--platform-bg);
+  }
+
+  & .streak-panel__stat dt {
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-text-muted);
+  }
+
+  & .streak-panel__stat dd {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-xl);
+    font-weight: 700;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+  }
+}

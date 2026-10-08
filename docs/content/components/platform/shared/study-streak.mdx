@@ -4,18 +4,18 @@ description: "'Racha diaria': the card with how many days in a row the student h
 
 # `StudyStreak`
 
-|            |                                                                                                                                                                                        |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/study-streak/study-streak.comp.tsx`                                                                                                                        |
-| Kind       | Server Component                                                                                                                                                                       |
-| Stylesheet | `study-streak.comp.css` → block `.study-streak`                                                                                                                                        |
-| Story      | `study-streak.stories.tsx` (`platform/shared/StudyStreak`): the four states, including a three-digit streak                                                                            |
-| Used by    | [`MyCoursesSection`](/components/platform/sections/courses/my-courses/my-courses-section), [`StudyGoalSection`](/components/platform/sections/dashboard/study-goal/study-goal-section) |
-| Uses       | `StudyStreak` (the model) from `services/study-goal/study-goal.types`; `FireIcon`, `AngleRightIcon` from `components/icons/`                                                           |
+|            |                                                                                                                              |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/study-streak/study-streak.comp.tsx`                                                              |
+| Kind       | Server Component                                                                                                             |
+| Stylesheet | `study-streak.comp.css` → block `.study-streak`                                                                              |
+| Story      | `study-streak.stories.tsx` (`platform/shared/StudyStreak`): the four states, including a three-digit streak                  |
+| Used by    | [`StudyGoalSection`](/components/platform/sections/dashboard/study-goal/study-goal-section)                                  |
+| Uses       | `StudyStreak` (the model) from `services/study-goal/study-goal.types`; `FireIcon`, `AngleRightIcon` from `components/icons/` |
 
 ## Purpose
 
-The streak as a card, the same on the two pages that show it: beside the list of «Mis cursos», which is where a streak is kept, and on the dashboard next to the daily goal.
+The streak as a card, on the dashboard next to the daily goal. «Mis cursos» had it too, beside its list, until 2026-10-07, when the owner asked for a longer streak there: that page has [`StreakPanel`](/components/platform/sections/courses/my-courses/streak-panel), a whole column with the last months of activity.
 
 The figure is not stored: it is counted backwards from the activity log (`streakOf` in `lib/study-streak.ts`).
 

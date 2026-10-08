@@ -57,21 +57,6 @@ export function audienceRange(levels: readonly EloRange[]): EloRange | undefined
   return { eloMin, eloMax };
 }
 
-/** "intermedio", "intermedio y avanzado", "principiante, intermedio y avanzado". */
-export function joinNames(names: readonly string[]): string {
-  if (names.length <= 1) return names[0] ?? "";
-  return `${names.slice(0, -1).join(", ")} y ${names[names.length - 1]}`;
-}
-
-/**
- * The level the list is filtered by, or undefined when the URL names none the
- * catalog has: a hand-typed `?nivel=` should not look like an empty list.
- */
-export function resolveLevelFilter<T extends { slug: string }>(levels: T[], slug: string | undefined): T | undefined {
-  if (!slug) return undefined;
-  return levels.find((level) => level.slug === slug);
-}
-
 /**
  * THE LEVELS OF A COURSE ARE A STRETCH OF THE SCALE, NOT A HANDFUL OF TICKS.
  *
@@ -112,10 +97,4 @@ export function reachableLevels(all: readonly string[], chosen: readonly string[
   const last = Math.max(...places);
   const reachable = [all[first - 1], all[first], all[last], all[last + 1]];
   return new Set(reachable.filter((slug): slug is string => slug !== undefined));
-}
-
-/** The courses aimed at the level; all of them when there is no level to filter by. */
-export function coursesOfLevel<T extends { levels: { slug: string }[] }>(courses: T[], slug: string | undefined): T[] {
-  if (!slug) return courses;
-  return courses.filter((course) => course.levels.some((level) => level.slug === slug));
 }

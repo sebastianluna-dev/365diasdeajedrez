@@ -1,0 +1,47 @@
+---
+description: "The catalog with its filters at the side: the search, levels, topics and whether a course is theirs, each with its count; how many courses are left, what is filtered as pills that take it off, and the covers in three columns. On a phone the filters open in a popup."
+---
+
+# `CatalogBrowser`
+
+|            |                                                                                                                                                                                                                                                                                                |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-catalog/catalog-browser.comp.tsx`                                                                                                                                                                                                                 |
+| Kind       | Client Component                                                                                                                                                                                                                                                                               |
+| Stylesheet | `catalog-browser.comp.css` → block `.catalog-browser`                                                                                                                                                                                                                                          |
+| Used by    | [`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section)                                                                                                                                                                                          |
+| Composes   | [`CourseCard`](/components/platform/sections/courses/course-card), [`PlatformCheckbox`](/components/platform/shared/platform-checkbox) (`tone="accent"`, with `count`), [`PlatformPopup`](/components/platform/shared/platform-popup), [`EmptyState`](/components/platform/shared/empty-state) |
+| Uses       | `CourseSummary`, `CourseLevelItem`; `foldForSearch` from `lib/fold-for-search`; `MagnifyingGlassIcon`, `SlidersIcon`, `XmarkIcon`                                                                                                                                                              |
+
+## Purpose
+
+The catalog as the owner chose it on 2026-10-07 («E2», with the filters at the side of «F3»): a column with the search and the filters, and over the courses how many are left and what is filtered, so that with several filters on one never loses track of them.
+
+## Props
+
+| Prop           | Type                | Required | Meaning                                                                                 |
+| -------------- | ------------------- | -------- | --------------------------------------------------------------------------------------- |
+| `courses`      | `CourseSummary[]`   | yes      | Every published course, the ones the student added too.                                 |
+| `levels`       | `CourseLevelItem[]` | yes      | The catalog's levels, the easiest first.                                                |
+| `initialLevel` | `string`            | no       | A level's slug ticked on arrival (`?nivel=`); one the catalog does not have is ignored. |
+
+## Behaviour
+
+- **The column** (240px, sticky under the shell's bar): the search, then «Nivel», «Tema» and «Tus cursos» («Los que llevas», «Sin empezar»), each option a [`PlatformCheckbox`](/components/platform/shared/platform-checkbox) in the accent's tone — a filter is not a form, so it is never blue — with how many courses it has. The topics come from the courses: a topic no course teaches has no filter.
+- **How they combine**: the options of one filter add up (a course of any ticked level); the filters narrow each other (that level and that topic). «Tus cursos» with both or neither ticked is everything.
+- **The search** matches the name, the description, the authors, the topics and the levels, folded (`foldForSearch`: no case, no accents); its focus is the accent's, a search not being a form.
+- **Over the courses**: how many are left (a live region), «Quitar filtros» (a row action) while something is filtered, and the filtered options as pills in the accent's tint, each taking its filter off.
+- **The covers** ([`CourseCard`](/components/platform/sections/courses/course-card)), three to a row, two under 1024px, one on a phone. Nothing left: an [`EmptyState`](/components/platform/shared/empty-state) says how to find something.
+- **On a phone** (under 768px) the column keeps only the search, above the courses, and «Filtros» — with how many are on — opens the filters in a [`PlatformPopup`](/components/platform/shared/platform-popup) («Filtros», `sm`), closed by «Ver N cursos».
+
+## Markup & styling
+
+Block `.catalog-browser` (207 lines).
+
+**Elements:** `.catalog-browser__aside`, `.catalog-browser__search`, `.catalog-browser__search-icon`, `.catalog-browser__search-input`, `.catalog-browser__facets`, `.catalog-browser__facet`, `.catalog-browser__facet-title`, `.catalog-browser__option` (the class on each checkbox row), `.catalog-browser__results`, `.catalog-browser__head`, `.catalog-browser__count`, `.catalog-browser__open`, `.catalog-browser__chips`, `.catalog-browser__chip`, `.catalog-browser__chip-icon`, `.catalog-browser__grid`, `.catalog-browser__popup`, `.catalog-browser__see`
+
+**Other selectors it styles:** `.platform-checkbox__label` and `.platform-checkbox__box` inside an option (a step smaller, level with it).
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, the type and space scales.
+
+**Breakpoints:** `(width < 1024px)` two columns of covers; `(width < 768px)` the filters go behind «Filtros»; `(width < 640px)` one column.

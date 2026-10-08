@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
 import { MOVE_TRAINER_ENABLED } from "@/constants/platform/features.const";
 import { countLessons } from "@/services/courses/course-rules";
 import type { MyCourseItem } from "@/services/courses/courses.types";
@@ -9,56 +10,36 @@ interface MyCourseCardProps {
   course: MyCourseItem;
 }
 
-/** A square at the card's side, and the full width on a phone. */
-const COVER_SIZES = "(max-width: 767px) 100vw, 96px";
-
-/** The gauge is drawn on a 36-unit box; the radius leaves room for its stroke. */
-const GAUGE_RADIUS = 15;
-const GAUGE_LENGTH = 2 * Math.PI * GAUGE_RADIUS;
+/** Two columns beside the streak in the wide page: a card is about 440px; one on a phone. */
+const COVER_SIZES = "(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 440px";
 
 /**
- * A course of the student's, as a row: its square image, its name, how far
- * they are in it — in one line of text, with the percentage on a ring — and
- * the two things to do with it, «Repasar» and «Aprender».
+ * A course of the student's as a cover (2026-10-07, «M2a», the owner's choice
+ * among two rounds of variants): its cover across the top, so a course is
+ * recognised as it is in the catalog; under it the name, a bar of how far
+ * they are, and at the foot the figures and the button that goes on.
  *
- * It is the course they already chose, so it says nothing of what the course
- * is — no description, no levels, no content types: that is the catalog's
- * card, `CourseCard`. What it is for is the progress.
+ * It replaced a row with a square picture and a ring of progress. A finished
+ * course says so — the bar in the success green and «Completado» where the
+ * button was — and leads to its page like any other.
  *
- * **The progress is a ring and a sentence, not two bars.** A bar has to be
- * measured by eye, and there were two of them to measure on every row; the
- * ring gives the figure one actually wants and the two counts are read as a
- * line of text. It is the same ring the chapter carries in the column beside
- * a lesson, so the two agree.
- *
- * The card is NOT a link. What leads to the course is its cover and its
- * name, and each button leads where it says: a row with three destinations
- * cannot be one target. The cover's link is left out of the tab order and
- * of the accessibility tree — it has no name of its own and the title's,
- * next to it, leads to the same place.
- *
- * «Repasar» opens what is due today among the lessons already learned, and
- * says how many exercises that is. With nothing due it says so: switched
- * off, with «Al día» where the count goes.
- *
- * A button that leads nowhere keeps its place, switched off, so the rows of
- * the list line up: «Repasar» with nothing due or nothing learned to review,
- * «Aprender» in a course without lessons. A FINISHED course does not switch
- * «Aprender» off — it starts the course over.
+ * The whole card leads to the course, through its name: the link's `::after`
+ * covers the card, so there is one link to announce. The button, raised above
+ * it, leads elsewhere — to the lesson that comes next (`learnHref`) —, and a
+ * course without lessons in view has none.
  *
  * «Repasar» is the Move Trainer's: while that is off (`MOVE_TRAINER_ENABLED`)
- * the button is not drawn at all, and «Aprender» is the row's one button.
+ * it is not drawn; on, it goes before the button when something is due.
  */
 export function MyCourseCard({ course }: MyCourseCardProps) {
   const { progress } = course;
+  const image = course.cover ?? course.thumbnail;
 
   return (
-    <article className="my-course-card">
-      <Link href={course.href} className="my-course-card__cover" aria-hidden="true" tabIndex={-1}>
-        {course.thumbnail && (
-          <Image src={course.thumbnail} alt="" fill sizes={COVER_SIZES} className="my-course-card__cover-image" />
-        )}
-      </Link>
+    <article className={`my-course-card${course.isCompleted ? " my-course-card_state_done" : ""}`}>
+      <div className="my-course-card__cover">
+        {image && <Image src={image} alt="" fill sizes={COVER_SIZES} className="my-course-card__cover-image" />}
+      </div>
 
       <div className="my-course-card__body">
         <h2 className="my-course-card__name">
@@ -67,84 +48,47 @@ export function MyCourseCard({ course }: MyCourseCardProps) {
           </Link>
         </h2>
 
-        {/* The two measures as one line: they are different measures of the
-            same progress, and a course whose lessons say no minutes is
-            measured in lessons alone. */}
-        <p className="my-course-card__figures">
-          <span>
-            {progress.completedLessons} de {countLessons(progress.totalLessons)}
-          </span>
-          {progress.totalMinutes > 0 && (
-            <>
-              <span className="my-course-card__dot" aria-hidden="true">
-                ·
-              </span>
-              <span>
-                {progress.completedMinutes}/{progress.totalMinutes} minutos
-              </span>
-            </>
-          )}
-        </p>
-      </div>
+        <span className="my-course-card__meter" aria-hidden="true">
+          <span className="my-course-card__meter-fill" style={{ width: `${progress.percent}%` }} />
+        </span>
 
-      {/* How far the course has gone, on the ring. The arc is drawn by holding
-          back part of the circle's own length; at 0% only the track is
-          drawn. */}
-      <span className="my-course-card__gauge">
-        <svg className="my-course-card__ring" viewBox="0 0 36 36" aria-hidden="true">
-          <circle className="my-course-card__ring-track" cx="18" cy="18" r={GAUGE_RADIUS} />
-          {progress.percent > 0 && (
-            <circle
-              className="my-course-card__ring-fill"
-              cx="18"
-              cy="18"
-              r={GAUGE_RADIUS}
-              style={{ strokeDasharray: GAUGE_LENGTH, strokeDashoffset: GAUGE_LENGTH * (1 - progress.percent / 100) }}
-            />
-          )}
-        </svg>
-        <span className="my-course-card__percent">{progress.percent}%</span>
-      </span>
+        <div className="my-course-card__foot">
+          <p className="my-course-card__figures">
+            {progress.totalLessons === 0
+              ? "Sin lecciones todavía"
+              : course.isCompleted
+                ? `${progress.completedLessons} de ${countLessons(progress.totalLessons)}`
+                : `${progress.percent}% · ${progress.completedLessons} de ${countLessons(progress.totalLessons)}`}
+          </p>
 
-      <div className="my-course-card__actions">
-        {MOVE_TRAINER_ENABLED &&
-          (course.reviewCount > 0 ? (
-            <Link
-              href={course.reviewHref}
-              className="platform-button platform-button_variant_ink platform-button_size_sm my-course-card__review"
-            >
-              Repasar
-              <span
-                className="my-course-card__review-count"
-                aria-label={`${course.reviewCount} ${course.reviewCount === 1 ? "ejercicio" : "ejercicios"}`}
+          <div className="my-course-card__actions">
+            {MOVE_TRAINER_ENABLED && course.reviewCount > 0 && (
+              <Link
+                href={course.reviewHref}
+                className="platform-button platform-button_variant_ink platform-button_size_sm"
+                aria-label={`Repasar ${course.reviewCount} ${course.reviewCount === 1 ? "ejercicio" : "ejercicios"}`}
               >
-                {course.reviewCount}
-              </span>
-            </Link>
-          ) : (
-            <span
-              className="platform-button platform-button_size_sm my-course-card__review my-course-card__review_state_off"
-              aria-disabled="true"
-            >
-              Repasar
-              {course.isReviewUpToDate && <span className="my-course-card__review-status">Al día</span>}
-            </span>
-          ))}
+                Repasar {course.reviewCount}
+              </Link>
+            )}
 
-        {/* The platform's quiet button, small, as «Repasar» is the ink one:
-            the card only gives them a common width, so the rows line up. */}
-        {course.learnHref ? (
-          <Link href={course.learnHref} className="platform-button platform-button_size_sm my-course-card__learn">
-            Aprender
-          </Link>
-        ) : (
-          <span
-            className="platform-button platform-button_size_sm my-course-card__learn my-course-card__learn_state_off"
-            aria-disabled="true"
-          >
-            Aprender
-          </span>
-        )}
+            {course.isCompleted ? (
+              <span className="my-course-card__done">
+                <CircleCheckIcon variant="classic-solid" className="my-course-card__done-icon" />
+                Completado
+              </span>
+            ) : (
+              course.learnHref && (
+                <Link
+                  href={course.learnHref}
+                  className="platform-button platform-button_variant_soft platform-button_size_sm"
+                >
+                  {progress.completedLessons === 0 ? "Empezar" : "Continuar"}
+                </Link>
+              )
+            )}
+          </div>
+        </div>
       </div>
     </article>
   );
