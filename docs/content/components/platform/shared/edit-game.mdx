@@ -9,7 +9,7 @@ description: "The 'Datos de la partida' popup over GameFields. It posts to the a
 | File       | `components/platform/shared/edit-game/edit-game.comp.tsx`                                                                                                                                                                       |
 | Kind       | Client Component                                                                                                                                                                                                                |
 | Stylesheet | `edit-game.comp.css` → block `.edit-game`                                                                                                                                                                                       |
-| Story      | `edit-game.stories.tsx` (`platform/shared/EditGame`): closed, open (by its `play` function), with a label of its own and with the pencil for a trigger; the action is a spy listed in the Actions panel                         |
+| Story      | `edit-game.stories.tsx` (`platform/shared/EditGame`): closed, open (by its `play` function) and with the pencil for a trigger; the action is a spy listed in the Actions panel                                                  |
 | Used by    | [`GameRecord`](/components/platform/sections/studies/game-view/game-record) (the student's studies), [`ChapterGameSection`](/components/platform/sections/staff/courses/chapter-game-section) (the staff's chapter collections) |
 | Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup) (size `lg`), [`GameFields`](/components/platform/shared/game-fields), [`SubmitButton`](/components/platform/shared/submit-button)                                 |
 | Writes     | Whatever `action` it is given: `updateGameDetails()` for a study, `updateChapterGameDetails()` for a chapter's collection                                                                                                       |
@@ -22,14 +22,13 @@ It lives in `shared/` since 2026-09-28, when the staff panel got its own game sc
 
 ## Props
 
-| Prop        | Type                                    | Required                | Meaning                                                                                                                                                                                                                                                                                   |
-| ----------- | --------------------------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `action`    | `(formData: FormData) => Promise<void>` | yes                     | The server action that saves the record, already bound to its game.                                                                                                                                                                                                                       |
-| `values`    | `GameFieldValues`                       | yes                     | Current values. The whole game is passed (`GameView`, `ChapterGameDetail`), which is a superset.                                                                                                                                                                                          |
-| `results`   | `{ code, label }[]`                     | yes                     | The results catalog; its label is the PGN token.                                                                                                                                                                                                                                          |
-| `titleHint` | `string`                                | yes                     | What the name is for on this screen, under its field.                                                                                                                                                                                                                                     |
-| `label`     | `string`                                | no · default `"Editar"` | Trigger text. In the aside of a game «Editar» is enough, and there the trigger is the platform's **row action** — it sits at the end of a row of the list; any other label means it stands in the editor's bar, among buttons, and it is drawn as one (`.platform-button`).               |
-| `trigger`   | `"text" \| "icon"`                      | no · default `"text"`   | `text` writes the label; `icon` is a pencil with no word (`PenToSquareIcon` in Classic Solid, the platform's quiet small square — 32px —, named «Editar los datos de la partida»), for the head of a card already titled «Datos de la partida»: the game's record beside a study's board. |
+| Prop        | Type                                    | Required              | Meaning                                                                                                                                                                                                                                                                                                                                                                                 |
+| ----------- | --------------------------------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `action`    | `(formData: FormData) => Promise<void>` | yes                   | The server action that saves the record, already bound to its game.                                                                                                                                                                                                                                                                                                                     |
+| `values`    | `GameFieldValues`                       | yes                   | Current values. The whole game is passed (`GameView`, `ChapterGameDetail`), which is a superset.                                                                                                                                                                                                                                                                                        |
+| `results`   | `{ code, label }[]`                     | yes                   | The results catalog; its label is the PGN token.                                                                                                                                                                                                                                                                                                                                        |
+| `titleHint` | `string`                                | yes                   | What the name is for on this screen, under its field.                                                                                                                                                                                                                                                                                                                                   |
+| `trigger`   | `"text" \| "icon"`                      | no · default `"text"` | `text` writes «Editar», the platform's **row action**, at the end of a row of a list (the staff's chapter collection); `icon` is a pencil with no word (`PenToSquareIcon` in Classic Solid, the platform's quiet small square — 32px —, named «Editar los datos de la partida»), for the head of a card already titled «Datos de la partida»: the game's record beside a study's board. |
 
 ## Behaviour
 
@@ -41,7 +40,7 @@ Block `.edit-game` (27 lines): the pencil and the popup's content, which pads it
 
 **Elements:** `.edit-game__open` (only a hook: the pencil is the platform's quiet button, like the gear of a game's row), `.edit-game__form`, `.edit-game__subtitle` (the content's first line), `.edit-game__body`, `.edit-game__actions`
 
-**Modifiers and states:** none of its own. The trigger wears `.platform-row-action` or `.platform-button` (see `label`).
+**Modifiers and states:** none of its own. The word wears `.platform-row-action`; the pencil, the platform's quiet button.
 
 **Other classes it renders:** `.platform-button`, and `PlatformPopup`'s.
 
@@ -61,6 +60,7 @@ import { EditGame } from "@/components/platform/shared/edit-game/edit-game.comp"
   results={results}
   values={game}
   titleHint="Cómo identificas esta partida dentro del estudio. Si lo dejas vacío se usan los dos jugadores."
+  trigger="icon"
 />;
 ```
 

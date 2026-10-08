@@ -64,10 +64,7 @@ Reference page: [Components › EditGame](/components/platform/shared/edit-game)
   argTypes: {
     action: { description: "The screen's server action, bound to the game; a spy here." },
     values: { control: "object", description: "`GameFieldValues`: the record as saved." },
-    label: {
-      control: "text",
-      description: "The trigger's text; «Editar» (the default) is a row action, anything else the platform's button.",
-    },
+    trigger: { description: "`text`: «Editar», a row action; `icon`: the pencil, for the head of the record." },
   },
 } satisfies Meta<typeof EditGame>;
 
@@ -79,12 +76,6 @@ export const Closed: Story = {};
 
 /** Open, by its `play` function: the record in the popup, «Guardar datos» in ink beside «Cancelar». */
 export const Open: Story = { play: open };
-
-/**
- * With a label of its own the trigger is the platform's button, for a bar where it stands among buttons. No
- * screen passes one today: both mount it with «Editar».
- */
-export const WithLabel: Story = { name: "With label", args: { label: "Editar datos" } };
 
 /** With the pencil for a trigger, as in the head of the game's record beside a study's board: no word, named «Editar los datos de la partida». */
 export const WithIcon: Story = { name: "With icon", args: { trigger: "icon" } };

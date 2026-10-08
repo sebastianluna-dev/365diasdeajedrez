@@ -23,14 +23,9 @@ interface EditGameProps {
   /** What the name is for on this screen, under its field. */
   titleHint: string;
   /**
-   * Trigger text. In the aside there is little room and "Editar" is enough; in
-   * the editor bar it shares a row with three other buttons and needs to say what it is for.
-   */
-  label?: string;
-  /**
-   * `text` writes the label; `icon` is a pencil with no word, for the head of
-   * a card that is already titled «Datos de la partida» (the game's record
-   * beside the board).
+   * `text` writes «Editar» as the action of a row; `icon` is a pencil with no
+   * word, for the head of a card that is already titled «Datos de la partida»
+   * (the game's record beside the board).
    */
   trigger?: "text" | "icon";
 }
@@ -40,13 +35,13 @@ interface EditGameProps {
  * the action it is given and closes; the moves are not edited here but on the
  * board.
  */
-export function EditGame({ action, values, results, titleHint, label = "Editar", trigger = "text" }: EditGameProps) {
+export function EditGame({ action, values, results, titleHint, trigger = "text" }: EditGameProps) {
   const popup = useRef<PlatformPopupHandle>(null);
 
   return (
     <div className="edit-game">
-      {/* Beside a game of the aside it is the action of a row; in the
-          editor's bar it stands among buttons and is one. */}
+      {/* Beside a game of a list it is the action of a row; in the head of
+          the record, the pencil. */}
       {trigger === "icon" ? (
         <button
           type="button"
@@ -57,12 +52,8 @@ export function EditGame({ action, values, results, titleHint, label = "Editar",
           <PenToSquareIcon variant="classic-solid" className="platform-button__icon" />
         </button>
       ) : (
-        <button
-          type="button"
-          className={label === "Editar" ? "platform-row-action" : "platform-button"}
-          onClick={(event) => popup.current?.open(event)}
-        >
-          {label}
+        <button type="button" className="platform-row-action" onClick={(event) => popup.current?.open(event)}>
+          Editar
         </button>
       )}
 
