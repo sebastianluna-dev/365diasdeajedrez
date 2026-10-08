@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IMAGE_MAX_BYTES, IMAGE_MAX_MB, isAllowedImageType } from "@/constants/platform/upload.const";
 import { withCoverCrop } from "@/lib/cloudinary-url";
-import { createUploadSignature } from "@/services/media/media.actions";
+import { createUploadSignature, discardUnsavedImage } from "@/services/media/media.actions";
 import type { ImageSaveResult } from "@/services/media/media.types";
 
 export type ImageUploadStatus =
@@ -21,7 +21,9 @@ interface UseImageUploadOptions {
   /**
    * Stores the image the moment it changes: a server action, given the new
    * URL, or `""` when the image is taken away. Without it the URL only lives
-   * here, and it is whoever mounts the hook who sends it in a form.
+   * here, and it is whoever mounts the hook who sends it in a form; an image
+   * uploaded here that the form will not send — replaced, taken away, or still
+   * here when the field goes — is discarded (see `discardUnsavedImage`).
    */
   save?: (url: string) => Promise<ImageSaveResult>;
 }
@@ -42,16 +44,41 @@ interface UseImageUploadOptions {
  * With `save`, uploading IS saving: the image is stored as soon as it is up,
  * and taking it away is stored too. What is shown is what is stored: if the
  * save fails, the image goes back to the one there was.
+ *
+ * Without `save`, the images uploaded here are nobody's until the form that
+ * sends one is saved. One that is replaced or taken away, and the one still
+ * shown when the field is unmounted, are handed to `discardUnsavedImage`,
+ * which deletes it unless a row points at it: the form that was saved is the
+ * one that leaves its image there, and the server is who tells them apart.
+ * Until 2026-10-08 every photo uploaded in the authors' dialog and then
+ * closed without saving stayed in Cloudinary, pointed at by nobody.
  */
 export function useImageUpload({ initialUrl, aspectRatio, save }: UseImageUploadOptions) {
   const [url, setUrl] = useState(initialUrl ?? "");
   const [status, setStatus] = useState<ImageUploadStatus>({ kind: "idle" });
 
+  /** What is shown, for the moment the field goes, when the state is gone. */
+  const shown = useRef(url);
+  useEffect(() => {
+    shown.current = url;
+  }, [url]);
+
+  const holdsUploads = !save;
+  const original = initialUrl ?? "";
+
+  // The cleanup is the field going away: the form closed, saved or left.
+  useEffect(() => {
+    if (!holdsUploads) return;
+    return () => discardUploaded(shown.current, original);
+  }, [holdsUploads, original]);
+
   /** Shows the image and, when there is somewhere to store it, stores it. */
   const commit = async (next: string, failure: string) => {
     if (!save) {
+      const replaced = shown.current;
       setUrl(next);
       setStatus({ kind: "idle" });
+      discardUploaded(replaced, initialUrl ?? "");
       return;
     }
 
@@ -121,7 +148,10 @@ export function useImageUpload({ initialUrl, aspectRatio, save }: UseImageUpload
     }
   };
 
-  /** Takes the image away; what was uploaded stays in Cloudinary, unused. */
+  /**
+   * Takes the image away. With `save` the action deletes the stored one; without
+   * it, one uploaded here is discarded and the record's goes when the form is saved.
+   */
   const clear = () => commit("", "No se pudo quitar la imagen. Inténtalo otra vez.");
 
   return {
@@ -132,4 +162,14 @@ export function useImageUpload({ initialUrl, aspectRatio, save }: UseImageUpload
     upload,
     clear,
   };
+}
+
+/**
+ * Hands an image uploaded by the field over to `discardUnsavedImage`; the one
+ * the field opened with is the record's, and nothing is sent for it.
+ */
+function discardUploaded(candidate: string, original: string): void {
+  if (candidate === "" || candidate === original) return;
+  // Fire and forget: nothing on screen depends on it, and a failure is an orphan.
+  discardUnsavedImage(candidate).catch(() => {});
 }
