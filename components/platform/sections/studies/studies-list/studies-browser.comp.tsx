@@ -124,6 +124,7 @@ export function StudiesBrowser({ own, received, kinds }: StudiesBrowserProps) {
         <div className="studies-browser__sort">
           <PlatformSelect
             aria-label="Ordenar"
+            tone="accent"
             options={SORT_OPTIONS}
             value={sort}
             onValueChange={(value) => setSort(value as Sort)}
@@ -152,7 +153,7 @@ export function StudiesBrowser({ own, received, kinds }: StudiesBrowserProps) {
           <div className="studies-browser__grid">
             {showSlot && (
               <div className="studies-browser__item" style={itemStyle(0)}>
-                <NewStudy kinds={kinds} trigger="slot" />
+                <NewStudy kinds={kinds} />
               </div>
             )}
             {ownShown.map((study, index) => (

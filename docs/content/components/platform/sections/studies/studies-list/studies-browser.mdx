@@ -20,7 +20,7 @@ The body of «Mis estudios», rebuilt on 2026-10-07 in the «Biblioteca» direct
 From top to bottom:
 
 1. **The bar**: the search at the start, the tabs beside it, the order at the end (on a phone each takes a line of its own).
-2. **Their own studies**, in a grid of covers — four across the page's 1240px, three under 1024px, two on a phone —, headed by the dashed slot that creates one (`NewStudy` with `trigger="slot"`, the same popup as the page's button).
+2. **Their own studies**, in a grid of covers — four across the page's 1240px, three under 1024px, two on a phone —, headed by the dashed slot that creates one ([`NewStudy`](/components/platform/sections/studies/studies-list/new-study)), the only way to create one: the page's head has no button.
 3. **«Recibido»**, with its count: what reaches them ready-made and cannot be touched, in a block of its own.
 
 It is a Client Component because it filters; everything it renders arrived from the server in one read, and nothing is fetched or written here.
@@ -37,13 +37,13 @@ It is a Client Component because it filters; everything it renders arrived from 
 
 - **The search** matches each study's `searchText`, which the mapper folds (`foldForSearch`: no case, no accents) from its name, its description, where it comes from and **every game's** title, players and event; what is typed is folded the same way, so «kasparov» finds «Kaspárov» and «anderssen» finds the study whose games he played. It filters as one types. A live region, out of sight, says how many studies are left («1 estudio»); none left, an [`EmptyState`](/components/platform/shared/empty-state) says what was searched and what one can search by.
 - **The tabs**: «Todos», then their own by kind — «Mis partidas», «Estudios», «Torneos», «Colecciones» — and «Recibidos», each with its count. The counts are the library's, whatever is searched, and a kind they have none of has no tab. They are buttons with `aria-pressed`; the chosen one is filled with the ink, which the head's red button does not compete with.
-- **The order**: «Recientes» (the default, by `updatedAt`), «Nombre» (Spanish collation, no case) or «Más partidas». It replaced the server's order, which put «Mis partidas» first.
+- **The order**: «Recientes» (the default, by `updatedAt`), «Nombre» (Spanish collation, no case) or «Más partidas». It replaced the server's order, which put «Mis partidas» first. It is a [`PlatformSelect`](/components/platform/shared/platform-select) in the accent's tone (`tone="accent"`): a filter is not a form, so its focus and the option under the pointer are the brand's red and not a form's blue.
 - **The slot** heads their own grid while nothing is searched and the tab is «Todos» or one of the kinds they can create.
 - **Entrance.** The groups are keyed by the tab and the order, so changing either remounts them and every card plays its entrance again: a 260 ms fade with a short rise, staggered 35 ms per card through `--studies-browser-index`, capped at the twelfth so a long library does not take a second to come in. Typing does not replay it. Off under `prefers-reduced-motion`.
 
 ## Markup & styling
 
-Block `.studies-browser` (217 lines).
+Block `.studies-browser` (220 lines).
 
 **Elements:** `.studies-browser__bar`, `.studies-browser__search` (the box: its border, and the focus in the accent's red — its border and pale ring —, not a form's blue: it is not a form and never says an error, the owner's call, as for the header's search), `.studies-browser__search-icon`, `.studies-browser__search-input`, `.studies-browser__tabs`, `.studies-browser__tab`, `.studies-browser__tab-count`, `.studies-browser__sort` (the box around the select, which the bar lays out), `.studies-browser__status` (the live region, out of sight), `.studies-browser__group`, `.studies-browser__group-title`, `.studies-browser__group-count`, `.studies-browser__grid`, `.studies-browser__item` (the animated wrapper of each card)
 

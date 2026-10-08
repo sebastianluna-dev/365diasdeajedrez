@@ -17,14 +17,14 @@ interface NewStudyProps {
    * with the account — and "Colección" only for a teacher. See services/studies/study-rules.
    */
   kinds: StudyKindOption[];
-  /**
-   * What opens it: the page's button (the default), or the dashed slot that
-   * heads the grid of «Mis estudios». Both open the same popup.
-   */
-  trigger?: "button" | "slot";
 }
 
-export function NewStudy({ kinds, trigger = "button" }: NewStudyProps) {
+/**
+ * «Nuevo estudio»: the dashed slot that heads the grid of «Mis estudios», and
+ * the popup it opens. The only way in since 2026-10-07: the page's head had a
+ * button to the same popup, which the owner took out.
+ */
+export function NewStudy({ kinds }: NewStudyProps) {
   const popup = useRef<PlatformPopupHandle>(null);
   // Bumped on every closing: the form is remounted, so it never opens with
   // what was typed the last time. On closing and not on opening, because
@@ -33,26 +33,13 @@ export function NewStudy({ kinds, trigger = "button" }: NewStudyProps) {
   const [opening, setOpening] = useState(0);
 
   return (
-    <div className={`new-study${trigger === "slot" ? " new-study_trigger_slot" : ""}`}>
-      {trigger === "slot" ? (
-        // The first cell of the grid: what does not exist yet, dashed, lit when
-        // it is about to be pressed.
-        <button type="button" className="new-study__slot" onClick={(event) => popup.current?.open(event)}>
-          <PlusIcon variant="classic-solid" className="new-study__slot-icon" />
-          Nuevo estudio
-        </button>
-      ) : (
-        // The page's primary action since 2026-10-07: the library's head
-        // creates, as in the «Biblioteca» design the owner chose.
-        <button
-          type="button"
-          className="platform-button platform-button_variant_accent new-study__open"
-          onClick={(event) => popup.current?.open(event)}
-        >
-          <PlusIcon variant="classic-solid" className="platform-button__icon" />
-          Nuevo estudio
-        </button>
-      )}
+    <div className="new-study">
+      {/* The first cell of the grid: what does not exist yet, dashed, lit when
+          it is about to be pressed. */}
+      <button type="button" className="new-study__slot" onClick={(event) => popup.current?.open(event)}>
+        <PlusIcon variant="classic-solid" className="new-study__slot-icon" />
+        Nuevo estudio
+      </button>
 
       <PlatformPopup ref={popup} title="Nuevo estudio" size="md" onClose={() => setOpening((count) => count + 1)}>
         <NewStudyForm

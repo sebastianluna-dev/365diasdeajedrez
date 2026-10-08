@@ -1,10 +1,6 @@
+/* A cell of the library's grid: it fills it, and the slot fills it too. */
 .new-study {
-  flex: none;
-
-  /* In the grid it is a cell: it fills it, and the slot fills it too. */
-  &.new-study_trigger_slot {
-    display: flex;
-  }
+  display: flex;
 
   /* The slot of what does not exist yet: dashed, the cell's whole size — as
      tall as the covers beside it —, and lit only when it is about to be

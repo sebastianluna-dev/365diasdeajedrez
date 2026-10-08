@@ -122,9 +122,12 @@
     opacity: 0.75;
   }
 
-  /* At the end of the bar; where it wraps, at the end of its own line. */
+  /* At the end of the bar; where it wraps, at the end of its own line. As
+     wide as its longest option: its list takes the trigger's width, and
+     narrower, «Más partidas» broke in two. */
   & .studies-browser__sort {
     flex: none;
+    width: 176px;
     margin-left: auto;
   }
 

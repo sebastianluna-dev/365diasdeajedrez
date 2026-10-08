@@ -41,6 +41,12 @@ Reference page: [Components › PlatformSelect](/components/platform/shared/plat
     defaultValue: { control: "select", options: STUDY_KINDS.map((kind) => kind.value), description: "Initial choice." },
     placeholder: { control: "text", description: "Trigger text while nothing is chosen." },
     disabled: { control: "boolean" },
+    tone: {
+      control: "inline-radio",
+      options: ["selection", "accent"],
+      description:
+        "`selection` (a form's blue) or `accent` (the brand's red, for a filter or an order outside a form).",
+    },
   },
   decorators: [
     (Story) => (
@@ -86,4 +92,14 @@ export const Open: Story = {
   play: async ({ canvasElement }) => {
     await userEvent.click(within(canvasElement).getByRole("combobox"));
   },
+};
+
+/**
+ * The accent tone, for a select that sorts or filters outside a form (the order of «Mis estudios»): the list open, the
+ * option under the pointer in the brand's red instead of a form's blue.
+ */
+export const Accent: Story = {
+  args: { tone: "accent", "aria-label": "Ordenar" },
+  parameters: Open.parameters,
+  play: Open.play,
 };

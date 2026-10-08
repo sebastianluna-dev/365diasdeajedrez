@@ -1,4 +1,3 @@
-import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import type { StudyKindOption, StudySummary } from "@/services/studies/studies.types";
 import { StudiesBrowser } from "./studies-browser.comp";
 
@@ -10,15 +9,11 @@ interface StudiesListSectionProps {
 }
 
 export function StudiesListSection({ studies, kinds }: StudiesListSectionProps) {
-  if (studies.length === 0) {
-    return (
-      <EmptyState
-        title="Todavía no tienes estudios"
-        description="Crea un estudio o importa partidas para empezar tu biblioteca."
-      />
-    );
-  }
-
+  // No empty state of its own: the library is drawn even with nothing in it,
+  // because its grid opens with the slot that creates the first study, the
+  // only way to create one since the page's button went. («Mis partidas» is
+  // born with the account, so it is rarely empty at all.)
+  //
   // The split is decided by OWNERSHIP, not by kind: what is not theirs — the
   // databases of their courses and the collections a teacher handed them — is
   // read-only and goes in its own section so it does not mix with what they

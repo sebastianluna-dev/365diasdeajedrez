@@ -1347,7 +1347,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               <SectionDialog
                 block="new-study"
                 label="Nuevo estudio"
-                buttonClassName="new-study__open"
+                buttonClassName="new-study__slot"
                 title="Nuevo estudio"
                 size="md"
                 form={(close) => (

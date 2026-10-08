@@ -151,6 +151,20 @@
     width: 16px;
     height: 16px;
   }
+
+  /* THE ACCENT TONE: a select that sorts or filters what is on the screen,
+     outside any form. The focus and the option under the pointer take the
+     brand's red instead of a form's blue: a filter never says an error, so
+     its red cannot be read as one (2026-10-07, the owner's call). */
+  &.platform-select_tone_accent .platform-select__trigger:focus-visible {
+    outline-color: var(--platform-accent-soft);
+    border-color: var(--platform-accent);
+  }
+
+  &.platform-select_tone_accent .platform-select__item[data-highlighted] {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+  }
 }
 
 /* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */

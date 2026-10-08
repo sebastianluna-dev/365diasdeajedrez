@@ -4,14 +4,14 @@ description: "Splits the student's studies by ownership (editable versus receive
 
 # `StudiesListSection`
 
-|            |                                                                                                                                                 |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/studies-list/studies-list.section.tsx`                                                                    |
-| Kind       | Server Component                                                                                                                                |
-| Stylesheet | none: the browser and the cards paint everything                                                                                                |
-| Used by    | `/estudios`                                                                                                                                     |
-| Composes   | [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser), [`EmptyState`](/components/platform/shared/empty-state) |
-| Uses       | `StudySummary`, `StudyKindOption` from `services/studies/studies.types`                                                                         |
+|            |                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-list/studies-list.section.tsx`           |
+| Kind       | Server Component                                                                       |
+| Stylesheet | none: the browser and the cards paint everything                                       |
+| Used by    | `/estudios`                                                                            |
+| Composes   | [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser) |
+| Uses       | `StudySummary`, `StudyKindOption` from `services/studies/studies.types`                |
 
 ## Purpose
 
@@ -26,7 +26,7 @@ The body of "Mis estudios". The page resolves the identity in the DAL first and 
 
 ## Behaviour
 
-No studies at all renders an [`EmptyState`](/components/platform/shared/empty-state) ("Todavía no tienes estudios"); otherwise the list is partitioned on `permissions.canEditGames` and passed to the client browser. The page mounts [`NewStudy`](/components/platform/sections/studies/studies-list/new-study) in its header with the kinds the viewer may create, and hands the same kinds here for the browser's slot.
+The list is partitioned on `permissions.canEditGames` and passed to the client browser, even when it is empty: the library's grid opens with the slot that creates a study ([`NewStudy`](/components/platform/sections/studies/studies-list/new-study)), the only way to create one since the page's head lost its button (2026-10-07), so an empty state of its own — «Todavía no tienes estudios», until then — would have hidden it. «Mis partidas» is born with the account, so the list is rarely empty at all. The page hands the kinds the viewer may create for that slot.
 
 ## Markup & styling
 

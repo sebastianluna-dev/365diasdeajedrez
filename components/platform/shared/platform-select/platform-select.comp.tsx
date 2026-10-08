@@ -45,6 +45,14 @@ interface PlatformSelectProps extends Omit<ComponentProps<"button">, "value" | "
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
+  /**
+   * The colour of the focus and of the option under the pointer. `selection`
+   * (default) is the blue of filling in a form; `accent` the brand's red, for
+   * a select that sorts or filters what is on the screen, outside any form
+   * (the order of «Mis estudios»): a filter is not a form and never says an
+   * error, so its red cannot be read as one.
+   */
+  tone?: "selection" | "accent";
 }
 
 /** The private value of the empty option's item. It never leaves the component. */
@@ -94,6 +102,7 @@ function SelectControl({
   placeholder,
   required,
   disabled,
+  tone = "selection",
   className,
   ...triggerProps
 }: PlatformSelectProps) {
@@ -130,7 +139,7 @@ function SelectControl({
   );
 
   return (
-    <div className="platform-select">
+    <div className={`platform-select${tone === "accent" ? " platform-select_tone_accent" : ""}`}>
       <Select.Root
         name={name}
         form={form}
