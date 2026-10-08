@@ -51,9 +51,13 @@
       background: var(--platform-track);
     }
 
+    /* The accent's red, as the library's search: a search is not a form and
+       never says an error, so its red cannot be read as one, and outside a
+       form the focus is the brand's (2026-10-07, the owner's call; it was the
+       selection's blue). */
     &:focus-visible {
-      outline: none;
-      border-color: var(--platform-selection);
+      outline: 2px solid var(--platform-accent-soft);
+      border-color: var(--platform-accent);
       background: var(--platform-surface);
     }
   }

@@ -20,8 +20,10 @@
   }
 
   /* The platform's control on white, with the glass inside it: the field is
-     the box, so the box takes the focus the way a form's field does — the
-     selection's border and its pale ring. */
+     the box, so the box takes the focus. In the accent's red and not in a
+     form's blue (2026-10-07, the owner's call): it is not a form and never
+     says an error, so its red cannot be read as one, and outside a form the
+     focus is the brand's — the accent's border and its pale ring. */
   & .studies-browser__search {
     flex: 0 1 320px;
     min-width: 0;
@@ -41,8 +43,8 @@
   }
 
   & .studies-browser__search:has(.studies-browser__search-input:focus) {
-    outline: 2px solid var(--platform-selection-soft);
-    border-color: var(--platform-selection);
+    outline: 2px solid var(--platform-accent-soft);
+    border-color: var(--platform-accent);
   }
 
   & .studies-browser__search-icon {
