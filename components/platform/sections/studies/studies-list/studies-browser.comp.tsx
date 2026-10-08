@@ -31,8 +31,9 @@ const SORT_OPTIONS: { value: Sort; label: string }[] = [
 ];
 
 const COMPARE: Record<Sort, (left: StudySummary, right: StudySummary) => number> = {
-  // ISO strings sort as the moments they write.
-  RECENT: (left, right) => right.updatedAt.localeCompare(left.updatedAt),
+  // By when they last opened it (or created it): ISO strings sort as the
+  // moments they write.
+  RECENT: (left, right) => right.recentAt.localeCompare(left.recentAt),
   NAME: (left, right) => left.name.localeCompare(right.name, "es", { sensitivity: "base" }),
   GAMES: (left, right) => right.gameCount - left.gameCount || left.name.localeCompare(right.name, "es"),
 };

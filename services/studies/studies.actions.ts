@@ -23,6 +23,7 @@ import { allowAction } from "@/lib/rate-limit";
 import { clearAnnotations, clearVariations, emptyGame, parseEditableGame, serializeGame } from "@/lib/chess/pgn-edit";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
+import { getVisibleDatabasesWhere } from "@/services/shared/game-visibility";
 import { z } from "zod";
 import { formOptionalText, formText, parseForm, readIds } from "@/services/shared/form-schema";
 import {
@@ -792,4 +793,31 @@ export async function unshareStudyWithStudent(studyId: string, formData: FormDat
   await db.studyShare.deleteMany({ where: { databaseId: owned.study.id, userId: studentId } });
 
   revalidatePath(platformRoutes.studyDetail(owned.study.id));
+}
+
+/**
+ * The game a person has on screen becomes the one their study opens on next
+ * time, its card's board and its place in «Recientes» (`StudyVisit`, of which
+ * this is the only writer). Called by the game page from the browser once the
+ * game is shown, never while rendering, so a page Next prefetches writes
+ * nothing. Only a game the viewer can see, in the study it says; anything else
+ * — a forged request, a game deleted meanwhile — goes out silently. Nothing is
+ * revalidated: the list is read fresh when it is next opened.
+ */
+export async function rememberOpenedGame(studyId: string, gameId: string): Promise<void> {
+  if (typeof studyId !== "string" || typeof gameId !== "string") return;
+  const user = await getCurrentUser();
+  const db = getPlatformDb();
+
+  const game = await db.game.findFirst({
+    where: { id: gameId, databaseId: studyId, database: await getVisibleDatabasesWhere() },
+    select: { id: true },
+  });
+  if (!game) return;
+
+  await db.studyVisit.upsert({
+    where: { userId_databaseId: { userId: user.id, databaseId: studyId } },
+    create: { userId: user.id, databaseId: studyId, gameId },
+    update: { gameId, openedAt: new Date() },
+  });
 }

@@ -11,14 +11,19 @@ export interface StudySummary {
   updatedAtLabel: string;
   /** How long ago it was last touched: "hace 3 meses". */
   updatedAgoLabel: string;
-  /** The same moment as an ISO string, for the list to sort by recency. */
-  updatedAt: string;
   /**
-   * The position the card's board shows: where the study's first game ends
-   * (`finalFenOf`), the starting one for a study with no games.
+   * What «Recientes» orders by, as an ISO string: when the viewer last opened
+   * a game of the study (`StudyVisit`), or, for one they never opened, when it
+   * was created — so a study just made is not sent to the bottom.
+   */
+  recentAt: string;
+  /**
+   * The position the card's board shows: where the last game the viewer
+   * opened ends (`finalFenOf`), or the first game when they never opened one,
+   * the starting position for a study with no games.
    */
   boardFen: string;
-  /** Which side the card's board is seen from: the first game's orientation. */
+  /** Which side the card's board is seen from: that game's orientation. */
   boardOrientation: "white" | "black";
   /**
    * Everything the list's search matches against, folded (`foldForSearch`):

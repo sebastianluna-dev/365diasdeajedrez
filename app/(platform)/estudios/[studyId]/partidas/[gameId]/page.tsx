@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { GameRecord } from "@/components/platform/sections/studies/game-view/game-record.comp";
 import { GameViewSection } from "@/components/platform/sections/studies/game-view/game-view.section";
+import { RememberOpenedGame } from "@/components/platform/sections/studies/game-view/remember-opened-game.comp";
 import { readImportReport } from "@/services/shared/pgn-import-report";
 import { getGameById, getGameResultOptions } from "@/services/studies/studies.service";
 
@@ -51,6 +52,8 @@ export default async function GamePage({ params, searchParams }: GamePageProps) 
         importReport={readImportReport(importadas)}
       />
       <GameRecord game={game} results={results} />
+      {/* The study opens here next time: said from the browser, once shown. */}
+      <RememberOpenedGame studyId={studyId} gameId={gameId} />
     </>
   );
 }

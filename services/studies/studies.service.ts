@@ -45,14 +45,27 @@ const getVisibleStudiesWhere = getVisibleDatabasesWhere;
  */
 const CLASS_GAMES_ID = "class-games";
 
+/**
+ * The game the viewer last left a study on (`StudyVisit`), for the study's own
+ * URL to open there; null when they never opened one, or it was deleted.
+ */
+export async function getLastOpenedGameId(studyId: string): Promise<string | null> {
+  const user = await getCurrentUser();
+  const visit = await getPlatformDb().studyVisit.findUnique({
+    where: { userId_databaseId: { userId: user.id, databaseId: studyId } },
+    select: { gameId: true },
+  });
+  return visit?.gameId ?? null;
+}
+
 export async function getUserStudies(): Promise<StudySummary[]> {
   const db = getPlatformDb();
   const [where, user] = await Promise.all([getListedDatabasesWhere(), getCurrentUser()]);
 
-  // The four reads are independent, so they travel together: the totals and the
+  // The five reads are independent, so they travel together: the totals and the
   // games' names are scoped by the same visibility `where` instead of by the ids
-  // of the first query, and the class games only need the viewer.
-  const [rows, totals, gameNames, classGames] = await Promise.all([
+  // of the first query, and the visits and the class games only need the viewer.
+  const [rows, totals, gameNames, visits, classGames] = await Promise.all([
     db.gameDatabase.findMany({
       where,
       // "Mis partidas" first: it is the only one that is always there and where what
@@ -75,8 +88,19 @@ export async function getUserStudies(): Promise<StudySummary[]> {
       where: { database: where },
       select: { databaseId: true, title: true, white: true, black: true, event: true },
     }),
+    // The game each study was last left on, by this viewer: where its card
+    // opens, its board, and its place in «Recientes».
+    db.studyVisit.findMany({
+      where: { userId: user.id },
+      select: {
+        databaseId: true,
+        openedAt: true,
+        game: { select: { id: true, pgn: true, orientation: { select: { code: true } } } },
+      },
+    }),
     getClassGamesSummary(),
   ]);
+  const visitOf = new Map(visits.map((visit) => [visit.databaseId, visit]));
   const totalOf = new Map(totals.map((total) => [total.databaseId, total._count._all]));
   const termsOf = new Map<string, string[]>();
   for (const game of gameNames) {
@@ -87,7 +111,11 @@ export async function getUserStudies(): Promise<StudySummary[]> {
 
   const now = new Date();
   const studies = rows.map((row) =>
-    mapStudySummary(row, user.id, totalOf.get(row.id) ?? 0, now, [...new Set(termsOf.get(row.id))]),
+    mapStudySummary(row, user.id, totalOf.get(row.id) ?? 0, {
+      now,
+      gameTerms: [...new Set(termsOf.get(row.id))],
+      visit: visitOf.get(row.id),
+    }),
   );
   // At the end of the list and only if there is something: an empty "class games"
   // card would be noise for whoever has not been to one yet.
@@ -297,7 +325,7 @@ async function getClassGamesSummary(): Promise<StudySummary | null> {
     gameCount: items.length,
     updatedAtLabel: latest.classDateLabel,
     updatedAgoLabel: latest.classDateAgoLabel,
-    updatedAt: latest.classDate,
+    recentAt: latest.classDate,
     boardFen: finalFenOf(game?.pgn ?? ""),
     boardOrientation: game?.orientation?.code === BOARD_ORIENTATION.BLACK ? "black" : "white",
     searchText: foldForSearch(

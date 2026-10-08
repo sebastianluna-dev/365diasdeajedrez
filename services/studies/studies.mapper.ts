@@ -104,16 +104,32 @@ export type GameViewRow = Prisma.GameGetPayload<{ include: typeof gameViewInclud
  * `gameCount` is the study's total, counted by the service: the row's own count
  * is the cited games only (see `studySummaryInclude`). `now` exists for tests.
  */
+/** The game of a study a person opened last, with what its card needs of it. */
+export interface StudySummaryVisit {
+  openedAt: Date;
+  /** Null once that game was deleted: the study goes back to its first game. */
+  game: { id: string; pgn: string; orientation: { code: string } | null } | null;
+}
+
+/** What the list adds to a study's row: read by the service, all optional. */
+export interface StudySummaryExtras {
+  now?: Date;
+  /** Every game's title, players and event, for the list's search. */
+  gameTerms?: string[];
+  /** The viewer's last opening of the study (`StudyVisit`), when there is one. */
+  visit?: StudySummaryVisit;
+}
+
 export function mapStudySummary(
   row: StudySummaryRow,
   viewerId: string | null,
   gameCount: number,
-  now: Date = new Date(),
-  /** Every game's title, players and event, for the list's search (the service reads them). */
-  gameTerms: string[] = [],
+  { now = new Date(), gameTerms = [], visit }: StudySummaryExtras = {},
 ): StudySummary {
   const isOwner = row.userId === viewerId;
   const [first] = row.games;
+  // The game the card stands for: the one they left the study on, or its first.
+  const shown = visit?.game ?? first;
   const sharedByName = isOwner ? undefined : (row.shares[0]?.teacher?.displayName ?? undefined);
   const origin = row.course
     ? { code: "COURSE" as const, label: row.course.name }
@@ -130,10 +146,10 @@ export function mapStudySummary(
     gameCount,
     updatedAtLabel: formatSpanishDate(row.updatedAt),
     updatedAgoLabel: formatRelativeSpanish(row.updatedAt, now),
-    updatedAt: row.updatedAt.toISOString(),
+    recentAt: (visit?.openedAt ?? row.createdAt).toISOString(),
     // An empty study: an empty PGN ends where it starts, the initial position.
-    boardFen: finalFenOf(first?.pgn ?? ""),
-    boardOrientation: orientationCodeOf(first?.orientation ?? null) === BOARD_ORIENTATION.BLACK ? "black" : "white",
+    boardFen: finalFenOf(shown?.pgn ?? ""),
+    boardOrientation: orientationCodeOf(shown?.orientation ?? null) === BOARD_ORIENTATION.BLACK ? "black" : "white",
     searchText: foldForSearch([row.name, row.description, origin?.label, ...gameTerms].filter(Boolean).join(" ")),
     origin,
     courseName: row.course?.name,
@@ -141,10 +157,11 @@ export function mapStudySummary(
     sharedByName,
     permissions: studyPermissionsOf({ kindCode: row.kind.code, isOwner }),
     citedGameCount: row._count.games,
-    // Straight to the first game: a study is read on its game page, and the
-    // study's own URL only redirects there. Without games there is nothing to
-    // redirect to, so the card opens the study's empty page.
-    href: row.games[0] ? platformRoutes.gameDetail(row.id, row.games[0].id) : platformRoutes.studyDetail(row.id),
+    // Straight to a game — the one they left the study on, or its first —: a
+    // study is read on its game page, and the study's own URL only redirects
+    // there. Without games there is nothing to go to, so the card opens the
+    // study's empty page.
+    href: shown ? platformRoutes.gameDetail(row.id, shown.id) : platformRoutes.studyDetail(row.id),
   };
 }
 

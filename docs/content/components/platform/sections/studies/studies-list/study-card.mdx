@@ -15,7 +15,7 @@ description: "One study in the library of «Mis estudios», as a cover: its boar
 
 ## Purpose
 
-A study as the library shows it (2026-10-07: the «Biblioteca» direction, card «T2», the «cover», which the owner chose among three directions and then five cards). A study is recognised by its board, as on Lichess: the card opens with its board across its whole width, where the study's first game ends, and under it says, from top to bottom:
+A study as the library shows it (2026-10-07: the «Biblioteca» direction, card «T2», the «cover», which the owner chose among three directions and then five cards). A study is recognised by its board, as on Lichess: the card opens with its board across its whole width — where the last game the viewer opened in the study ends, or its first game when they never opened one —, and under it says, from top to bottom:
 
 - **what it is**, with its icon, in the accent's ink — «Mis partidas» (`UserIcon`), «Estudio» (`BookOpenIcon`), «Torneo» (`TrophyIcon`), «Colección» (`BooksIcon`) — or, for a study that is not theirs, **where it comes from**, in grey: the teacher who shared it (`ChalkboardUserIcon`), the course (`GraduationCapIcon`), «Tus clases» (`UsersIcon`);
 - **its name**, in two lines at most: a library is scanned;
@@ -23,7 +23,7 @@ A study as the library shows it (2026-10-07: the «Biblioteca» direction, card 
 
 It replaced a card with the site's logo mark as its tile, the description and the first four games listed by name: tall cards in two columns, all of them with the same tile. The description and the games are still what the [search](/components/platform/sections/studies/studies-list/studies-browser) finds.
 
-**The whole card is the link.** The name is the only `<a>`; its `::after` is stretched over the card (`position: absolute; inset: 0`), so a click anywhere goes to the study's first game (`href`; the study's empty page when it has none) while the markup keeps one link with the study's name. The board is `aria-hidden`: the name says what the study is. Keyboard focus on the link draws the accent's ring around the card (`:has(:focus-visible)`), the ring of everything outside a form.
+**The whole card is the link.** The name is the only `<a>`; its `::after` is stretched over the card (`position: absolute; inset: 0`), so a click anywhere goes to the game the study was left on, or its first (`href`; the study's empty page when it has none) while the markup keeps one link with the study's name. The board is `aria-hidden`: the name says what the study is. Keyboard focus on the link draws the accent's ring around the card (`:has(:focus-visible)`), the ring of everything outside a form.
 
 ## Props
 
@@ -33,7 +33,7 @@ It replaced a card with the site's logo mark as its tile, the description and th
 
 ## Behaviour
 
-- **The board** is `boardFen` seen from `boardOrientation`, both from the mapper: the final position of the study's first game in the aside's order (`finalFenOf` over its PGN; `studySummaryInclude` takes that one game), from the side that game is set to open from. A study without games shows the starting position. The class-games card shows the latest class's game.
+- **The board** is `boardFen` seen from `boardOrientation`, both from the mapper: the final position (`finalFenOf` over its PGN) of the last game the viewer opened in the study (`StudyVisit`, since 2026-10-07: the owner wanted the card to say where they were), or of its first game in the aside's order when they never opened one (`studySummaryInclude` takes that one game), from the side that game is set to open from. A study without games shows the starting position. The class-games card shows the latest class's game.
 - **Under the pointer** the shadow grows (`--platform-shadow-card` to `--platform-shadow-lift`); nothing moves.
 - **The card went through four shapes the same day.** First «T1», the board beside the text, at 92px in four columns and then in three; then 120px in two; the owner then took the cover. Beside the text the board read as an icon.
 - **The cross.** `permissions.canDelete` renders the [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) cross over the board's top right corner, on a white tile of its own (the quiet button is drawn for a white ground and was lost on the squares), raised above the stretched link with `z-index`; it comes out when the card is pointed at or holds the focus, and is always drawn where nothing hovers (`(hover: none)`). A study that cannot be deleted («Mis partidas», what was received) has none. The «Sólo lectura» pill of the old card went: what is not theirs is in its own block, «Recibido», and says where it comes from.

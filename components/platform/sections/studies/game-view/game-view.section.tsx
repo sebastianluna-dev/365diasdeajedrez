@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback } from "react";
+import { useCallback, useState, useSyncExternalStore } from "react";
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import {
@@ -54,6 +54,7 @@ export function GameViewSection({ game, asReader = false, errorCode, importRepor
   const { pgn, applyPgn } = usePgnHistory(game.pgn, { undo: canEdit });
   const save = useCallback((next: string) => autosaveGamePgn(game.studyId, game.id, next), [game.studyId, game.id]);
   const { saveLabel } = useGameAutosave({ pgn, enabled: canEdit, save });
+  const { path, onPathChange } = useRememberedMove(game.id);
 
   // The mode is the reader's: it changes nothing for whoever edits the game,
   // so its owner is told it is on and given the way to see it at work.
@@ -100,7 +101,63 @@ export function GameViewSection({ game, asReader = false, errorCode, importRepor
         }}
         result={game.resultLabel}
         tools={{ saveLabel }}
+        path={path}
+        onPathChange={onPathChange}
       />
     </section>
   );
+}
+
+/** Where a game's move is kept, in this browser: one key per game. */
+const moveKey = (gameId: string) => `365:estudios:partida:${gameId}:jugada`;
+
+/** Another tab that moves through the same game keeps this one in step. */
+function subscribeToStorage(onChange: () => void) {
+  window.addEventListener("storage", onChange);
+  return () => window.removeEventListener("storage", onChange);
+}
+
+function readMove(gameId: string): string | null {
+  try {
+    return localStorage.getItem(moveKey(gameId));
+  } catch {
+    // Storage refused (a private window, blocked data): nothing remembered.
+    return null;
+  }
+}
+
+/**
+ * The move a game was left on, kept by the browser (`localStorage`) and given
+ * back when the game is opened again (2026-10-07): which game a study opens on
+ * is the server's (`StudyVisit`), which move inside it is this device's, saved
+ * on every move, at once, with nothing to send when the page closes.
+ *
+ * The viewer is driven (`path`): the server renders the start, which is all
+ * it can know, and the browser's first render already takes the stored move
+ * (`useSyncExternalStore`), so the board — drawn in the browser only — opens
+ * on it. A move the PGN no longer has is resolved by the viewer to its
+ * closest ancestor. What the viewer reports back that is the move it was
+ * given is an echo, not a move, and is not written.
+ */
+function useRememberedMove(gameId: string) {
+  const saved = useSyncExternalStore(
+    subscribeToStorage,
+    () => readMove(gameId),
+    () => null,
+  );
+  const [moved, setMoved] = useState<{ gameId: string; path: string } | null>(null);
+  const path = moved?.gameId === gameId ? moved.path : (saved ?? "");
+
+  const onPathChange = (next: string) => {
+    if (next === path) return;
+    setMoved({ gameId, path: next });
+    try {
+      if (next) localStorage.setItem(moveKey(gameId), next);
+      else localStorage.removeItem(moveKey(gameId));
+    } catch {
+      // Storage refused: the move is simply not remembered.
+    }
+  };
+
+  return { path, onPathChange };
 }

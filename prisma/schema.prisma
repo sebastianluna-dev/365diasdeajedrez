@@ -657,6 +657,7 @@ model User {
   gameDatabases     GameDatabase[]
   /// Collections that have been shared with them.
   studyShares       StudyShare[]
+  studyVisits       StudyVisit[]
   positions         Position[]
   classParticipants ClassParticipant[]
   activities        UserActivity[]
@@ -912,6 +913,7 @@ model GameDatabase {
   games         Game[]
   gamePositions GamePosition[]
   shares        StudyShare[]
+  visits        StudyVisit[]
 
   /// A single collection per chapter: it is what makes "this chapter's collection"
   /// one row and not a list that has to be disambiguated.
@@ -930,6 +932,36 @@ model GameDatabase {
 /// and the unique index prevents sharing it twice with the same one. Removing
 /// the share is deleting the row; there is no history because there is nothing
 /// to audit — the material goes on existing in the teacher's database.
+/// The last game a person opened in a study (2026-10-07): «Mis estudios» opens the
+/// study on it, its card shows where that game ends, and the list's «Recientes»
+/// orders by `openedAt`. One row per person and study, overwritten each time a
+/// game of the study is on screen; its only writer is `rememberOpenedGame`
+/// (services/studies/studies.actions.ts), which the game page calls from the
+/// browser once the game is shown, so a page Next prefetches writes nothing.
+///
+/// Per person and not on the study: a collection a teacher shares is one study
+/// and many readers, who could not write on it anyway, and writing on the study
+/// would move its `updatedAt` for having been looked at. Which move the board
+/// was on inside the game is the browser's to keep (localStorage), not this
+/// table's: it changes with every move.
+model StudyVisit {
+  id         String   @id @default(uuid())
+  userId     String
+  databaseId String
+  /// Null once that game is deleted: the study then opens on its first game
+  /// again, and keeps its place in «Recientes».
+  gameId     String?
+  openedAt   DateTime @default(now())
+
+  user     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  database GameDatabase @relation(fields: [databaseId], references: [id], onDelete: Cascade)
+  game     Game?        @relation(fields: [gameId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, databaseId])
+  @@index([databaseId])
+  @@index([gameId])
+}
+
 model StudyShare {
   id         String   @id @default(uuid())
   databaseId String
@@ -1009,6 +1041,7 @@ model Game {
   positions   GamePosition[]
   /// Lessons that take their content from this game.
   lessons     Lesson[]
+  visits      StudyVisit[]
 
   @@index([databaseId, order])
 }

@@ -7,6 +7,7 @@ import { withErrorParam } from "@/services/shared/safe-return-to";
 import {
   getClassGames,
   getGameResultOptions,
+  getLastOpenedGameId,
   getShareableStudents,
   getStudyById,
   getStudyKinds,
@@ -26,7 +27,7 @@ export async function generateMetadata({ params }: StudyPageProps): Promise<Meta
 
 /**
  * A study is read on its game page, so this URL only sends there: to the
- * first game, carrying along whatever a server action bounced with. It stays a
+ * game the viewer last left it on, or its first, carrying along whatever a server action bounced with. It stays a
  * page — and not a redirect alone — for the study that has no game to go to,
  * which is where it is named and, by its owner, filled or deleted.
  */
@@ -38,11 +39,13 @@ export default async function StudyPage({ params, searchParams }: StudyPageProps
   const study = await getStudyById(studyId);
   if (!study) notFound();
 
-  const first = study.games[0];
-  if (first) {
+  // The game they left the study on, while it is still in it; else the first.
+  const openedId = await getLastOpenedGameId(studyId);
+  const opening = study.games.find((game) => game.id === openedId) ?? study.games[0];
+  if (opening) {
     // What the action came back with goes on to the game page, which is where
     // it is read: an error, or the result of an import.
-    const target = platformRoutes.gameDetail(studyId, first.id);
+    const target = platformRoutes.gameDetail(studyId, opening.id);
     const report = readImportReport(importadas);
     if (error) redirect(withErrorParam(target, error));
     redirect(report ? withImportReport(target, report) : target);

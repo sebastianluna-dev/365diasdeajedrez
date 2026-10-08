@@ -148,11 +148,33 @@ describe("mapStudySummary", () => {
   });
 
   it("searches its name, its description and its games' names, without case or accents", () => {
-    const view = mapStudySummary(summary({ name: "Ataques", description: "Clásicos" }), "owner", 2, undefined, [
-      "Garri Kaspárov",
-      "La Inmortal",
-    ]);
+    const view = mapStudySummary(summary({ name: "Ataques", description: "Clásicos" }), "owner", 2, {
+      gameTerms: ["Garri Kaspárov", "La Inmortal"],
+    });
     expect(view.searchText).toBe("ataques clasicos garri kasparov la inmortal");
+  });
+
+  it("opens on the game the viewer left it on, and its board is where that game ends", () => {
+    const row = summary({ games: [{ id: "g1", pgn: "", orientation: null }] });
+    const view = mapStudySummary(row, "owner", 2, {
+      visit: { openedAt: new Date(2026, 9, 7), game: { id: "g2", pgn: "1. d4 d5 *", orientation: null } },
+    });
+    expect(view.href).toBe("/estudios/study-1/partidas/g2");
+    expect(view.boardFen).toBe("rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2");
+  });
+
+  it("goes back to its first game when the one it was left on was deleted", () => {
+    const row = summary({ games: [{ id: "g1", pgn: "", orientation: null }] });
+    const view = mapStudySummary(row, "owner", 1, { visit: { openedAt: new Date(2026, 9, 7), game: null } });
+    expect(view.href).toBe("/estudios/study-1/partidas/g1");
+  });
+
+  it("is recent by when it was last opened, or by when it was created", () => {
+    const opened = mapStudySummary(summary(), "owner", 0, {
+      visit: { openedAt: new Date(Date.UTC(2026, 9, 7)), game: null },
+    });
+    expect(opened.recentAt).toBe("2026-10-07T00:00:00.000Z");
+    expect(mapStudySummary(summary(), "owner", 0).recentAt).toBe(new Date(2026, 0, 1).toISOString());
   });
 
   it("says where a study that is not theirs comes from", () => {
@@ -174,7 +196,7 @@ describe("mapStudySummary", () => {
   });
 
   it("dice hace cuánto se tocó, además de la fecha", () => {
-    const view = mapStudySummary(summary(), "owner", 0, new Date(2026, 8, 24));
+    const view = mapStudySummary(summary(), "owner", 0, { now: new Date(2026, 8, 24) });
     expect(view.updatedAtLabel).toBe("1 de junio, 2026");
     expect(view.updatedAgoLabel).toBe("hace 3 meses");
   });

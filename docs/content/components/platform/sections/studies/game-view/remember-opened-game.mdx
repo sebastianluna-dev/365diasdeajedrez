@@ -1,0 +1,34 @@
+---
+description: "Draws nothing: once a study's game is on screen, it tells the server that this is the game the study was left on (rememberOpenedGame), which «Mis estudios» opens the study on, shows on its card and orders «Recientes» by."
+---
+
+# `RememberOpenedGame`
+
+|         |                                                                                                                |
+| ------- | -------------------------------------------------------------------------------------------------------------- |
+| File    | `components/platform/sections/studies/game-view/remember-opened-game.comp.tsx`                                 |
+| Kind    | Client Component (renders nothing)                                                                             |
+| Used by | `/estudios/[studyId]/partidas/[gameId]` (the student's game page; not the teacher's view of a student's study) |
+| Uses    | `rememberOpenedGame` from `services/studies/studies.actions`                                                   |
+
+## Purpose
+
+A study opens where it was left (2026-10-07, the owner's design). Which **game** is the server's, in `StudyVisit` — one row per person and study —, because the list renders on the server: the card's link, its board (where that game ends) and the order «Recientes» (by `openedAt`) all come from it. Which **move** inside the game is the browser's ([`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section)).
+
+## Props
+
+| Prop      | Type     | Required | Meaning                   |
+| --------- | -------- | -------- | ------------------------- |
+| `studyId` | `string` | yes      | The study the game is in. |
+| `gameId`  | `string` | yes      | The game on screen.       |
+
+## Behaviour
+
+- **From the browser, once the game is shown** (`useEffect`), never while the page renders: Next prefetches the pages a link points to, and a page rendered and never seen must not count as opened.
+- **Fire and forget.** The action checks the session, that the game is in that study and that the viewer can see it, and upserts the row (`openedAt` now); anything else goes out silently. A failed write costs a stale card and nothing on screen. Nothing is revalidated: the list is read fresh the next time it is opened.
+- Once per game shown (twice in development, under Strict Mode, which is harmless: the same row is written).
+
+## Related
+
+- [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser), whose «Recientes» orders by it, and [`StudyCard`](/components/platform/sections/studies/studies-list/study-card), whose link and board follow it.
+- The study's own URL (`/estudios/[studyId]`) redirects to the same game, through `getLastOpenedGameId`.
