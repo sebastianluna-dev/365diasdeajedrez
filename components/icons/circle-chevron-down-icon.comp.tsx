@@ -1,0 +1,46 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `circle-chevron-down`, in Duotone Light (the default), Duotone
+ * Solid, Classic Solid or Classic Light, as `variant` says.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function CircleChevronDownIcon({ className, variant = "duotone-light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-85.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "duotone-light" && (
+        <>
+          <path
+            opacity=".4"
+            d="M32 256a224 224 0 1 0 448 0 224 224 0 1 0 -448 0zm100.7-43.3c6.2-6.2 16.4-6.2 22.6 0L256 313.4 356.7 212.7c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6l-112 112c-6.2 6.2-16.4 6.2-22.6 0l-112-112c-6.2-6.2-6.2-16.4 0-22.6z"
+          />
+          <path d="M256 480a224 224 0 1 1 0-448 224 224 0 1 1 0 448zM256 0a256 256 0 1 0 0 512 256 256 0 1 0 0-512zM132.7 235.3l112 112c6.2 6.2 16.4 6.2 22.6 0l112-112c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L256 313.4 155.3 212.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6z" />
+        </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M0 256a256 256 0 1 0 512 0 256 256 0 1 0 -512 0zm135-49c9.4-9.4 24.6-9.4 33.9 0l87 87 87-87c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9L273 345c-9.4 9.4-24.6 9.4-33.9 0L135 241c-9.4-9.4-9.4-24.6 0-33.9z"
+          />
+          <path d="M239 345c9.4 9.4 24.6 9.4 33.9 0L377 241c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-87 87-87-87c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9L239 345z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M256 0a256 256 0 1 0 0 512 256 256 0 1 0 0-512zM135 241c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l87 87 87-87c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9L273 345c-9.4 9.4-24.6 9.4-33.9 0L135 241z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M256 480a224 224 0 1 1 0-448 224 224 0 1 1 0 448zM256 0a256 256 0 1 0 0 512 256 256 0 1 0 0-512zM132.7 235.3l112 112c6.2 6.2 16.4 6.2 22.6 0l112-112c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L256 313.4 155.3 212.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6z" />
+      )}
+    </svg>
+  );
+}

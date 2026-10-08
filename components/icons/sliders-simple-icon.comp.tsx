@@ -1,0 +1,46 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `sliders-simple`, in Duotone Light (the default), Duotone
+ * Solid, Classic Solid or Classic Light, as `variant` says.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function SlidersSimpleIcon({ className, variant = "duotone-light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-85.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "duotone-light" && (
+        <>
+          <path
+            opacity=".4"
+            d="M32 368a48 48 0 1 0 96 0 48 48 0 1 0 -96 0zM384 144a48 48 0 1 0 96 0 48 48 0 1 0 -96 0z"
+          />
+          <path d="M80 416a48 48 0 1 1 0-96 48 48 0 1 1 0 96zm78.4-64c-7.4-36.5-39.7-64-78.4-64-44.2 0-80 35.8-80 80s35.8 80 80 80c38.7 0 71-27.5 78.4-64L496 384c8.8 0 16-7.2 16-16s-7.2-16-16-16l-337.6 0zM480 144a48 48 0 1 1 -96 0 48 48 0 1 1 96 0zM353.6 128L16 128c-8.8 0-16 7.2-16 16s7.2 16 16 16l337.6 0c7.4 36.5 39.7 64 78.4 64 44.2 0 80-35.8 80-80s-35.8-80-80-80c-38.7 0-71 27.5-78.4 64z" />
+        </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M0 160c0 17.7 14.3 32 32 32l293.5 0c-3.5-10-5.5-20.8-5.5-32s1.9-22 5.5-32L32 128c-17.7 0-32 14.3-32 32zM186.5 320c3.5 10 5.5 20.8 5.5 32s-1.9 22-5.5 32L480 384c17.7 0 32-14.3 32-32s-14.3-32-32-32l-293.5 0z"
+          />
+          <path d="M416 192a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm0-128a96 96 0 1 0 0 192 96 96 0 1 0 0-192zM96 384a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm0-128a96 96 0 1 0 0 192 96 96 0 1 0 0-192z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M96 384a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm90.5-64c-13.2-37.3-48.7-64-90.5-64-53 0-96 43-96 96s43 96 96 96c41.8 0 77.4-26.7 90.5-64L480 384c17.7 0 32-14.3 32-32s-14.3-32-32-32l-293.5 0zM448 160a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM325.5 128L32 128c-17.7 0-32 14.3-32 32s14.3 32 32 32l293.5 0c13.2 37.3 48.7 64 90.5 64 53 0 96-43 96-96s-43-96-96-96c-41.8 0-77.4 26.7-90.5 64z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M80 416a48 48 0 1 1 0-96 48 48 0 1 1 0 96zm78.4-64c-7.4-36.5-39.7-64-78.4-64-44.2 0-80 35.8-80 80s35.8 80 80 80c38.7 0 71-27.5 78.4-64L496 384c8.8 0 16-7.2 16-16s-7.2-16-16-16l-337.6 0zM480 144a48 48 0 1 1 -96 0 48 48 0 1 1 96 0zM353.6 128L16 128c-8.8 0-16 7.2-16 16s7.2 16 16 16l337.6 0c7.4 36.5 39.7 64 78.4 64 44.2 0 80-35.8 80-80s-35.8-80-80-80c-38.7 0-71 27.5-78.4 64z" />
+      )}
+    </svg>
+  );
+}
