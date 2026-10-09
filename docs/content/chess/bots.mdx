@@ -42,12 +42,15 @@ What Stockfish's own limiters really do (checked against Stockfish 18's source a
 | 1320 | `UCI_LimitStrength true`, `UCI_Elo 1320`    | `depth 1`                           | 1     | the engine's     | the engine's        | 1.0–4.0   |
 | 1600 | `UCI_Elo 1600` (level 2.2)                  | `depth 3`                           | 1     |                  |                     | 1.0–4.0   |
 | 2000 | `UCI_Elo 2000` (level 4.2)                  | `depth 5`                           | 1     |                  |                     | 1.2–4.5   |
+| 2200 | `UCI_Elo 2300` (level 5.5)                  | `depth 6`                           | 1     |                  |                     | 1.2–5.0   |
 | 2400 | `UCI_Elo 2400` (level 6.1)                  | `depth 7`                           | 1     |                  |                     | 1.2–5.0   |
 | 2800 | `UCI_Elo 2800` (level 10.2)                 | `depth 11` (browser cap 400k nodes) | 1     |                  |                     | 1.5–6.0   |
 
+**The engine regime climbs in whole depths.** Skill picks at depth `1 + int(level)`, and within one depth the level only tunes its randomness a little (`120 − 2 × level`), so a bot's strength steps up with each depth and moves little between two steps: measured, depth 3 plays at ≈ 1670, 4 at ≈ 1815, 5 from ≈ 1960 at its bottom to ≈ 2060 at its top, 6 at ≈ 2200, 7 at ≈ 2400, 8 at ≈ 2555, 9 at ≈ 2660, 10 at ≈ 2745 and 11 at ≈ 2815 — some 150–200 points a depth below 2500, 70–105 above. A label is met by sending a `UCI_Elo` whose depth measures nearest to it, so a step belongs halfway between what the two depths around it measure. Sent as the label, the step to depth 6 fell at 2197, just under its anchor, and a bot of 2184 played a whole depth below its label (2035). Since 2026-10-09 the 2200 row sends 2300, which puts that step at the label 2131, halfway between the top of depth 5 and the bottom of depth 6 (≈ 2190), and the one to depth 7 at 2365. The mapping stays monotone — a higher label never gets a shallower depth — so the ladder keeps its order; what the steps cost is that a label between two depths sits up to half a step from what it plays: Corrales Jiménez, 2125, is some 65 points from either.
+
 Every bot sends `Hash 16`. Between rows the numbers are interpolated inside each regime; past 1200 the sampled row is extrapolated and clamped (at most 20 000 nodes, a temperature of at least 30 cp, a blunder rate of at least 1 %). The browser's node cap for 2600 and above can only weaken: in a tactical position it may leave the bot a little weaker in the browser than under Node.
 
-A bot searches by depth or nodes, **never by time** (`SearchBudget` has no `movetime`): its strength must not depend on the device, and nodes reproduce under Node, which is what lets it be calibrated before anything is promised. The one search by time is `FULL_STRENGTH_PROFILE` (`full-strength.const.ts`), the analysis board's «Jugar esta posición contra el módulo»: full strength, 300 ms, never calibrated nor saved. The numbers above are the second calibration round's; the calibration moves the table — the temperature, the blunders and the nodes below; `UCI_Elo` above — and never the labels.
+A bot searches by depth or nodes, **never by time** (`SearchBudget` has no `movetime`): its strength must not depend on the device, and nodes reproduce under Node, which is what lets it be calibrated before anything is promised. The one search by time is `FULL_STRENGTH_PROFILE` (`full-strength.const.ts`), the analysis board's «Jugar esta posición contra el módulo»: full strength, 300 ms, never calibrated nor saved. The numbers above are the second calibration round's below 1320 and the third's above; the calibration moves the table — the temperature, the blunders and the nodes below; `UCI_Elo` above — and never the labels.
 
 ## How a weak bot picks — `choose-bot-move.ts`
 
@@ -78,19 +81,59 @@ What the figure means: an Elo **in Stockfish's pool**, not on the human scale. T
 
 ### Results
 
-The second round (2026-10-08), 120 games per bot or more, the anchors as above. The first round, with the research's starting table (1 500–15 000 nodes, 140–40 cp, the worst candidate as the blunder from 1000), measured the sampled bots 400–900 points above their labels — Rodrigo, 1309, played at 2235 —; fewer nodes, a warmer pick and random legal moves as the blunder brought them within tolerance.
+Five rounds, the anchors as above, every bot within its tolerance at the end:
 
-| Bot           | Label | Measured | ± (95 %) | Games |
-| ------------- | ----- | -------- | -------- | ----- |
-| Tere          | 412   | 479      | 147      | 120   |
-| Beto          | 547   | 579      | 143      | 140   |
-| Lupita        | 668   | 682      | 141      | 160   |
-| Don Chuy      | 783   | 872      | 118      | 130   |
-| Mariana       | 891   | 902      | 115      | 120   |
-| Profe Ramírez | 1036  | 1084     | 89       | 132   |
-| Ximena        | 1174  | 1237     | 75       | 126   |
-| Rodrigo       | 1309  | 1394     | 62       | 120   |
-| Sofía         | 1447  | 1528     | 66       | 120   |
-| Carlsen       | 2798  | 2814     | 49       | 120   |
+- **First** (2026-10-08): the research's starting table for the sampled regime (1 500–15 000 nodes, 140–40 cp, the worst candidate as the blunder from 1000) measured the sampled bots 400–900 points above their labels — Rodrigo, 1309, played at 2235.
+- **Second** (2026-10-08): fewer nodes, a warmer pick and random legal moves as the blunder brought the eight sampled bots within tolerance; Sofía and Carlsen were measured with them.
+- **Third** (2026-10-09): the other 35, all of the engine regime, 120 games each (4 200 games, 36 minutes on nine workers). Two fell outside the tolerance, Zacarías Rodríguez (2184, measured 2035) and Ávila Rodríguez (2279, 2169), and the round showed the steps above: Hernández Guerrero (2379) measured 2299 and Torres Rosas (2385), a depth up, 2417.
+- **Fourth and fifth** (2026-10-09): the nine bots between 2000 and 2400 again, with the 2200 row moved. At 2350 it put Corrales Jiménez (2125) at the bottom of depth 6, where she measured 2245; at 2300 she is at the top of depth 5, and the fifth round, 240 games each, gave the figures below.
 
-The ladder is in order and continuous across the threshold (Rodrigo 1394, Sofía 1528), and sits a steady 50–80 points above the labels on both sides of it, as one would expect from a pool anchored on `UCI_Elo`. The other 35 bots are not measured yet (`--check` lists them).
+| Bot                           | Label | Measured | Δ    | ± (95 %) | Games |
+| ----------------------------- | ----- | -------- | ---- | -------- | ----- |
+| Tere                          | 412   | 479      | +67  | 147      | 120   |
+| Beto                          | 547   | 579      | +32  | 143      | 140   |
+| Lupita                        | 668   | 682      | +14  | 141      | 160   |
+| Don Chuy                      | 783   | 872      | +89  | 118      | 130   |
+| Mariana                       | 891   | 902      | +11  | 115      | 120   |
+| Profe Ramírez                 | 1036  | 1084     | +48  | 89       | 132   |
+| Ximena                        | 1174  | 1237     | +63  | 75       | 126   |
+| Rodrigo                       | 1309  | 1394     | +85  | 62       | 120   |
+| Sofía                         | 1447  | 1528     | +81  | 66       | 120   |
+| Iván                          | 1586  | 1686     | +100 | 64       | 120   |
+| Daniela                       | 1723  | 1654     | −69  | 64       | 120   |
+| El Ingeniero                  | 1868  | 1821     | −47  | 71       | 120   |
+| Scarlett Daniela Olea Valle   | 1975  | 1959     | −16  | 66       | 120   |
+| Mia Fernanda Guzmán García    | 2007  | 2017     | +10  | 47       | 240   |
+| Tania Miranda Rodríguez       | 2041  | 2012     | −29  | 50       | 240   |
+| Paula Sofía Hernández Díaz    | 2055  | 2014     | −41  | 53       | 240   |
+| Zenia Corrales Jiménez        | 2125  | 2079     | −46  | 49       | 240   |
+| Santiago Zacarías Rodríguez   | 2184  | 2162     | −22  | 46       | 240   |
+| Arturo A. Fernández Hernández | 2267  | 2202     | −65  | 49       | 240   |
+| Joshua Adrián Ávila Rodríguez | 2279  | 2240     | −39  | 46       | 240   |
+| Gilberto Hernández Guerrero   | 2379  | 2397     | +18  | 51       | 240   |
+| Luis Carlos Torres Rosas      | 2385  | 2398     | +13  | 46       | 240   |
+| Wilhelm Steinitz              | 2457  | 2410     | −47  | 62       | 120   |
+| Carlos Torre Repetto          | 2531  | 2562     | +31  | 57       | 120   |
+| Max Euwe                      | 2538  | 2527     | −11  | 59       | 120   |
+| Vasili Smyslov                | 2603  | 2559     | −44  | 60       | 120   |
+| Emanuel Lasker                | 2612  | 2569     | −43  | 53       | 120   |
+| Mijaíl Botvínnik              | 2628  | 2680     | +52  | 60       | 120   |
+| Tigran Petrosián              | 2639  | 2648     | +9   | 57       | 120   |
+| Hou Yifan                     | 2641  | 2624     | −17  | 59       | 120   |
+| Alexander Alekhine            | 2646  | 2680     | +34  | 56       | 120   |
+| Boris Spassky                 | 2657  | 2652     | −5   | 53       | 120   |
+| José Raúl Capablanca          | 2668  | 2701     | +33  | 50       | 120   |
+| Judit Polgár                  | 2689  | 2624     | −65  | 53       | 120   |
+| Mijaíl Tal                    | 2694  | 2687     | −7   | 55       | 120   |
+| Ding Liren                    | 2716  | 2720     | +4   | 53       | 120   |
+| Anatoli Kárpov                | 2737  | 2745     | +8   | 51       | 120   |
+| Viswanathan Anand             | 2749  | 2724     | −25  | 46       | 120   |
+| Vladímir Krámnik              | 2753  | 2713     | −40  | 52       | 120   |
+| Gukesh D                      | 2757  | 2776     | +19  | 47       | 120   |
+| Bobby Fischer                 | 2763  | 2724     | −39  | 51       | 120   |
+| Fabiano Caruana               | 2774  | 2769     | −5   | 46       | 120   |
+| Hikaru Nakamura               | 2779  | 2772     | −7   | 48       | 120   |
+| Garri Kaspárov                | 2786  | 2814     | +28  | 52       | 120   |
+| Magnus Carlsen                | 2798  | 2814     | +16  | 49       | 120   |
+
+Every label is within its tolerance, and the ladder never inverts beyond the margins (`calibration.test.ts`). The sampled bots sit 10–90 points above their labels; the engine's, from 69 under to 100 over, 7 under on average. Iván (1586) measures exactly 100 over, the edge of the tolerance: he is just above the step to depth 3 (`UCI_Elo` 1567), and a 1500 row with a 1600 row sending about 1570 would put him a step down without moving Sofía, two points above the step to depth 2. What the figures mean is the pool's Elo, as above: the students' games against each bot will say how they read on the human scale.

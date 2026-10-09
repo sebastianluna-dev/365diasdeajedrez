@@ -1,6 +1,17 @@
 {
   "engineBuild": "sha256:a8fbc05ec6920b56",
-  "anchors": [1320, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800, 3000],
+  "anchors": [
+    1320,
+    1400,
+    1600,
+    1800,
+    2000,
+    2200,
+    2400,
+    2600,
+    2800,
+    3000
+  ],
   "bots": {
     "tere": {
       "label": 412,
@@ -65,10 +76,255 @@
       "games": 120,
       "measuredAt": "2026-10-09"
     },
+    "ivan": {
+      "label": 1586,
+      "measured": 1686,
+      "margin": 64,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "daniela": {
+      "label": 1723,
+      "measured": 1654,
+      "margin": 64,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "el-ingeniero": {
+      "label": 1868,
+      "measured": 1821,
+      "margin": 71,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "torres-rosas": {
+      "label": 2385,
+      "measured": 2398,
+      "margin": 46,
+      "games": 240,
+      "measuredAt": "2026-10-09"
+    },
+    "hernandez-guerrero": {
+      "label": 2379,
+      "measured": 2397,
+      "margin": 51,
+      "games": 240,
+      "measuredAt": "2026-10-09"
+    },
+    "avila-rodriguez": {
+      "label": 2279,
+      "measured": 2240,
+      "margin": 46,
+      "games": 240,
+      "measuredAt": "2026-10-09"
+    },
+    "fernandez-hernandez": {
+      "label": 2267,
+      "measured": 2202,
+      "margin": 49,
+      "games": 240,
+      "measuredAt": "2026-10-09"
+    },
+    "zacarias-rodriguez": {
+      "label": 2184,
+      "measured": 2162,
+      "margin": 46,
+      "games": 240,
+      "measuredAt": "2026-10-09"
+    },
+    "corrales-jimenez": {
+      "label": 2125,
+      "measured": 2079,
+      "margin": 49,
+      "games": 240,
+      "measuredAt": "2026-10-09"
+    },
+    "hernandez-diaz": {
+      "label": 2055,
+      "measured": 2014,
+      "margin": 53,
+      "games": 240,
+      "measuredAt": "2026-10-09"
+    },
+    "miranda-rodriguez": {
+      "label": 2041,
+      "measured": 2012,
+      "margin": 50,
+      "games": 240,
+      "measuredAt": "2026-10-09"
+    },
+    "guzman-garcia": {
+      "label": 2007,
+      "measured": 2017,
+      "margin": 47,
+      "games": 240,
+      "measuredAt": "2026-10-09"
+    },
+    "olea-valle": {
+      "label": 1975,
+      "measured": 1959,
+      "margin": 66,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "carlos-torre": {
+      "label": 2531,
+      "measured": 2562,
+      "margin": 57,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "steinitz": {
+      "label": 2457,
+      "measured": 2410,
+      "margin": 62,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "lasker": {
+      "label": 2612,
+      "measured": 2569,
+      "margin": 53,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "capablanca": {
+      "label": 2668,
+      "measured": 2701,
+      "margin": 50,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "alekhine": {
+      "label": 2646,
+      "measured": 2680,
+      "margin": 56,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "euwe": {
+      "label": 2538,
+      "measured": 2527,
+      "margin": 59,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "botvinnik": {
+      "label": 2628,
+      "measured": 2680,
+      "margin": 60,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "smyslov": {
+      "label": 2603,
+      "measured": 2559,
+      "margin": 60,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "tal": {
+      "label": 2694,
+      "measured": 2687,
+      "margin": 55,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "petrosian": {
+      "label": 2639,
+      "measured": 2648,
+      "margin": 57,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "spassky": {
+      "label": 2657,
+      "measured": 2652,
+      "margin": 53,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "fischer": {
+      "label": 2763,
+      "measured": 2724,
+      "margin": 51,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "karpov": {
+      "label": 2737,
+      "measured": 2745,
+      "margin": 51,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "kasparov": {
+      "label": 2786,
+      "measured": 2814,
+      "margin": 52,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "kramnik": {
+      "label": 2753,
+      "measured": 2713,
+      "margin": 52,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "anand": {
+      "label": 2749,
+      "measured": 2724,
+      "margin": 46,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "ding-liren": {
+      "label": 2716,
+      "measured": 2720,
+      "margin": 53,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
     "carlsen": {
       "label": 2798,
       "measured": 2814,
       "margin": 49,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "nakamura": {
+      "label": 2779,
+      "measured": 2772,
+      "margin": 48,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "caruana": {
+      "label": 2774,
+      "measured": 2769,
+      "margin": 46,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "gukesh": {
+      "label": 2757,
+      "measured": 2776,
+      "margin": 47,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "polgar": {
+      "label": 2689,
+      "measured": 2624,
+      "margin": 53,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "hou-yifan": {
+      "label": 2641,
+      "measured": 2624,
+      "margin": 59,
       "games": 120,
       "measuredAt": "2026-10-09"
     }

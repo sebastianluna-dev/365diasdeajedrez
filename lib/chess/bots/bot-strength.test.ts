@@ -77,6 +77,15 @@ describe("strengthFor", () => {
     }
   });
 
+  it("puts the step to depth 6 where the calibration placed it, halfway between depths 5 and 6", () => {
+    // The 2200 row sends 2300 (third calibration round, docs → Bots): sent as
+    // the label, the step fell at 2197 and a bot of 2184 played a depth below.
+    expect(strengthFor(2130)).toMatchObject({ search: { depth: 5 } });
+    expect(strengthFor(2131)).toMatchObject({ search: { depth: 6 } });
+    expect(strengthFor(2364)).toMatchObject({ search: { depth: 6 } });
+    expect(strengthFor(2365)).toMatchObject({ search: { depth: 7 } });
+  });
+
   it("searches by nodes or depth, never by time", () => {
     for (const strength of [...sampled, ...engine]) expect("movetime" in strength.search).toBe(false);
   });

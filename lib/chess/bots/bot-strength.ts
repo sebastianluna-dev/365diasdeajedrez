@@ -106,14 +106,24 @@ interface EngineRow {
   delay: [number, number];
 }
 
-/** research/bot-strength.md §3, rows 1320–2800. */
+/**
+ * research/bot-strength.md §3, rows 1320–2800, as the calibration left them
+ * (2026-10-09). Stockfish picks its move at depth `1 + int(level)`, so a bot's
+ * strength climbs in whole depths — some 140–220 points a depth below 2500,
+ * 70–110 above — and moves little between two steps. With every label sent as
+ * it is, the step to depth 6 fell at 2197, just under its anchor: a bot of 2184
+ * played a whole depth below its label and measured 2035. The 2200 row sends
+ * 2300, which moves that step to the label 2131, halfway between the top of
+ * depth 5 (≈ 2060) and the bottom of depth 6 (≈ 2190), and the one to depth 7
+ * from 2383 to 2365.
+ */
 const ENGINE_ROWS: readonly EngineRow[] = [
   { elo: 1320, uciElo: 1320, browserNodeCap: null, delay: [1_000, 4_000] },
   { elo: 1400, uciElo: 1400, browserNodeCap: null, delay: [1_000, 4_000] },
   { elo: 1600, uciElo: 1600, browserNodeCap: null, delay: [1_000, 4_000] },
   { elo: 1800, uciElo: 1800, browserNodeCap: null, delay: [1_000, 4_500] },
   { elo: 2000, uciElo: 2000, browserNodeCap: null, delay: [1_200, 4_500] },
-  { elo: 2200, uciElo: 2200, browserNodeCap: null, delay: [1_200, 5_000] },
+  { elo: 2200, uciElo: 2300, browserNodeCap: null, delay: [1_200, 5_000] },
   { elo: 2400, uciElo: 2400, browserNodeCap: null, delay: [1_200, 5_000] },
   { elo: 2600, uciElo: 2600, browserNodeCap: 400_000, delay: [1_500, 5_500] },
   { elo: 2800, uciElo: 2800, browserNodeCap: 400_000, delay: [1_500, 6_000] },
