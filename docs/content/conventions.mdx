@@ -67,6 +67,12 @@ These rules are enforced by review, a few tests (`proxy.test.ts`, `nav-items.tes
 - A move inside a PGN tree is addressed by a **dotted path** of child indexes from the root (`"0.0.1.0"`). `TrainingExercise.path` and `ClassBlock.movePath` use it.
 - Positions are identified by `createPositionHash(fen)` (`lib/chess/position-hash.ts`), computed on the server only.
 
+## Play
+
+- **Playing never counts toward the streak.** No module of `services/play`, `services/bots` or `services/profile` reaches the writer of `UserActivity`/`UserStatDaily`, nor names them; `services/play/no-activity.test.ts` walks their imports with `lib/testing/module-reach.ts`. A played game is a `PlayedGame`, never a study's `Game`; «Guardar en un estudio» makes a copy.
+- **A bot is weakened only through UCI, on our side of the protocol**: `Skill Level`, `UCI_LimitStrength`/`UCI_Elo`, nodes or depth, and `pickBotMove`'s choice; never by time (`SearchBudget` takes no `movetime`; the project's one `movetime` is the analysis board's full-strength module, `FULL_STRENGTH_PROFILE`, never calibrated nor saved), with `ucinewgame` per game and `Hash 16` said out loud. The engine (`public/engine/`, GPL) is not modified. A label the calibration (`npm run bots:calibrate`) cannot reach moves in a new migration printed by `npm run bots:sql`, never by editing an old one ([Bots](/chess/bots)).
+- **How a game ended is said in the player strips and under the board, never over it**: nothing covers the board ([Play](/platform/play)).
+
 ## Documentation and debt
 
 - Debt you find but do not fix goes to `IMPROVEMENTS.md` with area, priority (low · medium · high · extreme) and how to approach it. Mechanical, well-specified tasks go to `TODOS.md`. Risks the project accepts knowingly go to `WARNINGS.md` with what, why and the way out. The three are in English and **local only**: gitignored, never in the remote, so a fresh clone does not have them.
