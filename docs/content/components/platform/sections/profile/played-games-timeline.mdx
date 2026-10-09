@@ -1,0 +1,32 @@
+---
+description: "Every game of a person as a timeline (L4): the day on the left, a dot of the result's colour on the line, the game's row on the right; twenty a page."
+---
+
+# `PlayedGamesTimeline`
+
+|            |                                                                                                                                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/profile/played-games-timeline/played-games-timeline.comp.tsx`                                                                                                                                     |
+| Kind       | Server Component                                                                                                                                                                                                                |
+| Stylesheet | `played-games-timeline.comp.css` → block `.played-games-timeline`                                                                                                                                                               |
+| Story      | `played-games-timeline.stories.tsx` (`platform/sections/profile/PlayedGamesTimeline`): one's own, paged, empty, filtered to nothing                                                                                             |
+| Used by    | [`ProfileGamesSection`](/components/platform/sections/profile/profile-games-section)                                                                                                                                            |
+| Uses       | `ResultBadge`, `resultOf`, `movesText` ([`PlayedGameCard`](/components/platform/shared/played-game-card)), [`PlayerAvatar`](/components/chess/player-avatar), [`EmptyState`](/components/platform/shared/empty-state), `dayKey` |
+
+## Purpose
+
+L4, chosen on 2026-10-08 for `/perfil/<slug>/partidas`. The day is written once, on its first game («Hoy», «Ayer», or the date, on the study day's calendar); each row says «Ganaste contra Don Chuy 783» («Ganó» on somebody else's profile), «Tablas con…», «En curso contra…» or «Anulada contra…», with the reason, the colour and the moves, and opens the game. Under the list, «Más recientes» and «Anteriores» between the pages. Empty, it says so — and offers «Jugar» on one's own profile, or «Ninguna partida con estos filtros» when a filter is on.
+
+## Props
+
+| Prop       | Type                       | Required | Meaning                                             |
+| ---------- | -------------------------- | -------- | --------------------------------------------------- |
+| `page`     | `PlayedGamesPage`          | yes      | One page from `listPlayedGamesOf`.                  |
+| `isOwn`    | `boolean`                  | yes      | «Ganaste» or «Ganó».                                |
+| `hrefOf`   | `(page: number) => string` | yes      | The address of another page, with the same filters. |
+| `filtered` | `boolean`                  | yes      | A filter is on: the empty list says so.             |
+| `now`      | `Date`                     | no       | The instant «Hoy» is read from; a story pins it.    |
+
+## Markup & styling
+
+**Elements:** `.played-games-timeline__list`, `.played-games-timeline__row` (`_result_win|loss|draw|open|aborted`, which set the dot's `--dot`), `.played-games-timeline__day`, `.played-games-timeline__line`, `.played-games-timeline__card`, `.played-games-timeline__text`, `.played-games-timeline__headline`, `.played-games-timeline__elo`, `.played-games-timeline__facts`, `.played-games-timeline__pager`, `.played-games-timeline__page`

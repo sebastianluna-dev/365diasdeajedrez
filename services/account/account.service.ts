@@ -13,7 +13,15 @@ export async function getAccountSettings(): Promise<AccountSettings> {
   const user = await getCurrentUser();
   const row = await getPlatformDb().user.findUniqueOrThrow({
     where: { id: user.id },
-    select: { displayName: true, email: true, createdAt: true, dailyGoalMinutes: true },
+    select: {
+      displayName: true,
+      email: true,
+      createdAt: true,
+      dailyGoalMinutes: true,
+      slug: true,
+      statusLine: true,
+      country: true,
+    },
   });
 
   return {
@@ -21,5 +29,8 @@ export async function getAccountSettings(): Promise<AccountSettings> {
     email: row.email,
     memberSinceLabel: formatSpanishDate(row.createdAt),
     goalMinutes: row.dailyGoalMinutes,
+    slug: row.slug,
+    statusLine: row.statusLine,
+    country: row.country,
   };
 }

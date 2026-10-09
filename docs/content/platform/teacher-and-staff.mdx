@@ -16,6 +16,8 @@ Both panels are ordinary platform pages with a stricter border: `requireTeacher(
 
 `services/teacher-students/`: only students with an **active** `TeacherStudent` row, and that condition is always inside the `where`. `getAssignedStudents(query?)`, `getAssignedStudentDetail(studentId)` (course progress, recent activity, shared classes), `getStudentStudy` and `getStudentGame` for the **read-only** view of a student's studies. Opening the study of an unassigned student by URL returns nothing, so the page 404s without revealing a name.
 
+While `PLAY_ENABLED` is on, the student's page also carries «Partidas jugadas» — their last eight games against the bots, each opening read-only, and «Ver su perfil» — and the teacher's menu gains «Jugar» before «Explorador»; the teacher's public card, `/profesor/perfil`, is «Mi ficha» in that menu, because «Mi perfil» (the user menu) is now everyone's profile at `/perfil` ([Play](/platform/play)).
+
 ### Classes — `/profesor/clases`
 
 `services/teacher-classes/`:

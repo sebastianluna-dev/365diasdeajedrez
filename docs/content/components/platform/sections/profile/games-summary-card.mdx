@@ -1,0 +1,21 @@
+---
+description: "«Partidas»: how many games a person played against the bots, and how they went — won, lost, drawn, still open."
+---
+
+# `GamesSummaryCard`
+
+|            |                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/profile/games-summary-card/games-summary-card.comp.tsx`            |
+| Kind       | Server Component                                                                                 |
+| Stylesheet | `games-summary-card.comp.css` → block `.games-summary-card`                                      |
+| Story      | `games-summary-card.stories.tsx` (`platform/sections/profile/GamesSummaryCard`): ten games, none |
+| Used by    | [`ProfileOverviewSection`](/components/platform/sections/profile/profile-overview-section)       |
+
+## Purpose
+
+The record against every bot together (`ProfileView.record`, summed from `botScoreboardOf`): the total large, then the wins in the success's ink, the losses in the danger red, the draws, and the open games when there are any. A cancelled game counts for nothing (`countsForScore`).
+
+## Markup & styling
+
+**Elements:** `.games-summary-card__head`, `.games-summary-card__icon`, `.games-summary-card__title`, `.games-summary-card__figure`, `.games-summary-card__record`, `.games-summary-card__wins`, `.games-summary-card__losses`

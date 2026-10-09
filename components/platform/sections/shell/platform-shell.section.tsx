@@ -4,7 +4,8 @@ import { LOGO_LABEL, LogoWordmarkIcon } from "@/components/icons/logo-wordmark-i
 import { buildPlatformNavGroups } from "@/constants/platform/nav-items.const";
 import { getSessionUser } from "@/lib/platform-auth/current-user";
 import { getSessionRoles } from "@/lib/platform-auth/roles";
-import { homeRouteFor, teacherRoutes } from "@/lib/platform-routes";
+import { PLAY_ENABLED } from "@/constants/platform/features.const";
+import { homeRouteFor, platformRoutes, teacherRoutes } from "@/lib/platform-routes";
 import { ClearResultParams } from "./clear-result-params.comp";
 import { PlatformNav } from "./platform-nav.comp";
 import { PlatformSearch } from "./platform-search.comp";
@@ -72,8 +73,11 @@ export async function PlatformShell({ children }: PlatformShellProps) {
               <PlatformUserMenu
                 displayName={user.displayName}
                 initials={initialsOf(user.displayName)}
-                // The teacher has a page of their own; nobody else does yet.
-                profileHref={roles.isTeacher ? teacherRoutes.profile : undefined}
+                // Everyone's profile while «Jugar» is on (the teacher's card is
+                // «Mi ficha» in the menu); before it, only the teacher had a page.
+                profileHref={
+                  PLAY_ENABLED ? platformRoutes.profile : roles.isTeacher ? teacherRoutes.profile : undefined
+                }
               />
             )}
           </div>

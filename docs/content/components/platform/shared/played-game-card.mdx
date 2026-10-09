@@ -1,0 +1,35 @@
+---
+description: "A played game as a card: the final position from the person's side with the result in a corner, the rival and a line of facts; the whole card opens the game. Also exports ResultBadge."
+---
+
+# `PlayedGameCard`
+
+Also exports `ResultBadge`, `resultOf` and `movesText`.
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/played-game-card/played-game-card.comp.tsx`                                                                                                                                                                                                                                                                                                                |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                       |
+| Stylesheet | `played-game-card.comp.css` → block `.played-game-card`; `result-badge.comp.css` → block `.result-badge`                                                                                                                                                                                                                                                                               |
+| Story      | `played-game-card.stories.tsx` (`platform/shared/PlayedGameCard`): won, lost with Black, drawn, open                                                                                                                                                                                                                                                                                   |
+| Used by    | [`ProfileOverviewSection`](/components/platform/sections/profile/profile-overview-section), `StudentPlayedGamesCard` on the teacher's page of a student ([`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section)); `ResultBadge` also by [`PlayedGamesTimeline`](/components/platform/sections/profile/played-games-timeline) |
+| Uses       | [`StaticDiagram`](/components/chess/static-diagram), [`PlayerAvatar`](/components/chess/player-avatar), `formatRelativeSpanish`, `platformRoutes.playedGame`                                                                                                                                                                                                                           |
+
+## Purpose
+
+L2, chosen on 2026-10-08: a played game drawn like a study's card. The final position (`PlayedGameCard.finalFen`, a static diagram, no chessground) from the side the person played, the result in the corner, the rival with their portrait and label, and «Jaque mate · 17 jugadas · hace 2 días». The whole card is a link to the game: to read it, or to go on with it while it is open.
+
+`ResultBadge` says the result from the person's side in one letter or word: «G» on the success's soft fill, «P» on the danger's, «T» and «Anulada» on the neutral fill, «En curso» on the accent's. `resultOf` reads it from the card (an open game, or a closed one without a result: cancelled); `movesText` says «17 jugadas», counting moves and not plies.
+
+## Props
+
+| Prop   | Type             | Required | Meaning                                            |
+| ------ | ---------------- | -------- | -------------------------------------------------- |
+| `game` | `PlayedGameCard` | yes      | From `services/play` (`recentPlayedGamesOf`).      |
+| `now`  | `Date`           | no       | The instant «hace…» is read from; a story pins it. |
+
+## Markup & styling
+
+**Elements:** `.played-game-card__board`, `.played-game-card__result`, `.played-game-card__who`, `.played-game-card__name`, `.played-game-card__elo`, `.played-game-card__facts`
+
+**Modifiers:** `.result-badge_result_win|loss|draw|open|aborted`

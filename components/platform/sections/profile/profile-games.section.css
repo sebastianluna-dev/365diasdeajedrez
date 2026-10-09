@@ -1,0 +1,15 @@
+/* «Partidas»: the two filters in a row, then the timeline. */
+.profile-games {
+  display: grid;
+  gap: var(--platform-space-5);
+
+  & .profile-games__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-3);
+
+    & > * {
+      min-width: 220px;
+    }
+  }
+}

@@ -103,6 +103,10 @@ Shared by students and teachers. The client board sends a FEN to `searchPosition
 - Visibility comes from `getVisibleGamesWhere()`; teachers additionally see games of actively assigned students. Filters by origin exist; the signature leaves room for player, colour, Elo and date.
 - A search refused by the rate limit comes back with `throttled: true` and empty figures; the explorer shows a notice instead of "0 partidas" and does not cache that answer.
 
+## Play and profile — `/jugar`, `/perfil`
+
+Behind `PLAY_ENABLED` (off). Games against the bots at `/jugar`, one URL per game, saved move by move and never among the studies' games; the profile at `/perfil/<slug>` with the level against bots, the games and the study streak, and every game at `/perfil/<slug>/partidas`. «Ajustes» gains the user name, the status line and the flag. **Playing never writes `UserActivity`**: the streak, the minutes and the days studied do not move. The whole of it is [Play](/platform/play).
+
 ## Activity and statistics
 
 `services/shared/user-activity.service.ts` → `recordUserActivity({ userId, typeCode, subjectTypeCode, subjectId, topicId?, occurredAt?, meta? })` appends the fact and upserts the daily aggregate for the metric (and per topic). Callers: lesson/course completion, class attendance (marked by the teacher), exercise passed, game analysed.

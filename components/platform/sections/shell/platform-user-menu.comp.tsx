@@ -22,7 +22,7 @@ interface PlatformUserMenuProps {
   displayName: string;
   /** The first letters of that name, which is what the avatar draws. */
   initials: string;
-  /** Their own page, when their role has one (the teacher's profile). */
+  /** Their own page: their profile while «Jugar» is on; before it, the teacher's card. */
   profileHref?: string;
 }
 

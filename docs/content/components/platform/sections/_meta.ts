@@ -9,6 +9,7 @@ const meta: MetaRecord = {
   classes: "classes/",
   explorer: "explorer/",
   play: "play/",
+  profile: "profile/",
   trainer: "trainer/",
   teacher: "teacher/",
   staff: "staff/",

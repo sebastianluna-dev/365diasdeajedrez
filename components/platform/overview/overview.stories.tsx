@@ -18,6 +18,12 @@ import { LiveGameBanner } from "@/components/platform/sections/play/live-game/li
 import { BotCard } from "@/components/platform/sections/play/lobby/bot-card/bot-card.comp";
 import { BotSheet } from "@/components/platform/sections/play/lobby/bot-sheet/bot-sheet.comp";
 import { OpenGameNotice } from "@/components/platform/sections/play/lobby/open-game-notice/open-game-notice.comp";
+import { BotLevelCard } from "@/components/platform/sections/profile/bot-level-card/bot-level-card.comp";
+import { GamesSummaryCard } from "@/components/platform/sections/profile/games-summary-card/games-summary-card.comp";
+import { LevelSparkline } from "@/components/platform/sections/profile/level-sparkline/level-sparkline.comp";
+import { PlayedGamesTimeline } from "@/components/platform/sections/profile/played-games-timeline/played-games-timeline.comp";
+import { StudyStreakCard } from "@/components/platform/sections/profile/study-streak-card/study-streak-card.comp";
+import { PlayedGameCard } from "@/components/platform/shared/played-game-card/played-game-card.comp";
 import { MoveTree } from "@/components/chess/game-viewer/move-tree.comp";
 import { PlayerStrip } from "@/components/chess/game-viewer/player-strip.comp";
 import { StaticDiagram } from "@/components/chess/static-diagram.comp";
@@ -127,7 +133,13 @@ import { buildPlatformNavGroups } from "@/constants/platform/nav-items.const";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { GAME_RESULT } from "@/constants/platform/study-codes.const";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
-import { FIXTURE_BOT, FIXTURE_STUDENT, FIXTURE_TEAM_BOT, fixtureBotView } from "@/lib/testing/fixtures/bots";
+import {
+  FIXTURE_BOT,
+  FIXTURE_STUDENT,
+  FIXTURE_TEAM_BOT,
+  fixtureBotView,
+  fixturePlayedGames,
+} from "@/lib/testing/fixtures/bots";
 import { staffRoutes } from "@/lib/platform-routes";
 import { readTokens, type Theme, tokenContrast } from "@/lib/platform-tokens";
 import type { CourseLevelItem } from "@/services/courses/courses.types";
@@ -521,6 +533,15 @@ function PopupTrigger() {
     </>
   );
 }
+
+/** The instant the profile's examples are read from, so «hace 5 horas» stays the same. */
+const PROFILE_NOW = new Date("2026-10-08T18:00:00Z");
+
+/** A level that climbed over six games, for the profile's tiles. */
+const LEVEL_SERIES = [800, 825, 825, 850, 850, 875].map((level, index) => ({
+  at: new Date(Date.UTC(2026, 8, index + 1)),
+  level,
+}));
 
 /** «Abandonar» and the popup it opens, as a game against a bot mounts them. */
 function AbandonTrigger() {
@@ -1481,6 +1502,46 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             </Tile>
             <Tile name="LiveGameBanner" docs="platform-sections-play-live-game-livegamebanner" width={400} height={112}>
               <LiveGameBanner kind="stale" onReload={() => undefined} />
+            </Tile>
+            <Tile name="PlayedGameCard" docs="platform-shared-playedgamecard" width={400} height={320}>
+              <div className="overview__bot-cards">
+                {fixturePlayedGames(PROFILE_NOW)
+                  .slice(1, 3)
+                  .map((game) => (
+                    <PlayedGameCard key={game.id} game={game} now={PROFILE_NOW} />
+                  ))}
+              </div>
+            </Tile>
+            <Tile name="BotLevelCard" docs="platform-sections-profile-botlevelcard" width={400} height={216}>
+              <BotLevelCard level={{ level: 875, sampleSize: 10, series: LEVEL_SERIES }} isOwn />
+            </Tile>
+            <Tile name="LevelSparkline" docs="platform-sections-profile-levelsparkline" width={400} height={96}>
+              <div style={{ width: 240 }}>
+                <LevelSparkline points={LEVEL_SERIES} />
+              </div>
+            </Tile>
+            <Tile name="GamesSummaryCard" docs="platform-sections-profile-gamessummarycard" width={400} height={160}>
+              <GamesSummaryCard record={{ wins: 5, losses: 3, draws: 1, open: 1 }} />
+            </Tile>
+            <Tile name="StudyStreakCard" docs="platform-sections-profile-studystreakcard" width={400} height={160}>
+              <StudyStreakCard
+                streak={{ streak: { days: 21, studiedToday: true }, daysThisWeek: 4, minutesThisWeek: 95 }}
+                isOwn
+              />
+            </Tile>
+            <Tile
+              name="PlayedGamesTimeline"
+              docs="platform-sections-profile-playedgamestimeline"
+              width={400}
+              height={360}
+            >
+              <PlayedGamesTimeline
+                page={{ games: fixturePlayedGames(PROFILE_NOW).slice(0, 3), page: 1, pageCount: 1, total: 3 }}
+                isOwn
+                filtered={false}
+                hrefOf={() => "/perfil/ana-torres/partidas"}
+                now={PROFILE_NOW}
+              />
             </Tile>
           </Section>
 

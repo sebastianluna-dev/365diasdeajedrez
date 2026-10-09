@@ -1,0 +1,67 @@
+/* «Visión general»: the three cards in a row, then the last games, four to a row. */
+.profile-overview {
+  display: grid;
+  gap: var(--platform-space-8);
+
+  & .profile-overview__cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--platform-space-4);
+  }
+
+  & .profile-overview__games {
+    display: grid;
+    gap: var(--platform-space-4);
+  }
+
+  & .profile-overview__games-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--platform-space-3);
+  }
+
+  & .profile-overview__games-title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-xl);
+    font-weight: 700;
+  }
+
+  & .profile-overview__count {
+    font-family: var(--platform-font);
+    font-size: var(--platform-type-sm);
+    font-weight: 400;
+    color: var(--platform-text-muted);
+  }
+
+  & .profile-overview__all {
+    color: var(--platform-accent-ink);
+    font-size: var(--platform-type-sm);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  & .profile-overview__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--platform-space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (width < 1024px) {
+    & .profile-overview__cards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    & .profile-overview__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}

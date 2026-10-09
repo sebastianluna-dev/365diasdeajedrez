@@ -1,0 +1,133 @@
+/* L4: the day on the left, a vertical line with a dot of the result's
+   colour, and the game's row on the right. */
+.played-games-timeline {
+  display: grid;
+  gap: var(--platform-space-4);
+
+  & .played-games-timeline__list {
+    display: grid;
+    max-width: 760px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .played-games-timeline__row {
+    --dot: var(--platform-text-muted);
+    display: grid;
+    grid-template-columns: 88px 20px minmax(0, 1fr);
+    column-gap: var(--platform-space-3);
+    align-items: stretch;
+
+    &.played-games-timeline__row_result_win {
+      --dot: var(--platform-success-ink);
+    }
+
+    &.played-games-timeline__row_result_loss {
+      --dot: var(--platform-danger);
+    }
+
+    &.played-games-timeline__row_result_open {
+      --dot: var(--platform-accent);
+    }
+  }
+
+  & .played-games-timeline__day {
+    padding-top: var(--platform-space-4);
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-align: right;
+    text-transform: uppercase;
+    color: var(--platform-text-muted);
+  }
+
+  & .played-games-timeline__line {
+    position: relative;
+    justify-self: center;
+    width: 2px;
+    background: var(--platform-border-strong);
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: var(--platform-space-4);
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      background: var(--dot);
+      box-shadow: 0 0 0 3px var(--platform-bg);
+    }
+  }
+
+  & .played-games-timeline__card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--platform-space-3);
+    margin-bottom: var(--platform-space-2);
+    padding: var(--platform-space-2) var(--platform-space-3);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+    color: var(--platform-text);
+    text-decoration: none;
+    transition: box-shadow 160ms ease-out;
+
+    &:hover {
+      box-shadow:
+        var(--platform-shadow-card),
+        0 0 0 1px var(--platform-border-strong);
+    }
+  }
+
+  & .played-games-timeline__text {
+    display: grid;
+    min-width: 0;
+    gap: var(--platform-space-0-5);
+  }
+
+  & .played-games-timeline__headline {
+    font-size: var(--platform-type-sm);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .played-games-timeline__elo {
+    font-weight: 400;
+    color: var(--platform-text-muted);
+  }
+
+  & .played-games-timeline__facts {
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-subtle);
+  }
+
+  & .played-games-timeline__pager {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: var(--platform-space-3);
+    max-width: 760px;
+
+    & > :last-child {
+      justify-self: end;
+    }
+  }
+
+  & .played-games-timeline__page {
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-muted);
+  }
+
+  @media (width < 640px) {
+    & .played-games-timeline__row {
+      grid-template-columns: 56px 16px minmax(0, 1fr);
+      column-gap: var(--platform-space-2);
+    }
+  }
+}

@@ -1,0 +1,30 @@
+---
+description: "A profile's head (N5): the square portrait with the flag, the name with its badge, the status line, «Se unió el…» with the figures, the owner's «Editar perfil» and «Jugar», and the tabs."
+---
+
+# `ProfileHeaderSection`
+
+|            |                                                                                              |
+| ---------- | -------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/profile/profile-header.section.tsx`                            |
+| Kind       | Server Component                                                                             |
+| Stylesheet | `profile-header.section.css` → block `.profile-header`                                       |
+| Used by    | `app/(platform)/perfil/[slug]/page.tsx`, `app/(platform)/perfil/[slug]/partidas/page.tsx`    |
+| Uses       | [`PlayerAvatar`](/components/chess/player-avatar) (`xl`), `federationFlag`, `platformRoutes` |
+
+## Purpose
+
+N5, after the reference the owner sent (Chess.com's profile): a 120px square portrait; the name large, with the flag of `User.country` and the badge «Alumno» or «Profesor»; the status line (`User.statusLine`) — or, on one's own empty profile, «Escribe una línea de estado», a link to «Ajustes» —; «Se unió el 30 de agosto, 2026 · 4 cursos · 3 estudios · 4 partidas · Nivel contra bots ≈ 850» on one line; and, only for the person themselves, «Editar perfil» (to «Ajustes») and «Jugar».
+
+**Tabs** (planning decision §K): «Visión general» and «Partidas» are the two pages of the profile, the open one with `aria-current="page"`; «Estudios», «Cursos» and «Actividad» are links to `/estudios`, `/cursos` and `/inicio`, drawn only for the owner — a teacher or the staff reading the profile see the two pages.
+
+## Props
+
+| Prop      | Type                    | Required | Meaning                            |
+| --------- | ----------------------- | -------- | ---------------------------------- |
+| `profile` | `ProfileView`           | yes      | From `getProfileOf(slug)`.         |
+| `active`  | `"overview" \| "games"` | yes      | Which tab is the page being shown. |
+
+## Markup & styling
+
+**Elements:** `.profile-header__top`, `.profile-header__who`, `.profile-header__name-row`, `.profile-header__name` (the `h1`; the flag and the badge are beside it, not inside it), `.profile-header__flag`, `.profile-header__badge`, `.profile-header__status` (`_state_empty`), `.profile-header__facts`, `.profile-header__actions`, `.profile-header__tabs`, `.profile-header__tab` (`_state_active`)

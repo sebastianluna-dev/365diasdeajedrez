@@ -1,0 +1,69 @@
+/* A played game as a card (L2): the board, the rival, a line of facts. */
+.played-game-card {
+  display: grid;
+  align-content: start;
+  gap: var(--platform-space-2);
+  min-width: 0;
+  padding: var(--platform-space-2);
+  border-radius: 8px;
+  background: var(--platform-surface);
+  box-shadow: var(--platform-shadow-card);
+  color: var(--platform-text);
+  text-decoration: none;
+  transition: box-shadow 160ms ease-out;
+
+  &:hover {
+    box-shadow:
+      var(--platform-shadow-card),
+      0 0 0 1px var(--platform-border-strong);
+  }
+
+  & .played-game-card__board {
+    position: relative;
+    display: block;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  & .played-game-card__board .static-diagram {
+    margin: 0;
+  }
+
+  & .played-game-card__result {
+    position: absolute;
+    top: var(--platform-space-1);
+    left: var(--platform-space-1);
+    z-index: 1;
+    box-shadow: var(--platform-shadow-lift);
+    border-radius: 4px;
+  }
+
+  & .played-game-card__who {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    min-width: 0;
+    padding: 0 var(--platform-space-1);
+    font-size: var(--platform-type-xs);
+    font-weight: 700;
+  }
+
+  & .played-game-card__name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .played-game-card__elo {
+    flex: none;
+    font-weight: 400;
+    color: var(--platform-text-muted);
+  }
+
+  & .played-game-card__facts {
+    padding: 0 var(--platform-space-1) var(--platform-space-1);
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-text-subtle);
+  }
+}

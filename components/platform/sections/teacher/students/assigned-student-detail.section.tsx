@@ -8,11 +8,15 @@ import {
 } from "@/components/platform/shared/platform-table/platform-table.comp";
 import { ProgressIndicator } from "@/components/platform/shared/progress-indicator/progress-indicator.comp";
 import { teacherRoutes } from "@/lib/platform-routes";
+import type { PlayedGameCard } from "@/services/play/play.types";
 import type { AssignedStudentDetail, StudentSharedClass } from "@/services/teacher-students/teacher-students.types";
+import { StudentPlayedGamesCard } from "./student-played-games-card.comp";
 import "./assigned-student-detail.section.css";
 
 interface AssignedStudentDetailSectionProps {
   student: AssignedStudentDetail;
+  /** The student's last games against the bots; null while «Jugar» is off. */
+  playedGames: PlayedGameCard[] | null;
 }
 
 function ClassList({ classes, emptyLabel }: { classes: StudentSharedClass[]; emptyLabel: string }) {
@@ -41,7 +45,7 @@ function ClassList({ classes, emptyLabel }: { classes: StudentSharedClass[]; emp
  * student's studies are theirs and the teacher consults them, does not edit
  * them (which is why there is not a single write control on them).
  */
-export function AssignedStudentDetailSection({ student }: AssignedStudentDetailSectionProps) {
+export function AssignedStudentDetailSection({ student, playedGames }: AssignedStudentDetailSectionProps) {
   return (
     <div className="assigned-student">
       <section className="platform-card">
@@ -126,6 +130,8 @@ export function AssignedStudentDetailSection({ student }: AssignedStudentDetailS
           ))}
         </PlatformTable>
       </section>
+
+      {playedGames && <StudentPlayedGamesCard slug={student.slug} games={playedGames} />}
 
       <section className="platform-card">
         <h2 className="platform-card__title">Actividad reciente</h2>

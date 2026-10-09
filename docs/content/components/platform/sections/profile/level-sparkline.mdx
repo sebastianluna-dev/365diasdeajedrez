@@ -1,0 +1,21 @@
+---
+description: "How the level against bots moved, one point per finished game from the fifth on: a hand-drawn SVG named in words for a screen reader."
+---
+
+# `LevelSparkline`
+
+|            |                                                                                                     |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/profile/level-sparkline/level-sparkline.comp.tsx`                     |
+| Kind       | Server Component                                                                                    |
+| Stylesheet | `level-sparkline.comp.css` → block `.level-sparkline`                                               |
+| Story      | `level-sparkline.stories.tsx` (`platform/sections/profile/LevelSparkline`): rising, two points only |
+| Used by    | [`BotLevelCard`](/components/platform/sections/profile/bot-level-card)                              |
+
+## Purpose
+
+`levelSeries` gives the level after each finished game, each over the ten up to it; this draws it as a line over its wash in the selection's blue, scaled to a 220 × 48 box with a little headroom. No chart library. It is a `role="img"` with a `<title>` and an `aria-label` that say it in words: «De ≈ 775 a ≈ 925 en 12 partidas». Fewer than two points draw nothing.
+
+## Markup & styling
+
+**Elements:** `.level-sparkline__area`, `.level-sparkline__line`

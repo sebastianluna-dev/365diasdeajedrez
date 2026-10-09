@@ -230,3 +230,14 @@ export async function botLevelSummaryOf(userId: string): Promise<BotLevelSummary
   });
   return { ...botLevelOf(games), series: levelSeries(games) };
 }
+
+/** The bots `userId` has played, weakest first: the rival filter of their games. */
+export async function playedRivalsOf(userId: string): Promise<{ slug: string; name: string }[]> {
+  return getPlatformDb().bot.findMany({
+    where: {
+      OR: [{ whiteGames: { some: { blackUserId: userId } } }, { blackGames: { some: { whiteUserId: userId } } }],
+    },
+    orderBy: { elo: "asc" },
+    select: { slug: true, name: true },
+  });
+}

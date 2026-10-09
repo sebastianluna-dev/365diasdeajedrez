@@ -1,12 +1,12 @@
 ---
-description: "A student's page for their teacher, entirely read-only: facts, course progress, shared classes, the student's studies as links and recent activity."
+description: "A student's page for their teacher, entirely read-only: facts, course progress, shared classes, the student's studies as links, the games they played against the bots, and recent activity."
 ---
 
 # `AssignedStudentDetailSection`
 
 |            |                                                                                                                                                                                                                                                              |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/teacher/students/assigned-student-detail.section.tsx`                                                                                                                                                                          |
+| Files      | `components/platform/sections/teacher/students/assigned-student-detail.section.tsx`, `student-played-games-card.comp.tsx`                                                                                                                                    |
 | Kind       | Server Component                                                                                                                                                                                                                                             |
 | Stylesheet | `assigned-student-detail.section.css` → block `.assigned-student`                                                                                                                                                                                            |
 | Used by    | `/profesor/alumnos/[studentId]`                                                                                                                                                                                                                              |
@@ -19,14 +19,16 @@ Everything a teacher may know about an assigned student, in cards: assignment fa
 
 ## Props
 
-| Prop      | Type                    | Required | Meaning                                                                                                                                                                                      |
-| --------- | ----------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `student` | `AssignedStudentDetail` | yes      | `id`, `email`, `assignedAtIso`, `assignedAtLabel`, `note?`, `courses[]` (with `percent`, `statusLabel`, `lastLessonName?`), `upcomingClasses[]`, `pastClasses[]`, `studies[]`, `activity[]`. |
+| Prop          | Type                       | Required | Meaning                                                                                                                                                                                                                        |
+| ------------- | -------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `student`     | `AssignedStudentDetail`    | yes      | `id`, `email`, `assignedAtIso`, `assignedAtLabel`, `note?`, `courses[]` (with `percent`, `statusLabel`, `lastLessonName?`), `upcomingClasses[]`, `pastClasses[]`, `studies[]`, `activity[]`, `slug` (their profile's address). |
+| `playedGames` | `PlayedGameCard[] \| null` | yes      | The student's last eight games against the bots (`recentPlayedGamesOf`, under the profile's visibility); `null` while `PLAY_ENABLED` is off, and the card is not drawn.                                                        |
 
 ## Behaviour
 
 - The local `ClassList` renders shared classes with title link, local date, status tag and an "Asistió" tag.
 - Studies are a [`PlatformTable`](/components/platform/shared/platform-table) whose name links to `teacherRoutes.studentStudy(studentId, studyId)`, the teacher's read-only study view.
+- **«Partidas jugadas»** (`StudentPlayedGamesCard`, planning decision §K, 2026-10-08): the last eight games as [`PlayedGameCard`](/components/platform/shared/played-game-card)s, four to a row, each opening the game read-only, and «Ver su perfil» to `/perfil/<slug>`; without games, a line says so.
 - Activity rows show type and subject labels with a date-only local time; empty renders an [`EmptyState`](/components/platform/shared/empty-state).
 
 ## Markup & styling
@@ -50,7 +52,7 @@ From `app/(platform)/profesor/alumnos/[studentId]/page.tsx`:
 ```tsx
 import { AssignedStudentDetailSection } from "@/components/platform/sections/teacher/students/assigned-student-detail.section";
 
-<AssignedStudentDetailSection student={student} />;
+<AssignedStudentDetailSection student={student} playedGames={playedGames} />;
 ```
 
 ## Related

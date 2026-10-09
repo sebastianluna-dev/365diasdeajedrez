@@ -29,6 +29,7 @@ const meta: MetaRecord = {
   "platform-select": "PlatformSelect",
   "platform-switch": "PlatformSwitch",
   "platform-table": "PlatformTable",
+  "played-game-card": "PlayedGameCard",
   "progress-indicator": "ProgressIndicator",
   "sortable-dnd": "SortableDnd",
   "study-streak": "StudyStreak",

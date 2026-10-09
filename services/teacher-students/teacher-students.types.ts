@@ -47,6 +47,8 @@ export interface StudentActivityItem {
 export interface AssignedStudentDetail {
   id: string;
   displayName: string;
+  /** Their user name: where their profile is. */
+  slug: string;
   email: string;
   assignedAtLabel: string;
   assignedAtIso: string;

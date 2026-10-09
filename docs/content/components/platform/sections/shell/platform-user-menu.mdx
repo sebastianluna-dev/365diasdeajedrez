@@ -20,11 +20,11 @@ Who is signed in, and everything that is theirs, behind the avatar at the right 
 
 ## Props
 
-| Prop          | Type     | Required | Meaning                                                                                                                                               |
-| ------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `displayName` | `string` | yes      | Whoever is signed in: the name the menu heads with, and the avatar's label.                                                                           |
-| `initials`    | `string` | yes      | The first letters of that name, which is what the avatar draws. The shell computes them (`initialsOf`), so this stays a component that is given data. |
-| `profileHref` | `string` | no       | Their own page, when their role has one. Today only the teacher's (`/profesor/perfil`); without it the name heads the menu and leads nowhere.         |
+| Prop          | Type     | Required | Meaning                                                                                                                                                                                   |
+| ------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `displayName` | `string` | yes      | Whoever is signed in: the name the menu heads with, and the avatar's label.                                                                                                               |
+| `initials`    | `string` | yes      | The first letters of that name, which is what the avatar draws. The shell computes them (`initialsOf`), so this stays a component that is given data.                                     |
+| `profileHref` | `string` | no       | Their own page: everyone's profile (`/perfil`) while `PLAY_ENABLED` is on; before it, only the teacher's card (`/profesor/perfil`). Without it the name heads the menu and leads nowhere. |
 
 ## Behaviour
 

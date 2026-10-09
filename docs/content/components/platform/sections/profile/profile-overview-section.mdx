@@ -1,0 +1,21 @@
+---
+description: "«Visión general» of a profile: the three cards — level against bots, games, study streak — and the last eight games as cards, with «Ver todas»."
+---
+
+# `ProfileOverviewSection`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                 |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/profile/profile-overview.section.tsx`                                                                                                                                                                                                                                                                                             |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                |
+| Stylesheet | `profile-overview.section.css` → block `.profile-overview`                                                                                                                                                                                                                                                                                                      |
+| Used by    | `app/(platform)/perfil/[slug]/page.tsx`                                                                                                                                                                                                                                                                                                                         |
+| Composes   | [`BotLevelCard`](/components/platform/sections/profile/bot-level-card), [`GamesSummaryCard`](/components/platform/sections/profile/games-summary-card), [`StudyStreakCard`](/components/platform/sections/profile/study-streak-card), [`PlayedGameCard`](/components/platform/shared/played-game-card), [`EmptyState`](/components/platform/shared/empty-state) |
+
+## Purpose
+
+What N5 puts under the tabs: three cards in a row (one column under 1024px), then «Partidas N» with the last eight games (`PROFILE_RECENT_GAMES`) as L2 cards, four to a row and two under 1024px, and «Ver todas» to `/perfil/<slug>/partidas` when there are more. With no games, an empty state that offers «Jugar» to the owner. Everything comes in the `ProfileView`; the section reads nothing.
+
+## Markup & styling
+
+**Elements:** `.profile-overview__cards`, `.profile-overview__games`, `.profile-overview__games-head`, `.profile-overview__games-title`, `.profile-overview__count`, `.profile-overview__all`, `.profile-overview__grid`

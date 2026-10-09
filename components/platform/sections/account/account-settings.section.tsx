@@ -1,10 +1,14 @@
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
+import { PLAY_ENABLED } from "@/constants/platform/features.const";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
+import { USER_SLUG_MAX, USER_SLUG_MIN } from "@/constants/platform/user-slug.const";
+import { federationOptions } from "@/lib/chess/federations";
 import { GOAL_OPTIONS } from "@/constants/platform/study-goal.const";
 import { platformRoutes } from "@/lib/platform-routes";
-import { setTheme } from "@/services/account/account.actions";
+import { setProfileDetails, setTheme, setUserSlug } from "@/services/account/account.actions";
 import { updateDailyGoal } from "@/services/study-goal/study-goal.actions";
 import type { AccountSettings } from "@/services/account/account.types";
 import "./account-settings.section.css";
@@ -28,9 +32,11 @@ interface AccountSettingsSectionProps {
  * «Ajustes»: what is the person's own and what they can decide.
  *
  * Their details are shown and not edited — a name and an email are changed by
- * whoever runs the academy — and the one thing that is theirs to set is the
- * daily goal, the same one the dashboard offers beside the streak. It is the
- * same action either way, and each page says where to come back to.
+ * whoever runs the academy. What is theirs to set: the profile — the user name
+ * that is its address, a status line and a flag (while «Jugar» is on) —, the
+ * theme, and the daily goal, the same one the dashboard offers beside the
+ * streak. It is the same action either way, and each page says where to come
+ * back to.
  */
 export function AccountSettingsSection({ account, theme, errorCode }: AccountSettingsSectionProps) {
   const chosen = theme ?? "system";
@@ -64,6 +70,57 @@ export function AccountSettingsSection({ account, theme, errorCode }: AccountSet
 
         <p className="account-settings__note">Para cambiar tu nombre o tu correo, escríbele a tu profesor.</p>
       </section>
+
+      {PLAY_ENABLED && (
+        <section className="account-settings__card" aria-labelledby="account-settings-profile">
+          <h2 id="account-settings-profile" className="account-settings__title">
+            Tu perfil
+          </h2>
+
+          <PlatformForm action={setUserSlug} className="account-settings__form">
+            <PlatformFormField
+              name="slug"
+              label="Nombre de usuario"
+              hint={`Tu perfil está en ${platformRoutes.userProfile(account.slug)}. Si lo cambias, la dirección anterior deja de funcionar.`}
+              messages={{
+                valueMissing: "Escribe un nombre de usuario.",
+                patternMismatch: "Sólo minúsculas, números y guiones, sin espacios ni acentos.",
+                tooShort: `Al menos ${USER_SLUG_MIN} caracteres.`,
+              }}
+            >
+              <input
+                type="text"
+                defaultValue={account.slug}
+                required
+                minLength={USER_SLUG_MIN}
+                maxLength={USER_SLUG_MAX}
+                pattern="[a-z0-9]+(-[a-z0-9]+)*"
+                autoComplete="username"
+                spellCheck={false}
+              />
+            </PlatformFormField>
+            <SubmitButton pendingLabel="Guardando…">Guardar</SubmitButton>
+          </PlatformForm>
+
+          <PlatformForm action={setProfileDetails} className="account-settings__form">
+            <PlatformFormField
+              name="statusLine"
+              label="Línea de estado"
+              hint="Lo que se lee bajo tu nombre en tu perfil."
+            >
+              <input type="text" defaultValue={account.statusLine ?? ""} maxLength={120} />
+            </PlatformFormField>
+            <PlatformFormField name="country" label="País">
+              <PlatformSelect
+                emptyOption="Sin bandera"
+                defaultValue={account.country ?? ""}
+                options={federationOptions().map((option) => ({ value: option.code, label: option.label }))}
+              />
+            </PlatformFormField>
+            <SubmitButton pendingLabel="Guardando…">Guardar</SubmitButton>
+          </PlatformForm>
+        </section>
+      )}
 
       <section className="account-settings__card" aria-labelledby="account-settings-theme">
         <h2 id="account-settings-theme" className="account-settings__title">
@@ -101,22 +158,20 @@ export function AccountSettingsSection({ account, theme, errorCode }: AccountSet
           Los minutos que quieres estudiar cada día. Es lo que mide la barra de tu racha.
         </p>
 
-        <form action={updateDailyGoal} className="account-settings__form">
+        <PlatformForm action={updateDailyGoal} className="account-settings__form">
           {/* Where the action comes back to: this page, and not the dashboard
               it was written for. */}
           <input type="hidden" name="returnTo" value={platformRoutes.settings} />
 
-          <label className="account-settings__field">
-            <span className="account-settings__field-label">Minutos al día</span>
+          <PlatformFormField name="goalMinutes" label="Minutos al día">
             <PlatformSelect
-              name="goalMinutes"
               defaultValue={String(account.goalMinutes)}
               options={GOAL_OPTIONS.map((minutes) => ({ value: String(minutes), label: `${minutes} minutos` }))}
             />
-          </label>
+          </PlatformFormField>
 
           <SubmitButton>Guardar</SubmitButton>
-        </form>
+        </PlatformForm>
       </section>
     </div>
   );

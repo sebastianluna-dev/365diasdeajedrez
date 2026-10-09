@@ -1,0 +1,22 @@
+---
+description: "«Partidas» of a profile (L4): the rival and result filters, which navigate, and every game as a timeline, twenty a page."
+---
+
+# `ProfileGamesSection`
+
+|            |                                                                                                                                                                         |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/platform/sections/profile/profile-games.section.tsx`, `played-games-filters.comp.tsx`                                                                       |
+| Kind       | Server Component; `PlayedGamesFilters` is its client leaf                                                                                                               |
+| Stylesheet | `profile-games.section.css` → block `.profile-games`                                                                                                                    |
+| Used by    | `app/(platform)/perfil/[slug]/partidas/page.tsx`                                                                                                                        |
+| Composes   | [`PlayedGamesTimeline`](/components/platform/sections/profile/played-games-timeline), [`PlatformSelect`](/components/platform/shared/platform-select) (`tone="accent"`) |
+| Uses       | `listPlayedGamesOf`, `playedRivalsOf` (`services/play`)                                                                                                                 |
+
+## Purpose
+
+The list R1 asked for, drawn as the timeline L4 chose. The filters live in the URL — `?rival=<slug>`, `?resultado=win|loss|draw|open`, `?pagina=` — so a filtered list can be linked and reloaded; `PlayedGamesFilters` are two selects that navigate (a filter, not a form: the accent's focus, never an error), and a change goes back to the first page. The list is paginated on the server (`PLAYED_GAMES_PAGE_SIZE`, 20), open games first; the rivals are the bots the person has played, weakest first.
+
+## Markup & styling
+
+**Elements:** `.profile-games__filters`

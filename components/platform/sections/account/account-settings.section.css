@@ -118,25 +118,14 @@
     color: var(--platform-text-muted);
   }
 
+  /* A `PlatformForm`: its fields one under another, the button at the end
+     of the last row. */
   & .account-settings__form {
-    display: flex;
-    align-items: flex-end;
-    gap: var(--platform-space-4);
     margin-top: var(--platform-space-5);
-    flex-wrap: wrap;
-  }
 
-  & .account-settings__field {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-2);
-    min-width: 200px;
-  }
-
-  & .account-settings__field-label {
-    font-size: var(--platform-type-sm);
-    font-weight: 600;
-    color: var(--platform-text-muted);
+    & > button[type="submit"] {
+      align-self: flex-end;
+    }
   }
 
   @media (width < 640px) {

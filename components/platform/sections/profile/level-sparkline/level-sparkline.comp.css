@@ -1,0 +1,18 @@
+/* The level's line, in the selection's blue over its wash. */
+.level-sparkline {
+  display: block;
+  width: 100%;
+  height: auto;
+
+  & .level-sparkline__area {
+    fill: var(--platform-selection-wash);
+  }
+
+  & .level-sparkline__line {
+    fill: none;
+    stroke: var(--platform-selection);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+}

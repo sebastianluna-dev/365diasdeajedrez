@@ -1,0 +1,122 @@
+/* A profile's head (N5): portrait, name and facts, the owner's actions, and
+   the tabs under a rule. */
+.profile-header {
+  display: grid;
+  gap: var(--platform-space-6);
+
+  & .profile-header__top {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--platform-space-6);
+  }
+
+  & .profile-header__who {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+    gap: var(--platform-space-2);
+  }
+
+  & .profile-header__name-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-3);
+  }
+
+  & .profile-header__name {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-3xl);
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  & .profile-header__flag {
+    font-size: var(--platform-type-xl);
+    line-height: 1;
+  }
+
+  & .profile-header__badge {
+    padding: var(--platform-space-0-5) var(--platform-space-2);
+    border-radius: 4px;
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text-muted);
+    font-family: var(--platform-font);
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+  }
+
+  & .profile-header__status {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text);
+  }
+
+  & .profile-header__status_state_empty {
+    color: var(--platform-text-muted);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--platform-text);
+      text-decoration: underline;
+    }
+  }
+
+  & .profile-header__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-1) var(--platform-space-4);
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+
+    & strong {
+      font-weight: 600;
+      color: var(--platform-text);
+    }
+  }
+
+  & .profile-header__actions {
+    display: flex;
+    flex: none;
+    gap: var(--platform-space-3);
+  }
+
+  & .profile-header__tabs {
+    display: flex;
+    gap: var(--platform-space-5);
+    overflow-x: auto;
+    border-bottom: 1px solid var(--platform-border);
+  }
+
+  & .profile-header__tab {
+    padding: var(--platform-space-2) 0;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    color: var(--platform-text-muted);
+    font-size: var(--platform-type-md);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover {
+      color: var(--platform-text);
+    }
+  }
+
+  & .profile-header__tab_state_active {
+    border-bottom-color: var(--platform-text);
+    color: var(--platform-text);
+  }
+
+  @media (width < 768px) {
+    & .profile-header__top {
+      flex-wrap: wrap;
+    }
+
+    & .profile-header__actions {
+      width: 100%;
+    }
+  }
+}

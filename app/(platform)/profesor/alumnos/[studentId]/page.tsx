@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AssignedStudentDetailSection } from "@/components/platform/sections/teacher/students/assigned-student-detail.section";
+import { PLAY_ENABLED } from "@/constants/platform/features.const";
+import { recentPlayedGamesOf } from "@/services/play/play.service";
 import { getAssignedStudentDetail } from "@/services/teacher-students/teacher-students.service";
 
 interface TeacherStudentPageProps {
@@ -19,6 +21,9 @@ export default async function TeacherStudentPage({ params }: TeacherStudentPageP
   // the assignment is still active: by direct URL, someone else's student is a 404.
   const student = await getAssignedStudentDetail(studentId);
   if (!student) notFound();
+  // The games are read under the same visibility as the student's profile: a
+  // teacher sees their students' games under an active assignment.
+  const playedGames = PLAY_ENABLED ? await recentPlayedGamesOf(student.id) : null;
 
   return (
     <div className="platform-page teacher-student-page">
@@ -27,7 +32,7 @@ export default async function TeacherStudentPage({ params }: TeacherStudentPageP
         <p className="platform-page__subtitle">{student.email}</p>
       </header>
 
-      <AssignedStudentDetailSection student={student} />
+      <AssignedStudentDetailSection student={student} playedGames={playedGames} />
     </div>
   );
 }

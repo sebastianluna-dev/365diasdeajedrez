@@ -6,4 +6,10 @@ export interface AccountSettings {
   memberSinceLabel: string;
   /** Minutes a day they set themselves (`User.dailyGoalMinutes`). */
   goalMinutes: number;
+  /** Their user name: the address of their profile. */
+  slug: string;
+  /** The line under their name on the profile; null when they wrote none. */
+  statusLine: string | null;
+  /** A FIDE federation code, for the profile's flag; null for none. */
+  country: string | null;
 }

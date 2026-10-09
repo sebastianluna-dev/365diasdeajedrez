@@ -118,7 +118,7 @@ export async function getAssignedStudentDetail(studentId: string): Promise<Assig
 
   const now = new Date();
   const [student, courseRows, classRows, studyRows, activityRows, completedLessons, studyTotals] = await Promise.all([
-    db.user.findUnique({ where: { id: studentId }, select: { id: true, displayName: true, email: true } }),
+    db.user.findUnique({ where: { id: studentId }, select: { id: true, displayName: true, email: true, slug: true } }),
     db.courseProgress.findMany({
       where: { userId: studentId },
       select: {
@@ -220,6 +220,7 @@ export async function getAssignedStudentDetail(studentId: string): Promise<Assig
   return {
     id: student.id,
     displayName: student.displayName,
+    slug: student.slug,
     email: student.email,
     assignedAtIso: assignment.assignedAt.toISOString(),
     assignedAtLabel: formatSpanishDate(assignment.assignedAt),
