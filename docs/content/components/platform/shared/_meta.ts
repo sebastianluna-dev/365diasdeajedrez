@@ -24,6 +24,7 @@ const meta: MetaRecord = {
   "platform-error": "PlatformError",
   "platform-form": "PlatformForm",
   "platform-info-tip": "PlatformInfoTip",
+  "platform-nav-menu": "PlatformNavMenu",
   "platform-notice": "PlatformNotice",
   "platform-popup": "PlatformPopup",
   "platform-select": "PlatformSelect",

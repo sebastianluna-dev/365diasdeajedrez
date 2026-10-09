@@ -1,0 +1,35 @@
+---
+description: "A dropdown of the platform's top bar on Radix's DropdownMenu: «Herramientas», two columns of tools each with its icon and the line that says what it is for."
+---
+
+# `PlatformNavMenu`
+
+|            |                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-nav-menu/platform-nav-menu.comp.tsx`                                                  |
+| Kind       | Client Component                                                                                                           |
+| Stylesheet | `platform-nav-menu.comp.css` → blocks `.platform-nav-menu__trigger` and `.platform-nav-menu`                               |
+| Story      | `platform-nav-menu.stories.tsx` (`platform/shared/PlatformNavMenu`): closed, open by its `play`, on a tool                 |
+| Used by    | [`PlatformNav`](/components/platform/sections/shell/platform-nav), for a `PlatformNavDropdown` entry                       |
+| Uses       | `DropdownMenu` from `radix-ui`; `ChessBoardIcon`, `FileImportIcon`, `MagnifyingGlassIcon`, `DumbbellIcon`, `AngleDownIcon` |
+
+## Purpose
+
+M3, chosen on 2026-10-08: «Herramientas» opens a menu aligned to its right edge, in two columns from 1024px (one under it), each tool with its icon in the muted grey, its name and one line that says what it is for. It is the platform's first menu on a Radix primitive: keyboard (the arrows, Home/End, Escape), focus management, a click outside and `aria-haspopup`/`aria-expanded` come with `DropdownMenu`, where the user menu draws its own by hand (IMPROVEMENTS #104).
+
+The trigger is drawn like the bar's items, and lights up like one (`_state_active`, the accent's soft fill and ink) when one of its tools is the current page; that tool is marked in the open menu with the accent's wash and `aria-current="page"`. The content is portalled to `<body>`: the bar scrolls sideways and would clip it, and no modal dialog is ever open under the bar.
+
+## Props
+
+| Prop         | Type                  | Required | Meaning                                                             |
+| ------------ | --------------------- | -------- | ------------------------------------------------------------------- |
+| `menu`       | `PlatformNavDropdown` | yes      | `{ label, items: { label, href, description, icon }[] }`.           |
+| `activeHref` | `string \| null`      | yes      | The address `activeNavHref` lit, to light the trigger and the tool. |
+
+## Markup & styling
+
+**Elements:** `.platform-nav-menu__chevron`, `.platform-nav-menu__item` (`_state_current`), `.platform-nav-menu__icon`, `.platform-nav-menu__text`, `.platform-nav-menu__label`, `.platform-nav-menu__description`
+
+**Modifiers and states:** `.platform-nav-menu__trigger_state_active`; the primitive's `data-state` (open/closed) and `data-highlighted`.
+
+**Motion:** in 160 ms (`ease-out`) and out in 120 (`ease-in`) on `data-state`, `@keyframes platform-nav-menu-in`/`-out`; the chevron turns over 160 ms. Both stop under `prefers-reduced-motion: reduce`.

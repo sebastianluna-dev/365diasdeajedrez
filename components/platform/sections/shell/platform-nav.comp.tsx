@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { activeNavHref, type PlatformNavGroup } from "@/constants/platform/nav-items.const";
+import { PlatformNavMenu } from "@/components/platform/shared/platform-nav-menu/platform-nav-menu.comp";
+import { activeNavHref, isNavDropdown, type PlatformNavGroup } from "@/constants/platform/nav-items.const";
 import "./platform-nav.comp.css";
 
 interface PlatformNavProps {
@@ -23,6 +24,7 @@ export function PlatformNav({ groups }: PlatformNavProps) {
               ("Administración", "Panel del profesor"). The menu is exclusive by
               role, so there are no two groups to tell apart. */}
           {group.items.map((item) => {
+            if (isNavDropdown(item)) return <PlatformNavMenu key={item.label} menu={item} activeHref={activeHref} />;
             const isActive = item.href === activeHref;
             return (
               <Link

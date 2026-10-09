@@ -2,64 +2,97 @@ import { describe, expect, it } from "vitest";
 import {
   activeNavHref,
   buildPlatformNavGroups,
+  isNavDropdown,
+  type PlatformNavFeatures,
+  type PlatformNavGroup,
   STAFF_NAV_ITEMS,
-  STUDENT_NAV_ITEMS,
-  TEACHER_NAV_ITEMS,
 } from "./nav-items.const";
+
+const ALL_ON: PlatformNavFeatures = { play: true, analysisBoard: true, trainer: true };
+const ALL_OFF: PlatformNavFeatures = { play: false, analysisBoard: false, trainer: false };
+const STUDENT = { isTeacher: false, isStaff: false };
+const TEACHER = { isTeacher: true, isStaff: false };
+const STAFF = { isTeacher: false, isStaff: true };
+
+/** Every address of a menu, a dropdown's tools in place of the dropdown. */
+const hrefsOf = (groups: PlatformNavGroup[]) =>
+  groups.flatMap((group) =>
+    group.items.flatMap((entry) => (isNavDropdown(entry) ? entry.items.map((item) => item.href) : [entry.href])),
+  );
+
+/** What the bar shows at its top level: a link's label or a dropdown's. */
+const labelsOf = (groups: PlatformNavGroup[]) => groups.flatMap((group) => group.items.map((entry) => entry.label));
 
 describe("buildPlatformNavGroups", () => {
   it("da sólo el grupo del alumno, sin encabezado", () => {
-    const groups = buildPlatformNavGroups({ isTeacher: false, isStaff: false }, { play: false });
+    const groups = buildPlatformNavGroups(STUDENT, ALL_OFF);
     expect(groups).toHaveLength(1);
     expect(groups[0]?.label).toBeUndefined();
-    expect(groups[0]?.items).toEqual(STUDENT_NAV_ITEMS);
+    expect(labelsOf(groups)).toEqual(["Inicio", "Mis clases", "Mis estudios", "Mis cursos", "Explorador"]);
   });
 
   it("sustituye el menú del alumno por el del profesor, no lo apila", () => {
-    const groups = buildPlatformNavGroups({ isTeacher: true, isStaff: false }, { play: false });
+    const groups = buildPlatformNavGroups(TEACHER, ALL_OFF);
     expect(groups).toHaveLength(1);
     expect(groups[0]?.label).toBe("Profesor");
-    expect(groups[0]?.items).toEqual(TEACHER_NAV_ITEMS);
+    expect(labelsOf(groups)).toEqual([
+      "Panel del profesor",
+      "Mis alumnos",
+      "Clases que imparto",
+      "Explorador",
+      "Mi ficha",
+    ]);
   });
 
-  it("da el menú de administración al staff", () => {
-    const groups = buildPlatformNavGroups({ isTeacher: false, isStaff: true });
+  it("da el menú de administración al staff, sin «Jugar» ni «Herramientas»", () => {
+    const groups = buildPlatformNavGroups(STAFF, ALL_ON);
     expect(groups).toHaveLength(1);
     expect(groups[0]?.items).toEqual(STAFF_NAV_ITEMS);
-  });
-
-  it("ofrece el explorador tanto al alumno como al profesor", () => {
-    // It is a cross-cutting tool: who sees which games is decided by the
-    // visibility filter, not the menu.
-    const hasExplorer = (items: { href: string }[]) => items.some((item) => item.href === "/explorador");
-
-    expect(hasExplorer(STUDENT_NAV_ITEMS)).toBe(true);
-    expect(hasExplorer(TEACHER_NAV_ITEMS)).toBe(true);
-  });
-
-  it("pone «Jugar» antes del explorador para el alumno y el profesor sólo con su interruptor encendido", () => {
-    const hrefs = (roles: { isTeacher: boolean; isStaff: boolean }, play: boolean) =>
-      buildPlatformNavGroups(roles, { play }).flatMap((group) => group.items.map((item) => item.href));
-    const student = { isTeacher: false, isStaff: false };
-    const teacher = { isTeacher: true, isStaff: false };
-    expect(hrefs(student, true)).toEqual(["/inicio", "/clases", "/estudios", "/cursos", "/jugar", "/explorador"]);
-    expect(hrefs(teacher, true).slice(-3)).toEqual(["/jugar", "/explorador", "/profesor/perfil"]);
-    expect(hrefs(student, false)).not.toContain("/jugar");
-    expect(hrefs({ isTeacher: false, isStaff: true }, true)).not.toContain("/jugar");
   });
 
   it("con varios roles manda el de mayor alcance: staff sobre profesor", () => {
-    const groups = buildPlatformNavGroups({ isTeacher: true, isStaff: true });
-    expect(groups).toHaveLength(1);
+    const groups = buildPlatformNavGroups({ isTeacher: true, isStaff: true }, ALL_ON);
     expect(groups[0]?.label).toBe("Administración");
     expect(groups[0]?.items).toEqual(STAFF_NAV_ITEMS);
+  });
+
+  it("ofrece el explorador al alumno y al profesor, de primer nivel o dentro de «Herramientas»", () => {
+    // It is a cross-cutting tool: who sees which games is decided by the
+    // visibility filter, not the menu.
+    for (const features of [ALL_ON, ALL_OFF]) {
+      expect(hrefsOf(buildPlatformNavGroups(STUDENT, features))).toContain("/explorador");
+      expect(hrefsOf(buildPlatformNavGroups(TEACHER, features))).toContain("/explorador");
+    }
+  });
+
+  it("con todo encendido, reúne las herramientas en un desplegable después de «Jugar»", () => {
+    const groups = buildPlatformNavGroups(STUDENT, ALL_ON);
+    expect(labelsOf(groups)).toEqual(["Inicio", "Mis clases", "Mis estudios", "Mis cursos", "Jugar", "Herramientas"]);
+    const tools = groups[0]?.items.find(isNavDropdown);
+    expect(tools?.items.map((item) => item.label)).toEqual([
+      "Tablero de análisis",
+      "Importar partida",
+      "Explorador",
+      "Entrenador",
+    ]);
+    expect(tools?.items.every((item) => item.description.length > 0)).toBe(true);
+    expect(labelsOf(buildPlatformNavGroups(TEACHER, ALL_ON)).slice(-3)).toEqual(["Jugar", "Herramientas", "Mi ficha"]);
+  });
+
+  it("deja fuera lo apagado: «Jugar» sin su interruptor, el entrenador sin el suyo", () => {
+    const noPlay = buildPlatformNavGroups(STUDENT, { ...ALL_ON, play: false });
+    expect(hrefsOf(noPlay)).not.toContain("/jugar");
+    const noTrainer = buildPlatformNavGroups(STUDENT, { ...ALL_ON, trainer: false });
+    expect(hrefsOf(noTrainer)).not.toContain("/entrenador");
+    const noBoard = buildPlatformNavGroups(STUDENT, { ...ALL_ON, analysisBoard: false });
+    expect(labelsOf(noBoard)).toEqual(["Inicio", "Mis clases", "Mis estudios", "Mis cursos", "Jugar", "Explorador"]);
   });
 });
 
 describe("activeNavHref", () => {
-  const alumno = buildPlatformNavGroups({ isTeacher: false, isStaff: false });
-  const profesor = buildPlatformNavGroups({ isTeacher: true, isStaff: false });
-  const staff = buildPlatformNavGroups({ isTeacher: false, isStaff: true });
+  const alumno = buildPlatformNavGroups(STUDENT, ALL_ON);
+  const profesor = buildPlatformNavGroups(TEACHER, ALL_ON);
+  const staff = buildPlatformNavGroups(STAFF, ALL_ON);
 
   it("marca la coincidencia exacta", () => {
     expect(activeNavHref(alumno, "/inicio")).toBe("/inicio");
@@ -67,6 +100,11 @@ describe("activeNavHref", () => {
 
   it("marca el ítem por prefijo en las rutas hijas", () => {
     expect(activeNavHref(alumno, "/estudios/abc/partidas/xyz")).toBe("/estudios");
+  });
+
+  it("encuentra una herramienta dentro de su desplegable", () => {
+    expect(activeNavHref(alumno, "/herramientas/tablero-de-analisis")).toBe("/herramientas/tablero-de-analisis");
+    expect(activeNavHref(profesor, "/explorador")).toBe("/explorador");
   });
 
   it("se queda con la coincidencia más larga y no enciende dos ítems", () => {

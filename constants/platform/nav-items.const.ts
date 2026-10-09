@@ -1,4 +1,4 @@
-import { PLAY_ENABLED } from "@/constants/platform/features.const";
+import { ANALYSIS_BOARD_ENABLED, MOVE_TRAINER_ENABLED, PLAY_ENABLED } from "@/constants/platform/features.const";
 import { platformRoutes, staffRoutes, teacherRoutes } from "@/lib/platform-routes";
 
 // Platform navigation. The menu is EXCLUSIVE by role: each person sees only
@@ -18,11 +18,47 @@ export interface PlatformNavItem {
   href: string;
 }
 
+/** A tool in a dropdown: its line says what it is for (M3), its icon is named by what it does. */
+export interface PlatformNavMenuItem extends PlatformNavItem {
+  description: string;
+  icon: "analysis-board" | "import" | "explorer" | "trainer";
+}
+
+/**
+ * A dropdown of the bar: a trigger with no address of its own, and the tools
+ * under it. Named `PlatformNavDropdown` and not `PlatformNavMenu`, which is
+ * the component that draws it.
+ */
+export interface PlatformNavDropdown {
+  label: string;
+  items: PlatformNavMenuItem[];
+}
+
+export type PlatformNavEntry = PlatformNavItem | PlatformNavDropdown;
+
+/** Whether an entry is a dropdown rather than a link. */
+export function isNavDropdown(entry: PlatformNavEntry): entry is PlatformNavDropdown {
+  return "items" in entry;
+}
+
 export interface PlatformNavGroup {
   /** No label = base group, rendered without a heading. */
   label?: string;
-  items: PlatformNavItem[];
+  items: PlatformNavEntry[];
 }
+
+/** What is switched on, which decides «Jugar» and whether the tools are gathered. */
+export interface PlatformNavFeatures {
+  play: boolean;
+  analysisBoard: boolean;
+  trainer: boolean;
+}
+
+const FEATURES: PlatformNavFeatures = {
+  play: PLAY_ENABLED,
+  analysisBoard: ANALYSIS_BOARD_ENABLED,
+  trainer: MOVE_TRAINER_ENABLED,
+};
 
 /**
  * The trainer is reached from courses and dashboard, so it takes no room here.
@@ -60,31 +96,76 @@ export const STAFF_NAV_ITEMS: PlatformNavItem[] = [
 /** «Jugar», for the student after their courses and for the teacher before the explorer. */
 const PLAY_ITEM: PlatformNavItem = { label: "Jugar", href: platformRoutes.play };
 
-/** The items with «Jugar» put in before `beforeHref`. */
-function withPlay(items: PlatformNavItem[], beforeHref: string): PlatformNavItem[] {
-  const at = items.findIndex((item) => item.href === beforeHref);
-  return [...items.slice(0, at), PLAY_ITEM, ...items.slice(at)];
+/**
+ * «Herramientas» (planning decision §H, M3): the analysis board, «Importar
+ * partida», the explorer and — while it is on — the trainer, each with the
+ * line that says what it is for.
+ */
+function toolsDropdown(features: PlatformNavFeatures): PlatformNavDropdown {
+  return {
+    label: "Herramientas",
+    items: [
+      {
+        label: "Tablero de análisis",
+        href: platformRoutes.analysisBoard(),
+        description: "Pega un FEN o un PGN y analízalo con el módulo.",
+        icon: "analysis-board",
+      },
+      {
+        label: "Importar partida",
+        href: platformRoutes.importGame,
+        description: "Un PGN que entra directo a uno de tus estudios.",
+        icon: "import",
+      },
+      {
+        label: "Explorador",
+        href: platformRoutes.explorer,
+        description: "Busca una posición en tus partidas.",
+        icon: "explorer",
+      },
+      ...(features.trainer
+        ? [
+            {
+              label: "Entrenador",
+              href: platformRoutes.trainer,
+              description: "Repasa las jugadas de tus lecciones.",
+              icon: "trainer" as const,
+            },
+          ]
+        : []),
+    ],
+  };
+}
+
+/**
+ * The student's or the teacher's items with what is switched on: «Jugar»
+ * before the explorer, and the explorer gathered into «Herramientas» once the
+ * analysis board is on (until then it stays a link of its own, so it never
+ * disappears).
+ */
+function withFeatures(items: PlatformNavItem[], features: PlatformNavFeatures): PlatformNavEntry[] {
+  return items.flatMap((item): PlatformNavEntry[] => {
+    if (item.href !== platformRoutes.explorer) return [item];
+    return [...(features.play ? [PLAY_ITEM] : []), features.analysisBoard ? toolsDropdown(features) : item];
+  });
 }
 
 /**
  * Pure (testable) function that picks the right menu. It always returns ONE
- * single group: the list of the widest role the user has. «Jugar» is in the
- * student's and the teacher's while its switch is on (`features.play`); the
- * staff's menu is the panel's and has none.
+ * single group: the list of the widest role the user has. The student's and
+ * the teacher's gain «Jugar» and «Herramientas» with their switches
+ * (`features`); the staff's menu is the panel's and has neither.
  *
  * It still returns an array (and not a loose group) so as not to force the
  * component to change shape if one day there is more than one again.
  */
 export function buildPlatformNavGroups(
   roles: { isTeacher: boolean; isStaff: boolean },
-  features: { play: boolean } = { play: PLAY_ENABLED },
+  features: PlatformNavFeatures = FEATURES,
 ): PlatformNavGroup[] {
   if (roles.isStaff) return [{ label: "Administración", items: STAFF_NAV_ITEMS }];
-  if (roles.isTeacher) {
-    const items = features.play ? withPlay(TEACHER_NAV_ITEMS, platformRoutes.explorer) : TEACHER_NAV_ITEMS;
-    return [{ label: "Profesor", items }];
-  }
-  return [{ items: features.play ? withPlay(STUDENT_NAV_ITEMS, platformRoutes.explorer) : STUDENT_NAV_ITEMS }];
+  if (roles.isTeacher) return [{ label: "Profesor", items: withFeatures(TEACHER_NAV_ITEMS, features) }];
+  return [{ items: withFeatures(STUDENT_NAV_ITEMS, features) }];
 }
 
 /**
@@ -95,7 +176,8 @@ export function buildPlatformNavGroups(
 export function activeNavHref(groups: PlatformNavGroup[], pathname: string): string | null {
   let best: string | null = null;
   for (const group of groups) {
-    for (const item of group.items) {
+    // A dropdown's tools compete like any item; the trigger lights up with them.
+    for (const item of group.items.flatMap((entry) => (isNavDropdown(entry) ? entry.items : [entry]))) {
       const matches = pathname === item.href || pathname.startsWith(`${item.href}/`);
       if (matches && (best === null || item.href.length > best.length)) best = item.href;
     }

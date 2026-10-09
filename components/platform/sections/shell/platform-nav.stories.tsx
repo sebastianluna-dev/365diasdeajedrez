@@ -79,3 +79,14 @@ export const Staff: Story = {
 export const NothingActive: Story = {
   parameters: at(platformRoutes.settings),
 };
+
+/** The student's menu with «Jugar» and «Herramientas» switched on, on the analysis board: the dropdown's trigger is lit. */
+export const WithTools: Story = {
+  args: {
+    groups: buildPlatformNavGroups(
+      { isTeacher: false, isStaff: false },
+      { play: true, analysisBoard: true, trainer: false },
+    ),
+  },
+  parameters: at(platformRoutes.analysisBoard()),
+};
