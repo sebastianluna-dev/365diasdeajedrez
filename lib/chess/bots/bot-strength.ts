@@ -81,13 +81,21 @@ interface SampledRow {
   delay: [number, number];
 }
 
-/** research/bot-strength.md §3, rows 400–1200. */
+/**
+ * Rows 400–1200, as the second calibration round left them (2026-10-08).
+ * research/bot-strength.md §3 started at 1 500–15 000 nodes, a temperature of
+ * 140–40 cp and, from 1000, the worst candidate as the blunder: measured, that
+ * was 400–900 points above every label (Rodrigo, 1309, played at 2235). A
+ * full-strength search's worst line is still a decent move, and a few thousand
+ * nodes already see a lot; fewer nodes, a warmer pick and random legal moves
+ * as the blunder brought every bot within its tolerance.
+ */
 const SAMPLED_ROWS: readonly SampledRow[] = [
-  { elo: 400, nodes: 1_500, multiPv: 8, temperature: 140, blunderRate: 0.15, blunder: "legal", delay: [600, 2_000] },
-  { elo: 600, nodes: 2_500, multiPv: 8, temperature: 100, blunderRate: 0.1, blunder: "legal", delay: [700, 2_500] },
-  { elo: 800, nodes: 4_000, multiPv: 8, temperature: 75, blunderRate: 0.06, blunder: "legal", delay: [800, 3_000] },
-  { elo: 1000, nodes: 8_000, multiPv: 6, temperature: 55, blunderRate: 0.035, blunder: "worst", delay: [800, 3_500] },
-  { elo: 1200, nodes: 15_000, multiPv: 6, temperature: 40, blunderRate: 0.02, blunder: "worst", delay: [1_000, 4_000] },
+  { elo: 400, nodes: 400, multiPv: 8, temperature: 300, blunderRate: 0.3, blunder: "legal", delay: [600, 2_000] },
+  { elo: 600, nodes: 600, multiPv: 8, temperature: 240, blunderRate: 0.24, blunder: "legal", delay: [700, 2_500] },
+  { elo: 800, nodes: 1_000, multiPv: 8, temperature: 190, blunderRate: 0.18, blunder: "legal", delay: [800, 3_000] },
+  { elo: 1000, nodes: 1_500, multiPv: 8, temperature: 150, blunderRate: 0.13, blunder: "legal", delay: [800, 3_500] },
+  { elo: 1200, nodes: 2_500, multiPv: 8, temperature: 110, blunderRate: 0.09, blunder: "legal", delay: [1_000, 4_000] },
 ];
 
 interface EngineRow {

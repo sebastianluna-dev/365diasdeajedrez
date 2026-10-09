@@ -1,0 +1,43 @@
+{ The openings the bots' calibration starts from (scripts/calibrate-bots.ts).
+  Twelve main lines of four moves each, balanced: every final position was
+  checked at depth 16 to be within 50 centipawns of equality — White's usual
+  first-move edge — (`npm run bots:calibrate -- --verify-openings`). Each is
+  played twice by a pairing, with the colours swapped, so no side is
+  favoured. Without them a full-strength engine would play the same game over
+  and over. }
+
+[Event "Italiana"]
+1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. c3 Nf6 *
+
+[Event "Española"]
+1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 *
+
+[Event "Escocesa"]
+1. e4 e5 2. Nf3 Nc6 3. d4 exd4 4. Nxd4 Nf6 *
+
+[Event "Siciliana"]
+1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 *
+
+[Event "Francesa"]
+1. e4 e6 2. d4 d5 3. Nc3 Nf6 4. Bg5 Be7 *
+
+[Event "Caro-Kann"]
+1. e4 c6 2. d4 d5 3. Nc3 dxe4 4. Nxe4 Bf5 *
+
+[Event "Gambito de Dama"]
+1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 *
+
+[Event "Eslava"]
+1. d4 d5 2. c4 c6 3. Nf3 Nf6 4. Nc3 dxc4 *
+
+[Event "Petrov"]
+1. e4 e5 2. Nf3 Nf6 3. Nxe5 d6 4. Nf3 Nxe4 *
+
+[Event "Nimzoindia"]
+1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 O-O *
+
+[Event "Inglesa"]
+1. c4 e5 2. Nc3 Nf6 3. Nf3 Nc6 4. g3 d5 *
+
+[Event "Londres"]
+1. d4 d5 2. Bf4 Nf6 3. e3 e6 4. Nf3 c5 *

@@ -1,0 +1,76 @@
+{
+  "engineBuild": "sha256:a8fbc05ec6920b56",
+  "anchors": [1320, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800, 3000],
+  "bots": {
+    "tere": {
+      "label": 412,
+      "measured": 479,
+      "margin": 147,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "beto": {
+      "label": 547,
+      "measured": 579,
+      "margin": 143,
+      "games": 140,
+      "measuredAt": "2026-10-09"
+    },
+    "lupita": {
+      "label": 668,
+      "measured": 682,
+      "margin": 141,
+      "games": 160,
+      "measuredAt": "2026-10-09"
+    },
+    "don-chuy": {
+      "label": 783,
+      "measured": 872,
+      "margin": 118,
+      "games": 130,
+      "measuredAt": "2026-10-09"
+    },
+    "mariana": {
+      "label": 891,
+      "measured": 902,
+      "margin": 115,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "profe-ramirez": {
+      "label": 1036,
+      "measured": 1084,
+      "margin": 89,
+      "games": 132,
+      "measuredAt": "2026-10-09"
+    },
+    "ximena": {
+      "label": 1174,
+      "measured": 1237,
+      "margin": 75,
+      "games": 126,
+      "measuredAt": "2026-10-09"
+    },
+    "rodrigo": {
+      "label": 1309,
+      "measured": 1394,
+      "margin": 62,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "sofia": {
+      "label": 1447,
+      "measured": 1528,
+      "margin": 66,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    },
+    "carlsen": {
+      "label": 2798,
+      "measured": 2814,
+      "margin": 49,
+      "games": 120,
+      "measuredAt": "2026-10-09"
+    }
+  }
+}

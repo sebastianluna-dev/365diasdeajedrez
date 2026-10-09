@@ -35,17 +35,18 @@ describe("strengthFor", () => {
 
   it("follows the table at its rows", () => {
     expect(strengthFor(400)).toMatchObject({
-      search: { nodes: 1_500 },
+      search: { nodes: 400 },
       multiPv: 8,
-      temperature: 140,
-      blunderRate: 0.15,
+      temperature: 300,
+      blunderRate: 0.3,
       blunder: "legal",
     });
     expect(strengthFor(1000)).toMatchObject({
-      search: { nodes: 8_000 },
-      multiPv: 6,
-      temperature: 55,
-      blunder: "worst",
+      search: { nodes: 1_500 },
+      multiPv: 8,
+      temperature: 150,
+      blunderRate: 0.13,
+      blunder: "legal",
     });
     expect(strengthFor(1400)).toMatchObject({ uciElo: 1400, search: { depth: 1 } });
     expect(strengthFor(1600)).toMatchObject({ search: { depth: 3 } });

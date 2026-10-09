@@ -34,11 +34,11 @@ What Stockfish's own limiters really do (checked against Stockfish 18's source a
 
 | Elo  | Engine options                              | Budget                              | Lines | Temperature (cp) | Blunder             | Delay (s) |
 | ---- | ------------------------------------------- | ----------------------------------- | ----- | ---------------- | ------------------- | --------- |
-| 400  | `Skill Level 20`, `UCI_LimitStrength false` | `nodes 1 500` (≈ depth 3)           | 8     | 140              | 15 % · random legal | 0.6–2.0   |
-| 600  | same                                        | `nodes 2 500`                       | 8     | 100              | 10 % · random legal | 0.7–2.5   |
-| 800  | same                                        | `nodes 4 000`                       | 8     | 75               | 6 % · random legal  | 0.8–3.0   |
-| 1000 | same                                        | `nodes 8 000`                       | 6     | 55               | 3.5 % · worst line  | 0.8–3.5   |
-| 1200 | same                                        | `nodes 15 000`                      | 6     | 40               | 2 % · worst line    | 1.0–4.0   |
+| 400  | `Skill Level 20`, `UCI_LimitStrength false` | `nodes 400` (≈ depth 2)             | 8     | 300              | 30 % · random legal | 0.6–2.0   |
+| 600  | same                                        | `nodes 600`                         | 8     | 240              | 24 % · random legal | 0.7–2.5   |
+| 800  | same                                        | `nodes 1 000`                       | 8     | 190              | 18 % · random legal | 0.8–3.0   |
+| 1000 | same                                        | `nodes 1 500`                       | 8     | 150              | 13 % · random legal | 0.8–3.5   |
+| 1200 | same                                        | `nodes 2 500`                       | 8     | 110              | 9 % · random legal  | 1.0–4.0   |
 | 1320 | `UCI_LimitStrength true`, `UCI_Elo 1320`    | `depth 1`                           | 1     | the engine's     | the engine's        | 1.0–4.0   |
 | 1600 | `UCI_Elo 1600` (level 2.2)                  | `depth 3`                           | 1     |                  |                     | 1.0–4.0   |
 | 2000 | `UCI_Elo 2000` (level 4.2)                  | `depth 5`                           | 1     |                  |                     | 1.2–4.5   |
@@ -47,13 +47,13 @@ What Stockfish's own limiters really do (checked against Stockfish 18's source a
 
 Every bot sends `Hash 16`. Between rows the numbers are interpolated inside each regime; past 1200 the sampled row is extrapolated and clamped (at most 20 000 nodes, a temperature of at least 30 cp, a blunder rate of at least 1 %). The browser's node cap for 2600 and above can only weaken: in a tactical position it may leave the bot a little weaker in the browser than under Node.
 
-A bot searches by depth or nodes, **never by time** (`SearchBudget` has no `movetime`): its strength must not depend on the device, and nodes reproduce under Node, which is what lets it be calibrated before anything is promised. The one search by time is `FULL_STRENGTH_PROFILE` (`full-strength.const.ts`), the analysis board's «Jugar esta posición contra el módulo»: full strength, 300 ms, never calibrated nor saved. The numbers above are a starting point; the calibration moves the table — the temperature, the blunders and the nodes below; `UCI_Elo` above — and never the labels.
+A bot searches by depth or nodes, **never by time** (`SearchBudget` has no `movetime`): its strength must not depend on the device, and nodes reproduce under Node, which is what lets it be calibrated before anything is promised. The one search by time is `FULL_STRENGTH_PROFILE` (`full-strength.const.ts`), the analysis board's «Jugar esta posición contra el módulo»: full strength, 300 ms, never calibrated nor saved. The numbers above are the second calibration round's; the calibration moves the table — the temperature, the blunders and the nodes below; `UCI_Elo` above — and never the labels.
 
 ## How a weak bot picks — `choose-bot-move.ts`
 
 `chooseBotMove(candidates, strength, legalUci, rng)` works on the candidates of the search's last complete iteration (`finalCandidates`), scored for the side that moves (`scoreOf`: centipawns, and a mate as ±100 000 minus two per move), so a bot playing Black samples as well as one playing White:
 
-1. A blunder with the bot's rate: a random legal move (`legalUciMoves`) below 1000, the worst candidate above.
+1. A blunder with the bot's rate: a random legal move (`legalUciMoves`). The worst candidate is also possible (`blunder: "worst"`), but the calibration showed it hardly weakens a bot — a full-strength search's worst line is still a decent move — so no row uses it.
 2. A mate of its own is always played, the shortest.
 3. Otherwise a soft-max: each candidate within 3 × T of the best is picked with weight `exp(−(best − score) / T)`; one that loses more than that only comes in as a blunder.
 
@@ -62,3 +62,35 @@ The randomness is injected: `mulberry32(seedOf(gameId, ply))` (`rng.ts`) in a ga
 ## How long it seems to think — `bot-delay.ts`
 
 A bot's search takes 1–150 ms; a person never answers that fast, so the wait is a timer on the screen, never the engine's budget. `thinkDelayMs(strength, { ply, candidates, forced, recapture, rng })` draws within the bot's range, pushed toward the long end when several moves are within 30 cp of the best, and cut to 0.3–0.8 s for an only move, a recapture and the bot's first eight moves. The caller subtracts what the search already took.
+
+## Calibration
+
+`npm run bots:calibrate` ([Scripts & seed](/operations/scripts-and-seed)) measures the bots before any Elo is promised, with the engine the browser loads run under Node: the same bytes, so the figures transfer.
+
+- **Anchors**: Stockfish at `UCI_Elo` 1320, 1400, 1600 … 2800 and 3000, each searching to its pick depth with no node cap, fixed at those ratings.
+- **Pairings**: a bot of 1320 and up plays the anchors within ±300 of its label. A sampled bot plays its neighbours within ±300 — every sampled bot from it up to 1319 joins the run as a rung — and the anchors within reach, so the chain hangs from them.
+- **Games**: each pairing plays the twelve openings of `lib/chess/__fixtures__/calibration-openings.pgn` (four moves each, within 50 cp of equality at depth 16, White's usual edge; `--verify-openings` checks them), each twice with the colours swapped, from a fresh `ucinewgame`. A game ends by the rules (`gameEnd`) or, after 400 plies, as a draw. A weak bot's games are reproducible from `--seed`.
+- **Fit**: Bradley-Terry on the Elo scale, draws as half points, the anchors fixed, with one virtual draw against each opponent so a clean sweep does not run to infinity; the margin is 1.96 standard deviations of a bootstrap over the games.
+
+The report, `lib/chess/bots/calibration.json`, holds per bot its label when measured, the measured Elo, the margin, the games and the date, under the hash of the engine build. `calibration.test.ts` checks only the bots it holds: a label within 150 of its measure below 1320 and within 100 above, and a ladder that never inverts beyond the margins. Whether the report is recent is `--check`'s to say (a new engine build makes it stale), not CI's.
+
+What the figure means: an Elo **in Stockfish's pool**, not on the human scale. The engine regime measured against `UCI_Elo` anchors is Stockfish against itself and holds by construction; what the run really measures is the sampled regime — whose temperature, blunders and nodes are ours — and the continuity of the ladder across the threshold. The human calibration comes later, from the students' games against each bot, which the scoreboard already keeps. When a label cannot be met, the lever is the strength table (the temperature, the blunders or the nodes below; `UCI_Elo` above), never the label; moving a label is a data migration.
+
+### Results
+
+The second round (2026-10-08), 120 games per bot or more, the anchors as above. The first round, with the research's starting table (1 500–15 000 nodes, 140–40 cp, the worst candidate as the blunder from 1000), measured the sampled bots 400–900 points above their labels — Rodrigo, 1309, played at 2235 —; fewer nodes, a warmer pick and random legal moves as the blunder brought them within tolerance.
+
+| Bot           | Label | Measured | ± (95 %) | Games |
+| ------------- | ----- | -------- | -------- | ----- |
+| Tere          | 412   | 479      | 147      | 120   |
+| Beto          | 547   | 579      | 143      | 140   |
+| Lupita        | 668   | 682      | 141      | 160   |
+| Don Chuy      | 783   | 872      | 118      | 130   |
+| Mariana       | 891   | 902      | 115      | 120   |
+| Profe Ramírez | 1036  | 1084     | 89       | 132   |
+| Ximena        | 1174  | 1237     | 75       | 126   |
+| Rodrigo       | 1309  | 1394     | 62       | 120   |
+| Sofía         | 1447  | 1528     | 66       | 120   |
+| Carlsen       | 2798  | 2814     | 49       | 120   |
+
+The ladder is in order and continuous across the threshold (Rodrigo 1394, Sofía 1528), and sits a steady 50–80 points above the labels on both sides of it, as one would expect from a pool anchored on `UCI_Elo`. The other 35 bots are not measured yet (`--check` lists them).

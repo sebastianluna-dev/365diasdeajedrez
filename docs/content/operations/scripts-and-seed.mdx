@@ -109,6 +109,18 @@ Not what the viewer plays today (that is lichess's `.mp3`, see [Stockfish, piece
 
 Regenerates `public/pieces/*.svg` from chessground's cburnett CSS (adds `viewBox`). Run after upgrading `@lichess-org/chessground`.
 
+## `scripts/calibrate-bots.ts` — `npm run bots:calibrate`
+
+Measures the bots of «Jugar» by playing them, and writes `lib/chess/bots/calibration.json`. It reads no `.env.local` and touches no database: it runs the engine the browser loads (`node public/engine/stockfish.js`) as child processes, two per worker. Always run it through `npm run` (the database hook does not ask for it then).
+
+```bash
+npm run bots:calibrate -- --bots tere,sofia,carlsen --games 120 --workers 6 --seed 7
+npm run bots:calibrate -- --check            # measured, missing, relabelled, engine changed
+npm run bots:calibrate -- --verify-openings  # the twelve openings are still balanced
+```
+
+Without `--bots` it measures all 45. The method, the anchors and how to read the figure are in [Bots](/chess/bots#calibration). Re-run it after any change to the strength table (`lib/chess/bots/bot-strength.ts`) or to the engine; `--check` says when the report has gone stale.
+
 ## Adding a script
 
 - Put it in `scripts/`, add an `npm run` alias, start with the `dotenv` lines and the connection guard.
