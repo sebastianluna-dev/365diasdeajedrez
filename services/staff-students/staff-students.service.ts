@@ -6,7 +6,9 @@ import type { StaffStudentDetail, StaffStudentSummary, StudentAssignmentHistoryI
 
 // Administration panel: students. The staff sees EVERY account, but not their
 // private content — neither studies nor games appear here. Operating accounts is
-// not the same as reading what people store.
+// not the same as reading what people store. The one exception lives elsewhere:
+// a person's profile and played games, which the staff may read from
+// /perfil/<slug> (services/profile, services/play), never list from here.
 
 /** Only the active assignment; the history is read on the detail page. */
 const activeAssignmentSelect = {

@@ -35,7 +35,7 @@ Both panels are ordinary platform pages with a stricter border: `requireTeacher(
 
 ### Students (accounts) — `/administracion/alumnos`
 
-`services/staff-students/`: staff sees every account but never its private content (no studies, no games). `createStudentAccount` (email + display name → account and default study in one transaction, with a password typed by staff or a generated temporary one, shown once), `resetStudentPassword` (new temporary password, all sessions destroyed), `updateStudent`. The detail shows the assignment history.
+`services/staff-students/`: staff sees every account but never its private content (no studies, no study games). The one exception is what a person plays on the platform: the staff, like the student's teachers, may open any profile and its played games, read-only ([Play](/platform/play#who-may-see-what)); this panel still lists none of them. `createStudentAccount` (email + display name → account and default study in one transaction, with a password typed by staff or a generated temporary one, shown once), `resetStudentPassword` (new temporary password, all sessions destroyed), `updateStudent`. The detail shows the assignment history.
 
 ### Teachers and assignments — `/administracion/profesores`
 

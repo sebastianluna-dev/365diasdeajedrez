@@ -4,7 +4,7 @@ import { STUDY_DAY_TIMEZONE } from "@/constants/platform/timezones.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { activityLevel, dayKey, longestStreak, mondayOf, startOfDay, streakOf, weeksUpTo } from "@/lib/study-streak";
-import type { StreakOverview, StudyGoal, StudyStreak } from "./study-goal.types";
+import type { StreakOverview, StreakSummary, StudyGoal, StudyStreak } from "./study-goal.types";
 
 // Streak and daily goal: the two figures of the day. The dashboard shows both;
 // "Mis cursos", the streak.
@@ -121,3 +121,21 @@ export const getStreakOverview = cache(async (): Promise<StreakOverview> => {
     minutesThisWeek,
   };
 });
+
+/**
+ * Anyone's streak and this week's figures, by their id: the profile reads it
+ * for whoever it shows (its owner, their teacher, the staff), so it takes the
+ * id instead of the session. It only READS the activity: playing never writes
+ * it (no-activity.test.ts), so a profile's games never move these figures.
+ */
+export async function streakSummaryOf(userId: string): Promise<StreakSummary> {
+  const now = new Date();
+  const today = dayKey(now, STUDY_DAY_TIMEZONE);
+  const monday = mondayOf(today);
+  const [counts, minutesThisWeek] = await Promise.all([activityByDayOf(userId, now), minutesSince(userId, monday)]);
+  return {
+    streak: streakOf(counts.keys(), today),
+    daysThisWeek: [...counts].filter(([day, count]) => day >= monday && day <= today && count > 0).length,
+    minutesThisWeek,
+  };
+}

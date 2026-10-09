@@ -41,6 +41,7 @@ import {
 } from "./seed-data";
 import { nextClassAfter, planSeededOrders, resolveCollectionIds, seedReferenceDate } from "./seed-rules";
 import { proposeUserSlug } from "../services/shared/user-slug.service";
+import { seedPlay } from "./seed-play";
 import { AUTHOR_ROLE } from "../constants/platform/course-codes.const";
 
 const connectionString = process.env.PLATFORM_DATABASE_URL;
@@ -685,6 +686,14 @@ async function main() {
       create: { id: activity.id, ...data },
     });
   }
+
+  // «Jugar»: its catalogs, the bots and the demo student's games. Playing
+  // writes no activity, so it goes apart from what the stats are rebuilt from.
+  await seedPlay(
+    db,
+    USERS.find((user) => user.id === IDS.demoUser)!,
+    now,
+  );
 
   // UserStatDaily is derived: it is rebuilt whole from UserActivity so that the
   // aggregate and the source of truth cannot drift apart.

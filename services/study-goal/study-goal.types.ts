@@ -44,3 +44,10 @@ export interface StreakOverview {
   /** The duration of the lessons finished this week, as today's minutes are counted. */
   minutesThisWeek: number;
 }
+
+/** A person's streak and this week's figures, for their profile. */
+export interface StreakSummary {
+  streak: StudyStreak;
+  daysThisWeek: number;
+  minutesThisWeek: number;
+}

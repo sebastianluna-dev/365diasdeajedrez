@@ -76,6 +76,34 @@ export const platformRoutes = {
   courseReview: (courseId: string) => `/entrenador?course=${courseId}`,
   /** Game search by position; shared by student and teacher. */
   explorer: "/explorador",
+  /** «Jugar»: choose a bot and a colour. `?rival=<slug>` opens that bot's sheet. */
+  play: "/jugar",
+  playAgainst: (botSlug: string) => `/jugar?rival=${encodeURIComponent(botSlug)}`,
+  /** A played game, live or finished: ONE address for both, read-only for whoever holds no seat. */
+  playedGame: (gameId: string) => `/jugar/partidas/${gameId}`,
+  /** The own profile: it redirects to `/perfil/<slug>`, so a menu needs no user name. */
+  profile: "/perfil",
+  /** A person's profile, by their user name. */
+  userProfile: (slug: string) => `/perfil/${slug}`,
+  /** Every game of a person, a page at a time, filtered by rival and result. */
+  userProfileGames: (slug: string, query?: { pagina?: number; rival?: string; resultado?: string }) => {
+    const params = new URLSearchParams();
+    if (query?.pagina && query.pagina > 1) params.set("pagina", String(query.pagina));
+    if (query?.rival) params.set("rival", query.rival);
+    if (query?.resultado) params.set("resultado", query.resultado);
+    const search = params.toString();
+    return `/perfil/${slug}/partidas${search ? `?${search}` : ""}`;
+  },
+  /** «Herramientas»: the analysis board, with a position, a played game or a study's game to start from. */
+  analysisBoard: (source?: { fen?: string; partida?: string; estudio?: string }) => {
+    const params = new URLSearchParams();
+    if (source?.fen) params.set("fen", source.fen);
+    if (source?.partida) params.set("partida", source.partida);
+    if (source?.estudio) params.set("estudio", source.estudio);
+    const search = params.toString();
+    return `/herramientas/tablero-de-analisis${search ? `?${search}` : ""}`;
+  },
+  importGame: "/herramientas/importar-partida",
 } as const;
 
 /**

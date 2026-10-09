@@ -67,6 +67,9 @@ export const PROTECTED_PATH_PREFIXES = [
   "/ajustes",
   "/entrenador",
   "/explorador",
+  "/jugar",
+  "/perfil",
+  "/herramientas",
   "/profesor",
   "/administracion",
 ] as const;

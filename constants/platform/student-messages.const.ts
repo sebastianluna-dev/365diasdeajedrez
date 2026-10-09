@@ -9,6 +9,9 @@ export const STUDENT_ERROR_MESSAGES: Record<string, string> = {
   confirm: "Marca la casilla para confirmar.",
   pgnEmpty: "No se encontró ninguna partida en ese PGN.",
   pgnTooLong: "El PGN es demasiado largo. Divídelo en varias importaciones.",
+  botNotFound: "Ese rival ya no está disponible. Elige otro.",
+  slugTaken: "Ese nombre de usuario ya está en uso. Prueba con otro.",
+  slugInvalid: "El nombre de usuario lleva de 3 a 30 letras minúsculas, números y guiones, sin espacios ni acentos.",
 };
 
 /**

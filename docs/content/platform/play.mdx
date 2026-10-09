@@ -1,0 +1,75 @@
+---
+description: "«Jugar»: games against the bots and the person's profile — the switches, the routes, the services and actions, who may see what, what the server cannot check, and why playing never counts toward the streak."
+---
+
+# Play («Jugar»)
+
+Games against Stockfish bots of 400–2 800, saved and listed on the person's profile (`/perfil/<slug>`), and the «Tablero de análisis» under «Herramientas». Being built in phases since 2026-10-08; until the screens exist both switches in `constants/platform/features.const.ts` are off (`PLAY_ENABLED`, `ANALYSIS_BOARD_ENABLED`), every action answers `notFound()` or `disabled`, and the three route folders are placeholders that answer 404.
+
+What is in place today: the engine client, the bots and their strength ([Bots](/chess/bots)), the rules of a live game (`lib/chess/game-end.ts`, `lib/chess/live-game.ts`, `lib/play/`), the tables ([Data model → Played games](/platform/data-model#played-games-jugar)) and the services and actions below.
+
+## Rules that do not bend
+
+- **Playing never counts toward the streak.** No game, against a bot or a person, writes the activity log or its daily aggregate: the streak, the minutes and the days studied come from studying content, exercises, lessons and classes only. `services/play/no-activity.test.ts` walks the imports of `services/play`, `services/bots` and `services/profile` (`lib/testing/module-reach.ts`, the walker `components/loading-boundaries.test.ts` also uses) and fails if any reaches `services/shared/user-activity.service.ts`, or if a file there names the activity tables. Only `play.actions.ts` may reach the position index, to copy a game into a study.
+- **A played game is never a study game.** It is a `PlayedGame`, not a `Game`: «Mis estudios», the explorer and the classes never see it. «Guardar en un estudio» makes a copy.
+- **No clock, no undo, no hints against a bot.** The bot answers after a human-like delay (`thinkDelayMs`); the engine on the analysis board plays at full strength, instantly, never with a clock, and is never saved.
+
+## Routes
+
+| Route                               | What it is                                                                                   |
+| ----------------------------------- | -------------------------------------------------------------------------------------------- |
+| `/jugar`                            | The lobby: the bots by group, «Continuar» for the open game.                                 |
+| `/jugar/partidas/<id>`              | A game: played while it is open and the viewer holds a seat; read-only for everyone else.    |
+| `/perfil/<slug>`                    | The profile: header, streak, level against bots, scoreboard by bot and the last eight games. |
+| `/perfil/<slug>/partidas`           | Every game, twenty a page, filtered by rival and result.                                     |
+| `/herramientas/tablero-de-analisis` | The analysis board (phase 4).                                                                |
+
+The three prefixes are in `PROTECTED_PATH_PREFIXES` and in the proxy's matcher; `lib/platform-routes.ts` builds every address (`play`, `playAgainst`, `playedGame`, `profile`, `userProfile`, `userProfileGames`, `analysisBoard`, `importGame`).
+
+## Who may see what
+
+`Viewer` (`services/play/play-rules.ts`) is the person, the teacher row they hold and whether they are staff, resolved by `currentViewer()` from the DAL. Every read puts the rule **inside its `where`**, so a game or a profile the viewer may not see is never read:
+
+| Viewer  | Played games (`playedGameVisibleWhere`)                  | Profiles (`profileVisibleWhere`)                 |
+| ------- | -------------------------------------------------------- | ------------------------------------------------ |
+| Anyone  | The games where they hold a seat.                        | Their own.                                       |
+| Teacher | Also those of their students under an active assignment. | Also their students' under an active assignment. |
+| Staff   | Every game.                                              | Every profile.                                   |
+
+Reading is not writing: every action demands a seat (`seatOf`), and a teacher or the staff see a student's game read-only.
+
+## Services
+
+- `services/bots/` — `listBotGroups()` (the lobby, by group and order) and `getBotBySlug(slug)`; only active bots.
+- `services/play/play.service.ts` — `getOpenPlayedGame()` (the viewer's open game against a bot), `getPlayedGame(id)`, `listPlayedGamesOf(userId, { page, rival?, result? })` (open first, then the last move, then the start; `PLAYED_GAMES_PAGE_SIZE` 20), `recentPlayedGamesOf(userId)` (`PROFILE_RECENT_GAMES` 8), `botScoreboardOf(userId)`, `botScoreAgainst(userId, botId)` and `botLevelSummaryOf(userId)`.
+- `services/profile/` — `getProfileOf(slug)` and `getOwnSlug()`.
+- `services/study-goal` — `streakSummaryOf(userId)`, the streak shown on a profile (read, never written by playing).
+
+**«Nivel contra bots»** (`botLevelOf`, `levelSeries`): over the last ten finished games against bots, the average of the bots' Elo plus 400 per net win spread over the games, rounded to 25 and kept within 400–2 800; nothing under five games. An aborted game counts for nothing (`countsForScore`); a resignation or an abandonment is a loss. Computed when read, never stored, and never a rating: `isRated` is false against a bot, by a CHECK.
+
+## Actions
+
+`services/play/play.actions.ts`. Each one checks the switch, resolves the user in the DAL, goes through `allowAction`, validates with zod, keeps the seat inside its `where` and writes only through `writePlayedGameRecord`, in a transaction.
+
+| Action                                           | What it does                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `startPlayedGame(formData)`                      | Opens a game against a bot (`bot`, `color` white/black/random). With `replace`, the open game against a bot is closed first — abandoned after two moves of one's own, aborted before — else the open game is returned. A person keeps one open game against a bot, which the database backs with two partial unique indexes (one per colour); two tabs pressing at once land on the same game through their `P2002`. |
+| `rematchPlayedGame(gameId)`                      | The same bot, colours swapped.                                                                                                                                                                                                                                                                                                                                                                                       |
+| `appendPlayedMove(gameId, { expectedPly, san })` | One move, versioned by the ply the browser saw: `ok` with the server's reading of the board (`gameEnd`), `retry` answered as written, `stale` (another tab moved first), `invalid` (illegal) or `finished`.                                                                                                                                                                                                          |
+| `abandonPlayedGame(gameId, { expectedPly })`     | «Abandonar»: lost by whoever presses it, versioned like a move.                                                                                                                                                                                                                                                                                                                                                      |
+| `storePlayedGameReview(gameId, pgn)`             | The review's evaluations into a finished game; refused if one move differs.                                                                                                                                                                                                                                                                                                                                          |
+| `copyPlayedGameToStudy(gameId, formData)`        | «Guardar en un estudio»: a `Game` with source `PLATFORM_GAME` in one of one's studies, indexed in the same transaction.                                                                                                                                                                                                                                                                                              |
+
+`services/account/account.actions.ts` adds `setUserSlug` (the user name: the CHECK's pattern, not reserved, `slugTaken` on the unique index) and `setProfileDetails` (`statusLine`, `country`). A slug is proposed from the name before every account is created (`proposeUserSlug`); changing it leaves the old address answering 404.
+
+The rules the actions apply are pure and tested without a database: `checkAppend` (`append-rules.ts`), `play-rules.ts`, `profile-rules.ts` and the single writer (`services/shared/played-game-record.ts`, tested with an in-memory writer that applies the same guards). What the actions do against the database is checked in the app (phase 3).
+
+## What the server cannot check
+
+Both moves of a game against a bot leave the same browser: the server demands legality, turn order and a seat, not that the bot's move came from Stockfish at the bot's strength. So the scoreboard and the level are a record of what was played, never a rating, and nothing compares people by them.
+
+## Seed and query budget
+
+`prisma/seed-play.ts`, called by the seed: the three catalogs and the 45 bots upserted from the same roster the migrations' SQL is generated from, and three games for the demo student — won against Tere, lost by resignation against Don Chuy, and one open against Lupita on the student's turn — only when they have played none, written through the single writer. `prisma/seed-play.test.ts` replays them.
+
+The pages have a query budget (`/jugar` ≤ 3, `/perfil/<slug>` ≤ 7, without the session). It is measured with `PLATFORM_DB_LOG=query`, which makes `getPlatformDb()` print every query, against `npm run build && npm run start` on a cold load; the measured figures go here when the pages exist.

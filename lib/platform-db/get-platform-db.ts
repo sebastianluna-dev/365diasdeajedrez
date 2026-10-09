@@ -33,7 +33,12 @@ export function getPlatformDb(): PrismaClient {
     if (!connectionString) {
       throw new Error("Falta PLATFORM_DATABASE_URL en el entorno (ver .env.example).");
     }
-    client = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
+    // PLATFORM_DB_LOG=query prints every query: how a page's query budget is
+    // measured (docs/ → Platform → Play), against `npm run build && npm run start`.
+    client = new PrismaClient({
+      adapter: new PrismaPg({ connectionString }),
+      log: process.env.PLATFORM_DB_LOG === "query" ? ["query"] : undefined,
+    });
     globalStore.platformDbByClass.set(PrismaClient, client);
   }
   return client;

@@ -17,7 +17,8 @@ What it creates (data in `prisma/seed-data.ts`):
 - an author, the courses with chapters, lessons (PGN or linked games), topics and exercises derived with the same `deriveExerciseData` the staff panel uses; the role the author signs each course with (`SeedCourse.authorRole`, «Autor del contenido» by default) and its «Procedencia del recurso» (`SeedCourse.sources`);
 - studies and games for the demo student (positions indexed with `indexGamePositions`), shared collections;
 - classes with participants, blocks and a transcript, a teacher–student assignment;
-- activities and the rebuilt `UserStatDaily` aggregates.
+- activities and the rebuilt `UserStatDaily` aggregates;
+- «Jugar» (`prisma/seed-play.ts`): its three catalogs and the 45 bots, upserted by code and slug from `lib/chess/bots/roster.ts`, and three games for the demo student — won, lost by resignation, and one open on their turn — only when they have played none, so a re-seed never touches a game played since. They write no activity: playing never counts toward the streak.
 
 Environment switches:
 

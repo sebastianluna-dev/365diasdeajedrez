@@ -21,7 +21,10 @@ export type GameEndKind =
   | "fifty-moves"
   | "resignation"
   | "abandoned"
-  | "aborted";
+  | "aborted"
+  // Only between people, with a clock (not yet played on the platform).
+  | "timeout"
+  | "draw-agreed";
 
 export interface GameEnd {
   kind: GameEndKind;

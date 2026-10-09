@@ -4,6 +4,7 @@ const meta: MetaRecord = {
   authentication: "Authentication & roles",
   "data-model": "Data model",
   student: "Student features",
+  play: "Play",
   "teacher-and-staff": "Teacher & staff panels",
 };
 
