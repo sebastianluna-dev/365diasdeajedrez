@@ -61,12 +61,12 @@ From `components/platform/shared/game-fields/game-fields.comp.tsx`:
 ```tsx
 import { PlatformDatePicker } from "@/components/platform/shared/platform-date-picker/platform-date-picker.comp";
 
-<FormField label="Fecha">
-  <PlatformDatePicker name="playedAt" defaultValue={values?.playedAtValue ?? ""} />
-</FormField>;
+<PlatformFormField name="playedAt" label="Fecha">
+  <PlatformDatePicker defaultValue={values?.playedAtValue ?? ""} />
+</PlatformFormField>;
 ```
 
 ## Related
 
 - [`PlatformSelect`](/components/platform/shared/platform-select), the same idea for a list of choices.
-- [`PlatformForm`](/components/platform/shared/platform-form) and [`FormField`](/components/platform/shared/form-field), the fields it goes in.
+- [`PlatformForm`](/components/platform/shared/platform-form), whose `PlatformFormField` it goes in.

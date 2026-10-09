@@ -318,5 +318,5 @@ These are the only classes defined outside a component file, and they are meant 
 3. Colours, fonts, shadows and the progress track come from tokens; if you need a value that has no token, add the token to the right theme file with a comment saying what it is for, rather than writing the hex in the component. A platform colour is declared with its two values (see [Themes › Adding a colour](/architecture/themes#adding-a-colour)).
 4. Public site: dark tokens by default; inside `.section_theme_light` use the `-on-light` variants. Platform: only `--platform-*`.
 5. Keep the closed/hidden state inside the block (`.block_open`, `.block__panel_hidden`), never as a global `[hidden]` override.
-6. No `!important`, no id selectors, no element selectors outside the block except for native controls inside a wrapper (`& .platform-field__control input`).
+6. No `!important`, no id selectors, no element selectors outside the block except for native controls inside a wrapper (`& .platform-form__field > input`).
 7. If a rule must apply to several components, it is a primitive: put it in the theme file and document it in the table above.

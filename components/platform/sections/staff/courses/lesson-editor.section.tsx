@@ -1,4 +1,8 @@
-import { FormField, FormFieldset } from "@/components/platform/shared/form-field/form-field.comp";
+import {
+  PlatformForm,
+  PlatformFormField,
+  PlatformFormGroup,
+} from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { BOARD_ORIENTATION, CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
@@ -34,6 +38,8 @@ const ORIENTATION_LABELS: Record<string, string> = { WHITE: "Blancas", BLACK: "N
 
 /** Ties the "Opciones" controls to the metadata form in the other column. */
 const METADATA_FORM_ID = "lesson-metadata";
+/** The training colour's select, named by its label across the aside. */
+const TRAINING_COLOR_ID = "lesson-training-color";
 
 /**
  * The lesson is edited in independent cards — content, metadata and
@@ -77,7 +83,9 @@ export function LessonEditorSection({
                   them to the metadata form in the other column. It is the only honest
                   way to split a form across two places; two forms against the same
                   action would trample each other's fields — `updateLesson` reads ALL of
-                  them and saving here would erase what is there. */}
+                  them and saving here would erase what is there. Outside that form
+                  there is no `PlatformForm` to hold a `PlatformFormField`, so the
+                  select is named by a plain label pointing at its trigger. */}
               <div className="lesson-editor__stack">
                 <PlatformCheckbox
                   name="isPriority"
@@ -95,8 +103,12 @@ export function LessonEditorSection({
                   hint="Se entrena la línea principal del PGN; las variantes siguen en el modo estudiar."
                 />
 
-                <FormField label="Bando que entrena el alumno">
+                <div className="lesson-editor__select">
+                  <label className="lesson-editor__label" htmlFor={TRAINING_COLOR_ID}>
+                    Bando que entrena el alumno
+                  </label>
                   <PlatformSelect
+                    id={TRAINING_COLOR_ID}
                     name="trainingColorCode"
                     form={METADATA_FORM_ID}
                     defaultValue={lesson.trainingColorCode ?? ""}
@@ -106,7 +118,7 @@ export function LessonEditorSection({
                       { value: BOARD_ORIENTATION.BLACK, label: "Negras" },
                     ]}
                   />
-                </FormField>
+                </div>
 
                 <p className="lesson-editor__note">Se guardan con «Guardar metadatos».</p>
               </div>
@@ -183,48 +195,47 @@ export function LessonEditorSection({
         </StaffPanel>
 
         <StaffPanel title="Metadatos">
-          <form id={METADATA_FORM_ID} className="lesson-editor__form" action={saveLesson}>
-            <FormField label="Nombre">
-              <input type="text" name="name" defaultValue={lesson.name} maxLength={160} required />
-            </FormField>
+          <PlatformForm id={METADATA_FORM_ID} action={saveLesson}>
+            <PlatformFormField name="name" label="Nombre">
+              <input type="text" defaultValue={lesson.name} maxLength={160} required />
+            </PlatformFormField>
 
-            <FormField label="Descripción">
-              <textarea name="description" defaultValue={lesson.description ?? ""} maxLength={1000} />
-            </FormField>
+            <PlatformFormField name="description" label="Descripción">
+              <textarea defaultValue={lesson.description ?? ""} maxLength={1000} />
+            </PlatformFormField>
 
             {/* The position the lesson starts from is NOT typed: it comes from the
                 [FEN] header of the linked game, which is the only source of its content. */}
             <div className="lesson-editor__pair">
-              <FormField label="Orientación del tablero">
+              <PlatformFormField name="orientationCode" label="Orientación del tablero">
                 <PlatformSelect
-                  name="orientationCode"
                   defaultValue={lesson.orientationCode}
                   options={CONTENT_ORIENTATIONS.map((code) => ({
                     value: code,
                     label: ORIENTATION_LABELS[code] ?? code,
                   }))}
                 />
-              </FormField>
+              </PlatformFormField>
 
-              <FormField label="Duración estimada (minutos)">
-                <input type="number" name="estimatedDuration" min={0} defaultValue={lesson.estimatedDuration ?? ""} />
-              </FormField>
+              <PlatformFormField name="estimatedDuration" label="Duración estimada (minutos)">
+                <input type="number" min={0} defaultValue={lesson.estimatedDuration ?? ""} />
+              </PlatformFormField>
             </div>
 
-            <FormFieldset legend="Temas" optional>
+            {/* The group's label names the cards. */}
+            <PlatformFormGroup label="Temas" optional>
               <PlatformCheckCards
                 name="topicCodes"
                 defaultValue={lesson.topicCodes}
-                aria-label="Temas"
                 layout="line"
                 options={topics.map((topic) => ({ value: topic.code, label: topic.label }))}
               />
-            </FormFieldset>
+            </PlatformFormGroup>
 
             <div className="lesson-editor__submit">
               <SubmitButton className="platform-button">Guardar metadatos</SubmitButton>
             </div>
-          </form>
+          </PlatformForm>
         </StaffPanel>
 
         <StaffPanel title="Ejercicios" meta={`${lesson.exercises.length}`}>

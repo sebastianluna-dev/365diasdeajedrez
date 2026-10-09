@@ -11,13 +11,6 @@
     gap: var(--platform-space-4);
   }
 
-  /* The metadata form: the cards it is made of bring their own spacing. */
-  & .course-editor__form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-4);
-  }
-
   & .course-editor__submit {
     display: flex;
     justify-content: flex-end;

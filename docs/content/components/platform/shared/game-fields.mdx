@@ -6,15 +6,15 @@ description: "A game's data fields in one place, shared by every form that write
 
 Also exports the `GameFieldValues` type.
 
-|            |                                                                                                                                                                 |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/game-fields/game-fields.comp.tsx`                                                                                                   |
-| Kind       | Server Component                                                                                                                                                |
-| Stylesheet | `game-fields.comp.css` → block `.game-fields`                                                                                                                   |
-| Story      | `game-fields.stories.tsx` (`platform/shared/GameFields`): a complete record, an empty one, and a title and a federation from the PGN that the lists do not have |
-| Used by    | [`EditGame`](/components/platform/shared/edit-game)                                                                                                             |
-| Composes   | [`FormField`](/components/platform/shared/form-field), [`OptionalFields`](/components/platform/shared/optional-fields)                                          |
-| Uses       | `federationOptions`, `FIDE_TITLES`, `FIDE_TITLE_LABELS` from `lib/chess/federations`                                                                            |
+|            |                                                                                                                                                                                                                                                                              |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/game-fields/game-fields.comp.tsx`                                                                                                                                                                                                                |
+| Kind       | Server Component                                                                                                                                                                                                                                                             |
+| Stylesheet | `game-fields.comp.css` → block `.game-fields`                                                                                                                                                                                                                                |
+| Story      | `game-fields.stories.tsx` (`platform/shared/GameFields`): a complete record, an empty one, and a title and a federation from the PGN that the lists do not have, each inside a `PlatformForm` that never submits                                                             |
+| Used by    | [`EditGame`](/components/platform/shared/edit-game)                                                                                                                                                                                                                          |
+| Composes   | [`PlatformFormField`](/components/platform/shared/platform-form), [`PlatformSelect`](/components/platform/shared/platform-select), [`PlatformDatePicker`](/components/platform/shared/platform-date-picker), [`OptionalFields`](/components/platform/shared/optional-fields) |
+| Uses       | `federationOptions`, `FIDE_TITLES`, `FIDE_TITLE_LABELS` from `lib/chess/federations`                                                                                                                                                                                         |
 
 ## Purpose
 
@@ -22,20 +22,21 @@ The fields of a game (name, players with Elo, title and federation, result, date
 
 It lives in `shared/` because two products write a game's record with it: the student's studies and the staff's chapter collections.
 
-**No small print under the fields** (2026-10-05). The two clarifications the form has — what the name is for (`titleHint`) and what an ECO is («Código de apertura, como «B40».») — were lines under their inputs; the owner asked for them in an "i" instead — inside the input, at its end, as the staff's slug has it —, which is [`FormField`](/components/platform/shared/form-field)'s `info`. They are read once, and a form of fifteen fields is shorter without them.
+**No small print under the fields** (2026-10-05). The two clarifications the form has — what the name is for (`titleHint`) and what an ECO is («Código de apertura, como «B40».») — were lines under their inputs; the owner asked for them in an "i" instead — inside the input, at its end, as the staff's slug has it —, which is [`PlatformFormField`](/components/platform/shared/platform-form)'s `info`. They are read once, and a form of fifteen fields is shorter without them.
 
 ## Props
 
-| Prop        | Type                | Required | Meaning                                                                                                                                |
-| ----------- | ------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `values`    | `GameFieldValues`   | no       | Current values for the edit form; absent on creation. `playedAtValue` is short ISO (`yyyy-mm-dd`), what `<input type="date">` expects. |
-| `results`   | `{ code, label }[]` | yes      | The results catalog; `ONGOING` is the default.                                                                                         |
-| `titleHint` | `string`            | yes      | What the "i" inside the name's input says, different on creation and on edit.                                                          |
+| Prop        | Type                | Required | Meaning                                                                                                                          |
+| ----------- | ------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `values`    | `GameFieldValues`   | no       | Current values for the edit form; absent on creation. `playedAtValue` is short ISO (`yyyy-mm-dd`), what the date picker expects. |
+| `results`   | `{ code, label }[]` | yes      | The results catalog; `ONGOING` is the default.                                                                                   |
+| `titleHint` | `string`            | yes      | What the "i" inside the name's input says, different on creation and on edit.                                                    |
 
 ## Behaviour
 
+- Each field is a [`PlatformFormField`](/components/platform/shared/platform-form), which gives its control the `name` the actions read and the `id` its label points at. A field needs the context of the form around it, so `GameFields` renders inside a `PlatformForm`: `EditGame`'s, or the story's.
 - Plain inputs with `defaultValue`; no state.
-- `CodeSelect` handles the title and federation dropdowns, each a [`PlatformSelect`](/components/platform/shared/platform-select) with the `emptyOption` ("Sin título", "Sin federación"): a PGN may bring a title or a federation that is not in our lists (headers are written by whoever wants), so a stored value outside the options is added as one more option, "X (del PGN)", and saving without touching it keeps it. The result is a `PlatformSelect` over `results`.
+- `CodeSelect` handles the title and federation dropdowns, each a [`PlatformSelect`](/components/platform/shared/platform-select) with the `emptyOption` ("Sin título", "Sin federación"): a PGN may bring a title or a federation that is not in our lists (headers are written by whoever wants), so a stored value outside the options is added as one more option, "X (del PGN)", and saving without touching it keeps it. `CodeSelect` passes on to the select what the field hands its control (`id`, `name`, the ref the form validates through, the ARIA of its messages). The result is a `PlatformSelect` over `results`.
 - Elo inputs are `type="number"` between 100 and 4000.
 
 ## Markup & styling
@@ -44,7 +45,7 @@ Block `.game-fields` (15 lines): the two-column rows.
 
 **Elements:** `.game-fields__row`
 
-**Other selectors it styles:** `.platform-field` (spacing inside the rows).
+**Other selectors it styles:** `.platform-form__field` (spacing inside the rows: each grows from 220px).
 
 No tokens, no media queries of its own.
 

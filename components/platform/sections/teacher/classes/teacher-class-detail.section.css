@@ -80,8 +80,11 @@
     margin-top: var(--platform-space-4);
   }
 
+  /* A `PlatformForm`, whose own rule stacks its children: here the field and
+     its button sit in one row, the button level with the select. */
   & .teacher-class__enroll {
     display: flex;
+    flex-direction: row;
     align-items: flex-end;
     flex-wrap: wrap;
     gap: var(--platform-space-3);
@@ -89,7 +92,7 @@
     padding-top: var(--platform-space-4);
     border-top: 1px solid var(--platform-border);
 
-    & .platform-field {
+    & .platform-form__field {
       flex: 0 1 280px;
     }
   }

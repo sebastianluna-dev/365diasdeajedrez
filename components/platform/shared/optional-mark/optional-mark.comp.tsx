@@ -5,9 +5,9 @@ export const OPTIONAL_MARK = "Opcional";
 
 /**
  * «Opcional» in a thin pill, right after a field's label. The field pieces
- * draw it themselves — `PlatformFormField` and `FormField` when their control
- * has no `required` (`isOptionalControl`), `PlatformFormGroup` and
- * `FormFieldset` when they are told `optional` —, so no caller writes it.
+ * draw it themselves — `PlatformFormField` when its control has no
+ * `required` (`isOptionalControl`), `PlatformFormGroup` when it is told
+ * `optional` —, so no caller writes it.
  *
  * Only for the eye (`aria-hidden`): what a screen reader needs it already
  * has, since a required control is announced as such and an optional one is

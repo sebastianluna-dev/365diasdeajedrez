@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { createStudentAccount } from "@/services/staff-students/staff-students.actions";
 import { ACCOUNT_INITIAL_STATE } from "@/services/staff-students/staff-students.types";
@@ -37,31 +37,32 @@ export function CreateAccountForm() {
           <PlatformNotice message={state.message ?? "Cuenta creada."} variant="success" />
         ))}
 
-      <form className="create-account__form platform-card" action={formAction}>
+      <PlatformForm className="create-account__form platform-card" action={formAction}>
         <h2 className="platform-card__title">Nueva cuenta de alumno</h2>
         <p className="create-account__hint">
           No hay registro público ni correos de activación: la contraseña se genera aquí y se la entregas tú.
         </p>
 
-        <FormField label="Nombre para mostrar">
-          <input type="text" name="displayName" maxLength={120} required />
-        </FormField>
+        <PlatformFormField name="displayName" label="Nombre para mostrar">
+          <input type="text" maxLength={120} required />
+        </PlatformFormField>
 
-        <FormField label="Email">
-          <input type="email" name="email" maxLength={254} required autoComplete="off" />
-        </FormField>
+        <PlatformFormField name="email" label="Email">
+          <input type="email" maxLength={254} required autoComplete="off" />
+        </PlatformFormField>
 
-        <FormField
+        <PlatformFormField
+          name="password"
           label="Contraseña inicial"
           hint="Si la dejas vacía se genera una temporal y se muestra una sola vez."
         >
-          <input type="text" name="password" maxLength={200} autoComplete="off" />
-        </FormField>
+          <input type="text" maxLength={200} autoComplete="off" />
+        </PlatformFormField>
 
         <button type="submit" className="platform-button" disabled={isPending}>
           {isPending ? "Creando…" : "Crear cuenta"}
         </button>
-      </form>
+      </PlatformForm>
     </div>
   );
 }

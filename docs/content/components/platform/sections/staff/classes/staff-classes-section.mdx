@@ -4,14 +4,14 @@ description: "The global read view of every class: a GET filter form (teacher, s
 
 # `StaffClassesSection`
 
-|            |                                                                                                                                                                                                  |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/staff/classes/staff-classes.section.tsx`                                                                                                                           |
-| Kind       | Server Component                                                                                                                                                                                 |
-| Stylesheet | `staff-classes.section.css` → block `.staff-classes`                                                                                                                                             |
-| Used by    | `/administracion/clases`                                                                                                                                                                         |
-| Composes   | [`PlatformTable`](/components/platform/shared/platform-table), [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime)              |
-| Uses       | `CLASS_STATUS` from `constants/platform/class-codes.const`; `staffRoutes` from `lib/platform-routes`; `StaffClassSummary`, `StaffClassFilters` from `services/staff-classes/staff-classes.types` |
+|            |                                                                                                                                                                                                                                                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/classes/staff-classes.section.tsx`                                                                                                                                                                                                                                                                                       |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                             |
+| Stylesheet | `staff-classes.section.css` → block `.staff-classes`                                                                                                                                                                                                                                                                                                         |
+| Used by    | `/administracion/clases`                                                                                                                                                                                                                                                                                                                                     |
+| Composes   | [`PlatformTable`](/components/platform/shared/platform-table), [`PlatformForm` and `PlatformFormField`](/components/platform/shared/platform-form), [`PlatformSelect`](/components/platform/shared/platform-select), [`PlatformDatePicker`](/components/platform/shared/platform-date-picker), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Uses       | `CLASS_STATUS` from `constants/platform/class-codes.const`; `staffRoutes` from `lib/platform-routes`; `StaffClassSummary`, `StaffClassFilters` from `services/staff-classes/staff-classes.types`                                                                                                                                                             |
 
 ## Purpose
 
@@ -28,15 +28,15 @@ Every class of every teacher, for oversight. The page parses the URL into typed 
 
 ## Behaviour
 
-A GET `<form action={staffRoutes.classes}>` with teacher and status selects, two date inputs and a title search, then a table with title (linked), teacher, local date and time, status tag, participants and attended. Empty label: "Ninguna clase coincide con esos filtros."
+A GET filter on the platform's form, [`PlatformForm`](/components/platform/shared/platform-form) with `action={staffRoutes.classes}`: teacher and status selects (`PlatformSelect`, «Todos» as the empty option), two date pickers (`PlatformDatePicker`) and a title search, each a `PlatformFormField` that gives its control the `name` the URL carries. None is required, so no field ever shows a message, and the focus and the selects keep the form's blue. Then a table with title (linked), teacher, local date and time, status tag, participants and attended. Empty label: "Ninguna clase coincide con esos filtros."
 
 ## Markup & styling
 
-Block `.staff-classes` (16 lines): the filter row.
+Block `.staff-classes` (19 lines): the filter row. The form is `PlatformForm`, a column of its own, so the row says `flex-direction: row` (its two classes outweigh `.platform-form`'s one); each field grows from 170px and the button sits at their foot.
 
 **Elements:** `.staff-classes__filters`
 
-**Other selectors it styles:** `.platform-field`.
+**Other selectors it styles:** `.platform-form__field` (`PlatformFormField`'s root).
 
 No tokens or media queries of its own.
 

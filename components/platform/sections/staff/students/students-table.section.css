@@ -11,13 +11,16 @@
     gap: var(--platform-space-3);
   }
 
+  /* A `PlatformForm`, whose own root is a column: here the field and the
+     button share a row, bottom-aligned, and wrap when they no longer fit. */
   & .students-table__search {
     display: flex;
+    flex-direction: row;
     align-items: flex-end;
     gap: var(--platform-space-3);
     flex-wrap: wrap;
 
-    & .platform-field {
+    & .platform-form__field {
       flex: 0 1 300px;
     }
   }

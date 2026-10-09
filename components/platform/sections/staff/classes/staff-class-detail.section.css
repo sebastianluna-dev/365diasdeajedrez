@@ -43,14 +43,18 @@
     color: var(--platform-text-muted);
   }
 
+  /* A field and its button in a row that wraps, the button at the field's
+     foot. Each form is `PlatformForm`, a column of its own: the row is said
+     here. */
   & .staff-class__support {
     display: flex;
+    flex-direction: row;
     align-items: flex-end;
     flex-wrap: wrap;
     gap: var(--platform-space-3);
     margin-bottom: var(--platform-space-4);
 
-    & .platform-field {
+    & .platform-form__field {
       flex: 1 1 320px;
     }
   }

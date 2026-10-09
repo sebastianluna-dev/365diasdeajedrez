@@ -4,15 +4,15 @@ description: "A teacher's record for staff: profile form, activate or deactivate
 
 # `TeacherAdminDetailSection`
 
-|            |                                                                                                                                                                                                                                                                                                                                             |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/teachers/teacher-admin-detail.section.tsx`                                                                                                                                                                                                                                                              |
-| Kind       | Server Component                                                                                                                                                                                                                                                                                                                            |
-| Stylesheet | `teacher-admin-detail.section.css` → block `.teacher-admin`                                                                                                                                                                                                                                                                                 |
-| Used by    | `/administracion/profesores/[teacherId]`                                                                                                                                                                                                                                                                                                    |
-| Composes   | [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice), [`PlatformTable`](/components/platform/shared/platform-table), [`LocalDateTime`](/components/platform/shared/local-datetime) |
-| Writes     | `updateTeacher()`, `setTeacherActive()` · `services/staff-teachers/staff-teachers.actions.ts`                                                                                                                                                                                                                                               |
-| Uses       | `STAFF_ERROR_MESSAGES`; `TIMEZONE_OPTIONS`; `StaffTeacherDetail`, `AssignableStudent` from `services/staff-teachers/staff-teachers.types`                                                                                                                                                                                                   |
+|            |                                                                                                                                                                                                                                                                                                                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/teachers/teacher-admin-detail.section.tsx`                                                                                                                                                                                                                                                                                         |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                       |
+| Stylesheet | `teacher-admin-detail.section.css` → block `.teacher-admin`                                                                                                                                                                                                                                                                                                            |
+| Used by    | `/administracion/profesores/[teacherId]`                                                                                                                                                                                                                                                                                                                               |
+| Composes   | [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel), [`PlatformForm`, `PlatformFormField`](/components/platform/shared/platform-form), [`PlatformNotice`](/components/platform/shared/platform-notice), [`PlatformTable`](/components/platform/shared/platform-table), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Writes     | `updateTeacher()`, `setTeacherActive()` · `services/staff-teachers/staff-teachers.actions.ts`                                                                                                                                                                                                                                                                          |
+| Uses       | `STAFF_ERROR_MESSAGES`; `TIMEZONE_OPTIONS`; `StaffTeacherDetail`, `AssignableStudent` from `services/staff-teachers/staff-teachers.types`                                                                                                                                                                                                                              |
 
 ## Purpose
 
@@ -28,18 +28,18 @@ Four cards: the profile (the same fields the teacher edits in their own profile,
 
 ## Behaviour
 
-- Profile: `<form action={updateTeacher.bind(null, id)}>` with display name, title, time zone, photo URL and bio.
-- Status: a one-button form posting `setTeacherActive`; a hidden `isActive=on` travels only when reactivating, so an absent field means deactivate. An info [`PlatformNotice`](/components/platform/shared/platform-notice) precedes it when active assignments exist.
+- Profile: a `PlatformForm` posting `updateTeacher.bind(null, id)` with display name, title, time zone, photo URL and bio, each a `PlatformFormField` (2026-10-08; they were `FormField`s): an emptied name shows its message under it and nothing is sent; the time zone is a `PlatformSelect`, given its `name` by the field.
+- Status: a one-button plain `<form>` posting `setTeacherActive` (it holds no field); a hidden `isActive=on` travels only when reactivating, so an absent field means deactivate. An info [`PlatformNotice`](/components/platform/shared/platform-notice) precedes it when active assignments exist.
 - Assignments: [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel) in `byTeacher` mode.
 - Classes: a [`PlatformTable`](/components/platform/shared/platform-table) with title, date, status and participants.
 
 ## Markup & styling
 
-Block `.teacher-admin` (27 lines).
+Block `.teacher-admin` (29 lines).
 
 **Elements:** `.teacher-admin__form`, `.teacher-admin__meta`, `.teacher-admin__status`
 
-**Other selectors it styles:** `.platform-field`.
+**Other selectors it styles:** `.platform-form__field`, which takes the profile column's whole width (the button keeps its own).
 
 **Tokens:** `--platform-text-muted`
 

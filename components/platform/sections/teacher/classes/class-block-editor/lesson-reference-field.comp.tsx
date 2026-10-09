@@ -1,6 +1,6 @@
 "use client";
 
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
+import { PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 
 interface LessonReferenceFieldProps {
   value: string;
@@ -17,13 +17,13 @@ interface LessonReferenceFieldProps {
  */
 export function LessonReferenceField({ value, onChange }: LessonReferenceFieldProps) {
   return (
-    <FormField
+    <PlatformFormField
+      name="lessonId"
       label="Id de la lección"
       hint="Es lo último de la dirección de la lección: /cursos/00020212/1/20000004 → 20000004. Debajo aparecerá su contenido para comprobar que es la que quieres."
     >
       <input
         type="text"
-        name="lessonId"
         value={value}
         onChange={(event) => onChange(event.target.value.trim())}
         inputMode="numeric"
@@ -31,6 +31,6 @@ export function LessonReferenceField({ value, onChange }: LessonReferenceFieldPr
         placeholder="20000004"
         required
       />
-    </FormField>
+    </PlatformFormField>
   );
 }

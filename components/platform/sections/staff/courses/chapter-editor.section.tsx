@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { staffRoutes } from "@/lib/platform-routes";
@@ -63,14 +63,14 @@ export function ChapterEditorSection({ chapter, errorCode }: ChapterEditorSectio
         }
       >
         <StaffPanel title="Metadatos del capítulo">
-          <form className="chapter-editor__form" action={updateChapter.bind(null, chapter.courseId, chapter.id)}>
-            <FormField label="Nombre">
-              <input type="text" name="name" defaultValue={chapter.name} maxLength={160} required />
-            </FormField>
+          <PlatformForm action={updateChapter.bind(null, chapter.courseId, chapter.id)}>
+            <PlatformFormField name="name" label="Nombre">
+              <input type="text" defaultValue={chapter.name} maxLength={160} required />
+            </PlatformFormField>
 
-            <FormField label="Descripción">
-              <textarea name="description" defaultValue={chapter.description ?? ""} maxLength={1000} />
-            </FormField>
+            <PlatformFormField name="description" label="Descripción">
+              <textarea defaultValue={chapter.description ?? ""} maxLength={1000} />
+            </PlatformFormField>
 
             <PlatformCheckbox
               name="isPriority"
@@ -82,7 +82,7 @@ export function ChapterEditorSection({ chapter, errorCode }: ChapterEditorSectio
             <div className="chapter-editor__submit">
               <SubmitButton className="platform-button">Guardar</SubmitButton>
             </div>
-          </form>
+          </PlatformForm>
         </StaffPanel>
       </StaffEditorLayout>
     </div>

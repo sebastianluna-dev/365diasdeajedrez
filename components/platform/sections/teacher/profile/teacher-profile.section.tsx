@@ -1,4 +1,4 @@
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { TEACHER_ERROR_MESSAGES } from "@/constants/platform/teacher-messages.const";
 import { TIMEZONE_OPTIONS } from "@/constants/platform/timezones.const";
@@ -18,7 +18,7 @@ export function TeacherProfileSection({ profile, errorCode }: TeacherProfileSect
   const errorMessage = errorCode ? (TEACHER_ERROR_MESSAGES[errorCode] ?? TEACHER_ERROR_MESSAGES.invalid) : undefined;
 
   return (
-    <form className="teacher-profile platform-card" action={updateTeacherProfile}>
+    <PlatformForm className="teacher-profile platform-card" action={updateTeacherProfile}>
       <h2 className="platform-card__title">Mi perfil público</h2>
       <p className="teacher-profile__hint">
         Es lo que ven tus alumnos en las clases que impartes. Tu email de acceso ({profile.email}) no se cambia desde
@@ -28,28 +28,32 @@ export function TeacherProfileSection({ profile, errorCode }: TeacherProfileSect
       {errorMessage && <PlatformNotice message={errorMessage} />}
 
       <div className="teacher-profile__fields">
-        <FormField label="Nombre para mostrar">
-          <input type="text" name="displayName" defaultValue={profile.displayName} maxLength={120} required />
-        </FormField>
+        <PlatformFormField name="displayName" label="Nombre para mostrar">
+          <input type="text" defaultValue={profile.displayName} maxLength={120} required />
+        </PlatformFormField>
 
-        <FormField label="Título" hint="Por ejemplo: Gran Maestro, Maestro FIDE.">
-          <input type="text" name="title" defaultValue={profile.title ?? ""} maxLength={120} />
-        </FormField>
+        <PlatformFormField name="title" label="Título" hint="Por ejemplo: Gran Maestro, Maestro FIDE.">
+          <input type="text" defaultValue={profile.title ?? ""} maxLength={120} />
+        </PlatformFormField>
 
-        <FormField label="Zona horaria" hint="Se usa para programar tus clases en tu hora local.">
-          <PlatformSelect name="timezone" options={TIMEZONE_OPTIONS} defaultValue={profile.timezone ?? "UTC"} />
-        </FormField>
+        <PlatformFormField
+          name="timezone"
+          label="Zona horaria"
+          hint="Se usa para programar tus clases en tu hora local."
+        >
+          <PlatformSelect options={TIMEZONE_OPTIONS} defaultValue={profile.timezone ?? "UTC"} />
+        </PlatformFormField>
 
-        <FormField label="Foto (URL)" hint="Enlace a una imagen ya publicada.">
-          <input type="url" name="photo" defaultValue={profile.photo ?? ""} maxLength={500} />
-        </FormField>
+        <PlatformFormField name="photo" label="Foto (URL)" hint="Enlace a una imagen ya publicada.">
+          <input type="url" defaultValue={profile.photo ?? ""} maxLength={500} />
+        </PlatformFormField>
       </div>
 
-      <FormField label="Biografía">
-        <textarea name="bio" defaultValue={profile.bio ?? ""} maxLength={1000} />
-      </FormField>
+      <PlatformFormField name="bio" label="Biografía">
+        <textarea defaultValue={profile.bio ?? ""} maxLength={1000} />
+      </PlatformFormField>
 
       <SubmitButton>Guardar cambios</SubmitButton>
-    </form>
+    </PlatformForm>
   );
 }

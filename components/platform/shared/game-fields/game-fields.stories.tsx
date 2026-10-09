@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { PlatformForm } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { GAME_RESULT } from "@/constants/platform/study-codes.const";
 import { GameFields, type GameFieldValues } from "./game-fields.comp";
 
@@ -43,8 +44,10 @@ and the staff's chapter collections — offers exactly these fields, so nothing
 set in one can be trapped where another cannot correct it. Every field is
 optional. A title or a federation the PGN brings and the lists do not have is
 kept as one more option, «(del PGN)», so saving without touching it does not
-turn it into another. The dropdowns are \`PlatformSelect\` and the date is
-\`PlatformDatePicker\`; \`EditGame\` puts these fields in its dialog.
+turn it into another. Each is a \`PlatformFormField\`, so they render inside a
+\`PlatformForm\` (here one that never submits); the dropdowns are
+\`PlatformSelect\` and the date is \`PlatformDatePicker\`; \`EditGame\` puts
+these fields in its dialog's form.
 
 Source: \`components/platform/shared/game-fields/game-fields.comp.tsx\`.
 Reference page: [Components › GameFields](/components/platform/shared/game-fields) in the docs site.
@@ -58,10 +61,14 @@ Reference page: [Components › GameFields](/components/platform/shared/game-fie
     results: { control: "object", description: "The results catalog; its label is the PGN token." },
     titleHint: { control: "text", description: "What the name is for on this screen." },
   },
+  // The fields are `PlatformFormField`s, which need a form's context: here a
+  // `PlatformForm` that never submits stands for `EditGame`'s.
   decorators: [
     (Story) => (
       <div className="platform-card" style={{ maxWidth: 680 }}>
-        <Story />
+        <PlatformForm onSubmit={(event) => event.preventDefault()}>
+          <Story />
+        </PlatformForm>
       </div>
     ),
   ],

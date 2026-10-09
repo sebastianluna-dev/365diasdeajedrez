@@ -4,15 +4,15 @@ description: "Every account in a PlatformTable (name, email, whether it has a pa
 
 # `StudentsTableSection`
 
-|            |                                                                                                                                                                                     |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/students/students-table.section.tsx`                                                                                                            |
-| Kind       | Server Component (async)                                                                                                                                                            |
-| Stylesheet | `students-table.section.css` → block `.students-table`                                                                                                                              |
-| Used by    | `/administracion/alumnos`                                                                                                                                                           |
-| Composes   | [`PlatformTable`](/components/platform/shared/platform-table), [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime) |
-| Reads      | `listStudents(query)` · `services/staff-students/staff-students.service.ts`                                                                                                         |
-| Uses       | `staffRoutes` from `lib/platform-routes`                                                                                                                                            |
+|            |                                                                                                                                                                                                                |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/students/students-table.section.tsx`                                                                                                                                       |
+| Kind       | Server Component (async)                                                                                                                                                                                       |
+| Stylesheet | `students-table.section.css` → block `.students-table`                                                                                                                                                         |
+| Used by    | `/administracion/alumnos`                                                                                                                                                                                      |
+| Composes   | [`PlatformTable`](/components/platform/shared/platform-table), [`PlatformForm`, `PlatformFormField`](/components/platform/shared/platform-form), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Reads      | `listStudents(query)` · `services/staff-students/staff-students.service.ts`                                                                                                                                    |
+| Uses       | `staffRoutes` from `lib/platform-routes`                                                                                                                                                                       |
 
 ## Purpose
 
@@ -26,15 +26,15 @@ The account list. Beyond identity it surfaces the two operational facts staff ac
 
 ## Behaviour
 
-Awaits the filtered list; names link to the record; last login through a date-only [`LocalDateTime`](/components/platform/shared/local-datetime) or "Nunca". Empty label adapts to whether a query was given.
+The search is a `PlatformForm` whose `action` is the list's own route, so it submits as a plain GET form and the query lands in `?q=`; its one field, «Buscar», is a `PlatformFormField` (2026-10-08; it was a `FormField`) named `q`, and a search box never says «Opcional». Awaits the filtered list; names link to the record; last login through a date-only [`LocalDateTime`](/components/platform/shared/local-datetime) or "Nunca". Empty label adapts to whether a query was given.
 
 ## Markup & styling
 
-Block `.students-table` (24 lines): the bar with the search and the button.
+Block `.students-table` (27 lines): the bar with the search and the button.
 
 **Elements:** `.students-table__bar`, `.students-table__search`
 
-**Other selectors it styles:** `.platform-field`.
+**Other selectors it styles:** `.platform-form__field` inside `.students-table__search`, the field's share of the row. The form is a `PlatformForm`, whose own root is a column: `.students-table__search` turns it into a bottom-aligned row that wraps.
 
 No tokens or media queries of its own.
 

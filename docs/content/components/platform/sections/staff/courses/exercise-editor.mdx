@@ -4,15 +4,15 @@ description: "The lesson's exercises, described as SAN lines: a list with move, 
 
 # `ExerciseEditor`
 
-|            |                                                                                                                                                 |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/courses/exercise-editor.comp.tsx`                                                                           |
-| Kind       | Client Component                                                                                                                                |
-| Stylesheet | `exercise-editor.comp.css` → block `.exercise-editor`                                                                                           |
-| Used by    | [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section)                                                      |
-| Composes   | [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker), [`FormField`](/components/platform/shared/form-field) |
-| Writes     | `createExercise()`, `updateExercise()`, `moveExercise()`, `deleteExercise()` · `services/staff-courses/staff-courses.actions.ts`                |
-| Uses       | `CatalogOption`, `ExerciseAdminRow` from `services/staff-courses/staff-courses.types`                                                           |
+|            |                                                                                                                                                                                                                         |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/exercise-editor.comp.tsx`                                                                                                                                                   |
+| Kind       | Client Component                                                                                                                                                                                                        |
+| Stylesheet | `exercise-editor.comp.css` → block `.exercise-editor`                                                                                                                                                                   |
+| Used by    | [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section)                                                                                                                              |
+| Composes   | [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker), [`PlatformForm`](/components/platform/shared/platform-form), [`PlatformFormField`](/components/platform/shared/platform-form) |
+| Writes     | `createExercise()`, `updateExercise()`, `moveExercise()`, `deleteExercise()` · `services/staff-courses/staff-courses.actions.ts`                                                                                        |
+| Uses       | `CatalogOption`, `ExerciseAdminRow` from `services/staff-courses/staff-courses.types`                                                                                                                                   |
 
 ## Purpose
 
@@ -31,12 +31,12 @@ An exercise is a mode, an optional prompt, the moves played **before** it starts
 
 - Rows show the mode tag, the prompt or the line, a "Desactualizado" tag when `isStale`, the ply range, and controls: up and down (`moveExercise` forms), "Editar" (or "Volver a congelar" for stale ones, toggling `editingId`), "Eliminar".
 - A stale exercise not being edited shows a `role="alert"` warning: the lesson's PGN changed after it was frozen.
-- `ExerciseFields`: mode select, prompt, `afterSans` and `lineSans`. The two move inputs are **controlled** because the picker writes them too; `afterSans` is not preloaded when editing, because the frozen copy stores the position, not the path that led to it.
+- `ExerciseFields`, a [`PlatformForm`](/components/platform/shared/platform-form): mode select, prompt, `afterSans` and `lineSans`, each a `PlatformFormField`; the line is required, and saving without it answers «Este campo es obligatorio.» under the field. The two move inputs are **controlled** because the picker writes them too; `afterSans` is not preloaded when editing, because the frozen copy stores the position, not the path that led to it.
 - "Agregar ejercicio" toggles the create form.
 
 ## Markup & styling
 
-Block `.exercise-editor` (77 lines).
+Block `.exercise-editor` (77 lines). `.exercise-editor__form` sits on the `PlatformForm`'s root, beside `.platform-form`: its frame, padding and tighter gap win over the form's by specificity.
 
 **Elements:** `.exercise-editor__list`, `.exercise-editor__item`, `.exercise-editor__row`, `.exercise-editor__summary`, `.exercise-editor__controls`, `.exercise-editor__meta`, `.exercise-editor__warning`, `.exercise-editor__form`, `.exercise-editor__actions`
 

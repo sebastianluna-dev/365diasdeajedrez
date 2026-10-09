@@ -4,10 +4,12 @@
   gap: var(--platform-space-2);
   min-width: 0;
 
-  /* The label and the hint look like a FormField's: this is one more field of the block. */
+  /* The label and the hint look like a `PlatformFormField`'s: this is one
+     more field of the block's form, one whose control is a whole viewer. */
   & .block-game-field__label {
     margin: 0;
     font-size: var(--platform-type-md);
+    font-weight: 400;
     color: var(--platform-text-muted);
   }
 

@@ -42,7 +42,7 @@ const ALLOWED: Record<string, { text: string; why: string }[]> = {
 };
 
 /** The JSX tags that draw a field, counted only to know the parser still sees them. */
-const FIELD_TAGS = new Set(["FormField", "FormFieldset", "PlatformFormField", "PlatformFormGroup"]);
+const FIELD_TAGS = new Set(["PlatformFormField", "PlatformFormGroup"]);
 
 function filesOf(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {

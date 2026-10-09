@@ -8,7 +8,6 @@ const meta: MetaRecord = {
   "class-content-renderer": "ClassContentRenderer",
   "edit-game": "EditGame",
   "empty-state": "EmptyState",
-  "form-field": "FormField",
   "game-fields": "GameFields",
   "game-list": "GameList",
   "game-settings": "GameSettings",

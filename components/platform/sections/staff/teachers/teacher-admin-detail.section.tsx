@@ -1,5 +1,5 @@
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import {
   PlatformTable,
@@ -31,29 +31,29 @@ export function TeacherAdminDetailSection({ teacher, assignable, errorCode }: Te
       <section className="platform-card">
         <h2 className="platform-card__title">Perfil</h2>
 
-        <form className="teacher-admin__form" action={updateTeacher.bind(null, teacher.id)}>
-          <FormField label="Nombre para mostrar">
-            <input type="text" name="displayName" defaultValue={teacher.displayName} maxLength={120} required />
-          </FormField>
+        <PlatformForm className="teacher-admin__form" action={updateTeacher.bind(null, teacher.id)}>
+          <PlatformFormField name="displayName" label="Nombre para mostrar">
+            <input type="text" defaultValue={teacher.displayName} maxLength={120} required />
+          </PlatformFormField>
 
-          <FormField label="Título">
-            <input type="text" name="title" defaultValue={teacher.title ?? ""} maxLength={120} />
-          </FormField>
+          <PlatformFormField name="title" label="Título">
+            <input type="text" defaultValue={teacher.title ?? ""} maxLength={120} />
+          </PlatformFormField>
 
-          <FormField label="Zona horaria">
-            <PlatformSelect name="timezone" options={TIMEZONE_OPTIONS} defaultValue={teacher.timezone ?? "UTC"} />
-          </FormField>
+          <PlatformFormField name="timezone" label="Zona horaria">
+            <PlatformSelect options={TIMEZONE_OPTIONS} defaultValue={teacher.timezone ?? "UTC"} />
+          </PlatformFormField>
 
-          <FormField label="Foto (URL)">
-            <input type="url" name="photo" defaultValue={teacher.photo ?? ""} maxLength={500} />
-          </FormField>
+          <PlatformFormField name="photo" label="Foto (URL)">
+            <input type="url" defaultValue={teacher.photo ?? ""} maxLength={500} />
+          </PlatformFormField>
 
-          <FormField label="Biografía">
-            <textarea name="bio" defaultValue={teacher.bio ?? ""} maxLength={1000} />
-          </FormField>
+          <PlatformFormField name="bio" label="Biografía">
+            <textarea defaultValue={teacher.bio ?? ""} maxLength={1000} />
+          </PlatformFormField>
 
           <SubmitButton>Guardar perfil</SubmitButton>
-        </form>
+        </PlatformForm>
 
         <p className="teacher-admin__meta">Cuenta de acceso: {teacher.email}</p>
       </section>

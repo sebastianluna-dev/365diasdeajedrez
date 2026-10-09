@@ -10,7 +10,9 @@
     gap: var(--platform-space-4);
     max-width: 520px;
 
-    & .platform-field {
+    /* The column starts its children at the left edge: a field takes the
+       whole width, as the button does not. */
+    & .platform-form__field {
       width: 100%;
     }
   }

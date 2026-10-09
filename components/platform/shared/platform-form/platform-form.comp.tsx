@@ -2,6 +2,7 @@
 
 import {
   cloneElement,
+  use,
   useEffect,
   useId,
   useRef,
@@ -31,16 +32,40 @@ export type PlatformFormMatcher =
 export type PlatformFormMessages = Partial<Record<PlatformFormMatcher, string>>;
 
 // What a field says when nothing more specific was given. `required` is the
-// one constraint nearly every field has, so it always has words.
+// one constraint nearly every field has, so it always has words; so do the
+// bounds of a number (an Elo's `min`/`max`), since a state without words
+// leaves the field red and the form blocked with nothing said.
 const DEFAULT_MESSAGES: PlatformFormMessages = {
   valueMissing: "Este campo es obligatorio.",
   tooLong: "Es demasiado largo.",
   tooShort: "Es demasiado corto.",
   typeMismatch: "Revisa el formato.",
   patternMismatch: "Revisa el formato.",
+  badInput: "Revisa el formato.",
+  rangeUnderflow: "Es demasiado bajo.",
+  rangeOverflow: "Es demasiado alto.",
+  stepMismatch: "Revisa el valor.",
 };
 
 type PlatformFormProps = ComponentProps<typeof Form.Root>;
+
+const REACT_LAZY_TYPE = Symbol.for("react.lazy");
+
+/**
+ * The element a Server Component passed as the control. While the server
+ * renders the HTML, an element that came through the RSC payload can still be
+ * a lazy reference to it, and only the browser gets the element itself: read
+ * as it comes, the control's `required` and its tag said one thing on each
+ * side — «Opcional» drawn in the browser alone, a hydration error — and
+ * `cloneElement` refused it. It is unwrapped the way Radix's `Slot` does.
+ */
+function useResolvedElement<P>(element: ReactElement<P>): ReactElement<P> {
+  const maybeLazy = element as unknown as { $$typeof?: symbol; _payload?: PromiseLike<ReactElement<P>> };
+  if (maybeLazy.$$typeof === REACT_LAZY_TYPE && maybeLazy._payload && "then" in maybeLazy._payload) {
+    return use(maybeLazy._payload);
+  }
+  return element;
+}
 
 /**
  * The platform's form, on Radix's `Form` primitive. A plain `<form>` for all
@@ -95,12 +120,13 @@ interface PlatformFormFieldProps {
 export function PlatformFormField({
   name,
   label,
-  children,
+  children: control,
   hint,
   info,
   messages,
   serverError,
 }: PlatformFormFieldProps) {
+  const children = useResolvedElement(control);
   const allMessages = { ...DEFAULT_MESSAGES, ...messages };
   // A textarea's "i" goes in a strip under its text; an input's, over its end.
   const framed = Boolean(info) && children.type === "textarea";
@@ -136,8 +162,10 @@ export function PlatformFormField({
           {text}
         </Form.Message>
       ))}
+      {/* Forced on, under a built-in matcher only because Radix, given no
+          `match`, passes `forceMatch` on to the DOM. */}
       {serverError && (
-        <Form.Message forceMatch className="platform-form__message">
+        <Form.Message match="valueMissing" forceMatch className="platform-form__message">
           {serverError}
         </Form.Message>
       )}
@@ -241,8 +269,9 @@ interface PlatformFormGroupProps {
  * with `aria-labelledby`. Same look as a field; no validity messages, because
  * a group with a default is never invalid.
  */
-export function PlatformFormGroup({ label, optional = false, children, hint }: PlatformFormGroupProps) {
+export function PlatformFormGroup({ label, optional = false, children: control, hint }: PlatformFormGroupProps) {
   const labelId = useId();
+  const children = useResolvedElement(control);
 
   return (
     <div role="group" aria-labelledby={labelId} className="platform-form__field">

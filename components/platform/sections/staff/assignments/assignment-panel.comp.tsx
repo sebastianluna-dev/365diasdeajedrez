@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { staffRoutes } from "@/lib/platform-routes";
 import { assignStudent, endAssignment } from "@/services/staff-teachers/staff-teachers.actions";
 import type { StudentAssignmentHistoryItem } from "@/services/staff-students/staff-students.types";
@@ -50,25 +50,24 @@ export function AssignmentPanel(props: AssignmentPanelProps) {
           )}
         </p>
 
-        <form className="assignment-panel__form" action={assignStudent}>
+        <PlatformForm className="assignment-panel__form" action={assignStudent}>
           <input type="hidden" name="studentId" value={props.studentId} />
           <input type="hidden" name="returnTo" value={returnTo} />
 
-          <FormField label={active ? "Reasignar a" : "Asignar a"}>
+          <PlatformFormField name="teacherId" label={active ? "Reasignar a" : "Asignar a"}>
             <PlatformSelect
-              name="teacherId"
               required
               placeholder="Elige un profesor…"
               options={props.teachers.map((teacher) => ({ value: teacher.id, label: teacher.displayName }))}
             />
-          </FormField>
+          </PlatformFormField>
 
-          <FormField label="Nota">
-            <input type="text" name="note" maxLength={300} />
-          </FormField>
+          <PlatformFormField name="note" label="Nota">
+            <input type="text" maxLength={300} />
+          </PlatformFormField>
 
           <SubmitButton pendingLabel="Asignando…">{active ? "Reasignar" : "Asignar"}</SubmitButton>
-        </form>
+        </PlatformForm>
 
         {active && (
           <form action={endAssignment.bind(null, active.id)}>
@@ -131,13 +130,16 @@ export function AssignmentPanel(props: AssignmentPanelProps) {
         <p className="assignment-panel__current">Este profesor no tiene alumnos asignados.</p>
       )}
 
-      <form className="assignment-panel__form" action={assignStudent}>
+      <PlatformForm className="assignment-panel__form" action={assignStudent}>
         <input type="hidden" name="teacherId" value={props.teacherId} />
         <input type="hidden" name="returnTo" value={returnTo} />
 
-        <FormField label="Agregar alumno" hint="Si el alumno ya tiene profesor, asignarlo aquí lo reasigna.">
+        <PlatformFormField
+          name="studentId"
+          label="Agregar alumno"
+          hint="Si el alumno ya tiene profesor, asignarlo aquí lo reasigna."
+        >
           <PlatformSelect
-            name="studentId"
             required
             placeholder="Elige un alumno…"
             options={props.assignable.map((student) => ({
@@ -145,14 +147,14 @@ export function AssignmentPanel(props: AssignmentPanelProps) {
               label: `${student.displayName}${student.currentTeacherName ? ` — ahora con ${student.currentTeacherName}` : ""}`,
             }))}
           />
-        </FormField>
+        </PlatformFormField>
 
-        <FormField label="Nota">
-          <input type="text" name="note" maxLength={300} />
-        </FormField>
+        <PlatformFormField name="note" label="Nota">
+          <input type="text" maxLength={300} />
+        </PlatformFormField>
 
         <SubmitButton pendingLabel="Asignando…">Asignar</SubmitButton>
-      </form>
+      </PlatformForm>
     </div>
   );
 }

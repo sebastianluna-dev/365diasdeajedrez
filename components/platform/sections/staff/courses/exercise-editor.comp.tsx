@@ -3,7 +3,7 @@
 import { ArrowDownIcon } from "@/components/icons/arrow-down-icon.comp";
 import { ArrowUpIcon } from "@/components/icons/arrow-up-icon.comp";
 import { useState } from "react";
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import {
   createExercise,
   deleteExercise,
@@ -42,46 +42,44 @@ function ExerciseFields({ action, modes, exercise, submitLabel, lessonPgn, onCan
   const [lineSans, setLineSans] = useState(exercise?.line ?? "");
 
   return (
-    <form className="exercise-editor__form" action={action}>
-      <FormField label="Modo">
+    <PlatformForm className="exercise-editor__form" action={action}>
+      <PlatformFormField name="modeCode" label="Modo">
         <PlatformSelect
-          name="modeCode"
           defaultValue={exercise?.modeCode ?? modes[0]?.code}
           options={modes.map((mode) => ({ value: mode.code, label: mode.label }))}
         />
-      </FormField>
+      </PlatformFormField>
 
-      <FormField label="Enunciado">
-        <input type="text" name="promptText" defaultValue={exercise?.promptText ?? ""} maxLength={500} />
-      </FormField>
+      <PlatformFormField name="promptText" label="Enunciado">
+        <input type="text" defaultValue={exercise?.promptText ?? ""} maxLength={500} />
+      </PlatformFormField>
 
-      <FormField
+      {/* Not preloaded when editing: the frozen copy stores the position, not
+          the path that led to it, so rebuilding it would not be reliable.
+          The board below can fill it in. */}
+      <PlatformFormField
+        name="afterSans"
         label="Jugadas previas (SAN, separadas por espacios)"
         hint="Desde la posición inicial de la lección hasta donde arranca el ejercicio. Vacío = desde el principio."
       >
-        {/* Not preloaded when editing: the frozen copy stores the position, not
-            the path that led to it, so rebuilding it would not be reliable.
-            The board below can fill it in. */}
         <input
           type="text"
-          name="afterSans"
           value={afterSans}
           onChange={(event) => setAfterSans(event.target.value)}
           placeholder="e4 c5 Nf3"
           autoComplete="off"
         />
-      </FormField>
+      </PlatformFormField>
 
-      <FormField label="Línea a entrenar (SAN, separadas por espacios)">
+      <PlatformFormField name="lineSans" label="Línea a entrenar (SAN, separadas por espacios)">
         <input
           type="text"
-          name="lineSans"
           value={lineSans}
           onChange={(event) => setLineSans(event.target.value)}
           required
           autoComplete="off"
         />
-      </FormField>
+      </PlatformFormField>
 
       <ExerciseMovePicker
         pgn={lessonPgn}
@@ -99,7 +97,7 @@ function ExerciseFields({ action, modes, exercise, submitLabel, lessonPgn, onCan
           </button>
         )}
       </div>
-    </form>
+    </PlatformForm>
   );
 }
 

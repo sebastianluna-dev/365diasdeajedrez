@@ -1,5 +1,9 @@
 import Link from "next/link";
-import { FormField, FormFieldset } from "@/components/platform/shared/form-field/form-field.comp";
+import {
+  PlatformForm,
+  PlatformFormField,
+  PlatformFormGroup,
+} from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { TEACHER_ERROR_MESSAGES } from "@/constants/platform/teacher-messages.const";
 import { teacherRoutes } from "@/lib/platform-routes";
@@ -34,79 +38,74 @@ export function ClassFormSection({ classDetail, students, providers, timeZone, e
   const errorMessage = errorCode ? (TEACHER_ERROR_MESSAGES[errorCode] ?? TEACHER_ERROR_MESSAGES.invalid) : undefined;
 
   return (
-    <form className="class-form platform-card" action={action}>
+    <PlatformForm className="class-form platform-card" action={action}>
       <h2 className="platform-card__title">{isEdit ? "Editar la clase" : "Nueva clase"}</h2>
       <p className="class-form__hint">Las horas se interpretan en tu zona horaria ({timeZone.replace(/_/g, " ")}).</p>
 
       {errorMessage && <PlatformNotice message={errorMessage} />}
 
-      <FormField label="Título">
-        <input type="text" name="title" defaultValue={classDetail?.title ?? ""} maxLength={120} required />
-      </FormField>
+      <PlatformFormField name="title" label="Título">
+        <input type="text" defaultValue={classDetail?.title ?? ""} maxLength={120} required />
+      </PlatformFormField>
 
-      <FormField label="Descripción">
-        <input type="text" name="description" defaultValue={classDetail?.description ?? ""} maxLength={500} />
-      </FormField>
+      <PlatformFormField name="description" label="Descripción">
+        <input type="text" defaultValue={classDetail?.description ?? ""} maxLength={500} />
+      </PlatformFormField>
 
       <div className="class-form__row">
-        <FormField label="Fecha y hora">
-          <input type="datetime-local" name="scheduledAt" defaultValue={classDetail?.scheduledAtInput ?? ""} required />
-        </FormField>
+        <PlatformFormField name="scheduledAt" label="Fecha y hora">
+          <input type="datetime-local" defaultValue={classDetail?.scheduledAtInput ?? ""} required />
+        </PlatformFormField>
 
-        <FormField label="Duración (minutos)" hint="Entre 15 y 480.">
+        <PlatformFormField name="durationMin" label="Duración (minutos)" hint="Entre 15 y 480.">
           <input
             type="number"
-            name="durationMin"
             min={15}
             max={480}
             step={5}
             defaultValue={classDetail?.durationMin ?? DEFAULT_DURATION}
             required
           />
-        </FormField>
+        </PlatformFormField>
       </div>
 
       <div className="class-form__row">
-        <FormField label="Plataforma de reunión">
+        <PlatformFormField name="meetingProviderCode" label="Plataforma de reunión">
           <PlatformSelect
-            name="meetingProviderCode"
             defaultValue={classDetail?.meetingProviderCode ?? ""}
             emptyOption="Sin plataforma"
             options={providers.map((provider) => ({ value: provider.code, label: provider.label }))}
           />
-        </FormField>
+        </PlatformFormField>
 
-        <FormField label="Enlace de la reunión">
-          <input type="url" name="meetingUrl" defaultValue={classDetail?.meetingUrl ?? ""} maxLength={500} />
-        </FormField>
+        <PlatformFormField name="meetingUrl" label="Enlace de la reunión">
+          <input type="url" defaultValue={classDetail?.meetingUrl ?? ""} maxLength={500} />
+        </PlatformFormField>
       </div>
 
-      <FormField
+      <PlatformFormField
+        name="meetingUrlVisibleFrom"
         label="El enlace se ve desde"
         hint="Si lo dejas vacío, se abrirá 30 minutos antes de la clase. Tú lo ves siempre."
       >
-        <input
-          type="datetime-local"
-          name="meetingUrlVisibleFrom"
-          defaultValue={classDetail?.meetingUrlVisibleFromInput ?? ""}
-        />
-      </FormField>
+        <input type="datetime-local" defaultValue={classDetail?.meetingUrlVisibleFromInput ?? ""} />
+      </PlatformFormField>
 
       {isEdit && (
         <>
-          <FormField label="Grabación (URL)">
-            <input type="url" name="recordingUrl" defaultValue={classDetail.recordingUrl ?? ""} maxLength={500} />
-          </FormField>
+          <PlatformFormField name="recordingUrl" label="Grabación (URL)">
+            <input type="url" defaultValue={classDetail.recordingUrl ?? ""} maxLength={500} />
+          </PlatformFormField>
 
-          <FormField label="Resumen de la clase">
-            <textarea name="summary" defaultValue={classDetail.summary ?? ""} maxLength={5000} />
-          </FormField>
+          <PlatformFormField name="summary" label="Resumen de la clase">
+            <textarea defaultValue={classDetail.summary ?? ""} maxLength={5000} />
+          </PlatformFormField>
         </>
       )}
 
       {!isEdit && (
-        <FormFieldset
-          legend="Alumnos inscritos"
+        <PlatformFormGroup
+          label="Alumnos inscritos"
           optional
           hint={
             students.length === 0
@@ -116,11 +115,10 @@ export function ClassFormSection({ classDetail, students, providers, timeZone, e
         >
           <PlatformCheckCards
             name="studentIds"
-            aria-label="Alumnos inscritos"
             layout="line"
             options={students.map((student) => ({ value: student.id, label: student.displayName }))}
           />
-        </FormFieldset>
+        </PlatformFormGroup>
       )}
 
       <div className="class-form__actions">
@@ -134,6 +132,6 @@ export function ClassFormSection({ classDetail, students, providers, timeZone, e
           Cancelar
         </Link>
       </div>
-    </form>
+    </PlatformForm>
   );
 }

@@ -4,15 +4,15 @@ description: "The class content editor: a list of blocks with move, edit and del
 
 # `ClassBlockEditor`
 
-|            |                                                                                                                                                                 |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/teacher/classes/class-block-editor/class-block-editor.comp.tsx`                                                                   |
-| Kind       | Client Component                                                                                                                                                |
-| Stylesheet | `class-block-editor.comp.css` → block `.class-block-editor`                                                                                                     |
-| Used by    | [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section)                                                       |
-| Composes   | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form), [`FormField`](/components/platform/shared/form-field)               |
-| Writes     | `addClassBlock()`, `updateClassBlock()`, `moveClassBlock()`, `deleteClassBlock()` · `services/teacher-classes/teacher-classes.actions.ts`                       |
-| Uses       | `CLASS_BLOCK_KIND`, `ClassBlockKindCode` from `constants/platform/class-codes.const`; `TeacherClassBlock` from `services/teacher-classes/teacher-classes.types` |
+|            |                                                                                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/class-block-editor/class-block-editor.comp.tsx`                                                                                   |
+| Kind       | Client Component                                                                                                                                                                |
+| Stylesheet | `class-block-editor.comp.css` → block `.class-block-editor`                                                                                                                     |
+| Used by    | [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section)                                                                       |
+| Composes   | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form), [`PlatformForm` and `PlatformFormField`](/components/platform/shared/platform-form) |
+| Writes     | `addClassBlock()`, `updateClassBlock()`, `moveClassBlock()`, `deleteClassBlock()` · `services/teacher-classes/teacher-classes.actions.ts`                                       |
+| Uses       | `CLASS_BLOCK_KIND`, `ClassBlockKindCode` from `constants/platform/class-codes.const`; `TeacherClassBlock` from `services/teacher-classes/teacher-classes.types`                 |
 
 ## Purpose
 
@@ -36,14 +36,12 @@ Where a class's content is composed: an ordered list of blocks (text, video, gam
 
 ## Markup & styling
 
-Block `.class-block-editor` (66 lines).
+Block `.class-block-editor` (67 lines).
 
-**Elements:** `.class-block-editor__list`, `.class-block-editor__item`, `.class-block-editor__row`, `.class-block-editor__summary`, `.class-block-editor__controls`, `.class-block-editor__warning`, `.class-block-editor__add`
+**Elements:** `.class-block-editor__list`, `.class-block-editor__item`, `.class-block-editor__row`, `.class-block-editor__summary`, `.class-block-editor__controls`, `.class-block-editor__warning`, `.class-block-editor__add`, `.class-block-editor__kind` (the «Agregar un bloque» chooser: a `PlatformForm` of one field that never submits, there because a field is drawn inside a form; the block's own form opens under it)
 
 **Other classes it renders:** `.platform-row-action` (and `_variant_danger` where the action destroys): «Editar», «Eliminar» and «Quitar» are the platform's row actions, written as words at the end of the row they belong to — see [Styling](/ui/styling).
 **Modifiers and states:** `.platform-row-action`
-
-**Other selectors it styles:** `.platform-field` (the add row).
 
 **Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-border-strong`, `--platform-danger`, `--platform-danger-border`, `--platform-text`, `--platform-text-muted`
 

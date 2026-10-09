@@ -99,7 +99,6 @@ import { BoardSkeleton } from "@/components/platform/shared/board-skeleton/board
 import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer/class-content-renderer.comp";
 import { EditGame } from "@/components/platform/shared/edit-game/edit-game.comp";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
-import { FormField, FormFieldset } from "@/components/platform/shared/form-field/form-field.comp";
 import { GameFields } from "@/components/platform/shared/game-fields/game-fields.comp";
 import { OptionalFields } from "@/components/platform/shared/optional-fields/optional-fields.comp";
 import { OptionalMark } from "@/components/platform/shared/optional-mark/optional-mark.comp";
@@ -867,16 +866,6 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 </PlatformFormField>
               </PlatformForm>
             </Tile>
-            <Tile name="FormField" docs="platform-shared-formfield" width={400} height={296}>
-              <div className="overview__stack">
-                <FormField label="Nombre para mostrar" hint="Cómo lo verán sus alumnos.">
-                  <input type="text" name="displayName" defaultValue="Fernanda Ríos" required />
-                </FormField>
-                <FormField label="Email" error="Ya existe una cuenta con ese email.">
-                  <input type="email" name="email" defaultValue="fernanda@ejemplo.com" required />
-                </FormField>
-              </div>
-            </Tile>
             <Tile name="PlatformSelect" docs="platform-shared-platformselect" width={400} height={168}>
               <div className="overview__stack">
                 <PlatformSelect aria-label="Nivel" defaultValue="intermedio" options={LEVELS} />
@@ -941,21 +930,6 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 <PlatformSwitch label="Módulo de análisis" hint="Apagado, no gasta batería." />
               </div>
             </Tile>
-            <Tile name="FormFieldset" docs="platform-shared-formfield" width={400} height={248}>
-              <FormFieldset legend="Tipos de contenido">
-                <PlatformCheckCards
-                  name="contentTypes"
-                  aria-label="Tipos de contenido"
-                  layout="line"
-                  defaultValue={["ENDGAMES"]}
-                  options={[
-                    { value: "OPENINGS", label: "Aperturas" },
-                    { value: "TACTICS", label: "Táctica" },
-                    { value: "ENDGAMES", label: "Finales" },
-                  ]}
-                />
-              </FormFieldset>
-            </Tile>
             <Tile name="PlatformInfoTip" docs="platform-shared-platforminfotip" width={400} height={96}>
               <div className="overview__row">
                 <span>Slug del curso</span>
@@ -969,35 +943,39 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               </div>
             </Tile>
             <Tile name="OptionalFields" docs="platform-shared-optionalfields" width={400} height={264}>
-              <OptionalFields>
-                <FormField label="Evento">
-                  <input type="text" name="event" defaultValue="Nacional Abierto 2026" />
-                </FormField>
-                <FormField label="Ronda">
-                  <input type="text" name="round" />
-                </FormField>
-              </OptionalFields>
+              <PlatformForm onSubmit={(event) => event.preventDefault()}>
+                <OptionalFields>
+                  <PlatformFormField name="event" label="Evento">
+                    <input type="text" defaultValue="Nacional Abierto 2026" />
+                  </PlatformFormField>
+                  <PlatformFormField name="round" label="Ronda">
+                    <input type="text" />
+                  </PlatformFormField>
+                </OptionalFields>
+              </PlatformForm>
             </Tile>
             <Tile name="PlatformSearch" docs="platform-sections-shell-platformsearch" surface width={400} height={144}>
               <PlatformSearch />
             </Tile>
             <Tile name="GameFields" docs="platform-shared-gamefields" width={720} height={840}>
-              <GameFields
-                values={{
-                  title: "Una inmortal en Wijk aan Zee",
-                  white: "Kasparov, Garry",
-                  whiteElo: 2812,
-                  whiteTitle: "GM",
-                  black: "Topalov, Veselin",
-                  blackElo: 2700,
-                  blackTitle: "GM",
-                  resultCode: GAME_RESULT.WHITE_WINS,
-                  playedAtValue: "1999-01-20",
-                  event: "Hoogovens",
-                }}
-                results={RESULTS}
-                titleHint="Cómo identificas esta partida dentro del estudio."
-              />
+              <PlatformForm onSubmit={(event) => event.preventDefault()}>
+                <GameFields
+                  values={{
+                    title: "Una inmortal en Wijk aan Zee",
+                    white: "Kasparov, Garry",
+                    whiteElo: 2812,
+                    whiteTitle: "GM",
+                    black: "Topalov, Veselin",
+                    blackElo: 2700,
+                    blackTitle: "GM",
+                    resultCode: GAME_RESULT.WHITE_WINS,
+                    playedAtValue: "1999-01-20",
+                    event: "Hoogovens",
+                  }}
+                  results={RESULTS}
+                  titleHint="Cómo identificas esta partida dentro del estudio."
+                />
+              </PlatformForm>
             </Tile>
           </Section>
 

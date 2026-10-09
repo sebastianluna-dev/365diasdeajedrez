@@ -9,7 +9,7 @@ description: "A set of fields that are all optional, said once: «Todos los camp
 | File       | `components/platform/shared/optional-fields/optional-fields.comp.tsx`                                                                                                                     |
 | Kind       | Server Component                                                                                                                                                                          |
 | Stylesheet | `optional-fields.comp.css` → block `.optional-fields`                                                                                                                                     |
-| Story      | `optional-fields.stories.tsx` (`platform/shared/OptionalFields`): three `FormField`s under the note (checked by `play`), and on `PlatformForm`                                            |
+| Story      | `optional-fields.stories.tsx` (`platform/shared/OptionalFields`): three fields of a `PlatformForm` under the note (checked by `play`)                                                     |
 | Used by    | [`GameFields`](/components/platform/shared/game-fields), so the record of a game in `EditGame`; the blank tab of [`NewGame`](/components/platform/sections/studies/study-detail/new-game) |
 
 ## Purpose
@@ -27,7 +27,7 @@ A container, the one kind of component that takes `children` under the conventio
 ## Behaviour
 
 - It writes «Todos los campos son opcionales.» first, then the fields.
-- **The marks are hidden by its stylesheet**, `.optional-fields .optional-mark { display: none }`, not by telling each field: `FormField` is a Server Component, and the server has no React context to hand down. The note and the hiding live in this one piece, so neither can be there without the other. `display: none` also takes the word away from a screen reader, which it was hidden from anyway.
+- **The marks are hidden by its stylesheet**, `.optional-fields .optional-mark { display: none }`, not by telling each field: many of its forms are Server Component sections, and the server has no React context to hand down. The note and the hiding live in this one piece, so neither can be there without the other. `display: none` also takes the word away from a screen reader, which it was hidden from anyway.
 - Not for a form of **one** field — «Contraseña nueva» keeps its pill —, nor for a filter bar, whose fields are searches and selects and carry no mark.
 
 ## Markup & styling

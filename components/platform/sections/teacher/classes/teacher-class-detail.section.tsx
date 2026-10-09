@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer/class-content-renderer.comp";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import type { ClassStatusCode } from "@/constants/platform/class-codes.const";
 import { CLASS_STATUS } from "@/constants/platform/class-codes.const";
@@ -142,19 +142,18 @@ export function TeacherClassDetailSection({
         <AttendanceForm classId={classDetail.id} participants={classDetail.participants} />
 
         {enrollable.length > 0 && (
-          <form className="teacher-class__enroll" action={addParticipant.bind(null, classDetail.id)}>
-            <FormField label="Inscribir a un alumno">
+          <PlatformForm className="teacher-class__enroll" action={addParticipant.bind(null, classDetail.id)}>
+            <PlatformFormField name="studentId" label="Inscribir a un alumno">
               <PlatformSelect
-                name="studentId"
                 required
                 placeholder="Elige un alumno…"
                 options={enrollable.map((student) => ({ value: student.id, label: student.displayName }))}
               />
-            </FormField>
+            </PlatformFormField>
             <SubmitButton className="platform-button" pendingLabel="Inscribiendo…">
               Inscribir
             </SubmitButton>
-          </form>
+          </PlatformForm>
         )}
       </section>
 

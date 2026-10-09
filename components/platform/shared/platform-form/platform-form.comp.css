@@ -10,7 +10,7 @@
     min-width: 0;
   }
 
-  /* The label is light, as the staff's forms draw it (`FormField`): the text
+  /* The label is light: the text
      size, regular weight, the muted grey. What is typed is what is read; the
      label only says which field it is (2026-10-05; it was bold, in the text
      colour and a step larger). «Opcional», when the field says it, follows
@@ -31,8 +31,8 @@
   /* The native controls are direct children of the field: Radix's `Control`
      renders the element it is given, with no wrapper of its own. A select is
      `PlatformSelect`, which brings its own look. */
-  /* The platform's one control size, the same as FormField's inputs and the
-     triggers of PlatformSelect and PlatformDatePicker, on white. */
+  /* The platform's one control size, the same as the triggers of
+     PlatformSelect and PlatformDatePicker, on white. */
   & .platform-form__field > input,
   & .platform-form__field > textarea {
     width: 100%;
@@ -87,7 +87,7 @@
   }
 
   /* A field with an "i": the button sits INSIDE the control, at its right
-     end, as `FormField`'s does. The field becomes a one-column grid and the
+     end. The field becomes a one-column grid and the
      control and the "i" share its second row, one over the other; the label
      row keeps the first, and the hint and the messages follow. */
   & .platform-form__field.platform-form__field_with_info {

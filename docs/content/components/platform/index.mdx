@@ -11,7 +11,6 @@ description: "Index of components/platform: the shared primitives and every sect
 | Page                                                                         | Kind   | What it is                                                                                                                  |
 | ---------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------- |
 | [`PlatformTable`](/components/platform/shared/platform-table)                | server | Semantic table for every panel listing; filters travel in the URL.                                                          |
-| [`FormField`](/components/platform/shared/form-field)                        | server | A real label around a native control; `FormFieldset` names a group of cards.                                                |
 | [`PlatformForm`](/components/platform/shared/platform-form)                  | client | `PlatformForm`, `PlatformFormField`, `PlatformFormGroup` on Radix's Form: fields with validity messages.                    |
 | [`GameFields`](/components/platform/shared/game-fields)                      | server | The fields of a game's record, the same in every form that writes one.                                                      |
 | [`EditGame`](/components/platform/shared/edit-game)                          | client | The «Datos de la partida» dialog over `GameFields`; it posts to the action it is given.                                     |
@@ -207,17 +206,17 @@ description: "Index of components/platform: the shared primitives and every sect
 
 ## Choosing a shared piece
 
-| Need                                 | Use                                                                                                                                                                                             |
-| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
-| A list of records in a panel         | `PlatformTable` (filters through search params).                                                                                                                                                |
-| A form control with a label          | `PlatformFormField` on `PlatformForm` (or `FormField`, for a form not migrated yet); a group of cards in `PlatformFormGroup` (`FormFieldset`). «Opcional» is drawn by the field, never written. |     |
-| One of a few, or several of a few    | `PlatformChoiceCards` (radio) or `PlatformCheckCards` (checkboxes), each option as a card with a line of explanation.                                                                           |
-| A clarification that is not a rule   | `PlatformInfoTip`, an "i" with the text behind it; what is needed to fill the field in stays a visible hint.                                                                                    |
-| Show the outcome of an action        | `PlatformNotice` from the page's message map.                                                                                                                                                   |
-| Nothing to show yet                  | `EmptyState` with a link to the action that creates the first item.                                                                                                                             |
-| A date or time of a class            | `LocalDateTime` with the server-formatted fallback.                                                                                                                                             |
-| A cover or photo                     | `ImageUpload` inside the form that will save the URL.                                                                                                                                           |
-| A submit button with a pending state | [`SubmitButton`](/components/platform/shared/submit-button) (on the login screen, [`LoginSubmit`](/components/auth/sections/login/login-submit), its model).                                    |
-| Anything with a board                | see [Chess components](/components/chess#which-one-to-use).                                                                                                                                     |
+| Need                                 | Use                                                                                                                                                          |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | --- |
+| A list of records in a panel         | `PlatformTable` (filters through search params).                                                                                                             |
+| A form control with a label          | `PlatformFormField` on `PlatformForm`; a group of cards in `PlatformFormGroup`. «Opcional» is drawn by the field, never written.                             |     |
+| One of a few, or several of a few    | `PlatformChoiceCards` (radio) or `PlatformCheckCards` (checkboxes), each option as a card with a line of explanation.                                        |
+| A clarification that is not a rule   | `PlatformInfoTip`, an "i" with the text behind it; what is needed to fill the field in stays a visible hint.                                                 |
+| Show the outcome of an action        | `PlatformNotice` from the page's message map.                                                                                                                |
+| Nothing to show yet                  | `EmptyState` with a link to the action that creates the first item.                                                                                          |
+| A date or time of a class            | `LocalDateTime` with the server-formatted fallback.                                                                                                          |
+| A cover or photo                     | `ImageUpload` inside the form that will save the URL.                                                                                                        |
+| A submit button with a pending state | [`SubmitButton`](/components/platform/shared/submit-button) (on the login screen, [`LoginSubmit`](/components/auth/sections/login/login-submit), its model). |
+| Anything with a board                | see [Chess components](/components/chess#which-one-to-use).                                                                                                  |
 
 A piece belongs in `shared/` when a second section of the platform needs it; until then it stays next to the section that uses it.

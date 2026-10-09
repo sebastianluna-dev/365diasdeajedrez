@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { PenToSquareIcon } from "@/components/icons/pen-to-square-icon.comp";
 import { GameFields, type GameFieldValues } from "@/components/platform/shared/game-fields/game-fields.comp";
+import { PlatformForm } from "@/components/platform/shared/platform-form/platform-form.comp";
 import {
   PlatformPopup,
   type PlatformPopupHandle,
@@ -58,7 +59,10 @@ export function EditGame({ action, values, results, titleHint, trigger = "text" 
       )}
 
       <PlatformPopup ref={popup} title="Datos de la partida" size="lg">
-        <form action={action} className="edit-game__form" onSubmit={() => popup.current?.close()}>
+        {/* The platform's form, whose context the record's fields need. It
+            only calls `onSubmit` for a valid form: a field the browser rejects
+            keeps the popup open and shows its own message. */}
+        <PlatformForm action={action} className="edit-game__form" onSubmit={() => popup.current?.close()}>
           {/* Said once, before the fields: the row of actions does not repeat it. */}
           <p className="edit-game__subtitle">Al guardar, estos datos se escriben también en las cabeceras del PGN.</p>
 
@@ -74,7 +78,7 @@ export function EditGame({ action, values, results, titleHint, trigger = "text" 
             </button>
             <SubmitButton className="platform-button platform-button_variant_ink">Guardar datos</SubmitButton>
           </div>
-        </form>
+        </PlatformForm>
       </PlatformPopup>
     </div>
   );

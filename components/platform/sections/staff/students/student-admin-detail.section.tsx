@@ -1,5 +1,5 @@
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import {
   PlatformTable,
@@ -35,17 +35,17 @@ export function StudentAdminDetailSection({ student, teachers, errorCode }: Stud
       <section className="platform-card">
         <h2 className="platform-card__title">Datos de la cuenta</h2>
 
-        <form className="student-admin__form" action={updateStudent.bind(null, student.id)}>
-          <FormField label="Nombre para mostrar">
-            <input type="text" name="displayName" defaultValue={student.displayName} maxLength={120} required />
-          </FormField>
+        <PlatformForm className="student-admin__form" action={updateStudent.bind(null, student.id)}>
+          <PlatformFormField name="displayName" label="Nombre para mostrar">
+            <input type="text" defaultValue={student.displayName} maxLength={120} required />
+          </PlatformFormField>
 
-          <FormField label="Email">
-            <input type="email" name="email" defaultValue={student.email} maxLength={254} required />
-          </FormField>
+          <PlatformFormField name="email" label="Email">
+            <input type="email" defaultValue={student.email} maxLength={254} required />
+          </PlatformFormField>
 
           <SubmitButton>Guardar</SubmitButton>
-        </form>
+        </PlatformForm>
 
         <dl className="student-admin__facts">
           <div className="student-admin__fact">

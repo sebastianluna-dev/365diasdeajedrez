@@ -8,7 +8,7 @@
     flex-wrap: wrap;
     gap: var(--platform-space-3);
 
-    & .platform-field {
+    & .platform-form__field {
       flex: 1 1 220px;
     }
   }

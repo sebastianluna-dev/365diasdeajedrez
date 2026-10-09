@@ -1,7 +1,7 @@
 import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer/class-content-renderer.comp";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import {
   PlatformTable,
@@ -69,22 +69,26 @@ export function StaffClassDetailSection({ classDetail, errorCode }: StaffClassDe
           los datos los gestiona el profesor.
         </p>
 
-        <form className="staff-class__support" action={setRecordingUrl.bind(null, classDetail.id)}>
-          <FormField label="Grabación (URL)">
-            <input type="url" name="recordingUrl" defaultValue={classDetail.recordingUrl ?? ""} maxLength={500} />
-          </FormField>
+        <PlatformForm className="staff-class__support" action={setRecordingUrl.bind(null, classDetail.id)}>
+          <PlatformFormField name="recordingUrl" label="Grabación (URL)">
+            <input type="url" defaultValue={classDetail.recordingUrl ?? ""} maxLength={500} />
+          </PlatformFormField>
           <SubmitButton className="platform-button">Guardar grabación</SubmitButton>
-        </form>
+        </PlatformForm>
 
         {!isCancelled && (
-          <form className="staff-class__support" action={cancelClassAsStaff.bind(null, classDetail.id)}>
-            <FormField label="Cancelar la clase — motivo" hint="Queda anotado en el resumen con marca de soporte.">
-              <input type="text" name="note" maxLength={300} required />
-            </FormField>
+          <PlatformForm className="staff-class__support" action={cancelClassAsStaff.bind(null, classDetail.id)}>
+            <PlatformFormField
+              name="note"
+              label="Cancelar la clase — motivo"
+              hint="Queda anotado en el resumen con marca de soporte."
+            >
+              <input type="text" maxLength={300} required />
+            </PlatformFormField>
             <SubmitButton className="platform-button" pendingLabel="Cancelando…">
               Cancelar clase
             </SubmitButton>
-          </form>
+          </PlatformForm>
         )}
       </section>
 

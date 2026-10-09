@@ -21,7 +21,9 @@ The form controls of the platform are built on [Radix Primitives](https://www.ra
 
 `PlatformFormField` is one field: the label, the control and the messages. The control is passed as a single element and receives `id` and `name` from the field (Radix's `Form.Control asChild`), so the label reaches it and the submitted `FormData` carries it under the field's name.
 
-Every other write form of the platform still uses [`FormField`](/components/platform/shared/form-field); they are migrated as they are touched.
+Every form of the platform with fields is on it since 2026-10-08, when the last ones left the native `FormField`, which was deleted: the staff and teacher editors, the account forms and the filters and searches that have a label.
+
+**From a Server Component.** Most of those forms are sections rendered on the server, and they mount `PlatformForm` and `PlatformFormField` as they are, with the control written in the section. While the server renders the HTML, a control that came through the RSC payload can still be a lazy reference to the element, and only the browser gets the element itself: read as it came, its `required` gave «Opcional» in the browser alone (a hydration error) and `PlatformFormGroup`'s `cloneElement` refused it. The field and the group unwrap it first (`useResolvedElement`, the way Radix's own `Slot` does).
 
 ## Props
 
@@ -38,7 +40,7 @@ Everything `<form>` takes. `className` is added to `.platform-form`.
 | `children`    | `ReactElement`         | yes      | The control: a native `input`/`textarea`, or a [`PlatformSelect`](/components/platform/shared/platform-select).                                                                                                                                                                                                                                                                                                       |
 | `hint`        | `string`               | no       | Small help text under the control.                                                                                                                                                                                                                                                                                                                                                                                    |
 | `info`        | `string`               | no       | A clarification folded into an "i" ([`PlatformInfoTip`](/components/platform/shared/platform-info-tip)), named «Sobre «label»»: for what helps the first time and would be a line of small print every time after. On a text input it sits **inside the control, at its right end**; on a `<textarea>`, in **a strip under the text, inside the same frame**, with the count of its `maxLength`. A select takes none. |
-| `messages`    | `PlatformFormMessages` | no       | Text per validity state (`valueMissing`, `tooLong`, `typeMismatch`…), merged over Spanish defaults. Only the matching one renders.                                                                                                                                                                                                                                                                                    |
+| `messages`    | `PlatformFormMessages` | no       | Text per validity state (`valueMissing`, `tooLong`, `typeMismatch`…), merged over Spanish defaults, which every state has («Este campo es obligatorio.», «Es demasiado alto.» for a number over its `max`…). Only the matching one renders.                                                                                                                                                                           |
 | `serverError` | `string`               | no       | A failure the server reported for this field: rendered as its message and the field marked invalid until the user changes the control.                                                                                                                                                                                                                                                                                |
 
 ### `PlatformFormGroup`
@@ -66,9 +68,9 @@ Block `.platform-form`, the root being the `<form>`. Native controls are styled 
 
 **Elements:** `.platform-form__field`, `.platform-form__label-row`, `.platform-form__label`, `.platform-form__hint`, `.platform-form__message`, `.platform-form__info` (the "i"), `.platform-form__frame` (a textarea with an "i": the border around the text and the strip), `.platform-form__strip`, `.platform-form__count`, `.platform-form__sr` (the count in words, visually hidden)
 
-**The label is light** (2026-10-05): the text size (`md`), regular weight, the muted grey, as the staff's forms draw it with `FormField`; it was bold, in the text colour and a step larger, and the owner preferred the lighter one. The label row is a wrapping flex line, the label and the mark after it.
+**The label is light** (2026-10-05): the text size (`md`), regular weight, the muted grey; it was bold, in the text colour and a step larger, and the owner preferred the lighter one. The label row is a wrapping flex line, the label and the mark after it.
 
-**Modifiers:** `.platform-form__field_with_info`. A field with an "i" is a one-column grid where the control and the "i" share the second row, the "i" at its end and centred; the input keeps room for it (`padding-right`, the scale's `space-12`). The "i" is the control's sibling, outside the label, so the label names the input alone. It is how [`FormField`](/components/platform/shared/form-field)'s `info` looks, for forms not on `PlatformForm` yet.
+**Modifiers:** `.platform-form__field_with_info`. A field with an "i" is a one-column grid where the control and the "i" share the second row, the "i" at its end and centred; the input keeps room for it (`padding-right`, the scale's `space-12`). The "i" is the control's sibling, outside the label, so the label names the input alone.
 
 **States:** `.platform-form__field[data-invalid]` turns the control's border red, and with the focus its ring red too (`--platform-danger`, drawn strong): an invalid field keeps saying so while it is being fixed, instead of taking the selection's blue, which would say all is well (2026-10-06).
 
@@ -101,5 +103,4 @@ import { PlatformSelect } from "@/components/platform/shared/platform-select/pla
 
 - [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards), the group control of `PlatformFormGroup`.
 - [`PlatformSelect`](/components/platform/shared/platform-select), the select that goes inside a field.
-- [`FormField`](/components/platform/shared/form-field), the native wrapper the rest of the forms still use.
 - [`SubmitButton`](/components/platform/shared/submit-button) stays the submit: it reads the form status, whichever form.

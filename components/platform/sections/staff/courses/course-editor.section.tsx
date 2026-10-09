@@ -1,4 +1,3 @@
-import { FormField, FormFieldset } from "@/components/platform/shared/form-field/form-field.comp";
 import { ImageUpload } from "@/components/platform/shared/image-upload.comp";
 import { PlatformInfoTip } from "@/components/platform/shared/platform-info-tip/platform-info-tip.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
@@ -13,6 +12,11 @@ import type {
   LevelOption,
 } from "@/services/staff-courses/staff-courses.types";
 import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
+import {
+  PlatformForm,
+  PlatformFormField,
+  PlatformFormGroup,
+} from "@/components/platform/shared/platform-form/platform-form.comp";
 import { CourseAuthors } from "./course-authors/course-authors.comp";
 import { CourseLevelsField } from "./course-levels-field.comp";
 import { CourseNameFields } from "./course-name-fields.comp";
@@ -106,40 +110,40 @@ export function CourseEditorSection({
         }
       >
         <StaffPanel title="Metadatos">
-          <form className="course-editor__form" action={updateCourse.bind(null, course.id)}>
+          <PlatformForm action={updateCourse.bind(null, course.id)}>
             {/* The only piece of the form with state: the slug follows the name. */}
             <CourseNameFields name={course.name} slug={course.slug} />
 
-            <FormField label="Descripción">
-              <textarea name="description" defaultValue={course.description ?? ""} maxLength={1000} />
-            </FormField>
+            <PlatformFormField name="description" label="Descripción">
+              <textarea defaultValue={course.description ?? ""} maxLength={1000} />
+            </PlatformFormField>
 
             {/* What the course teaches, as one-line cards in two columns, with
-                the name alone: several at once, and the action refuses to save none. */}
-            <FormFieldset legend="Contenido">
+                the name alone: several at once, and the action refuses to save
+                none. The group's label names the cards. */}
+            <PlatformFormGroup label="Contenido">
               <PlatformCheckCards
                 name="contentTypeCodes"
                 defaultValue={course.contentTypeCodes}
-                aria-label="Tipos de contenido"
                 layout="line"
                 options={contentTypes.map((type) => ({
                   value: type.code,
                   label: type.label,
                 }))}
               />
-            </FormFieldset>
+            </PlatformFormGroup>
 
             {/* Who the course is aimed at, as one-line cards in order of
                 difficulty, each with its name and its orientative Elo range
                 beside it. Several at once, or none. */}
-            <FormFieldset legend="Niveles" optional>
+            <PlatformFormGroup label="Niveles" optional>
               <CourseLevelsField levels={levels} defaultValue={course.levelSlugs} />
-            </FormFieldset>
+            </PlatformFormGroup>
 
             <div className="course-editor__submit">
               <SubmitButton className="platform-button">Guardar metadatos</SubmitButton>
             </div>
-          </form>
+          </PlatformForm>
         </StaffPanel>
       </StaffEditorLayout>
     </div>

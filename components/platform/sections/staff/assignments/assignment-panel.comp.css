@@ -14,14 +14,17 @@
     color: var(--platform-text);
   }
 
+  /* A `PlatformForm`, whose own root is a column: here the fields and the
+     button share a row, bottom-aligned, and wrap when they no longer fit. */
   & .assignment-panel__form {
     display: flex;
+    flex-direction: row;
     align-items: flex-end;
     flex-wrap: wrap;
     gap: var(--platform-space-3);
     width: 100%;
 
-    & .platform-field {
+    & .platform-form__field {
       flex: 1 1 240px;
     }
   }

@@ -4,15 +4,15 @@ description: "The teacher's public profile form: display name, title, IANA time 
 
 # `TeacherProfileSection`
 
-|            |                                                                                                                                                                                                 |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/teacher/profile/teacher-profile.section.tsx`                                                                                                                      |
-| Kind       | Server Component                                                                                                                                                                                |
-| Stylesheet | `teacher-profile.section.css` → block `.teacher-profile`                                                                                                                                        |
-| Used by    | `/profesor/perfil`                                                                                                                                                                              |
-| Composes   | [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice)                                                                          |
-| Writes     | `updateTeacherProfile()` · `services/teacher/teacher.actions.ts`                                                                                                                                |
-| Uses       | `TEACHER_ERROR_MESSAGES` from `constants/platform/teacher-messages.const`; `TIMEZONE_OPTIONS` from `constants/platform/timezones.const`; `TeacherProfile` from `services/teacher/teacher.types` |
+|            |                                                                                                                                                                                                                       |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/profile/teacher-profile.section.tsx`                                                                                                                                            |
+| Kind       | Server Component                                                                                                                                                                                                      |
+| Stylesheet | `teacher-profile.section.css` → block `.teacher-profile`                                                                                                                                                              |
+| Used by    | `/profesor/perfil`                                                                                                                                                                                                    |
+| Composes   | [`PlatformForm` and `PlatformFormField`](/components/platform/shared/platform-form), [`PlatformSelect`](/components/platform/shared/platform-select), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes     | `updateTeacherProfile()` · `services/teacher/teacher.actions.ts`                                                                                                                                                      |
+| Uses       | `TEACHER_ERROR_MESSAGES` from `constants/platform/teacher-messages.const`; `TIMEZONE_OPTIONS` from `constants/platform/timezones.const`; `TeacherProfile` from `services/teacher/teacher.types`                       |
 
 ## Purpose
 
@@ -27,15 +27,15 @@ What students see of their teacher in the classes they attend, plus the one sett
 
 ## Behaviour
 
-The whole card is a `<form action={updateTeacherProfile}>`: name (required), title, time zone (a [`PlatformSelect`](/components/platform/shared/platform-select) over `TIMEZONE_OPTIONS`, underscores shown as spaces), photo as a URL (moving it to [`ImageUpload`](/components/platform/shared/image-upload) is an open improvement) and a bio textarea. The action validates, saves and revalidates `/profesor/perfil`.
+The whole card is a [`PlatformForm`](/components/platform/shared/platform-form) posting to `updateTeacherProfile`, each field a `PlatformFormField`: name (required, and an empty one says so under it instead of submitting), title, time zone (a [`PlatformSelect`](/components/platform/shared/platform-select) over `TIMEZONE_OPTIONS`, underscores shown as spaces), photo as a URL (moving it to [`ImageUpload`](/components/platform/shared/image-upload) is an open improvement) and a bio textarea. The action validates, saves and revalidates `/profesor/perfil`.
 
 ## Markup & styling
 
-Block `.teacher-profile` (27 lines), on top of `.platform-card`.
+Block `.teacher-profile` (29 lines), on top of `.platform-card` and `.platform-form`.
 
 **Elements:** `.teacher-profile__hint`, `.teacher-profile__fields`
 
-**Other selectors it styles:** `.platform-field` (grid placement).
+**Other selectors it styles:** `.platform-form__field` (the whole width: the card's column starts its children at the left edge).
 
 **Tokens:** `--platform-text-muted`
 

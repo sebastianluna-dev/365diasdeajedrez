@@ -21,7 +21,9 @@
     }
   }
 
-  & .platform-field {
+  /* The card's column starts its children at the left edge: a field takes
+     the whole width, as the button does not. */
+  & .platform-form__field {
     width: 100%;
   }
 }

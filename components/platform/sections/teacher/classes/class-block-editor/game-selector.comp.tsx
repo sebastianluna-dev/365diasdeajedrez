@@ -1,6 +1,6 @@
 "use client";
 
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
+import { PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import type { ReferenceableGameGroup } from "@/services/teacher-classes/teacher-classes.types";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
@@ -17,9 +17,12 @@ interface GameSelectorProps {
  */
 export function GameSelector({ groups, value, onChange }: GameSelectorProps) {
   return (
-    <FormField label="Partida" hint={groups.length === 0 ? "No hay partidas disponibles todavía." : undefined}>
+    <PlatformFormField
+      name="gameId"
+      label="Partida"
+      hint={groups.length === 0 ? "No hay partidas disponibles todavía." : undefined}
+    >
       <PlatformSelect
-        name="gameId"
         value={value}
         onValueChange={onChange}
         required
@@ -29,6 +32,6 @@ export function GameSelector({ groups, value, onChange }: GameSelectorProps) {
           options: group.games.map((game) => ({ value: game.id, label: game.label })),
         }))}
       />
-    </FormField>
+    </PlatformFormField>
   );
 }

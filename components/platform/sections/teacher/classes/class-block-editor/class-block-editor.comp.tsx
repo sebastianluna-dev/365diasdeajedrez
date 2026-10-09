@@ -3,7 +3,7 @@
 import { ArrowDownIcon } from "@/components/icons/arrow-down-icon.comp";
 import { ArrowUpIcon } from "@/components/icons/arrow-up-icon.comp";
 import { useState } from "react";
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { CLASS_BLOCK_KIND, type ClassBlockKindCode } from "@/constants/platform/class-codes.const";
 import {
   addClassBlock,
@@ -140,14 +140,22 @@ export function ClassBlockEditor({ classId, blocks, options, initialGameId }: Cl
       </ol>
 
       <div className="class-block-editor__add">
-        <FormField label="Agregar un bloque">
-          <PlatformSelect
-            value={newKind ?? ""}
-            onValueChange={(kind) => setNewKind((kind || null) as ClassBlockKindCode | null)}
-            placeholder="Elige un tipo…"
-            options={Object.values(CLASS_BLOCK_KIND).map((kind) => ({ value: kind, label: KIND_LABELS[kind] ?? kind }))}
-          />
-        </FormField>
+        {/* Choosing the kind only opens the block's form below, so this form
+            never sends anything: it is there because a field is drawn inside
+            one, and it cannot be the block's, which is mounted per kind. */}
+        <PlatformForm className="class-block-editor__kind">
+          <PlatformFormField name="newBlockKind" label="Agregar un bloque">
+            <PlatformSelect
+              value={newKind ?? ""}
+              onValueChange={(kind) => setNewKind((kind || null) as ClassBlockKindCode | null)}
+              placeholder="Elige un tipo…"
+              options={Object.values(CLASS_BLOCK_KIND).map((kind) => ({
+                value: kind,
+                label: KIND_LABELS[kind] ?? kind,
+              }))}
+            />
+          </PlatformFormField>
+        </PlatformForm>
 
         {newKind && (
           <BlockForm

@@ -9,6 +9,12 @@
     text-wrap: pretty;
   }
 
+  /* The form is `PlatformForm`, a column with a gap of its own: here its
+     parts keep the spacing they set themselves, under the strip. */
+  & .edit-game__form {
+    gap: 0;
+  }
+
   & .edit-game__body {
     padding: var(--platform-space-5) var(--platform-space-6) 0;
   }

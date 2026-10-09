@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import {
   PlatformTable,
   PlatformTableCell,
@@ -32,41 +32,41 @@ const STATUS_LABELS: Record<string, string> = {
 export function StaffClassesSection({ classes, teachers, rawFilters }: StaffClassesSectionProps) {
   return (
     <div className="staff-classes">
-      <form className="staff-classes__filters" action={staffRoutes.classes}>
-        <FormField label="Profesor">
+      {/* A GET filter, drawn with the platform's form so its fields look like
+          every other one; none is required, so none ever shows a message. */}
+      <PlatformForm className="staff-classes__filters" action={staffRoutes.classes}>
+        <PlatformFormField name="teacherId" label="Profesor">
           <PlatformSelect
-            name="teacherId"
             defaultValue={rawFilters.teacherId ?? ""}
             emptyOption="Todos"
             options={teachers.map((teacher) => ({ value: teacher.id, label: teacher.displayName }))}
           />
-        </FormField>
+        </PlatformFormField>
 
-        <FormField label="Estado">
+        <PlatformFormField name="status" label="Estado">
           <PlatformSelect
-            name="status"
             defaultValue={rawFilters.status ?? ""}
             emptyOption="Todos"
             options={Object.values(CLASS_STATUS).map((code) => ({ value: code, label: STATUS_LABELS[code] ?? code }))}
           />
-        </FormField>
+        </PlatformFormField>
 
-        <FormField label="Desde">
-          <PlatformDatePicker name="from" defaultValue={rawFilters.from ?? ""} />
-        </FormField>
+        <PlatformFormField name="from" label="Desde">
+          <PlatformDatePicker defaultValue={rawFilters.from ?? ""} />
+        </PlatformFormField>
 
-        <FormField label="Hasta">
-          <PlatformDatePicker name="to" defaultValue={rawFilters.to ?? ""} />
-        </FormField>
+        <PlatformFormField name="to" label="Hasta">
+          <PlatformDatePicker defaultValue={rawFilters.to ?? ""} />
+        </PlatformFormField>
 
-        <FormField label="Título">
-          <input type="search" name="q" defaultValue={rawFilters.q ?? ""} maxLength={120} />
-        </FormField>
+        <PlatformFormField name="q" label="Título">
+          <input type="search" defaultValue={rawFilters.q ?? ""} maxLength={120} />
+        </PlatformFormField>
 
         <button type="submit" className="platform-button">
           Filtrar
         </button>
-      </form>
+      </PlatformForm>
 
       <PlatformTable
         label="Clases"

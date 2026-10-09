@@ -6,13 +6,13 @@ description: "«Opcional» in a thin pill after a field's label: drawn by the fi
 
 Also exports `OPTIONAL_MARK`; `optional-control.ts`, beside it, exports `isOptionalControl`.
 
-|            |                                                                                                                                                                                                                                                   |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/optional-mark/optional-mark.comp.tsx`; `optional-control.ts`, with its test                                                                                                                                           |
-| Kind       | Server Component                                                                                                                                                                                                                                  |
-| Stylesheet | `optional-mark.comp.css` → block `.optional-mark`                                                                                                                                                                                                 |
-| Story      | `optional-mark.stories.tsx` (`platform/shared/OptionalMark`): the pill alone                                                                                                                                                                      |
-| Used by    | [`PlatformFormField` and `PlatformFormGroup`](/components/platform/shared/platform-form), [`FormField` and `FormFieldset`](/components/platform/shared/form-field); hidden inside [`OptionalFields`](/components/platform/shared/optional-fields) |
+|            |                                                                                                                                                                         |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/optional-mark/optional-mark.comp.tsx`; `optional-control.ts`, with its test                                                                 |
+| Kind       | Server Component                                                                                                                                                        |
+| Stylesheet | `optional-mark.comp.css` → block `.optional-mark`                                                                                                                       |
+| Story      | `optional-mark.stories.tsx` (`platform/shared/OptionalMark`): the pill alone                                                                                            |
+| Used by    | [`PlatformFormField` and `PlatformFormGroup`](/components/platform/shared/platform-form); hidden inside [`OptionalFields`](/components/platform/shared/optional-fields) |
 
 ## Purpose
 
@@ -34,11 +34,11 @@ True for a `<textarea>`, or an `<input>` one types into — `text` (or no `type`
 
 It reads only the element's **string** type and its props. A component's identity is not compared: an element of a Client Component created on the server reaches the client wrapped, so `type === PlatformDatePicker` would hold on one side only, and importing the picker would ship it to every page with a field. No date picker needs the mark today (the four are in all-optional forms or filters); one that does, among required fields, would need an `optional` prop on its field, added with that case.
 
-A group (`PlatformFormGroup`, `FormFieldset`) has no `required` to read, so it takes `optional`: «Niveles» of a course, «Temas» of a lesson, «Alumnos inscritos» of a new class.
+A group (`PlatformFormGroup`) has no `required` to read, so it takes `optional`: «Niveles» of a course, «Temas» of a lesson, «Alumnos inscritos» of a new class.
 
 ## Behaviour
 
-- `aria-hidden="true"`: the word is for the eye. In `FormField` the `<label>` wraps the whole field, and the word inside it would change the field's name; a required control is announced as such, an optional one is not, which is the difference the mark draws.
+- `aria-hidden="true"`: the word is for the eye. It sits in the label's row, and read aloud it would add to what the field is called; a required control is announced as such, an optional one is not, which is the difference the mark draws.
 - No props: what it says is `OPTIONAL_MARK`, «Opcional».
 
 ## Markup & styling
@@ -51,16 +51,16 @@ No media queries.
 
 ## Usage
 
-The field pieces draw it; a screen never does. From `components/platform/shared/form-field/form-field.comp.tsx`:
+The field pieces draw it; a screen never does. From `components/platform/shared/platform-form/platform-form.comp.tsx`:
 
 ```tsx
-<span className="platform-field__label-row">
-  <span className="platform-field__label">{label}</span>
+<div className="platform-form__label-row">
+  <Form.Label className="platform-form__label">{label}</Form.Label>
   {isOptionalControl(children) && <OptionalMark />}
-</span>
+</div>
 ```
 
 ## Related
 
 - [`OptionalFields`](/components/platform/shared/optional-fields), which hides it under one note when all the fields are optional.
-- [`PlatformForm`](/components/platform/shared/platform-form) and [`FormField`](/components/platform/shared/form-field), which draw it.
+- [`PlatformForm`](/components/platform/shared/platform-form), whose field and group draw it.

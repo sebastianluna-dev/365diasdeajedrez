@@ -3,13 +3,16 @@
   flex-direction: column;
   gap: var(--platform-space-5);
 
+  /* The filters in a row that wraps, the button at the fields' foot. The form
+     is `PlatformForm`, a column of its own: the row is said here. */
   & .staff-classes__filters {
     display: flex;
+    flex-direction: row;
     align-items: flex-end;
     flex-wrap: wrap;
     gap: var(--platform-space-3);
 
-    & .platform-field {
+    & .platform-form__field {
       flex: 1 1 170px;
     }
   }

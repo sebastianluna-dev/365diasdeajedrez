@@ -7,8 +7,8 @@ import "./optional-fields.comp.css";
  * fifteen fields, fifteen pills say nothing a line does not.
  *
  * It is a container (`children`), and the marks are hidden by its
- * stylesheet, not by telling each field: `FormField` is a Server Component,
- * and the server has no context to pass it down. The note and the hiding
+ * stylesheet, not by telling each field: many forms are Server Component
+ * sections, and the server has no context to pass it down. The note and the hiding
  * live in this one piece, so neither can be there without the other.
  *
  * Not for a form of one field («Contraseña nueva» keeps its pill), nor for

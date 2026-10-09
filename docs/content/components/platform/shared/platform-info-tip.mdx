@@ -4,14 +4,14 @@ description: "A clarification folded into an 'i': a small round button that show
 
 # `PlatformInfoTip`
 
-|            |                                                                                                                                                                                                                                                                                                                                                 |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/platform-info-tip/platform-info-tip.comp.tsx`                                                                                                                                                                                                                                                                       |
-| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                |
-| Stylesheet | `platform-info-tip.comp.css` → blocks `.platform-info-tip` (the button) and `.platform-info-tip__content` (the tip, its sibling)                                                                                                                                                                                                                |
-| Story      | `platform-info-tip.stories.tsx` (`platform/shared/PlatformInfoTip`): `Default`, `Below`                                                                                                                                                                                                                                                         |
-| Used by    | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) (the cover's card), [`FormField`](/components/platform/shared/form-field) (a field's `info`, inside its input: the game's form and, through [`CourseNameFields`](/components/platform/sections/staff/courses/course-name-fields), the course's slug) |
-| Uses       | `Tooltip` from `radix-ui`; `CircleInfoIcon` from `components/icons/`, in Classic Light at 22px inside its 28px button (the owner's choice, 2026-10-05: a fine line in one layer, after trying Duotone Solid and Duotone Light; it was 18px)                                                                                                     |
+|            |                                                                                                                                                                                                                                                                                                                                                                                   |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-info-tip/platform-info-tip.comp.tsx`                                                                                                                                                                                                                                                                                                         |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                  |
+| Stylesheet | `platform-info-tip.comp.css` → blocks `.platform-info-tip` (the button) and `.platform-info-tip__content` (the tip, its sibling)                                                                                                                                                                                                                                                  |
+| Story      | `platform-info-tip.stories.tsx` (`platform/shared/PlatformInfoTip`): `Default`, `Below`                                                                                                                                                                                                                                                                                           |
+| Used by    | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) (the cover's card), [`PlatformFormField`](/components/platform/shared/platform-form) (a field's `info`, inside its input: the game's record, the game's settings and, through [`CourseNameFields`](/components/platform/sections/staff/courses/course-name-fields), the course's slug) |
+| Uses       | `Tooltip` from `radix-ui`; `CircleInfoIcon` from `components/icons/`, in Classic Light at 22px inside its 28px button (the owner's choice, 2026-10-05: a fine line in one layer, after trying Duotone Solid and Duotone Light; it was 18px)                                                                                                                                       |
 
 ## Purpose
 
@@ -50,19 +50,16 @@ No media queries.
 
 ## Usage
 
-From `components/platform/sections/staff/courses/course-name-fields.comp.tsx`, inside the slug's input:
+A field's «i» is not written by hand: [`PlatformFormField`](/components/platform/shared/platform-form) draws it from its `info`, inside the input's right end. From `components/platform/sections/staff/courses/course-name-fields.comp.tsx`:
 
 ```tsx
-import { PlatformInfoTip } from "@/components/platform/shared/platform-info-tip/platform-info-tip.comp";
-
-<span className="platform-field__control course-name-fields__slug">
-  <input id={slugId} type="text" name="slug" defaultValue={slug} required />
-  <PlatformInfoTip label="Sobre el slug" text={SLUG_INFO} />
-</span>;
+<PlatformFormField name="slug" label="Slug" info={SLUG_INFO} messages={{ patternMismatch: `${SLUG_FORMAT}.` }}>
+  <input ref={slugRef} type="text" defaultValue={slug} maxLength={160} pattern={SLUG_PATTERN} required />
+</PlatformFormField>
 ```
 
-The field that holds it must not be a `<label>` around everything, as [`FormField`](/components/platform/shared/form-field) is: the button's name would end up in the input's. Give the input an `id` and the label an `htmlFor`.
+Anywhere else, the button must not sit inside a `<label>` around its input: its name would end up in the input's. Give the input an `id` and the label an `htmlFor`, and put the tip beside the input, as the field does.
 
 ## Related
 
-- [`FormField`](/components/platform/shared/form-field) and [`PlatformFormField`](/components/platform/shared/platform-form) for the visible `hint`.
+- [`PlatformFormField`](/components/platform/shared/platform-form), its `info` and, for what must stay in sight, its `hint`.

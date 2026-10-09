@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { platformRoutes } from "@/lib/platform-routes";
 import { CLASS_BLOCK_KIND, type ClassBlockKindCode } from "@/constants/platform/class-codes.const";
 import type {
@@ -59,19 +59,23 @@ export function BlockForm({ action, kind, options, block, submitLabel, onCancel 
   const annotatableStudyId = annotatableStudyOf(options.games, gameId);
 
   return (
-    <form className="block-form" action={action}>
+    <PlatformForm className="block-form" action={action}>
       <input type="hidden" name="kind" value={kind} />
 
       {kind === CLASS_BLOCK_KIND.TEXT && (
-        <FormField label="Texto" hint="Se admiten párrafos y subtítulos con «## ».">
-          <textarea name="text" defaultValue={block?.text ?? ""} maxLength={10000} required />
-        </FormField>
+        <PlatformFormField name="text" label="Texto" hint="Se admiten párrafos y subtítulos con «## ».">
+          <textarea defaultValue={block?.text ?? ""} maxLength={10000} required />
+        </PlatformFormField>
       )}
 
       {kind === CLASS_BLOCK_KIND.VIDEO && (
-        <FormField label="URL del video" hint="Enlace http(s) a la grabación o al video de apoyo.">
-          <input type="url" name="videoUrl" defaultValue={block?.videoUrl ?? ""} maxLength={500} required />
-        </FormField>
+        <PlatformFormField
+          name="videoUrl"
+          label="URL del video"
+          hint="Enlace http(s) a la grabación o al video de apoyo."
+        >
+          <input type="url" defaultValue={block?.videoUrl ?? ""} maxLength={500} required />
+        </PlatformFormField>
       )}
 
       {kind === CLASS_BLOCK_KIND.GAME_REF && (
@@ -123,9 +127,9 @@ export function BlockForm({ action, kind, options, block, submitLabel, onCancel 
         </>
       )}
 
-      <FormField label="Pie o nota">
-        <input type="text" name="caption" defaultValue={block?.caption ?? ""} maxLength={200} />
-      </FormField>
+      <PlatformFormField name="caption" label="Pie o nota">
+        <input type="text" defaultValue={block?.caption ?? ""} maxLength={200} />
+      </PlatformFormField>
 
       <div className="block-form__actions">
         <SubmitButton className="platform-button platform-button_variant_ink">{submitLabel}</SubmitButton>
@@ -135,6 +139,6 @@ export function BlockForm({ action, kind, options, block, submitLabel, onCancel 
           </button>
         )}
       </div>
-    </form>
+    </PlatformForm>
   );
 }

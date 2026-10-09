@@ -1,4 +1,4 @@
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { TIMEZONE_OPTIONS } from "@/constants/platform/timezones.const";
@@ -25,69 +25,68 @@ export function TeacherFormSection({ linkableUsers, errorCode }: TeacherFormSect
     <div className="teacher-form">
       {errorMessage && <PlatformNotice message={errorMessage} />}
 
-      <form className="teacher-form__card platform-card" action={createTeacher}>
+      <PlatformForm className="teacher-form__card platform-card" action={createTeacher}>
         <h2 className="platform-card__title">Vincular una cuenta existente</h2>
         <p className="teacher-form__hint">
           Convierte en profesor a alguien que ya tiene cuenta. Sigue pudiendo usar la plataforma como alumno.
         </p>
 
-        <FormField label="Cuenta">
+        <PlatformFormField name="userId" label="Cuenta">
           <PlatformSelect
-            name="userId"
             required
             placeholder="Elige una cuenta…"
             options={linkableUsers.map((user) => ({ value: user.id, label: `${user.displayName} — ${user.email}` }))}
           />
-        </FormField>
+        </PlatformFormField>
 
-        <FormField label="Nombre para mostrar" hint="Cómo lo verán sus alumnos.">
-          <input type="text" name="displayName" maxLength={120} required />
-        </FormField>
+        <PlatformFormField name="displayName" label="Nombre para mostrar" hint="Cómo lo verán sus alumnos.">
+          <input type="text" maxLength={120} required />
+        </PlatformFormField>
 
-        <FormField label="Título">
-          <input type="text" name="title" maxLength={120} />
-        </FormField>
+        <PlatformFormField name="title" label="Título">
+          <input type="text" maxLength={120} />
+        </PlatformFormField>
 
-        <FormField label="Zona horaria">
-          <PlatformSelect name="timezone" options={TIMEZONE_OPTIONS} defaultValue="America/Mexico_City" />
-        </FormField>
+        <PlatformFormField name="timezone" label="Zona horaria">
+          <PlatformSelect options={TIMEZONE_OPTIONS} defaultValue="America/Mexico_City" />
+        </PlatformFormField>
 
         <SubmitButton pendingLabel="Vinculando…">Vincular como profesor</SubmitButton>
-      </form>
+      </PlatformForm>
 
-      <form className="teacher-form__card platform-card" action={createTeacher}>
+      <PlatformForm className="teacher-form__card platform-card" action={createTeacher}>
         <h2 className="platform-card__title">Crear cuenta y ficha de profesor</h2>
         <p className="teacher-form__hint">
           Crea las dos cosas a la vez. Si dejas la contraseña vacía se genera una: entrégasela reiniciándola desde su
           ficha, que es donde se muestra una sola vez.
         </p>
 
-        <FormField label="Nombre para mostrar">
-          <input type="text" name="displayName" maxLength={120} required />
-        </FormField>
+        <PlatformFormField name="displayName" label="Nombre para mostrar">
+          <input type="text" maxLength={120} required />
+        </PlatformFormField>
 
-        <FormField label="Email">
-          <input type="email" name="email" maxLength={254} required autoComplete="off" />
-        </FormField>
+        <PlatformFormField name="email" label="Email">
+          <input type="email" maxLength={254} required autoComplete="off" />
+        </PlatformFormField>
 
-        <FormField label="Contraseña inicial">
-          <input type="text" name="password" maxLength={200} autoComplete="off" />
-        </FormField>
+        <PlatformFormField name="password" label="Contraseña inicial">
+          <input type="text" maxLength={200} autoComplete="off" />
+        </PlatformFormField>
 
-        <FormField label="Título">
-          <input type="text" name="title" maxLength={120} />
-        </FormField>
+        <PlatformFormField name="title" label="Título">
+          <input type="text" maxLength={120} />
+        </PlatformFormField>
 
-        <FormField label="Zona horaria">
-          <PlatformSelect name="timezone" options={TIMEZONE_OPTIONS} defaultValue="America/Mexico_City" />
-        </FormField>
+        <PlatformFormField name="timezone" label="Zona horaria">
+          <PlatformSelect options={TIMEZONE_OPTIONS} defaultValue="America/Mexico_City" />
+        </PlatformFormField>
 
-        <FormField label="Biografía">
-          <textarea name="bio" maxLength={1000} />
-        </FormField>
+        <PlatformFormField name="bio" label="Biografía">
+          <textarea maxLength={1000} />
+        </PlatformFormField>
 
         <SubmitButton pendingLabel="Creando…">Crear profesor</SubmitButton>
-      </form>
+      </PlatformForm>
     </div>
   );
 }

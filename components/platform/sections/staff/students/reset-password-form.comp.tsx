@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { resetStudentPassword } from "@/services/staff-students/staff-students.actions";
 import { ACCOUNT_INITIAL_STATE } from "@/services/staff-students/staff-students.types";
@@ -31,20 +31,21 @@ export function ResetPasswordForm({ userId }: ResetPasswordFormProps) {
           <PlatformNotice message={state.message ?? "Contraseña restablecida."} variant="success" />
         ))}
 
-      <form className="reset-password__form" action={formAction}>
+      <PlatformForm className="reset-password__form" action={formAction}>
         <input type="hidden" name="userId" value={userId} />
 
-        <FormField
+        <PlatformFormField
+          name="password"
           label="Contraseña nueva"
           hint="Vacía = se genera una temporal. Al guardar se cierran todas sus sesiones."
         >
-          <input type="text" name="password" maxLength={200} autoComplete="off" />
-        </FormField>
+          <input type="text" maxLength={200} autoComplete="off" />
+        </PlatformFormField>
 
         <button type="submit" className="platform-button" disabled={isPending}>
           {isPending ? "Restableciendo…" : "Restablecer contraseña"}
         </button>
-      </form>
+      </PlatformForm>
     </div>
   );
 }

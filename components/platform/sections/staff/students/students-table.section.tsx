@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import {
   PlatformTable,
   PlatformTableCell,
@@ -21,14 +21,14 @@ export async function StudentsTableSection({ query }: StudentsTableSectionProps)
     <div className="students-table">
       <div className="students-table__bar">
         {/* GET: the filter lives in the URL, no client state. */}
-        <form className="students-table__search" action={staffRoutes.students}>
-          <FormField label="Buscar">
-            <input type="search" name="q" defaultValue={query ?? ""} placeholder="Nombre o email" maxLength={120} />
-          </FormField>
+        <PlatformForm className="students-table__search" action={staffRoutes.students}>
+          <PlatformFormField name="q" label="Buscar">
+            <input type="search" defaultValue={query ?? ""} placeholder="Nombre o email" maxLength={120} />
+          </PlatformFormField>
           <button type="submit" className="platform-button">
             Buscar
           </button>
-        </form>
+        </PlatformForm>
 
         <Link href={staffRoutes.newStudent} className="platform-button">
           Registrar alumno

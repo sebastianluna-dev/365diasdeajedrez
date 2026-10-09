@@ -75,8 +75,8 @@ function findOptionLabel(
  *
  * Inside a form it submits like a native select: the primitive keeps a hidden
  * `<select name>` in sync with the choice. Everything not listed here (`id`,
- * `aria-*`, `className`, `ref`) goes to the trigger button, which is what
- * `PlatformFormField` and `FormField` label.
+ * `aria-*`, `className`, `ref`) goes to the trigger button, which is what a
+ * `PlatformFormField`'s label names.
  *
  * The list is NOT portalled: it renders next to the trigger, positioned
  * against the viewport, so it also works inside a modal `<dialog>`, whose top

@@ -4,15 +4,15 @@ description: "The teacher's students with an active assignment in a PlatformTabl
 
 # `AssignedStudentsSection`
 
-|            |                                                                                                                                                                                     |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/teacher/students/assigned-students.section.tsx`                                                                                                       |
-| Kind       | Server Component (async)                                                                                                                                                            |
-| Stylesheet | `assigned-students.section.css` → block `.assigned-students`                                                                                                                        |
-| Used by    | `/profesor/alumnos`                                                                                                                                                                 |
-| Composes   | [`PlatformTable`](/components/platform/shared/platform-table), [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime) |
-| Reads      | `getAssignedStudents(query)` · `services/teacher-students/teacher-students.service.ts`                                                                                              |
-| Uses       | `teacherRoutes` from `lib/platform-routes`                                                                                                                                          |
+|            |                                                                                                                                                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/students/assigned-students.section.tsx`                                                                                                                                     |
+| Kind       | Server Component (async)                                                                                                                                                                                          |
+| Stylesheet | `assigned-students.section.css` → block `.assigned-students`                                                                                                                                                      |
+| Used by    | `/profesor/alumnos`                                                                                                                                                                                               |
+| Composes   | [`PlatformTable`](/components/platform/shared/platform-table), [`PlatformForm` and `PlatformFormField`](/components/platform/shared/platform-form), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Reads      | `getAssignedStudents(query)` · `services/teacher-students/teacher-students.service.ts`                                                                                                                            |
+| Uses       | `teacherRoutes` from `lib/platform-routes`                                                                                                                                                                        |
 
 ## Purpose
 
@@ -30,11 +30,11 @@ Awaits the filtered list. Name cells link to the student's page. Dates go throug
 
 ## Markup & styling
 
-Block `.assigned-students` (22 lines): the search bar layout.
+Block `.assigned-students` (25 lines): the search bar layout.
 
 **Elements:** `.assigned-students__search`
 
-**Other selectors it styles:** `.platform-field` (inline in the bar).
+**Other selectors it styles:** `.platform-form__field` (inline in the bar: the search is a GET `PlatformForm` laid out as a row, and its one field, «Buscar alumno», is a search box, which never says «Opcional»).
 
 **Breakpoints:** `(width < 640px)` stacks the search field and button.
 

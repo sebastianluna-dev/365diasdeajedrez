@@ -1,4 +1,5 @@
-import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
+import type { ComponentProps } from "react";
+import { PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { federationOptions, FIDE_TITLE_LABELS, FIDE_TITLES } from "@/lib/chess/federations";
 import "./game-fields.comp.css";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
@@ -15,6 +16,9 @@ import { OptionalFields } from "@/components/platform/shared/optional-fields/opt
 // ALL are optional, also on creation: when analysis starts one does not yet
 // know which game it is going to be. So they are said optional once, over
 // them (`OptionalFields`), and no field carries its own «Opcional».
+//
+// They are `PlatformFormField`s, so they render inside a `PlatformForm` (the
+// one of `EditGame`'s popup): a field needs the form's context.
 
 export interface GameFieldValues {
   title?: string;
@@ -35,6 +39,16 @@ export interface GameFieldValues {
   blackCountry?: string;
 }
 
+type CodeSelectProps = Omit<
+  ComponentProps<typeof PlatformSelect>,
+  "value" | "defaultValue" | "options" | "groups" | "emptyOption"
+> & {
+  /** The stored value, which may be one the lists do not have. */
+  value: string | undefined;
+  options: { code: string; label: string }[];
+  emptyLabel: string;
+};
+
 /**
  * The dropdown of a value that comes from the PGN.
  *
@@ -42,24 +56,17 @@ export interface GameFieldValues {
  * are written by whoever wants — so the stored value is added as one more
  * option. Without that, opening the form and saving it without touching
  * anything would silently turn that value into a different one.
+ *
+ * The field hands its control `id`, `name`, the ref it validates through and
+ * the ARIA that ties it to its messages: they pass on to the select.
  */
-function CodeSelect({
-  name,
-  value,
-  options,
-  emptyLabel,
-}: {
-  name: string;
-  value: string | undefined;
-  options: { code: string; label: string }[];
-  emptyLabel: string;
-}) {
+function CodeSelect({ value, options, emptyLabel, ...selectProps }: CodeSelectProps) {
   const current = value?.trim() ?? "";
   const isKnown = current.length === 0 || options.some((option) => option.code === current);
 
   return (
     <PlatformSelect
-      name={name}
+      {...selectProps}
       defaultValue={current}
       emptyOption={emptyLabel}
       options={[
@@ -84,85 +91,74 @@ export function GameFields({ values, results, titleHint }: GameFieldsProps) {
   return (
     <OptionalFields>
       <div className="game-fields">
-        <FormField label="Nombre de la partida" info={titleHint}>
-          <input type="text" name="title" defaultValue={values?.title ?? ""} maxLength={120} />
-        </FormField>
+        <PlatformFormField name="title" label="Nombre de la partida" info={titleHint}>
+          <input type="text" defaultValue={values?.title ?? ""} maxLength={120} />
+        </PlatformFormField>
 
         <div className="game-fields__row">
-          <FormField label="Blancas">
-            <input type="text" name="white" defaultValue={values?.white ?? ""} maxLength={120} />
-          </FormField>
-          <FormField label="Elo de las blancas">
-            <input type="number" name="whiteElo" defaultValue={values?.whiteElo ?? ""} min={100} max={4000} />
-          </FormField>
+          <PlatformFormField name="white" label="Blancas">
+            <input type="text" defaultValue={values?.white ?? ""} maxLength={120} />
+          </PlatformFormField>
+          <PlatformFormField name="whiteElo" label="Elo de las blancas">
+            <input type="number" defaultValue={values?.whiteElo ?? ""} min={100} max={4000} />
+          </PlatformFormField>
         </div>
 
         <div className="game-fields__row">
-          <FormField label="Título de las blancas">
-            <CodeSelect name="whiteTitle" value={values?.whiteTitle} options={TITLE_OPTIONS} emptyLabel="Sin título" />
-          </FormField>
-          <FormField label="Federación de las blancas">
-            <CodeSelect
-              name="whiteCountry"
-              value={values?.whiteCountry}
-              options={federationOptions()}
-              emptyLabel="Sin federación"
-            />
-          </FormField>
+          <PlatformFormField name="whiteTitle" label="Título de las blancas">
+            <CodeSelect value={values?.whiteTitle} options={TITLE_OPTIONS} emptyLabel="Sin título" />
+          </PlatformFormField>
+          <PlatformFormField name="whiteCountry" label="Federación de las blancas">
+            <CodeSelect value={values?.whiteCountry} options={federationOptions()} emptyLabel="Sin federación" />
+          </PlatformFormField>
         </div>
 
         <div className="game-fields__row">
-          <FormField label="Negras">
-            <input type="text" name="black" defaultValue={values?.black ?? ""} maxLength={120} />
-          </FormField>
-          <FormField label="Elo de las negras">
-            <input type="number" name="blackElo" defaultValue={values?.blackElo ?? ""} min={100} max={4000} />
-          </FormField>
+          <PlatformFormField name="black" label="Negras">
+            <input type="text" defaultValue={values?.black ?? ""} maxLength={120} />
+          </PlatformFormField>
+          <PlatformFormField name="blackElo" label="Elo de las negras">
+            <input type="number" defaultValue={values?.blackElo ?? ""} min={100} max={4000} />
+          </PlatformFormField>
         </div>
 
         <div className="game-fields__row">
-          <FormField label="Título de las negras">
-            <CodeSelect name="blackTitle" value={values?.blackTitle} options={TITLE_OPTIONS} emptyLabel="Sin título" />
-          </FormField>
-          <FormField label="Federación de las negras">
-            <CodeSelect
-              name="blackCountry"
-              value={values?.blackCountry}
-              options={federationOptions()}
-              emptyLabel="Sin federación"
-            />
-          </FormField>
+          <PlatformFormField name="blackTitle" label="Título de las negras">
+            <CodeSelect value={values?.blackTitle} options={TITLE_OPTIONS} emptyLabel="Sin título" />
+          </PlatformFormField>
+          <PlatformFormField name="blackCountry" label="Federación de las negras">
+            <CodeSelect value={values?.blackCountry} options={federationOptions()} emptyLabel="Sin federación" />
+          </PlatformFormField>
         </div>
 
         <div className="game-fields__row">
-          <FormField label="Resultado">
+          <PlatformFormField name="resultCode" label="Resultado">
             <PlatformSelect
-              name="resultCode"
               defaultValue={values?.resultCode ?? "ONGOING"}
               options={results.map((result) => ({ value: result.code, label: result.label }))}
             />
-          </FormField>
-          <FormField label="Fecha">
-            <PlatformDatePicker name="playedAt" defaultValue={values?.playedAtValue ?? ""} />
-          </FormField>
+          </PlatformFormField>
+          <PlatformFormField name="playedAt" label="Fecha">
+            <PlatformDatePicker defaultValue={values?.playedAtValue ?? ""} />
+          </PlatformFormField>
         </div>
 
         <div className="game-fields__row">
-          <FormField label="Evento">
-            <input type="text" name="event" defaultValue={values?.event ?? ""} maxLength={120} />
-          </FormField>
-          <FormField label="Lugar">
-            <input type="text" name="site" defaultValue={values?.site ?? ""} maxLength={120} />
-          </FormField>
+          <PlatformFormField name="event" label="Evento">
+            <input type="text" defaultValue={values?.event ?? ""} maxLength={120} />
+          </PlatformFormField>
+          <PlatformFormField name="site" label="Lugar">
+            <input type="text" defaultValue={values?.site ?? ""} maxLength={120} />
+          </PlatformFormField>
         </div>
 
         <div className="game-fields__row">
-          <FormField label="Ronda">
-            <input type="text" name="round" defaultValue={values?.round ?? ""} maxLength={120} />
-          </FormField>
-          <FormField label="ECO" info="Código de apertura, como «B40».">
-            <input type="text" name="eco" defaultValue={values?.eco ?? ""} maxLength={120} />
-          </FormField>
+          <PlatformFormField name="round" label="Ronda">
+            <input type="text" defaultValue={values?.round ?? ""} maxLength={120} />
+          </PlatformFormField>
+          <PlatformFormField name="eco" label="ECO" info="Código de apertura, como «B40».">
+            <input type="text" defaultValue={values?.eco ?? ""} maxLength={120} />
+          </PlatformFormField>
         </div>
       </div>
     </OptionalFields>
