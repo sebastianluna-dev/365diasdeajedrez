@@ -41,3 +41,51 @@ export const GAME_TERMINATION_LABELS: Record<GameTerminationCode, string> = {
   TIMEOUT: "Tiempo agotado",
   DRAW_AGREED: "Tablas acordadas",
 };
+
+/** Where a bot belongs: one row each in «Jugar», in this order. */
+export const BOT_GROUP = {
+  CHARACTERS: "CHARACTERS",
+  MEXICO_OPEN: "MEXICO_OPEN",
+  MEXICO_WOMEN: "MEXICO_WOMEN",
+  MEXICO_LEGENDS: "MEXICO_LEGENDS",
+  WORLD_CHAMPIONS: "WORLD_CHAMPIONS",
+  ACTIVE: "ACTIVE",
+} as const;
+
+export type BotGroupCode = (typeof BOT_GROUP)[keyof typeof BOT_GROUP];
+
+/** What each group is called on screen. */
+export const BOT_GROUP_LABELS: Record<BotGroupCode, string> = {
+  CHARACTERS: "Personajes",
+  MEXICO_OPEN: "Selección olímpica absoluta",
+  MEXICO_WOMEN: "Selección olímpica femenil",
+  MEXICO_LEGENDS: "Leyendas mexicanas",
+  WORLD_CHAMPIONS: "Campeones del mundo",
+  ACTIVE: "En activo",
+};
+
+/**
+ * The ring around a bot's portrait, as a code and never as a colour: gold for
+ * the world champions, the flag's three colours for Mexico's teams.
+ */
+export const BOT_RING = {
+  NONE: "NONE",
+  GOLD: "GOLD",
+  TRICOLOR: "TRICOLOR",
+} as const;
+
+export type BotRingCode = (typeof BOT_RING)[keyof typeof BOT_RING];
+
+/** Each group's ring. */
+export const BOT_GROUP_RING: Record<BotGroupCode, BotRingCode> = {
+  CHARACTERS: BOT_RING.NONE,
+  MEXICO_OPEN: BOT_RING.TRICOLOR,
+  MEXICO_WOMEN: BOT_RING.TRICOLOR,
+  MEXICO_LEGENDS: BOT_RING.NONE,
+  WORLD_CHAMPIONS: BOT_RING.GOLD,
+  ACTIVE: BOT_RING.NONE,
+};
+
+export function isBotRingCode(value: string): value is BotRingCode {
+  return Object.values(BOT_RING).includes(value as BotRingCode);
+}

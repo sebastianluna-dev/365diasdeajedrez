@@ -1,0 +1,64 @@
+---
+description: "The bots of «Jugar»: who they are (lib/chess/bots/roster.ts), how Stockfish is weakened to each Elo in two regimes, how a weak bot picks its move, the human-like delay, and the two feature flags."
+---
+
+# Bots
+
+The opponents of «Jugar» are Stockfish — the same lite single-threaded build as the analysis ([Stockfish, pieces & sounds](/chess/engine-and-assets)) — weakened to an Elo between 400 and 2800, each with a name, a group and a line about how it plays. Everything here is pure code in `lib/chess/bots/`, tested without the engine; the engine itself is only reached through the engine client.
+
+**Off until calibrated.** `PLAY_ENABLED` and `ANALYSIS_BOARD_ENABLED` in `constants/platform/features.const.ts` are `false`: no page, link or action of «Jugar» exists for a user until the bots have been measured and the owner has checked the screens.
+
+## Who they are — `roster.ts`
+
+`BOT_ROSTER` is the one source of the 45 bots: the seed reads it, the SQL of the migrations is generated from it, and the calibration takes its slugs and Elos from it. Each `BotSeed` has a `slug` (its address, `/jugar?rival=<slug>`), `name`, `elo`, `group`, `order` inside the group, `bio`, favourite `openings`, `country` (a FIDE code, for the flag), and for real players `fideTitle`, `fideElo` and `ratingAsOf`.
+
+| Group (`BOT_GROUP`)                         | Bots                                                                      | Ring      |
+| ------------------------------------------- | ------------------------------------------------------------------------- | --------- |
+| `CHARACTERS` «Personajes»                   | Twelve invented characters, Tere 412 to El Ingeniero 1868                 | none      |
+| `MEXICO_OPEN` «Selección olímpica absoluta» | Mexico's open team at the Samarcanda 2026 Olympiad, at their FIDE ratings | tricolour |
+| `MEXICO_WOMEN` «Selección olímpica femenil» | Mexico's women's team at the same Olympiad                                | tricolour |
+| `MEXICO_LEGENDS` «Leyendas mexicanas»       | Carlos Torre Repetto                                                      | none      |
+| `WORLD_CHAMPIONS` «Campeones del mundo»     | Steinitz to Ding Liren                                                    | gold      |
+| `ACTIVE` «En activo»                        | The stars of today; Carlsen, 2798, is the strongest bot                   | none      |
+
+`roster.test.ts` keeps the slugs unique and URL-safe, every label in 400–2800 and **never a multiple of 100**, Carlsen alone at the top, every group with its ring (`BOT_GROUP_RING`, a code and never a colour), flags only for federations `federations.ts` knows, and every FIDE rating dated.
+
+A bot named after a player does not play like them: it is Stockfish, weakened. Names of real people are shown as facts (title and rating with their date); permission for their use is the owner's to obtain, and the bios are the academy's own text.
+
+## How strong — `bot-strength.ts`
+
+What Stockfish's own limiters really do (checked against Stockfish 18's source and the research probes): `Skill Level` does not think worse — it thinks the same and, when the iteration at depth `1 + int(level)` ends, picks among four candidates with a weighted random; `UCI_Elo` is only a conversion to a fractional level (`skillLevelFor`), and it refuses anything under 1320. So `strengthFor(elo)` has **two regimes, split at the engine's floor and never blended**:
+
+- **Sampled, up to 1319**: the engine at full strength (`Skill Level 20`) on a tiny budget of nodes with several lines (`MultiPV`), and the app picks the move (`chooseBotMove`).
+- **The engine's own, from 1320**: `UCI_LimitStrength` + `UCI_Elo`, searching exactly to the depth where Skill picks (more is wasted work, less weakens without control); the move is the engine's `bestmove`.
+
+| Elo  | Engine options                              | Budget                              | Lines | Temperature (cp) | Blunder             | Delay (s) |
+| ---- | ------------------------------------------- | ----------------------------------- | ----- | ---------------- | ------------------- | --------- |
+| 400  | `Skill Level 20`, `UCI_LimitStrength false` | `nodes 1 500` (≈ depth 3)           | 8     | 140              | 15 % · random legal | 0.6–2.0   |
+| 600  | same                                        | `nodes 2 500`                       | 8     | 100              | 10 % · random legal | 0.7–2.5   |
+| 800  | same                                        | `nodes 4 000`                       | 8     | 75               | 6 % · random legal  | 0.8–3.0   |
+| 1000 | same                                        | `nodes 8 000`                       | 6     | 55               | 3.5 % · worst line  | 0.8–3.5   |
+| 1200 | same                                        | `nodes 15 000`                      | 6     | 40               | 2 % · worst line    | 1.0–4.0   |
+| 1320 | `UCI_LimitStrength true`, `UCI_Elo 1320`    | `depth 1`                           | 1     | the engine's     | the engine's        | 1.0–4.0   |
+| 1600 | `UCI_Elo 1600` (level 2.2)                  | `depth 3`                           | 1     |                  |                     | 1.0–4.0   |
+| 2000 | `UCI_Elo 2000` (level 4.2)                  | `depth 5`                           | 1     |                  |                     | 1.2–4.5   |
+| 2400 | `UCI_Elo 2400` (level 6.1)                  | `depth 7`                           | 1     |                  |                     | 1.2–5.0   |
+| 2800 | `UCI_Elo 2800` (level 10.2)                 | `depth 11` (browser cap 400k nodes) | 1     |                  |                     | 1.5–6.0   |
+
+Every bot sends `Hash 16`. Between rows the numbers are interpolated inside each regime; past 1200 the sampled row is extrapolated and clamped (at most 20 000 nodes, a temperature of at least 30 cp, a blunder rate of at least 1 %). The browser's node cap for 2600 and above can only weaken: in a tactical position it may leave the bot a little weaker in the browser than under Node.
+
+A bot searches by depth or nodes, **never by time** (`SearchBudget` has no `movetime`): its strength must not depend on the device, and nodes reproduce under Node, which is what lets it be calibrated before anything is promised. The one search by time is `FULL_STRENGTH_PROFILE` (`full-strength.const.ts`), the analysis board's «Jugar esta posición contra el módulo»: full strength, 300 ms, never calibrated nor saved. The numbers above are a starting point; the calibration moves the table — the temperature, the blunders and the nodes below; `UCI_Elo` above — and never the labels.
+
+## How a weak bot picks — `choose-bot-move.ts`
+
+`chooseBotMove(candidates, strength, legalUci, rng)` works on the candidates of the search's last complete iteration (`finalCandidates`), scored for the side that moves (`scoreOf`: centipawns, and a mate as ±100 000 minus two per move), so a bot playing Black samples as well as one playing White:
+
+1. A blunder with the bot's rate: a random legal move (`legalUciMoves`) below 1000, the worst candidate above.
+2. A mate of its own is always played, the shortest.
+3. Otherwise a soft-max: each candidate within 3 × T of the best is picked with weight `exp(−(best − score) / T)`; one that loses more than that only comes in as a blunder.
+
+The randomness is injected: `mulberry32(seedOf(gameId, ply))` (`rng.ts`) in a game, a constant in the tests. A weak bot's game is reproducible from the same seed, the same hash and a fresh `ucinewgame`; a bot from 1320 up is not (the engine draws its own random numbers), so its tests check the protocol and the calibration checks its distribution.
+
+## How long it seems to think — `bot-delay.ts`
+
+A bot's search takes 1–150 ms; a person never answers that fast, so the wait is a timer on the screen, never the engine's budget. `thinkDelayMs(strength, { ply, candidates, forced, recapture, rng })` draws within the bot's range, pushed toward the long end when several moves are within 30 cp of the best, and cut to 0.3–0.8 s for an only move, a recapture and the bot's first eight moves. The caller subtracts what the search already took.

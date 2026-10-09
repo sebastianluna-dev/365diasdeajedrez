@@ -16,3 +16,21 @@
  * value it has today.
  */
 export const MOVE_TRAINER_ENABLED = false as boolean;
+
+/**
+ * «Jugar»: games against the bots, `/jugar`, the profile at `/perfil` with the
+ * games played, and every link to them.
+ *
+ * Off until the bots are calibrated (`npm run bots:calibrate`) and the owner
+ * has checked the screens: the pages answer 404 — also one opened by a game's
+ * id — and the actions of `services/play` answer `disabled`.
+ */
+export const PLAY_ENABLED = false as boolean;
+
+/**
+ * «Herramientas»: the analysis board at `/herramientas/tablero-de-analisis`,
+ * «Importar partida», and the menu that gathers them with the explorer and the
+ * trainer. It persists nothing and needs no calibration nor migration, so it
+ * can be switched on before `PLAY_ENABLED`.
+ */
+export const ANALYSIS_BOARD_ENABLED = false as boolean;
