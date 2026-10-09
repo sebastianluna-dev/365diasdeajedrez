@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { normalizePositionFen } from "./position-key";
 
 // Identity of a position for the position search. THE ONLY source of truth: the
 // client sends the FEN and the hash is always computed here, on the server. Do
@@ -9,22 +10,8 @@ import { createHash } from "node:crypto";
 // the seed and the indexing scripts run outside Next and need to import it.
 
 /**
- * The four fields that define the position: pieces, turn, castling rights and
- * en passant square. The half-move clock and the move number are discarded, as
- * they tell the history of the game and not the position: two games that
- * transpose through different orders reach the same place with different clocks
- * and must count as the same position.
- *
- * The en passant square needs no special treatment: chessops only writes it
- * when the capture is really legal (`legalEpSquare` in `Position.toSetup`), so
- * one of its FENs already comes normalised on that point.
- */
-export function normalizePositionFen(fen: string): string {
-  return fen.trim().split(/\s+/).slice(0, 4).join(" ");
-}
-
-/**
- * Deterministic hash of the position, to index and search by equality.
+ * Deterministic hash of the position, to index and search by equality: the
+ * hash of its key (`normalizePositionFen`, which drops the clocks).
  *
  * SHA-256 and not Zobrist: the hash only has to be stable and free of practical
  * collisions, and this is provided by the standard library with no state to

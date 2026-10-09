@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { createPositionHash, normalizePositionFen } from "@/lib/chess/position-hash";
+import { createPositionHash } from "@/lib/chess/position-hash";
+import { normalizePositionFen } from "@/lib/chess/position-key";
 
 const START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 

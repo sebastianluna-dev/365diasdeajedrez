@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { legalDests, positionOutcome } from "./legal-moves";
+import { legalDests, legalUciMoves, positionOutcome } from "./legal-moves";
 
 const START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -47,5 +47,25 @@ describe("positionOutcome", () => {
 
   it("un FEN inválido no dice nada", () => {
     expect(positionOutcome("esto no es un fen")).toBeNull();
+  });
+});
+
+describe("legalUciMoves", () => {
+  it("lists every promotion of a pawn on the seventh rank", () => {
+    const moves = legalUciMoves("8/4P3/8/8/8/8/k7/4K3 w - - 0 1");
+    expect(moves).toEqual(expect.arrayContaining(["e7e8q", "e7e8r", "e7e8b", "e7e8n"]));
+    expect(moves).not.toContain("e7e8");
+  });
+
+  it("writes castling as the king's two squares, never onto its rook", () => {
+    const moves = legalUciMoves("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
+    expect(moves).toEqual(expect.arrayContaining(["e1g1", "e1c1"]));
+    expect(moves).not.toContain("e1h1");
+    expect(moves).not.toContain("e1a1");
+  });
+
+  it("is twenty moves at the start, and none for an invalid FEN", () => {
+    expect(legalUciMoves("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")).toHaveLength(20);
+    expect(legalUciMoves("not a fen")).toEqual([]);
   });
 });
