@@ -9,6 +9,10 @@ export interface CurrentUser {
   email: string;
   displayName: string;
   createdAt: Date;
+  /** The user name: the address of their profile, `/perfil/<slug>`. */
+  slug: string;
+  /** A FIDE federation code for their flag, or null. */
+  country: string | null;
 }
 
 // Identity DAL: the ONLY point that decides who the current user is. Services
@@ -34,8 +38,8 @@ export const getSessionUser = cache(async (): Promise<CurrentUser | null> => {
   const session = await getSessionContext();
   if (!session) return null;
 
-  const { id, email, displayName, createdAt } = session;
-  return { id, email, displayName, createdAt };
+  const { id, email, displayName, createdAt, slug, country } = session;
+  return { id, email, displayName, createdAt, slug, country };
 });
 
 /**

@@ -37,16 +37,16 @@ export const getTeacherContext = cache(async (): Promise<TeacherContext | null> 
   // a panel: it is the deactivation without deleting data.
   if (!session?.teacher || !session.teacher.isActive) return null;
 
-  const { id, email, displayName, createdAt } = session;
-  return { user: { id, email, displayName, createdAt }, teacher: session.teacher };
+  const { id, email, displayName, createdAt, slug, country } = session;
+  return { user: { id, email, displayName, createdAt, slug, country }, teacher: session.teacher };
 });
 
 const getStaffContext = cache(async (): Promise<StaffContext | null> => {
   const session = await getSessionContext();
   if (!session?.staff) return null;
 
-  const { id, email, displayName, createdAt } = session;
-  return { user: { id, email, displayName, createdAt }, staffId: session.staff.id };
+  const { id, email, displayName, createdAt, slug, country } = session;
+  return { user: { id, email, displayName, createdAt, slug, country }, staffId: session.staff.id };
 });
 
 /**

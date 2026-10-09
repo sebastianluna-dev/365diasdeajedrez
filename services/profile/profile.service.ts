@@ -32,27 +32,19 @@ export const getProfileOf = cache(async (slug: string): Promise<ProfileView | nu
   return profileView(row, { viewerId: viewer.userId, botLevel, scoreboard, streak, recentGames });
 });
 
-/** The current person's user name, for `/perfil` to redirect to their own profile. */
-export const getOwnSlug = cache(async (): Promise<string> => {
-  const user = await getCurrentUser();
-  const row = await getPlatformDb().user.findUniqueOrThrow({ where: { id: user.id }, select: { slug: true } });
-  return row.slug;
-});
+/** The current person's user name, for `/perfil` to redirect to their own profile: the session carries it. */
+export const getOwnSlug = cache(async (): Promise<string> => (await getCurrentUser()).slug);
 
-/** The current person as a side of a scoreboard: their name and their portrait. */
+/** The current person as a side of a scoreboard: their name and their portrait, from the session. */
 export const getOwnPlayerCard = cache(async (): Promise<PlayerCard> => {
   const user = await getCurrentUser();
-  const row = await getPlatformDb().user.findUniqueOrThrow({
-    where: { id: user.id },
-    select: { slug: true, displayName: true, country: true },
-  });
   return {
-    name: row.displayName,
+    name: user.displayName,
     avatar: {
-      initials: initialsOf(row.displayName),
-      tone: avatarToneOf(row.slug),
+      initials: initialsOf(user.displayName),
+      tone: avatarToneOf(user.slug),
       ring: BOT_RING.NONE,
-      country: row.country,
+      country: user.country,
     },
   };
 });

@@ -30,6 +30,10 @@ export interface SessionUser {
   email: string;
   displayName: string;
   createdAt: Date;
+  /** The user name: the address of their profile, and the seed of their portrait's tone. */
+  slug: string;
+  /** A FIDE federation code for their flag, or null. */
+  country: string | null;
   sessionId: string;
   /// Platform roles, resolved in the SAME session query: they are rows whose
   /// existence is the role (see prisma/schema.prisma). They are exposed only
@@ -100,6 +104,10 @@ export async function readSessionUser(): Promise<SessionUser | null> {
           email: true,
           displayName: true,
           createdAt: true,
+          // The portrait's seed and flag: read here, where the row is already
+          // being read, so «Jugar» and the profile ask for no row of their own.
+          slug: true,
+          country: true,
           // Roles by row existence. They go in the nested select so that this path —
           // which every authenticated request goes through — keeps costing a single
           // query, which the join strategy above is what makes true.
