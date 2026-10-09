@@ -148,6 +148,36 @@
     margin-top: calc(-1 * var(--platform-space-4));
   }
 
+  /* A game played on the platform: the strip carries a portrait and a line
+     under the name, so it is a size up and a step taller. */
+  & .game-viewer__player_kind_played {
+    padding: var(--platform-space-2) var(--platform-space-3);
+    font-size: var(--viewer-player-font-size, var(--platform-type-sm));
+  }
+
+  /* G6: who won is said in the strips, never over the board — the winner's
+     tinted green, the loser's red, a draw's grey — and the reason under the
+     name takes the strip's ink. */
+  & .game-viewer__player_ending_win {
+    background: var(--platform-success-soft);
+
+    & .player-strip__status {
+      color: var(--platform-success-ink);
+    }
+  }
+
+  & .game-viewer__player_ending_loss {
+    background: var(--platform-danger-soft);
+
+    & .player-strip__status {
+      color: var(--platform-danger);
+    }
+  }
+
+  & .game-viewer__player_ending_draw {
+    background: var(--platform-surface-neutral);
+  }
+
   /* The buttons touch and share the column's width: they are a single button
      bar, and the gap between them read them as loose actions. */
   & .game-viewer__nav {

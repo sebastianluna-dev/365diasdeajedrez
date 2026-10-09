@@ -1,6 +1,8 @@
 import { type ComponentProps, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, fireEvent, fn, userEvent, waitFor, within } from "storybook/test";
+import { FIXTURE_BOT, FIXTURE_STUDENT } from "@/lib/testing/fixtures/bots";
+import type { PlayStatus } from "@/lib/play/play-status";
 import { GameViewer } from "./game-viewer.comp";
 
 const HEADERS = `[Event "Paris"]
@@ -101,8 +103,8 @@ lesson's way on, in-place editing.
 
 The viewer never saves: it reports the new PGN and the screen decides. Here
 the screen is the story, which keeps the PGN so a move played on the board in
-\`Study\` stays. Its older slots (\`footerActions\`, \`positionActions\`) are
-left empty, as the "data, not components" rule wants them gone.
+\`Study\` stays. A game against a bot is played on it too
+(\`interaction="play"\`): the \`Play…\` stories show its states.
 
 Source: \`components/chess/game-viewer/game-viewer.comp.tsx\`.
 Reference page: [Components › GameViewer](/components/chess/game-viewer/game-viewer) in the docs site.
@@ -120,8 +122,8 @@ Reference page: [Components › GameViewer](/components/chess/game-viewer/game-v
     controls: { control: "inline-radio", options: ["board", "panel"] },
     boardTools: { control: "boolean", description: "The flip and the options menu beside the arrows." },
     engine: { control: "boolean", description: "Offers the engine (switched off until someone switches it on)." },
-    footerActions: { control: false },
-    positionActions: { control: false },
+    interaction: { control: "inline-radio", options: ["read", "edit", "play"] },
+    play: { control: false },
   },
   decorators: [
     (Story) => (
@@ -240,3 +242,94 @@ export const PinnedComment: Story = {
 
 /** A PGN with nothing in it the parser can read: the viewer says so in place of the board. */
 export const Unreadable: Story = { args: { pgn: "" } };
+
+/** The Opera game's first `plies` moves, as a game against a bot still being played: the student with White against Don Chuy. */
+const liveGame = (plies: number) => {
+  const moves = OPERA_GAME.slice(OPERA_GAME.indexOf("1. e4"))
+    .replace(/\d+\.\s*/g, "")
+    .replace("1-0", "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, plies);
+  const movetext = moves.map((san, index) => (index % 2 === 0 ? `${index / 2 + 1}. ${san}` : san)).join(" ");
+  return `[White "${FIXTURE_STUDENT.name}"]\n[Black "${FIXTURE_BOT.name}"]\n[Result "*"]\n\n${movetext} *`;
+};
+
+/** The strips and the play state for a live game in `status`. */
+const playArgs = (status: PlayStatus, plies: number): Partial<ComponentProps<typeof GameViewer>> => ({
+  pgn: liveGame(plies),
+  initialPath: mainLinePath(plies),
+  controls: "panel",
+  interaction: "play",
+  players: {
+    white: {
+      name: FIXTURE_STUDENT.name,
+      avatar: FIXTURE_STUDENT.avatar,
+      turn: status === "your-turn",
+      status: status === "your-turn" ? "Te toca mover" : undefined,
+      clock: null,
+    },
+    black: {
+      name: FIXTURE_BOT.name,
+      elo: FIXTURE_BOT.elo,
+      avatar: { ...FIXTURE_BOT.avatar, busy: status === "thinking" },
+      turn: status !== "your-turn",
+      status: status === "thinking" ? "Pensando…" : undefined,
+      clock: null,
+    },
+  },
+  play: {
+    color: "white",
+    status,
+    onMove: fn().mockName("appendPlayedMove"),
+    onAbandon: fn().mockName("openAbandonPopup"),
+  },
+});
+
+/** Playing a bot, the student's turn: the dot lit on their strip, the board movable for White at the end of the line, «Abandonar» under the moves. */
+export const PlayYourTurn: Story = { name: "Play: your turn", args: playArgs("your-turn", 12) };
+
+/** The bot thinking: the arc turns around its portrait, «Pensando…» under its name, and the board waits. */
+export const PlayThinking: Story = { name: "Play: thinking", args: playArgs("thinking", 13) };
+
+/** The bot's move on the board while it is saved: nobody moves until it is. */
+export const PlaySaving: Story = { name: "Play: saving", args: playArgs("saving", 14) };
+
+/**
+ * The game over (G6): the winner's strip green with «Ganaste», the loser's red with «Perdió» and the reason under each
+ * name; under the board «Revancha» and the other ways on, and the scoreboard against Don Chuy. Nothing covers the board.
+ */
+export const PlayOver: Story = {
+  name: "Play: over",
+  args: {
+    pgn: OPERA_GAME,
+    initialPath: mainLinePath(33),
+    controls: "panel",
+    interaction: "read",
+    tools: {},
+    players: {
+      white: {
+        name: FIXTURE_STUDENT.name,
+        avatar: FIXTURE_STUDENT.avatar,
+        ending: { kind: "win", label: "Ganaste", reason: "por jaque mate" },
+      },
+      black: {
+        name: FIXTURE_BOT.name,
+        elo: FIXTURE_BOT.elo,
+        avatar: FIXTURE_BOT.avatar,
+        ending: { kind: "loss", label: "Perdió", reason: "por jaque mate" },
+      },
+    },
+    play: {
+      color: "white",
+      status: "over",
+      over: {
+        scoreboard: { you: FIXTURE_STUDENT, rival: FIXTURE_BOT, wins: 3, losses: 1, draws: 0 },
+        rematch: fn(async () => {}).mockName("rematchPlayedGame"),
+        otherOpponentHref: "/jugar",
+        analysisBoardHref: "/herramientas/tablero-de-analisis?partida=AbC12345",
+        onSave: fn().mockName("openSavePopup"),
+      },
+    },
+  },
+};

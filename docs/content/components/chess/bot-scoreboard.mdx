@@ -1,0 +1,39 @@
+---
+description: "The record against one rival as a match's scoreboard: both portraits at the ends, the wins and losses large between them, the draws small underneath."
+---
+
+# `BotScoreboard`
+
+|            |                                                                                                          |
+| ---------- | -------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/bot-scoreboard/bot-scoreboard.comp.tsx`                                                |
+| Kind       | Server Component                                                                                         |
+| Stylesheet | `bot-scoreboard.comp.css` → block `.bot-scoreboard`                                                      |
+| Story      | `bot-scoreboard.stories.tsx` (`chess/BotScoreboard`): after a game, before the first one, the small size |
+| Used by    | [`GameOverActions`](/components/chess/game-viewer/game-over-actions), a bot's sheet in the play lobby    |
+| Uses       | [`PlayerAvatar`](/components/chess/player-avatar)                                                        |
+
+## Purpose
+
+H6, chosen on 2026-10-08: the record against one bot reads as a match's scoreboard — you and the rival with your portraits, «2 – 1» large between you, «1 tabla» small underneath. Only finished games with a result count (`countsForScore` in `services/play/play-rules.ts`); an aborted game is not a game. Before the first game it says «Primera partida» under a 0 – 0.
+
+The figures are `aria-hidden`; the group's `aria-label` says the whole record in words («Marcador contra Don Chuy: 2 ganadas, 1 perdidas, 1 tabla»).
+
+## Props
+
+| Prop     | Type             | Required            | Meaning                                                |
+| -------- | ---------------- | ------------------- | ------------------------------------------------------ |
+| `you`    | `ScoreboardSide` | yes                 | `{ name, avatar }` of the person.                      |
+| `rival`  | `ScoreboardSide` | yes                 | `{ name, avatar, elo? }`; the Elo is shown as «≈ 783». |
+| `wins`   | `number`         | yes                 |                                                        |
+| `losses` | `number`         | yes                 |                                                        |
+| `draws`  | `number`         | yes                 |                                                        |
+| `size`   | `"sm" \| "md"`   | no · default `"md"` | `sm` inside a bot's sheet, on the soft surface.        |
+
+## Markup & styling
+
+**Elements:** `.bot-scoreboard__side`, `.bot-scoreboard__name`, `.bot-scoreboard__elo`, `.bot-scoreboard__score`, `.bot-scoreboard__figures`, `.bot-scoreboard__figure`, `.bot-scoreboard__dash`, `.bot-scoreboard__draws`
+
+**Modifiers:** `.bot-scoreboard_size_sm`, `.bot-scoreboard_size_md`
+
+**Tokens:** `--platform-surface`, `--platform-surface-soft`, `--platform-text`, `--platform-text-title`, `--platform-text-muted`, `--platform-font-display`, `--platform-type-*`, `--platform-space-*`.

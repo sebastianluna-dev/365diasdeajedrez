@@ -145,6 +145,8 @@ export const TEXT_PAIRS: readonly (readonly [text: string, background: string])[
   // The ink button and the danger button's hover are written in the surface.
   ["surface", "text"],
   ["surface", "danger"],
+  // A played game's «Ganaste»/«Ganó», filled in the success ink (G6).
+  ["surface", "success-ink"],
   // The user menu's avatar: the initial in the canvas's colour, on the text's.
   ["bg", "text"],
   // A study's tile: the brand's mark in the accent, on the white surface.
@@ -158,6 +160,8 @@ export const TEXT_PAIRS: readonly (readonly [text: string, background: string])[
   ["selection", "surface"],
   ["selection", "selection-soft"],
   ["selection", "selection-wash"],
+  // A portrait's initials on each of its six tones.
+  ...[1, 2, 3, 4, 5, 6].map((tone) => ["on-avatar", `avatar-${tone}`] as const),
 ];
 
 /**
@@ -179,6 +183,7 @@ export const COLOUR_GROUPS: readonly { name: string; pattern: RegExp }[] = [
   { name: "Semantic", pattern: /^(danger|(success|danger|warning)-[a-z]+)$/ },
   { name: "Ink", pattern: /^(ink|on-ink|accent-on-ink)$/ },
   { name: "Levels", pattern: /^level-[0-9]+$/ },
+  { name: "Avatar", pattern: /^(avatar-[0-9]+|on-avatar|ring(-[a-z]+)+)$/ },
 ];
 
 export interface ColourGroup {

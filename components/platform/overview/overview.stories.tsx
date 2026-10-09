@@ -1,15 +1,18 @@
 import { type CSSProperties, Fragment, useRef, useState, type ReactNode } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import Link from "next/link";
+import { BotScoreboard } from "@/components/chess/bot-scoreboard/bot-scoreboard.comp";
 import { ChessBoard } from "@/components/chess/chess-board.comp";
 import { ChessMoveQualityIcon } from "@/components/chess/chess-move-quality-icon.comp";
 import { EnginePanel } from "@/components/chess/game-viewer/engine-panel.comp";
 import { GameReviewChart } from "@/components/chess/game-viewer/game-review-chart.comp";
+import { GameOverActions } from "@/components/chess/game-viewer/game-over-actions.comp";
 import { GameReview } from "@/components/chess/game-viewer/game-review.comp";
 import { GameTools } from "@/components/chess/game-viewer/game-tools.comp";
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
 import { MoveContextMenu } from "@/components/chess/game-viewer/move-context-menu.comp";
 import { MoveTable } from "@/components/chess/game-viewer/move-table.comp";
+import { PlayerAvatar } from "@/components/chess/player-avatar/player-avatar.comp";
 import { MoveTree } from "@/components/chess/game-viewer/move-tree.comp";
 import { PlayerStrip } from "@/components/chess/game-viewer/player-strip.comp";
 import { StaticDiagram } from "@/components/chess/static-diagram.comp";
@@ -119,6 +122,7 @@ import { buildPlatformNavGroups } from "@/constants/platform/nav-items.const";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { GAME_RESULT } from "@/constants/platform/study-codes.const";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
+import { FIXTURE_BOT, FIXTURE_STUDENT } from "@/lib/testing/fixtures/bots";
 import { staffRoutes } from "@/lib/platform-routes";
 import { readTokens, type Theme, tokenContrast } from "@/lib/platform-tokens";
 import type { CourseLevelItem } from "@/services/courses/courses.types";
@@ -1432,6 +1436,27 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               <div className="overview__player">
                 <PlayerStrip name="Fernanda Ríos" elo={2391} title="WGM" country="MEX" outcome="win" />
               </div>
+            </Tile>
+            <Tile name="PlayerAvatar" docs="chess-playeravatar" width={400} height={120}>
+              <div className="overview__avatars">
+                <PlayerAvatar {...FIXTURE_BOT.avatar} size="lg" />
+                <PlayerAvatar initials="JC" tone={2} ring="GOLD" country="CUB" size="lg" />
+                <PlayerAvatar initials="ZC" tone={3} ring="TRICOLOR" country="MEX" size="lg" />
+                <PlayerAvatar {...FIXTURE_BOT.avatar} size="lg" busy />
+              </div>
+            </Tile>
+            <Tile name="BotScoreboard" docs="chess-botscoreboard" width={400} height={136}>
+              <BotScoreboard you={FIXTURE_STUDENT} rival={FIXTURE_BOT} wins={2} losses={1} draws={1} />
+            </Tile>
+            <Tile name="GameOverActions" docs="chess-game-viewer-gameoveractions" width={400} height={264}>
+              <GameOverActions
+                scoreboard={{ you: FIXTURE_STUDENT, rival: FIXTURE_BOT, wins: 3, losses: 1, draws: 0 }}
+                rematch={async () => undefined}
+                otherOpponentHref="/jugar"
+                analysisBoardHref={null}
+                onSave={() => undefined}
+                onAnalyse={() => undefined}
+              />
             </Tile>
             <Tile name="MoveTable" docs="chess-game-viewer-movetable" width={400} height={392}>
               {OPERA_OPENING_TREE && (

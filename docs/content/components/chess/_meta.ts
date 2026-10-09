@@ -5,6 +5,8 @@ const meta: MetaRecord = {
   "chess-board": "ChessBoard",
   "chess-board-lazy": "ChessBoardLazy",
   "static-diagram": "StaticDiagram",
+  "player-avatar": "PlayerAvatar",
+  "bot-scoreboard": "BotScoreboard",
   "elo-table": "EloTable",
   "chess-move-quality-icon": "ChessMoveQualityIcon",
   "game-viewer": "game-viewer/",

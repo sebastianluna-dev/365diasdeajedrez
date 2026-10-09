@@ -1,0 +1,44 @@
+---
+description: "What can be done once a game against a bot is over, under the board: Revancha, Otro rival, Analizar, Tablero de análisis, Guardar en un estudio, and the scoreboard against that rival."
+---
+
+# `GameOverActions`
+
+Also exports the type `GameOverActionsData`.
+
+|            |                                                                                                                         |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/game-over-actions.comp.tsx`                                                               |
+| Kind       | Client Component (rendered by the viewer)                                                                               |
+| Stylesheet | `game-over-actions.comp.css` → block `.game-over-actions`                                                               |
+| Story      | `game-over-actions.stories.tsx` (`chess/game-viewer/GameOverActions`): every way on, and without the analysis board     |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`play.over`)                                                 |
+| Uses       | [`BotScoreboard`](/components/chess/bot-scoreboard), [`SubmitButton`](/components/platform/shared/submit-button), icons |
+
+## Purpose
+
+G6 (2026-10-08) replaced the result card over the board (F1): who won is said in the player strips, and what comes next goes **under the board**, where it covers nothing and the game stays there to be gone through. The viewer draws it from `play.over`, data the game's page gives it, with any interaction.
+
+- **Revancha** (`platform-button_variant_accent`, the one main action): a `<form>` over the `rematch` server action, «Preparando…» while it opens the new game.
+- **Otro rival**: a link back to the lobby.
+- **Analizar**: the viewer's own review, the «Evaluación» tab of [`GameTools`](/components/chess/game-viewer/game-tools), brought into view (`useToolsTab().reveal`). Only drawn when the viewer has `tools`.
+- **Tablero de análisis**: only while that board is switched on (`analysisBoardHref` not null).
+- **Guardar en un estudio**: the page opens its popup.
+- The [`BotScoreboard`](/components/chess/bot-scoreboard) against that rival, counting the game just finished.
+
+## Props
+
+| Prop                | Type                          | Required | Meaning                                                                     |
+| ------------------- | ----------------------------- | -------- | --------------------------------------------------------------------------- |
+| `scoreboard`        | `BotScoreboardProps \| null`  | yes      | The record against this rival.                                              |
+| `rematch`           | `() => Promise<void>`         | yes      | A server action that opens the rematch and redirects to it.                 |
+| `otherOpponentHref` | `string`                      | yes      | The lobby.                                                                  |
+| `analysisBoardHref` | `string \| null`              | yes      | The game on the analysis board; null while `ANALYSIS_BOARD_ENABLED` is off. |
+| `onSave`            | `(event: MouseEvent) => void` | yes      | Opens the page's «Guardar en un estudio» popup.                             |
+| `onAnalyse`         | `() => void`                  | no       | Given by the viewer when it has tools; without it «Analizar» is not drawn.  |
+
+## Markup & styling
+
+**Elements:** `.game-over-actions__buttons` (wrapping as the column narrows; the rematch's `<form>` is `display: contents`)
+
+**Tokens:** `--platform-space-2`, `--platform-space-3`; the buttons are the platform's `.platform-button`.

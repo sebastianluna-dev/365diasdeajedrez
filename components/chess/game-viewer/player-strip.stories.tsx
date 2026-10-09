@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { FIXTURE_BOT } from "@/lib/testing/fixtures/bots";
 import { PlayerStrip } from "./player-strip.comp";
 
 const meta = {
@@ -93,4 +94,47 @@ export const UnknownFederation: Story = {
 export const LongName: Story = {
   args: { name: "Fernanda Alejandra Ríos de la Garza" },
   parameters: { stripWidth: 320 },
+};
+
+/** A game against a bot, the bot to move: the lit dot, its portrait with the arc turning, «Pensando…» under its name. */
+export const PlayedThinking: Story = {
+  args: {
+    name: FIXTURE_BOT.name,
+    elo: FIXTURE_BOT.elo,
+    title: undefined,
+    country: undefined,
+    outcome: undefined,
+    avatar: { ...FIXTURE_BOT.avatar, busy: true },
+    turn: true,
+    status: "Pensando…",
+    clock: null,
+  },
+};
+
+/** The same strip once the bot lost (G6): «Perdió» in the danger red and the reason under the name; the viewer tints the band. */
+export const PlayedLost: Story = {
+  args: {
+    name: FIXTURE_BOT.name,
+    elo: FIXTURE_BOT.elo,
+    title: undefined,
+    country: undefined,
+    outcome: undefined,
+    avatar: FIXTURE_BOT.avatar,
+    ending: { kind: "loss", label: "Perdió", reason: "por jaque mate" },
+  },
+};
+
+/** A strip with a clock running, as a game between people will have one: the slot at the far end, in the ink. */
+export const WithClock: Story = {
+  args: {
+    name: "Ana Torres",
+    elo: undefined,
+    title: undefined,
+    country: undefined,
+    outcome: undefined,
+    avatar: { initials: "AT", tone: 2, ring: "NONE", country: null },
+    turn: true,
+    status: "Te toca mover",
+    clock: { remainingMs: 158_000, running: true },
+  },
 };

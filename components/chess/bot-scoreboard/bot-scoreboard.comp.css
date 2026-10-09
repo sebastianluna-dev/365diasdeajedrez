@@ -1,0 +1,71 @@
+/* A match's scoreboard: the two sides at the ends, the score large in the
+   middle, the draws small under it. */
+.bot-scoreboard {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--platform-space-4);
+  padding: var(--platform-space-3) var(--platform-space-4);
+  border-radius: 8px;
+  background: var(--platform-surface);
+
+  & .bot-scoreboard__side {
+    display: grid;
+    justify-items: center;
+    gap: var(--platform-space-1);
+    min-width: 0;
+    text-align: center;
+  }
+
+  & .bot-scoreboard__name {
+    max-width: 100%;
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+    color: var(--platform-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .bot-scoreboard__elo {
+    font-weight: 400;
+    color: var(--platform-text-muted);
+  }
+
+  & .bot-scoreboard__score {
+    display: grid;
+    justify-items: center;
+    gap: var(--platform-space-0-5);
+  }
+
+  & .bot-scoreboard__figures {
+    display: flex;
+    align-items: baseline;
+    gap: var(--platform-space-2);
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-3xl);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--platform-text-title);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .bot-scoreboard__dash {
+    color: var(--platform-text-muted);
+  }
+
+  & .bot-scoreboard__draws {
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-text-muted);
+  }
+
+  &.bot-scoreboard_size_sm {
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-2) var(--platform-space-3);
+    background: var(--platform-surface-soft);
+
+    & .bot-scoreboard__figures {
+      font-size: var(--platform-type-2xl);
+    }
+  }
+}

@@ -1,0 +1,16 @@
+/* Under the board once the game is over: the buttons, wrapping as the column
+   narrows, and the scoreboard against that rival. */
+.game-over-actions {
+  display: grid;
+  gap: var(--platform-space-3);
+
+  & .game-over-actions__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-2);
+  }
+
+  & .game-over-actions__buttons form {
+    display: contents;
+  }
+}

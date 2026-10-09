@@ -38,7 +38,13 @@ export function useToolsTab(canEdit: boolean) {
     setFocusRequest((count) => count + 1);
   }, []);
 
-  return { tab, setTab, focusRequest, requestEdit };
+  /** Opens a tab and brings the panel into view: «Analizar» under a finished game. */
+  const reveal = useCallback((next: GameToolsTab) => {
+    setTab(next);
+    setFocusRequest((count) => count + 1);
+  }, []);
+
+  return { tab, setTab, focusRequest, requestEdit, reveal };
 }
 
 /**

@@ -67,3 +67,92 @@
   color: var(--platform-text-muted);
   font-variant-numeric: tabular-nums;
 }
+
+/* E4: the turn as a dot before the portrait, lit in the accent for whoever
+   moves and dim for the other. */
+.player-strip__turn {
+  flex: none;
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  background: var(--platform-border-strong);
+
+  &.player-strip__turn_state_on {
+    background: var(--platform-accent);
+  }
+}
+
+/* Beside the portrait, two lines: who, and what they are doing or how it ended. */
+.player-strip__who {
+  display: grid;
+  min-width: 0;
+  gap: var(--platform-space-0-5);
+}
+
+.player-strip__line {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  min-width: 0;
+}
+
+.player-strip__status {
+  font-size: max(var(--platform-type-2xs), 0.86em);
+  color: var(--platform-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* G6: «Ganaste» / «Ganó» filled in the success ink, «Perdió» in the danger
+   red, «Tablas» on the neutral fill. */
+.player-strip__ending {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: var(--platform-space-0-5) var(--platform-space-2);
+  border-radius: 4px;
+  font-size: max(var(--platform-type-2xs), 0.86em);
+  font-weight: 700;
+  line-height: 1.3;
+
+  &.player-strip__ending_kind_win {
+    background: var(--platform-success-ink);
+    color: var(--platform-surface);
+  }
+
+  &.player-strip__ending_kind_loss {
+    background: var(--platform-danger);
+    color: var(--platform-surface);
+  }
+
+  &.player-strip__ending_kind_draw {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text-muted);
+  }
+}
+
+.player-strip__ending-icon {
+  width: 0.9em;
+  height: 0.9em;
+}
+
+/* The clock's slot, at the far end: still in grey, running in the ink. */
+.player-strip__clock {
+  flex: none;
+  margin-left: auto;
+  padding: var(--platform-space-1) var(--platform-space-2);
+  border-radius: 4px;
+  background: var(--platform-surface-neutral);
+  color: var(--platform-text-muted);
+  font-family: var(--platform-font-mono);
+  font-size: 1.4em;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+
+  &.player-strip__clock_state_running {
+    background: var(--platform-text);
+    color: var(--platform-surface);
+  }
+}

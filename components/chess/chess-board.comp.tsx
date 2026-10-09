@@ -63,6 +63,12 @@ export interface ChessBoardProps {
   /** Called after a legal interactive move, with its SAN and the FEN it was played from. */
   onMove?: (san: string, fromFen: string) => void;
   /**
+   * Which side may move, when it is not simply the side to move: a game
+   * against a bot lets the person move only their own colour, and nobody
+   * while the bot thinks (`"none"`). Without it, whoever's turn it is.
+   */
+  movableColor?: "white" | "black" | "none";
+  /**
    * Lets the user draw arrows and circles with the right click, and notifies on release.
    *
    * It also changes WHERE the shapes live: without this they are `autoShapes`,
@@ -81,6 +87,7 @@ export function ChessBoard({
   annotations,
   interactive = false,
   onMove,
+  movableColor,
   editableShapes = false,
   onShapesChange,
 }: ChessBoardProps) {
@@ -170,6 +177,8 @@ export function ChessBoard({
       viewOnly: !interactive,
       draggable: { enabled: interactive },
       selectable: { enabled: interactive },
+      // A move is made on one's turn or not at all: no premoves.
+      premovable: { enabled: false },
       drawable: {
         enabled: editableShapes,
         onChange: editableShapes ? (shapes) => onShapesChangeRef.current?.(shapes) : undefined,
@@ -198,10 +207,11 @@ export function ChessBoard({
       check: check ? color : false,
     };
     if (interactive) {
+      const mover = movableColor ?? color;
       config.movable = {
         free: false,
-        color,
-        dests: legalDests(fen),
+        color: mover === "none" ? undefined : mover,
+        dests: mover === color ? legalDests(fen) : new Map(),
         showDests: true,
         events: {
           after: (orig, dest) => {
@@ -223,7 +233,7 @@ export function ChessBoard({
     if (editableShapes) config.drawable = { shapes: position?.shapes ?? [] };
     api.set(config);
     if (!editableShapes) api.setAutoShapes(position?.shapes ?? []);
-  }, [ply, positions, position, orientation, interactive, editableShapes]);
+  }, [ply, positions, position, orientation, interactive, movableColor, editableShapes]);
 
   // Keep chessground sized to its container.
   useEffect(() => {

@@ -8,6 +8,8 @@ import { PlatformPopup, type PlatformPopupHandle } from "./platform-popup.comp";
 interface PopupArgs {
   title: string;
   size: "sm" | "md" | "lg";
+  /** `sheet`: on a phone it comes up from the bottom edge. */
+  phone?: "sheet";
   /** What the content is: a few paragraphs, or a form. */
   content: "text" | "form";
   paragraphs: number;
@@ -17,14 +19,14 @@ const TEXT =
   "Un estudio guarda tus partidas con sus variantes, comentarios y flechas. Puedes compartirlo con tu profesor.";
 
 /** A popup behind its trigger, with the content the story asks for. */
-function PopupSample({ title, size, content, paragraphs }: PopupArgs) {
+function PopupSample({ title, size, phone, content, paragraphs }: PopupArgs) {
   const popup = useRef<PlatformPopupHandle>(null);
   return (
     <>
       <button type="button" className="platform-button" onClick={(event) => popup.current?.open(event)}>
         Abrir el popup
       </button>
-      <PlatformPopup ref={popup} title={title} size={size}>
+      <PlatformPopup ref={popup} title={title} size={size} phone={phone}>
         {content === "form" ? (
           <PlatformForm
             onSubmit={(event) => {
@@ -129,3 +131,14 @@ export const Large: Story = { args: { size: "lg" }, play: open };
 
 /** Scrolling inside past `100dvh - 40px`, with the strip scrolling along: the frame scrolls as a whole. */
 export const Tall: Story = { args: { paragraphs: 24 }, play: open };
+
+/**
+ * `phone="sheet"` in a phone's width: the popup comes up from the bottom edge, as wide as the screen and rounded only
+ * at the top, as «¿Abandonas la partida?» does over a board (P3). On a wider screen it is the ordinary popup.
+ */
+export const SheetOnPhone: Story = {
+  name: "Sheet on phone",
+  args: { title: "¿Abandonas la partida?", size: "sm", phone: "sheet" },
+  globals: { viewport: { value: "mobile1", isRotated: false } },
+  play: open,
+};

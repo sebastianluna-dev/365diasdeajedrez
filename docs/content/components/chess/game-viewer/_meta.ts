@@ -7,6 +7,7 @@ const meta: MetaRecord = {
   "move-context-menu": "MoveContextMenu",
   "game-tools": "GameTools",
   "player-strip": "PlayerStrip",
+  "game-over-actions": "GameOverActions",
   "engine-panel": "EnginePanel",
   "game-review": "GameReview",
   "game-review-chart": "GameReviewChart",

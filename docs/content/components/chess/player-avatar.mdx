@@ -1,0 +1,43 @@
+---
+description: "A portrait without a picture, for a bot or a person: initials on one of six tones from the slug, a ring for a bot's group, the federation's flag in a corner, and a turning arc while a bot thinks."
+---
+
+# `PlayerAvatar`
+
+|            |                                                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/chess/player-avatar/player-avatar.comp.tsx`                                                                                          |
+| Kind       | Server Component (no state; rendered inside client ones too)                                                                                     |
+| Stylesheet | `player-avatar.comp.css` → block `.player-avatar`                                                                                                |
+| Story      | `player-avatar.stories.tsx` (`chess/PlayerAvatar`): the strip's size with a flag, the four sizes, the six tones, the two rings, busy             |
+| Used by    | [`PlayerStrip`](/components/chess/game-viewer/player-strip), [`BotScoreboard`](/components/chess/bot-scoreboard), the play lobby and the profile |
+| Uses       | `PlayerAvatarData` from `lib/avatar-tone`; `federationFlag` from `lib/chess/federations`                                                         |
+
+## Purpose
+
+The bots have no pictures (planning decision §H: commissioned illustrations later, never photos), and neither do the people. Until then every portrait is **initials on a tone** (A4): the tone comes from the slug through `avatarToneOf` (FNV-1a, six tones), so the same player has the same colour on every screen and in every session; `initialsOf` takes the first and last words' initials. A bot's group adds a ring — **gold** for the world champions, **Mexico's three colours** for its Olympiad teams — and its federation's flag sits in a corner on a white disc. While a bot thinks, an arc of the accent turns around it (D2).
+
+The portrait is decorative (`aria-hidden`): whoever draws it writes the name beside it.
+
+## Props
+
+| Prop       | Type                             | Required            | Meaning                                                                                       |
+| ---------- | -------------------------------- | ------------------- | --------------------------------------------------------------------------------------------- |
+| `initials` | `string`                         | yes                 | Up to two letters (`initialsOf`).                                                             |
+| `tone`     | `1 \| 2 \| 3 \| 4 \| 5 \| 6`     | yes                 | `avatarToneOf(slug)`.                                                                         |
+| `ring`     | `"NONE" \| "GOLD" \| "TRICOLOR"` | yes                 | The bot group's `BotGroup.ring`; `NONE` for a person.                                         |
+| `country`  | `string \| null`                 | yes                 | FIDE federation code; no flag when the table does not know it, and none at `sm`.              |
+| `size`     | `"sm" \| "md" \| "lg" \| "xl"`   | no · default `"md"` | 28px (a row), 40px (a strip), 56px (a card), 120px and square with 8px corners (the profile). |
+| `busy`     | `boolean`                        | no                  | The turning arc (D2); under reduced motion it stands still as a whole ring of the accent.     |
+
+## Markup & styling
+
+Block `.player-avatar`, its size one custom property (`--player-avatar-size`) the ring, the flag and the arc follow.
+
+**Elements:** `.player-avatar__face` (the disc with the initials), `.player-avatar__flag`, `.player-avatar__busy`
+
+**Modifiers:** `.player-avatar_size_sm|md|lg|xl`, `.player-avatar_tone_1` … `_tone_6`, `.player-avatar_ring_gold`, `.player-avatar_ring_tricolor`, `.player-avatar_state_busy`
+
+**Tokens:** `--platform-avatar-1` … `-6` and `--platform-on-avatar` (each initials-on-tone pair at 4.5:1 in both themes, in `TEXT_PAIRS`), `--platform-ring-gold`, `--platform-ring-tricolor-green|white|red`, `--platform-accent`, `--platform-surface`, `--platform-border`, `--platform-font-display`, `--platform-type-*`. The family is «Avatar» on Storybook's Colours page.
+
+**Motion:** `@keyframes player-avatar-spin`, switched off under `prefers-reduced-motion: reduce`.

@@ -3,7 +3,6 @@
 import {
   type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent,
-  type ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -22,6 +21,8 @@ import { BackwardStepIcon } from "@/components/icons/backward-step-icon.comp";
 import { BarsIcon } from "@/components/icons/bars-icon.comp";
 import { VolumeXmarkIcon } from "@/components/icons/volume-xmark-icon.comp";
 import { VolumeLowIcon } from "@/components/icons/volume-low-icon.comp";
+import { FlagIcon } from "@/components/icons/flag-icon.comp";
+import type { PlayStatus } from "@/lib/play/play-status";
 import { numberedMoveLabel } from "@/lib/chess/notation";
 import { endPathOf, nextPathOf, nodeAtPath, parentPathOf, parsePgnTree, treeUpToPly } from "@/lib/chess/pgn-tree";
 import { EnginePanel } from "./engine-panel.comp";
@@ -29,6 +30,7 @@ import { useEngine } from "./use-engine.hook";
 import { evaluationBarFill } from "@/lib/chess/engine-protocol";
 import { MoveContextMenu, type MoveContextMenuTarget } from "./move-context-menu.comp";
 import { GameTools, useToolsTab } from "./game-tools.comp";
+import { GameOverActions, type GameOverActionsData } from "./game-over-actions.comp";
 import { type PlayerInfo, PlayerStrip } from "./player-strip.comp";
 import { playerOutcomes } from "@/lib/chess/player-outcomes";
 import { useLingering } from "./use-lingering.hook";
@@ -44,6 +46,20 @@ import {
   type ViewerPreferences,
 } from "./viewer-preferences";
 import "./game-viewer.comp.css";
+
+/** A game being played on the viewer (`interaction="play"`), or the actions of one that is over. */
+export interface GameViewerPlay {
+  /** The person's colour: the board moves only for it. */
+  color: "white" | "black";
+  /** From `playStatusOf`: the board moves only on `your-turn`, and only at the end of the line. */
+  status: PlayStatus;
+  /** The person's move, as SAN; the viewer adds nothing to the PGN itself. */
+  onMove?: (san: string) => void;
+  /** «Abandonar», while the game is on: the page opens its popup. */
+  onAbandon?: (event: MouseEvent<HTMLButtonElement>) => void;
+  /** Once it is over, what goes under the board (G6). */
+  over?: GameOverActionsData;
+}
 
 interface GameViewerProps {
   /** Full PGN: moves, variations, comments and annotations. */
@@ -64,10 +80,6 @@ interface GameViewerProps {
    * through the lesson and nothing else.
    */
   boardTools?: boolean;
-  /** Button that closes the bottom bar, right-aligned (the notes). */
-  footerActions?: ReactNode;
-  /** Bottom-bar action that works on the current position. */
-  positionActions?: (fen: string) => ReactNode;
   /**
    * The button at the right end of the bar under the board: the way OUT while
    * there are moves left («Saltar»), and the way ON once the last one is
@@ -154,6 +166,16 @@ interface GameViewerProps {
   editable?: boolean;
   onPgnChange?: (pgn: string) => void;
   /**
+   * How the viewer is used: `read` goes through the game; `edit` annotates
+   * it (what `editable` says); `play` plays a live game on it: the board
+   * moves only for `play.color`, only on its turn and only at the end of the
+   * line, with no move menu, no arrows and nothing to edit. Without it, `edit`
+   * when `editable`, otherwise `read`.
+   */
+  interaction?: "read" | "edit" | "play";
+  /** The live game, with `interaction="play"`; or, with any interaction, a finished game's actions (`over`). */
+  play?: GameViewerPlay;
+  /**
    * Which move to show, when whoever mounts the viewer wants to decide — the
    * evaluation chart takes the board to the move being pointed at.
    *
@@ -162,6 +184,11 @@ interface GameViewerProps {
    * whatever arrives through `onPathChange` or the board will not move.
    */
   path?: string;
+}
+
+/** The strip's container says what kind of strip it holds and how the game ended for it (G6). */
+function stripModifiers(player: PlayerInfo): string {
+  return `${player.avatar ? " game-viewer__player_kind_played" : ""}${player.ending ? ` game-viewer__player_ending_${player.ending.kind}` : ""}`;
 }
 
 /** How long the button has to be held before the game starts running. */
@@ -187,8 +214,6 @@ export function GameViewer({
   title,
   badge,
   boardTools = true,
-  footerActions,
-  positionActions,
   onwards,
   players,
   result,
@@ -201,6 +226,8 @@ export function GameViewer({
   onPathChange,
   editable = false,
   onPgnChange,
+  interaction,
+  play,
   path,
 }: GameViewerProps) {
   const tree = useMemo(() => parsePgnTree(pgn), [pgn]);
@@ -226,6 +253,17 @@ export function GameViewer({
     while (closest.length > 0 && !tree.nodesByPath.has(closest)) closest = parentPathOf(closest);
     return closest;
   }, [tree, selectedPath, path]);
+
+  // Playing, the board follows the game: when a move lands at the end of the
+  // line and the person was looking at the end, they go on looking at it; one
+  // who went back to look at an earlier move is left there. Adjusted while
+  // rendering, as a state that follows another, so no frame shows the old end.
+  const leafPath = useMemo(() => (tree ? endPathOf(tree, "") : ""), [tree]);
+  const [followedLeaf, setFollowedLeaf] = useState(leafPath);
+  if (leafPath !== followedLeaf) {
+    setFollowedLeaf(leafPath);
+    if (interaction === "play" && selectedPath === followedLeaf) setSelectedPath(leafPath);
+  }
   const [flipToggled, setFlipToggled] = useState(false);
   const [engineOn, setEngineOn] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -298,7 +336,9 @@ export function GameViewer({
 
   // Editing takes two: the permission and someone to hand the PGN to. Without
   // both the viewer is exactly the one it was before.
-  const isEditing = editable && Boolean(onPgnChange);
+  const isPlaying = interaction === "play" && play !== undefined;
+  const isEditing =
+    (interaction === "edit" || (interaction === undefined && editable)) && Boolean(onPgnChange) && !isPlaying;
   // By reference, like the path notification: publishing the PGN does not
   // depend on the consumer of the viewer memoising its callback.
   const onPgnChangeRef = useRef(onPgnChange);
@@ -686,7 +726,9 @@ export function GameViewer({
       <div className="game-viewer__layout">
         <div className="game-viewer__board-card">
           {players && (
-            <div className="game-viewer__player game-viewer__player_side_top">
+            <div
+              className={`game-viewer__player game-viewer__player_side_top${stripModifiers(flipBoard ? players.white : players.black)}`}
+            >
               {flipBoard ? (
                 <PlayerStrip {...players.white} outcome={outcomes?.white} />
               ) : (
@@ -705,8 +747,15 @@ export function GameViewer({
                   shapes: node ? node.shapes : tree.initialShapes,
                 }}
                 flipBoard={flipBoard}
-                interactive={isEditing}
-                onMove={(san) => editing.addMoveAt(currentPath, san)}
+                interactive={isEditing || isPlaying}
+                onMove={(san) => (isPlaying ? play?.onMove?.(san) : editing.addMoveAt(currentPath, san))}
+                movableColor={
+                  isPlaying
+                    ? play?.status === "your-turn" && currentPath === leafPath
+                      ? play.color
+                      : "none"
+                    : undefined
+                }
                 editableShapes={isEditing}
                 onShapesChange={(shapes) => editing.updateShapes(currentPath, shapes)}
               />
@@ -734,13 +783,19 @@ export function GameViewer({
           </div>
 
           {players && (
-            <div className="game-viewer__player game-viewer__player_side_bottom">
+            <div
+              className={`game-viewer__player game-viewer__player_side_bottom${stripModifiers(flipBoard ? players.black : players.white)}`}
+            >
               {flipBoard ? (
                 <PlayerStrip {...players.black} outcome={outcomes?.black} />
               ) : (
                 <PlayerStrip {...players.white} outcome={outcomes?.white} />
               )}
             </div>
+          )}
+
+          {play?.over && (
+            <GameOverActions {...play.over} onAnalyse={tools ? () => toolsTab.reveal("review") : undefined} />
           )}
 
           {controls === "board" && nav}
@@ -824,13 +879,20 @@ export function GameViewer({
               )}
             </div>
 
-            {/* The card's footer only exists when the screen mounting the viewer
-                gives it something to show: empty, it was a white strip. */}
-            {(positionActions || footerActions) && (
+            {/* While a game is on, its one action under the moves (P2). */}
+            {isPlaying && play?.onAbandon && play.status !== "over" && (
               <div className="game-viewer__toolbar">
-                {positionActions?.(fen)}
-
-                {footerActions && <div className="game-viewer__toolbar-end">{footerActions}</div>}
+                <div className="game-viewer__toolbar-end">
+                  <button
+                    type="button"
+                    className="platform-button platform-button_variant_danger platform-button_size_sm"
+                    onClick={play.onAbandon}
+                    disabled={play.status === "halted"}
+                  >
+                    <FlagIcon variant="classic-solid" className="platform-button__icon" />
+                    Abandonar
+                  </button>
+                </div>
               </div>
             )}
           </div>

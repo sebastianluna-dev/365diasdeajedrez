@@ -177,6 +177,23 @@
   --platform-level-5: light-dark(#78151a, #c96a26);
   --platform-level-6: light-dark(#450b0e, #8f4713);
 
+  /* A portrait without a picture (`PlayerAvatar`): the initials on one of six
+     tones, picked from the slug (`avatarToneOf`), so a bot or a person has
+     the same colour on every screen. Deep on light with white initials, pale
+     on dark with near-black ones. The rings say a bot's group: gold for the
+     world champions, Mexico's three colours for its Olympiad teams. */
+  --platform-avatar-1: light-dark(#1f6f6a, #7fcdc5);
+  --platform-avatar-2: light-dark(#3d4f9a, #a9b6ef);
+  --platform-avatar-3: light-dark(#7a3f78, #d9a6d6);
+  --platform-avatar-4: light-dark(#8a5a12, #e2b667);
+  --platform-avatar-5: light-dark(#2f6b51, #8fd3b0);
+  --platform-avatar-6: light-dark(#a3462b, #f0a58c);
+  --platform-on-avatar: light-dark(#ffffff, #14100d);
+  --platform-ring-gold: light-dark(#b8860b, #e6b84a);
+  --platform-ring-tricolor-green: light-dark(#006847, #3fbf7f);
+  --platform-ring-tricolor-white: light-dark(#ddd6cb, #f3efe9);
+  --platform-ring-tricolor-red: light-dark(#ce1126, #ff6b6f);
+
   /* Typography. The whole platform uses SF Pro Display — display and text —;
      Gramatika and Suisse Intl stay on the public site. A single token so that
      no file of the private area names a specific font. */
@@ -1026,6 +1043,28 @@ html body.platform-theme[data-scroll-locked] {
 
   @starting-style {
     background: transparent;
+  }
+}
+
+/* A sheet on a phone (`PlatformPopup phone="sheet"`, P3): under 640px it
+   stands on the bottom edge, as wide as the screen, rounded only at the top,
+   and its rise comes from below the screen instead of a few pixels under the
+   centre. The same transition as every dialog: only where it starts changes. */
+@media (width < 640px) {
+  .platform-dialog.platform-dialog_phone_sheet {
+    width: 100%;
+    max-width: none;
+    margin: auto 0 0;
+    border-radius: 8px 8px 0 0;
+    transform: translateY(100%);
+  }
+
+  .platform-dialog.platform-dialog_phone_sheet[open] {
+    transform: none;
+
+    @starting-style {
+      transform: translateY(100%);
+    }
   }
 }
 

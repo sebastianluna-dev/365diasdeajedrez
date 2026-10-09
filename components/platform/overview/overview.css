@@ -262,6 +262,14 @@
     gap: var(--platform-space-0-5);
   }
 
+  /* A row of portraits, with room for their rings and flags. */
+  & .overview__avatars {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-6);
+    padding: var(--platform-space-2);
+  }
+
   /* The row the viewer puts a player's strip in. */
   & .overview__player {
     display: flex;

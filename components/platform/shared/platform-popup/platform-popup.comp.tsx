@@ -31,6 +31,12 @@ interface PlatformPopupProps {
   /** `sm` 480px, `md` 600px (the default), `lg` 720px; always within the viewport. */
   size?: "sm" | "md" | "lg";
   /**
+   * `sheet`: on a phone (under 640px) it comes up from the bottom, as wide as
+   * the screen, instead of standing in the middle (P3): for a short question
+   * asked over a board, where the thumb already is.
+   */
+  phone?: "sheet";
+  /**
    * The native `close` event, whichever exit (the cross, Escape, `close()`, a
    * form that closes on submit): where a host resets what the content held —
    * a ticked box, a chosen tab, a form it remounts with a key. Reset on
@@ -61,7 +67,7 @@ const FOCUSABLE =
  * backdrop, and this one waits beneath, inert, until the question is
  * answered.
  */
-export function PlatformPopup({ title, ref, size = "md", onClose, children }: PlatformPopupProps) {
+export function PlatformPopup({ title, ref, size = "md", phone, onClose, children }: PlatformPopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
@@ -89,7 +95,7 @@ export function PlatformPopup({ title, ref, size = "md", onClose, children }: Pl
   return (
     <dialog
       ref={dialogRef}
-      className={`platform-dialog platform-popup platform-popup_size_${size}`}
+      className={`platform-dialog platform-popup platform-popup_size_${size}${phone ? " platform-dialog_phone_sheet" : ""}`}
       aria-labelledby={titleId}
       onClose={onClose}
     >

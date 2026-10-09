@@ -1,0 +1,157 @@
+/* A portrait: a disc of the player's tone with the initials, a ring of its
+   group around it, the flag in a corner, and an arc that turns while a bot
+   thinks. Its size is one custom property, so the ring, the flag and the arc
+   follow it. */
+.player-avatar {
+  --player-avatar-size: 40px;
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: var(--player-avatar-size);
+  height: var(--player-avatar-size);
+  border-radius: 50%;
+  font-size: var(--platform-type-sm);
+
+  &.player-avatar_size_sm {
+    --player-avatar-size: 28px;
+    font-size: var(--platform-type-2xs);
+  }
+
+  &.player-avatar_size_lg {
+    --player-avatar-size: 56px;
+    font-size: var(--platform-type-xl);
+  }
+
+  /* The profile's header: square, as N5 draws it. */
+  &.player-avatar_size_xl {
+    --player-avatar-size: 120px;
+    border-radius: 8px;
+    font-size: var(--platform-type-4xl);
+  }
+
+  & .player-avatar__face {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    border-radius: inherit;
+    font-family: var(--platform-font-display);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    overflow: hidden;
+  }
+
+  &.player-avatar_tone_1 .player-avatar__face {
+    background: var(--platform-avatar-1);
+    color: var(--platform-on-avatar);
+  }
+
+  &.player-avatar_tone_2 .player-avatar__face {
+    background: var(--platform-avatar-2);
+    color: var(--platform-on-avatar);
+  }
+
+  &.player-avatar_tone_3 .player-avatar__face {
+    background: var(--platform-avatar-3);
+    color: var(--platform-on-avatar);
+  }
+
+  &.player-avatar_tone_4 .player-avatar__face {
+    background: var(--platform-avatar-4);
+    color: var(--platform-on-avatar);
+  }
+
+  &.player-avatar_tone_5 .player-avatar__face {
+    background: var(--platform-avatar-5);
+    color: var(--platform-on-avatar);
+  }
+
+  &.player-avatar_tone_6 .player-avatar__face {
+    background: var(--platform-avatar-6);
+    color: var(--platform-on-avatar);
+  }
+
+  /* The ring sits under the face, a hair outside it, with the surface between
+     the two so it reads as a ring and not as a thicker disc. */
+  &.player-avatar_ring_gold::before,
+  &.player-avatar_ring_tricolor::before {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+  }
+
+  &.player-avatar_ring_gold::before {
+    background: var(--platform-ring-gold);
+  }
+
+  &.player-avatar_ring_tricolor::before {
+    background: conic-gradient(
+      from 200deg,
+      var(--platform-ring-tricolor-green) 0 33.3%,
+      var(--platform-ring-tricolor-white) 0 66.6%,
+      var(--platform-ring-tricolor-red) 0
+    );
+  }
+
+  &.player-avatar_ring_gold .player-avatar__face,
+  &.player-avatar_ring_tricolor .player-avatar__face {
+    box-shadow: 0 0 0 2px var(--platform-surface);
+  }
+
+  /* A4: the federation's flag on a white disc, in the lower right corner. */
+  & .player-avatar__flag {
+    position: absolute;
+    z-index: 2;
+    right: calc(var(--player-avatar-size) * -0.08);
+    bottom: calc(var(--player-avatar-size) * -0.08);
+    display: grid;
+    place-items: center;
+    width: calc(var(--player-avatar-size) * 0.42);
+    height: calc(var(--player-avatar-size) * 0.42);
+    border-radius: 50%;
+    background: var(--platform-surface);
+    box-shadow: 0 0 0 1px var(--platform-border);
+    font-size: var(--platform-type-2xs);
+    line-height: 1;
+  }
+
+  &.player-avatar_size_lg .player-avatar__flag {
+    font-size: var(--platform-type-sm);
+  }
+
+  &.player-avatar_size_xl .player-avatar__flag {
+    right: calc(var(--player-avatar-size) * -0.06);
+    bottom: calc(var(--player-avatar-size) * -0.06);
+    width: calc(var(--player-avatar-size) * 0.3);
+    height: calc(var(--player-avatar-size) * 0.3);
+    font-size: var(--platform-type-xl);
+  }
+
+  /* D2: an arc of the accent turning around the portrait while the bot thinks. */
+  & .player-avatar__busy {
+    position: absolute;
+    z-index: 2;
+    inset: -5px;
+    border: 2px solid transparent;
+    border-top-color: var(--platform-accent);
+    border-radius: 50%;
+    animation: player-avatar-spin 1s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Still: a whole ring of the accent, so «thinking» is still seen. */
+    & .player-avatar__busy {
+      animation: none;
+      border-color: var(--platform-accent);
+    }
+  }
+}
+
+@keyframes player-avatar-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
