@@ -8,8 +8,8 @@ export interface PlayerCard {
   avatar: PlayerAvatarData;
 }
 
-/** A person's profile, as its head (N5), its three cards and its last games read it. */
-export interface ProfileView {
+/** A profile's head (N5): what both of its pages draw above their tabs. */
+export interface ProfileHead {
   userId: string;
   slug: string;
   displayName: string;
@@ -23,10 +23,14 @@ export interface ProfileView {
   isOwn: boolean;
   counts: { courses: number; studies: number; games: number };
   botLevel: BotLevelSummary;
+  /** A platform rating arrives with the games between people; it exists in the type from day one. */
+  rating: null;
+}
+
+/** A person's profile, as its head, its three cards and its last games read it («Visión general»). */
+export interface ProfileView extends ProfileHead {
   /** The record against every bot together. */
   record: { wins: number; losses: number; draws: number; open: number };
   streak: StreakSummary;
   recentGames: PlayedGameCard[];
-  /** A platform rating arrives with the games between people; it exists in the type from day one. */
-  rating: null;
 }

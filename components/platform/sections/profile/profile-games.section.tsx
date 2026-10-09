@@ -1,7 +1,7 @@
 import { platformRoutes } from "@/lib/platform-routes";
 import { listPlayedGamesOf, playedRivalsOf } from "@/services/play/play.service";
 import type { PlayedGameResultFilter } from "@/services/play/play.types";
-import type { ProfileView } from "@/services/profile/profile.types";
+import type { ProfileHead } from "@/services/profile/profile.types";
 import { PlayedGamesFilters } from "./played-games-filters.comp";
 import { PlayedGamesTimeline } from "./played-games-timeline/played-games-timeline.comp";
 import "./profile-games.section.css";
@@ -9,7 +9,7 @@ import "./profile-games.section.css";
 const RESULT_FILTERS: readonly PlayedGameResultFilter[] = ["win", "loss", "draw", "open"];
 
 interface ProfileGamesSectionProps {
-  profile: ProfileView;
+  profile: ProfileHead;
   /** From the URL: `?pagina=`, `?rival=`, `?resultado=`. */
   query: { pagina?: string; rival?: string; resultado?: string };
 }

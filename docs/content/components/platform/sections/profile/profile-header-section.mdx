@@ -20,10 +20,10 @@ N5, after the reference the owner sent (Chess.com's profile): a 120px square por
 
 ## Props
 
-| Prop      | Type                    | Required | Meaning                            |
-| --------- | ----------------------- | -------- | ---------------------------------- |
-| `profile` | `ProfileView`           | yes      | From `getProfileOf(slug)`.         |
-| `active`  | `"overview" \| "games"` | yes      | Which tab is the page being shown. |
+| Prop      | Type                    | Required | Meaning                                                                                                 |
+| --------- | ----------------------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| `profile` | `ProfileHead`           | yes      | The head only: `getProfileHeadOf(slug)` on «Partidas»; «Visión general» passes its whole `ProfileView`. |
+| `active`  | `"overview" \| "games"` | yes      | Which tab is the page being shown.                                                                      |
 
 ## Markup & styling
 

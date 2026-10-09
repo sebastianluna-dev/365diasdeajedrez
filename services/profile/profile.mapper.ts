@@ -4,9 +4,9 @@ import { formatSpanishDate } from "@/lib/format-spanish-date";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import type { BotLevelSummary, BotScore, PlayedGameCard } from "@/services/play/play.types";
 import type { StreakSummary } from "@/services/study-goal/study-goal.types";
-import type { ProfileView } from "./profile.types";
+import type { ProfileHead, ProfileView } from "./profile.types";
 
-// A `User` row and what its profile gathers → `ProfileView`. Pure.
+// A `User` row and what its profile gathers → `ProfileHead`, or the whole `ProfileView`. Pure.
 
 export const PROFILE_SELECT = {
   id: true,
@@ -23,25 +23,8 @@ export const PROFILE_SELECT = {
 
 export type ProfileRow = Prisma.UserGetPayload<{ select: typeof PROFILE_SELECT }>;
 
-export function profileView(
-  row: ProfileRow,
-  parts: {
-    viewerId: string;
-    botLevel: BotLevelSummary;
-    scoreboard: BotScore[];
-    streak: StreakSummary;
-    recentGames: PlayedGameCard[];
-  },
-): ProfileView {
-  const record = parts.scoreboard.reduce(
-    (total, score) => ({
-      wins: total.wins + score.wins,
-      losses: total.losses + score.losses,
-      draws: total.draws + score.draws,
-      open: total.open + score.open,
-    }),
-    { wins: 0, losses: 0, draws: 0, open: 0 },
-  );
+/** The head of a profile: who, the figures and the level. */
+export function profileHead(row: ProfileRow, parts: { viewerId: string; botLevel: BotLevelSummary }): ProfileHead {
   return {
     userId: row.id,
     slug: row.slug,
@@ -63,9 +46,29 @@ export function profileView(
       games: row._count.playedGamesAsWhite + row._count.playedGamesAsBlack,
     },
     botLevel: parts.botLevel,
-    record,
-    streak: parts.streak,
-    recentGames: parts.recentGames,
     rating: null,
   };
+}
+
+/** The whole profile: the head, the record summed from the scoreboard, the streak and the last games. */
+export function profileView(
+  row: ProfileRow,
+  parts: {
+    viewerId: string;
+    botLevel: BotLevelSummary;
+    scoreboard: BotScore[];
+    streak: StreakSummary;
+    recentGames: PlayedGameCard[];
+  },
+): ProfileView {
+  const record = parts.scoreboard.reduce(
+    (total, score) => ({
+      wins: total.wins + score.wins,
+      losses: total.losses + score.losses,
+      draws: total.draws + score.draws,
+      open: total.open + score.open,
+    }),
+    { wins: 0, losses: 0, draws: 0, open: 0 },
+  );
+  return { ...profileHead(row, parts), record, streak: parts.streak, recentGames: parts.recentGames };
 }

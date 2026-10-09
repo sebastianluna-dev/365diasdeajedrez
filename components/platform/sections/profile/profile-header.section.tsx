@@ -4,11 +4,11 @@ import { PenIcon } from "@/components/icons/pen-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { federationFlag } from "@/lib/chess/federations";
 import { platformRoutes } from "@/lib/platform-routes";
-import type { ProfileView } from "@/services/profile/profile.types";
+import type { ProfileHead } from "@/services/profile/profile.types";
 import "./profile-header.section.css";
 
 interface ProfileHeaderSectionProps {
-  profile: ProfileView;
+  profile: ProfileHead;
   /** Which of the two pages is open: its tab carries `aria-current`. */
   active: "overview" | "games";
 }

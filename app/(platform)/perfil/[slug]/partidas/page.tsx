@@ -4,7 +4,7 @@ import { ProfileGamesSection } from "@/components/platform/sections/profile/prof
 import { ProfileHeaderSection } from "@/components/platform/sections/profile/profile-header.section";
 import { PLAY_ENABLED } from "@/constants/platform/features.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
-import { getProfileOf } from "@/services/profile/profile.service";
+import { getProfileHeadOf } from "@/services/profile/profile.service";
 
 export const metadata: Metadata = {
   title: "Partidas",
@@ -20,7 +20,7 @@ export default async function ProfileGamesPage({ params, searchParams }: Profile
   if (!PLAY_ENABLED) notFound();
   await getCurrentUser();
   const [{ slug }, query] = await Promise.all([params, searchParams]);
-  const profile = await getProfileOf(slug);
+  const profile = await getProfileHeadOf(slug);
   if (!profile) notFound();
 
   return (
