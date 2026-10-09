@@ -10,8 +10,9 @@ const meta = {
       description: {
         component: `
 Who a bot is, at the top of its popup: the portrait, «Elo ≈ 783», how it
-plays, its favourite openings, a real player's FIDE facts with their date,
-and the scoreboard against it (H6).
+plays, its favourite openings, a real player's FIDE facts with their date
+and the line that says it is Stockfish, not that person, and the scoreboard
+against it (H6).
 
 Source: \`components/platform/sections/play/lobby/bot-sheet/bot-sheet.comp.tsx\`.
 Reference page: [Components › BotSheet](/components/platform/sections/play/lobby/bot-sheet) in the docs site.
@@ -35,5 +36,5 @@ type Story = StoryObj<typeof meta>;
 /** An invented character, with the record against it. */
 export const Character: Story = {};
 
-/** A national team's player before the first game: the FIDE facts with their date, and 0 – 0. */
+/** A national team's player before the first game: the FIDE facts with their date, the line that says it is Stockfish, and 0 – 0. */
 export const TeamPlayer: Story = { args: { bot: FIXTURE_TEAM_BOT, score: null } };
