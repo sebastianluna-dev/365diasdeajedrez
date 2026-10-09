@@ -106,6 +106,8 @@ const eslintConfig = defineConfig([
     "storybook-static/**",
     // Claude Code's isolated worktrees: each is a full checkout of the repo.
     ".claude/worktrees/**",
+    // Local planning notes (git-ignored): research probes and drafts, not app code.
+    "planning/**",
   ]),
 ]);
 

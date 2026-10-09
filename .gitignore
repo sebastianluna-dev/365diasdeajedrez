@@ -60,6 +60,8 @@ next-env.d.ts
 IMPROVEMENTS.md
 TODOS.md
 WARNINGS.md
+# feature planning notes (definitions, plans, architecture drafts): local too
+/planning/
 
 # claude code: personal settings, next to the committed .claude/settings.json
 **/.claude/settings.local.json
