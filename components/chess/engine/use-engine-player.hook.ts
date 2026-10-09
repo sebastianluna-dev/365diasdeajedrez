@@ -47,8 +47,10 @@ export function useEnginePlayer(
   strength: EnginePlayerProfile | null,
   enabled: boolean,
   shared?: EngineClientHandle,
+  /** A new value replaces its own worker with a fresh one (`useEngineClient`). */
+  instance = 0,
 ): EnginePlayer {
-  const own = useEngineClient(enabled && strength !== null && !shared);
+  const own = useEngineClient(enabled && strength !== null && !shared, instance);
   const { client, status } = shared ?? own;
   // The options are what matters, not the object: a page refresh hands an
   // equal strength in a new object, and that must not start a new game.

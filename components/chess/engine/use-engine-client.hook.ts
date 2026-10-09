@@ -17,9 +17,10 @@ export interface EngineClientHandle {
  *
  * Created LAZILY, only while `enabled`: it is 7 MB of WebAssembly that make no
  * sense to download for someone who never switches it on. Switching off KILLS
- * the worker; it is never left thinking in the background.
+ * the worker; it is never left thinking in the background. A new `instance`
+ * replaces the worker with a fresh one: how a caller recovers from one that died.
  */
-export function useEngineClient(enabled: boolean): EngineClientHandle {
+export function useEngineClient(enabled: boolean, instance = 0): EngineClientHandle {
   const [ready, setReady] = useState<EngineClient | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -68,7 +69,7 @@ export function useEngineClient(enabled: boolean): EngineClientHandle {
       setFailed(false);
       client.terminate();
     };
-  }, [enabled]);
+  }, [enabled, instance]);
 
   const status: EngineClientStatus = !enabled ? "off" : failed ? "failed" : ready ? "ready" : "loading";
   return { client: status === "ready" ? ready : null, status };

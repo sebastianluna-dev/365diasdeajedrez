@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { useEnginePlayer } from "@/components/chess/engine/use-engine-player.hook";
 import type { BotStrength } from "@/lib/chess/bots/bot-strength";
 import { seedOf } from "@/lib/chess/bots/rng";
@@ -60,13 +60,29 @@ export function useLiveGame({
 }): LiveGame {
   const [state, dispatch] = useReducer(liveGameReducer, snapshot, (game) => initialLiveGameState(game));
   const playing = seated && state.status !== "over" && state.status !== "stale" && state.status !== "engine-failed";
-  const player = useEnginePlayer(strength, playing);
+  // A worker that dies — it throws, or stops answering — is replaced ONCE
+  // and the same position asked again; the second death ends in «Recargar».
+  // Nothing is lost either way: every move is saved before the bot is asked.
+  const [restarts, setRestarts] = useState(0);
+  const player = useEnginePlayer(strength, playing, undefined, restarts);
+  const searched = useRef<string | null>(null);
+  const restartsRef = useRef(restarts);
+
+  const engineDied = useCallback(() => {
+    if (restartsRef.current > 0) {
+      dispatch({ type: "ENGINE_FAILED" });
+      return;
+    }
+    searched.current = null;
+    restartsRef.current = 1;
+    setRestarts(1);
+  }, []);
 
   // The engine's own state reaches the game: ready to start, or gone.
   useEffect(() => {
     if (player.status === "ready") dispatch({ type: "ENGINE_READY" });
-    if (player.status === "failed") dispatch({ type: "ENGINE_FAILED" });
-  }, [player.status]);
+    if (player.status === "failed") engineDied();
+  }, [player.status, engineDied]);
 
   // Save the move the server does not have yet. At most one in flight: the
   // next one waits for this one's answer, which is its version.
@@ -86,7 +102,6 @@ export function useLiveGame({
 
   // Ask the bot as soon as it is its turn on the board — while the person's
   // move is still being saved — and hand its move in after its delay.
-  const searched = useRef<string | null>(null);
   const timers = useRef(new Set<number>());
   useEffect(() => {
     if (player.status !== "ready" || state.end) return;
@@ -96,17 +111,16 @@ export function useLiveGame({
     if (searched.current === key) return;
     searched.current = key;
     const generation = state.generation;
-    player.reply({ initialFen: state.initialFen, sans: state.sans }, seedOf(gameId, state.sans.length)).then(
-      ({ san, waitMs }) => {
+    player
+      .reply({ initialFen: state.initialFen, sans: state.sans }, seedOf(gameId, state.sans.length))
+      .then(({ san, waitMs }) => {
         const timer = window.setTimeout(() => {
           timers.current.delete(timer);
           dispatch({ type: "BOT_REPLY", san, generation });
         }, waitMs);
         timers.current.add(timer);
-      },
-      () => dispatch({ type: "ENGINE_FAILED" }),
-    );
-  }, [player, state, gameId]);
+      }, engineDied);
+  }, [player, state, gameId, engineDied]);
 
   // A delay still running when the page goes away shows nothing.
   useEffect(() => {
