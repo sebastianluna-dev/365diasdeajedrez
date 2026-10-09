@@ -2,16 +2,9 @@
    below. It is drawn as a card of the platform — white, rounded, on its
    shadow — and not as a list glued to the bar. */
 .platform-user-menu {
-  /* Hung from the avatar by CSS and not placed by a library: Radix's own
-     positioning put it 145px to the right of the trigger under the zoom the
-     platform had until 2026-10-02, which at the right edge of the bar is
-     outside the window. Here the
-     menu's right edge IS the avatar's, and there is nothing to measure. */
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  /* Over the bar, which is a stacking context of its own at z-index 20:
-     inside it, this only has to clear the page. */
+  /* Placed by Radix under the avatar, its right edge on the avatar's
+     (`align="end"`), in a portal at the end of the page: over the bar, which
+     is a stacking context of its own at z-index 20. */
   z-index: 40;
   width: 300px;
   padding: var(--platform-space-2);
@@ -19,7 +12,8 @@
   background: var(--platform-surface);
   box-shadow: var(--platform-shadow-card);
   /* It grows out of the avatar, which is the corner above it. */
-  transform-origin: top right;
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+  outline: none;
 
   /* The day: the streak, the bar of the goal and what is left of it. The same
      figures the dashboard heads with, here in one block the width of the
@@ -136,9 +130,10 @@
     cursor: pointer;
     text-decoration: none;
 
-    &:hover,
-    &:focus-visible {
+    /* The row under the pointer or the arrows, as the primitive marks it. */
+    &[data-highlighted] {
       background: var(--platform-bg);
+      outline: none;
     }
   }
 
@@ -244,28 +239,21 @@
     }
   }
 
-  animation: platform-user-menu-in 160ms ease-out;
+  /* In and out on the primitive's `data-state`, which keeps it mounted until the exit has played. */
+  &[data-state="open"] {
+    animation: platform-user-menu-in 160ms ease-out;
+  }
 
-  /* Kept mounted while it leaves, which is what `useLingering` is for. */
-  &.platform-user-menu_state_closing {
+  &[data-state="closed"] {
     animation: platform-user-menu-out 120ms ease-in forwards;
-    pointer-events: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    &,
-    &.platform-user-menu_state_closing {
+    &[data-state="open"],
+    &[data-state="closed"] {
       animation: none;
     }
   }
-}
-
-/* What the menu hangs from: the avatar, and the box around it that gives the
-   absolute position something to measure from. */
-.platform-user-menu-anchor {
-  position: relative;
-  flex: none;
-  display: flex;
 }
 
 /* The avatar is the trigger: the same disc the bar drew before, now a button.
@@ -288,7 +276,7 @@
   cursor: pointer;
 
   &:hover,
-  &[aria-expanded="true"] {
+  &[data-state="open"] {
     background: var(--platform-accent);
     color: var(--platform-on-accent);
   }

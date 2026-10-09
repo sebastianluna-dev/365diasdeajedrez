@@ -4,15 +4,15 @@ description: "The avatar of the bar and everything behind it: the day's streak a
 
 # `PlatformUserMenu`
 
-|            |                                                                                                                                                                     |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/shell/platform-user-menu.comp.tsx`                                                                                                    |
-| Kind       | Client Component                                                                                                                                                    |
-| Stylesheet | `platform-user-menu.comp.css` → block `.platform-user-menu`                                                                                                         |
-| Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)                                                                                       |
-| Reads      | `readStudyGoal()` · `services/study-goal/study-goal.actions.ts`                                                                                                     |
-| Writes     | `logoutAction()` · `services/auth/auth.actions.ts`                                                                                                                  |
-| Uses       | `useLingering` · `components/chess/game-viewer/use-lingering.hook`<br />`FireIcon`, `UserIcon`, `ArrowUpIcon`, `ArrowRightFromBracketIcon` from `components/icons/` |
+|            |                                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/shell/platform-user-menu.comp.tsx`                                                                |
+| Kind       | Client Component                                                                                                                |
+| Stylesheet | `platform-user-menu.comp.css` → block `.platform-user-menu`                                                                     |
+| Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)                                                   |
+| Reads      | `readStudyGoal()` · `services/study-goal/study-goal.actions.ts`                                                                 |
+| Writes     | `logoutAction()` · `services/auth/auth.actions.ts`                                                                              |
+| Uses       | `DropdownMenu` from `radix-ui`<br />`FireIcon`, `UserIcon`, `ArrowUpIcon`, `ArrowRightFromBracketIcon` from `components/icons/` |
 
 ## Purpose
 
@@ -29,24 +29,24 @@ Who is signed in, and everything that is theirs, behind the avatar at the right 
 ## Behaviour
 
 - **The day is asked for when the menu is opened**, not handed down by the shell. `readStudyGoal()` costs three queries, and the bar is drawn on every page of the platform: read in the shell it would be three queries on each one — and, the shell being a layout, they would go stale until a full reload. Asked for on opening they cost nothing until someone looks, and what they say is true at the moment of looking. Read once per visit and kept; if the read fails, the block is left out and the menu works.
-- **It is drawn by hand, not on Radix**, unlike the platform's other popups. Radix moved it 145px to the right of the avatar under the zoom the platform had until 2026-10-02 — at the right edge of the bar, out through the side of the window — while the select's list, in the middle of a page, is placed correctly by the same machinery; the difference was not run down (IMPROVEMENTS #40). Hung from the avatar with CSS (`position: absolute; right: 0`) there is nothing to measure.
-- It follows the platform's menu pattern all the same: `role="menu"` with `role="menuitem"` rows, `aria-haspopup`/`aria-expanded` on the avatar, closing on Escape (returning the focus to the avatar) and on a press outside, up and down walking the rows and wrapping around, and the focus moving into the menu when it opens.
-- It stays mounted while it leaves (`useLingering` + `_state_closing`), so it enters in 160ms and leaves in 120ms, both off under `prefers-reduced-motion`.
-- The rows are, in order: the name (a link to `/profesor/perfil` for a teacher, a heading for everyone else), **«Ajustes»** ([`AccountSettingsSection`](/components/platform/sections/account/account-settings-section)), **«Modo oscuro»**, «Sitio público» and «Cerrar sesión».
+- **On Radix's `DropdownMenu`** since 2026-10-09, like «Herramientas» ([`PlatformNavMenu`](/components/platform/shared/platform-nav-menu)): the keyboard (the arrows wrapping around, Home/End, a row's first letter), the focus moving into the menu and back to the avatar, Escape and a press outside come with the primitive, which places it under the avatar (`align="end"`, 10px below) in a portal. It was drawn by hand while the platform had a `zoom`, under which Radix's placement landed it 145px off the avatar; the zoom went on 2026-10-02, and with it the reason (IMPROVEMENTS #40, #104).
+- It enters in 160ms and leaves in 120ms on the primitive's `data-state`, which keeps it mounted until the exit has played; both off under `prefers-reduced-motion`.
+- **The rows that submit a form** — the theme and «Cerrar sesión» — keep the menu open on select (`event.preventDefault()` in `onSelect`): closing it would take the form out of the page before the browser submitted it. The page that answers closes it.
+- The rows are, in order: the name (a link to the person's profile while `PLAY_ENABLED` is on, before it to `/profesor/perfil` for a teacher; a heading otherwise), **«Ajustes»** ([`AccountSettingsSection`](/components/platform/sections/account/account-settings-section)), **«Modo oscuro»**, «Sitio público» and «Cerrar sesión».
 - **The theme row is rendered twice and the stylesheet shows one.** One form asks for dark, the other for light, each with its switch drawn in the state the current theme is in. Which theme that is cannot be known here when nobody has chosen — it is the machine's preference, and only the browser reads it — so `@media (prefers-color-scheme)` and `:root[data-theme]` pick the row (see [Themes](/architecture/themes)). Both are plain forms over `setTheme`, so the switch works without JavaScript.
 - **«Cerrar sesión» is a `<form action={logoutAction}>`**, as it always was: signing out does not depend on JavaScript.
 
 ## Markup & styling
 
-Block `.platform-user-menu`, 300px wide, on `--platform-shadow-card`, hung 10px under the avatar and aligned to its right edge, growing out of `top right`.
+Block `.platform-user-menu`, 300px wide, on `--platform-shadow-card`, placed by the primitive 10px under the avatar and aligned to its right edge, growing out of `--radix-dropdown-menu-content-transform-origin`.
 
 At the top, the day: the flame on its own disc of `--platform-warning-soft`, the streak in figures, the goal's bar (`--platform-accent-bright`, like the dashboard's: what it measures is the day and not a course) and, under it, what is left of the goal and the minutes done. A hairline that reaches from edge to edge of the card — pulled out of the menu's padding with a negative margin — separates it from the rows.
 
 **Elements:** `.platform-user-menu__day`, `__figure`, `__figure-mark`, `__flame`, `__flame-core`, `__figure-text`, `__figure-value`, `__figure-label`, `__track`, `__fill`, `__day-note`, `__day-count`, `__rule`, `__item`, `__icon`
 
-**Modifiers:** `.platform-user-menu_state_closing` (leaving), `.platform-user-menu__item_role_name` (the name, when it is a heading and not a link), `.platform-user-menu__icon_turn_out` (the arrow of a link that leaves the platform)
+**Modifiers and states:** the primitive's `data-state` (open/closed) and `data-highlighted` (the row under the pointer or the arrows), `.platform-user-menu__item_role_name` (the name, when it is a heading and not a link), `.platform-user-menu__icon_turn_out` (the arrow of a link that leaves the platform)
 
-**Outside the block:** `.platform-user-menu-anchor` (what the menu is hung from) and `.platform-user-menu__avatar` (the trigger: the 38px disc of the brand's black, which takes the accent while the menu is open).
+**Outside the block:** `.platform-user-menu__avatar` (the trigger: the 38px disc of the brand's black, which takes the accent while the menu is open).
 
 ## Related
 

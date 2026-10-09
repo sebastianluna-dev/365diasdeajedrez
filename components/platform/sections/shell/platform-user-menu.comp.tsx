@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
+import { useState } from "react";
+import { DropdownMenu } from "radix-ui";
 import { ArrowUpIcon } from "@/components/icons/arrow-up-icon.comp";
 import { ArrowRightFromBracketIcon } from "@/components/icons/arrow-right-from-bracket-icon.comp";
 import { FireIcon } from "@/components/icons/fire-icon.comp";
 import { SlidersIcon } from "@/components/icons/sliders-icon.comp";
 import { MoonIcon } from "@/components/icons/moon-icon.comp";
 import { UserIcon } from "@/components/icons/user-icon.comp";
-import { useLingering } from "@/components/chess/game-viewer/use-lingering.hook";
 import { platformRoutes } from "@/lib/platform-routes";
 import { CurrentPathField } from "@/components/platform/shared/current-path-field/current-path-field.comp";
 import { setTheme } from "@/services/account/account.actions";
@@ -41,96 +41,37 @@ function dayLabel(goal: StudyGoal): string {
  * asked for when the menu is opened (`readStudyGoal`), so they cost nothing
  * on the pages nobody opens it on and they are never stale.
  *
- * Drawn by hand and not on Radix, unlike the platform's other popups. Radix
- * moves what it opens with a `transform` in pixels, and here those pixels came
- * out multiplied by the platform's zoom: the menu landed 145px to the right of
- * the avatar, through the side of the window. The select's list, in the middle
- * of a page, is placed correctly by the same machinery — the difference was not
- * run down (see IMPROVEMENTS). Hung from the avatar with CSS there is nothing
- * to measure and nothing to go wrong.
+ * On Radix's `DropdownMenu` since 2026-10-09, like «Herramientas»: the
+ * keyboard (the arrows, Home/End, typing a row's first letter), the focus,
+ * Escape and a click outside come with the primitive. It was drawn by hand
+ * while the platform had a `zoom`, under which Radix's placement landed the
+ * menu 145px off the avatar; the zoom went on 2026-10-02.
+ *
+ * The theme and the way out are forms, so they work without JavaScript; their
+ * rows keep the menu open on select (`preventDefault`), because closing it
+ * would take the form out of the page before the browser submitted it.
  */
 export function PlatformUserMenu({ displayName, initials, profileHref }: PlatformUserMenuProps) {
-  const [open, setOpen] = useState(false);
   const [goal, setGoal] = useState<StudyGoal | null>(null);
-  const rootRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
-  // Kept mounted while it leaves, so the closing animation has something to
-  // run on (see `useLingering`).
-  const lingering = useLingering(open ? true : null);
-
-  const close = useCallback((returnFocus: boolean) => {
-    setOpen(false);
-    if (returnFocus) buttonRef.current?.focus();
-  }, []);
 
   // Once per visit: the figures are read on the first opening and kept. A
   // failure leaves the block out and the menu whole — what one comes here for
   // is the way out, not the streak.
-  const toggle = () => {
-    setOpen((wasOpen) => !wasOpen);
-    if (!goal) void readStudyGoal().then(setGoal, () => {});
+  const changeOpen = (open: boolean) => {
+    if (open && !goal) void readStudyGoal().then(setGoal, () => {});
   };
 
-  // It closes like every other menu: clicking outside, or with Escape.
-  useEffect(() => {
-    if (!open) return;
-    const handlePointerDown = (event: PointerEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
-    };
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") close(true);
-    };
-
-    window.addEventListener("pointerdown", handlePointerDown);
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("pointerdown", handlePointerDown);
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [open, close]);
-
-  // A menu that opens takes the focus with it, like the viewer's: otherwise
-  // whoever opened it with the keyboard is left on the avatar, with the rows
-  // out of reach.
-  useEffect(() => {
-    if (!open) return;
-    rootRef.current?.querySelector<HTMLElement>(".platform-user-menu a, .platform-user-menu button")?.focus();
-  }, [open]);
-
-  /** Up and down walk the rows and wrap around; the other keys are the page's. */
-  const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
-    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
-    const items = Array.from(event.currentTarget.querySelectorAll<HTMLElement>("a, button"));
-    if (items.length === 0) return;
-    event.preventDefault();
-    const current = items.findIndex((item) => item === document.activeElement);
-    const step = event.key === "ArrowDown" ? 1 : -1;
-    items[(current + step + items.length) % items.length]?.focus();
-  };
+  /** A row that submits its form: the menu stays open until the page answers. */
+  const keepOpen = (event: Event) => event.preventDefault();
 
   return (
-    <div ref={rootRef} className="platform-user-menu-anchor">
-      <button
-        ref={buttonRef}
-        type="button"
-        className="platform-user-menu__avatar"
-        aria-label={`Tu cuenta: ${displayName}`}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        onClick={toggle}
-      >
+    <DropdownMenu.Root modal={false} onOpenChange={changeOpen}>
+      <DropdownMenu.Trigger className="platform-user-menu__avatar" aria-label={`Tu cuenta: ${displayName}`}>
         {initials}
-      </button>
+      </DropdownMenu.Trigger>
 
-      {lingering.value && (
-        // eslint-disable-next-line jsx-a11y/interactive-supports-focus -- the focus goes to the items inside it, never to the container
-        <div
-          role="menu"
-          aria-label="Tu cuenta"
-          className={`platform-user-menu${lingering.closing ? " platform-user-menu_state_closing" : ""}`}
-          onKeyDown={handleKeyDown}
-        >
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content className="platform-user-menu" align="end" sideOffset={10} aria-label="Tu cuenta">
           {goal && (
             <div className="platform-user-menu__day">
               <p className="platform-user-menu__figure">
@@ -162,47 +103,49 @@ export function PlatformUserMenu({ displayName, initials, profileHref }: Platfor
             </div>
           )}
 
-          {goal && <hr className="platform-user-menu__rule" />}
+          {goal && <DropdownMenu.Separator className="platform-user-menu__rule" />}
 
-          {/* The name leads to their page when their role has one; when it
-              does not, it heads the menu and leads nowhere. */}
+          {/* The name leads to their page when they have one; when they do
+              not, it heads the menu and leads nowhere. */}
           {profileHref ? (
-            <Link href={profileHref} role="menuitem" className="platform-user-menu__item" onClick={() => close(false)}>
-              <UserIcon className="platform-user-menu__icon" />
-              {displayName}
-            </Link>
+            <DropdownMenu.Item asChild>
+              <Link href={profileHref} className="platform-user-menu__item">
+                <UserIcon className="platform-user-menu__icon" />
+                {displayName}
+              </Link>
+            </DropdownMenu.Item>
           ) : (
-            <p className="platform-user-menu__item platform-user-menu__item_role_name">
+            <DropdownMenu.Label className="platform-user-menu__item platform-user-menu__item_role_name">
               <UserIcon className="platform-user-menu__icon" />
               {displayName}
-            </p>
+            </DropdownMenu.Label>
           )}
 
-          <Link
-            href={platformRoutes.settings}
-            role="menuitem"
-            className="platform-user-menu__item"
-            onClick={() => close(false)}
-          >
-            <SlidersIcon className="platform-user-menu__icon" />
-            Ajustes
-          </Link>
+          <DropdownMenu.Item asChild>
+            <Link href={platformRoutes.settings} className="platform-user-menu__item">
+              <SlidersIcon className="platform-user-menu__icon" />
+              Ajustes
+            </Link>
+          </DropdownMenu.Item>
 
           {/* The same row twice, and the stylesheet shows the one that fits the
               theme being drawn: which theme that IS cannot be known here when
               nobody has chosen — it is the machine's preference, and only the
               browser reads it. Each one asks for the other theme, and its
-              switch is drawn in the state the current one is in. */}
+              switch is drawn in the state the current one is in. The hidden
+              one cannot take the focus, and the primitive skips it. */}
           <form
             action={setTheme.bind(null, "dark")}
             className="platform-user-menu__theme platform-user-menu__theme_to_dark"
           >
             <CurrentPathField name="returnTo" />
-            <button type="submit" role="menuitem" className="platform-user-menu__item">
-              <MoonIcon className="platform-user-menu__icon" />
-              Modo oscuro
-              <span className="platform-user-menu__switch" aria-hidden="true" />
-            </button>
+            <DropdownMenu.Item asChild onSelect={keepOpen}>
+              <button type="submit" className="platform-user-menu__item">
+                <MoonIcon className="platform-user-menu__icon" />
+                Modo oscuro
+                <span className="platform-user-menu__switch" aria-hidden="true" />
+              </button>
+            </DropdownMenu.Item>
           </form>
 
           <form
@@ -210,27 +153,33 @@ export function PlatformUserMenu({ displayName, initials, profileHref }: Platfor
             className="platform-user-menu__theme platform-user-menu__theme_to_light"
           >
             <CurrentPathField name="returnTo" />
-            <button type="submit" role="menuitem" className="platform-user-menu__item">
-              <MoonIcon className="platform-user-menu__icon" />
-              Modo oscuro
-              <span className="platform-user-menu__switch platform-user-menu__switch_state_on" aria-hidden="true" />
-            </button>
+            <DropdownMenu.Item asChild onSelect={keepOpen}>
+              <button type="submit" className="platform-user-menu__item">
+                <MoonIcon className="platform-user-menu__icon" />
+                Modo oscuro
+                <span className="platform-user-menu__switch platform-user-menu__switch_state_on" aria-hidden="true" />
+              </button>
+            </DropdownMenu.Item>
           </form>
 
-          <Link href="/" role="menuitem" className="platform-user-menu__item" onClick={() => close(false)}>
-            <ArrowUpIcon className="platform-user-menu__icon platform-user-menu__icon_turn_out" />
-            Sitio público
-          </Link>
+          <DropdownMenu.Item asChild>
+            <Link href="/" className="platform-user-menu__item">
+              <ArrowUpIcon className="platform-user-menu__icon platform-user-menu__icon_turn_out" />
+              Sitio público
+            </Link>
+          </DropdownMenu.Item>
 
           {/* A form, so signing out works without JavaScript, as it always has. */}
           <form action={logoutAction}>
-            <button type="submit" role="menuitem" className="platform-user-menu__item">
-              <ArrowRightFromBracketIcon className="platform-user-menu__icon" />
-              Cerrar sesión
-            </button>
+            <DropdownMenu.Item asChild onSelect={keepOpen}>
+              <button type="submit" className="platform-user-menu__item">
+                <ArrowRightFromBracketIcon className="platform-user-menu__icon" />
+                Cerrar sesión
+              </button>
+            </DropdownMenu.Item>
           </form>
-        </div>
-      )}
-    </div>
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
   );
 }
