@@ -22,6 +22,7 @@ import { Writable } from "node:stream";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../lib/platform-db/generated/client";
 import { hashPassword, passwordProblem } from "../lib/platform-auth/password";
+import { proposeUserSlug } from "../services/shared/user-slug.service";
 import { createDefaultStudy } from "../services/studies/default-study";
 
 const connectionString = process.env.PLATFORM_DATABASE_URL;
@@ -91,7 +92,13 @@ async function createUser(rawEmail: string | undefined, displayName: string | un
   // the administration panel does it (services/staff-students).
   const user = await db.$transaction(async (tx) => {
     const created = await tx.user.create({
-      data: { email, displayName: name, passwordHash, passwordUpdatedAt: new Date() },
+      data: {
+        email,
+        displayName: name,
+        slug: await proposeUserSlug(tx, name),
+        passwordHash,
+        passwordUpdatedAt: new Date(),
+      },
     });
     await createDefaultStudy(tx, created.id);
     return created;

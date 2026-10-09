@@ -13,6 +13,7 @@ import { z } from "zod";
 import { formEmail, formText, parseForm } from "@/services/shared/form-schema";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
 import { withErrorParam } from "@/services/shared/safe-return-to";
+import { proposeUserSlug } from "@/services/shared/user-slug.service";
 import { createDefaultStudy } from "@/services/studies/default-study";
 import type { AccountActionState } from "./staff-students.types";
 
@@ -79,6 +80,7 @@ export async function createStudentAccount(
         data: {
           email,
           displayName,
+          slug: await proposeUserSlug(tx, displayName),
           passwordHash: await hashPassword(resolved.password),
           passwordUpdatedAt: new Date(),
         },

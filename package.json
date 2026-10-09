@@ -24,6 +24,7 @@
     "collections:by-chapter": "tsx scripts/migrate-chapter-collections.ts",
     "stats:rebuild": "tsx scripts/rebuild-daily-stats.ts",
     "bots:calibrate": "tsx scripts/calibrate-bots.ts",
+    "bots:sql": "tsx scripts/bots-sql.ts",
     "sounds:make": "tsx scripts/make-board-sounds.ts",
     "user:create": "tsx scripts/platform-user.ts create",
     "user:password": "tsx scripts/platform-user.ts password",

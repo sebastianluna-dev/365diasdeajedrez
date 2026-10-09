@@ -89,3 +89,41 @@ export const BOT_GROUP_RING: Record<BotGroupCode, BotRingCode> = {
 export function isBotRingCode(value: string): value is BotRingCode {
   return Object.values(BOT_RING).includes(value as BotRingCode);
 }
+
+/**
+ * How long each side has: `NONE` is the only one in use (against a bot there
+ * is no clock); the rest are for games between people and are seeded
+ * inactive, so switching one on is updating a row.
+ */
+export const TIME_CONTROL = {
+  NONE: "NONE",
+  BULLET_1_0: "BULLET_1_0",
+  BULLET_2_1: "BULLET_2_1",
+  BLITZ_3_0: "BLITZ_3_0",
+  BLITZ_3_2: "BLITZ_3_2",
+  BLITZ_5_0: "BLITZ_5_0",
+  RAPID_10_0: "RAPID_10_0",
+  RAPID_15_10: "RAPID_15_10",
+  CLASSICAL_30_0: "CLASSICAL_30_0",
+} as const;
+
+export type TimeControlCode = (typeof TIME_CONTROL)[keyof typeof TIME_CONTROL];
+
+/** Each time control's label and seconds; `initialSeconds` null is «without a clock». */
+export const TIME_CONTROL_VALUES: readonly {
+  code: TimeControlCode;
+  label: string;
+  initialSeconds: number | null;
+  incrementSeconds: number;
+  isActive: boolean;
+}[] = [
+  { code: TIME_CONTROL.NONE, label: "Sin tiempo", initialSeconds: null, incrementSeconds: 0, isActive: true },
+  { code: TIME_CONTROL.BULLET_1_0, label: "1+0", initialSeconds: 60, incrementSeconds: 0, isActive: false },
+  { code: TIME_CONTROL.BULLET_2_1, label: "2+1", initialSeconds: 120, incrementSeconds: 1, isActive: false },
+  { code: TIME_CONTROL.BLITZ_3_0, label: "3+0", initialSeconds: 180, incrementSeconds: 0, isActive: false },
+  { code: TIME_CONTROL.BLITZ_3_2, label: "3+2", initialSeconds: 180, incrementSeconds: 2, isActive: false },
+  { code: TIME_CONTROL.BLITZ_5_0, label: "5+0", initialSeconds: 300, incrementSeconds: 0, isActive: false },
+  { code: TIME_CONTROL.RAPID_10_0, label: "10+0", initialSeconds: 600, incrementSeconds: 0, isActive: false },
+  { code: TIME_CONTROL.RAPID_15_10, label: "15+10", initialSeconds: 900, incrementSeconds: 10, isActive: false },
+  { code: TIME_CONTROL.CLASSICAL_30_0, label: "30+0", initialSeconds: 1800, incrementSeconds: 0, isActive: false },
+];

@@ -40,6 +40,7 @@ import {
   USERS,
 } from "./seed-data";
 import { nextClassAfter, planSeededOrders, resolveCollectionIds, seedReferenceDate } from "./seed-rules";
+import { proposeUserSlug } from "../services/shared/user-slug.service";
 import { AUTHOR_ROLE } from "../constants/platform/course-codes.const";
 
 const connectionString = process.env.PLATFORM_DATABASE_URL;
@@ -210,6 +211,8 @@ async function main() {
       where: { email: user.email },
       select: { passwordHash: true },
     });
+    // The user name only reaches a new account (`create`): an existing one
+    // keeps whatever its person chose.
     const credential = existing?.passwordHash
       ? {}
       : { passwordHash: await hashPassword(DEMO_PASSWORD), passwordUpdatedAt: new Date() };
@@ -217,7 +220,7 @@ async function main() {
     await db.user.upsert({
       where: { email: user.email },
       update: { displayName: user.displayName, ...credential },
-      create: { ...user, ...credential },
+      create: { ...user, slug: await proposeUserSlug(db, user.displayName), ...credential },
     });
   }
 

@@ -250,7 +250,8 @@ model GameResult {
   label String
   order Int    @default(0)
 
-  games Game[]
+  games       Game[]
+  playedGames PlayedGame[]
 }
 
 model ClassStatus {
@@ -638,6 +639,20 @@ model User {
   passwordUpdatedAt DateTime?
   lastLoginAt       DateTime?
 
+  /// The person's user name: the address of their profile, `/perfil/<slug>`.
+  /// Proposed from the name when the account is created (`proposeUserSlug`,
+  /// services/shared/user-slug.service.ts, called by whoever creates it) and
+  /// changed only by the person in «Ajustes» (`setUserSlug`). CHECK
+  /// `user_slug_format` in the migration: 3–30 lower-case letters, digits and
+  /// single dashes. Addressed by slug and not by code, as Level is: it goes in
+  /// the URL. Its P2002 is `User_slug_key`.
+  slug       String  @unique
+  /// One line the person writes about themselves, on their profile. Optional.
+  statusLine String? @db.VarChar(120)
+  /// FIDE's three-letter federation code (lib/chess/federations.ts), as
+  /// Game.whiteCountry: the flag beside their name. Optional.
+  country    String?
+
   /// Minutes of study the student sets themselves per day. A column and not a
   /// settings table because today it is the only setting that does not hang from a
   /// course (the ones that do live in UserCourseSettings); if more appear, they
@@ -662,6 +677,10 @@ model User {
   classParticipants ClassParticipant[]
   activities        UserActivity[]
   dailyStats        UserStatDaily[]
+
+  /// Games played on the platform, in each seat (never study games).
+  playedGamesAsWhite PlayedGame[] @relation("PlayedGameWhiteUser")
+  playedGamesAsBlack PlayedGame[] @relation("PlayedGameBlackUser")
 
   /// Assignments in which this user is the student.
   studentAssignments TeacherStudent[] @relation("StudentAssignments")
@@ -1315,4 +1334,158 @@ model UserStatDaily {
   topic  Topic?     @relation(fields: [topicId], references: [id], onDelete: SetNull)
 
   @@unique([userId, day, metricId, topicId])
+}
+
+// ---------------------------------------------------------------------------
+// «Jugar»: games played on the platform, against a bot today, a person later
+// ---------------------------------------------------------------------------
+//
+// A played game is NOT a Game: it hangs from no study, so «Mis estudios»,
+// the explorer's position index (GamePosition) and the classes never see it,
+// and it writes no UserActivity (playing never counts toward the streak).
+// «Guardar en un estudio» COPIES it into a Game with source PLATFORM_GAME.
+//
+// Constraints Prisma cannot express, added by hand in the migration
+// `…_played_games` (see there): CHECK bot_elo_range; CHECKs
+// played_game_white_one_seat / played_game_black_one_seat (a seat is a person
+// OR a bot), played_game_closed_has_termination and played_game_bot_never_rated;
+// partial unique indexes played_game_white_user_open_vs_bot and
+// played_game_black_user_open_vs_bot (one open game against a bot per person
+// and colour).
+
+/// Where a bot belongs (BOT_GROUP, constants/platform/play-codes.const.ts).
+/// `ring` is a BotRingCode (NONE, GOLD, TRICOLOR): the portrait's ring as a
+/// code, never a colour. Seeded; never edited from the interface.
+model BotGroup {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  ring  String @default("NONE")
+  order Int    @default(0)
+
+  bots Bot[]
+}
+
+/// An opponent the engine plays as. Its rows come from ONE place,
+/// lib/chess/bots/roster.ts: the seed upserts them and the migrations carry
+/// the SQL `npm run bots:sql` generates from it. `elo` is the label the student
+/// sees (400–2800, never round; CHECK bot_elo_range); how Stockfish is weakened
+/// to it is `strengthFor(elo)` in lib/chess/bots/bot-strength.ts and is never
+/// stored. Addressed by `slug` and not by code, as Level is: it goes in the URL.
+/// No portrait column: the avatar is initials on a tone derived from the slug.
+model Bot {
+  id         Int       @id @default(autoincrement())
+  slug       String    @unique
+  name       String
+  elo        Int
+  /// One line about how it plays, or who the player is: the academy's own text.
+  bio        String
+  /// Favourite openings as copy for its card: a list of strings, as Game.tags.
+  openings   Json?
+  /// Facts about a real player, shown as facts with the date they were true.
+  fideElo    Int?
+  fideTitle  String?
+  /// FIDE's three-letter federation code, for the flag.
+  country    String?
+  ratingAsOf DateTime? @db.Date
+  groupId    Int
+  order      Int       @default(0)
+  isActive   Boolean   @default(true)
+
+  group      BotGroup     @relation(fields: [groupId], references: [id])
+  whiteGames PlayedGame[] @relation("PlayedGameWhiteBot")
+  blackGames PlayedGame[] @relation("PlayedGameBlackBot")
+
+  @@index([groupId, order])
+}
+
+/// How long each side has (TIME_CONTROL). NONE is the only active one; the
+/// eight rhythms of games between people are seeded inactive.
+model TimeControl {
+  id               Int     @id @default(autoincrement())
+  code             String  @unique
+  label            String
+  /// Null: without a clock.
+  initialSeconds   Int?
+  incrementSeconds Int     @default(0)
+  order            Int     @default(0)
+  isActive         Boolean @default(false)
+
+  games PlayedGame[]
+}
+
+/// How a played game ended (GAME_TERMINATION). Null while it is being played.
+model GameTermination {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  games PlayedGame[]
+}
+
+/// A game PLAYED on the platform. Two seats, each a person or a bot (exactly
+/// one of each pair: CHECKs in the migration); the services require at least
+/// one person, and both users set is a game between people.
+///
+/// SINGLE WRITER: `pgn`, `plyCount`, `finalFen`, `lastMoveAt`, `resultId`,
+/// `terminationId` and `finishedAt` are written only by `writePlayedGameRecord`
+/// (services/shared/played-game-record.ts), inside the transaction of whoever
+/// writes. Nothing deletes a played game; every seat relation is RESTRICT, so
+/// the record outlives nobody's history and a future rating can be recomputed
+/// from it.
+model PlayedGame {
+  /// Short: it goes in the URL (/jugar/partidas/aB3xK9pQ), as Game.id.
+  id            String    @id @default(nanoid(8))
+  whiteUserId   String?
+  whiteBotId    Int?
+  blackUserId   String?
+  blackBotId    Int?
+  timeControlId Int
+  /// ONGOING («*») while it is played, and after an ABORTED close.
+  resultId      Int
+  /// Set exactly when the game closes: CHECK played_game_closed_has_termination.
+  terminationId Int?
+  /// Null when it starts at the initial position (as Game.initialFen).
+  initialFen    String?
+  /// Moves AND headers: the PGN is the content, as everywhere. Single writer.
+  pgn           String    @db.Text
+  /// The number of plies in `pgn`: the version each move is checked against. Single writer.
+  plyCount      Int       @default(0)
+  /// The position after the last move, for the profile's diagram. Single writer.
+  finalFen      String
+  /// Each seat's strength WHEN it was played: a bot can be recalibrated
+  /// afterwards. Written at creation, never updated.
+  whiteElo      Int?
+  blackElo      Int?
+  /// Never true against a bot: CHECK played_game_bot_never_rated.
+  isRated       Boolean   @default(false)
+  /// Time left per side; null without a clock.
+  clockWhiteMs  Int?
+  clockBlackMs  Int?
+  startedAt     DateTime  @default(now())
+  /// Server time of the last move; null before the first. Single writer.
+  lastMoveAt    DateTime?
+  /// Null while it is played. Single writer.
+  finishedAt    DateTime?
+  updatedAt     DateTime  @updatedAt
+
+  whiteUser   User?            @relation("PlayedGameWhiteUser", fields: [whiteUserId], references: [id], onDelete: Restrict)
+  whiteBot    Bot?             @relation("PlayedGameWhiteBot", fields: [whiteBotId], references: [id], onDelete: Restrict)
+  blackUser   User?            @relation("PlayedGameBlackUser", fields: [blackUserId], references: [id], onDelete: Restrict)
+  blackBot    Bot?             @relation("PlayedGameBlackBot", fields: [blackBotId], references: [id], onDelete: Restrict)
+  timeControl TimeControl      @relation(fields: [timeControlId], references: [id], onDelete: Restrict)
+  result      GameResult       @relation(fields: [resultId], references: [id], onDelete: Restrict)
+  termination GameTermination? @relation(fields: [terminationId], references: [id], onDelete: Restrict)
+
+  /// The profile's lists.
+  @@index([whiteUserId, lastMoveAt])
+  @@index([blackUserId, lastMoveAt])
+  /// The scoreboard against each bot.
+  @@index([whiteUserId, blackBotId])
+  @@index([blackUserId, whiteBotId])
+  /// A future sweeper of abandoned games, and the clock.
+  @@index([lastMoveAt])
+  /// The order of a future rating recomputation.
+  @@index([finishedAt])
 }

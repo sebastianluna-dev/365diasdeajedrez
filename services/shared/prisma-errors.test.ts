@@ -84,7 +84,7 @@ async function uniqueViolationThroughTheAdapter(violation: PgUniqueViolation): P
   const poolConfig = { Client: FailingPgClient } as unknown as ConstructorParameters<typeof PrismaPg>[0];
   const db = new PrismaClient({ adapter: new PrismaPg(poolConfig) });
   try {
-    await db.user.create({ data: { email: "alumno@example.com", displayName: "Alumno" } });
+    await db.user.create({ data: { email: "alumno@example.com", displayName: "Alumno", slug: "alumno" } });
   } catch (error) {
     return error;
   } finally {

@@ -21,6 +21,7 @@ import {
 } from "@/services/shared/form-schema";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
 import { safeReturnTo, withErrorParam } from "@/services/shared/safe-return-to";
+import { proposeUserSlug } from "@/services/shared/user-slug.service";
 import { createDefaultStudy } from "@/services/studies/default-study";
 import { planAssignment } from "./assignment-rules";
 
@@ -117,7 +118,13 @@ export async function createTeacher(formData: FormData): Promise<void> {
     // Account and record in the same transaction: either both go in or neither does.
     const created = await db.$transaction(async (tx) => {
       const user = await tx.user.create({
-        data: { email, displayName, passwordHash: await hashPassword(password), passwordUpdatedAt: new Date() },
+        data: {
+          email,
+          displayName,
+          slug: await proposeUserSlug(tx, displayName),
+          passwordHash: await hashPassword(password),
+          passwordUpdatedAt: new Date(),
+        },
         select: { id: true },
       });
       // A teacher also uses "Mis estudios" — that is where they make the collections

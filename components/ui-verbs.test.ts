@@ -33,10 +33,13 @@ const RESTING_PENDING_LABEL = [
 
 const PENDING_LABEL = /pendingLabel="([^"]*)"/g;
 
+/** Code nobody writes: Prisma's generated client, whose base64 blobs can spell anything. */
+const GENERATED = join(ROOT, "lib/platform-db/generated");
+
 function filesOf(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const path = join(directory, entry.name);
-    if (entry.isDirectory()) return filesOf(path);
+    if (entry.isDirectory()) return path === GENERATED ? [] : filesOf(path);
     // A test names what it checks in Spanish, in its own words: it is not copy.
     const isCopy = /\.tsx?$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name);
     return isCopy ? [path] : [];
