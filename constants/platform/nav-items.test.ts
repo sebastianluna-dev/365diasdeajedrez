@@ -69,12 +69,7 @@ describe("buildPlatformNavGroups", () => {
     const groups = buildPlatformNavGroups(STUDENT, ALL_ON);
     expect(labelsOf(groups)).toEqual(["Inicio", "Mis clases", "Mis estudios", "Mis cursos", "Jugar", "Herramientas"]);
     const tools = groups[0]?.items.find(isNavDropdown);
-    expect(tools?.items.map((item) => item.label)).toEqual([
-      "Tablero de análisis",
-      "Importar partida",
-      "Explorador",
-      "Entrenador",
-    ]);
+    expect(tools?.items.map((item) => item.label)).toEqual(["Tablero de análisis", "Explorador", "Entrenador"]);
     expect(tools?.items.every((item) => item.description.length > 0)).toBe(true);
     expect(labelsOf(buildPlatformNavGroups(TEACHER, ALL_ON)).slice(-3)).toEqual(["Jugar", "Herramientas", "Mi ficha"]);
   });

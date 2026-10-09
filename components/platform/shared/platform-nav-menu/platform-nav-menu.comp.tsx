@@ -5,14 +5,12 @@ import { DropdownMenu } from "radix-ui";
 import { AngleDownIcon } from "@/components/icons/angle-down-icon.comp";
 import { ChessBoardIcon } from "@/components/icons/chess-board-icon.comp";
 import { DumbbellIcon } from "@/components/icons/dumbbell-icon.comp";
-import { FileImportIcon } from "@/components/icons/file-import-icon.comp";
 import { MagnifyingGlassIcon } from "@/components/icons/magnifying-glass-icon.comp";
 import type { PlatformNavDropdown, PlatformNavMenuItem } from "@/constants/platform/nav-items.const";
 import "./platform-nav-menu.comp.css";
 
 const ICONS: Record<PlatformNavMenuItem["icon"], typeof ChessBoardIcon> = {
   "analysis-board": ChessBoardIcon,
-  import: FileImportIcon,
   explorer: MagnifyingGlassIcon,
   trainer: DumbbellIcon,
 };

@@ -825,9 +825,9 @@ export async function rememberOpenedGame(studyId: string, gameId: string): Promi
 
 // --- «Herramientas» ---------------------------------------------------------
 //
-// The analysis board and «Importar partida» put games into a study chosen in
-// the form, not in the URL: the same two writes as a study's own «Nueva
-// partida» and «Importar», each reached with the study read from the form.
+// The analysis board puts its game into a study chosen in the form, not in the
+// URL: the same write as a study's own «Nueva partida», reached with the study
+// read from the form.
 
 /** The study a tool's form chose, or back to the tool with an error. */
 function chosenStudy(formData: FormData, back: string): string {
@@ -845,10 +845,4 @@ function chosenStudy(formData: FormData, back: string): string {
 export async function saveAnalysisToStudy(formData: FormData): Promise<void> {
   if (!ANALYSIS_BOARD_ENABLED) notFound();
   return createStudyGame(chosenStudy(formData, platformRoutes.analysisBoard()), formData);
-}
-
-/** «Importar partida»: a pasted PGN into the study chosen in the form, as a study's «Importar» does. */
-export async function importPgnToStudy(formData: FormData): Promise<void> {
-  if (!ANALYSIS_BOARD_ENABLED) notFound();
-  return importPgnGames(chosenStudy(formData, platformRoutes.importGame), formData);
 }

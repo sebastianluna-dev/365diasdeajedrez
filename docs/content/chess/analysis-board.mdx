@@ -40,14 +40,14 @@ The viewer plays it with `interaction="play"` and `play.fromPath`/`play.leafPath
 ## Saving and importing
 
 - **«Guardar en un estudio»** ([`SaveToStudyPopup`](/components/platform/shared/save-to-study-popup), the same popup a played game uses): the person's own studies (`getOwnStudyOptions`) and a name; `saveAnalysisToStudy` is `createStudyGame` with the PGN in a hidden field — moves, variations and comments —, indexed, and ends on the new game.
-- **«Importar partida»** (`/herramientas/importar-partida`, [`ImportGameSection`](/components/platform/sections/tools/import-game/import-game-section)): a pasted PGN, one game or several, into the study chosen in the form; `importPgnToStudy` is a study's own `importPgnGames` and ends on the first game imported.
+- **No «Importar partida» of its own.** It was a second tool of «Herramientas» until 2026-10-09, when the owner dropped it: a game pasted in «PGN» is saved with «Guardar en un estudio», and a study imports its own games («Importar»).
 
 ## Verification in the app
 
 What was checked on 2026-10-09 with the switch on in a local copy, on `next dev`, as `alumno.demo`:
 
-1. «Herramientas» opens its menu with the board, «Importar partida» and the explorer; `/herramientas` goes to the board.
+1. «Herramientas» opens its menu with the board and the explorer; `/herramientas` goes to the board.
 2. A FEN without kings says «No es un FEN válido.»; «hola» as a PGN says «No es un PGN válido.»; a Ruy López loads its sixteen moves.
 3. From 6... b5, «Jugar contra el módulo» with White: 7. d4 is answered at once (bxa4), both in blue as a variation of the main line's 7. Bb3; «Volver al análisis» keeps them.
-4. «Guardar en un estudio» saves the analysis as a game of «Estudio: ataques al rey» and opens it; «Importar partida» imports a pasted game into it and opens it.
+4. «Guardar en un estudio» saves the analysis as a game of «Estudio: ataques al rey» and opens it.
 5. The bar fits the student's menu from 1280px (the teacher's from about 1330px).

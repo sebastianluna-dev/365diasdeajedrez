@@ -17,9 +17,8 @@ const meta = {
       description: {
         component: `
 A dropdown of the top bar (M3), on Radix's \`DropdownMenu\`: «Herramientas»
-gathers the analysis board, «Importar partida», the explorer and the trainer,
-two columns of tools each with its icon and the line that says what it is
-for. The trigger lights up like an item when one of its tools is the page.
+gathers the analysis board, the explorer and the trainer, two columns of tools
+each with its icon and the line that says what it is for. The trigger lights up like an item when one of its tools is the page.
 
 Source: \`components/platform/shared/platform-nav-menu/platform-nav-menu.comp.tsx\`.
 Reference page: [Components › PlatformNavMenu](/components/platform/shared/platform-nav-menu) in the docs site.
@@ -51,7 +50,7 @@ type Story = StoryObj<typeof meta>;
 /** Closed: the trigger among the bar's items. */
 export const Closed: Story = {};
 
-/** Open, by its `play`: the four tools in two columns, with their lines. */
+/** Open, by its `play`: the three tools in two columns, with their lines. */
 export const Open: Story = {
   play: async ({ canvasElement }) => {
     await userEvent.click(within(canvasElement).getByRole("button", { name: "Herramientas" }));

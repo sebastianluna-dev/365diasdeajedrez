@@ -140,7 +140,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/entrenador` (the Move Trainer; **switched off**: it answers 404 while `MOVE_TRAINER_ENABLED` in `constants/platform/features.const.ts` is `false`)
 - `/explorador` (search for games by position; student and teacher share it)
 - `/jugar`, `/jugar/partidas/[gameId]` (games against the bots), `/perfil`, `/perfil/[slug]`, `/perfil/[slug]/partidas` (a person's profile and every game they played; seen by them, their teachers and the staff) — **switched off** while `PLAY_ENABLED` is `false`
-- `/herramientas` (goes to the board), `/herramientas/tablero-de-analisis`, `/herramientas/importar-partida` — **switched off** while `ANALYSIS_BOARD_ENABLED` is `false`; once on, «Herramientas» in the bar gathers them with the explorer
+- `/herramientas` (goes to the board) and `/herramientas/tablero-de-analisis` — **switched off** while `ANALYSIS_BOARD_ENABLED` is `false`; once on, «Herramientas» in the bar gathers the board with the explorer
 
 **Platform — teacher** (requires an active `Teacher` row)
 

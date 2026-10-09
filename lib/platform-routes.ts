@@ -103,7 +103,6 @@ export const platformRoutes = {
     const search = params.toString();
     return `/herramientas/tablero-de-analisis${search ? `?${search}` : ""}`;
   },
-  importGame: "/herramientas/importar-partida",
 } as const;
 
 /**

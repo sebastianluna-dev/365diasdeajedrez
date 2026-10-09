@@ -21,7 +21,7 @@ export interface PlatformNavItem {
 /** A tool in a dropdown: its line says what it is for (M3), its icon is named by what it does. */
 export interface PlatformNavMenuItem extends PlatformNavItem {
   description: string;
-  icon: "analysis-board" | "import" | "explorer" | "trainer";
+  icon: "analysis-board" | "explorer" | "trainer";
 }
 
 /**
@@ -97,9 +97,9 @@ export const STAFF_NAV_ITEMS: PlatformNavItem[] = [
 const PLAY_ITEM: PlatformNavItem = { label: "Jugar", href: platformRoutes.play };
 
 /**
- * «Herramientas» (planning decision §H, M3): the analysis board, «Importar
- * partida», the explorer and — while it is on — the trainer, each with the
- * line that says what it is for.
+ * «Herramientas» (planning decision §H, M3): the analysis board, the explorer
+ * and — while it is on — the trainer, each with the line that says what it is
+ * for.
  */
 function toolsDropdown(features: PlatformNavFeatures): PlatformNavDropdown {
   return {
@@ -110,12 +110,6 @@ function toolsDropdown(features: PlatformNavFeatures): PlatformNavDropdown {
         href: platformRoutes.analysisBoard(),
         description: "Pega un FEN o un PGN y analízalo con el módulo.",
         icon: "analysis-board",
-      },
-      {
-        label: "Importar partida",
-        href: platformRoutes.importGame,
-        description: "Un PGN que entra directo a uno de tus estudios.",
-        icon: "import",
       },
       {
         label: "Explorador",

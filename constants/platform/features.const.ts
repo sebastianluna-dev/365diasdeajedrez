@@ -28,9 +28,9 @@ export const MOVE_TRAINER_ENABLED = false as boolean;
 export const PLAY_ENABLED = false as boolean;
 
 /**
- * «Herramientas»: the analysis board at `/herramientas/tablero-de-analisis`,
- * «Importar partida», and the menu that gathers them with the explorer and the
- * trainer. It persists nothing and needs no calibration nor migration, so it
- * can be switched on before `PLAY_ENABLED`.
+ * «Herramientas»: the analysis board at `/herramientas/tablero-de-analisis` and
+ * the menu that gathers it with the explorer and the trainer. It persists
+ * nothing and needs no calibration nor migration, so it can be switched on
+ * before `PLAY_ENABLED`.
  */
 export const ANALYSIS_BOARD_ENABLED = false as boolean;
