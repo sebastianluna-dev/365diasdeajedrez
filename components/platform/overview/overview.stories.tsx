@@ -13,6 +13,11 @@ import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
 import { MoveContextMenu } from "@/components/chess/game-viewer/move-context-menu.comp";
 import { MoveTable } from "@/components/chess/game-viewer/move-table.comp";
 import { PlayerAvatar } from "@/components/chess/player-avatar/player-avatar.comp";
+import { AbandonPopup } from "@/components/platform/sections/play/live-game/abandon-popup/abandon-popup.comp";
+import { LiveGameBanner } from "@/components/platform/sections/play/live-game/live-game-banner/live-game-banner.comp";
+import { BotCard } from "@/components/platform/sections/play/lobby/bot-card/bot-card.comp";
+import { BotSheet } from "@/components/platform/sections/play/lobby/bot-sheet/bot-sheet.comp";
+import { OpenGameNotice } from "@/components/platform/sections/play/lobby/open-game-notice/open-game-notice.comp";
 import { MoveTree } from "@/components/chess/game-viewer/move-tree.comp";
 import { PlayerStrip } from "@/components/chess/game-viewer/player-strip.comp";
 import { StaticDiagram } from "@/components/chess/static-diagram.comp";
@@ -122,7 +127,7 @@ import { buildPlatformNavGroups } from "@/constants/platform/nav-items.const";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { GAME_RESULT } from "@/constants/platform/study-codes.const";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
-import { FIXTURE_BOT, FIXTURE_STUDENT } from "@/lib/testing/fixtures/bots";
+import { FIXTURE_BOT, FIXTURE_STUDENT, FIXTURE_TEAM_BOT, fixtureBotView } from "@/lib/testing/fixtures/bots";
 import { staffRoutes } from "@/lib/platform-routes";
 import { readTokens, type Theme, tokenContrast } from "@/lib/platform-tokens";
 import type { CourseLevelItem } from "@/services/courses/courses.types";
@@ -513,6 +518,27 @@ function PopupTrigger() {
           </button>
         </div>
       </PlatformPopup>
+    </>
+  );
+}
+
+/** «Abandonar» and the popup it opens, as a game against a bot mounts them. */
+function AbandonTrigger() {
+  const popup = useRef<PlatformPopupHandle>(null);
+  return (
+    <>
+      <button
+        type="button"
+        className="platform-button platform-button_variant_danger platform-button_size_sm"
+        onClick={(event) => popup.current?.open(event)}
+      >
+        Abandonar
+      </button>
+      <AbandonPopup
+        ref={popup}
+        onAbandon={async () => popup.current?.close()}
+        onCancel={() => popup.current?.close()}
+      />
     </>
   );
 }
@@ -1411,6 +1437,50 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   />
                 )}
               />
+            </Tile>
+          </Section>
+
+          <Section title="Play">
+            <Tile name="OpenGameNotice" docs="platform-sections-play-lobby-opengamenotice" width={400} height={136}>
+              <OpenGameNotice
+                game={{
+                  id: "AbC12345",
+                  rival: {
+                    kind: "bot",
+                    botId: 4,
+                    name: FIXTURE_BOT.name,
+                    slug: FIXTURE_BOT.slug,
+                    elo: FIXTURE_BOT.elo,
+                    avatar: FIXTURE_BOT.avatar,
+                    title: null,
+                  },
+                  color: "white",
+                  plyCount: 12,
+                }}
+              />
+            </Tile>
+            <Tile name="BotCard" docs="platform-sections-play-lobby-botcard" width={400} height={216}>
+              <div className="overview__bot-cards">
+                <BotCard
+                  bot={fixtureBotView()}
+                  score={{ botId: 4, wins: 2, losses: 1, draws: 0, open: 0 }}
+                  onPick={() => undefined}
+                />
+                <BotCard bot={FIXTURE_TEAM_BOT} score={null} onPick={() => undefined} />
+              </div>
+            </Tile>
+            <Tile name="BotSheet" docs="platform-sections-play-lobby-botsheet" width={400} height={344}>
+              <BotSheet
+                bot={fixtureBotView()}
+                you={FIXTURE_STUDENT}
+                score={{ botId: 4, wins: 2, losses: 1, draws: 1, open: 0 }}
+              />
+            </Tile>
+            <Tile name="AbandonPopup" docs="platform-sections-play-live-game-abandonpopup" width={400} height={112}>
+              <AbandonTrigger />
+            </Tile>
+            <Tile name="LiveGameBanner" docs="platform-sections-play-live-game-livegamebanner" width={400} height={112}>
+              <LiveGameBanner kind="stale" onReload={() => undefined} />
             </Tile>
           </Section>
 

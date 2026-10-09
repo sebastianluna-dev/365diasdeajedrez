@@ -262,6 +262,13 @@
     gap: var(--platform-space-0-5);
   }
 
+  /* Two bot cards side by side, at the gallery's width. */
+  & .overview__bot-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 168px);
+    gap: var(--platform-space-4);
+  }
+
   /* A row of portraits, with room for their rings and flags. */
   & .overview__avatars {
     display: flex;

@@ -2,6 +2,12 @@ import type { PlayerAvatarData } from "@/lib/avatar-tone";
 import type { BotLevelSummary, PlayedGameCard } from "@/services/play/play.types";
 import type { StreakSummary } from "@/services/study-goal/study-goal.types";
 
+/** A person as a side of a scoreboard or a strip: the name and the portrait. */
+export interface PlayerCard {
+  name: string;
+  avatar: PlayerAvatarData;
+}
+
 /** A person's profile, as its head (N5), its three cards and its last games read it. */
 export interface ProfileView {
   userId: string;

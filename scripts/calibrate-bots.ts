@@ -41,7 +41,7 @@ import {
   type BotStrength,
   type EngineStrength,
 } from "../lib/chess/bots/bot-strength";
-import { chooseBotMove } from "../lib/chess/bots/choose-bot-move";
+import { botSearchOf, pickBotMove } from "../lib/chess/bots/bot-move";
 import { mulberry32, seedOf } from "../lib/chess/bots/rng";
 import { BOT_ROSTER } from "../lib/chess/bots/roster";
 import { createEngineClient, type EngineClient } from "../lib/chess/engine/engine-client";
@@ -189,15 +189,13 @@ async function playGame(
     const player = whiteToMove ? white : black;
     const client = whiteToMove ? engines[0] : engines[1];
     const fen = currentFen(game)!;
-    const reply = await client.bestMove({ fen: null, moves: uciMoves(game), search: player.strength.search });
-
-    let uci: string | null;
-    if (player.strength.regime === "sampled") {
-      const rng = mulberry32(seedOf(seed, game.sans.length));
-      uci = chooseBotMove(reply.candidates, player.strength, legalUciMoves(fen), rng)?.uci ?? null;
-    } else {
-      uci = reply.bestMove;
-    }
+    const reply = await client.bestMove({
+      fen: null,
+      moves: uciMoves(game),
+      search: botSearchOf(player.strength, false),
+    });
+    const rng = mulberry32(seedOf(seed, game.sans.length));
+    const uci = pickBotMove(player.strength, reply, legalUciMoves(fen), rng);
     const san = uci ? uciLineToSan(fen, [uci])[0] : undefined;
     const next = san ? playSan(game, san) : null;
     if (!next) throw new Error(`${player.id} had no playable move at ${fen} (${uci ?? "none"})`);

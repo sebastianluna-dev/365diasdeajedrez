@@ -4,9 +4,9 @@ description: "«Jugar»: games against the bots and the person's profile — the
 
 # Play («Jugar»)
 
-Games against Stockfish bots of 400–2 800, saved and listed on the person's profile (`/perfil/<slug>`), and the «Tablero de análisis» under «Herramientas». Being built in phases since 2026-10-08; until the screens exist both switches in `constants/platform/features.const.ts` are off (`PLAY_ENABLED`, `ANALYSIS_BOARD_ENABLED`), every action answers `notFound()` or `disabled`, and the three route folders are placeholders that answer 404.
+Games against Stockfish bots of 400–2 800, saved and listed on the person's profile (`/perfil/<slug>`), and the «Tablero de análisis» under «Herramientas». Being built in phases since 2026-10-08. Both switches in `constants/platform/features.const.ts` stay off (`PLAY_ENABLED`, `ANALYSIS_BOARD_ENABLED`) until the bots are calibrated and the owner has checked the screens: off, every page answers 404 — also a game opened by its id —, every action `notFound()` or `disabled`, and «Jugar» is not in the menu.
 
-What is in place today: the engine client, the bots and their strength ([Bots](/chess/bots)), the rules of a live game (`lib/chess/game-end.ts`, `lib/chess/live-game.ts`, `lib/play/`), the tables ([Data model → Played games](/platform/data-model#played-games-jugar)) and the services and actions below.
+What is in place: the engine client, the bots and their strength ([Bots](/chess/bots)), the rules of a live game (`lib/chess/game-end.ts`, `lib/chess/live-game.ts`, `lib/play/`), the tables ([Data model → Played games](/platform/data-model#played-games-jugar)), the services and actions below, the lobby ([`PlayLobbySection`](/components/platform/sections/play/lobby/play-lobby-section)) and the game itself ([`LiveGameSection`](/components/platform/sections/play/live-game/live-game-section)), played on the one [`GameViewer`](/components/chess/game-viewer/game-viewer). The profile pages and the analysis board are next.
 
 ## Rules that do not bend
 
@@ -73,3 +73,17 @@ Both moves of a game against a bot leave the same browser: the server demands le
 `prisma/seed-play.ts`, called by the seed: the three catalogs and the 45 bots upserted from the same roster the migrations' SQL is generated from, and three games for the demo student — won against Tere, lost by resignation against Don Chuy, and one open against Lupita on the student's turn — only when they have played none, written through the single writer. `prisma/seed-play.test.ts` replays them.
 
 The pages have a query budget (`/jugar` ≤ 3, `/perfil/<slug>` ≤ 7, without the session). It is measured with `PLATFORM_DB_LOG=query`, which makes `getPlatformDb()` print every query, against `npm run build && npm run start` on a cold load; the measured figures go here when the pages exist.
+
+## Verification in the app
+
+What was checked on 2026-10-08 with the switch on in a local copy, against `next dev` and the seeded local database, driving system Chrome with Playwright and the demo accounts (`constants/platform/demo-user.const.ts`). The seed leaves `alumno.demo` a game won against Tere, one lost against Don Chuy and one open against Lupita on their turn; repeat the steps after `npm run db:seed` on a database where the student has played nothing.
+
+1. `alumno.demo` opens `/jugar`: «Tienes una partida en curso contra Lupita» with «Continuar», the suggested rival «después de Tere» (Beto), the record on Tere's and Don Chuy's cards, «Partida en curso» on Lupita's.
+2. «Continuar» opens the game with «Te toca mover»; a move on the board shows «Pensando…» and the turning arc on Lupita's strip, and her move arrives after its delay.
+3. Reloading the page keeps every move: they were saved one by one.
+4. «Abandonar» opens «¿Abandonas la partida?»; confirming tints Lupita's strip «Ganó» and the student's «Perdió», both «por abandono», with «Revancha», «Otro rival», «Analizar», «Guardar en un estudio» and the scoreboard (0 – 1) under the board.
+5. `/jugar?rival=beto` opens Beto's popup; «Negras» and «Jugar» open a game in which Beto moves first.
+6. The same game in a second tab: after a move in the first, a move in the second brings «Esta partida cambió en otra pestaña.» with «Recargar».
+7. `profesor.demo`, the student's teacher, opens the finished game: the board, the moves and the strips, with no «Abandonar» and no «Revancha».
+
+Still to check when the profile arrives: the profile and its links, the activity untouched on `/inicio` after playing, and the staff's read-only view. The query budget is measured then too.

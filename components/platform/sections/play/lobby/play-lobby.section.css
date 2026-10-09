@@ -1,0 +1,109 @@
+/* The lobby (J1): the open game, the suggested rival on a white band, and a
+   row per group that scrolls sideways. */
+.play-lobby {
+  display: grid;
+  gap: var(--platform-space-6);
+
+  & .play-lobby__suggested {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-5);
+    padding: var(--platform-space-5) var(--platform-space-6);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .play-lobby__suggested-text {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+    gap: var(--platform-space-1);
+  }
+
+  & .play-lobby__eyebrow {
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--platform-accent-ink);
+  }
+
+  & .play-lobby__suggested-name {
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-2xl);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  & .play-lobby__suggested-elo {
+    color: var(--platform-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .play-lobby__suggested-bio {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .play-lobby__group {
+    display: grid;
+    gap: var(--platform-space-3);
+    min-width: 0;
+  }
+
+  & .play-lobby__group-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--platform-space-3);
+  }
+
+  & .play-lobby__group-title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-lg);
+    font-weight: 700;
+  }
+
+  & .play-lobby__group-span {
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-muted);
+  }
+
+  /* A row that scrolls sideways, with room for the cards' shadow. */
+  & .play-lobby__row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 168px;
+    gap: var(--platform-space-4);
+    margin: 0;
+    padding: var(--platform-space-1) var(--platform-space-1) var(--platform-space-3);
+    overflow-x: auto;
+    list-style: none;
+    scroll-snap-type: x proximity;
+  }
+
+  & .play-lobby__cell {
+    scroll-snap-align: start;
+  }
+
+  /* The popup's content: the sheet, then the colour and the foot. The
+     dialog is in the top layer but still inside this block in the document,
+     so its content is styled from here. */
+  & .play-lobby__popup {
+    display: grid;
+    gap: var(--platform-space-5);
+    padding: var(--platform-space-5) var(--platform-space-6);
+  }
+
+  @media (width < 768px) {
+    & .play-lobby__suggested {
+      flex-wrap: wrap;
+      padding: var(--platform-space-4);
+    }
+
+    & .play-lobby__row {
+      grid-auto-columns: 144px;
+    }
+  }
+}

@@ -1,0 +1,24 @@
+---
+description: "Why a live game's board stopped — another tab moved, or the bot's engine died — with «Recargar»; above the board, never over it."
+---
+
+# `LiveGameBanner`
+
+|            |                                                                                                          |
+| ---------- | -------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/play/live-game/live-game-banner/live-game-banner.comp.tsx`                 |
+| Kind       | Server Component (no state; its `onReload` comes from the client section)                                |
+| Stylesheet | `live-game-banner.comp.css` → block `.live-game-banner`                                                  |
+| Story      | `live-game-banner.stories.tsx` (`platform/sections/play/live-game/LiveGameBanner`): stale, engine failed |
+| Used by    | [`LiveGameSection`](/components/platform/sections/play/live-game/live-game-section)                      |
+
+## Props
+
+| Prop       | Type                         | Required | Meaning                                                                                                 |
+| ---------- | ---------------------------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| `kind`     | `"stale" \| "engine-failed"` | yes      | «Esta partida cambió en otra pestaña.», or «El módulo dejó de responder. Lo que jugaste está guardado.» |
+| `onReload` | `() => void`                 | yes      | «Recargar»: starts again from what the server has.                                                      |
+
+## Markup & styling
+
+**Elements:** `.live-game-banner__text`. `role="alert"`, on the warning's soft fill in its ink.

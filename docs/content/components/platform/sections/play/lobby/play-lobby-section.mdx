@@ -1,0 +1,32 @@
+---
+description: "«Jugar» (J1): the open game first, then the suggested rival and every bot by group, each a card that opens its sheet, the colour and «Jugar»."
+---
+
+# `PlayLobbySection`
+
+|            |                                                                                                                                                                                                                                                                                                                                                            |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/platform/sections/play/lobby/play-lobby.section.tsx`, `bot-gallery.comp.tsx`, `start-game-form.comp.tsx`                                                                                                                                                                                                                                       |
+| Kind       | Server Component; `BotGallery` and `StartGameForm` are its client leaves                                                                                                                                                                                                                                                                                   |
+| Stylesheet | `play-lobby.section.css` → block `.play-lobby`; `start-game-form.comp.css` → block `.start-game`                                                                                                                                                                                                                                                           |
+| Used by    | `app/(platform)/jugar/page.tsx`                                                                                                                                                                                                                                                                                                                            |
+| Composes   | [`OpenGameNotice`](/components/platform/sections/play/lobby/open-game-notice), [`BotCard`](/components/platform/sections/play/lobby/bot-card), [`BotSheet`](/components/platform/sections/play/lobby/bot-sheet), [`PlatformPopup`](/components/platform/shared/platform-popup), [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards) |
+| Uses       | `listBotGroups`, `suggestedBot`, `eloSpanOf` (`services/bots`); `getOpenPlayedGame`, `botScoreboardOf`, `startPlayedGame` (`services/play`); `getOwnPlayerCard` (`services/profile`)                                                                                                                                                                       |
+
+## Purpose
+
+The lobby of games against bots, as chosen on 2026-10-08 (J1): a gallery by groups with the suggested rival on top and a row per group that scrolls sideways — the invented characters, Mexico's Olympiad teams and its legend, the world champions, today's stars —, each row headed by its span of labels («De 412 a 1868»). A card opens the bot's popup: its sheet, the colour (Blancas, Negras, Al azar) and «Jugar».
+
+**The suggested rival** (`suggestedBot` in `services/bots/bot-rules.ts`, with its test) is the first bot stronger than the strongest one already beaten; the weakest of all to start with; the strongest once every bot has fallen. A draw does not move it.
+
+**An open game against a bot** comes first, as [`OpenGameNotice`](/components/platform/sections/play/lobby/open-game-notice) with «Continuar», and the popup warns before starting another: it sends `replace`, and `startPlayedGame` closes the open one in the same transaction — lost by abandonment after two moves of one's own, cancelled before them.
+
+`/jugar?rival=<slug>` opens that bot's popup on arrival (a profile's link to play a bot again). The popup's content changes with the bot, so `BotGallery` draws it before opening (`flushSync`): the popup then focuses the content it finds, the colour cards.
+
+## Behaviour
+
+The section reads in one round: the groups, the open game, the scoreboard and the person's own card (for the scoreboard's other side). It writes nothing. `startPlayedGame` redirects to the new game; a failure comes back as `?error=` and the page shows it in a [`PlatformNotice`](/components/platform/shared/platform-notice).
+
+## Markup & styling
+
+**Elements:** `.play-lobby__suggested`, `.play-lobby__suggested-text`, `.play-lobby__eyebrow`, `.play-lobby__suggested-name`, `.play-lobby__suggested-elo`, `.play-lobby__suggested-bio`, `.play-lobby__group`, `.play-lobby__group-head`, `.play-lobby__group-title`, `.play-lobby__group-span`, `.play-lobby__row` (a horizontal grid of 168px columns, 144px under 768px, snapping), `.play-lobby__cell`, `.play-lobby__popup` (the popup's content, styled from here because the dialog is still inside the block in the document); `.start-game__piece`, `.start-game__warning`, `.start-game__foot`.

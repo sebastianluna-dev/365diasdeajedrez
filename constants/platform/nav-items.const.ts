@@ -1,3 +1,4 @@
+import { PLAY_ENABLED } from "@/constants/platform/features.const";
 import { platformRoutes, staffRoutes, teacherRoutes } from "@/lib/platform-routes";
 
 // Platform navigation. The menu is EXCLUSIVE by role: each person sees only
@@ -43,7 +44,9 @@ export const TEACHER_NAV_ITEMS: PlatformNavItem[] = [
   // Same destination as in the student menu: the explorer belongs to no role,
   // and what each person sees is decided by the visibility filter, not the menu.
   { label: "Explorador", href: platformRoutes.explorer },
-  { label: "Mi perfil", href: teacherRoutes.profile },
+  // «Mi ficha»: the teacher's public card. «Mi perfil» is everyone's profile,
+  // reached from the user menu (planning decision §K, 2026-10-08).
+  { label: "Mi ficha", href: teacherRoutes.profile },
 ];
 
 export const STAFF_NAV_ITEMS: PlatformNavItem[] = [
@@ -54,17 +57,34 @@ export const STAFF_NAV_ITEMS: PlatformNavItem[] = [
   { label: "Clases", href: staffRoutes.classes },
 ];
 
+/** «Jugar», for the student after their courses and for the teacher before the explorer. */
+const PLAY_ITEM: PlatformNavItem = { label: "Jugar", href: platformRoutes.play };
+
+/** The items with «Jugar» put in before `beforeHref`. */
+function withPlay(items: PlatformNavItem[], beforeHref: string): PlatformNavItem[] {
+  const at = items.findIndex((item) => item.href === beforeHref);
+  return [...items.slice(0, at), PLAY_ITEM, ...items.slice(at)];
+}
+
 /**
  * Pure (testable) function that picks the right menu. It always returns ONE
- * single group: the list of the widest role the user has.
+ * single group: the list of the widest role the user has. «Jugar» is in the
+ * student's and the teacher's while its switch is on (`features.play`); the
+ * staff's menu is the panel's and has none.
  *
  * It still returns an array (and not a loose group) so as not to force the
  * component to change shape if one day there is more than one again.
  */
-export function buildPlatformNavGroups(roles: { isTeacher: boolean; isStaff: boolean }): PlatformNavGroup[] {
+export function buildPlatformNavGroups(
+  roles: { isTeacher: boolean; isStaff: boolean },
+  features: { play: boolean } = { play: PLAY_ENABLED },
+): PlatformNavGroup[] {
   if (roles.isStaff) return [{ label: "Administración", items: STAFF_NAV_ITEMS }];
-  if (roles.isTeacher) return [{ label: "Profesor", items: TEACHER_NAV_ITEMS }];
-  return [{ items: STUDENT_NAV_ITEMS }];
+  if (roles.isTeacher) {
+    const items = features.play ? withPlay(TEACHER_NAV_ITEMS, platformRoutes.explorer) : TEACHER_NAV_ITEMS;
+    return [{ label: "Profesor", items }];
+  }
+  return [{ items: features.play ? withPlay(STUDENT_NAV_ITEMS, platformRoutes.explorer) : STUDENT_NAV_ITEMS }];
 }
 
 /**

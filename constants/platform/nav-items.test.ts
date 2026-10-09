@@ -9,14 +9,14 @@ import {
 
 describe("buildPlatformNavGroups", () => {
   it("da sólo el grupo del alumno, sin encabezado", () => {
-    const groups = buildPlatformNavGroups({ isTeacher: false, isStaff: false });
+    const groups = buildPlatformNavGroups({ isTeacher: false, isStaff: false }, { play: false });
     expect(groups).toHaveLength(1);
     expect(groups[0]?.label).toBeUndefined();
     expect(groups[0]?.items).toEqual(STUDENT_NAV_ITEMS);
   });
 
   it("sustituye el menú del alumno por el del profesor, no lo apila", () => {
-    const groups = buildPlatformNavGroups({ isTeacher: true, isStaff: false });
+    const groups = buildPlatformNavGroups({ isTeacher: true, isStaff: false }, { play: false });
     expect(groups).toHaveLength(1);
     expect(groups[0]?.label).toBe("Profesor");
     expect(groups[0]?.items).toEqual(TEACHER_NAV_ITEMS);
@@ -35,6 +35,17 @@ describe("buildPlatformNavGroups", () => {
 
     expect(hasExplorer(STUDENT_NAV_ITEMS)).toBe(true);
     expect(hasExplorer(TEACHER_NAV_ITEMS)).toBe(true);
+  });
+
+  it("pone «Jugar» antes del explorador para el alumno y el profesor sólo con su interruptor encendido", () => {
+    const hrefs = (roles: { isTeacher: boolean; isStaff: boolean }, play: boolean) =>
+      buildPlatformNavGroups(roles, { play }).flatMap((group) => group.items.map((item) => item.href));
+    const student = { isTeacher: false, isStaff: false };
+    const teacher = { isTeacher: true, isStaff: false };
+    expect(hrefs(student, true)).toEqual(["/inicio", "/clases", "/estudios", "/cursos", "/jugar", "/explorador"]);
+    expect(hrefs(teacher, true).slice(-3)).toEqual(["/jugar", "/explorador", "/profesor/perfil"]);
+    expect(hrefs(student, false)).not.toContain("/jugar");
+    expect(hrefs({ isTeacher: false, isStaff: true }, true)).not.toContain("/jugar");
   });
 
   it("con varios roles manda el de mayor alcance: staff sobre profesor", () => {

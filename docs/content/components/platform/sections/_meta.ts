@@ -8,6 +8,7 @@ const meta: MetaRecord = {
   studies: "studies/",
   classes: "classes/",
   explorer: "explorer/",
+  play: "play/",
   trainer: "trainer/",
   teacher: "teacher/",
   staff: "staff/",

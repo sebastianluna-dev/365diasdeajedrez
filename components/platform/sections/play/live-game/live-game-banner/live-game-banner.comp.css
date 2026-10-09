@@ -1,0 +1,12 @@
+/* A warning band above the board: the reason, and «Recargar». */
+.live-game-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--platform-space-3);
+  padding: var(--platform-space-2) var(--platform-space-2) var(--platform-space-2) var(--platform-space-4);
+  border-radius: 8px;
+  background: var(--platform-warning-soft);
+  color: var(--platform-warning-ink);
+  font-size: var(--platform-type-sm);
+}

@@ -50,6 +50,10 @@ URLs are Spanish because the product is. The single source of truth for private-
 | `/ajustes`                                                       | The account: the student's details, read-only, and the daily goal. It hangs from the root because it is everyone's, whatever their role.                                                                                                                                                                                                                                                                        |
 | `/entrenador`, `/entrenador?lesson=…`, `?chapter=…`, `?course=…` | Move Trainer home and session (`course` is a course's «Repasar»).                                                                                                                                                                                                                                                                                                                                               |
 | `/explorador`                                                    | Position search; shared by students and teachers.                                                                                                                                                                                                                                                                                                                                                               |
+| `/jugar`, `/jugar?rival=<slug>`                                  | «Jugar» (behind `PLAY_ENABLED`): the bots by group, the suggested rival and the open game; `?rival` opens that bot's popup. [Play](/platform/play).                                                                                                                                                                                                                                                             |
+| `/jugar/partidas/[gameId]`                                       | A game against a bot, live or finished: played by whoever holds a seat, read by their teacher and the staff.                                                                                                                                                                                                                                                                                                    |
+| `/perfil`, `/perfil/[slug]`, `/perfil/[slug]/partidas`           | The person's profile and every game they played (behind `PLAY_ENABLED`; until the profile pages exist they answer 404).                                                                                                                                                                                                                                                                                         |
+| `/herramientas`                                                  | Reserved for the analysis board and «Importar partida» (behind `ANALYSIS_BOARD_ENABLED`); answers 404 today.                                                                                                                                                                                                                                                                                                    |
 
 ### Teacher (active `Teacher` row)
 
@@ -108,6 +112,9 @@ export const PROTECTED_PATH_PREFIXES = [
   "/ajustes",
   "/entrenador",
   "/explorador",
+  "/jugar",
+  "/perfil",
+  "/herramientas",
   "/profesor",
   "/administracion",
 ] as const;

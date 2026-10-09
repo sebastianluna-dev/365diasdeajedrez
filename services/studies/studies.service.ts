@@ -348,3 +348,13 @@ async function getClassGamesSummary(): Promise<StudySummary | null> {
 export async function getClassGames(): Promise<ClassGameItem[]> {
   return getClassGameItems();
 }
+
+/** The studies the person owns, by name: where a game from elsewhere can be saved («Guardar en un estudio»). */
+export async function getOwnStudyOptions(): Promise<{ id: string; name: string }[]> {
+  const user = await getCurrentUser();
+  return getPlatformDb().gameDatabase.findMany({
+    where: { userId: user.id },
+    orderBy: { name: "asc" },
+    select: { id: true, name: true },
+  });
+}

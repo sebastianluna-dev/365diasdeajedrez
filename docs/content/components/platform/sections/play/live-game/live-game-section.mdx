@@ -1,0 +1,36 @@
+---
+description: "A game against a bot on the one viewer: the live game (useLiveGame) with its popups, the banner when the board stops, the announcer, and once over the review and the actions under the board."
+---
+
+# `LiveGameSection`
+
+|            |                                                                                                                                                                                                                                                                       |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/platform/sections/play/live-game/live-game.section.tsx`, `use-live-game.hook.ts`, `live-game-players.ts`, `save-to-study-popup.comp.tsx`                                                                                                                  |
+| Kind       | Client Component (the leaf with state of `/jugar/partidas/[gameId]`)                                                                                                                                                                                                  |
+| Stylesheet | `live-game.section.css` → block `.live-game`                                                                                                                                                                                                                          |
+| Used by    | `app/(platform)/jugar/partidas/[gameId]/page.tsx`                                                                                                                                                                                                                     |
+| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`interaction="play"`), [`AbandonPopup`](/components/platform/sections/play/live-game/abandon-popup), [`LiveGameBanner`](/components/platform/sections/play/live-game/live-game-banner), `SaveToStudyPopup` |
+| Uses       | `useLiveGame`, `liveGamePlayers`; `useEnginePlayer` (`components/chess/engine`); `liveGameReducer`, `playStatusOf` (`lib/play`); `appendPlayedMove`, `abandonPlayedGame`, `storePlayedGameReview` (`services/play`)                                                   |
+
+## Purpose
+
+The page of a game against a bot — one URL, live or finished — mounts this with the game, the bot's strength and what comes after (the scoreboard, the person's studies, the rematch and the copy bound to the game). It plays the game on **the** viewer: there is no second board.
+
+## Behaviour
+
+**`useLiveGame`** wires the pure reducer (`lib/play/live-game-machine.ts`) to the engine and the server. Every ply, the person's or the bot's, is saved on its own with its ply as the version (`appendPlayedMove(gameId, { expectedPly, san })`), at most one in flight; a throttled save is retried after 1, 2 and 4 s. The bot is asked as soon as the person's move is on the board — while it is still being saved — and its move is shown after its human-like delay (`thinkDelayMs`), never on top of a move the server may still refuse. The bot's engine (`useEnginePlayer`) lives only while the game does, so «Analizar» never meets a second Worker.
+
+**`liveGamePlayers`** (pure, tested) says what each strip says: the portraits, the turn as a dot, «Te toca mover» on the person's own, «Pensando…» and the turning arc on the bot's, and once it is over who won and why — «Ganaste» on the person's own strip, «Ganó» on the other's, «Perdió», «Tablas», the reason under the name (G6). A cancelled game has no winner and no tint.
+
+**When the board stops** — another tab moved (`stale`), or the engine died twice — [`LiveGameBanner`](/components/platform/sections/play/live-game/live-game-banner) says why, with «Recargar»; nothing is lost.
+
+**Over**, the viewer reads the game with its tools: «Analizar» opens the review, whose evaluations are stored in the game (`storePlayedGameReview`, refused if a move changed). The page is refreshed once so the scoreboard under the board counts the game just finished. A game finished before this visit is read from the server's PGN, with its review.
+
+**Whoever only reads it** — the person's teacher, the staff — gets the board, the moves and the strips, with no engine and nothing to do.
+
+**Announcer:** a visually hidden `aria-live="polite"` line: «Beto jugó Cf3. Tu turno.», «Ganaste.».
+
+## Markup & styling
+
+**Elements:** `.live-game__announcer`, `.live-game__popup`, `.live-game__popup-text`, `.live-game__popup-foot`

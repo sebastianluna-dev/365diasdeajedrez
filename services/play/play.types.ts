@@ -11,6 +11,8 @@ export type AppendMoveResult =
 /** One side of a played game: a person or a bot. */
 export interface PlayedSeat {
   kind: "user" | "bot";
+  /** The bot's id, for its scoreboard; null for a person. */
+  botId: number | null;
   name: string;
   /** The person's user name or the bot's slug: where its page is. */
   slug: string;

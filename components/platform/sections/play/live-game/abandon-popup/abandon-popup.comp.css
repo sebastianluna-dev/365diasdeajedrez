@@ -1,0 +1,23 @@
+/* What is under the strip: one line, and the two answers. */
+.abandon-popup {
+  display: grid;
+  gap: var(--platform-space-5);
+  padding: var(--platform-space-5) var(--platform-space-6);
+
+  & .abandon-popup__text {
+    margin: 0;
+    color: var(--platform-text-muted);
+  }
+
+  & .abandon-popup__foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--platform-space-3);
+  }
+
+  @media (width < 640px) {
+    & .abandon-popup__foot {
+      flex-direction: column-reverse;
+    }
+  }
+}

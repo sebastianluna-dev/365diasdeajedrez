@@ -1,0 +1,49 @@
+/* A bot's sheet inside its popup: the portrait and the label, how it plays,
+   the facts, and the scoreboard against it. */
+.bot-sheet {
+  display: grid;
+  gap: var(--platform-space-3);
+
+  & .bot-sheet__head {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-4);
+  }
+
+  & .bot-sheet__who {
+    display: grid;
+    gap: var(--platform-space-0-5);
+  }
+
+  & .bot-sheet__group {
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--platform-accent-ink);
+  }
+
+  & .bot-sheet__elo {
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-2xl);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .bot-sheet__bio {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    line-height: 1.5;
+  }
+
+  & .bot-sheet__fact {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-muted);
+  }
+
+  & .bot-sheet__label {
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+}

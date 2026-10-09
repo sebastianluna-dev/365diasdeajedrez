@@ -1,0 +1,22 @@
+---
+description: "The open game against a bot, above the lobby's gallery: the rival, the colour and how far it went, with «Continuar»."
+---
+
+# `OpenGameNotice`
+
+|            |                                                                                                           |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/play/lobby/open-game-notice/open-game-notice.comp.tsx`                      |
+| Kind       | Server Component                                                                                          |
+| Stylesheet | `open-game-notice.comp.css` → block `.open-game-notice`                                                   |
+| Story      | `open-game-notice.stories.tsx` (`platform/sections/play/lobby/OpenGameNotice`): six moves in, not started |
+| Used by    | [`PlayLobbySection`](/components/platform/sections/play/lobby/play-lobby-section)                         |
+| Uses       | [`PlayerAvatar`](/components/chess/player-avatar), `platformRoutes.playedGame`                            |
+
+## Purpose
+
+A game against a bot has no clock, so it waits where it was left: «Tienes una partida en curso contra Beto», with the colour and the moves played (a move is two plies), and «Continuar» to its page.
+
+## Markup & styling
+
+**Elements:** `.open-game-notice__text`, `.open-game-notice__title`, `.open-game-notice__meta`. On the accent's wash; wraps under 640px.

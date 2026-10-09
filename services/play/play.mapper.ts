@@ -61,6 +61,7 @@ export function seatView(user: UserRow | null, bot: BotRow | null, elo: number |
   if (bot) {
     return {
       kind: "bot",
+      botId: bot.id,
       name: bot.name,
       slug: bot.slug,
       elo: elo ?? bot.elo,
@@ -77,6 +78,7 @@ export function seatView(user: UserRow | null, bot: BotRow | null, elo: number |
   const slug = user?.slug ?? "";
   return {
     kind: "user",
+    botId: null,
     name,
     slug,
     elo,
