@@ -139,6 +139,8 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/ajustes` (the account: the student's details, the theme and the daily goal; reached from the menu behind the avatar of the bar). The platform has a **light and a dark theme**: it follows the machine unless the person chooses, and the choice is the `tema` cookie — see `docs/` → Architecture → Themes.
 - `/entrenador` (the Move Trainer; **switched off**: it answers 404 while `MOVE_TRAINER_ENABLED` in `constants/platform/features.const.ts` is `false`)
 - `/explorador` (search for games by position; student and teacher share it)
+- `/jugar`, `/jugar/partidas/[gameId]` (games against the bots), `/perfil`, `/perfil/[slug]`, `/perfil/[slug]/partidas` (a person's profile and every game they played; seen by them, their teachers and the staff) — **switched off** while `PLAY_ENABLED` is `false`
+- `/herramientas` (goes to the board), `/herramientas/tablero-de-analisis`, `/herramientas/importar-partida` — **switched off** while `ANALYSIS_BOARD_ENABLED` is `false`; once on, «Herramientas» in the bar gathers them with the explorer
 
 **Platform — teacher** (requires an active `Teacher` row)
 
@@ -146,7 +148,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/profesor/alumnos`, `/profesor/alumnos/[studentId]`
 - `/profesor/alumnos/[studentId]/estudios/[studyId]`, `…/partidas/[gameId]` (**read-only** access to the studies of their assigned students)
 - `/profesor/clases`, `/profesor/clases/nuevo`, `/profesor/clases/[classId]`, `/profesor/clases/[classId]/editar`
-- `/profesor/perfil`
+- `/profesor/perfil` («Mi ficha» in the teacher's menu: the public card the student sees)
 
 **Platform — administration** (requires a `Staff` row; `/admin` belongs to Payload)
 
@@ -160,6 +162,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 
 - **Route groups**: `(frontend)` (public site), `(payload)` (CMS), `(auth)` (login) and `(platform)` (the authenticated area, with its own `layout`, `loading`, `error` and `platform.css`). Each one has its own root layout.
 - **Every section calls its own service**: page components never query the database directly.
+- **Stockfish runs in the browser, untouched**: `public/engine/` serves the lite single-threaded WebAssembly build (GPL-3.0, its licence in `LICENSE-stockfish.txt`) in a Web Worker, and everything the platform does with it — the analysis, the review, the bots of «Jugar» and the full-strength module of the analysis board — goes through one UCI client (`lib/chess/engine/engine-client.ts`). A bot is weakened on our side of the protocol, never by changing the engine. See `docs/` → Chess → Bots.
 - **A triad per domain**: `services/<domain>/{<domain>.service.ts, <domain>.mapper.ts, <domain>.types.ts}` (plus `.actions.ts` where there are server actions). The _service_ fetches data, the _mapper_ translates it into the view type and the _types_ are the contract of the UI.
 - **BEM CSS per component**, no Tailwind: every `.css` file nests under its own root selector so that styles do not leak between sections.
 - **Catalogues instead of enums**: the Prisma schema uses no enums; every restricted domain is a catalogue table with a unique, stable `code` (the logic compares `code`, never ids) and the seed loads them idempotently.
