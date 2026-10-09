@@ -34,6 +34,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { parsePgn } from "chessops/pgn";
+import { format, resolveConfig } from "prettier";
 import {
   BOT_HASH_MB,
   skillLevelFor,
@@ -387,7 +388,9 @@ async function calibrate(): Promise<void> {
   const ordered = Object.fromEntries(
     BOT_ROSTER.filter((bot) => report.bots[bot.slug]).map((bot) => [bot.slug, report.bots[bot.slug]!]),
   );
-  writeFileSync(REPORT_FILE, `${JSON.stringify({ ...report, bots: ordered }, null, 2)}\n`);
+  // In Prettier's shape, so `npm run format:check` still passes after a run.
+  const json = JSON.stringify({ ...report, bots: ordered }, null, 2);
+  writeFileSync(REPORT_FILE, await format(json, { ...(await resolveConfig(REPORT_FILE)), filepath: REPORT_FILE }));
   console.log(`\nWritten ${REPORT_FILE} after ${Math.round((Date.now() - started) / 1000)} s.`);
 }
 
