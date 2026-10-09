@@ -1,0 +1,33 @@
+---
+description: "«Guardar en un estudio»: a copy of a played game, or of what is on the analysis board, into one of the person's studies — the study, a name and «Guardar»."
+---
+
+# `SaveToStudyPopup`
+
+|            |                                                                                                                                                                                                                                                          |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/save-to-study-popup/save-to-study-popup.comp.tsx`                                                                                                                                                                            |
+| Kind       | Client Component                                                                                                                                                                                                                                         |
+| Stylesheet | `save-to-study-popup.comp.css` → block `.save-to-study-popup`                                                                                                                                                                                            |
+| Story      | `save-to-study-popup.stories.tsx` (`platform/shared/SaveToStudyPopup`): open, without studies of one's own                                                                                                                                               |
+| Used by    | [`LiveGameSection`](/components/platform/sections/play/live-game/live-game-section) (`copyPlayedGameToStudy`), [`AnalysisBoardSection`](/components/platform/sections/tools/analysis-board/analysis-board-section) (`saveAnalysisToStudy`)               |
+| Uses       | [`PlatformPopup`](/components/platform/shared/platform-popup), [`PlatformForm`](/components/platform/shared/platform-form), [`PlatformSelect`](/components/platform/shared/platform-select), [`SubmitButton`](/components/platform/shared/submit-button) |
+
+## Purpose
+
+A COPY into one of the person's own studies, where it becomes a study's game like any other — indexed, found by the explorer —, and whatever it came from stays where it was. The study (`PlatformSelect` over the person's own studies, the first chosen) and a name (empty: the one proposed, «Ana Torres – Don Chuy»), «Guardar» («Guardando…»), and the action redirects to the new game. Without a study of one's own it says where to make one instead. A played game's page passes the action bound to the game; the analysis board passes `saveAnalysisToStudy` and its PGN, sent in a hidden field.
+
+## Props
+
+| Prop           | Type                                  | Required | Meaning                                                              |
+| -------------- | ------------------------------------- | -------- | -------------------------------------------------------------------- |
+| `ref`          | `Ref<PlatformPopupHandle>`            | yes      | The host opens and closes it.                                        |
+| `studies`      | `{ id, name }[]`                      | yes      | `getOwnStudyOptions()`.                                              |
+| `defaultTitle` | `string`                              | yes      | The name's placeholder: what it is called if left empty.             |
+| `action`       | `(formData) => void \| Promise<void>` | yes      | `copyPlayedGameToStudy` bound to the game, or `saveAnalysisToStudy`. |
+| `pgn`          | `string`                              | no       | What is saved, when the action does not know it already.             |
+| `onCancel`     | `() => void`                          | yes      | «Cancelar».                                                          |
+
+## Markup & styling
+
+**Elements:** `.save-to-study-popup__text`, `.save-to-study-popup__foot`

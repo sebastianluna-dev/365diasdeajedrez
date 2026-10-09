@@ -5,6 +5,7 @@ const meta: MetaRecord = {
   viewer: "Board & game viewer",
   "engine-and-assets": "Stockfish, pieces & sounds",
   bots: "Bots",
+  "analysis-board": "Analysis board",
 };
 
 export default meta;

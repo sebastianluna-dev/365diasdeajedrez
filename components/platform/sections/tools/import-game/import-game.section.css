@@ -1,0 +1,26 @@
+/* One card: the study, the PGN, and the foot with the way to the board. */
+.import-game {
+  max-width: 720px;
+  padding: var(--platform-space-6);
+  border-radius: 8px;
+  background: var(--platform-surface);
+  box-shadow: var(--platform-shadow-card);
+
+  & .import-game__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-3);
+  }
+
+  & .import-game__board {
+    color: var(--platform-accent-ink);
+    font-size: var(--platform-type-sm);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

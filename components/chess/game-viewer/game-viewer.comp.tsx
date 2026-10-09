@@ -25,6 +25,7 @@ import { FlagIcon } from "@/components/icons/flag-icon.comp";
 import type { PlayStatus } from "@/lib/play/play-status";
 import { numberedMoveLabel } from "@/lib/chess/notation";
 import { endPathOf, nextPathOf, nodeAtPath, parentPathOf, parsePgnTree, treeUpToPly } from "@/lib/chess/pgn-tree";
+import type { EngineClientHandle } from "@/components/chess/engine/use-engine-client.hook";
 import { EnginePanel } from "./engine-panel.comp";
 import { useEngine } from "./use-engine.hook";
 import { evaluationBarFill } from "@/lib/chess/engine-protocol";
@@ -59,6 +60,15 @@ export interface GameViewerPlay {
   onAbandon?: (event: MouseEvent<HTMLButtonElement>) => void;
   /** Once it is over, what goes under the board (G6). */
   over?: GameOverActionsData;
+  /**
+   * The line being played, when it is not the main line: from `fromPath`
+   * (the node it started at) to `leafPath` (its last move). The board moves
+   * only at `leafPath`, and the notation paints the line's moves in the
+   * selection's blue — the analysis board playing a position against the
+   * module. Without them, the main line and its end.
+   */
+  fromPath?: string;
+  leafPath?: string;
 }
 
 interface GameViewerProps {
@@ -148,6 +158,12 @@ interface GameViewerProps {
    */
   engine?: boolean;
   /**
+   * The engine to analyse on, when whoever mounts the viewer owns one it
+   * shares with something else — the analysis board's analysis and its
+   * full-strength module are one Worker. Without it the viewer creates its own.
+   */
+  engineClient?: EngineClientHandle;
+  /**
    * Reports the dotted path of the current node every time it changes. It
    * exists so the class block editor can capture "this position" without a
    * second viewer; the viewer stays read-only and whoever does not pass this
@@ -223,6 +239,7 @@ export function GameViewer({
   controls = "board",
   tools,
   engine = false,
+  engineClient,
   onPathChange,
   editable = false,
   onPgnChange,
@@ -258,11 +275,14 @@ export function GameViewer({
   // line and the person was looking at the end, they go on looking at it; one
   // who went back to look at an earlier move is left there. Adjusted while
   // rendering, as a state that follows another, so no frame shows the old end.
-  const leafPath = useMemo(() => (tree ? endPathOf(tree, "") : ""), [tree]);
+  const mainEnd = useMemo(() => (tree ? endPathOf(tree, "") : ""), [tree]);
+  const leafPath = play?.leafPath ?? mainEnd;
   const [followedLeaf, setFollowedLeaf] = useState(leafPath);
   if (leafPath !== followedLeaf) {
     setFollowedLeaf(leafPath);
-    if (interaction === "play" && selectedPath === followedLeaf) setSelectedPath(leafPath);
+    if (interaction === "play" && (selectedPath === followedLeaf || play?.leafPath !== undefined)) {
+      setSelectedPath(leafPath);
+    }
   }
   const [flipToggled, setFlipToggled] = useState(false);
   const [engineOn, setEngineOn] = useState(false);
@@ -502,7 +522,19 @@ export function GameViewer({
   // The engine lives here and not in its panel because its evaluation is used
   // by TWO places far apart on the screen: the bar next to the board and the
   // notation line. With `engine` off the hook creates no worker and downloads nothing.
-  const engineState = useEngine(fen, engine && engineOn);
+  // Playing, the board is the game's: no evaluation, no lines (T3), and the
+  // shared engine is free for whoever plays on it.
+  const engineState = useEngine(fen, engine && engineOn && !isPlaying, engineClient);
+
+  // The line being played against the module, painted in the notation.
+  const lineFrom = play?.fromPath;
+  const lineEnd = play?.leafPath;
+  const playedLine = useMemo(() => {
+    if (!isPlaying || lineFrom === undefined || lineEnd === undefined) return undefined;
+    const segments = lineEnd ? lineEnd.split(".") : [];
+    const from = lineFrom ? lineFrom.split(".").length : 0;
+    return new Set(segments.slice(from).map((_, index) => segments.slice(0, from + index + 1).join(".")));
+  }, [isPlaying, lineFrom, lineEnd]);
 
   // It sounds on position change, never on mount: whoever opens a lesson
   // does not expect a starting gun.
@@ -767,7 +799,7 @@ export function GameViewer({
                 start and the only thing that changes is whether it is visible. */}
             {engine && (
               <div
-                className={`game-viewer__evaluation${engineOn ? "" : " game-viewer__evaluation_state_off"}`}
+                className={`game-viewer__evaluation${engineOn && !isPlaying ? "" : " game-viewer__evaluation_state_off"}`}
                 aria-hidden="true"
               >
                 <span
@@ -826,7 +858,7 @@ export function GameViewer({
             outside it, the button bar the game is traversed with. */}
         <div className="game-viewer__panel-column">
           <div
-            className={`game-viewer__panel${engine && engineOn ? " game-viewer__panel_engine_on" : ""}${
+            className={`game-viewer__panel${engine && engineOn && !isPlaying ? " game-viewer__panel_engine_on" : ""}${
               engine && engineOn && engineExpanded ? " game-viewer__panel_engine_expanded" : ""
             }`}
           >
@@ -839,7 +871,7 @@ export function GameViewer({
               </div>
             )}
 
-            {engine && (
+            {engine && !isPlaying && (
               <EnginePanel
                 fen={fen}
                 enabled={engineOn}
@@ -861,6 +893,7 @@ export function GameViewer({
                   onSelect={setCurrentPath}
                   onContextMenu={isEditing ? openMenu : undefined}
                   pinnedComment={pinnedComment}
+                  highlightedPaths={playedLine}
                 />
               ) : (
                 <MoveTable
@@ -869,6 +902,7 @@ export function GameViewer({
                   onSelect={setCurrentPath}
                   onContextMenu={isEditing ? openMenu : undefined}
                   pinnedComment={pinnedComment}
+                  highlightedPaths={playedLine}
                 />
               )}
               {/* Said in the list itself, where the missing moves would be looked for. */}

@@ -27,13 +27,14 @@ The tree carries no editing logic. It reports a right click when asked to and no
 
 ## Props
 
-| Prop            | Type                                        | Required | Meaning                                                                                                                                                                     |
-| --------------- | ------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tree`          | `PgnTree`                                   | yes      | The parsed game from `parsePgnTree`.                                                                                                                                        |
-| `currentPath`   | `string`                                    | yes      | Dotted path of the active node; `""` is the initial position.                                                                                                               |
-| `onSelect`      | `(path: string) => void`                    | yes      | Click on a move.                                                                                                                                                            |
-| `onContextMenu` | `(path: string, event: MouseEvent) => void` | no       | Right click on a move. Optional on purpose: whoever only reads the game does not pass it and the list behaves exactly as before; an editor uses it to open the move's menu. |
-| `pinnedComment` | `string`                                    | no       | The game owner's note, drawn as the text's first paragraph: before the PGN's own opening comment and the first move, keeping its line breaks.                               |
+| Prop               | Type                                        | Required | Meaning                                                                                                                                                                     |
+| ------------------ | ------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tree`             | `PgnTree`                                   | yes      | The parsed game from `parsePgnTree`.                                                                                                                                        |
+| `currentPath`      | `string`                                    | yes      | Dotted path of the active node; `""` is the initial position.                                                                                                               |
+| `onSelect`         | `(path: string) => void`                    | yes      | Click on a move.                                                                                                                                                            |
+| `onContextMenu`    | `(path: string, event: MouseEvent) => void` | no       | Right click on a move. Optional on purpose: whoever only reads the game does not pass it and the list behaves exactly as before; an editor uses it to open the move's menu. |
+| `pinnedComment`    | `string`                                    | no       | The game owner's note, drawn as the text's first paragraph: before the PGN's own opening comment and the first move, keeping its line breaks.                               |
+| `highlightedPaths` | `ReadonlySet<string>`                       | no       | Moves painted in the selection's blue (`_line_played`): the line being played against the module.                                                                           |
 
 ## Behaviour
 
@@ -45,7 +46,7 @@ The tree carries no editing logic. It reports a right click when asked to and no
 
 ## Markup & styling
 
-Block `.move-tree` (125 lines).
+Block `.move-tree` (130 lines).
 
 **Elements:** `.move-tree__line` (a run of the main line), `.move-tree__comment` (a paragraph of the lesson), `.move-tree__variation` (a line that was not played), `.move-tree__bracket`, `.move-tree__aside` (what a variation is proposed for, inside its paragraph), `.move-tree__move`, `.move-tree__sr` (a move's NAGs in words, visually hidden)
 

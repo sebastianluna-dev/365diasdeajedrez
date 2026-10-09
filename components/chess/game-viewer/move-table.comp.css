@@ -100,6 +100,19 @@
   /* On the accent's tint of the active move a grey does not belong: it takes
      the move's accent, and stays behind the bold move by its own lighter
      weight — not by an opacity, which took it under 4.5:1. */
+  /* The line being played against the module (T3): its moves in the
+     selection's blue, and the current one on the blue's tint. */
+  & .move-table__move.move-table__move_line_played,
+  & .move-table__inline.move-table__inline_line_played {
+    color: var(--platform-selection);
+  }
+
+  & .move-table__move.move-table__move_line_played.move-table__move_state_active,
+  & .move-table__inline.move-table__inline_line_played.move-table__inline_state_active {
+    background: var(--platform-selection-soft);
+    color: var(--platform-selection);
+  }
+
   & .move-table__move_state_active .move-table__eval {
     color: inherit;
   }

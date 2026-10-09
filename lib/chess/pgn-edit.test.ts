@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  addMoveToPgn,
   addMove,
   clearAnnotations,
   clearVariations,
@@ -379,5 +380,19 @@ describe("clearVariations", () => {
 
     expect(clearVariations(game)).toBe(false);
     expect(movetext(serializeGame(game))).toBe("1. e4 e5 2. Nf3 { Desarrolla. } *");
+  });
+});
+
+describe("addMoveToPgn", () => {
+  it("adds at the end of the line, and opens a variation where the node already went on", () => {
+    const first = addMoveToPgn("1. e4 e5 *", "0.0", "Nf3");
+    expect(first?.path).toBe("0.0.0");
+    const side = addMoveToPgn(first!.pgn, "0", "c5");
+    expect(side?.path).toBe("0.1");
+    expect(side?.pgn).toContain("( 1... c5 )");
+  });
+
+  it("refuses an illegal move", () => {
+    expect(addMoveToPgn("1. e4 *", "0", "e4")).toBeNull();
   });
 });

@@ -423,3 +423,17 @@ export function clearVariations(game: Game<PgnNodeData>): boolean {
   }
   return changed;
 }
+
+/**
+ * A PGN with one more move after `path`, and where it went: at the end of the
+ * line, or as a new variation if the node already went on; the existing
+ * child, untouched, when it is that move. Null when the move is not legal
+ * there or the PGN does not read. For whoever adds moves from outside the
+ * viewer: the analysis board's module playing a line.
+ */
+export function addMoveToPgn(pgn: string, path: string, san: string): { pgn: string; path: string } | null {
+  const game = parseEditableGame(pgn);
+  if (!game) return null;
+  const added = addMove(game, path, san);
+  return added ? { pgn: serializeGame(game), path: added.path } : null;
+}

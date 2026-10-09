@@ -1,0 +1,34 @@
+/* The analysis board: the band when playing the module, the viewer, and
+   under it the FEN/PGN form beside the module and «Guardar en un estudio». */
+.analysis-board {
+  display: grid;
+  gap: var(--platform-space-4);
+
+  & .analysis-board__source {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .analysis-board__below {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+    align-items: start;
+    gap: var(--platform-space-4);
+  }
+
+  & .analysis-board__side {
+    display: grid;
+    gap: var(--platform-space-3);
+  }
+
+  & .analysis-board__save {
+    justify-self: start;
+  }
+
+  @media (width < 1024px) {
+    & .analysis-board__below {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}

@@ -21,6 +21,8 @@ interface MoveTableProps {
    * is about the game in this study, not something the game says.
    */
   pinnedComment?: string;
+  /** Moves painted in the selection's blue: the line being played against the module. */
+  highlightedPaths?: ReadonlySet<string>;
 }
 
 const moveNumberOf = (node: PgnTreeNode) => Math.ceil(node.ply / 2);
@@ -41,7 +43,14 @@ const nagsSaid = (node: PgnTreeNode) =>
  * pure and tested against a real game with three levels of variations. Here
  * they are only rendered.
  */
-export function MoveTable({ tree, currentPath, onSelect, onContextMenu, pinnedComment }: MoveTableProps) {
+export function MoveTable({
+  tree,
+  currentPath,
+  onSelect,
+  onContextMenu,
+  pinnedComment,
+  highlightedPaths,
+}: MoveTableProps) {
   const activeRef = useRef<HTMLButtonElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const blocks = useMemo(() => buildNotationBlocks(tree), [tree]);
@@ -81,7 +90,7 @@ export function MoveTable({ tree, currentPath, onSelect, onContextMenu, pinnedCo
       <button
         type="button"
         {...bind(node)}
-        className={`move-table__cell move-table__cell_side_${side} move-table__move${node.path === currentPath ? " move-table__move_state_active" : ""}`}
+        className={`move-table__cell move-table__cell_side_${side} move-table__move${node.path === currentPath ? " move-table__move_state_active" : ""}${highlightedPaths?.has(node.path) ? " move-table__move_line_played" : ""}`}
       >
         {sanToSpanish(node.san)}
         {node.nags.length > 0 && (
@@ -129,7 +138,7 @@ export function MoveTable({ tree, currentPath, onSelect, onContextMenu, pinnedCo
                     key={item.node.path}
                     type="button"
                     {...bind(item.node)}
-                    className={`move-table__inline${item.node.path === currentPath ? " move-table__inline_state_active" : ""}`}
+                    className={`move-table__inline${item.node.path === currentPath ? " move-table__inline_state_active" : ""}${highlightedPaths?.has(item.node.path) ? " move-table__inline_line_played" : ""}`}
                   >
                     {isWhite(item.node)
                       ? `${moveNumberOf(item.node)}.`

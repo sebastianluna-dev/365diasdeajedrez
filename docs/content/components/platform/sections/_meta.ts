@@ -10,6 +10,7 @@ const meta: MetaRecord = {
   explorer: "explorer/",
   play: "play/",
   profile: "profile/",
+  tools: "tools/",
   trainer: "trainer/",
   teacher: "teacher/",
   staff: "staff/",

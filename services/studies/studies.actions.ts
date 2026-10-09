@@ -3,7 +3,8 @@
 import { Chess } from "chessops/chess";
 import { parseFen } from "chessops/fen";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { ANALYSIS_BOARD_ENABLED } from "@/constants/platform/features.const";
 import { BOARD_ORIENTATION, OWNER_TYPE } from "@/constants/platform/shared-codes.const";
 import {
   DATABASE_KIND,
@@ -820,4 +821,34 @@ export async function rememberOpenedGame(studyId: string, gameId: string): Promi
     create: { userId: user.id, databaseId: studyId, gameId },
     update: { gameId, openedAt: new Date() },
   });
+}
+
+// --- «Herramientas» ---------------------------------------------------------
+//
+// The analysis board and «Importar partida» put games into a study chosen in
+// the form, not in the URL: the same two writes as a study's own «Nueva
+// partida» and «Importar», each reached with the study read from the form.
+
+/** The study a tool's form chose, or back to the tool with an error. */
+function chosenStudy(formData: FormData, back: string): string {
+  const study = formData.get("study");
+  if (typeof study !== "string" || study.length === 0 || study.length > 40) redirect(withErrorParam(back, "invalid"));
+  return study;
+}
+
+/**
+ * «Guardar en un estudio» on the analysis board: what is on the board — its
+ * moves, variations and comments — as a new game of one of the person's
+ * studies. It is `createStudyGame`, with the PGN in a hidden field and the
+ * study from the select.
+ */
+export async function saveAnalysisToStudy(formData: FormData): Promise<void> {
+  if (!ANALYSIS_BOARD_ENABLED) notFound();
+  return createStudyGame(chosenStudy(formData, platformRoutes.analysisBoard()), formData);
+}
+
+/** «Importar partida»: a pasted PGN into the study chosen in the form, as a study's «Importar» does. */
+export async function importPgnToStudy(formData: FormData): Promise<void> {
+  if (!ANALYSIS_BOARD_ENABLED) notFound();
+  return importPgnGames(chosenStudy(formData, platformRoutes.importGame), formData);
 }

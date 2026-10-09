@@ -84,7 +84,7 @@ They are restored onto an empty or test database with `pg_restore --no-owner --d
 
 ## Access to the platform
 
-The private area (`/inicio`, `/clases`, `/estudios`, `/cursos`, `/lecciones` (the old lesson URLs, which redirect), `/ajustes`, `/entrenador`, `/explorador`, `/jugar` and `/perfil` (both behind `PLAY_ENABLED`, off), `/profesor`, `/administracion`) requires signing in at `/iniciar-sesion`. The seed leaves three test accounts ready with the password `ajedrez365` (or the one in `PLATFORM_DEMO_PASSWORD`); it is only assigned to accounts that do not have a password yet, so a re-seed never reverts a change made by hand:
+The private area (`/inicio`, `/clases`, `/estudios`, `/cursos`, `/lecciones` (the old lesson URLs, which redirect), `/ajustes`, `/entrenador`, `/explorador`, `/jugar` and `/perfil` (both behind `PLAY_ENABLED`, off), `/herramientas` (behind `ANALYSIS_BOARD_ENABLED`, off), `/profesor`, `/administracion`) requires signing in at `/iniciar-sesion`. The seed leaves three test accounts ready with the password `ajedrez365` (or the one in `PLATFORM_DEMO_PASSWORD`); it is only assigned to accounts that do not have a password yet, so a re-seed never reverts a change made by hand:
 
 | Account                              | Role                 | What they see beyond the student's view |
 | ------------------------------------ | -------------------- | --------------------------------------- |

@@ -103,6 +103,10 @@ Shared by students and teachers. The client board sends a FEN to `searchPosition
 - Visibility comes from `getVisibleGamesWhere()`; teachers additionally see games of actively assigned students. Filters by origin exist; the signature leaves room for player, colour, Elo and date.
 - A search refused by the rate limit comes back with `throttled: true` and empty figures; the explorer shows a notice instead of "0 partidas" and does not cache that answer.
 
+## Tools — `/herramientas`
+
+Behind `ANALYSIS_BOARD_ENABLED` (off). «Herramientas» in the top bar gathers the analysis board (a FEN or PGN on the study's viewer, the module to play the position against, «Guardar en un estudio»; it persists nothing), «Importar partida», the explorer and — while it is on — the trainer. See [Analysis board](/chess/analysis-board).
+
 ## Play and profile — `/jugar`, `/perfil`
 
 Behind `PLAY_ENABLED` (off). Games against the bots at `/jugar`, one URL per game, saved move by move and never among the studies' games; the profile at `/perfil/<slug>` with the level against bots, the games and the study streak, and every game at `/perfil/<slug>/partidas`. «Ajustes» gains the user name, the status line and the flag. **Playing never writes `UserActivity`**: the streak, the minutes and the days studied do not move. The whole of it is [Play](/platform/play).

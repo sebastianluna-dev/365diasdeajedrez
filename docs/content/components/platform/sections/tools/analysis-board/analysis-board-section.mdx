@@ -1,0 +1,26 @@
+---
+description: "The analysis board's leaf with state: the study's viewer on one shared engine, the work kept for the tab, the FEN/PGN form, the module to play against, and «Guardar en un estudio»."
+---
+
+# `AnalysisBoardSection`
+
+|            |                                                                                                                                                                                                                                                                                                             |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/platform/sections/tools/analysis-board/analysis-board.section.tsx`, `use-engine-sparring.hook.ts`                                                                                                                                                                                               |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                            |
+| Stylesheet | `analysis-board.section.css` → block `.analysis-board`                                                                                                                                                                                                                                                      |
+| Used by    | `app/(platform)/herramientas/tablero-de-analisis/page.tsx`                                                                                                                                                                                                                                                  |
+| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`PositionInput`](/components/platform/sections/tools/analysis-board/position-input), [`PlayVsEngine`](/components/platform/sections/tools/analysis-board/play-vs-engine), [`SaveToStudyPopup`](/components/platform/shared/save-to-study-popup) |
+| Uses       | `useEngineClient`, `useEnginePlayer` (`components/chess/engine`), `usePgnHistory`, `addMoveToPgn`, `gameEnd`, `FULL_STRENGTH_PROFILE`                                                                                                                                                                       |
+
+## Purpose
+
+The whole of [Analysis board](/chess/analysis-board) on the client. It receives the source the page resolved (or none), the person's own studies and `saveAnalysisToStudy`, and owns:
+
+- the PGN with an undo stack (`usePgnHistory`), the current move, and the work kept for the tab in `sessionStorage` (written only once something changed; read once per visit in the browser, and the board keyed by what it opened with);
+- **one engine** (`useEngineClient(true)`, created on arrival) for the viewer's analysis (`engineClient`) and the module;
+- `useEngineSparring`: the position played against the module, every move added after the line's last with `addMoveToPgn`, the module's answered at once.
+
+## Markup & styling
+
+**Elements:** `.analysis-board__source`, `.analysis-board__below` (the form beside a 360px column, stacked under 1024px), `.analysis-board__side`, `.analysis-board__save`

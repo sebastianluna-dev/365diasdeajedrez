@@ -1,0 +1,11 @@
+/* Under the board: the two fields and «Cargar» at the end. */
+.position-input {
+  padding: var(--platform-space-5);
+  border-radius: 8px;
+  background: var(--platform-surface);
+  box-shadow: var(--platform-shadow-card);
+
+  & .position-input__submit {
+    align-self: flex-end;
+  }
+}

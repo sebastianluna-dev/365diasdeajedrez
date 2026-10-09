@@ -113,6 +113,16 @@
     }
   }
 
+  /* In one row the gaps between the wordmark, the menu and the tools are
+     24px, not 48: with «Herramientas» the student's menu fits from 1280px
+     (where the search also narrows) and the teacher's, the longest, from
+     about 1330px (2026-10-09; below that it scrolls, as it always did). */
+  @media (width >= 1280px) {
+    & .platform-shell__bar-inner {
+      gap: var(--platform-space-6);
+    }
+  }
+
   /* The design was drawn at a fixed 1440 px. Below that the bar splits into
      two rows rather than shrinking the menu: logo and user on top, the
      navigation below with its own scroll if it does not fit. */

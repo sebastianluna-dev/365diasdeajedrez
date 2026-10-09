@@ -26,9 +26,18 @@ interface MoveTreeProps {
    * about the game in this study, not something the game says.
    */
   pinnedComment?: string;
+  /** Moves painted in the selection's blue: the line being played against the module. */
+  highlightedPaths?: ReadonlySet<string>;
 }
 
-export function MoveTree({ tree, currentPath, onSelect, onContextMenu, pinnedComment }: MoveTreeProps) {
+export function MoveTree({
+  tree,
+  currentPath,
+  onSelect,
+  onContextMenu,
+  pinnedComment,
+  highlightedPaths,
+}: MoveTreeProps) {
   const activeRef = useRef<HTMLButtonElement>(null);
 
   // The active move goes to the TOP of the panel: what is read after a move is
@@ -79,7 +88,7 @@ export function MoveTree({ tree, currentPath, onSelect, onContextMenu, pinnedCom
               }
             : undefined
         }
-        className={`move-tree__move${isActive ? " move-tree__move_active" : ""}`}
+        className={`move-tree__move${isActive ? " move-tree__move_active" : ""}${highlightedPaths?.has(item.path) ? " move-tree__move_line_played" : ""}`}
       >
         {item.label}
         {/* The symbols are seen and the words are heard: a screen reader

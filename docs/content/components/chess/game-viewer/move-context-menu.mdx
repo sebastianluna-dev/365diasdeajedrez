@@ -94,5 +94,5 @@ The viewer builds `menu` in `openMenu(path, event)`: `canPromote` is false when 
 
 ## Related
 
-- [`usePgnEditing`](/components/chess/game-viewer/use-pgn-editing-hook) implements the callbacks in the viewer; the analysis board wires `lib/chess/pgn-edit` directly.
+- [`usePgnEditing`](/components/chess/game-viewer/use-pgn-editing-hook) implements the callbacks in the viewer; the analysis board's module adds its line from outside the viewer with `addMoveToPgn` of `lib/chess/pgn-edit`.
 - [Board & game viewer](/chess/viewer) describes the editing model.

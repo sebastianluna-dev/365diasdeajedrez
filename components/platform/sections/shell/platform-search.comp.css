@@ -62,6 +62,11 @@
     }
   }
 
+  /* Narrower while the bar is one row with little room: the menu needs it more. */
+  @media (width >= 1280px) and (width < 1536px) {
+    width: 200px;
+  }
+
   /* The bar stacks at the widths where it no longer fits in one row, and there
      the field takes the row it is given. */
   @media (width < 1280px) {

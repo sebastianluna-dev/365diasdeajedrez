@@ -1,9 +1,9 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { ANALYSIS_BOARD_ENABLED } from "@/constants/platform/features.const";
+import { platformRoutes } from "@/lib/platform-routes";
 
-// «Herramientas»: the analysis board and «Importar partida» (planning/jugar,
-// phase 4). Until they are built — and while ANALYSIS_BOARD_ENABLED is off —
-// there is nothing here; the folder exists so the proxy protects the prefix
-// from the first commit.
-export default function ToolsPage(): never {
-  notFound();
+/** «Herramientas» has no page of its own: its first tool is the analysis board. */
+export default function ToolsPage() {
+  if (!ANALYSIS_BOARD_ENABLED) notFound();
+  redirect(platformRoutes.analysisBoard());
 }

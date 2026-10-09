@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { BotScoreboardProps } from "@/components/chess/bot-scoreboard/bot-scoreboard.comp";
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
 import type { PlatformPopupHandle } from "@/components/platform/shared/platform-popup/platform-popup.comp";
+import { SaveToStudyPopup } from "@/components/platform/shared/save-to-study-popup/save-to-study-popup.comp";
 import type { BotStrength } from "@/lib/chess/bots/bot-strength";
 import { toPgn } from "@/lib/chess/live-game";
 import { sanToSpanish } from "@/lib/chess/notation";
@@ -15,7 +16,6 @@ import type { PlayedGameView } from "@/services/play/play.types";
 import { AbandonPopup } from "./abandon-popup/abandon-popup.comp";
 import { LiveGameBanner } from "./live-game-banner/live-game-banner.comp";
 import { liveGamePlayers } from "./live-game-players";
-import { SaveToStudyPopup } from "./save-to-study-popup.comp";
 import { useLiveGame } from "./use-live-game.hook";
 import "./live-game.section.css";
 

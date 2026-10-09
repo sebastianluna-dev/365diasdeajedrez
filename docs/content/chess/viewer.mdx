@@ -16,7 +16,7 @@ The chessground surface plus, in standalone mode, a move list and toolbar.
 | `position`                            | **Controlled mode**: the parent owns the position and navigation (GameViewer, trainer, explorer). Only the board renders.                                                          |
 | `flipBoard`, `annotations`            | Orientation and move-quality tags for the notation rows.                                                                                                                           |
 | `interactive`, `onMove(san, fromFen)` | Lets the user play legal moves (validated by chessops via `legalDests`). Promotion opens an accessible dialog (`aria-modal`, autofocus, Escape cancels).                           |
-| `editableShapes`, `onShapesChange`    | Right-click arrows and circles become the user's editable shapes (analysis board); otherwise shapes are read-only `autoShapes`.                                                    |
+| `editableShapes`, `onShapesChange`    | Right-click arrows and circles become the user's editable shapes (a study's editable game, the analysis board); otherwise shapes are read-only `autoShapes`.                       |
 
 It imports chessground's base CSS and the cburnett piece sheet; board colours come from `--board-light`/`--board-dark`.
 

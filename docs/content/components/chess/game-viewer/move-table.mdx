@@ -21,13 +21,14 @@ The hard part, deciding the order of rows and blocks and when Black's move has t
 
 ## Props
 
-| Prop            | Type                                        | Required | Meaning                                                                                                                                   |
-| --------------- | ------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `tree`          | `PgnTree`                                   | yes      | The parsed game.                                                                                                                          |
-| `currentPath`   | `string`                                    | yes      | Dotted path of the active node; `""` is the initial position.                                                                             |
-| `onSelect`      | `(path: string) => void`                    | yes      | Click on a move.                                                                                                                          |
-| `onContextMenu` | `(path: string, event: MouseEvent) => void` | no       | Right click on a move: opens its menu where it can be edited. Absent in read-only viewers.                                                |
-| `pinnedComment` | `string`                                    | no       | The game owner's note (`Game.pinnedComment`), drawn as the list's first comment: before the PGN's own opening comment and the first move. |
+| Prop               | Type                                        | Required | Meaning                                                                                                                                   |
+| ------------------ | ------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `tree`             | `PgnTree`                                   | yes      | The parsed game.                                                                                                                          |
+| `currentPath`      | `string`                                    | yes      | Dotted path of the active node; `""` is the initial position.                                                                             |
+| `onSelect`         | `(path: string) => void`                    | yes      | Click on a move.                                                                                                                          |
+| `onContextMenu`    | `(path: string, event: MouseEvent) => void` | no       | Right click on a move: opens its menu where it can be edited. Absent in read-only viewers.                                                |
+| `pinnedComment`    | `string`                                    | no       | The game owner's note (`Game.pinnedComment`), drawn as the list's first comment: before the PGN's own opening comment and the first move. |
+| `highlightedPaths` | `ReadonlySet<string>`                       | no       | Moves painted in the selection's blue (`_line_played`): the line the analysis board is playing against the module.                        |
 
 ## Behaviour
 
@@ -40,7 +41,7 @@ The hard part, deciding the order of rows and blocks and when Black's move has t
 
 ## Markup & styling
 
-Block `.move-table` (212 lines). The evaluations are in `--platform-text-muted`, not a lighter grey: the cell turns to `--platform-surface-neutral` under the pointer, a fill where the subtle grey falls under 4.5:1. On the active move they take its accent and stay behind it by their weight (500 against the move's 700), not by an opacity.
+Block `.move-table` (225 lines). The evaluations are in `--platform-text-muted`, not a lighter grey: the cell turns to `--platform-surface-neutral` under the pointer, a fill where the subtle grey falls under 4.5:1. On the active move they take its accent and stay behind it by their weight (500 against the move's 700), not by an opacity.
 
 **Elements:** `.move-table__row`, `.move-table__number`, `.move-table__cell`, `.move-table__move`, `.move-table__nag`, `.move-table__sr` (the NAGs in words, visually hidden), `.move-table__eval`, `.move-table__ellipsis`, `.move-table__comment`, `.move-table__line`, `.move-table__inline`, `.move-table__inline-comment`
 

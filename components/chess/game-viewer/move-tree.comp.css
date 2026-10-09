@@ -108,6 +108,11 @@
     background: var(--platform-surface-neutral);
   }
 
+  /* The line being played against the module (T3), in the selection's blue. */
+  & .move-tree__move.move-tree__move_line_played {
+    color: var(--platform-selection);
+  }
+
   & .move-tree__move.move-tree__move_active {
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);

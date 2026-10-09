@@ -1,0 +1,53 @@
+---
+description: "The analysis board under «Herramientas»: a workbench on the study's viewer, a FEN or PGN to load, the module at full strength to play a position against, and «Guardar en un estudio»; it persists nothing."
+---
+
+# Analysis board
+
+`/herramientas/tablero-de-analisis`, behind `ANALYSIS_BOARD_ENABLED` (off until the owner has checked it). Reached from «Herramientas» in the top bar, from a finished game against a bot («Tablero de análisis» under the board) and by URL. It needs no migration and no calibration: it writes nothing until «Guardar en un estudio».
+
+## What it is
+
+The study's own viewer — the notation with its variations, the engine, the tools under the board, arrows, the move menu, ⌘Z — with nothing beside it but the game (T3, chosen on 2026-10-08: «más parecido a la partida de un estudio»). Under the board, two fields with their labels, «FEN» and «PGN», and one «Cargar» (K1); beside them, «Jugar esta posición contra el módulo» and «Guardar en un estudio».
+
+**It persists nothing** (planning decision A3): the work is kept in `sessionStorage` under `365:herramientas:tablero` — it survives a reload and dies with the tab — and only once something changed, so an untouched board never flips the one it opened with. The kept work is read in the browser only (`useSyncExternalStore`, read once per visit), and the board is keyed by what it opened with.
+
+## Where it starts
+
+`resolveAnalysisSource` (`services/analysis/analysis.service.ts`) reads the URL through each source's own visibility rule; a source the person may not see opens an empty board, as if nothing had been asked.
+
+| URL                                   | Opens                                                         |
+| ------------------------------------- | ------------------------------------------------------------- |
+| `?fen=<FEN>`                          | The position, if it can exist (`pgnOfFen`, ≤ 120 characters). |
+| `?partida=<playedGameId>`             | A played game (`getPlayedGame`, the profile's visibility).    |
+| `?estudio=<studyId>&partida=<gameId>` | A study's game (`getGameById`, the studies' visibility).      |
+| nothing                               | What the tab kept, or the starting position.                  |
+
+A PGN never travels in the URL. `platformRoutes.analysisBoard(source?)` builds the three.
+
+**Loading a FEN or a PGN** is checked in the browser by `readPositionInput` (`lib/chess/position-input.ts`, pure and tested): a FEN that can exist on a board, kings and all; a PGN with a move or a starting position; the PGN when both fields have text. A failure says «No es un FEN válido.» or «No es un PGN válido.» under its own field and leaves the board as it was.
+
+## Playing a position against the module
+
+Planning decision B: the module plays **at full strength and at once** — `FULL_STRENGTH_PROFILE` (`lib/chess/bots/full-strength.const.ts`), Skill 20, no strength limit, a search of 300 ms, the project's one search bounded by time —, **never with a clock**, and **nothing is saved or counted**. The colour is offered as the side to move at the node on the board.
+
+`useEngineSparring` (`components/platform/sections/tools/analysis-board/`) adds every move — the person's and the module's — after the line's last move with `addMoveToPgn` (`lib/chess/pgn-edit.ts`): at the end of the line, or as a new variation when the node already went on. So what is played is a variation of the analysis while it is played, and stays one after «Volver al análisis». It ends on the board's own ending (`gameEnd`) or with «Volver al análisis».
+
+The viewer plays it with `interaction="play"` and `play.fromPath`/`play.leafPath`: the board moves only for the person's colour at the line's end; the line's moves are painted in the selection's blue in the notation; the evaluation bar and the engine's lines are off; the band above the board is the selection's blue (T3).
+
+**One engine for both.** The board owns one `EngineClient` (`useEngineClient(true)`, created on arrival) and hands it to the viewer's analysis (`engineClient`) and to the module (`useEnginePlayer(FULL_STRENGTH_PROFILE, …, shared)`). Playing stops the analysis; the player sets its options and `ucinewgame`; back to the analysis, `useEngine` sets `MultiPV 3` again. The WASM is compiled once per visit (verified on 2026-10-09: one Worker on arrival — two under React's strict mode in development —, none more after loading, playing and going back).
+
+## Saving and importing
+
+- **«Guardar en un estudio»** ([`SaveToStudyPopup`](/components/platform/shared/save-to-study-popup), the same popup a played game uses): the person's own studies (`getOwnStudyOptions`) and a name; `saveAnalysisToStudy` is `createStudyGame` with the PGN in a hidden field — moves, variations and comments —, indexed, and ends on the new game.
+- **«Importar partida»** (`/herramientas/importar-partida`, [`ImportGameSection`](/components/platform/sections/tools/import-game/import-game-section)): a pasted PGN, one game or several, into the study chosen in the form; `importPgnToStudy` is a study's own `importPgnGames` and ends on the first game imported.
+
+## Verification in the app
+
+What was checked on 2026-10-09 with the switch on in a local copy, on `next dev`, as `alumno.demo`:
+
+1. «Herramientas» opens its menu with the board, «Importar partida» and the explorer; `/herramientas` goes to the board.
+2. A FEN without kings says «No es un FEN válido.»; «hola» as a PGN says «No es un PGN válido.»; a Ruy López loads its sixteen moves.
+3. From 6... b5, «Jugar contra el módulo» with White: 7. d4 is answered at once (bxa4), both in blue as a variation of the main line's 7. Bb3; «Volver al análisis» keeps them.
+4. «Guardar en un estudio» saves the analysis as a game of «Estudio: ataques al rey» and opens it; «Importar partida» imports a pasted game into it and opens it.
+5. The bar fits the student's menu from 1280px (the teacher's from about 1330px).

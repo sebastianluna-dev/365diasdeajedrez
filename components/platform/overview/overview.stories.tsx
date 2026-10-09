@@ -79,6 +79,9 @@ import { ExplorerGames } from "@/components/platform/sections/explorer/explorer-
 import { ExplorerNextMoves } from "@/components/platform/sections/explorer/explorer-next-moves.comp";
 import { PlatformNav } from "@/components/platform/sections/shell/platform-nav.comp";
 import { PlatformNavMenu } from "@/components/platform/shared/platform-nav-menu/platform-nav-menu.comp";
+import { SaveToStudyPopup } from "@/components/platform/shared/save-to-study-popup/save-to-study-popup.comp";
+import { PlayVsEngine } from "@/components/platform/sections/tools/analysis-board/play-vs-engine/play-vs-engine.comp";
+import { PositionInput } from "@/components/platform/sections/tools/analysis-board/position-input/position-input.comp";
 import { PlatformSearch } from "@/components/platform/sections/shell/platform-search.comp";
 import { AuthorAvatar } from "@/components/platform/sections/staff/courses/authors-manager/author-avatar.comp";
 import { CourseSourceForm } from "@/components/platform/sections/staff/courses/course-sources/course-source-form.comp";
@@ -549,6 +552,29 @@ const LEVEL_SERIES = [800, 825, 825, 850, 850, 875].map((level, index) => ({
   at: new Date(Date.UTC(2026, 8, index + 1)),
   level,
 }));
+
+/** «Guardar en un estudio» and its popup, as a played game and the analysis board mount them. */
+function SaveToStudyTrigger() {
+  const popup = useRef<PlatformPopupHandle>(null);
+  return (
+    <>
+      <button
+        type="button"
+        className="platform-button platform-button_size_sm"
+        onClick={(event) => popup.current?.open(event)}
+      >
+        Guardar en un estudio
+      </button>
+      <SaveToStudyPopup
+        ref={popup}
+        studies={[{ id: "demoAtaq", name: "Estudio: ataques al rey" }]}
+        defaultTitle="Análisis"
+        action={() => popup.current?.close()}
+        onCancel={() => popup.current?.close()}
+      />
+    </>
+  );
+}
 
 /** «Abandonar» and the popup it opens, as a game against a bot mounts them. */
 function AbandonTrigger() {
@@ -1512,6 +1538,33 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             </Tile>
             <Tile name="LiveGameBanner" docs="platform-sections-play-live-game-livegamebanner" width={400} height={112}>
               <LiveGameBanner kind="stale" onReload={() => undefined} />
+            </Tile>
+            <Tile
+              name="PositionInput"
+              docs="platform-sections-tools-analysis-board-positioninput"
+              width={400}
+              height={360}
+            >
+              <PositionInput onLoad={() => undefined} />
+            </Tile>
+            <Tile
+              name="PlayVsEngine"
+              docs="platform-sections-tools-analysis-board-playvsengine"
+              width={400}
+              height={280}
+            >
+              <div className="overview__stack">
+                <PlayVsEngine sideToMove="white" playing={null} onStart={() => undefined} onStop={() => undefined} />
+                <PlayVsEngine
+                  sideToMove="white"
+                  playing={{ color: "white", status: "your-turn", end: null, failed: false }}
+                  onStart={() => undefined}
+                  onStop={() => undefined}
+                />
+              </div>
+            </Tile>
+            <Tile name="SaveToStudyPopup" docs="platform-shared-savetostudypopup" width={400} height={112}>
+              <SaveToStudyTrigger />
             </Tile>
             <Tile name="PlayedGameCard" docs="platform-shared-playedgamecard" width={400} height={320}>
               <div className="overview__bot-cards">

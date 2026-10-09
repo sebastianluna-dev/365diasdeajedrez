@@ -1,0 +1,33 @@
+---
+description: "«Jugar esta posición contra el módulo»: the colour and the button while analysing; the selection's blue band with whose turn it is, how it ended and «Volver al análisis» while playing."
+---
+
+# `PlayVsEngine`
+
+|            |                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/tools/analysis-board/play-vs-engine/play-vs-engine.comp.tsx`                                 |
+| Kind       | Client Component                                                                                                           |
+| Stylesheet | `play-vs-engine.comp.css` → block `.play-vs-engine`                                                                        |
+| Story      | `play-vs-engine.stories.tsx` (`platform/sections/tools/analysis-board/PlayVsEngine`): analysing, your turn, thinking, over |
+| Used by    | [`AnalysisBoardSection`](/components/platform/sections/tools/analysis-board/analysis-board-section)                        |
+| Uses       | [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards), `ChessKingPieceIcon`, `ArrowLeftIcon`          |
+
+## Purpose
+
+Planning decision B, drawn as T3 asks. Analysing, a card: what it does («A máxima potencia y al instante, sin reloj. Lo que juegues queda como variante del análisis.»), the colour as two cards — the side to move at the node on the board first — and «Jugar contra el módulo». Playing, the band above the board in the selection's blue: «Juegas con blancas contra el módulo», then «Te toca mover.», «El módulo piensa…» or how it ended («Jaque mate: ganaste.»), said politely to a screen reader, and «Volver al análisis».
+
+## Props
+
+| Prop         | Type                                     | Required | Meaning                                                      |
+| ------------ | ---------------------------------------- | -------- | ------------------------------------------------------------ |
+| `sideToMove` | `"white" \| "black"`                     | yes      | The colour offered first.                                    |
+| `playing`    | `{ color, status, end, failed } \| null` | yes      | The line being played (`Sparring`), or null while analysing. |
+| `onStart`    | `(color) => void`                        | yes      | Starts playing the node on the board with that colour.       |
+| `onStop`     | `() => void`                             | yes      | «Volver al análisis».                                        |
+
+## Markup & styling
+
+**Elements:** `.play-vs-engine__heading`, `.play-vs-engine__note`, `.play-vs-engine__piece`, `.play-vs-engine__start`, `.play-vs-engine__text`, `.play-vs-engine__title`, `.play-vs-engine__status`
+
+**Modifiers:** `.play-vs-engine_state_playing` (the band: `--platform-selection-wash` with a 4px edge of `--platform-selection`)
