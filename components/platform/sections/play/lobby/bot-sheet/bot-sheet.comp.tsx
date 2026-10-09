@@ -1,6 +1,6 @@
 import { BotScoreboard } from "@/components/chess/bot-scoreboard/bot-scoreboard.comp";
 import { PlayerAvatar } from "@/components/chess/player-avatar/player-avatar.comp";
-import { BOT_GROUP_LABELS } from "@/constants/platform/play-codes.const";
+import { BOT_GROUP, BOT_GROUP_LABELS } from "@/constants/platform/play-codes.const";
 import type { BotView } from "@/services/bots/bots.types";
 import type { BotScore } from "@/services/play/play.types";
 import type { PlayerCard } from "@/services/profile/profile.types";
@@ -18,7 +18,7 @@ interface BotSheetProps {
  * until calibrated), how it plays, its favourite openings, the facts of the
  * real player it is named after with the date they were true, and the
  * scoreboard against it (H6). It never claims to play like that person: it is
- * Stockfish, weakened.
+ * Stockfish, weakened, and the sheet of every real player says so.
  */
 export function BotSheet({ bot, you, score }: BotSheetProps) {
   return (
@@ -43,6 +43,13 @@ export function BotSheet({ bot, you, score }: BotSheetProps) {
           <span className="bot-sheet__label">Elo FIDE</span> {bot.fideTitle ? `${bot.fideTitle} · ` : ""}
           {bot.fideElo}
           {bot.ratingAsOfLabel && ` (${bot.ratingAsOfLabel})`}
+        </p>
+      )}
+
+      {bot.groupCode !== BOT_GROUP.CHARACTERS && (
+        <p className="bot-sheet__notice">
+          Bot con el nombre de un jugador real: es Stockfish ajustado a un nivel aproximado, no juega como esa persona y
+          ella no participa en la plataforma.
         </p>
       )}
 
