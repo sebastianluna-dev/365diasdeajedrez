@@ -177,3 +177,96 @@ export function orderedEngineLines(current: EngineLines | null, fen: string): En
       return line ? [line] : [];
     });
 }
+
+// ---------------------------------------------------------------------------
+// The engine as an opponent: one move asked for, and the moves it weighed.
+// ---------------------------------------------------------------------------
+
+/**
+ * One `info … multipv` line AS THE ENGINE GIVES IT, for choosing between
+ * moves: the score from the point of view of WHOEVER MOVES, in centipawns, and
+ * a mate in moves with its sign (positive: the mover mates).
+ *
+ * Not an `EngineInfo`: that one is in pawns, from White's side and with every
+ * mate flattened to ±100, which is right for the bar and useless for telling a
+ * mate in one from a mate in nine.
+ */
+export interface Candidate {
+  /** Which of the requested lines it is: 1 is the best. */
+  multipv: number;
+  depth: number;
+  /** The move the line starts with, in UCI ("e2e4", "e7e8q"). */
+  uci: string;
+  /** Centipawns for the mover; null when the line announces a mate. */
+  cp: number | null;
+  /** Moves to mate, positive when the mover gives it; null when there is none in sight. */
+  mateIn: number | null;
+  /**
+   * A score the search has only bounded, mid-iteration: the move is not worth
+   * comparing until its iteration finishes.
+   */
+  bound: "lower" | "upper" | null;
+}
+
+/**
+ * Reads an `info` line with a score and a principal variation as a candidate
+ * move. `null` for every other line — `string`, `currmove`, a line without a
+ * `pv`, and the `score mate 0` of a position already mated, which has no move.
+ */
+export function parseCandidate(line: string): Candidate | null {
+  if (!line.startsWith("info ")) return null;
+
+  const tokens = line.split(/\s+/);
+  const depthAt = tokens.indexOf("depth");
+  const scoreAt = tokens.indexOf("score");
+  const pvAt = tokens.indexOf("pv");
+  if (depthAt === -1 || scoreAt === -1 || pvAt === -1) return null;
+
+  const depth = Number(tokens[depthAt + 1]);
+  const kind = tokens[scoreAt + 1];
+  const value = Number(tokens[scoreAt + 2]);
+  const uci = tokens[pvAt + 1] ?? "";
+  if (!Number.isFinite(depth) || !Number.isFinite(value)) return null;
+  if (!/^[a-h][1-8][a-h][1-8][qrbn]?$/.test(uci)) return null;
+
+  const multipvAt = tokens.indexOf("multipv");
+  const multipv = multipvAt === -1 ? 1 : Number(tokens[multipvAt + 1]);
+  if (!Number.isFinite(multipv) || multipv < 1) return null;
+
+  const bound = tokens.includes("lowerbound") ? "lower" : tokens.includes("upperbound") ? "upper" : null;
+
+  if (kind === "mate") {
+    if (value === 0) return null;
+    return { multipv, depth, uci, cp: null, mateIn: value, bound };
+  }
+  if (kind !== "cp") return null;
+  return { multipv, depth, uci, cp: value, mateIn: null, bound };
+}
+
+/**
+ * The move of a `bestmove` line: `"bestmove e2e4 ponder e7e5"` → `"e2e4"`.
+ * `null` for `bestmove (none)` — the position had no move, a mate or a
+ * stalemate on the board — and for anything that is not a `bestmove` line.
+ */
+export function parseBestMove(line: string): string | null {
+  const [head, move] = line.trim().split(/\s+/);
+  if (head !== "bestmove" || !move) return null;
+  return /^[a-h][1-8][a-h][1-8][qrbn]?$/.test(move) ? move : null;
+}
+
+/**
+ * A candidate read as the review stores a position's value: in pawns and from
+ * White's side, a mate with White's sign. The same normalisation as
+ * `parseEngineInfo`, from the mover's figures the candidate keeps.
+ */
+export function evaluationOfCandidate(
+  candidate: Candidate,
+  turn: "white" | "black",
+): { score: number; mateIn: number | null } {
+  const sign = turn === "white" ? 1 : -1;
+  if (candidate.mateIn !== null) {
+    return { score: sign * (candidate.mateIn > 0 ? MATE_SCORE : -MATE_SCORE), mateIn: sign * candidate.mateIn };
+  }
+  const cp = candidate.cp ?? 0;
+  return { score: cp === 0 ? 0 : (sign * cp) / 100, mateIn: null };
+}

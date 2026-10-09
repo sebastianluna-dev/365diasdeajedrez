@@ -1,20 +1,22 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { parseEngineInfo } from "@/lib/chess/engine-protocol";
+import { createWorkerTransport } from "@/components/chess/engine/worker-transport";
+import { createEngineClient, type EngineClient } from "@/lib/chess/engine/engine-client";
+import { evaluationOfCandidate, type Candidate } from "@/lib/chess/engine-protocol";
+import { positionOutcome } from "@/lib/chess/legal-moves";
 import type { MoveEvaluation } from "@/lib/chess/pgn-tree";
 import { replayGame, turnColor } from "@/lib/chess/replay";
 
 // Evaluate the WHOLE game: one engine pass per main-line position.
 //
-// Its own worker, apart from the one in `use-engine.hook.ts`. Not for convenience:
-// that one chases the position the user is at and keeps stopping and
-// relaunching the search; injecting a second batch of positions into that
-// conversation is exactly what makes Stockfish abort (see the long comment in
-// that file). Two different tasks, two engines.
+// Its own engine, apart from the one in `use-engine.hook.ts`. Not for
+// convenience: that one chases the position the user is at and keeps
+// replacing its search; a batch of sixty positions does not belong in that
+// conversation. Two different tasks, two engines.
 //
-// The traversal is serial and in turns: `position` + `go`, the last score it
-// gives is noted and it does NOT move on to the next until its `bestmove`.
+// The traversal is serial: one `bestMove` per position, through the engine
+// client, which waits for each `bestmove` before sending the next `position`.
 
 /**
  * How deep it goes on each position.
@@ -24,6 +26,9 @@ import { replayGame, turnColor } from "@/lib/chess/replay";
  * the fan at full blast. At sixteen, the gross mistakes show up all the same.
  */
 const REVIEW_DEPTH = 16;
+
+/** The hash the review asks for, said explicitly rather than left to the default. */
+const REVIEW_HASH_MB = 16;
 
 export type GameReviewState = "idle" | "running" | "failed";
 
@@ -52,6 +57,18 @@ export interface GameReviewRunner extends GameReviewProgress {
   cancel: () => void;
 }
 
+/**
+ * A position's value for the chart. Without a line — the position is over and
+ * the engine answers `bestmove (none)` — the board says it: a stalemate is a
+ * draw, and a mate keeps the previous position's figure, the winner's mate in
+ * one (a `mate 0` has no sign of its own to say who won).
+ */
+function evaluationAt(fen: string, best: Candidate | undefined, previous: MoveEvaluation | undefined): MoveEvaluation {
+  if (best) return evaluationOfCandidate(best, turnColor(fen));
+  if (positionOutcome(fen) === "stalemate") return { score: 0, mateIn: null };
+  return previous ?? { score: 0, mateIn: null };
+}
+
 export function useGameReview({ onFinished }: Options): GameReviewRunner {
   const [progress, setProgress] = useState<GameReviewProgress>({
     state: "idle",
@@ -60,7 +77,9 @@ export function useGameReview({ onFinished }: Options): GameReviewRunner {
     depth: REVIEW_DEPTH,
   });
 
-  const workerRef = useRef<Worker | null>(null);
+  const clientRef = useRef<EngineClient | null>(null);
+  /** Which traversal is the live one: a cancelled one keeps quiet when its engine is killed under it. */
+  const runRef = useRef(0);
   // By reference so starting the traversal does not depend on whoever mounts
   // the hook memoising its callback.
   const onFinishedRef = useRef(onFinished);
@@ -69,8 +88,9 @@ export function useGameReview({ onFinished }: Options): GameReviewRunner {
   }, [onFinished]);
 
   const stop = useCallback(() => {
-    workerRef.current?.terminate();
-    workerRef.current = null;
+    runRef.current += 1;
+    clientRef.current?.terminate();
+    clientRef.current = null;
   }, []);
 
   // Leaving the screen mid-evaluation cannot leave the engine thinking.
@@ -84,6 +104,7 @@ export function useGameReview({ onFinished }: Options): GameReviewRunner {
   const start = useCallback(
     (pgn: string) => {
       stop();
+      const run = runRef.current;
 
       const positions = replayGame(pgn);
       if (positions.length === 0) {
@@ -91,74 +112,47 @@ export function useGameReview({ onFinished }: Options): GameReviewRunner {
         return;
       }
 
-      let worker: Worker;
+      let client: EngineClient;
       try {
-        worker = new Worker("/engine/stockfish.js");
+        client = createEngineClient(createWorkerTransport());
       } catch {
         setProgress({ state: "failed", done: 0, total: 0, depth: REVIEW_DEPTH });
         return;
       }
 
-      workerRef.current = worker;
+      clientRef.current = client;
       setProgress({ state: "running", done: 0, total: positions.length, depth: REVIEW_DEPTH });
 
-      const evaluations: MoveEvaluation[] = [];
-      let index = 0;
-      /** The best reading of the position being analysed right now. */
-      let current: MoveEvaluation | null = null;
+      void (async () => {
+        try {
+          await client.ready();
+          // A single line: here only the position's value matters, and asking
+          // for three would multiply the work without adding anything to the chart.
+          await client.setOptions({ hash: REVIEW_HASH_MB, multiPv: 1 });
+          await client.newGame();
 
-      const askNext = () => {
-        if (index >= positions.length) {
+          const evaluations: MoveEvaluation[] = [];
+          for (const [index, position] of positions.entries()) {
+            const { candidates } = await client.bestMove({
+              fen: position.fen,
+              moves: [],
+              search: { depth: REVIEW_DEPTH },
+            });
+            if (runRef.current !== run) return;
+            evaluations.push(evaluationAt(position.fen, candidates[0], evaluations.at(-1)));
+            setProgress((previous) => ({ ...previous, done: index + 1 }));
+          }
+
           stop();
           setProgress((previous) => ({ ...previous, state: "idle", done: positions.length }));
           onFinishedRef.current(evaluations);
-          return;
+        } catch {
+          // A cancelled traversal is rejected when its engine is killed: not a failure.
+          if (runRef.current !== run) return;
+          stop();
+          setProgress((previous) => ({ ...previous, state: "failed" }));
         }
-        const position = positions[index];
-        if (!position) return;
-        current = null;
-        worker.postMessage(`position fen ${position.fen}`);
-        worker.postMessage(`go depth ${REVIEW_DEPTH}`);
-      };
-
-      worker.addEventListener("message", (event: MessageEvent) => {
-        const line = typeof event.data === "string" ? event.data : "";
-
-        if (line.startsWith("readyok")) {
-          askNext();
-          return;
-        }
-
-        if (line.startsWith("bestmove")) {
-          // Without a score the last known one is kept: the chart needs a value
-          // per position. That is a mate on the board, whose `mate 0`
-          // `parseEngineInfo` does not read (its zero cannot say who won), so
-          // the mate keeps the previous position's figure: the winner's mate in
-          // one. A stalemate does score, `cp 0`: a draw.
-          evaluations.push(current ?? evaluations[evaluations.length - 1] ?? { score: 0, mateIn: null });
-          index += 1;
-          setProgress((previous) => ({ ...previous, done: index }));
-          askNext();
-          return;
-        }
-
-        const position = positions[index];
-        if (!position) return;
-        const parsed = parseEngineInfo(line, turnColor(position.fen));
-        if (parsed) current = { score: parsed.score, mateIn: parsed.mateIn };
-      });
-
-      worker.onerror = () => {
-        stop();
-        setProgress((previous) => ({ ...previous, state: "failed" }));
-      };
-
-      worker.postMessage("uci");
-      worker.postMessage("setoption name UCI_AnalyseMode value true");
-      // A single line: here only the position's value matters, and asking for
-      // three would multiply the work per position without adding anything to the chart.
-      worker.postMessage("setoption name MultiPV value 1");
-      worker.postMessage("isready");
+      })();
     },
     [stop],
   );

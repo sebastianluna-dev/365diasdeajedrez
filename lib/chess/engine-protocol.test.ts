@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
   evaluationBarFill,
+  evaluationOfCandidate,
   formatEngineLine,
   formatEvaluation,
   mergeEngineLines,
   orderedEngineLines,
+  parseBestMove,
+  parseCandidate,
   parseEngineInfo,
   type EngineLines,
 } from "./engine-protocol";
@@ -222,5 +225,71 @@ describe("acumular las tres líneas", () => {
     // In a forced mate the engine may give only one.
     const state = feed(FEN, [info(1, 20, 100)]);
     expect(orderedEngineLines(state, FEN)).toHaveLength(1);
+  });
+});
+
+describe("parseCandidate", () => {
+  it("reads a line from the mover's point of view, in centipawns", () => {
+    expect(parseCandidate("info depth 6 seldepth 9 multipv 7 score cp -23 nodes 10009 pv a1c1 d8b6 c1b1")).toEqual({
+      multipv: 7,
+      depth: 6,
+      uci: "a1c1",
+      cp: -23,
+      mateIn: null,
+      bound: null,
+    });
+  });
+
+  it("keeps a mate's sign as the engine gives it, and its bound", () => {
+    expect(parseCandidate("info depth 12 multipv 1 score mate -2 pv e1d1")).toMatchObject({ mateIn: -2, cp: null });
+    expect(parseCandidate("info depth 6 multipv 8 score cp -25 upperbound nodes 10009 pv a2a3 f6e4")).toMatchObject({
+      bound: "upper",
+    });
+    expect(parseCandidate("info depth 6 multipv 2 score cp 40 lowerbound pv e2e4")).toMatchObject({ bound: "lower" });
+  });
+
+  it("reads a promotion", () => {
+    expect(parseCandidate("info depth 3 score cp 900 pv e7e8q")).toMatchObject({ uci: "e7e8q", multipv: 1 });
+  });
+
+  it("ignores lines without a move: strings, currmove, a mate already on the board", () => {
+    expect(parseCandidate("info string NNUE evaluation using nn-9067e33176e8.nnue")).toBeNull();
+    expect(parseCandidate("info depth 10 currmove e2e4 currmovenumber 1")).toBeNull();
+    expect(parseCandidate("info depth 0 score mate 0")).toBeNull();
+  });
+});
+
+describe("parseBestMove", () => {
+  it("reads the move and drops the ponder", () => {
+    expect(parseBestMove("bestmove e2e4 ponder e7e5")).toBe("e2e4");
+    expect(parseBestMove("bestmove e7e8n")).toBe("e7e8n");
+  });
+
+  it("answers null when the position had no move, or the line is something else", () => {
+    expect(parseBestMove("bestmove (none)")).toBeNull();
+    expect(parseBestMove("info depth 1 pv e2e4")).toBeNull();
+  });
+});
+
+describe("evaluationOfCandidate", () => {
+  it("turns the mover's figures into White's, in pawns", () => {
+    expect(
+      evaluationOfCandidate({ multipv: 1, depth: 16, uci: "e7e5", cp: 34, mateIn: null, bound: null }, "black"),
+    ).toEqual({
+      score: -0.34,
+      mateIn: null,
+    });
+    expect(
+      evaluationOfCandidate({ multipv: 1, depth: 16, uci: "d1h5", cp: null, mateIn: 2, bound: null }, "white"),
+    ).toEqual({
+      score: 100,
+      mateIn: 2,
+    });
+    expect(
+      evaluationOfCandidate({ multipv: 1, depth: 16, uci: "g7g6", cp: null, mateIn: -1, bound: null }, "black"),
+    ).toEqual({
+      score: 100,
+      mateIn: 1,
+    });
   });
 });

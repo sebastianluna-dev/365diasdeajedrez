@@ -21,16 +21,30 @@ npm uninstall stockfish
 
 ### How the app talks to it
 
-Two hooks own two independent workers, because Stockfish aborts (`RuntimeError: unreachable`) if it receives `position` while a previous `go` has not answered `bestmove`:
+Everything that talks UCI goes through **one engine client**, `lib/chess/engine/engine-client.ts` (`createEngineClient(transport)`). It owns the rule that matters: Stockfish aborts (`RuntimeError: unreachable`) if it receives `position` — or `ucinewgame` — while a previous `go` has not answered `bestmove`, and the worker script holds a `setoption` sent mid-search until after the `position` that followed it. So the client sends `position`, `ucinewgame`, `setoption` and `go` only while the engine is idle, one request at a time from a FIFO queue; a request that cannot wait (a new analysis, a new game, new options) sends `stop` and goes when the `bestmove` arrives.
 
-| Hook                      | Worker                                              | Depth | Lines         | Use                                                                                                                               |
-| ------------------------- | --------------------------------------------------- | ----- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `use-engine.hook.ts`      | created lazily when the user switches the module on | 20    | 3 (`MultiPV`) | Live analysis of the current position; stops and relaunches as the user navigates; feeds the evaluation bar and the engine panel. |
-| `use-game-review.hook.ts` | its own worker                                      | 16    | 1             | Evaluates every mainline position in series for the game review.                                                                  |
+| Method             | What it does                                                                                                                                 |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ready()`          | Resolves on the boot's `readyok` (`uci` + `isready`). No `UCI_AnalyseMode`: Stockfish 18 has no such option.                                 |
+| `setOptions(o)`    | One `setoption` per option (`Hash`, `MultiPV`, `UCI_LimitStrength`, `UCI_Elo`, `Skill Level`, `UCI_ShowWDL`), then `isready`.                |
+| `newGame()`        | `ucinewgame` + `isready`: forgets the previous game's hash.                                                                                  |
+| `analyse(req, cb)` | Analyses a FEN, calling back with every `EngineInfo`; a newer analysis replaces it. Returns the cancel.                                      |
+| `bestMove(req)`    | One move: `{ bestMove, candidates }`, the candidates being the lines of the last complete iteration (`finalCandidates`, `candidate-set.ts`). |
+| `terminate()`      | Kills the engine and rejects whatever is pending.                                                                                            |
 
-`lib/chess/engine-protocol.ts` parses the `info` lines (score normalised to White, mate distances, PV as UCI) and orders/merges the lines; nothing else in the app reads raw engine output.
+A budget is a depth, a number of nodes or both (`SearchBudget`); only the full-strength module of the analysis board searches by time (`TimedBudget`), because a bot's strength must not depend on the device. If the engine dies — the worker throws, or the process exits — every pending request is rejected; a search that never answers is taken for dead by a watchdog (four times what its budget should take on a slow phone, never under five seconds), because an iOS worker killed for memory fires no error.
 
-A position that is already over is searched at depth 0 and answered at once with `bestmove (none)`. Stalemate prints `info depth 0 score cp 0`, which parses as a draw. A mate on the board prints `info depth 0 score mate 0`, and that zero has no sign: read as a score it handed the win to the side that is mated, so `parseEngineInfo` returns `null` for it. The review then keeps the previous position's figure, the winner's mate in one. The live analysis gets no line either way, so the engine panel reads the board instead (`positionOutcome` in `lib/chess/legal-moves.ts`) and says the game is over.
+The client reaches the engine through an `EngineTransport` (`lib/chess/engine/engine-transport.ts`): a Web Worker in the browser (`components/chess/engine/worker-transport.ts`, the only place that creates one), and a scripted fake for the tests (`lib/testing/scripted-engine.ts`).
+
+| Hook                      | Engine                                                                    | Depth | Lines         | Use                                                                                                        |
+| ------------------------- | ------------------------------------------------------------------------- | ----- | ------------- | ---------------------------------------------------------------------------------------------------------- |
+| `use-engine-client.hook`  | creates a worker and its client lazily while `enabled`, kills it when off | —     | —             | The handle the other hooks build on: `{ client, status }`.                                                 |
+| `use-engine.hook.ts`      | its own client, or one its caller shares                                  | 20    | 3 (`MultiPV`) | Live analysis of the current position, replaced as the user navigates; feeds the evaluation bar and panel. |
+| `use-game-review.hook.ts` | its own client, created by `start`                                        | 16    | 1             | Evaluates every mainline position in series (`bestMove`) for the game review.                              |
+
+Both send `Hash 16` explicitly. `lib/chess/engine-protocol.ts` parses what the engine writes: `parseEngineInfo` (score normalised to White, mate distances, PV as UCI) for the analysis, `parseCandidate` (the mover's centipawns, the mate with its own sign, and whether the score is only a bound) and `parseBestMove` for moves asked for; nothing else in the app reads raw engine output.
+
+A position that is already over is searched at depth 0 and answered at once with `bestmove (none)`. Stalemate prints `info depth 0 score cp 0` without a line; a mate on the board prints `info depth 0 score mate 0`, and that zero has no sign: read as a score it handed the win to the side that is mated, so `parseEngineInfo` returns `null` for it. The review reads the board instead: a stalemate is a draw, and a mate keeps the previous position's figure, the winner's mate in one. The live analysis gets no line either way, so the engine panel reads the board too (`positionOutcome` in `lib/chess/legal-moves.ts`) and says the game is over.
 
 ## Pieces — `public/pieces/`
 
