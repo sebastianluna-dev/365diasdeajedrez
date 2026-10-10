@@ -6,11 +6,13 @@ import { BOT_VIEW_SELECT, botView } from "./bots.mapper";
 import type { BotGroupView, BotView } from "./bots.types";
 
 // The bots, read: a catalog seeded from lib/chess/bots/roster.ts and never
-// edited from the interface. Only the active ones.
+// edited from the interface. Only the active ones, and only those of a listed
+// group: the rivals of an adventure (`BOT_GROUP_LISTED`) are not in the gallery.
 
-/** Every group with its active bots, in the order «Jugar» shows them. */
+/** Every listed group with its active bots, in the order «Jugar» shows them. */
 export const listBotGroups = cache(async (): Promise<BotGroupView[]> => {
   const groups = await getPlatformDb().botGroup.findMany({
+    where: { isListed: true },
     orderBy: { order: "asc" },
     select: {
       code: true,
@@ -23,8 +25,11 @@ export const listBotGroups = cache(async (): Promise<BotGroupView[]> => {
     .filter((group) => group.bots.length > 0);
 });
 
-/** An active bot by its slug. */
+/** An active bot of the gallery by its slug: an adventure's rival is not found by it. */
 export const getBotBySlug = cache(async (slug: string): Promise<BotView | null> => {
-  const row = await getPlatformDb().bot.findFirst({ where: { slug, isActive: true }, select: BOT_VIEW_SELECT });
+  const row = await getPlatformDb().bot.findFirst({
+    where: { slug, isActive: true, group: { isListed: true } },
+    select: BOT_VIEW_SELECT,
+  });
   return row ? botView(row) : null;
 });

@@ -7,14 +7,15 @@ import {
   GAME_TERMINATION_LABELS,
   TIME_CONTROL_VALUES,
 } from "../constants/platform/play-codes.const";
-import { BOT_ROSTER } from "../lib/chess/bots/roster";
+import { allBotSeeds } from "../lib/adventure/adventure-bots";
 
 // The rows of «Jugar»'s catalogs and bots as SQL, for the migrations.
 //
 // Production never runs the seed, so catalog rows reach it inside a migration
 // (as DatabaseKind did, 20260904190000_study_types_and_shares). This writes
-// that SQL from the same constants and roster the seed reads, so the two can
-// not drift: `npm run bots:sql` prints it to paste into a migration, and
+// that SQL from the same constants and bots the seed reads — the gallery's
+// roster and the adventures' rivals (`allBotSeeds`) —, so the two can not
+// drift: `npm run bots:sql` prints it to paste into a migration, and
 // `play-catalog-sql.test.ts` checks the latest migration that carries it
 // against what it prints now. A bot relabelled by the calibration is a new
 // migration with this block, never an edit of an old one.
@@ -49,12 +50,16 @@ function upsert(table: string, columns: string[], rows: SqlValue[][], conflict: 
 export function playCatalogSql(): string {
   const groups = upsert(
     "BotGroup",
-    ["code", "label", "ring", "order"],
-    Object.values(BOT_GROUP)
-      .filter((code) => BOT_GROUP_LISTED[code])
-      .map((code, order) => [code, BOT_GROUP_LABELS[code], BOT_GROUP_RING[code], order]),
+    ["code", "label", "ring", "order", "isListed"],
+    Object.values(BOT_GROUP).map((code, order) => [
+      code,
+      BOT_GROUP_LABELS[code],
+      BOT_GROUP_RING[code],
+      order,
+      BOT_GROUP_LISTED[code],
+    ]),
     "code",
-    ["label", "ring", "order"],
+    ["label", "ring", "order", "isListed"],
   );
 
   const timeControls = upsert(
@@ -96,7 +101,7 @@ export function playCatalogSql(): string {
       "order",
       "isActive",
     ],
-    BOT_ROSTER.map((bot) => [
+    allBotSeeds().map((bot) => [
       bot.slug,
       bot.name,
       bot.elo,

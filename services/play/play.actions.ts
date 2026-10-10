@@ -149,8 +149,10 @@ export async function startPlayedGame(formData: FormData): Promise<void> {
 
   const form = parseForm(START_SCHEMA, formData);
   if (!form.ok) redirect(withErrorParam(platformRoutes.play, "invalid"));
+  // A hidden group's bots (an adventure's rivals) are not for the gallery: refusing
+  // them here is what keeps `?rival=` from skipping the story.
   const bot = await getPlatformDb().bot.findFirst({
-    where: { slug: form.data.bot, isActive: true },
+    where: { slug: form.data.bot, isActive: true, group: { isListed: true } },
     select: { id: true, name: true, elo: true },
   });
   if (!bot) redirect(withErrorParam(platformRoutes.play, "botNotFound"));
@@ -175,12 +177,12 @@ export async function rematchPlayedGame(gameId: string): Promise<void> {
     select: {
       whiteUserId: true,
       blackUserId: true,
-      whiteBot: { select: { id: true, name: true, elo: true, isActive: true } },
-      blackBot: { select: { id: true, name: true, elo: true, isActive: true } },
+      whiteBot: { select: { id: true, name: true, elo: true, isActive: true, group: { select: { isListed: true } } } },
+      blackBot: { select: { id: true, name: true, elo: true, isActive: true, group: { select: { isListed: true } } } },
     },
   });
   const bot = previous?.whiteBot ?? previous?.blackBot;
-  if (!previous || !bot?.isActive) redirect(withErrorParam(platformRoutes.play, "botNotFound"));
+  if (!previous || !bot?.isActive || !bot.group.isListed) redirect(withErrorParam(platformRoutes.play, "botNotFound"));
 
   const color = seatOf(previous, user.id) === "white" ? "black" : "white";
   const next = await openGame(user.id, user.displayName, bot, color, true);
