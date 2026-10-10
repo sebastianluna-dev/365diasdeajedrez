@@ -38,7 +38,7 @@ export default async function AdventureMapPage({ params, searchParams }: Adventu
   return (
     <div className="platform-page platform-page_width_full">
       {errorMessage && <PlatformNotice message={errorMessage} />}
-      <AdventureMapSection slug={adventureSlug} victory={victoryOf(victoria)} />
+      <AdventureMapSection slug={adventureSlug} victory={victoryOf(victoria)} autoScroll={!errorMessage} />
     </div>
   );
 }

@@ -34,6 +34,7 @@ Reference page: [Components › AdventureMap](/components/adventure/map/adventur
     art: ADVENTURE_ART["cuaderno-del-viajero"]!,
     player: { initials: "AD", name: "Alumno Demo" },
     victory: null,
+    action: async () => undefined,
   },
   decorators: [
     (Story) => (
@@ -66,14 +67,30 @@ export const Phone: Story = {
   globals: { viewport: { value: "mobile1", isRotated: false } },
 };
 
-/** Pressing a stamp opens that rival's sheet over the map. */
-export const OpenSheet: Story = {
+/** Pressing a stamp opens that rival's card over the map: here the fifth, the one to play. */
+export const OpenCard: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const stamps = await canvas.findAllByRole("button", { name: /Anselmo Quiroga, rival 5 de 12/ });
     const visible = stamps.find((stamp) => stamp.offsetParent !== null);
     await userEvent.click(visible!);
-    const dialog = await within(document.body).findByRole("dialog", { name: /Rival 5 de 12/ });
+    const dialog = await within(document.body).findByRole("dialog", { name: /Ficha de rival · N.º 05 de 12/ });
     await expect(dialog).toHaveAttribute("open");
+  },
+};
+
+/** With a game against a bot open: «Empezar» asks, in a second popup over the card, before closing it. */
+export const ReplacingAnOpenGame: Story = {
+  args: { progress: fixtureAdventureProgress({ attemptsOnNext: 1, openGame: "free" }) },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const stamps = await canvas.findAllByRole("button", { name: /Anselmo Quiroga, rival 5 de 12/ });
+    await userEvent.click(stamps.find((stamp) => stamp.offsetParent !== null)!);
+    const card = await within(document.body).findByRole("dialog", { name: /Ficha de rival/ });
+    await userEvent.click(within(card).getByRole("button", { name: "Empezar" }));
+    const question = await within(document.body).findByRole("dialog", {
+      name: /¿Quitar tu partida en curso contra Lupita\?/,
+    });
+    await expect(question).toHaveAttribute("open");
   },
 };

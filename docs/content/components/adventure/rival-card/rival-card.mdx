@@ -1,0 +1,55 @@
+---
+description: "A rival's card, the content of the popup the map opens: a passport page with the stamp, where the person stands, the facts and «Empezar» or «Volver a retar»."
+---
+
+# `RivalCard`
+
+|            |                                                                                                                                                                |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/adventure/rival-card/rival-card/rival-card.comp.tsx`                                                                                               |
+| Kind       | Client Component (a leaf: the cancel button and the replacement hand-off)                                                                                      |
+| Stylesheet | `rival-card.comp.css` → block `.rival-card`                                                                                                                    |
+| Story      | `rival-card.stories.tsx` (`adventure/rival-card/RivalCard`): available at its second try and its first, beaten, locked, the last page locked, with a game open |
+| Used by    | [`AdventureMap`](/components/adventure/map/adventure-map), inside a `PlatformPopup`                                                                            |
+| Uses       | `StampArt`, [`Keepsake`](/components/adventure/keepsakes/keepsake), `PlatformForm`, `PlatformChoiceCards`, `SubmitButton`, `starsForAttempts`, icons           |
+
+## Purpose
+
+A rival's page of the passport, opened by pressing its stamp on the map. The popup's strip (the platform's) says «Ficha de rival · N.º 05 de 12» and carries the cross; the card is what is under it and pads itself:
+
+- the **stamp large** on four corners of tape, the name and the role (a locked rival's stamp is the greyed proof with a red padlock over it);
+- **where the person stands**: beaten — a postmark, the date and «Ganaste en 24 jugadas» (half the plies of the game that first won); available — «Intento 2» and «Ya lo intentaste una vez: la historia te espera en esta página.»; locked — «Supera a Doña Cuca para llegar aquí.»;
+- the rival's **phrase** in pencil, and the facts of a passport page: the level («≈ 783»), the difficulty (its word and five pawns), the favourite opening with its moves, the style as two stamps, where it is played, the **stars** («Al primer intento» / «En 2 intentos» for a beaten rival; «si ganas en el intento 2» for the next, from `starsForAttempts`) and the **keepsake** (the drawing when beaten, or «Al ganarle: un recuerdo para tu cuaderno» with the sealed envelope);
+- the **form**: the colour on `PlatformChoiceCards` (blancas, negras, al azar) with `adventure` and `encounter` as hidden fields, «Cancelar» and the button — `_variant_ink`, with the arrow on its right and `pendingLabel="Preparando…"`: «Empezar» for the available rival, «Volver a retar» for a beaten one (it touches neither stars nor keepsake). A locked rival has no form: the server would bounce it anyway.
+
+With a game against a bot already open the card warns («Empezar otra cierra la que tienes en curso contra Lupita…») and its button does not submit: it hands the form's data to the map (`onReplace`), which asks in a `PlatformConfirmPopup` opened over the card and then submits with `replace=1`.
+
+## Props
+
+| Prop           | Type                                  | Required | Meaning                                                                                |
+| -------------- | ------------------------------------- | -------- | -------------------------------------------------------------------------------------- |
+| `adventure`    | `string`                              | yes      | The adventure's slug: sent by the form and used to find the portrait and the keepsake. |
+| `encounter`    | `EncounterView`                       | yes      | The rival with its state, attempts, stars and the game that beat it.                   |
+| `postmark`     | `string`                              | yes      | The place written round the stamp's postmark.                                          |
+| `previousName` | `string \| null`                      | yes      | The rival before this one, for a locked card.                                          |
+| `playerName`   | `string`                              | yes      | Written on the membership card keepsake.                                               |
+| `openGame`     | `OpenGameSummary \| null`             | yes      | The person's open game against a bot, if any.                                          |
+| `action`       | `(FormData) => void \| Promise<void>` | yes      | `startAdventureEncounter`, or a stub.                                                  |
+| `onReplace`    | `(FormData) => void`                  | yes      | With an open game: the button was pressed; the host asks for confirmation.             |
+| `onCancel`     | `() => void`                          | yes      | «Cancelar»: the host closes the popup.                                                 |
+
+## Markup & styling
+
+Block `.rival-card` (367 lines); the root also carries `.adventure`.
+
+**Elements:** `.rival-card__intro`, `__portrait`, `__padlock`, `__who`, `__name`, `__role`, `__status`, `__seal`, `__dot`, `__lock`, `__date`, `__line`, `__phrase`, `__facts`, `__fact`, `__level`, `__moves`, `__pawns`, `__pawn`, `__styles`, `__style`, `__reward`, `__stars`, `__star`, `__keepsake`, `__keepsake-drawing`, `__form`, `__piece`, `__warning`, `__foot`, `__watermark`
+
+**Modifiers and states:** `.rival-card_status_beaten|available|locked`, `.rival-card__fact_half`, `.rival-card__pawn_on`, `.rival-card__star_on`, `.rival-card__star_promise`
+
+**Tokens:** `--adventure-cream`, `--adventure-ink`, `--adventure-ink-soft`, `--adventure-graphite`, `--adventure-brick`, `--adventure-brick-deep`, `--adventure-brick-fill`, `--adventure-ochre`, `--adventure-kraft`, `--adventure-grain`, `--adventure-font-title`, `--adventure-font-data`, `--adventure-font-note`
+
+**Media queries:** `(width < 640px)`. No animation (the popup brings its own).
+
+## Related
+
+[`AdventureMap`](/components/adventure/map/adventure-map), [`EncounterStamp`](/components/adventure/stamp/encounter-stamp), [`Keepsake`](/components/adventure/keepsakes/keepsake), [`PlatformPopup`](/components/platform/shared/platform-popup/platform-popup), [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup/platform-confirm-popup).

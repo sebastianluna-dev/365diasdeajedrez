@@ -13,7 +13,8 @@ interface StampArtProps {
   encounter: Pick<EncounterView, "slug" | "order" | "state" | "elo" | "isFinal" | "beatenAt" | "portrait">;
   /** The place written round the postmark of a beaten rival: «LA TORRE». */
   postmark: string;
-  /** Draws a locked stamp with ink, greyed by the card that shows it (never by the map). */
+  /** A locked stamp drawn with ink, as a proof: the rival's card greys it and lays a padlock over it (never the map). */
+  isProof?: boolean;
   className?: string;
 }
 
@@ -74,10 +75,10 @@ function BlindPortrait({ isFinal }: { isFinal: boolean }) {
  * the stamp only — the label under it, and the button that makes it clickable,
  * are `EncounterStamp`'s — so the rival card can show the same stamp large.
  */
-export function StampArt({ adventure, encounter, postmark, className }: StampArtProps) {
+export function StampArt({ adventure, encounter, postmark, isProof = false, className }: StampArtProps) {
   const id = useId();
   const Portrait: ComponentType | undefined = ADVENTURE_PORTRAITS[adventure]?.[encounter.slug];
-  const isBlind = encounter.state === "locked";
+  const isBlind = encounter.state === "locked" && !isProof;
   const date = encounter.beatenAt ? postmarkDate(encounter.beatenAt) : null;
 
   return (

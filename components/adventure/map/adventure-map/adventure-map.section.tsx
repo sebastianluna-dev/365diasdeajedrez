@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { AdventureMap } from "@/components/adventure/map/adventure-map/adventure-map.comp";
 import { ADVENTURE_ART, adventureOf } from "@/lib/adventure/adventures";
 import { getAdventureProgress } from "@/services/adventure/adventure.service";
+import { startAdventureEncounter } from "@/services/adventure/adventure.actions";
 import { getOwnPlayerCard } from "@/services/profile/profile.service";
 
 interface AdventureMapSectionProps {
@@ -9,6 +10,8 @@ interface AdventureMapSectionProps {
   slug: string;
   /** The order of the encounter just beaten (`?victoria=`), already read as a number from 1 to 12, or null. */
   victory: number | null;
+  /** Scroll to the stamp to play on opening. The page turns it off when it brings a notice, which would be scrolled out of sight. */
+  autoScroll?: boolean;
 }
 
 /**
@@ -18,7 +21,7 @@ interface AdventureMapSectionProps {
  * zones and art, the person's initials. A `victory` only counts when that
  * encounter really is beaten, so a made-up address plays nothing.
  */
-export async function AdventureMapSection({ slug, victory }: AdventureMapSectionProps) {
+export async function AdventureMapSection({ slug, victory, autoScroll = true }: AdventureMapSectionProps) {
   const adventure = adventureOf(slug);
   const art = ADVENTURE_ART[slug];
   if (!adventure || !art) notFound();
@@ -32,6 +35,8 @@ export async function AdventureMapSection({ slug, victory }: AdventureMapSection
       art={art}
       player={{ initials: me.avatar.initials, name: me.name }}
       victory={beaten ? victory : null}
+      action={startAdventureEncounter}
+      autoScroll={autoScroll}
     />
   );
 }

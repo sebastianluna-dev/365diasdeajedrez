@@ -4,9 +4,4 @@
   border-radius: 8px;
   overflow: clip;
   box-shadow: var(--adventure-shadow);
-
-  /* A placeholder for the rival's sheet until the card is drawn. */
-  & .adventure-map__sheet {
-    padding: 20px;
-  }
 }

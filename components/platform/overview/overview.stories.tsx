@@ -8,6 +8,7 @@ import { Ticket } from "@/components/adventure/cover/ticket/ticket.comp";
 import { Keepsake } from "@/components/adventure/keepsakes/keepsake/keepsake.comp";
 import { AdventureMap } from "@/components/adventure/map/adventure-map/adventure-map.comp";
 import { NotePage } from "@/components/adventure/note-page/note-page/note-page.comp";
+import { RivalCard } from "@/components/adventure/rival-card/rival-card/rival-card.comp";
 import { EncounterStamp } from "@/components/adventure/stamp/encounter-stamp/encounter-stamp.comp";
 import { AdventureShelf } from "@/components/adventure/shelf/adventure-shelf/adventure-shelf.comp";
 import { NotebookSpine } from "@/components/adventure/shelf/notebook-spine/notebook-spine.comp";
@@ -1855,6 +1856,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                     art={ADVENTURE_ART["cuaderno-del-viajero"]!}
                     player={{ initials: "AD", name: "Alumno Demo" }}
                     victory={null}
+                    action={async () => undefined}
                     autoScroll={false}
                   />
                 </div>
@@ -1924,6 +1926,19 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   </div>
                 ))}
               </div>
+            </Tile>
+            <Tile name="RivalCard" docs="adventure-rival-card-rivalcard" width={620} height={800}>
+              <RivalCard
+                adventure="cuaderno-del-viajero"
+                encounter={fixtureAdventureProgress({ attemptsOnNext: 1 }).encounters[4]!}
+                postmark="BIBLIOTECA"
+                previousName="Toñito Garza"
+                playerName="Alumno Demo"
+                openGame={null}
+                action={async () => undefined}
+                onReplace={() => undefined}
+                onCancel={() => undefined}
+              />
             </Tile>
           </Section>
         </div>

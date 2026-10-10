@@ -22,10 +22,11 @@ The map of one adventure for one person. `AdventureMapSection` makes the reads �
 
 The three layouts of the world are all in the page and the stylesheet shows the one that fits the window (the desktop's from 1024px, the tablet's from 768, the phone's below), so the server renders the same markup for every device and nothing flashes. What the client map does that needs the browser:
 
-- **Scrolls to the stamp to play** when it opens (or to the last one when the adventure is complete), to 55 % of the window, instantly. `autoScroll={false}` leaves the window alone, for the sheet of the Storybook overview.
+- **Scrolls to the stamp to play** when it opens (or to the last one when the adventure is complete), to 55 % of the window, instantly. `autoScroll={false}` leaves the window alone: for the sheet of the Storybook overview, and the page passes it when it brings a notice (`?error=`), which the scroll would take out of sight.
 - **Measures the platform's bar** (`.platform-shell__bar`, one row or two) and sets `--map-bar` on its root, which is where the row over the map sticks.
 - **Follows the zone** the middle of the window is over, from the shown layer's own scale (`zoneAt` in `lib/adventure/map-geometry.ts`), so the row says «Biblioteca Central» as one scrolls.
-- **Opens the rival's sheet**: a stamp asks for it with its order and the map puts the rival in the popup (`flushSync`, so the dialog's content is there when it opens and the focus finds its first control).
+- **Opens the rival's card**: a stamp asks for it with its order and the map puts the rival in a `PlatformPopup` (`size="md"`, `phone="sheet"`; `flushSync`, so the content is there when the dialog opens and the focus finds its first control, and then the card is scrolled back to its top). The card's key is raised when the popup closes, so it opens fresh each time (the colour chosen is not kept).
+- **Asks before replacing an open game**: with a game against a bot open, the card's button hands its form to the map, which opens a `PlatformConfirmPopup` (`verb="Quitar"`) as a SIBLING of the card's popup, over it; confirming submits the form with `replace=1`, and `onDone` closes the card.
 
 ## Props
 
@@ -40,16 +41,16 @@ The three layouts of the world are all in the page and the stylesheet shows the 
 
 ## Behaviour
 
-`AdventureMapSection` answers 404 (`notFound`) for a slug with no adventure, art or progress; the page does it first, with both switches. A `victory` that is not a beaten encounter is dropped by the section. Nothing here writes: the game is opened by `startAdventureEncounter`, which the rival card will call.
+`AdventureMapSection` answers 404 (`notFound`) for a slug with no adventure, art or progress; the page does it first, with both switches. A `victory` that is not a beaten encounter is dropped by the section. Nothing here writes: the game is opened by `startAdventureEncounter`, which the rival card submits (the server decides: a locked encounter bounces back with `?error=encounterLocked`).
 
 ## Markup & styling
 
-Block `.adventure-map` (12 lines); the root also carries `.adventure`, which declares the paper's tokens where it is drawn.
+Block `.adventure-map` (7 lines); the root also carries `.adventure`, which declares the paper's tokens where it is drawn.
 
-**Elements:** `.adventure-map__sheet` (the popup's content, until the rival card).
+**Elements:** none (the root only).
 
 **Tokens:** `--adventure-shadow`. No media queries, no animation.
 
 ## Related
 
-[`MapLayer`](/components/adventure/map/map-layer), [`MapHud`](/components/adventure/map/map-hud), [`EncounterStamp`](/components/adventure/stamp/encounter-stamp), [`NotePage`](/components/adventure/note-page/note-page), [`Keepsake`](/components/adventure/keepsakes/keepsake), [`PlatformPopup`](/components/platform/shared/platform-popup/platform-popup).
+[`MapLayer`](/components/adventure/map/map-layer), [`MapHud`](/components/adventure/map/map-hud), [`EncounterStamp`](/components/adventure/stamp/encounter-stamp), [`NotePage`](/components/adventure/note-page/note-page), [`Keepsake`](/components/adventure/keepsakes/keepsake), [`RivalCard`](/components/adventure/rival-card/rival-card), [`PlatformPopup`](/components/platform/shared/platform-popup/platform-popup).
