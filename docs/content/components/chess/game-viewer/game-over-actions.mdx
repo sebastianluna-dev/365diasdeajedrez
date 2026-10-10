@@ -6,14 +6,14 @@ description: "What can be done once a game against a bot is over, under the boar
 
 Also exports the type `GameOverActionsData`.
 
-|            |                                                                                                                         |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/chess/game-viewer/game-over-actions.comp.tsx`                                                               |
-| Kind       | Client Component (rendered by the viewer)                                                                               |
-| Stylesheet | `game-over-actions.comp.css` → block `.game-over-actions`                                                               |
-| Story      | `game-over-actions.stories.tsx` (`chess/game-viewer/GameOverActions`): every way on, and without the analysis board     |
-| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`play.over`)                                                 |
-| Uses       | [`BotScoreboard`](/components/chess/bot-scoreboard), [`SubmitButton`](/components/platform/shared/submit-button), icons |
+|            |                                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/game-over-actions.comp.tsx`                                                                                   |
+| Kind       | Client Component (rendered by the viewer)                                                                                                   |
+| Stylesheet | `game-over-actions.comp.css` → block `.game-over-actions`                                                                                   |
+| Story      | `game-over-actions.stories.tsx` (`chess/game-viewer/GameOverActions`): every way on, without the analysis board, and a game of an adventure |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`play.over`)                                                                     |
+| Uses       | [`BotScoreboard`](/components/chess/bot-scoreboard), [`SubmitButton`](/components/platform/shared/submit-button), icons                     |
 
 ## Purpose
 
@@ -21,6 +21,7 @@ G6 (2026-10-08) replaced the result card over the board (F1): who won is said in
 
 - **Revancha** (`platform-button_variant_accent`, the one main action): a `<form>` over the `rematch` server action, «Preparando…» while it opens the new game.
 - **Otro rival**: a link back to the lobby.
+- **Volver al mapa** (a game of an adventure, `map` given): the one main action instead of the two above — a link in `_variant_accent` with the arrow on its right, because it leads somewhere. «Revancha» and «Otro rival» are not drawn: the story goes on on the map. The page puts `?victoria=<order>` in the address only when the game is the first win of the person over that rival, so the map plays its victory once. Everything else stays: «Analizar», «Tablero de análisis», «Guardar en un estudio» and the scoreboard.
 - **Analizar**: the viewer's own review, the «Evaluación» tab of [`GameTools`](/components/chess/game-viewer/game-tools), brought into view (`useToolsTab().reveal`). Only drawn when the viewer has `tools`.
 - **Tablero de análisis**: only while that board is switched on (`analysisBoardHref` not null).
 - **Guardar en un estudio**: the page opens its popup.
@@ -28,14 +29,15 @@ G6 (2026-10-08) replaced the result card over the board (F1): who won is said in
 
 ## Props
 
-| Prop                | Type                          | Required | Meaning                                                                     |
-| ------------------- | ----------------------------- | -------- | --------------------------------------------------------------------------- |
-| `scoreboard`        | `BotScoreboardProps \| null`  | yes      | The record against this rival.                                              |
-| `rematch`           | `() => Promise<void>`         | yes      | A server action that opens the rematch and redirects to it.                 |
-| `otherOpponentHref` | `string`                      | yes      | The lobby.                                                                  |
-| `analysisBoardHref` | `string \| null`              | yes      | The game on the analysis board; null while `ANALYSIS_BOARD_ENABLED` is off. |
-| `onSave`            | `(event: MouseEvent) => void` | yes      | Opens the page's «Guardar en un estudio» popup.                             |
-| `onAnalyse`         | `() => void`                  | no       | Given by the viewer when it has tools; without it «Analizar» is not drawn.  |
+| Prop                | Type                            | Required | Meaning                                                                                     |
+| ------------------- | ------------------------------- | -------- | ------------------------------------------------------------------------------------------- |
+| `scoreboard`        | `BotScoreboardProps \| null`    | yes      | The record against this rival.                                                              |
+| `rematch`           | `(() => Promise<void>) \| null` | yes      | A server action that opens the rematch and redirects to it; null in an adventure's game.    |
+| `map`               | `{ href: string }`              | no       | An adventure's game: «Volver al mapa» to this address replaces «Revancha» and «Otro rival». |
+| `otherOpponentHref` | `string`                        | yes      | The lobby.                                                                                  |
+| `analysisBoardHref` | `string \| null`                | yes      | The game on the analysis board; null while `ANALYSIS_BOARD_ENABLED` is off.                 |
+| `onSave`            | `(event: MouseEvent) => void`   | yes      | Opens the page's «Guardar en un estudio» popup.                                             |
+| `onAnalyse`         | `() => void`                    | no       | Given by the viewer when it has tools; without it «Analizar» is not drawn.                  |
 
 ## Markup & styling
 

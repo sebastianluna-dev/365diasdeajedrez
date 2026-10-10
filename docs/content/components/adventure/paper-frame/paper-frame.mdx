@@ -1,0 +1,49 @@
+---
+description: "A game of an adventure on a page of the notebook: the platform's game screen on a ruled sheet, headed by the place, the page and the attempt, with the way back to the map."
+---
+
+# `PaperFrame`
+
+|            |                                                                                                                                               |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/adventure/paper-frame/paper-frame/paper-frame.comp.tsx`                                                                           |
+| Kind       | Server-compatible (no state: it places what it is given)                                                                                      |
+| Stylesheet | `paper-frame.comp.css` → block `.paper-frame`                                                                                                 |
+| Story      | `paper-frame.stories.tsx` (`adventure/paper-frame/PaperFrame`): the third page at its second attempt, read-only and on a phone                |
+| Used by    | `app/(platform)/jugar/partidas/[gameId]/page.tsx`, around [`LiveGameSection`](/components/platform/sections/play/live-game/live-game-section) |
+| Uses       | `ChevronLeftIcon`, `platformRoutes`-built `mapHref`                                                                                           |
+
+## Purpose
+
+The game of an adventure's rival is the screen of every game against a bot — the board, the strips, the moves, «Abandonar» — laid on a page of the notebook. The frame is the sheet and its head:
+
+- **«BIBLIOTECA CENTRAL · Sala de lectura»**: the zone in small capitals (mono, spaced, brick) and the place in italic serif. It is the page's `<h1>` (the section is named by it); the free game's head with the two names is not drawn in an adventure.
+- **«Página 3 · Intento 2»**, in pencil on the corner: the page is the rival's order in the story; the attempt is the games that count against that rival plus one while this one is still open (`botScoreAgainst`). Whoever only reads the game — the teacher, the staff — cannot know which attempt it is, so the note says only the page.
+- **«Mapa»**: a small platform button with its icon on the left, to the adventure's map.
+
+It is the one place where `children` is the right prop: the frame only places the game, which keeps its own state and is the same piece in a free game («a component receives data» has this exception for containers that only place what they are given).
+
+## Props
+
+| Prop       | Type             | Required | Meaning                                              |
+| ---------- | ---------------- | -------- | ---------------------------------------------------- |
+| `zone`     | `string`         | yes      | The zone's name: «Biblioteca Central».               |
+| `place`    | `string`         | yes      | Where the game is played: «Sala de lectura».         |
+| `page`     | `number`         | yes      | The rival's order in the story.                      |
+| `attempt`  | `number \| null` | yes      | This game's attempt; null for whoever only reads it. |
+| `mapHref`  | `string`         | yes      | The adventure's map: where «Mapa» goes.              |
+| `children` | `ReactNode`      | yes      | The game.                                            |
+
+## Markup & styling
+
+Block `.paper-frame`; the root also carries `.adventure`. The sheet is the paper's cream with a grid of dots, the binding's holes (`::before`) and the margin line (`::after`); under 1024 px the padding and both lines move left, and under 640 px the head folds (the place goes under «Mapa» in two lines, the note to the corner).
+
+**Elements:** `.paper-frame__head`, `__map`, `__place`, `__zone`, `__separator`, `__name`, `__note`
+
+**Tokens:** `--adventure-cream`, `--adventure-grain`, `--adventure-leather-deep`, `--adventure-brick`, `--adventure-ink`, `--adventure-ink-soft`, `--adventure-shadow-lift`, `--adventure-font-title`, `--adventure-font-note`, `--adventure-font-data`
+
+**Media queries:** `(width < 1024px)`, `(width < 640px)`. No animation.
+
+## Related
+
+[`LiveGameSection`](/components/platform/sections/play/live-game/live-game-section), [`GameOverActions`](/components/chess/game-viewer/game-over-actions), [`AdventureMap`](/components/adventure/map/adventure-map).

@@ -27,6 +27,8 @@ The page of a game against a bot — one URL, live or finished — mounts this w
 
 **Over**, the viewer reads the game with its tools: «Analizar» opens the review, whose evaluations are stored in the game (`storePlayedGameReview`, refused if a move changed). The page is refreshed once so the scoreboard under the board counts the game just finished. A game finished before this visit is read from the server's PGN, with its review.
 
+**A game of an adventure** — the page wraps the section in [`PaperFrame`](/components/adventure/paper-frame/paper-frame) when `ADVENTURE_ENABLED` is on and `game.adventure` is set, passes `rematch={null}` and `adventure={{ mapHref, priorWins }}` (the victories already counted against that rival when the page was drawn). Over, the section hands the viewer `map: { href }`, and «Volver al mapa» replaces «Revancha» and «Otro rival» (see [`GameOverActions`](/components/chess/game-viewer/game-over-actions)). The address carries `?victoria=<order>` only when the end is a win of the viewer's seat and `priorWins` is 0, the first win: the map plays its sequence once; otherwise it is the map as it is. An aborted game offers nothing.
+
 **Whoever only reads it** — the person's teacher, the staff — gets the board, the moves and the strips, with no engine and nothing to do.
 
 **Announcer:** a visually hidden `aria-live="polite"` line: «Beto jugó Cf3. Tu turno.», «Ganaste.».

@@ -32,8 +32,15 @@ interface LiveGameSectionProps {
   /** The record against this bot, for under the board once it is over. */
   scoreboard: BotScoreboardProps | null;
   studies: { id: string; name: string }[];
-  /** `rematchPlayedGame`, bound to this game; null for whoever only reads it. */
+  /** `rematchPlayedGame`, bound to this game; null for whoever only reads it and for a game of an adventure, which goes back to its map. */
   rematch: (() => Promise<void>) | null;
+  /**
+   * A game of an adventure: where its map is, and how many times the person
+   * has already beaten this rival when the page is drawn. Over, the way on is
+   * «Volver al mapa»; it carries `?victoria=` only for the first win, which
+   * the map plays. Null for a free game.
+   */
+  adventure: { mapHref: string; priorWins: number } | null;
   /** `copyPlayedGameToStudy`, bound to this game. */
   copyToStudy: (formData: FormData) => Promise<void>;
   /** The game on the analysis board; null while that board is switched off. */
@@ -53,6 +60,7 @@ export function LiveGameSection({
   scoreboard,
   studies,
   rematch,
+  adventure,
   copyToStudy,
   analysisBoardHref,
 }: LiveGameSectionProps) {
@@ -103,6 +111,14 @@ export function LiveGameSection({
   const players = liveGamePlayers(game, seated ? state : { ...state, status: "over", end: game.end });
   const bot = game.white.kind === "bot" ? game.white : game.black;
   const announcement = announce(state, bot.name, game.viewerSeat);
+  const mapHref =
+    adventure && game.adventure
+      ? mapAddress(
+          adventure,
+          game.adventure.encounter.order,
+          game.viewerSeat !== null && state.end?.winner === game.viewerSeat,
+        )
+      : null;
 
   return (
     <div className="live-game">
@@ -127,11 +143,12 @@ export function LiveGameSection({
                 onMove: move,
                 onAbandon: (event) => abandonPopup.current?.open(event),
                 over:
-                  over && rematch && state.end?.kind !== "aborted"
+                  over && (rematch || mapHref) && state.end?.kind !== "aborted"
                     ? {
                         scoreboard,
                         rematch,
                         otherOpponentHref: platformRoutes.freePlay,
+                        map: mapHref ? { href: mapHref } : undefined,
                         analysisBoardHref,
                         onSave: (event) => savePopup.current?.open(event),
                       }
@@ -166,6 +183,16 @@ export function LiveGameSection({
       )}
     </div>
   );
+}
+
+/**
+ * Where «Volver al mapa» goes. The map plays its victory only once, for the
+ * first win over a rival: after that, or after anything but a win, it is the
+ * map as it is. The map checks the order against the person's games itself, so
+ * an address made up by hand plays nothing.
+ */
+function mapAddress(adventure: { mapHref: string; priorWins: number }, order: number, isWin: boolean): string {
+  return isWin && adventure.priorWins === 0 ? `${adventure.mapHref}?victoria=${order}` : adventure.mapHref;
 }
 
 /** What a screen reader is told after each step: the bot's move and whose turn it is, or how it ended. */

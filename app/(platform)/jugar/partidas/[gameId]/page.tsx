@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { PaperFrame } from "@/components/adventure/paper-frame/paper-frame/paper-frame.comp";
 import { LiveGameSection } from "@/components/platform/sections/play/live-game/live-game.section";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
-import { ANALYSIS_BOARD_ENABLED, PLAY_ENABLED } from "@/constants/platform/features.const";
+import { ADVENTURE_ENABLED, ANALYSIS_BOARD_ENABLED, PLAY_ENABLED } from "@/constants/platform/features.const";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { strengthFor } from "@/lib/chess/bots/bot-strength";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
@@ -46,39 +47,66 @@ export default async function PlayedGamePage({ params, searchParams }: PlayedGam
   const errorMessage = studentErrorMessage(error);
   const color = game.viewerSeat === "black" ? "negras" : "blancas";
 
+  // A game of an adventure is drawn on a page of the notebook, which brings its own head.
+  const adventure = ADVENTURE_ENABLED ? game.adventure : null;
+  const counted = score ? score.wins + score.losses + score.draws : 0;
+
+  const live = (
+    <LiveGameSection
+      game={game}
+      strength={seated && bot && !game.finishedAt ? strengthFor(bot.elo ?? 800) : null}
+      scoreboard={
+        score && you && bot
+          ? {
+              you,
+              rival: { name: bot.name, avatar: bot.avatar, elo: bot.elo ?? undefined },
+              wins: score.wins,
+              losses: score.losses,
+              draws: score.draws,
+            }
+          : null
+      }
+      studies={studies}
+      rematch={seated && !adventure ? rematchPlayedGame.bind(null, game.id) : null}
+      adventure={
+        adventure ? { mapHref: platformRoutes.adventureMap(adventure.slug), priorWins: score?.wins ?? 0 } : null
+      }
+      copyToStudy={copyPlayedGameToStudy.bind(null, game.id)}
+      analysisBoardHref={ANALYSIS_BOARD_ENABLED ? platformRoutes.analysisBoard({ partida: game.id }) : null}
+    />
+  );
+
   return (
-    <div className="platform-page platform-page_width_wide played-game-page">
-      <header className="played-game-page__head">
-        <h1 className="played-game-page__title">
-          {game.white.name} – {game.black.name}
-        </h1>
-        <span className="played-game-page__meta">
-          {seated ? `Con ${color} · ` : ""}
-          {game.timeControlLabel} · {formatSpanishDate(game.startedAt)}
-        </span>
-      </header>
+    <div
+      className={`platform-page platform-page_width_wide played-game-page${adventure ? " played-game-page_framed" : ""}`}
+    >
+      {!adventure && (
+        <header className="played-game-page__head">
+          <h1 className="played-game-page__title">
+            {game.white.name} – {game.black.name}
+          </h1>
+          <span className="played-game-page__meta">
+            {seated ? `Con ${color} · ` : ""}
+            {game.timeControlLabel} · {formatSpanishDate(game.startedAt)}
+          </span>
+        </header>
+      )}
 
       {errorMessage && <PlatformNotice message={errorMessage} />}
 
-      <LiveGameSection
-        game={game}
-        strength={seated && bot && !game.finishedAt ? strengthFor(bot.elo ?? 800) : null}
-        scoreboard={
-          score && you && bot
-            ? {
-                you,
-                rival: { name: bot.name, avatar: bot.avatar, elo: bot.elo ?? undefined },
-                wins: score.wins,
-                losses: score.losses,
-                draws: score.draws,
-              }
-            : null
-        }
-        studies={studies}
-        rematch={seated ? rematchPlayedGame.bind(null, game.id) : null}
-        copyToStudy={copyPlayedGameToStudy.bind(null, game.id)}
-        analysisBoardHref={ANALYSIS_BOARD_ENABLED ? platformRoutes.analysisBoard({ partida: game.id }) : null}
-      />
+      {adventure ? (
+        <PaperFrame
+          zone={adventure.encounter.zoneName}
+          place={adventure.encounter.place}
+          page={adventure.encounter.order}
+          attempt={seated ? counted + (game.finishedAt ? 0 : 1) : null}
+          mapHref={platformRoutes.adventureMap(adventure.slug)}
+        >
+          {live}
+        </PaperFrame>
+      ) : (
+        live
+      )}
     </div>
   );
 }

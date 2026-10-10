@@ -1,0 +1,146 @@
+/* A game of an adventure on a page of the notebook: a ruled sheet with the
+   binding's holes down its left edge and a margin line, a head with the way
+   back to the map, the place and the page, and the platform's own game screen
+   under it. The head is written in the paper's fonts; the buttons and the
+   game keep the platform's. */
+.paper-frame {
+  position: relative;
+  padding: 18px 40px 30px 64px;
+  border-radius: 8px;
+  background-color: var(--adventure-cream);
+  background-image: radial-gradient(circle, var(--adventure-grain) 1px, transparent 1.6px);
+  background-size: 22px 22px;
+  box-shadow: var(--adventure-shadow-lift);
+  color: var(--adventure-ink);
+
+  /* The binding: a column of holes. */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 18px;
+    bottom: 18px;
+    left: 18px;
+    width: 14px;
+    background: radial-gradient(circle at 50% 50%, var(--adventure-leather-deep) 0 4px, transparent 4.5px) 0 0 / 14px
+      30px repeat-y;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  /* The margin line of a ruled page. */
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 44px;
+    width: 1.5px;
+    background: var(--adventure-brick);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  & .paper-frame__head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 18px;
+  }
+
+  & .paper-frame__map {
+    justify-self: start;
+  }
+
+  & .paper-frame__place {
+    margin: 0;
+    text-align: center;
+    font-weight: 400;
+  }
+
+  & .paper-frame__zone {
+    font-family: var(--adventure-font-data);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--adventure-brick);
+  }
+
+  & .paper-frame__name {
+    font-family: var(--adventure-font-title);
+    font-size: 26px;
+    font-style: italic;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--adventure-ink);
+  }
+
+  /* The page and the attempt, in pencil on the corner. */
+  & .paper-frame__note {
+    margin: 0;
+    transform: rotate(-3deg);
+    font-family: var(--adventure-font-note);
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--adventure-ink-soft);
+  }
+
+  @media (width < 1024px) {
+    padding: 16px 20px 26px 44px;
+
+    &::before {
+      left: 10px;
+    }
+
+    &::after {
+      left: 30px;
+    }
+  }
+
+  @media (width < 640px) {
+    padding: 12px 12px 24px 26px;
+
+    &::before {
+      left: 4px;
+      width: 12px;
+      background-size: 12px 26px;
+    }
+
+    &::after {
+      left: 18px;
+    }
+
+    & .paper-frame__head {
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+    }
+
+    & .paper-frame__place {
+      display: grid;
+      gap: 4px;
+      text-align: left;
+    }
+
+    & .paper-frame__separator {
+      display: none;
+    }
+
+    & .paper-frame__zone {
+      font-size: 11.5px;
+    }
+
+    & .paper-frame__name {
+      font-size: 20px;
+    }
+
+    & .paper-frame__note {
+      grid-column: 1 / -1;
+      justify-self: end;
+      margin-top: -4px;
+      font-size: 18px;
+    }
+  }
+}

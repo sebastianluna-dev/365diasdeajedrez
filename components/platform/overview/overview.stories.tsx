@@ -8,6 +8,7 @@ import { Ticket } from "@/components/adventure/cover/ticket/ticket.comp";
 import { Keepsake } from "@/components/adventure/keepsakes/keepsake/keepsake.comp";
 import { AdventureMap } from "@/components/adventure/map/adventure-map/adventure-map.comp";
 import { NotePage } from "@/components/adventure/note-page/note-page/note-page.comp";
+import { PaperFrame } from "@/components/adventure/paper-frame/paper-frame/paper-frame.comp";
 import { RivalCard } from "@/components/adventure/rival-card/rival-card/rival-card.comp";
 import { EncounterStamp } from "@/components/adventure/stamp/encounter-stamp/encounter-stamp.comp";
 import { AdventureShelf } from "@/components/adventure/shelf/adventure-shelf/adventure-shelf.comp";
@@ -1939,6 +1940,25 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 onReplace={() => undefined}
                 onCancel={() => undefined}
               />
+            </Tile>
+            <Tile name="PaperFrame" docs="adventure-paper-frame-paperframe" width={1040} height={900}>
+              <PaperFrame
+                zone="Biblioteca Central"
+                place="Sala de lectura"
+                page={3}
+                attempt={2}
+                mapHref="/jugar/aventura/cuaderno-del-viajero"
+              >
+                <div className="overview__board-frame">
+                  <GameViewer
+                    pgn={OPERA_GAME}
+                    players={{
+                      white: { name: "Morphy, Paul", country: "USA" },
+                      black: { name: "Duke Karl / Count Isouard" },
+                    }}
+                  />
+                </div>
+              </PaperFrame>
             </Tile>
           </Section>
         </div>

@@ -333,3 +333,25 @@ export const PlayOver: Story = {
     },
   },
 };
+
+/**
+ * A game of an adventure that has been won, as the page draws it inside the paper frame: the same strips and the same
+ * moves, and under the board «Volver al mapa» as the one main action (no «Revancha», no «Otro rival»), with the scoreboard.
+ */
+export const AdventureGame: Story = {
+  args: {
+    ...PlayOver.args,
+    play: {
+      color: "white",
+      status: "over",
+      over: {
+        scoreboard: { you: FIXTURE_STUDENT, rival: FIXTURE_BOT, wins: 1, losses: 1, draws: 0 },
+        rematch: null,
+        otherOpponentHref: "/jugar/partida-libre",
+        map: { href: "/jugar/aventura/cuaderno-del-viajero?victoria=5" },
+        analysisBoardHref: "/herramientas/tablero-de-analisis?partida=AbC12345",
+        onSave: fn().mockName("openSavePopup"),
+      },
+    },
+  },
+};

@@ -34,4 +34,16 @@
     font-size: var(--platform-type-xs);
     color: var(--platform-text-muted);
   }
+
+  /* A game on a page of the notebook has no head of its own: the sheet's is
+     taller than this one, and its padding takes some of the height. */
+  &.played-game-page_framed {
+    --viewer-board-max: max(
+      320px,
+      calc(
+        100vh - 70px - (var(--platform-space-12) - var(--platform-space-5)) - 72px - 2 *
+          (40px + 2 * var(--platform-space-2)) - var(--platform-space-6) - 48px
+      )
+    );
+  }
 }

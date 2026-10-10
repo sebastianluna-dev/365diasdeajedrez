@@ -9,6 +9,7 @@ const meta: MetaRecord = {
   keepsakes: "keepsakes/",
   "note-page": "note-page/",
   "rival-card": "rival-card/",
+  "paper-frame": "paper-frame/",
 };
 
 export default meta;
