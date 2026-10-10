@@ -44,4 +44,43 @@
     top: -2%;
     width: 90%;
   }
+
+  /* The victory sticks it down: it comes in from the upper right, turned and
+     large, and settles; the tape goes on last. */
+  &.keepsake_phase_stick {
+    animation: keepsake-stick 0.8s cubic-bezier(0.2, 0.8, 0.25, 1.15) both;
+
+    & .keepsake__tape {
+      animation: keepsake-tape 0.3s 0.6s both;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &.keepsake_phase_stick,
+    &.keepsake_phase_stick .keepsake__tape {
+      animation: none;
+    }
+  }
+}
+
+@keyframes keepsake-stick {
+  from {
+    transform: translate(calc(-50% + 70px), calc(-50% - 60px)) rotate(calc(var(--rotation, 0deg) + 24deg)) scale(1.25);
+    opacity: 0;
+  }
+
+  55% {
+    opacity: 1;
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(var(--rotation, 0deg));
+    opacity: 1;
+  }
+}
+
+@keyframes keepsake-tape {
+  from {
+    opacity: 0;
+  }
 }

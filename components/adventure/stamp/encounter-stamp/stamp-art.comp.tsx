@@ -15,6 +15,11 @@ interface StampArtProps {
   postmark: string;
   /** A locked stamp drawn with ink, as a proof: the rival's card greys it and lays a padlock over it (never the map). */
   isProof?: boolean;
+  /**
+   * The victory is unlocking this stamp: it is drawn inked, with the blind proof and its padlock over it, which
+   * the stylesheet of the stamp fades and drops (`stamp-art__blind`, `stamp-art__padlock`).
+   */
+  isUnlocking?: boolean;
   className?: string;
 }
 
@@ -55,12 +60,14 @@ function BlindPortrait({ isFinal }: { isFinal: boolean }) {
       <path d={bust} fill="#ece3cf" />
       <circle cx="50" cy="55" r="40" fill="none" stroke="rgba(120,96,60,.22)" strokeWidth="1" />
       {!isFinal && (
-        <g transform="translate(50 58)" fill="none" stroke="#5f5c58" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M-9 -6V-14C-9 -21 -4.6 -24.6 0 -24.6C4.8 -24.6 9.2 -21 9.2 -14V-6" strokeWidth="2.4" />
-          <path d="M-15 -6.4H15.4L14.8 15.6H-14.6Z" strokeWidth="2.2" fill="rgba(236,227,207,.92)" />
-          <path d="M0.2 1.6V8.6" strokeWidth="2.6" />
-          <circle cx="0.2" cy="0.6" r="2.4" strokeWidth="1.8" />
-          <path d="M-12 -2.4L12.6 -3M-12.4 12L12.2 12.6" strokeWidth=".7" opacity=".5" />
+        <g className="stamp-art__padlock">
+          <g transform="translate(50 58)" fill="none" stroke="#5f5c58" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M-9 -6V-14C-9 -21 -4.6 -24.6 0 -24.6C4.8 -24.6 9.2 -21 9.2 -14V-6" strokeWidth="2.4" />
+            <path d="M-15 -6.4H15.4L14.8 15.6H-14.6Z" strokeWidth="2.2" fill="rgba(236,227,207,.92)" />
+            <path d="M0.2 1.6V8.6" strokeWidth="2.6" />
+            <circle cx="0.2" cy="0.6" r="2.4" strokeWidth="1.8" />
+            <path d="M-12 -2.4L12.6 -3M-12.4 12L12.2 12.6" strokeWidth=".7" opacity=".5" />
+          </g>
         </g>
       )}
     </>
@@ -75,11 +82,68 @@ function BlindPortrait({ isFinal }: { isFinal: boolean }) {
  * the stamp only — the label under it, and the button that makes it clickable,
  * are `EncounterStamp`'s — so the rival card can show the same stamp large.
  */
-export function StampArt({ adventure, encounter, postmark, isProof = false, className }: StampArtProps) {
+export function StampArt({
+  adventure,
+  encounter,
+  postmark,
+  isProof = false,
+  isUnlocking = false,
+  className,
+}: StampArtProps) {
   const id = useId();
   const Portrait: ComponentType | undefined = ADVENTURE_PORTRAITS[adventure]?.[encounter.slug];
   const isBlind = encounter.state === "locked" && !isProof;
+  // Unlocking, the ink is under the proof, which is what is taken away.
+  const showsInk = !isBlind || isUnlocking;
   const date = encounter.beatenAt ? postmarkDate(encounter.beatenAt) : null;
+
+  /** The blind proof: an embossed bust and, but for the last page, a padlock; the last page has a wax seal. */
+  const blind = (
+    <>
+      <rect x="6" y="6" width="108" height="138" fill="#f6f0e2" />
+      <rect
+        x="9.5"
+        y="9.5"
+        width="101"
+        height="131"
+        fill="none"
+        stroke="rgba(255,255,255,.9)"
+        strokeWidth="1.4"
+        transform="translate(-.7 -.7)"
+      />
+      <rect
+        x="9.5"
+        y="9.5"
+        width="101"
+        height="131"
+        fill="none"
+        stroke="rgba(120,96,60,.3)"
+        strokeWidth="1.2"
+        transform="translate(.7 .7)"
+      />
+      <svg x="15" y="21" width="90" height="100" viewBox="0 0 100 112" preserveAspectRatio="xMidYMid slice">
+        <BlindPortrait isFinal={encounter.isFinal} />
+      </svg>
+      <text className="stamp-art__title" x="16" y="136" fontSize="15" fontWeight="700" fill="rgba(120,96,60,.32)">
+        {encounter.elo}
+      </text>
+      {encounter.isFinal && (
+        <>
+          <rect x="6" y="6" width="108" height="138" fill="none" stroke={GOLD} strokeWidth="2.2" opacity=".85" />
+          <rect x="11" y="11" width="98" height="128" fill="none" stroke={GOLD} strokeWidth=".8" opacity=".7" />
+          <g transform="translate(60 72)">
+            <path d={SEAL} fill="#5e1810" transform="translate(1.6 2.6)" opacity=".45" />
+            <path d={SEAL} fill="#8f2a20" />
+            <circle r="17" fill="#a1352a" />
+            <circle r="17" fill="none" stroke="#6e1d14" strokeWidth="1.2" />
+            <path d="M-11 6h22l-1.6 -10 -5 4.6L0 -9.4l-4.4 9.6 -5 -4.6z" fill="#6e1d14" />
+            <circle cy="-12" r="2" fill="#6e1d14" />
+            <path d="M-9 -3l2 2M9 -3l-2 2" fill="none" stroke="#c75a48" strokeWidth="1" strokeLinecap="round" />
+          </g>
+        </>
+      )}
+    </>
+  );
 
   return (
     <svg
@@ -96,54 +160,9 @@ export function StampArt({ adventure, encounter, postmark, isProof = false, clas
         </radialGradient>
         <path id={`${id}-arc`} d="M73 36A21 21 0 0 1 115 36" />
       </defs>
-      <path d={perforated(120, 150, 3.4, 10.6)} fill={isBlind ? "#f6f0e2" : "#fcf8ee"} />
+      <path d={perforated(120, 150, 3.4, 10.6)} fill={showsInk ? "#fcf8ee" : "#f6f0e2"} />
 
-      {isBlind ? (
-        <>
-          <rect x="6" y="6" width="108" height="138" fill="#f6f0e2" />
-          <rect
-            x="9.5"
-            y="9.5"
-            width="101"
-            height="131"
-            fill="none"
-            stroke="rgba(255,255,255,.9)"
-            strokeWidth="1.4"
-            transform="translate(-.7 -.7)"
-          />
-          <rect
-            x="9.5"
-            y="9.5"
-            width="101"
-            height="131"
-            fill="none"
-            stroke="rgba(120,96,60,.3)"
-            strokeWidth="1.2"
-            transform="translate(.7 .7)"
-          />
-          <svg x="15" y="21" width="90" height="100" viewBox="0 0 100 112" preserveAspectRatio="xMidYMid slice">
-            <BlindPortrait isFinal={encounter.isFinal} />
-          </svg>
-          <text className="stamp-art__title" x="16" y="136" fontSize="15" fontWeight="700" fill="rgba(120,96,60,.32)">
-            {encounter.elo}
-          </text>
-          {encounter.isFinal && (
-            <>
-              <rect x="6" y="6" width="108" height="138" fill="none" stroke={GOLD} strokeWidth="2.2" opacity=".85" />
-              <rect x="11" y="11" width="98" height="128" fill="none" stroke={GOLD} strokeWidth=".8" opacity=".7" />
-              <g transform="translate(60 72)">
-                <path d={SEAL} fill="#5e1810" transform="translate(1.6 2.6)" opacity=".45" />
-                <path d={SEAL} fill="#8f2a20" />
-                <circle r="17" fill="#a1352a" />
-                <circle r="17" fill="none" stroke="#6e1d14" strokeWidth="1.2" />
-                <path d="M-11 6h22l-1.6 -10 -5 4.6L0 -9.4l-4.4 9.6 -5 -4.6z" fill="#6e1d14" />
-                <circle cy="-12" r="2" fill="#6e1d14" />
-                <path d="M-9 -3l2 2M9 -3l-2 2" fill="none" stroke="#c75a48" strokeWidth="1" strokeLinecap="round" />
-              </g>
-            </>
-          )}
-        </>
-      ) : (
+      {showsInk && (
         <>
           <rect x="9" y="9" width="102" height="132" fill={shade(encounter.portrait.background, 0.12)} />
           <path d={SCALLOP_LINES} fill="none" stroke="#fff8e8" strokeWidth=".5" opacity=".35" strokeLinecap="round" />
@@ -182,6 +201,15 @@ export function StampArt({ adventure, encounter, postmark, isProof = false, clas
           )}
         </>
       )}
+      {isBlind &&
+        (isUnlocking ? (
+          <g className="stamp-art__blind">
+            <path d={perforated(120, 150, 3.4, 10.6)} fill="#f6f0e2" />
+            {blind}
+          </g>
+        ) : (
+          blind
+        ))}
 
       {encounter.state === "beaten" && date && (
         <g className="stamp-art__postmark" opacity=".8" transform="rotate(-8 94 36)">

@@ -106,6 +106,15 @@
     }
   }
 
+  /* The victory takes the call away with the pin and brings it back over the next rival. */
+  & .map-layer__hint_phase_leaving {
+    animation: map-layer-fade-out 0.4s forwards;
+  }
+
+  & .map-layer__hint_phase_arriving {
+    animation: map-layer-fade-in 0.5s both;
+  }
+
   & .map-layer__live {
     position: absolute;
     inset: 0;
@@ -158,6 +167,11 @@
     }
   }
 
+  /* While the victory moves the token it does not hop in place: the hops are part of the walk. */
+  & .map-layer__token_phase_hop {
+    animation: none;
+  }
+
   /* The three layouts: the phone's by default, the tablet's from 768 and the desktop's from 1024. */
   &.map-layer_size_mobile {
     display: block;
@@ -187,6 +201,11 @@
     & .map-layer__token {
       animation: none;
     }
+
+    & .map-layer__hint_phase_leaving,
+    & .map-layer__hint_phase_arriving {
+      animation: none;
+    }
   }
 }
 
@@ -198,5 +217,17 @@
 
   50% {
     transform: translate(-50%, calc(-100% - 5px));
+  }
+}
+
+@keyframes map-layer-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes map-layer-fade-in {
+  from {
+    opacity: 0;
   }
 }

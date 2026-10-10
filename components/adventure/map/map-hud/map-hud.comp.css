@@ -94,6 +94,16 @@
     }
   }
 
+  /* The count goes up when a victory is written down: it rises into place, in brick. */
+  & .map-hud__figure_state_rising {
+    animation: map-hud-count 0.6s ease-out;
+    color: var(--adventure-brick);
+
+    & small {
+      color: inherit;
+    }
+  }
+
   & .map-hud__icon {
     width: 16px;
     height: 16px;
@@ -158,5 +168,27 @@
       gap: 5px;
       padding: 8px 10px;
     }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .map-hud__figure_state_rising {
+      animation: none;
+    }
+  }
+}
+
+@keyframes map-hud-count {
+  0% {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+
+  60% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+
+  100% {
+    transform: none;
   }
 }

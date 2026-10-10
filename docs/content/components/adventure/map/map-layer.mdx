@@ -4,14 +4,14 @@ description: "One layout of the map: the adventure's static scenery and, over it
 
 # `MapLayer`
 
-|            |                                                                                                                                         |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/adventure/map/map-layer/map-layer.comp.tsx`                                                                                 |
-| Kind       | A leaf of the client map (it has no state of its own; `useMemo` for the seam)                                                           |
-| Stylesheet | `map-layer.comp.css` → block `.map-layer`                                                                                               |
-| Story      | none of its own: drawn by the stories of [`AdventureMap`](/components/adventure/map/adventure-map) (`adventure-map.stories.tsx`)        |
-| Used by    | [`AdventureMap`](/components/adventure/map/adventure-map), three times                                                                  |
-| Uses       | `EncounterStamp`, `NotePage`, `Keepsake`, `PlayerToken`, `Needle` (generated), `seamOf` (`lib/adventure/map-geometry.ts`), `next/image` |
+|            |                                                                                                                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/adventure/map/map-layer/map-layer.comp.tsx`                                                                                                                                |
+| Kind       | A leaf of the client map (no state of its own: `useMemo` for the seam and the walk, refs for what the victory moves)                                                                   |
+| Stylesheet | `map-layer.comp.css` → block `.map-layer`                                                                                                                                              |
+| Story      | none of its own: drawn by the stories of [`AdventureMap`](/components/adventure/map/adventure-map) (`adventure-map.stories.tsx`)                                                       |
+| Used by    | [`AdventureMap`](/components/adventure/map/adventure-map), three times                                                                                                                 |
+| Uses       | `EncounterStamp`, `NotePage`, `Keepsake`, `PlayerToken`, `Needle` (generated), `seamOf`, `travelOf` (`lib/adventure/map-geometry.ts`), `useSeamTravel`, `useTokenTravel`, `next/image` |
 
 ## Purpose
 
@@ -21,30 +21,33 @@ Draws one of the three layouts of the world. The scenery is the exported SVG (`/
 2. **The seam, an SVG in the art's own units** (`viewBox="0 0 W H"`): the stretch walked, printed over the tape in its cream with the squares and the marks in brick, the red stitches over it and the stretch ahead in pencil; the start's red dot; the needle with its thread; the pencil notes with their arrows; and the «¡me toca!» with its arrow for the rival to play. The geometry is `seamOf(layout, currentOrder)`: the path is a Catmull-Rom spline through the layout's waypoints, split at the waypoint of the available stamp (a complete adventure walks it all).
 3. **The live layer**, in percentages of the world's box: per zone, its `NotePage` (open when the zone is reached, closed before), and per rival its `Keepsake` (only when beaten) and its `EncounterStamp`; the «Salida» flag and the person's token beside the stamp to play (offset from `token.byOrder` or the default).
 
+During a victory the layer also draws the stretch to the next rival, sewn under a mask (`travelOf`: the stretch's path, its marks, where its stitches start so they keep their phase, and the box the mask covers), keeps the token and the seam's needle on the rival beaten until their phases, hides the keepsake until it is stuck down, and gives each stamp its phase (`stampPhaseOf`). The `seam` and `token` phases are driven by `useSeamTravel` and `useTokenTravel` (`use-victory-travel.hook.ts`), on the layer that is shown only.
+
 Everything placed goes in `left/top/width` percentages of the world; what is measured (type, labels) is in `--u`, one unit of the art as a length (`100cqw / --art-width`, the world being a size container), with a floor so a phone still reads it.
 
 ## Props
 
-| Prop       | Type                                | Required | Meaning                                                   |
-| ---------- | ----------------------------------- | -------- | --------------------------------------------------------- |
-| `size`     | `"desktop" \| "tablet" \| "mobile"` | yes      | Which layout it is; the stylesheet shows it by the width. |
-| `layout`   | `AdventureLayout`                   | yes      | Its size, path and placements.                            |
-| `zones`    | `AdventureZoneSeed[]`               | yes      | The pages of the notebook.                                |
-| `progress` | `AdventureProgressView`             | yes      | Every rival with its state.                               |
-| `player`   | `{ initials, name }`                | yes      | The token's initials; the membership card's name.         |
-| `onOpen`   | `(order, trigger) => void`          | yes      | A stamp was pressed.                                      |
+| Prop       | Type                                | Required | Meaning                                                                      |
+| ---------- | ----------------------------------- | -------- | ---------------------------------------------------------------------------- |
+| `size`     | `"desktop" \| "tablet" \| "mobile"` | yes      | Which layout it is; the stylesheet shows it by the width.                    |
+| `layout`   | `AdventureLayout`                   | yes      | Its size, path and placements.                                               |
+| `zones`    | `AdventureZoneSeed[]`               | yes      | The pages of the notebook.                                                   |
+| `progress` | `AdventureProgressView`             | yes      | Every rival with its state.                                                  |
+| `player`   | `{ initials, name }`                | yes      | The token's initials; the membership card's name.                            |
+| `sequence` | `VictorySequence \| null`           | yes      | The victory being played: the rival, the phase, whether there is a next one. |
+| `onOpen`   | `(order, trigger) => void`          | yes      | A stamp was pressed.                                                         |
 
 ## Markup & styling
 
-Block `.map-layer` (202 lines); the root is a `<section aria-label="Mapa de …">` with `data-size`.
+Block `.map-layer` (233 lines); the root is a `<section aria-label="Mapa de …">` with `data-size`.
 
 **Elements:** `.map-layer__world`, `__scenery`, `__wash`, `__seam`, `__thread`, `__thread-dot`, `__pencil`, `__note`, `__hint`, `__live`, `__zone`, `__encounter`, `__zone-name`, `__flag`, `__token`
 
-**Modifiers and states:** `.map-layer_size_desktop|tablet|mobile` (shown from 1024, from 768 and below), `.map-layer__note_tone_light` and `.map-layer__hint_tone_light` (over the night)
+**Modifiers and states:** `.map-layer_size_desktop|tablet|mobile` (shown from 1024, from 768 and below), `.map-layer__note_tone_light` and `.map-layer__hint_tone_light` (over the night), `.map-layer__hint_phase_leaving|arriving` and `.map-layer__token_phase_hop` (the victory)
 
 **Tokens:** `--adventure-paper`, `--adventure-ink`, `--adventure-ink-soft`, `--adventure-thread`, `--adventure-graphite`, `--adventure-brick`, `--adventure-on-wood-soft`, `--adventure-cream-bright`, `--adventure-scenery-wash`, `--adventure-font-note`, `--adventure-font-data`
 
-**Media queries:** `(width >= 768px)`, `(width >= 1024px)`. **Animation:** `map-layer-hop` on the token, off under `prefers-reduced-motion`.
+**Media queries:** `(width >= 768px)`, `(width >= 1024px)`. **Animation:** `map-layer-hop` on the token and `map-layer-fade-out|in` on the call, all off under `prefers-reduced-motion`.
 
 ## Related
 

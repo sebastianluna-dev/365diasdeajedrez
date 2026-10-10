@@ -137,6 +137,35 @@ export interface Seam {
 }
 
 /**
+ * The needle when the thread is sewn up to arc length `sewn`: its point rests a
+ * step past it, turned along the path, and the thread runs from `from` (where
+ * the stitching started, a point of the path) to its eye.
+ */
+function needleAt(
+  layout: AdventureLayout,
+  samples: readonly PathSample[],
+  total: number,
+  sewn: number,
+  from: number,
+): Needle {
+  const tip = pointAtLength(samples, Math.min(total - 10, sewn + layout.needle.step));
+  const rotation = tip.angle + 180 + layout.needle.tilt;
+  const radians = (rotation * Math.PI) / 180;
+  const eye: Point = [
+    tip.x + Math.cos(radians) * 90 * layout.needle.scale,
+    tip.y + Math.sin(radians) * 90 * layout.needle.scale,
+  ];
+  const start = pointAtLength(samples, from);
+  return {
+    x: round(tip.x),
+    y: round(tip.y),
+    rotation: round(rotation),
+    scale: layout.needle.scale,
+    thread: `M${pair([start.x, start.y])}Q${pair([(start.x + eye[0]) / 2 + 20, (start.y + eye[1]) / 2 + 24])} ${pair(eye)}`,
+  };
+}
+
+/**
  * The seam of a layout when `currentOrder` is the available encounter (null
  * when the adventure is complete: everything is walked and the needle rests at
  * the end). An order that is not on the path leaves nothing walked.
@@ -168,21 +197,7 @@ export function seamOf(layout: AdventureLayout, currentOrder: number | null): Se
     });
   }
 
-  const tip = pointAtLength(samples, Math.min(total - 10, walkedLength + layout.needle.step));
-  const rotation = tip.angle + 180 + layout.needle.tilt;
-  const radians = (rotation * Math.PI) / 180;
-  const eye: Point = [
-    tip.x + Math.cos(radians) * 90 * layout.needle.scale,
-    tip.y + Math.sin(radians) * 90 * layout.needle.scale,
-  ];
-  const from = pointAtLength(samples, walkedLength);
-  const needle: Needle = {
-    x: round(tip.x),
-    y: round(tip.y),
-    rotation: round(rotation),
-    scale: layout.needle.scale,
-    thread: `M${pair([from.x, from.y])}Q${pair([(from.x + eye[0]) / 2 + 20, (from.y + eye[1]) / 2 + 24])} ${pair(eye)}`,
-  };
+  const needle = needleAt(layout, samples, total, walkedLength, walkedLength);
 
   return {
     all: pathData(segments),
@@ -213,4 +228,70 @@ export function arrowPath(points: readonly Point[], head = 10): string {
     b[1] - Math.sin(angle + spread) * head,
   ];
   return `${curve}M${pair(wing(0.5))}L${pair(b)}L${pair(wing(-0.5))}`;
+}
+
+/** The walk from one stamp to the next, as the victory sews it: what to draw and where things are at each moment. */
+export interface Travel {
+  /** The stretch between the two stamps, to be sewn: its path data. */
+  path: string;
+  /** The marks printed along it, which the walk turns from grey to brick. */
+  marks: PathMark[];
+  /** The arc length at which it starts: the stitch pattern keeps its phase from there. */
+  startLength: number;
+  /** A box around it, with room for the tape: a mask only needs to cover this much. */
+  box: { x: number; y: number; width: number; height: number };
+  /** The needle with the thread sewn up to `progress` (0 to 1) of the stretch, which starts at the first stamp. */
+  needleAt: (progress: number) => Needle;
+  /** The point of the path at `progress` of the stretch: where the token is, before its offset. */
+  pointAt: (progress: number) => { x: number; y: number };
+}
+
+/**
+ * The stretch from the stamp of `fromOrder` to the one of `toOrder`, which the
+ * victory sews. It is the difference between two seams: what was ahead and is
+ * now walked. Null when either order is not on the path, or they are not
+ * consecutive stops in that order.
+ */
+export function travelOf(layout: AdventureLayout, fromOrder: number, toOrder: number): Travel | null {
+  const fromIndex = layout.path.findIndex((stop) => stop[2] === fromOrder);
+  const toIndex = layout.path.findIndex((stop) => stop[2] === toOrder);
+  if (fromIndex < 0 || toIndex <= fromIndex) return null;
+
+  const segments = pathSegments(layout.path.map((stop): Point => [stop[0], stop[1]]));
+  const samples = sampleSegments(segments);
+  const total = samples[samples.length - 1]!.length;
+  const lengthAt = (index: number) => samples.find((sample) => sample.segment === index)?.length ?? total;
+  const startLength = lengthAt(fromIndex);
+  const endLength = lengthAt(toIndex);
+
+  const before = seamOf(layout, fromOrder).marks;
+  const after = seamOf(layout, toOrder).marks;
+  const marks = after.filter((mark, index) => mark.isWalked && !before[index]!.isWalked);
+  const at = (progress: number) => startLength + (endLength - startLength) * progress;
+  // The seam's lengths are where the first sample of a segment is; the token stands on the stamp itself.
+  const stopLength = (index: number) =>
+    index === 0 ? 0 : samples.findLast((sample) => sample.segment === index - 1)!.length;
+  const stopAt = (progress: number) => stopLength(fromIndex) + (stopLength(toIndex) - stopLength(fromIndex)) * progress;
+
+  const corners = layout.path.slice(fromIndex, toIndex + 1);
+  const margin = 80;
+  const left = Math.min(...corners.map((stop) => stop[0])) - margin;
+  const top = Math.min(...corners.map((stop) => stop[1])) - margin;
+
+  return {
+    path: pathData(segments.slice(fromIndex, toIndex)),
+    marks,
+    startLength,
+    box: {
+      x: round(left),
+      y: round(top),
+      width: round(Math.max(...corners.map((stop) => stop[0])) + margin - left),
+      height: round(Math.max(...corners.map((stop) => stop[1])) + margin - top),
+    },
+    needleAt: (progress) => needleAt(layout, samples, total, at(progress), at(progress)),
+    pointAt: (progress) => {
+      const point = pointAtLength(samples, stopAt(progress));
+      return { x: point.x, y: point.y };
+    },
+  };
 }

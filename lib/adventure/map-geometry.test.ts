@@ -7,6 +7,7 @@ import {
   pointAtLength,
   sampleSegments,
   seamOf,
+  travelOf,
   zoneAt,
   type Point,
 } from "./map-geometry";
@@ -88,6 +89,53 @@ describe.each(Object.entries(LAYOUTS))("the seam of the %s layout", (_name, layo
     expect(needle.x).toBeGreaterThan(0);
     expect(needle.x).toBeLessThan(layout.width);
     expect(needle.thread.startsWith("M")).toBe(true);
+  });
+});
+
+describe.each(Object.entries(LAYOUTS))("the walk of the %s layout", (_name, layout) => {
+  it("is the stretch the seam gains between two stamps, from the first to the second", () => {
+    const travel = travelOf(layout, 5, 6)!;
+    const from = layout.path.find((p) => p[2] === 5)!;
+    const to = layout.path.find((p) => p[2] === 6)!;
+    expect(travel.path.startsWith(`M${from[0]} ${from[1]}`)).toBe(true);
+    expect(travel.path.endsWith(`${to[0]} ${to[1]}`)).toBe(true);
+    // What it adds to the walked path is exactly the marks it carries.
+    const gained = seamOf(layout, 6).marks.filter((mark) => mark.isWalked).length;
+    const had = seamOf(layout, 5).marks.filter((mark) => mark.isWalked).length;
+    expect(travel.marks).toHaveLength(gained - had);
+    expect(travel.marks.every((mark) => mark.isWalked)).toBe(true);
+  });
+
+  it("puts the needle where the seam rests it at each end", () => {
+    const travel = travelOf(layout, 5, 6)!;
+    expect(travel.needleAt(0)).toEqual(seamOf(layout, 5).needle);
+    expect(travel.needleAt(1)).toEqual(seamOf(layout, 6).needle);
+  });
+
+  it("moves the token from one stamp to the next along the path", () => {
+    const travel = travelOf(layout, 5, 6)!;
+    const from = layout.path.find((p) => p[2] === 5)!;
+    const to = layout.path.find((p) => p[2] === 6)!;
+    expect(travel.pointAt(0).x).toBeCloseTo(from[0], 0);
+    expect(travel.pointAt(0).y).toBeCloseTo(from[1], 0);
+    expect(travel.pointAt(1).x).toBeCloseTo(to[0], 0);
+    expect(travel.pointAt(1).y).toBeCloseTo(to[1], 0);
+  });
+
+  it("has a box around the stretch and its stamps for the mask to cover", () => {
+    const { box } = travelOf(layout, 5, 6)!;
+    for (const order of [5, 6]) {
+      const stop = layout.path.find((p) => p[2] === order)!;
+      expect(stop[0]).toBeGreaterThan(box.x);
+      expect(stop[0]).toBeLessThan(box.x + box.width);
+      expect(stop[1]).toBeGreaterThan(box.y);
+      expect(stop[1]).toBeLessThan(box.y + box.height);
+    }
+  });
+
+  it("is nothing when the stamps are not in that order or not on the path", () => {
+    expect(travelOf(layout, 6, 5)).toBeNull();
+    expect(travelOf(layout, 12, 13)).toBeNull();
   });
 });
 

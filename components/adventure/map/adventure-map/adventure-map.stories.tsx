@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { ADVENTURE_ART } from "@/lib/adventure/adventures";
 import { CUADERNO_DEL_VIAJERO } from "@/lib/adventure/adventures/cuaderno-del-viajero";
 import { fixtureAdventureProgress } from "@/lib/testing/fixtures/adventure";
@@ -92,5 +92,52 @@ export const ReplacingAnOpenGame: Story = {
       name: /¿Quitar tu partida en curso contra Lupita\?/,
     });
     await expect(question).toHaveAttribute("open");
+  },
+};
+
+/** The map as the person finds it after a win: five rivals beaten (the fifth at its second try), the sixth open with its pin and the token on it. */
+export const AfterVictory: Story = {
+  args: { progress: fixtureAdventureProgress({ beaten: 5, stars: [3, 2, 1, 3, 2] }) },
+};
+
+/**
+ * Coming back from the first win over the fifth rival (`?victoria=5`): the map starts as it was before it — the fifth
+ * pinned, the sixth locked, four of twelve — and plays the victory once: the pin comes out, the postmark lands, two
+ * stars come out, the keepsake is stuck down, the seam is sewn to the sixth with the needle leading, its padlock falls
+ * and it is pinned, and the token hops over; the count goes up to five. The play waits for the end, so the check of
+ * accessibility reads the map as it is left.
+ */
+export const Victory: Story = {
+  args: { progress: fixtureAdventureProgress({ beaten: 5, stars: [3, 2, 1, 3, 2] }), victory: 5 },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Before it, the count says four.
+    await expect(canvas.getAllByText("4 de 12 rivales superados y 9 estrellas").length).toBeGreaterThan(0);
+    await waitFor(
+      () => expect(canvas.getAllByText("5 de 12 rivales superados y 11 estrellas").length).toBeGreaterThan(0),
+      { timeout: 13000 },
+    );
+    const sixth = canvas.getAllByRole("button", { name: /Inés Cárdenas, rival 6 de 12.*disponible/ });
+    await expect(sixth.length).toBeGreaterThan(0);
+  },
+};
+
+/** The first win over the last page: nothing is left to sew, unlock or hop to, so the sequence ends with the keepsake and the count of twelve. */
+export const VictoryOfTheLastPage: Story = {
+  args: { progress: fixtureAdventureProgress({ beaten: 12 }), victory: 12 },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await waitFor(() => expect(canvas.getAllByText(/12 de 12 rivales superados/).length).toBeGreaterThan(0), {
+      timeout: 9000,
+    });
+  },
+};
+
+/** A made-up or old `?victoria=` (here the second rival, with the story well past it) plays nothing: the map is as it is. */
+export const VictoryNotPlayed: Story = {
+  args: { progress: fixtureAdventureProgress({ beaten: 5, stars: [3, 2, 1, 3, 2] }), victory: 2 },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getAllByText("5 de 12 rivales superados y 11 estrellas").length).toBeGreaterThan(0);
   },
 };

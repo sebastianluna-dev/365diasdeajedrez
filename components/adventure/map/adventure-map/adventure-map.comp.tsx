@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { MapHud } from "@/components/adventure/map/map-hud/map-hud.comp";
 import { MapLayer, type MapLayerSize } from "@/components/adventure/map/map-layer/map-layer.comp";
+import { useVictorySequence } from "@/components/adventure/map/use-victory-sequence.hook";
 import { RivalCard } from "@/components/adventure/rival-card/rival-card/rival-card.comp";
 import {
   PlatformConfirmPopup,
@@ -48,9 +49,21 @@ const LAYERS: readonly { size: MapLayerSize; key: "desktop" | "tablet" | "mobile
  * state — which rival is open, which zone the window is over — and the two
  * things that need the browser: it scrolls the available stamp to the middle of
  * the window when it opens, and it measures the platform's bar so the row
- * sticks right under it.
+ * sticks right under it. Coming back from a first win (`victory`), it plays the
+ * victory over that rival (`useVictorySequence`) on the layers.
  */
-export function AdventureMap({ progress, zones, art, player, victory, action, autoScroll = true }: AdventureMapProps) {
+export function AdventureMap({
+  progress: given,
+  zones,
+  art,
+  player,
+  victory,
+  action,
+  autoScroll = true,
+}: AdventureMapProps) {
+  // Coming back from a first win, the map starts as it was before it and plays the victory (once).
+  const { progress, sequence } = useVictorySequence({ progress: given, victory });
+  const firstSequence = useRef(sequence);
   const rootRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<PlatformPopupHandle>(null);
   const confirmRef = useRef<PlatformConfirmPopupHandle>(null);
@@ -80,14 +93,24 @@ export function AdventureMap({ progress, zones, art, player, victory, action, au
     return () => observer.disconnect();
   }, []);
 
-  // On opening, the stamp to play (or the last one, when all are beaten) goes to the middle of the window.
+  // On opening, the stamp to play (or the last one, when all are beaten) goes to the middle of the window; coming
+  // back from a win, both stamps of the victory when they fit together, otherwise the rival beaten, and the camera
+  // follows the needle from there.
   useEffect(() => {
     if (!autoScroll) return;
-    const target = [...(rootRef.current?.querySelectorAll<HTMLElement>('[data-focus="true"]') ?? [])].find(
+    const layer = [...(rootRef.current?.querySelectorAll<HTMLElement>(".map-layer") ?? [])].find(
       (element) => element.offsetParent !== null,
     );
+    const target = layer?.querySelector<HTMLElement>('[data-focus="true"]');
     if (!target) return;
     const rect = target.getBoundingClientRect();
+    const victory = firstSequence.current;
+    const next = victory?.hasNext ? layer?.querySelector<HTMLElement>(`[data-order="${victory.order + 1}"]`) : null;
+    if (next && Math.abs(next.getBoundingClientRect().top - rect.top) <= window.innerHeight * 0.5) {
+      const middle = (rect.top + rect.height / 2 + next.getBoundingClientRect().top + next.offsetHeight / 2) / 2;
+      window.scrollTo({ top: window.scrollY + middle - window.innerHeight * 0.5, behavior: "instant" });
+      return;
+    }
     window.scrollTo({
       top: window.scrollY + rect.top + rect.height / 2 - window.innerHeight * 0.55,
       behavior: "instant",
@@ -138,6 +161,7 @@ export function AdventureMap({ progress, zones, art, player, victory, action, au
         beaten={progress.beaten}
         total={progress.total}
         stars={progress.stars}
+        isRising={sequence?.phase === "done"}
       />
       {LAYERS.map(({ size, key }) => (
         <MapLayer
@@ -147,6 +171,7 @@ export function AdventureMap({ progress, zones, art, player, victory, action, au
           zones={zones}
           progress={progress}
           player={player}
+          sequence={sequence}
           onOpen={openCard}
         />
       ))}

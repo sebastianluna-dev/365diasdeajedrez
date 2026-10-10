@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest";
+import { fixtureAdventureProgress } from "@/lib/testing/fixtures/adventure";
 import { GAME_RESULT, type GameResultCode } from "@/constants/platform/study-codes.const";
 import {
   attemptsOf,
   canStartEncounter,
   encounterStatesOf,
   firstWinOf,
+  isVictoryPlayable,
   nextEncounterOf,
+  progressBeforeVictory,
   starsForAttempts,
   totalsOf,
   type AdventureGame,
@@ -213,5 +216,65 @@ describe("nextEncounterOf and canStartEncounter", () => {
     expect(canStartEncounter(states, 12)).toBe(false);
     expect(canStartEncounter(states, 13)).toBe(false);
     expect(canStartEncounter(states, 0)).toBe(false);
+  });
+});
+
+describe("isVictoryPlayable", () => {
+  const progress = fixtureAdventureProgress({ beaten: 5, stars: [3, 2, 1, 3, 2] });
+
+  it("plays the win that just opened the next rival", () => {
+    expect(isVictoryPlayable(progress, 5)).toBe(true);
+  });
+
+  it("plays nothing for a rival not beaten, or one that is not on the map", () => {
+    expect(isVictoryPlayable(progress, 6)).toBe(false);
+    expect(isVictoryPlayable(progress, 13)).toBe(false);
+  });
+
+  it("plays nothing for an old win: the story has gone on or the next rival was tried", () => {
+    expect(isVictoryPlayable(progress, 3)).toBe(false);
+    expect(isVictoryPlayable(fixtureAdventureProgress({ beaten: 5, attemptsOnNext: 1 }), 5)).toBe(false);
+  });
+
+  it("plays the last page's win, which opens nothing", () => {
+    expect(isVictoryPlayable(fixtureAdventureProgress({ beaten: 12 }), 12)).toBe(true);
+  });
+});
+
+describe("progressBeforeVictory", () => {
+  const progress = fixtureAdventureProgress({ beaten: 5, stars: [3, 2, 1, 3, 2] });
+  const before = progressBeforeVictory(progress, 5);
+
+  it("puts the rival back to play with the attempts it had before the winning game, and nothing earned", () => {
+    const rival = before.encounters[4]!;
+    expect(rival).toMatchObject({ state: "available", attempts: 1, stars: 0, beatenAt: null, winPlies: null });
+    expect(before.current?.order).toBe(5);
+  });
+
+  it("locks the next rival and leaves the rest as they were", () => {
+    expect(before.encounters[5]!.state).toBe("locked");
+    expect(before.encounters.slice(0, 4)).toEqual(progress.encounters.slice(0, 4));
+    expect(before.encounters.slice(6)).toEqual(progress.encounters.slice(6));
+  });
+
+  it("is one rival and its stars short", () => {
+    expect(before.beaten).toBe(4);
+    expect(before.stars).toBe(progress.stars - 2);
+    expect(before.isComplete).toBe(false);
+  });
+
+  it("is the same for a first-try win, which had no attempts before", () => {
+    const first = progressBeforeVictory(fixtureAdventureProgress({ beaten: 1, stars: [3] }), 1);
+    expect(first.encounters[0]).toMatchObject({ state: "available", attempts: 0 });
+  });
+
+  it("reopens the last page when it was the one won", () => {
+    const last = progressBeforeVictory(fixtureAdventureProgress({ beaten: 12 }), 12);
+    expect(last.current?.order).toBe(12);
+    expect(last.beaten).toBe(11);
+  });
+
+  it("is the progress itself when the encounter is not beaten", () => {
+    expect(progressBeforeVictory(progress, 7)).toBe(progress);
   });
 });

@@ -187,6 +187,84 @@
     }
   }
 
+  & .encounter-stamp__star-slot {
+    display: inline-flex;
+  }
+
+  /* THE VICTORY. The map plays the win over this rival one step at a time and
+     the stamp draws the step it is in; each is a class that lasts as long as
+     the step, and what it leaves is what the stamp is without it. First the
+     pin comes out and the stamp settles flat... */
+  &.encounter-stamp_phase_release {
+    & .encounter-stamp__paper {
+      transform: rotate(var(--tilt, 0deg));
+      filter: drop-shadow(0 1px 0.5px rgb(42 28 14 / 0.35)) drop-shadow(0 4px 5px rgb(42 28 14 / 0.2));
+      animation: none;
+      transition:
+        transform 0.45s ease-in,
+        filter 0.45s ease-in;
+    }
+
+    & .stamp-art__pin {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: encounter-stamp-pin-out 0.45s ease-in forwards;
+    }
+
+    & .encounter-stamp__circle {
+      animation: encounter-stamp-fade-out 0.4s forwards;
+    }
+  }
+
+  /* ...then the postmark lands, with the thud of the stamp, and the stars are not there yet. */
+  &.encounter-stamp_phase_postmark {
+    transition: width 0.4s ease-out;
+
+    & .stamp-art__postmark {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: encounter-stamp-postmark 0.42s cubic-bezier(0.3, 0, 0.2, 1) both;
+    }
+
+    & .encounter-stamp__paper {
+      animation: encounter-stamp-thud 0.42s 0.3s ease-out;
+    }
+
+    & .encounter-stamp__stars {
+      visibility: hidden;
+    }
+  }
+
+  /* ...the stars come out one by one, 260 ms apart... */
+  &.encounter-stamp_phase_stars .encounter-stamp__star-slot {
+    animation: encounter-stamp-star 0.42s cubic-bezier(0.2, 0.8, 0.3, 1.5) both;
+    animation-delay: calc((var(--star) - 1) * 260ms);
+  }
+
+  /* ...and, on the next stamp, the padlock drops and the blind proof lifts off the ink under it... */
+  &.encounter-stamp_phase_unlock {
+    & .stamp-art__blind {
+      animation: encounter-stamp-lift 0.8s 0.25s ease-in forwards;
+    }
+
+    & .stamp-art__padlock {
+      animation: encounter-stamp-drop 0.5s ease-in forwards;
+    }
+  }
+
+  /* ...then it grows to the size of the stamp to play, and the pin goes in. */
+  &.encounter-stamp_phase_arrive {
+    transition: width 0.4s ease-out;
+
+    & .stamp-art__pin {
+      animation: encounter-stamp-pin-in 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+    }
+
+    & .encounter-stamp__label {
+      animation: encounter-stamp-fade-in 0.4s both;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     & .encounter-stamp__paper {
       transition: none;
@@ -199,6 +277,48 @@
     & .encounter-stamp__circle path {
       animation: none;
       stroke-dashoffset: 0;
+    }
+
+    &.encounter-stamp_phase_release {
+      & .encounter-stamp__paper {
+        transition: none;
+      }
+
+      & .stamp-art__pin,
+      & .encounter-stamp__circle {
+        animation: none;
+        opacity: 0;
+      }
+    }
+
+    &.encounter-stamp_phase_postmark {
+      transition: none;
+
+      & .stamp-art__postmark,
+      & .encounter-stamp__paper {
+        animation: none;
+      }
+    }
+
+    &.encounter-stamp_phase_stars .encounter-stamp__star-slot {
+      animation: none;
+    }
+
+    &.encounter-stamp_phase_unlock {
+      & .stamp-art__blind,
+      & .stamp-art__padlock {
+        animation: none;
+        opacity: 0;
+      }
+    }
+
+    &.encounter-stamp_phase_arrive {
+      transition: none;
+
+      & .stamp-art__pin,
+      & .encounter-stamp__label {
+        animation: none;
+      }
     }
   }
 }
@@ -217,5 +337,78 @@
 @keyframes encounter-stamp-trace {
   to {
     stroke-dashoffset: 0;
+  }
+}
+
+@keyframes encounter-stamp-pin-out {
+  to {
+    transform: translate(18px, -60px) rotate(30deg);
+    opacity: 0;
+  }
+}
+
+@keyframes encounter-stamp-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes encounter-stamp-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes encounter-stamp-postmark {
+  from {
+    opacity: 0;
+    transform: rotate(-8deg) scale(1.9);
+  }
+
+  70% {
+    opacity: 0.9;
+  }
+
+  to {
+    opacity: 0.8;
+    transform: rotate(-8deg) scale(1);
+  }
+}
+
+@keyframes encounter-stamp-thud {
+  40% {
+    transform: rotate(var(--tilt, 0deg)) scale(0.96) translateY(2px);
+  }
+}
+
+@keyframes encounter-stamp-star {
+  from {
+    transform: scale(0) rotate(-90deg);
+    opacity: 0;
+  }
+
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes encounter-stamp-lift {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes encounter-stamp-drop {
+  to {
+    transform: translate(50px, 30px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes encounter-stamp-pin-in {
+  from {
+    transform: translate(-14px, -50px) rotate(-30deg);
+    opacity: 0;
   }
 }

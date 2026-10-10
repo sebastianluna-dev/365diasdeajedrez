@@ -19,6 +19,8 @@ interface KeepsakeProps {
   position?: { left: number; top: number; width: number; rotation: number };
   /** Not won yet: the sealed envelope instead of the keepsake. */
   isSealed?: boolean;
+  /** The victory is sticking it down now: it comes in from above and the tape goes on last. */
+  isSticking?: boolean;
 }
 
 /**
@@ -27,14 +29,21 @@ interface KeepsakeProps {
  * envelope. It is decoration — what it is, in words, is the rival's card's —
  * so it is hidden from a screen reader.
  */
-export function Keepsake({ adventure, order, playerName, position, isSealed = false }: KeepsakeProps) {
+export function Keepsake({
+  adventure,
+  order,
+  playerName,
+  position,
+  isSealed = false,
+  isSticking = false,
+}: KeepsakeProps) {
   const drawing = ADVENTURE_KEEPSAKES[adventure]?.[order];
   if (!drawing && !isSealed) return null;
   const Drawing = drawing?.Drawing;
   const viewBox = isSealed ? SEALED_ENVELOPE_VIEW_BOX : drawing!.viewBox;
   return (
     <span
-      className={`keepsake keepsake_order_${order}${position ? " keepsake_stuck" : ""}${isSealed ? " keepsake_sealed" : ""}`}
+      className={`keepsake keepsake_order_${order}${position ? " keepsake_stuck" : ""}${isSealed ? " keepsake_sealed" : ""}${isSticking ? " keepsake_phase_stick" : ""}`}
       style={
         position
           ? ({

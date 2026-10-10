@@ -6,15 +6,15 @@ description: "The adventure's map: the journey on paper from the plaza to the pa
 
 Also exports `AdventureMapSection`, the Server Component that reads the progress and renders it.
 
-|            |                                                                                                                                                     |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Files      | `components/adventure/map/adventure-map/adventure-map.comp.tsx`, `adventure-map.section.tsx`                                                        |
-| Kind       | Client Component (the one with the state) under a Server Component                                                                                  |
-| Stylesheet | `adventure-map.comp.css` → block `.adventure-map`                                                                                                   |
-| Story      | `adventure-map.stories.tsx` (`adventure/map/AdventureMap`): four of twelve, fresh, complete, on a phone, with a rival's sheet open                  |
-| Used by    | `app/(platform)/jugar/aventura/[adventureSlug]/page.tsx`, behind `PLAY_ENABLED` and `ADVENTURE_ENABLED`                                             |
-| Composes   | [`MapLayer`](/components/adventure/map/map-layer) ×3, [`MapHud`](/components/adventure/map/map-hud), `PlatformPopup`                                |
-| Reads      | `getAdventureProgress(slug)` (`services/adventure`), `getOwnPlayerCard()` (`services/profile`), `adventureOf` and `ADVENTURE_ART` (`lib/adventure`) |
+|            |                                                                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/adventure/map/adventure-map/adventure-map.comp.tsx`, `adventure-map.section.tsx`                                                                                          |
+| Kind       | Client Component (the one with the state) under a Server Component                                                                                                                    |
+| Stylesheet | `adventure-map.comp.css` → block `.adventure-map`                                                                                                                                     |
+| Story      | `adventure-map.stories.tsx` (`adventure/map/AdventureMap`): four of twelve, fresh, complete, on a phone, a rival's sheet open, and the victory (played, of the last page, not played) |
+| Used by    | `app/(platform)/jugar/aventura/[adventureSlug]/page.tsx`, behind `PLAY_ENABLED` and `ADVENTURE_ENABLED`                                                                               |
+| Composes   | `useVictorySequence`, [`MapLayer`](/components/adventure/map/map-layer) ×3, [`MapHud`](/components/adventure/map/map-hud), `PlatformPopup`                                            |
+| Reads      | `getAdventureProgress(slug)` (`services/adventure`), `getOwnPlayerCard()` (`services/profile`), `adventureOf` and `ADVENTURE_ART` (`lib/adventure`)                                   |
 
 ## Purpose
 
@@ -25,23 +25,36 @@ The three layouts of the world are all in the page and the stylesheet shows the 
 - **Scrolls to the stamp to play** when it opens (or to the last one when the adventure is complete), to 55 % of the window, instantly. `autoScroll={false}` leaves the window alone: for the sheet of the Storybook overview, and the page passes it when it brings a notice (`?error=`), which the scroll would take out of sight.
 - **Measures the platform's bar** (`.platform-shell__bar`, one row or two) and sets `--map-bar` on its root, which is where the row over the map sticks.
 - **Follows the zone** the middle of the window is over, from the shown layer's own scale (`zoneAt` in `lib/adventure/map-geometry.ts`), so the row says «Biblioteca Central» as one scrolls.
+- **Plays the victory** coming back from a first win (`victory`): see below.
 - **Opens the rival's card**: a stamp asks for it with its order and the map puts the rival in a `PlatformPopup` (`size="md"`, `phone="sheet"`; `flushSync`, so the content is there when the dialog opens and the focus finds its first control, and then the card is scrolled back to its top). The card's key is raised when the popup closes, so it opens fresh each time (the colour chosen is not kept).
 - **Asks before replacing an open game**: with a game against a bot open, the card's button hands its form to the map, which opens a `PlatformConfirmPopup` (`verb="Quitar"`) as a SIBLING of the card's popup, over it; confirming submits the form with `replace=1`, and `onDone` closes the card.
 
 ## Props
 
-| Prop         | Type                    | Required | Meaning                                                                                                                    |
-| ------------ | ----------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `progress`   | `AdventureProgressView` | yes      | Every rival with its state, the totals and the open game.                                                                  |
-| `zones`      | `AdventureZoneSeed[]`   | yes      | The notebook's pages and the zone names, in story order.                                                                   |
-| `art`        | `AdventureArt`          | yes      | Where the live layer sits over each layout.                                                                                |
-| `player`     | `{ initials, name }`    | yes      | The token's initials, and the name the membership card writes.                                                             |
-| `victory`    | `number \| null`        | yes      | The encounter just beaten (`?victoria=`, only when it really is beaten); carried as `data-victory` for the sequence of A4. |
-| `autoScroll` | `boolean`               | no       | Default `true`.                                                                                                            |
+| Prop         | Type                    | Required | Meaning                                                                                                  |
+| ------------ | ----------------------- | -------- | -------------------------------------------------------------------------------------------------------- |
+| `progress`   | `AdventureProgressView` | yes      | Every rival with its state, the totals and the open game.                                                |
+| `zones`      | `AdventureZoneSeed[]`   | yes      | The notebook's pages and the zone names, in story order.                                                 |
+| `art`        | `AdventureArt`          | yes      | Where the live layer sits over each layout.                                                              |
+| `player`     | `{ initials, name }`    | yes      | The token's initials, and the name the membership card writes.                                           |
+| `victory`    | `number \| null`        | yes      | The encounter just beaten (`?victoria=`): played only if `isVictoryPlayable`; carried as `data-victory`. |
+| `autoScroll` | `boolean`               | no       | Default `true`.                                                                                          |
 
 ## Behaviour
 
-`AdventureMapSection` answers 404 (`notFound`) for a slug with no adventure, art or progress; the page does it first, with both switches. A `victory` that is not a beaten encounter is dropped by the section. Nothing here writes: the game is opened by `startAdventureEncounter`, which the rival card submits (the server decides: a locked encounter bounces back with `?error=encounterLocked`).
+`AdventureMapSection` answers 404 (`notFound`) for a slug with no adventure, art or progress; the page does it first, with both switches. A `victory` that `isVictoryPlayable` refuses — not beaten, or the story already past it — is dropped by the section. Nothing here writes: the game is opened by `startAdventureEncounter`, which the rival card submits (the server decides: a locked encounter bounces back with `?error=encounterLocked`).
+
+## The victory
+
+Coming back from the game that won a rival for the first time (`?victoria=<order>`, which «Volver al mapa» puts there only for a first win), the map plays what the mockup's `simularVictoria` shows, once. `useVictorySequence` (`use-victory-sequence.hook.ts`) does three things:
+
+- **Starts from the map as it was.** `progressBeforeVictory` (`services/adventure/adventure-rules.ts`, pure and tested) derives it from the progress it was given: the rival won is back to play with the attempts it had before the winning game and no stars, the next one is locked, and the count is one rival short. The hook then moves from there to the real map, phase by phase (`progressAt`).
+- **Plays it once.** On mount it takes `?victoria=` off the address with `history.replaceState` (Next integrates it into the router), so going back or reloading does not repeat it, and it reads what the address asked for only once, so a later `router.refresh()` does not bring it back. A win that is not real is not played: `isVictoryPlayable` asks that the rival be beaten and that the next one still be the one to play and untried (or that it be the last page).
+- **Does not animate under «reducir movimiento».** `matchMedia` (as an external store, so the server plays it and the browser corrects it): the map is at its end and nothing moves; every animation also has its `reduce` block.
+
+The phases, in order, with the mockup's durations as the starting point (`VICTORY_DURATIONS`): `rest` 700 ms (the person sees where they stand) → `release` 500 (the pin comes out of the stamp, the circle and the «¡me toca!» fade) → `postmark` 800 (the stamp is cancelled, thud, no stars yet) → `stars` 1080 (three stars, 260 ms apart) → `keepsake` 900 (it is stuck down, the tape last) → `seam` 1800 (the seam is sewn to the next rival with the needle leading) → `unlock` 1100 (the padlock falls and the blind proof lifts off the ink under it) → `arrive` 500 (the stamp grows, it is pinned) → `token` 1400 (it hops along the seam) → `done` (the count goes up and the «¡me toca!» comes back over the next rival). The last page has no next rival: it skips `seam`, `unlock`, `arrive` and `token`.
+
+Each phase is a class the pieces draw (`encounter-stamp_phase_*`, `keepsake_phase_stick`, `map-layer__hint_phase_*`, `map-layer__token_phase_hop`, `map-hud__figure_state_rising`) except the two that move along the path, which `use-victory-travel.hook.ts` drives frame by frame on the layer that is shown: the seam (a mask whose dash offset uncovers the stretch `travelOf` gives, and the needle and its thread) and the token. Both end exactly where the final render puts the same elements. When the two stamps do not fit the window, the camera follows the needle during the seam (the sequence only plays without reduced motion); when they fit, the map scrolls to the middle of the two on opening.
 
 ## Markup & styling
 

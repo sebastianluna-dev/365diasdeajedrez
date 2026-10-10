@@ -19,24 +19,25 @@ What stays on the window over the map, under the platform's bar: «Jugar» and �
 
 ## Props
 
-| Prop     | Type             | Required | Meaning                      |
-| -------- | ---------------- | -------- | ---------------------------- |
-| `zone`   | `{ kind, name }` | yes      | The zone the window is over. |
-| `beaten` | `number`         | yes      | Rivals beaten.               |
-| `total`  | `number`         | yes      | Rivals in the adventure.     |
-| `stars`  | `number`         | yes      | Stars earned.                |
+| Prop       | Type             | Required | Meaning                                                          |
+| ---------- | ---------------- | -------- | ---------------------------------------------------------------- |
+| `zone`     | `{ kind, name }` | yes      | The zone the window is over.                                     |
+| `beaten`   | `number`         | yes      | Rivals beaten.                                                   |
+| `total`    | `number`         | yes      | Rivals in the adventure.                                         |
+| `stars`    | `number`         | yes      | Stars earned.                                                    |
+| `isRising` | `boolean`        | no       | The victory has just been written down: the two figures come up. |
 
 ## Markup & styling
 
-Block `.map-hud` (162 lines).
+Block `.map-hud` (194 lines).
 
 **Elements:** `.map-hud__row`, `__links`, `__link-text`, `__zone`, `__zone-kind`, `__zone-name`, `__score`, `__figure`, `__icon`, `__sr-only`
 
-**Modifiers and states:** `.map-hud__icon_star`
+**Modifiers and states:** `.map-hud__icon_star`, `.map-hud__figure_state_rising`
 
 **Tokens:** `--adventure-kraft-pale`, `--adventure-cream-bright`, `--adventure-ink`, `--adventure-brick`, `--adventure-brick-deep`, `--adventure-graphite`, `--adventure-ochre`, `--adventure-shadow`, `--adventure-font-title`, `--adventure-font-data`
 
-**Media queries:** `(width < 1024px)`, `(width < 640px)`. No animation.
+**Media queries:** `(width < 1024px)`, `(width < 640px)`. **Animation:** `map-hud-count` (the figures rise into place, in brick), off under `prefers-reduced-motion`.
 
 ## Related
 

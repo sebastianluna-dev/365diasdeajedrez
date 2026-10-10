@@ -6,6 +6,15 @@ import { StampArt } from "./stamp-art.comp";
 import "@/components/adventure/adventure.css";
 import "./encounter-stamp.comp.css";
 
+/**
+ * A step of the victory the map is playing, which this stamp draws: the pin of
+ * the rival just beaten comes out (`release`), its postmark lands (`postmark`)
+ * and its stars come out one by one (`stars`); the next stamp loses its
+ * padlock (`unlock`) and is inked and pinned (`arrive`). The stylesheet
+ * animates each; any other time there is none.
+ */
+export type StampPhase = "release" | "postmark" | "stars" | "unlock" | "arrive";
+
 interface EncounterStampProps {
   encounter: EncounterView;
   /** The adventure's slug, where the portrait is looked up. */
@@ -22,6 +31,8 @@ interface EncounterStampProps {
   position: { left: number; top: number; width: number; tilt: number };
   /** The stamp the person is to play, or the last one when the adventure is complete: where the map scrolls to. */
   isFocus?: boolean;
+  /** The step of the victory being played on this stamp, if one is. */
+  phase?: StampPhase | null;
   /** Called with the rival's order when the stamp is pressed: the host opens its card. */
   onOpen: (order: number, trigger: HTMLElement) => void;
 }
@@ -59,6 +70,7 @@ export function EncounterStamp({
   postmark,
   position,
   isFocus = false,
+  phase = null,
   onOpen,
 }: EncounterStampProps) {
   const { state, attempts, stars } = encounter;
@@ -68,7 +80,7 @@ export function EncounterStamp({
   return (
     <button
       type="button"
-      className={`encounter-stamp encounter-stamp_status_${state}${encounter.isFinal ? " encounter-stamp_final" : ""}`}
+      className={`encounter-stamp encounter-stamp_status_${state}${encounter.isFinal ? " encounter-stamp_final" : ""}${phase ? ` encounter-stamp_phase_${phase}` : ""}`}
       style={
         {
           left: `${position.left}%`,
@@ -101,7 +113,7 @@ export function EncounterStamp({
         </svg>
       )}
       <span className="encounter-stamp__paper">
-        <StampArt adventure={adventure} encounter={encounter} postmark={postmark} />
+        <StampArt adventure={adventure} encounter={encounter} postmark={postmark} isUnlocking={phase === "unlock"} />
       </span>
       <span className="encounter-stamp__label" aria-hidden="true">
         {state === "available" && attempts > 0 && (
@@ -117,11 +129,12 @@ export function EncounterStamp({
           {state === "beaten" && (
             <span className="encounter-stamp__stars">
               {[1, 2, 3].map((star) => (
-                <StarIcon
-                  key={star}
-                  variant={star <= stars ? "classic-solid" : "classic-light"}
-                  className={`encounter-stamp__star${star <= stars ? " encounter-stamp__star_on" : ""}`}
-                />
+                <span key={star} className="encounter-stamp__star-slot" style={{ "--star": star } as CSSProperties}>
+                  <StarIcon
+                    variant={star <= stars ? "classic-solid" : "classic-light"}
+                    className={`encounter-stamp__star${star <= stars ? " encounter-stamp__star_on" : ""}`}
+                  />
+                </span>
               ))}
             </span>
           )}

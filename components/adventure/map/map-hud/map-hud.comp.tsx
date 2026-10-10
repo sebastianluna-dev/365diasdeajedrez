@@ -14,6 +14,8 @@ interface MapHudProps {
   beaten: number;
   total: number;
   stars: number;
+  /** The victory has just been written down: the two figures come up. */
+  isRising?: boolean;
 }
 
 /**
@@ -23,7 +25,7 @@ interface MapHudProps {
  * laid out as a row of paper tags; the row lets the map's clicks through
  * and only its tags catch them.
  */
-export function MapHud({ zone, beaten, total, stars }: MapHudProps) {
+export function MapHud({ zone, beaten, total, stars, isRising = false }: MapHudProps) {
   return (
     <div className="map-hud">
       <div className="map-hud__row">
@@ -44,11 +46,11 @@ export function MapHud({ zone, beaten, total, stars }: MapHudProps) {
         </p>
 
         <p className="map-hud__score">
-          <span className="map-hud__figure" aria-hidden="true">
+          <span className={`map-hud__figure${isRising ? " map-hud__figure_state_rising" : ""}`} aria-hidden="true">
             <StampIcon variant="classic-solid" className="map-hud__icon" />
             <b>{beaten}</b>/{total} <small>rivales</small>
           </span>
-          <span className="map-hud__figure" aria-hidden="true">
+          <span className={`map-hud__figure${isRising ? " map-hud__figure_state_rising" : ""}`} aria-hidden="true">
             <StarIcon variant="classic-solid" className="map-hud__icon map-hud__icon_star" />
             <b>{stars}</b> <small>estrellas</small>
           </span>

@@ -25,6 +25,8 @@ A rival on the map: the postage stamp (a 120 × 150 drawing in a 140 × 178 box,
 
 It is one `<button>` with `aria-haspopup="dialog"` whose `aria-label` says all of it: «Anselmo Quiroga, rival 5 de 12, nivel aproximado 783, disponible, intento 2» — the drawing and the label are hidden from a screen reader. Pressing it calls `onOpen(order, button)`; the host opens the rival's sheet.
 
+**In the victory** the map gives the stamp a `phase` and the stylesheet animates it, each step a class that lasts as long as the step: `release` (the pin comes out, the stamp settles flat, the circle fades), `postmark` (the postmark lands with a thud; the stars are hidden), `stars` (the three stars come out 260 ms apart, from `--star`), `unlock` (the next stamp is drawn inked under its blind proof, `isUnlocking`, which lifts off while the padlock drops) and `arrive` (it grows to the size of the stamp to play, the pin goes in and the label fades in). Without a phase the stamp is just what its state says.
+
 ## Props
 
 | Prop        | Type                         | Required | Meaning                                                              |
@@ -35,21 +37,22 @@ It is one `<button>` with `aria-haspopup="dialog"` whose `aria-label` says all o
 | `postmark`  | `string`                     | yes      | The zone's word on the postmark.                                     |
 | `position`  | `{ left, top, width, tilt }` | yes      | Percentages of the world's box and the tilt in degrees.              |
 | `isFocus`   | `boolean`                    | no       | The stamp the map scrolls to (`data-focus`).                         |
+| `phase`     | `StampPhase \| null`         | no       | The step of the victory this stamp draws (below).                    |
 | `onOpen`    | `(order, trigger) => void`   | yes      | The stamp was pressed.                                               |
 
-`StampArt` takes `adventure`, `encounter`, `postmark` and `className`; the rival card draws it large.
+`StampArt` takes `adventure`, `encounter`, `postmark`, `isProof`, `isUnlocking` and `className`; the rival card draws it large.
 
 ## Markup & styling
 
-Block `.encounter-stamp` (221 lines) and block `.stamp-art` (22 lines).
+Block `.encounter-stamp` (414 lines) and block `.stamp-art` (22 lines).
 
-**Elements:** `.encounter-stamp__paper`, `__label`, `__name`, `__nickname`, `__meta`, `__lock`, `__stars`, `__star`, `__attempt`, `__circle`; `.stamp-art__mono`, `__title`, `__postmark`
+**Elements:** `.encounter-stamp__paper`, `__label`, `__name`, `__nickname`, `__meta`, `__lock`, `__stars`, `__star`, `__attempt`, `__circle`, `__star-slot`; `.stamp-art__mono`, `__title`, `__postmark`, `__pin`, `__blind`, `__padlock`
 
-**Modifiers and states:** `.encounter-stamp_status_beaten|available|locked`, `.encounter-stamp_final`, `.encounter-stamp__star_on`
+**Modifiers and states:** `.encounter-stamp_status_beaten|available|locked`, `.encounter-stamp_final`, `.encounter-stamp_phase_release|postmark|stars|unlock|arrive`, `.encounter-stamp__star_on`
 
 **Tokens:** `--adventure-ink`, `--adventure-cream`, `--adventure-cream-bright`, `--adventure-graphite`, `--adventure-ochre`, `--adventure-brick`, `--adventure-brick-fill`, `--adventure-on-brick`, `--adventure-shadow`, `--adventure-font-title`, `--adventure-font-data`
 
-**Animation:** `encounter-stamp-breathe`, `encounter-stamp-trace`, and the hover lift: all off under `prefers-reduced-motion`. The stamp's own colours (the paper, the printed inks, the gold, the wax) are art and the same in both themes.
+**Animation:** `encounter-stamp-breathe`, `encounter-stamp-trace`, the hover lift and, for the victory, `encounter-stamp-pin-out|pin-in`, `-fade-out|in`, `-postmark`, `-thud`, `-star`, `-lift` and `-drop`: all off under `prefers-reduced-motion`. The stamp's own colours (the paper, the printed inks, the gold, the wax) are art and the same in both themes.
 
 ## Related
 

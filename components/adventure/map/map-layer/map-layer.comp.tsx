@@ -1,13 +1,15 @@
 import Image from "next/image";
-import { useMemo, type CSSProperties } from "react";
+import { useId, useMemo, useRef, type CSSProperties } from "react";
 import { Keepsake } from "@/components/adventure/keepsakes/keepsake/keepsake.comp";
 import { Needle } from "@/components/adventure/map/needle.comp";
 import { PATH_MARKS } from "@/components/adventure/map/path-marks.const";
 import { PlayerToken } from "@/components/adventure/map/player-token.comp";
+import { useSeamTravel, useTokenTravel } from "@/components/adventure/map/use-victory-travel.hook";
+import { inPhases, type VictorySequence } from "@/components/adventure/map/use-victory-sequence.hook";
 import { NotePage } from "@/components/adventure/note-page/note-page/note-page.comp";
-import { EncounterStamp } from "@/components/adventure/stamp/encounter-stamp/encounter-stamp.comp";
+import { EncounterStamp, type StampPhase } from "@/components/adventure/stamp/encounter-stamp/encounter-stamp.comp";
 import type { AdventureLayout, AdventureZoneSeed } from "@/lib/adventure/adventure.types";
-import { arrowPath, seamOf, zoneAt, type PathMark } from "@/lib/adventure/map-geometry";
+import { arrowPath, seamOf, travelOf, zoneAt, type PathMark } from "@/lib/adventure/map-geometry";
 import type { AdventureProgressView } from "@/services/adventure/adventure.types";
 import "@/components/adventure/adventure.css";
 import "./map-layer.comp.css";
@@ -29,11 +31,25 @@ interface MapLayerProps {
   progress: AdventureProgressView;
   /** The person, for the token's initials and the membership card's name. */
   player: { initials: string; name: string };
+  /** The victory being played, if one is: what it asks of each piece, and what the layer animates itself. */
+  sequence: VictorySequence | null;
   /** A stamp was pressed: the host opens that rival's card. */
   onOpen: (order: number, trigger: HTMLElement) => void;
 }
 
 const round = (value: number) => Math.round(value * 1000) / 1000;
+
+/** What each stamp draws of the victory: the rival won, then the next one. */
+function stampPhaseOf(order: number, sequence: VictorySequence | null): StampPhase | null {
+  if (!sequence) return null;
+  if (order === sequence.order)
+    return sequence.phase === "release" || sequence.phase === "postmark" || sequence.phase === "stars"
+      ? sequence.phase
+      : null;
+  if (order === sequence.order + 1)
+    return sequence.phase === "unlock" || sequence.phase === "arrive" ? sequence.phase : null;
+  return null;
+}
 
 /** The small mark printed along the tape, in the colour of the stretch it is on. */
 function PathMarkShape({ mark }: { mark: PathMark }) {
@@ -65,6 +81,73 @@ function PathMarkShape({ mark }: { mark: PathMark }) {
   );
 }
 
+interface SewingProps {
+  layout: AdventureLayout;
+  /** The path to sew, as SVG path data. */
+  path: string;
+  /** The marks printed on it, which are brick: it is walked. */
+  marks: readonly PathMark[];
+  /** The arc length of the whole path at which this one starts: the stitches keep their phase from there. */
+  startLength?: number;
+}
+
+/**
+ * A stretch of the path that is sewn: the tape in its cream with its printed
+ * squares, the brick marks, and the seam over it with its shadow, its thread
+ * and its highlight. The walked part of the map is one, and the stretch the
+ * victory sews to the next rival is another (under a mask that uncovers it).
+ */
+function Sewing({ layout, path, marks, startLength = 0 }: SewingProps) {
+  const tape = layout.seam.tape;
+  const square = layout.seam.stitch;
+  const thread = round(-(startLength % 20));
+  return (
+    <>
+      <path d={path} fill="none" stroke="#f5ead2" strokeWidth={tape} />
+      <path
+        d={path}
+        fill="none"
+        stroke="#dcbf86"
+        strokeWidth={tape}
+        strokeDasharray={`${square} ${square}`}
+        strokeDashoffset={round(-(startLength % (square * 2)))}
+      />
+      {marks.map((mark) => (
+        <PathMarkShape key={`${mark.x}-${mark.y}`} mark={mark} />
+      ))}
+      <path
+        d={path}
+        fill="none"
+        stroke="rgba(60,20,10,.35)"
+        strokeWidth="3.2"
+        strokeDasharray="12 8"
+        strokeDashoffset={thread}
+        strokeLinecap="round"
+        transform="translate(.8 1.4)"
+      />
+      <path
+        className="map-layer__thread"
+        d={path}
+        fill="none"
+        strokeWidth="3.2"
+        strokeDasharray="12 8"
+        strokeDashoffset={thread}
+        strokeLinecap="round"
+      />
+      <path
+        d={path}
+        fill="none"
+        stroke="#e0796a"
+        strokeWidth="1"
+        strokeDasharray="7 13"
+        strokeDashoffset={thread - 2}
+        strokeLinecap="round"
+        opacity=".85"
+      />
+    </>
+  );
+}
+
 /**
  * One layout of the map: the adventure's static scenery and, over it, the
  * live layer drawn from data — the seam sewn up to the rival to play and the
@@ -75,7 +158,7 @@ function PathMarkShape({ mark }: { mark: PathMark }) {
  * length), so the whole layer scales with the window. The three layouts are all
  * in the page and the stylesheet shows the one that fits.
  */
-export function MapLayer({ size, layout, zones, progress, player, onOpen }: MapLayerProps) {
+export function MapLayer({ size, layout, zones, progress, player, sequence, onOpen }: MapLayerProps) {
   const { width, height } = layout;
   const x = (value: number) => round((value / width) * 100);
   const y = (value: number) => round((value / height) * 100);
@@ -86,11 +169,39 @@ export function MapLayer({ size, layout, zones, progress, player, onOpen }: MapL
   const reachedZone = current ? zones.findIndex((zone) => zone.slug === current.zone) : zones.length - 1;
   const stopOf = (order: number) => layout.path.find((stop) => stop[2] === order)!;
   const focusOrder = currentOrder ?? progress.total;
-  const tokenOrder = focusOrder;
+
+  // The victory: the stretch to sew to the next rival, and what stays where it was until each step is done.
+  const phase = sequence?.phase ?? "done";
+  const wonOrder = sequence?.order ?? null;
+  const hasNext = sequence?.hasNext ?? false;
+  const travel = useMemo(
+    () => (wonOrder !== null && hasNext ? travelOf(layout, wonOrder, wonOrder + 1) : null),
+    [layout, wonOrder, hasNext],
+  );
+  const isSewing = travel !== null && inPhases(phase, "seam", "arrive");
+  // The token stays on the rival beaten until it hops to the next one.
+  const tokenOrder = sequence && travel && !inPhases(phase, "done") ? sequence.order : focusOrder;
   const tokenOffset = layout.token.byOrder[tokenOrder] ?? layout.token.offset;
   const tokenStop = stopOf(tokenOrder);
-  const hint = currentOrder === null ? null : layout.hints[currentOrder];
+  // The «¡me toca!» belongs to the rival to play: it leaves with the pin and comes back at the end.
+  const hintOrder = !sequence
+    ? currentOrder
+    : inPhases(phase, "done")
+      ? currentOrder
+      : inPhases(phase, "rest", "postmark")
+        ? sequence.order
+        : null;
+  const hint = hintOrder === null ? null : layout.hints[hintOrder];
   const start = layout.path[0]!;
+
+  const maskId = useId();
+  const worldRef = useRef<HTMLDivElement>(null);
+  const maskRef = useRef<SVGPathElement>(null);
+  const needleRef = useRef<SVGGElement>(null);
+  const needleThreadRef = useRef<SVGPathElement>(null);
+  const tokenRef = useRef<HTMLSpanElement>(null);
+  useSeamTravel({ phase, travel, layout, worldRef, maskRef, needleRef, needleThreadRef });
+  useTokenTravel({ phase, travel, layout, order: sequence?.order ?? null, worldRef, tokenRef });
 
   return (
     <section
@@ -99,7 +210,7 @@ export function MapLayer({ size, layout, zones, progress, player, onOpen }: MapL
       style={{ "--art-width": width, "--art-height": height } as CSSProperties}
       aria-label={`Mapa de ${progress.title}`}
     >
-      <div className="map-layer__world">
+      <div ref={worldRef} className="map-layer__world">
         <Image
           className="map-layer__scenery"
           src={`/aventuras/${progress.slug}/${SCENERY_FILE[size]}.svg`}
@@ -117,54 +228,13 @@ export function MapLayer({ size, layout, zones, progress, player, onOpen }: MapL
         <span className="map-layer__wash" aria-hidden="true" />
 
         <svg className="map-layer__seam" viewBox={`0 0 ${width} ${height}`} aria-hidden="true" focusable="false">
-          {/* The stretch walked: the tape in its cream with the printed squares, the marks in brick. */}
-          <path d={seam.walked} fill="none" stroke="#f5ead2" strokeWidth={layout.seam.tape} />
-          <path
-            d={seam.walked}
-            fill="none"
-            stroke="#dcbf86"
-            strokeWidth={layout.seam.tape}
-            strokeDasharray={`${layout.seam.stitch} ${layout.seam.stitch}`}
-          />
-          {seam.marks
-            .filter((mark) => mark.isWalked)
-            .map((mark) => (
-              <PathMarkShape key={`${mark.x}-${mark.y}`} mark={mark} />
-            ))}
+          {/* The stretch walked, sewn; then the marks still in grey and the rest of the path in pencil. */}
+          <Sewing layout={layout} path={seam.walked} marks={seam.marks.filter((mark) => mark.isWalked)} />
           {seam.marks
             .filter((mark) => !mark.isWalked)
             .map((mark) => (
               <PathMarkShape key={`${mark.x}-${mark.y}`} mark={mark} />
             ))}
-
-          {/* The seam over what is walked, the pencil over what is not. */}
-          <path
-            d={seam.walked}
-            fill="none"
-            stroke="rgba(60,20,10,.35)"
-            strokeWidth="3.2"
-            strokeDasharray="12 8"
-            strokeLinecap="round"
-            transform="translate(.8 1.4)"
-          />
-          <path
-            className="map-layer__thread"
-            d={seam.walked}
-            fill="none"
-            strokeWidth="3.2"
-            strokeDasharray="12 8"
-            strokeLinecap="round"
-          />
-          <path
-            d={seam.walked}
-            fill="none"
-            stroke="#e0796a"
-            strokeWidth="1"
-            strokeDasharray="7 13"
-            strokeDashoffset="-2"
-            strokeLinecap="round"
-            opacity=".85"
-          />
           <path
             className="map-layer__pencil"
             d={seam.ahead}
@@ -174,6 +244,35 @@ export function MapLayer({ size, layout, zones, progress, player, onOpen }: MapL
             strokeLinecap="round"
             opacity=".7"
           />
+
+          {/* The victory sews the stretch to the next rival, uncovered by a mask that runs along it. */}
+          {isSewing && travel && (
+            <>
+              <mask
+                id={maskId}
+                maskUnits="userSpaceOnUse"
+                x={travel.box.x}
+                y={travel.box.y}
+                width={travel.box.width}
+                height={travel.box.height}
+              >
+                <path
+                  ref={maskRef}
+                  d={travel.path}
+                  fill="none"
+                  stroke="#fff"
+                  strokeWidth={layout.seam.tape + 16}
+                  strokeLinecap="round"
+                  pathLength={1}
+                  strokeDasharray="1 1"
+                  strokeDashoffset={phase === "seam" ? 1 : 0}
+                />
+              </mask>
+              <g mask={`url(#${maskId})`}>
+                <Sewing layout={layout} path={travel.path} marks={travel.marks} startLength={travel.startLength} />
+              </g>
+            </>
+          )}
 
           <circle className="map-layer__thread-dot" cx={start[0]} cy={start[1]} r="6" />
           <path
@@ -186,6 +285,7 @@ export function MapLayer({ size, layout, zones, progress, player, onOpen }: MapL
 
           {/* The needle that leads the seam, still threaded. */}
           <path
+            ref={needleThreadRef}
             className="map-layer__thread"
             d={seam.needle.thread}
             fill="none"
@@ -193,6 +293,7 @@ export function MapLayer({ size, layout, zones, progress, player, onOpen }: MapL
             strokeLinecap="round"
           />
           <g
+            ref={needleRef}
             transform={`translate(${seam.needle.x} ${seam.needle.y}) rotate(${seam.needle.rotation}) scale(${seam.needle.scale})`}
           >
             <Needle />
@@ -228,7 +329,11 @@ export function MapLayer({ size, layout, zones, progress, player, onOpen }: MapL
           })}
 
           {hint && (
-            <g className={`map-layer__hint${zoneAt(layout, hint.y).isNight ? " map-layer__hint_tone_light" : ""}`}>
+            <g
+              className={`map-layer__hint${zoneAt(layout, hint.y).isNight ? " map-layer__hint_tone_light" : ""}${
+                sequence && phase === "release" ? " map-layer__hint_phase_leaving" : ""
+              }${sequence && phase === "done" ? " map-layer__hint_phase_arriving" : ""}`}
+            >
               <text
                 x={hint.x}
                 y={hint.y}
@@ -277,19 +382,22 @@ export function MapLayer({ size, layout, zones, progress, player, onOpen }: MapL
                         : layout.stamp.size;
                     return (
                       <div key={encounter.order} className="map-layer__encounter">
-                        {encounter.state === "beaten" && keepsake && (
-                          <Keepsake
-                            adventure={progress.slug}
-                            order={encounter.order}
-                            playerName={player.name}
-                            position={{
-                              left: x(keepsake[0]),
-                              top: y(keepsake[1]),
-                              width: x(keepsake[3]),
-                              rotation: keepsake[2],
-                            }}
-                          />
-                        )}
+                        {encounter.state === "beaten" &&
+                          keepsake &&
+                          !(sequence?.order === encounter.order && !inPhases(phase, "keepsake")) && (
+                            <Keepsake
+                              isSticking={sequence?.order === encounter.order && phase === "keepsake"}
+                              adventure={progress.slug}
+                              order={encounter.order}
+                              playerName={player.name}
+                              position={{
+                                left: x(keepsake[0]),
+                                top: y(keepsake[1]),
+                                width: x(keepsake[3]),
+                                rotation: keepsake[2],
+                              }}
+                            />
+                          )}
                         <EncounterStamp
                           encounter={encounter}
                           adventure={progress.slug}
@@ -302,6 +410,7 @@ export function MapLayer({ size, layout, zones, progress, player, onOpen }: MapL
                             tilt: layout.tilt[encounter.order] ?? 0,
                           }}
                           isFocus={encounter.order === focusOrder}
+                          phase={stampPhaseOf(encounter.order, sequence)}
                           onOpen={onOpen}
                         />
                       </div>
@@ -320,7 +429,8 @@ export function MapLayer({ size, layout, zones, progress, player, onOpen }: MapL
           </span>
 
           <span
-            className="map-layer__token"
+            ref={tokenRef}
+            className={`map-layer__token${sequence && phase === "token" ? " map-layer__token_phase_hop" : ""}`}
             style={{
               left: `${x(tokenStop[0] + tokenOffset[0])}%`,
               top: `${y(tokenStop[1] + tokenOffset[1])}%`,

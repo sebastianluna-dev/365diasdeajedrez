@@ -1,6 +1,6 @@
 import type { GameResultCode } from "@/constants/platform/study-codes.const";
 import { countsForScore, outcomeFor } from "@/services/play/play-rules";
-import type { EncounterProgress, EncounterStars } from "./adventure.types";
+import type { AdventureProgressView, EncounterProgress, EncounterStars } from "./adventure.types";
 
 // How far a person is in an adventure, as pure functions of their games: no
 // table holds it, so it can never disagree with the games. The story waits:
@@ -107,5 +107,52 @@ export function totalsOf(states: readonly EncounterProgress[]): { beaten: number
   return {
     beaten: states.filter((progress) => progress.state === "beaten").length,
     stars: states.reduce((sum, progress) => sum + progress.stars, 0),
+  };
+}
+
+/**
+ * Whether the map can play the victory over encounter `order`: it is beaten,
+ * and what the win opened is still as it opened — the next rival is the one to
+ * play and has not been tried (or there is none: it was the last page). An old
+ * or made-up address plays nothing.
+ */
+export function isVictoryPlayable(progress: AdventureProgressView, order: number): boolean {
+  const won = progress.encounters.find((encounter) => encounter.order === order);
+  if (won?.state !== "beaten") return false;
+  const next = progress.encounters.find((encounter) => encounter.order === order + 1);
+  return next === undefined || (next.state === "available" && next.attempts === 0);
+}
+
+/**
+ * The adventure as it was the moment before encounter `order` was won, so the
+ * victory can be played from there: the rival is the one to play again, with
+ * the attempts it had before the winning game and no stars, no postmark and no
+ * keepsake yet; the next one is locked; and the count is one rival and its
+ * stars short. Pure: the map derives it from the progress it was given.
+ */
+export function progressBeforeVictory(progress: AdventureProgressView, order: number): AdventureProgressView {
+  const won = progress.encounters.find((encounter) => encounter.order === order);
+  if (won?.state !== "beaten") return progress;
+  const encounters = progress.encounters.map((encounter) => {
+    if (encounter.order === order)
+      return {
+        ...encounter,
+        state: "available" as const,
+        attempts: Math.max(0, encounter.attempts - 1),
+        stars: 0 as const,
+        beatenAt: null,
+        winPlies: null,
+      };
+    if (encounter.order === order + 1 && encounter.state === "available")
+      return { ...encounter, state: "locked" as const };
+    return encounter;
+  });
+  return {
+    ...progress,
+    encounters,
+    current: encounters.find((encounter) => encounter.order === order) ?? null,
+    beaten: progress.beaten - 1,
+    stars: progress.stars - won.stars,
+    isComplete: false,
   };
 }

@@ -224,6 +224,7 @@
 
   & .game-tools__export {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--platform-space-2);
     margin-top: var(--platform-space-4);
   }
