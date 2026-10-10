@@ -1,0 +1,12 @@
+/* The map is a sheet of paper laid in the platform's page: its row sticks under the bar. */
+.adventure-map {
+  position: relative;
+  border-radius: 8px;
+  overflow: clip;
+  box-shadow: var(--adventure-shadow);
+
+  /* A placeholder for the rival's sheet until the card is drawn. */
+  & .adventure-map__sheet {
+    padding: 20px;
+  }
+}

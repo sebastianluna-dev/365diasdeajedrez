@@ -65,12 +65,14 @@ export function AdventureCover({ progress }: AdventureCoverProps) {
             {art && (
               <div className="adventure-cover__picture">
                 <JourneyMiniature
+                  adventure={progress.slug}
                   art={art.miniature.tall}
                   states={states}
                   variant="tall"
                   label="El viaje entero: el camino sube de la plaza del barrio al Palacio de los Escaques"
                 />
                 <JourneyMiniature
+                  adventure={progress.slug}
                   art={art.miniature.wide}
                   states={states}
                   variant="wide"

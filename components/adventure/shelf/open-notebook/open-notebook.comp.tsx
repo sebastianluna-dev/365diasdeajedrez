@@ -36,6 +36,7 @@ export function OpenNotebook({ notebook }: OpenNotebookProps) {
       {art && (
         <div className="open-notebook__picture">
           <JourneyMiniature
+            adventure={notebook.slug}
             art={art.miniature.wide}
             states={states}
             variant="wide"

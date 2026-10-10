@@ -1,0 +1,47 @@
+/* A keepsake: its own little drawing, lifted by a soft shadow. Stuck on the
+   map it is placed by its parent and held by a strip of tape. */
+.keepsake {
+  display: block;
+  position: relative;
+  width: 100%;
+  pointer-events: none;
+
+  & .keepsake__drawing {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    filter: drop-shadow(0 3px 3px rgb(42 28 14 / 0.25));
+  }
+
+  &.keepsake_stuck {
+    position: absolute;
+    z-index: 1;
+    transform: translate(-50%, -50%) rotate(var(--rotation, 0deg));
+  }
+
+  & .keepsake__tape {
+    position: absolute;
+    top: -6%;
+    left: 50%;
+    width: 52%;
+    max-width: 54px;
+    min-width: 30px;
+    height: calc(15 * var(--u, 1px));
+    transform: translateX(-50%) rotate(-8deg);
+    background: rgb(214 180 110 / 0.62);
+    background-image: repeating-linear-gradient(45deg, transparent 0 5px, rgb(255 255 255 / 0.24) 5px 8px);
+  }
+
+  /* Where the keepsake is thin or small, the tape goes where the paper is. */
+  &.keepsake_order_2 .keepsake__tape {
+    top: 10%;
+    left: 22%;
+    width: 22%;
+  }
+
+  &.keepsake_order_5 .keepsake__tape {
+    top: -2%;
+    width: 90%;
+  }
+}

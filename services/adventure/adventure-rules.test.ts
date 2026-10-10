@@ -4,6 +4,7 @@ import {
   attemptsOf,
   canStartEncounter,
   encounterStatesOf,
+  firstWinOf,
   nextEncounterOf,
   starsForAttempts,
   totalsOf,
@@ -85,6 +86,23 @@ describe("attemptsOf", () => {
 
   it("starts at zero", () => {
     expect(attemptsOf([])).toEqual({ attempts: 0, isBeaten: false });
+  });
+});
+
+describe("firstWinOf", () => {
+  it("is the first win in the order the games ended, and none when there is not one", () => {
+    const loss = game(1, "loss");
+    const first = game(1, "win");
+    const second = game(1, "win");
+    expect(firstWinOf([second, loss, first])).toBe(first);
+    expect(firstWinOf([loss, game(1, "draw"), game(1, "aborted"), game(1, "open")])).toBeNull();
+    expect(firstWinOf([])).toBeNull();
+  });
+
+  it("reads the win from the seat the person held", () => {
+    const win = game(1, "win", "black");
+    expect(firstWinOf([win])).toBe(win);
+    expect(firstWinOf([{ ...win, seat: "white" }])).toBeNull();
   });
 });
 

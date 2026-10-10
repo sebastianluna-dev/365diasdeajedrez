@@ -1,0 +1,56 @@
+---
+description: "A rival's perforated postage stamp on the map, with its portrait, its label and its state: cancelled, pinned or blind."
+---
+
+# `EncounterStamp`
+
+Also exports `StampArt`, the stamp's drawing alone, and `perforated`/`shade` (`perforated.ts`).
+
+|            |                                                                                                                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/adventure/stamp/encounter-stamp/encounter-stamp.comp.tsx`, `stamp-art.comp.tsx`, `perforated.ts`                                                           |
+| Kind       | A button (a leaf of the client map; the drawing is plain SVG)                                                                                                          |
+| Stylesheet | `encounter-stamp.comp.css` → block `.encounter-stamp`; `stamp-art.comp.css` → block `.stamp-art`                                                                       |
+| Story      | `encounter-stamp.stories.tsx` (`adventure/stamp/EncounterStamp`): beaten with three and two stars, available at its second try and its first, locked, the final locked |
+| Used by    | [`MapLayer`](/components/adventure/map/map-layer)                                                                                                                      |
+| Uses       | `StarIcon`, `LockIcon`, the portraits (`components/adventure/portraits/`, by `ADVENTURE_PORTRAITS`)                                                                    |
+
+## Purpose
+
+A rival on the map: the postage stamp (a 120 × 150 drawing in a 140 × 178 box, its outline bitten by half circles at a pitch: `perforated`, ported from the mockup and tested) with the engraved portrait, the rival's level in the serif and its number, and under it a paper label with the name and the level. The state decides the ink:
+
+- **Beaten**: inked and **cancelled** with a dated postmark — the zone's `postmark` word on the arc, the day and month, the year, and five wavy lines across the stamp — in the day of the game that won it, in Mexico City's time (`lib/adventure/postmark.ts`). Its label shows the stars earned.
+- **Available**: inked and **pinned**, lifted, with a red circle drawn round it (it traces itself in 1.4 s) and a brick label that says «Intento 2» once there has been a failed try. It breathes slowly; both animations stop under `prefers-reduced-motion`.
+- **Locked**: a **blind proof** — no ink, an embossed bust and a padlock in pencil — with a grey label and a lock beside the level. The last page has a gold frame and, while locked, a wax seal instead of the padlock.
+
+It is one `<button>` with `aria-haspopup="dialog"` whose `aria-label` says all of it: «Anselmo Quiroga, rival 5 de 12, nivel aproximado 783, disponible, intento 2» — the drawing and the label are hidden from a screen reader. Pressing it calls `onOpen(order, button)`; the host opens the rival's sheet.
+
+## Props
+
+| Prop        | Type                         | Required | Meaning                                                              |
+| ----------- | ---------------------------- | -------- | -------------------------------------------------------------------- |
+| `encounter` | `EncounterView`              | yes      | The rival with its state, attempts, stars and the day it was beaten. |
+| `adventure` | `string`                     | yes      | The adventure's slug: where the portrait is looked up.               |
+| `total`     | `number`                     | yes      | Rivals in the adventure («rival 5 de 12»).                           |
+| `postmark`  | `string`                     | yes      | The zone's word on the postmark.                                     |
+| `position`  | `{ left, top, width, tilt }` | yes      | Percentages of the world's box and the tilt in degrees.              |
+| `isFocus`   | `boolean`                    | no       | The stamp the map scrolls to (`data-focus`).                         |
+| `onOpen`    | `(order, trigger) => void`   | yes      | The stamp was pressed.                                               |
+
+`StampArt` takes `adventure`, `encounter`, `postmark` and `className`; the rival card draws it large.
+
+## Markup & styling
+
+Block `.encounter-stamp` (221 lines) and block `.stamp-art` (22 lines).
+
+**Elements:** `.encounter-stamp__paper`, `__label`, `__name`, `__nickname`, `__meta`, `__lock`, `__stars`, `__star`, `__attempt`, `__circle`; `.stamp-art__mono`, `__title`, `__postmark`
+
+**Modifiers and states:** `.encounter-stamp_status_beaten|available|locked`, `.encounter-stamp_final`, `.encounter-stamp__star_on`
+
+**Tokens:** `--adventure-ink`, `--adventure-cream`, `--adventure-cream-bright`, `--adventure-graphite`, `--adventure-ochre`, `--adventure-brick`, `--adventure-brick-fill`, `--adventure-on-brick`, `--adventure-shadow`, `--adventure-font-title`, `--adventure-font-data`
+
+**Animation:** `encounter-stamp-breathe`, `encounter-stamp-trace`, and the hover lift: all off under `prefers-reduced-motion`. The stamp's own colours (the paper, the printed inks, the gold, the wax) are art and the same in both themes.
+
+## Related
+
+[`MapLayer`](/components/adventure/map/map-layer), [`Keepsake`](/components/adventure/keepsakes/keepsake). The portraits are generated by `npm run adventure:art`.

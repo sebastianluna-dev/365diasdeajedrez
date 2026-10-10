@@ -42,6 +42,10 @@ export interface EncounterView extends EncounterProgress {
   keepsake: string;
   portrait: AdventurePortraitSeed;
   isFinal: boolean;
+  /** When the game that beat it ended; null until it is beaten. */
+  beatenAt: Date | null;
+  /** The half-moves of that game, for «Ganaste en 24 jugadas»; null until it is beaten. */
+  winPlies: number | null;
 }
 
 /** One adventure for one person: every encounter with where they stand, and the totals. */

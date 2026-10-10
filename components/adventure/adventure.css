@@ -34,6 +34,14 @@
      one that is coming. */
   --adventure-ticket: light-dark(#f4e6c4, #332f48);
   --adventure-ticket-quiet: light-dark(#e9e1cf, #282d44);
+  /* A page of the notebook of 1994 on the map: the ruled sheet, the flap that
+     covers a page not reached yet, and the brown ink it is written in. */
+  --adventure-page: light-dark(#f3e8cc, #2a3050);
+  --adventure-page-flap: light-dark(#eadcbc, #232944);
+  --adventure-page-ink: light-dark(#4a2f1d, #efe3c9);
+  /* What is laid over the map's scenery, which is drawn once for both themes:
+     nothing by day, a dark veil at night so it is the same notebook under a lamp. */
+  --adventure-scenery-wash: light-dark(transparent, rgb(14 18 44 / 0.5));
   /* The dots printed on a page, and what an empty place is filled with. */
   --adventure-grain: light-dark(#e1d6bc, #323a58);
   --adventure-empty: light-dark(#ddd3bf, #3a4060);

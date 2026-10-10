@@ -16,6 +16,8 @@ export interface AdventureGame {
   resultCode: GameResultCode;
   /** The seat the person held. */
   seat: "white" | "black";
+  /** Half-moves played; the map says «Ganaste en 24 jugadas» from it. */
+  plyCount?: number;
 }
 
 /** An encounter as the rules see it: its place in the story, and whether it closes the story. */
@@ -47,6 +49,18 @@ export function attemptsOf(games: readonly Pick<AdventureGame, "finishedAt" | "r
     .sort((a, b) => a.finishedAt!.getTime() - b.finishedAt!.getTime());
   const firstWin = counted.findIndex((game) => outcomeFor(game.resultCode, game.seat) === "win");
   return firstWin === -1 ? { attempts: counted.length, isBeaten: false } : { attempts: firstWin + 1, isBeaten: true };
+}
+
+/** The game that beat the rival: the first win among the games that count, in the order they ended; null if none. */
+export function firstWinOf<T extends Pick<AdventureGame, "finishedAt" | "resultCode" | "seat">>(
+  games: readonly T[],
+): T | null {
+  return (
+    games
+      .filter((game) => countsForScore(game))
+      .sort((a, b) => a.finishedAt!.getTime() - b.finishedAt!.getTime())
+      .find((game) => outcomeFor(game.resultCode, game.seat) === "win") ?? null
+  );
 }
 
 /**

@@ -10,6 +10,8 @@ import type { BotGroupCode } from "@/constants/platform/play-codes.const";
 export interface AdventureZoneSeed {
   /** Where the zone is in the art: `plaza`, `club`... Unique within the adventure. */
   slug: string;
+  /** The place written round a postmark, short and in capitals: «PLAZA», «LA TORRE». */
+  postmark: string;
   name: string;
   /** What kind of place it is, as copy. */
   kind: string;

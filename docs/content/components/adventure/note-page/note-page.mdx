@@ -1,0 +1,50 @@
+---
+description: "A page of the notebook of 1994 on the map: its taped label and its ruled sheet, closed, folded or open."
+---
+
+# `NotePage`
+
+|            |                                                                                                          |
+| ---------- | -------------------------------------------------------------------------------------------------------- |
+| File       | `components/adventure/note-page/note-page/note-page.comp.tsx`                                            |
+| Kind       | Client Component (a leaf: one `IntersectionObserver`); also `note-page-clip.ts` and `note-page.const.ts` |
+| Stylesheet | `note-page.comp.css` → block `.note-page`                                                                |
+| Story      | `note-page.stories.tsx` (`adventure/note-page/NotePage`): open, closed (not reached), torn out           |
+| Used by    | [`MapLayer`](/components/adventure/map/map-layer)                                                        |
+| Uses       | `pageClip` (`note-page-clip.ts`, tested), `AdventureZoneSeed` (`lib/adventure/adventure.types`)          |
+
+## Purpose
+
+The story is told by a page of the notebook per zone, read on arriving: a label taped to the sheet (the zone's kind, its name and its number in a circle) and the ruled sheet with a red margin — the chapter, the note and who signed it. Three states:
+
+- **`closed`** — the zone has not been reached: a flap covers the top half and says «Se abre al llegar»; the sheet is `aria-hidden` and a screen reader hears only that it opens on arriving.
+- **`folded`** — reached, not read yet: the sheet is clipped to its top half.
+- **`open`** — the flap turns up (`rotateX`) and the sheet unrolls (`clip-path`); it passes to it the first time 45 % of the page comes into view. For whoever asks for reduced motion a reached page is open from the start, in the stylesheet, with no transition.
+
+A page that was torn out (`zone.torn`, the club's) has a ragged lower edge — a seeded polygon, the same every time — and no signature. On a phone (`isCompact`) the type, the lines and the padding are smaller, as the mockup's.
+
+## Props
+
+| Prop        | Type                             | Required | Meaning                                                           |
+| ----------- | -------------------------------- | -------- | ----------------------------------------------------------------- |
+| `zone`      | `AdventureZoneSeed`              | yes      | Kind, name, chapter, note, signature and whether it was torn out. |
+| `number`    | `number`                         | yes      | Its place in the notebook, 1 to 6.                                |
+| `isReached` | `boolean`                        | yes      | The person has got to the zone.                                   |
+| `position`  | `{ left, top, width, rotation }` | yes      | Percentages of the world's box and the tilt in degrees.           |
+| `isCompact` | `boolean`                        | no       | The phone's layout.                                               |
+
+## Markup & styling
+
+Block `.note-page` (261 lines).
+
+**Elements:** `.note-page__label`, `__number`, `__kind`, `__place`, `__paper`, `__sheet`, `__chapter`, `__note`, `__signature`, `__flap`, `__sr-only`
+
+**Modifiers and states:** `.note-page_state_closed|folded|open`, `.note-page_torn`, `.note-page_size_compact`
+
+**Tokens:** `--adventure-page`, `--adventure-page-flap`, `--adventure-page-ink`, `--adventure-cream-bright`, `--adventure-ink`, `--adventure-brick`, `--adventure-graphite`, `--adventure-shadow`, `--adventure-font-title`, `--adventure-font-data`, `--adventure-font-hand`, `--adventure-font-note`
+
+**Animation:** the sheet's clip (0.55 s) and the flap's turn (0.75 s), both off under `prefers-reduced-motion` (a reached page is then open).
+
+## Related
+
+[`MapLayer`](/components/adventure/map/map-layer).

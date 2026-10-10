@@ -15,20 +15,19 @@ description: "The whole journey in one small drawing: cut-paper scenery, the pat
 
 ## Purpose
 
-The picture on the cover's left page and on the shelf's open notebook: the journey from the plaza to the palace, small. Two variants: **tall** for the open notebook and **wide** for a phone and for the shelf's card. The scenery is drawn by hand here, in cut-paper layers with a soft shadow, and keeps its own colours in both themes (it is art); the path, the stamps and everything that says where the person is read the paper's tokens.
+The picture on the cover's left page and on the shelf's open notebook: the journey from the plaza to the palace, small. Two variants: **tall** for the open notebook and **wide** for a phone and for the shelf's card. The scenery is the adventure's exported art, `public/aventuras/<slug>/miniatura-alta.svg` and `miniatura-ancha.svg` (made by `npm run adventure:art`, with no path), drawn as an `<image>` over the viewBox; it keeps its own colours in both themes (it is art), and the path, the stamps and everything that says where the person is read the paper's tokens.
 
 The path comes from the adventure's art file (`miniature.tall` and `miniature.wide`): its stops are the stamps' places, and a stop with a third value is the rival whose stamp sits there. It is smoothed with a Catmull-Rom curve, printed as a tape with a dashed red thread over it, and sewn solid as far as the stop of the available rival (a solid copy with `pathLength={100}` and a `stroke-dasharray` of the progress). Beaten stamps are filled and postmarked, the available one is larger and framed in brick with a pin, a locked one shows a padlock, and the last is a wax seal that carries a tick when it is written.
 
-**A placeholder:** when the adventure's art is exported (A3, `public/aventuras/<slug>/miniatura-*.svg`) this scenery is replaced by it; the path and stamps stay.
-
 ## Props
 
-| Prop      | Type                 | Required | Meaning                                                 |
-| --------- | -------------------- | -------- | ------------------------------------------------------- |
-| `art`     | `AdventureMiniature` | yes      | The viewBox and the path of the variant.                |
-| `states`  | `EncounterState[]`   | yes      | Each rival's state in the order of the story.           |
-| `variant` | `"tall" \| "wide"`   | yes      | Which scenery to draw.                                  |
-| `label`   | `string`             | yes      | What a screen reader says: the drawing is `role="img"`. |
+| Prop        | Type                 | Required | Meaning                                                                  |
+| ----------- | -------------------- | -------- | ------------------------------------------------------------------------ |
+| `adventure` | `string`             | yes      | The adventure's slug: where its scenery is (`public/aventuras/<slug>/`). |
+| `art`       | `AdventureMiniature` | yes      | The viewBox and the path of the variant.                                 |
+| `states`    | `EncounterState[]`   | yes      | Each rival's state in the order of the story.                            |
+| `variant`   | `"tall" \| "wide"`   | yes      | Which scenery to draw.                                                   |
+| `label`     | `string`             | yes      | What a screen reader says: the drawing is `role="img"`.                  |
 
 ## Markup & styling
 

@@ -1,0 +1,22 @@
+/* The drawing of a stamp: it is as wide as whatever holds it, and the postmark
+   is printed in ink that multiplies onto the paper under it. Fonts are the
+   adventure's (a font on an SVG text is set by a class: the attribute would
+   not take the variable). */
+.stamp-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+
+  & .stamp-art__mono {
+    font-family: var(--adventure-font-data);
+  }
+
+  & .stamp-art__title {
+    font-family: var(--adventure-font-title);
+  }
+
+  & .stamp-art__postmark {
+    mix-blend-mode: multiply;
+  }
+}

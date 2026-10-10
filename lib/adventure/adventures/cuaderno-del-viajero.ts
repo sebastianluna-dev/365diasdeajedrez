@@ -26,6 +26,7 @@ export const CUADERNO_DEL_VIAJERO: AdventureSeed = {
   zones: [
     {
       slug: "plaza",
+      postmark: "PLAZA",
       name: "Plaza de las Jacarandas",
       kind: "Parque del barrio",
       chapter: "Aquí empezó todo",
@@ -34,6 +35,7 @@ export const CUADERNO_DEL_VIAJERO: AdventureSeed = {
     },
     {
       slug: "club",
+      postmark: "LA TORRE",
       name: "Club La Torre",
       kind: "Club local",
       chapter: "Una página arrancada",
@@ -43,6 +45,7 @@ export const CUADERNO_DEL_VIAJERO: AdventureSeed = {
     },
     {
       slug: "biblioteca",
+      postmark: "BIBLIOTECA",
       name: "Biblioteca Central",
       kind: "Torneo universitario",
       chapter: "La dedicatoria sin firma",
@@ -51,6 +54,7 @@ export const CUADERNO_DEL_VIAJERO: AdventureSeed = {
     },
     {
       slug: "malecon",
+      postmark: "MALECÓN",
       name: "Abierto del Malecón",
       kind: "Torneo abierto",
       chapter: "La partida contra el capitán",
@@ -59,6 +63,7 @@ export const CUADERNO_DEL_VIAJERO: AdventureSeed = {
     },
     {
       slug: "hotel",
+      postmark: "ALAMEDA",
       name: "Gran Hotel Alameda",
       kind: "Campeonato de la ciudad",
       chapter: "El torneo que nunca terminó",
@@ -67,6 +72,7 @@ export const CUADERNO_DEL_VIAJERO: AdventureSeed = {
     },
     {
       slug: "palacio",
+      postmark: "PALACIO",
       name: "Palacio de los Escaques",
       kind: "La final pendiente",
       chapter: "El autor del cuaderno te espera",

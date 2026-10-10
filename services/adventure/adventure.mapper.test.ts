@@ -14,6 +14,7 @@ function row(
   seat: "white" | "black",
   result: "WHITE_WINS" | "BLACK_WINS" | "DRAW" | "ONGOING",
   minute = 1,
+  plyCount = 40,
 ) {
   const botSide = { slug: bot };
   return {
@@ -24,6 +25,7 @@ function row(
     whiteElo: seat === "white" ? null : 412,
     blackElo: seat === "white" ? 412 : null,
     finishedAt: new Date(minute * 60_000),
+    plyCount,
     result: { code: result },
     whiteBot: seat === "white" ? null : botSide,
     blackBot: seat === "white" ? botSide : null,
@@ -49,18 +51,24 @@ describe("adventureGamesOf", () => {
 });
 
 describe("progressView", () => {
-  const states = encounterStatesOf(
-    ADVENTURE.encounters,
-    adventureGamesOf(
-      [
-        row(slugOf("don-chema"), "white", GAME_RESULT.WHITE_WINS, 1),
-        row(slugOf("chayo-rios"), "white", GAME_RESULT.BLACK_WINS, 2),
-        row(slugOf("chayo-rios"), "white", GAME_RESULT.WHITE_WINS, 3),
-      ],
-      "ana",
-      ADVENTURE,
-    ),
+  const games = adventureGamesOf(
+    [
+      row(slugOf("don-chema"), "white", GAME_RESULT.WHITE_WINS, 1, 47),
+      row(slugOf("chayo-rios"), "white", GAME_RESULT.BLACK_WINS, 2),
+      row(slugOf("chayo-rios"), "white", GAME_RESULT.WHITE_WINS, 3, 82),
+    ],
+    "ana",
+    ADVENTURE,
   );
+  const states = encounterStatesOf(ADVENTURE.encounters, games);
+
+  it("tells when a rival was beaten and in how many half-moves, from the game that won", () => {
+    const view = progressView(ADVENTURE, states, null, games);
+    expect(view.encounters[0]).toMatchObject({ beatenAt: new Date(60_000), winPlies: 47 });
+    // The second rival was beaten on the second try: the date and length are the winning game's.
+    expect(view.encounters[1]).toMatchObject({ beatenAt: new Date(180_000), winPlies: 82 });
+    expect(view.encounters[2]).toMatchObject({ beatenAt: null, winPlies: null });
+  });
 
   it("puts the content and the progress of all twelve encounters together", () => {
     const view = progressView(ADVENTURE, states, null);

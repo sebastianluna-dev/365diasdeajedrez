@@ -19,7 +19,8 @@ the palace, the path sewn over it with red thread and the twelve stamps on their
 places — filled when beaten, framed in brick when it is the one to play, grey
 and padlocked while locked. The thread is solid as far as the person has got.
 The tall one is for the open notebook, the wide one for a phone and for the
-shelf's card. It is a drawing of its own until the adventure's art is exported.
+shelf's card. The scenery is the adventure's exported art
+(\`public/aventuras/<slug>/miniatura-*.svg\`).
 
 Source: \`components/adventure/cover/journey-miniature/journey-miniature.comp.tsx\`.
 Reference page: [Components › JourneyMiniature](/components/adventure/cover/journey-miniature) in the docs site.
@@ -28,6 +29,7 @@ Reference page: [Components › JourneyMiniature](/components/adventure/cover/jo
     },
   },
   args: {
+    adventure: "cuaderno-del-viajero",
     art: ART.miniature.tall,
     states: statesAt(4),
     variant: "tall",

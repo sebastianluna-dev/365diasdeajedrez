@@ -60,5 +60,5 @@ export const getAdventureProgress = cache(async (slug: string): Promise<Adventur
   if (!adventure) return null;
   const user = await getCurrentUser();
   const [games, openGame] = await Promise.all([adventureGamesFor(user.id, slug), getOpenPlayedGame()]);
-  return progressView(adventure, encounterStatesOf(adventure.encounters, games), openGame);
+  return progressView(adventure, encounterStatesOf(adventure.encounters, games), openGame, games);
 });

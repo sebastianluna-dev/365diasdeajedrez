@@ -139,7 +139,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/ajustes` (the account: the student's details, the theme and the daily goal; reached from the menu behind the avatar of the bar). The platform has a **light and a dark theme**: it follows the machine unless the person chooses, and the choice is the `tema` cookie — see `docs/` → Architecture → Themes.
 - `/entrenador` (the Move Trainer; **switched off**: it answers 404 while `MOVE_TRAINER_ENABLED` in `constants/platform/features.const.ts` is `false`)
 - `/explorador` (search for games by position; student and teacher share it)
-- `/jugar` (the way in), `/jugar/partida-libre` (the gallery of bots), `/jugar/aventura` (the adventure's shelf, behind `ADVENTURE_ENABLED`), `/jugar/partidas/[gameId]` (games against the bots), `/perfil`, `/perfil/[slug]`, `/perfil/[slug]/partidas` (a person's profile and every game they played; seen by them, their teachers and the staff) — **switched off** while `PLAY_ENABLED` is `false`
+- `/jugar` (the way in), `/jugar/partida-libre` (the gallery of bots), `/jugar/aventura` (the adventure's shelf, behind `ADVENTURE_ENABLED`), `/jugar/aventura/[adventureSlug]` (its map; `?victoria=` and `?error=`), `/jugar/partidas/[gameId]` (games against the bots), `/perfil`, `/perfil/[slug]`, `/perfil/[slug]/partidas` (a person's profile and every game they played; seen by them, their teachers and the staff) — **switched off** while `PLAY_ENABLED` is `false`
 - `/herramientas` (goes to the board) and `/herramientas/tablero-de-analisis` — **switched off** while `ANALYSIS_BOARD_ENABLED` is `false`; once on, «Herramientas» in the bar gathers the board with the explorer
 
 **Platform — teacher** (requires an active `Teacher` row)

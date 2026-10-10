@@ -59,6 +59,8 @@ export function fixtureAdventureProgress({
       keepsake: seed.keepsake,
       portrait: seed.portrait,
       isFinal: seed.isFinal === true,
+      beatenAt: isBeaten ? new Date(Date.UTC(2026, 8, 14 + 7 * (seed.order - 1), 18)) : null,
+      winPlies: isBeaten ? [48, 82, 104, 38, 66, 90, 72, 120, 84, 96, 110, 130][seed.order - 1]! : null,
     };
   });
   const current = encounters.find((encounter) => encounter.state === "available") ?? null;

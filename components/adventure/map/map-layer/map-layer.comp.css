@@ -1,0 +1,202 @@
+/* One layout of the map. The world is the art's own box, as wide as the layer
+   up to the art's width, and everything in it is placed in percentages of it;
+   `--u` is one unit of the art as a length, for what is measured and not
+   placed (type, the stamps' labels). The scenery is wider than the world: the
+   paper runs 700 units past each side, and the layer clips it. Only one of the
+   three layers is shown, by the window's width. */
+.map-layer {
+  position: relative;
+  display: none;
+  overflow: hidden;
+  background: var(--adventure-paper);
+  color: var(--adventure-ink);
+
+  & .map-layer__world {
+    --u: calc(100cqw / var(--art-width));
+
+    position: relative;
+    width: min(100%, calc(var(--art-width) * 1px));
+    margin-inline: auto;
+    aspect-ratio: var(--art-width) / var(--art-height);
+    container-type: inline-size;
+  }
+
+  & .map-layer__scenery {
+    position: absolute;
+    max-width: none;
+    height: auto;
+    user-select: none;
+  }
+
+  /* The scenery is drawn once, in daylight: at night a veil lies over it. */
+  & .map-layer__wash {
+    position: absolute;
+    inset: -40px -700px 0;
+    background: var(--adventure-scenery-wash);
+    pointer-events: none;
+  }
+
+  & .map-layer__seam {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  & .map-layer__thread {
+    stroke: var(--adventure-thread);
+  }
+
+  & .map-layer__thread-dot {
+    fill: var(--adventure-thread);
+  }
+
+  & .map-layer__pencil {
+    stroke: var(--adventure-graphite);
+  }
+
+  /* Notes in pencil on the margins, in the ink of the page; over the night, a light one. */
+  & .map-layer__note {
+    font-family: var(--adventure-font-note);
+    font-weight: 600;
+
+    & text {
+      fill: var(--adventure-ink-soft);
+    }
+
+    & path {
+      stroke: var(--adventure-ink-soft);
+    }
+  }
+
+  & .map-layer__note_tone_light {
+    & text {
+      fill: var(--adventure-on-wood-soft);
+    }
+
+    & path {
+      stroke: var(--adventure-on-wood-soft);
+    }
+  }
+
+  /* The «¡me toca!» that points at the stamp to play, in brick. */
+  & .map-layer__hint {
+    font-family: var(--adventure-font-note);
+    font-weight: 600;
+
+    & text {
+      fill: var(--adventure-brick);
+    }
+
+    & path {
+      stroke: var(--adventure-brick);
+    }
+  }
+
+  /* Over the night the brick would be lost: the call is in light ink, as the notes. */
+  & .map-layer__hint_tone_light {
+    & text {
+      fill: var(--adventure-on-wood-soft);
+    }
+
+    & path {
+      stroke: var(--adventure-on-wood-soft);
+    }
+  }
+
+  & .map-layer__live {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* The zones and their encounters only group the pieces: the pieces place themselves. */
+  & .map-layer__zone,
+  & .map-layer__encounter {
+    display: contents;
+  }
+
+  & .map-layer__zone-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  & .map-layer__flag {
+    position: absolute;
+    z-index: 1;
+    padding: 8px 12px 7px 20px;
+    transform: translate(-50%, -50%) rotate(-4deg);
+    clip-path: polygon(11px 0, 100% 0, 100% 100%, 11px 100%, 0 50%);
+    background: var(--adventure-ink);
+    font-family: var(--adventure-font-data);
+    font-size: max(10px, calc(12 * var(--u)));
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--adventure-cream-bright);
+  }
+
+  /* The person's token, hopping a little beside the stamp to play. */
+  & .map-layer__token {
+    position: absolute;
+    z-index: 3;
+    transform: translate(-50%, -100%);
+    pointer-events: none;
+    animation: map-layer-hop 3.4s ease-in-out infinite;
+
+    & svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+  }
+
+  /* The three layouts: the phone's by default, the tablet's from 768 and the desktop's from 1024. */
+  &.map-layer_size_mobile {
+    display: block;
+  }
+
+  @media (width >= 768px) {
+    &.map-layer_size_mobile {
+      display: none;
+    }
+
+    &.map-layer_size_tablet {
+      display: block;
+    }
+  }
+
+  @media (width >= 1024px) {
+    &.map-layer_size_tablet {
+      display: none;
+    }
+
+    &.map-layer_size_desktop {
+      display: block;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .map-layer__token {
+      animation: none;
+    }
+  }
+}
+
+@keyframes map-layer-hop {
+  0%,
+  100% {
+    transform: translate(-50%, -100%);
+  }
+
+  50% {
+    transform: translate(-50%, calc(-100% - 5px));
+  }
+}

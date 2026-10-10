@@ -1,0 +1,55 @@
+---
+description: "The adventure's map: the journey on paper from the plaza to the palace, in three layouts, with the live layer over the static scenery and the rival's sheet."
+---
+
+# `AdventureMap`
+
+Also exports `AdventureMapSection`, the Server Component that reads the progress and renders it.
+
+|            |                                                                                                                                                     |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/adventure/map/adventure-map/adventure-map.comp.tsx`, `adventure-map.section.tsx`                                                        |
+| Kind       | Client Component (the one with the state) under a Server Component                                                                                  |
+| Stylesheet | `adventure-map.comp.css` → block `.adventure-map`                                                                                                   |
+| Story      | `adventure-map.stories.tsx` (`adventure/map/AdventureMap`): four of twelve, fresh, complete, on a phone, with a rival's sheet open                  |
+| Used by    | `app/(platform)/jugar/aventura/[adventureSlug]/page.tsx`, behind `PLAY_ENABLED` and `ADVENTURE_ENABLED`                                             |
+| Composes   | [`MapLayer`](/components/adventure/map/map-layer) ×3, [`MapHud`](/components/adventure/map/map-hud), `PlatformPopup`                                |
+| Reads      | `getAdventureProgress(slug)` (`services/adventure`), `getOwnPlayerCard()` (`services/profile`), `adventureOf` and `ADVENTURE_ART` (`lib/adventure`) |
+
+## Purpose
+
+The map of one adventure for one person. `AdventureMapSection` makes the reads — the progress (derived from the games: two queries on top of the session) and the person's card — and hands the client map plain data: the progress, the adventure's zones, its art and the person's initials and name. The map is a sheet of paper laid in the platform's page, with a row over it; the platform's bar stays above.
+
+The three layouts of the world are all in the page and the stylesheet shows the one that fits the window (the desktop's from 1024px, the tablet's from 768, the phone's below), so the server renders the same markup for every device and nothing flashes. What the client map does that needs the browser:
+
+- **Scrolls to the stamp to play** when it opens (or to the last one when the adventure is complete), to 55 % of the window, instantly. `autoScroll={false}` leaves the window alone, for the sheet of the Storybook overview.
+- **Measures the platform's bar** (`.platform-shell__bar`, one row or two) and sets `--map-bar` on its root, which is where the row over the map sticks.
+- **Follows the zone** the middle of the window is over, from the shown layer's own scale (`zoneAt` in `lib/adventure/map-geometry.ts`), so the row says «Biblioteca Central» as one scrolls.
+- **Opens the rival's sheet**: a stamp asks for it with its order and the map puts the rival in the popup (`flushSync`, so the dialog's content is there when it opens and the focus finds its first control).
+
+## Props
+
+| Prop         | Type                    | Required | Meaning                                                                                                                    |
+| ------------ | ----------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `progress`   | `AdventureProgressView` | yes      | Every rival with its state, the totals and the open game.                                                                  |
+| `zones`      | `AdventureZoneSeed[]`   | yes      | The notebook's pages and the zone names, in story order.                                                                   |
+| `art`        | `AdventureArt`          | yes      | Where the live layer sits over each layout.                                                                                |
+| `player`     | `{ initials, name }`    | yes      | The token's initials, and the name the membership card writes.                                                             |
+| `victory`    | `number \| null`        | yes      | The encounter just beaten (`?victoria=`, only when it really is beaten); carried as `data-victory` for the sequence of A4. |
+| `autoScroll` | `boolean`               | no       | Default `true`.                                                                                                            |
+
+## Behaviour
+
+`AdventureMapSection` answers 404 (`notFound`) for a slug with no adventure, art or progress; the page does it first, with both switches. A `victory` that is not a beaten encounter is dropped by the section. Nothing here writes: the game is opened by `startAdventureEncounter`, which the rival card will call.
+
+## Markup & styling
+
+Block `.adventure-map` (12 lines); the root also carries `.adventure`, which declares the paper's tokens where it is drawn.
+
+**Elements:** `.adventure-map__sheet` (the popup's content, until the rival card).
+
+**Tokens:** `--adventure-shadow`. No media queries, no animation.
+
+## Related
+
+[`MapLayer`](/components/adventure/map/map-layer), [`MapHud`](/components/adventure/map/map-hud), [`EncounterStamp`](/components/adventure/stamp/encounter-stamp), [`NotePage`](/components/adventure/note-page/note-page), [`Keepsake`](/components/adventure/keepsakes/keepsake), [`PlatformPopup`](/components/platform/shared/platform-popup/platform-popup).

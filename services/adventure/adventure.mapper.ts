@@ -5,7 +5,7 @@ import type { Prisma } from "@/lib/platform-db/generated/client";
 import { botSideOf, SCORE_SELECT } from "@/services/play/play.mapper";
 import type { OpenGameSummary } from "@/services/play/play.types";
 import type { GameResultCode } from "@/constants/platform/study-codes.const";
-import { nextEncounterOf, totalsOf, type AdventureGame } from "./adventure-rules";
+import { firstWinOf, nextEncounterOf, totalsOf, type AdventureGame } from "./adventure-rules";
 import type { AdventureProgressView, EncounterProgress, EncounterView } from "./adventure.types";
 
 // Rows of `PlayedGame` and the adventure's content → what the adventure
@@ -15,6 +15,7 @@ import type { AdventureProgressView, EncounterProgress, EncounterView } from "./
 /** What the progress needs of each game against an adventure's rival: the scoreboard's columns and the bot's slug. */
 export const ADVENTURE_GAME_SELECT = {
   ...SCORE_SELECT,
+  plyCount: true,
   whiteBot: { select: { slug: true } },
   blackBot: { select: { slug: true } },
 } satisfies Prisma.PlayedGameSelect;
@@ -35,7 +36,15 @@ export function adventureGamesOf(
     const slug = row.whiteBot?.slug ?? row.blackBot?.slug;
     const order = slug ? orderOfBot.get(slug) : undefined;
     if (!side || order === undefined) return [];
-    return [{ order, finishedAt: row.finishedAt, resultCode: row.result.code as GameResultCode, seat: side.seat }];
+    return [
+      {
+        order,
+        finishedAt: row.finishedAt,
+        resultCode: row.result.code as GameResultCode,
+        seat: side.seat,
+        plyCount: row.plyCount,
+      },
+    ];
   });
 }
 
@@ -44,6 +53,7 @@ function encounterView(
   adventure: AdventureSeed,
   seed: AdventureEncounterSeed,
   progress: EncounterProgress,
+  win: AdventureGame | null,
 ): EncounterView {
   return {
     ...progress,
@@ -63,6 +73,8 @@ function encounterView(
     keepsake: seed.keepsake,
     portrait: seed.portrait,
     isFinal: seed.isFinal === true,
+    beatenAt: win?.finishedAt ?? null,
+    winPlies: win?.plyCount ?? null,
   };
 }
 
@@ -71,14 +83,13 @@ export function progressView(
   adventure: AdventureSeed,
   states: readonly EncounterProgress[],
   openGame: OpenGameSummary | null,
+  games: readonly AdventureGame[] = [],
 ): AdventureProgressView {
-  const encounters = adventure.encounters.map((seed) =>
-    encounterView(
-      adventure,
-      seed,
-      states.find((progress) => progress.order === seed.order)!,
-    ),
-  );
+  const encounters = adventure.encounters.map((seed) => {
+    const progress = states.find((candidate) => candidate.order === seed.order)!;
+    const win = progress.state === "beaten" ? firstWinOf(games.filter((game) => game.order === seed.order)) : null;
+    return encounterView(adventure, seed, progress, win);
+  });
   const next = nextEncounterOf(states);
   const { beaten, stars } = totalsOf(states);
   const openSeed = openGame

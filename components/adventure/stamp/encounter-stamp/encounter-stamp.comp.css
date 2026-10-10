@@ -1,0 +1,221 @@
+/* A rival's stamp on the map. It is placed by its parent in percentages of the
+   world (the art's own box), so everything inside is measured in `--u`, the
+   length of one unit of the art (set by `.map-layer`); the text keeps a floor
+   so a small phone still reads it. */
+.encounter-stamp {
+  position: absolute;
+  z-index: 1;
+  width: calc(118 * var(--u));
+  aspect-ratio: 140 / 178;
+  padding: 0;
+  border: 0;
+  background: none;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  color: var(--adventure-ink);
+  font-family: var(--adventure-font-title);
+
+  & .encounter-stamp__paper {
+    position: absolute;
+    inset: 0;
+    display: block;
+    transform: rotate(var(--tilt, 0deg));
+    filter: drop-shadow(0 1px 0.5px rgb(42 28 14 / 0.35)) drop-shadow(0 4px 5px rgb(42 28 14 / 0.2));
+    transition:
+      transform 0.22s ease,
+      filter 0.22s ease;
+  }
+
+  &:hover .encounter-stamp__paper {
+    transform: rotate(var(--tilt, 0deg)) translateY(-4px);
+    filter: drop-shadow(0 2px 1px rgb(42 28 14 / 0.3)) drop-shadow(0 10px 10px rgb(42 28 14 / 0.25));
+  }
+
+  & .encounter-stamp__label {
+    position: absolute;
+    top: calc(100% - 10 * var(--u));
+    left: 50%;
+    display: grid;
+    justify-items: center;
+    gap: 3px;
+    padding: max(4px, calc(5 * var(--u))) max(8px, calc(11 * var(--u))) max(5px, calc(6 * var(--u)));
+    transform: translateX(-50%) rotate(calc(var(--tilt, 0deg) * -1.4));
+    white-space: nowrap;
+    background: var(--adventure-cream-bright);
+    box-shadow: var(--adventure-shadow);
+  }
+
+  & .encounter-stamp__name {
+    font-size: max(12px, calc(15 * var(--u)));
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--adventure-ink);
+  }
+
+  & .encounter-stamp__nickname {
+    display: block;
+    font-size: 0.86em;
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  & .encounter-stamp__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: max(4px, calc(6 * var(--u)));
+    font-family: var(--adventure-font-data);
+    font-size: max(10px, calc(11.5 * var(--u)));
+    font-weight: 500;
+    line-height: 1;
+    color: var(--adventure-graphite);
+  }
+
+  & .encounter-stamp__lock {
+    width: max(10px, calc(12 * var(--u)));
+    height: max(10px, calc(12 * var(--u)));
+  }
+
+  & .encounter-stamp__stars {
+    display: inline-flex;
+    gap: 1px;
+  }
+
+  & .encounter-stamp__star {
+    width: max(10px, calc(12 * var(--u)));
+    height: max(10px, calc(12 * var(--u)));
+    color: var(--adventure-graphite);
+  }
+
+  & .encounter-stamp__star_on {
+    color: var(--adventure-ochre);
+  }
+
+  &:focus-visible {
+    outline: none;
+
+    & .encounter-stamp__paper {
+      outline: 3px solid var(--adventure-ink);
+      outline-offset: 5px;
+      border-radius: 2px;
+    }
+
+    & .encounter-stamp__label {
+      outline: 3px solid var(--adventure-ink);
+      outline-offset: 2px;
+    }
+  }
+
+  /* Locked: a blind proof, quieter than the rest, with the label of a stamp that has not been taken out yet. */
+  &.encounter-stamp_status_locked {
+    & .encounter-stamp__paper {
+      filter: drop-shadow(0 1px 0.5px rgb(42 28 14 / 0.22)) drop-shadow(0 3px 4px rgb(42 28 14 / 0.12));
+    }
+
+    & .encounter-stamp__label {
+      background: var(--adventure-cream);
+      box-shadow: 0 1px 1px rgb(42 28 14 / 0.14);
+    }
+
+    & .encounter-stamp__name {
+      font-weight: 500;
+      color: var(--adventure-graphite);
+    }
+  }
+
+  /* Available: lifted and pinned, with its label in brick and a red circle drawn round it. */
+  &.encounter-stamp_status_available {
+    z-index: 2;
+    width: calc(146 * var(--u));
+
+    & .encounter-stamp__paper {
+      transform: rotate(var(--tilt, 0deg)) translateY(-8px);
+      filter: drop-shadow(0 3px 2px rgb(42 28 14 / 0.3)) drop-shadow(0 22px 16px rgb(42 28 14 / 0.38));
+      animation: encounter-stamp-breathe 3.4s ease-in-out infinite;
+    }
+
+    & .encounter-stamp__label {
+      padding-top: max(6px, calc(7 * var(--u)));
+      background: var(--adventure-brick-fill);
+      box-shadow: var(--adventure-shadow);
+    }
+
+    & .encounter-stamp__name {
+      font-size: max(14px, calc(17 * var(--u)));
+      color: var(--adventure-on-brick);
+    }
+
+    & .encounter-stamp__meta {
+      color: var(--adventure-on-brick);
+    }
+  }
+
+  &.encounter-stamp_final {
+    width: calc(160 * var(--u));
+  }
+
+  & .encounter-stamp__attempt {
+    justify-self: center;
+    margin: -2px 0 2px;
+    padding: 2px 6px 1px;
+    transform: rotate(-3deg);
+    border: 1.5px solid currentcolor;
+    font-family: var(--adventure-font-data);
+    font-size: max(9px, calc(10 * var(--u)));
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    line-height: 1.1;
+    text-transform: uppercase;
+    color: var(--adventure-on-brick);
+  }
+
+  & .encounter-stamp__circle {
+    position: absolute;
+    top: -18%;
+    left: -24%;
+    width: 148%;
+    height: 140%;
+    overflow: visible;
+    pointer-events: none;
+
+    & path {
+      stroke: var(--adventure-brick);
+      opacity: 0.8;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: encounter-stamp-trace 1.4s 0.35s ease-out forwards;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .encounter-stamp__paper {
+      transition: none;
+    }
+
+    &.encounter-stamp_status_available .encounter-stamp__paper {
+      animation: none;
+    }
+
+    & .encounter-stamp__circle path {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+  }
+}
+
+@keyframes encounter-stamp-breathe {
+  0%,
+  100% {
+    transform: rotate(var(--tilt, 0deg)) translateY(-8px);
+  }
+
+  50% {
+    transform: rotate(calc(var(--tilt, 0deg) - 1deg)) translateY(-13px);
+  }
+}
+
+@keyframes encounter-stamp-trace {
+  to {
+    stroke-dashoffset: 0;
+  }
+}

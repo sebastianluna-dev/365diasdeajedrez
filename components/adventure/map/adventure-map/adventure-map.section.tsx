@@ -1,0 +1,37 @@
+import { notFound } from "next/navigation";
+import { AdventureMap } from "@/components/adventure/map/adventure-map/adventure-map.comp";
+import { ADVENTURE_ART, adventureOf } from "@/lib/adventure/adventures";
+import { getAdventureProgress } from "@/services/adventure/adventure.service";
+import { getOwnPlayerCard } from "@/services/profile/profile.service";
+
+interface AdventureMapSectionProps {
+  /** The adventure's slug, from the URL. */
+  slug: string;
+  /** The order of the encounter just beaten (`?victoria=`), already read as a number from 1 to 12, or null. */
+  victory: number | null;
+}
+
+/**
+ * The map of one adventure for the current person: it reads their progress
+ * (derived from their games: two queries on top of the session) and their
+ * card, and hands the client map the data — the progress, the adventure's
+ * zones and art, the person's initials. A `victory` only counts when that
+ * encounter really is beaten, so a made-up address plays nothing.
+ */
+export async function AdventureMapSection({ slug, victory }: AdventureMapSectionProps) {
+  const adventure = adventureOf(slug);
+  const art = ADVENTURE_ART[slug];
+  if (!adventure || !art) notFound();
+  const [progress, me] = await Promise.all([getAdventureProgress(slug), getOwnPlayerCard()]);
+  if (!progress) notFound();
+  const beaten = victory !== null && progress.encounters.some((e) => e.order === victory && e.state === "beaten");
+  return (
+    <AdventureMap
+      progress={progress}
+      zones={adventure.zones}
+      art={art}
+      player={{ initials: me.avatar.initials, name: me.name }}
+      victory={beaten ? victory : null}
+    />
+  );
+}

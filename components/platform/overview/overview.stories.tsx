@@ -5,6 +5,10 @@ import { AdventureCover } from "@/components/adventure/cover/adventure-cover/adv
 import { JourneyMiniature } from "@/components/adventure/cover/journey-miniature/journey-miniature.comp";
 import { NotebookCard } from "@/components/adventure/cover/notebook-card/notebook-card.comp";
 import { Ticket } from "@/components/adventure/cover/ticket/ticket.comp";
+import { Keepsake } from "@/components/adventure/keepsakes/keepsake/keepsake.comp";
+import { AdventureMap } from "@/components/adventure/map/adventure-map/adventure-map.comp";
+import { NotePage } from "@/components/adventure/note-page/note-page/note-page.comp";
+import { EncounterStamp } from "@/components/adventure/stamp/encounter-stamp/encounter-stamp.comp";
 import { AdventureShelf } from "@/components/adventure/shelf/adventure-shelf/adventure-shelf.comp";
 import { NotebookSpine } from "@/components/adventure/shelf/notebook-spine/notebook-spine.comp";
 import { OpenNotebook } from "@/components/adventure/shelf/open-notebook/open-notebook.comp";
@@ -152,6 +156,7 @@ import {
 } from "@/lib/testing/fixtures/bots";
 import { staffRoutes } from "@/lib/platform-routes";
 import { ADVENTURE_ART, COMING_ADVENTURES } from "@/lib/adventure/adventures";
+import { CUADERNO_DEL_VIAJERO } from "@/lib/adventure/adventures/cuaderno-del-viajero";
 import { fixtureAdventureProgress } from "@/lib/testing/fixtures/adventure";
 import { readTokens, type Theme, tokenContrast } from "@/lib/platform-tokens";
 import type { CourseLevelItem } from "@/services/courses/courses.types";
@@ -1793,6 +1798,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             <Tile name="JourneyMiniature" docs="adventure-cover-journeyminiature" width={400} height={560}>
               <div className="adventure" style={{ background: "var(--adventure-cream-bright)", padding: 12 }}>
                 <JourneyMiniature
+                  adventure="cuaderno-del-viajero"
                   art={ADVENTURE_ART["cuaderno-del-viajero"]!.miniature.tall}
                   states={fixtureAdventureProgress().encounters.map((encounter) => encounter.state)}
                   variant="tall"
@@ -1838,6 +1844,86 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               >
                 <NotebookSpine notebook={COMING_ADVENTURES[0]!} />
               </ul>
+            </Tile>
+            <Tile name="AdventureMap" docs="adventure-map-adventuremap" width={1240} height={760}>
+              {/* The map is seven thousand units tall: the tile shows the part around the fifth stamp. */}
+              <div style={{ height: 720, overflow: "hidden" }}>
+                <div style={{ marginTop: -3900 }}>
+                  <AdventureMap
+                    progress={fixtureAdventureProgress({ attemptsOnNext: 1 })}
+                    zones={CUADERNO_DEL_VIAJERO.zones}
+                    art={ADVENTURE_ART["cuaderno-del-viajero"]!}
+                    player={{ initials: "AD", name: "Alumno Demo" }}
+                    victory={null}
+                    autoScroll={false}
+                  />
+                </div>
+              </div>
+            </Tile>
+            <Tile name="EncounterStamp" docs="adventure-stamp-encounterstamp" width={760} height={330}>
+              <div
+                className="adventure"
+                style={
+                  {
+                    position: "relative",
+                    display: "flex",
+                    height: 290,
+                    background: "var(--adventure-paper)",
+                    "--u": "1.1px",
+                  } as CSSProperties
+                }
+              >
+                {[1, 5, 6].map((order, index) => (
+                  <div key={order} style={{ position: "relative", flex: 1 }}>
+                    <EncounterStamp
+                      encounter={fixtureAdventureProgress({ attemptsOnNext: 1 }).encounters[order - 1]!}
+                      adventure="cuaderno-del-viajero"
+                      total={12}
+                      postmark={order === 1 ? "PLAZA" : "BIBLIOTECA"}
+                      position={{ left: 50, top: 42, width: order === 5 ? 58 : 46, tilt: index === 1 ? -3 : 3 }}
+                      onOpen={() => undefined}
+                    />
+                  </div>
+                ))}
+              </div>
+            </Tile>
+            <Tile name="NotePage" docs="adventure-note-page-notepage" width={420} height={400}>
+              <div
+                className="adventure"
+                style={
+                  {
+                    position: "relative",
+                    height: 360,
+                    background: "var(--adventure-paper)",
+                    "--u": "1.1px",
+                  } as CSSProperties
+                }
+              >
+                <NotePage
+                  zone={CUADERNO_DEL_VIAJERO.zones[2]!}
+                  number={3}
+                  isReached
+                  position={{ left: 50, top: 50, width: 90, rotation: 1.5 }}
+                />
+              </div>
+            </Tile>
+            <Tile name="Keepsake" docs="adventure-keepsakes-keepsake" width={640} height={420}>
+              <div
+                className="adventure"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(6, 1fr)",
+                  gap: 18,
+                  padding: 18,
+                  background: "var(--adventure-paper)",
+                }}
+              >
+                {Array.from({ length: 12 }, (_, index) => (
+                  <div key={index} style={{ width: 70, justifySelf: "center", alignSelf: "center" }}>
+                    <Keepsake adventure="cuaderno-del-viajero" order={index + 1} playerName="Alumno Demo" />
+                  </div>
+                ))}
+              </div>
             </Tile>
           </Section>
         </div>

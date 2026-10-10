@@ -1,0 +1,261 @@
+/* A page of the notebook of 1994 on the map. It is placed by its parent in
+   percentages of the world; inside, everything is in `--u`, the length of one
+   unit of the art, with a floor under the text so a phone still reads it. */
+.note-page {
+  position: absolute;
+  z-index: 0;
+  width: calc(268 * var(--u));
+  margin: 0;
+  transform: translate(-50%, -50%) rotate(var(--rotation, 0deg));
+
+  & .note-page__label {
+    position: relative;
+    z-index: 3;
+    display: grid;
+    width: max-content;
+    max-width: 92%;
+    margin: 0 0 calc(-14 * var(--u)) calc(-14 * var(--u));
+    padding: calc(8 * var(--u)) calc(40 * var(--u)) calc(9 * var(--u)) calc(13 * var(--u));
+    transform: rotate(-3deg);
+    background: var(--adventure-cream-bright);
+    box-shadow: var(--adventure-shadow);
+
+    /* The strip of tape that holds the label. */
+    &::before {
+      content: "";
+      position: absolute;
+      top: -8px;
+      left: 22px;
+      width: 54px;
+      height: 16px;
+      transform: rotate(-6deg);
+      background: var(--tape);
+      background-image: repeating-linear-gradient(-45deg, transparent 0 5px, rgb(255 255 255 / 0.25) 5px 8px);
+    }
+  }
+
+  & .note-page__number {
+    position: absolute;
+    top: 50%;
+    right: calc(9 * var(--u));
+    display: grid;
+    place-items: center;
+    width: max(20px, calc(26 * var(--u)));
+    height: max(20px, calc(26 * var(--u)));
+    margin-top: calc(max(20px, calc(26 * var(--u))) / -2);
+    transform: rotate(-12deg);
+    border: 1.5px solid var(--adventure-brick);
+    border-radius: 50%;
+    font-family: var(--adventure-font-data);
+    font-size: max(10px, calc(12 * var(--u)));
+    font-weight: 600;
+    line-height: 1;
+    color: var(--adventure-brick);
+  }
+
+  & .note-page__kind {
+    margin-bottom: 3px;
+    font-family: var(--adventure-font-data);
+    font-size: max(9px, calc(10 * var(--u)));
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1.1;
+    text-transform: uppercase;
+    color: var(--adventure-brick);
+  }
+
+  & .note-page__place {
+    font-family: var(--adventure-font-title);
+    font-size: max(14px, calc(19 * var(--u)));
+    font-style: italic;
+    font-weight: 600;
+    line-height: 1.05;
+    color: var(--adventure-ink);
+  }
+
+  & .note-page__paper {
+    position: relative;
+    perspective: 900px;
+    filter: drop-shadow(0 2px 1px rgb(42 28 14 / 0.22)) drop-shadow(0 10px 12px rgb(42 28 14 / 0.22));
+  }
+
+  /* The sheet: ruled, with a red margin, unrolled by its clip. */
+  & .note-page__sheet {
+    position: relative;
+    padding: calc(26 * var(--u)) calc(18 * var(--u)) calc(16 * var(--u)) calc(34 * var(--u));
+    background-color: var(--adventure-page);
+    background-image:
+      linear-gradient(
+        90deg,
+        transparent calc(24 * var(--u)),
+        rgb(200 80 70 / 0.45) calc(24 * var(--u)) calc(25.5 * var(--u)),
+        transparent calc(25.5 * var(--u))
+      ),
+      repeating-linear-gradient(
+        transparent 0 calc(25 * var(--u)),
+        rgb(90 120 160 / 0.22) calc(25 * var(--u)) calc(26 * var(--u))
+      ),
+      radial-gradient(ellipse at 70% 90%, rgb(160 110 50 / 0.16), transparent 60%);
+    background-position:
+      0 0,
+      0 calc(13 * var(--u)),
+      0 0;
+    clip-path: var(--clip-open);
+    transition: clip-path 0.55s 0.32s ease-out;
+  }
+
+  & .note-page__chapter {
+    margin: 0 0 calc(4 * var(--u));
+    font-family: var(--adventure-font-hand);
+    font-size: max(15px, calc(21 * var(--u)));
+    font-weight: 700;
+    line-height: 1.24;
+    color: var(--adventure-page-ink);
+  }
+
+  & .note-page__note {
+    margin: 0;
+    font-family: var(--adventure-font-hand);
+    font-size: max(13px, calc(16.5 * var(--u)));
+    line-height: calc(26 * var(--u));
+    color: var(--adventure-page-ink);
+  }
+
+  & .note-page__signature {
+    margin: calc(4 * var(--u)) 0 0;
+    font-family: var(--adventure-font-hand);
+    font-size: max(13px, calc(16 * var(--u)));
+    font-weight: 700;
+    line-height: 1.6;
+    text-align: right;
+    color: var(--adventure-page-ink);
+  }
+
+  /* The flap: it covers the top half of a page that is not open, and turns up to open it. */
+  & .note-page__flap {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 52%;
+    display: grid;
+    place-items: center;
+    transform-origin: 50% 100%;
+    backface-visibility: hidden;
+    background-color: var(--adventure-page-flap);
+    background-image: linear-gradient(transparent 70%, rgb(90 60 30 / 0.16));
+    box-shadow: inset 0 -2px 0 rgb(90 60 30 / 0.18);
+    transition: transform 0.75s cubic-bezier(0.5, 0, 0.3, 1);
+
+    & span {
+      font-family: var(--adventure-font-note);
+      font-size: max(15px, calc(19 * var(--u)));
+      font-weight: 700;
+      line-height: 1;
+      transform: rotate(-3deg);
+      color: var(--adventure-graphite);
+    }
+  }
+
+  &.note-page_state_folded .note-page__sheet,
+  &.note-page_state_closed .note-page__sheet {
+    clip-path: var(--clip-folded);
+    transition: none;
+  }
+
+  &.note-page_state_open .note-page__flap {
+    transform: rotateX(-180deg);
+  }
+
+  /* A page not reached yet is held shut with a clip, drawn on the flap's edge. */
+  &.note-page_state_closed .note-page__flap::after {
+    content: "";
+    position: absolute;
+    top: -8px;
+    right: 16%;
+    width: 13px;
+    height: 34px;
+    transform: rotate(14deg);
+    border: 2.2px solid #8d949b;
+    border-radius: 7px;
+  }
+
+  &.note-page_torn .note-page__sheet {
+    padding-bottom: calc(40 * var(--u));
+  }
+
+  & .note-page__sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* On a phone the page is narrow: smaller type, lines and padding (the mockup's). */
+  &.note-page_size_compact {
+    & .note-page__label {
+      padding-right: calc(34 * var(--u));
+    }
+
+    & .note-page__place {
+      font-size: max(13px, calc(16 * var(--u)));
+    }
+
+    & .note-page__sheet {
+      padding: calc(20 * var(--u)) calc(12 * var(--u)) calc(12 * var(--u)) calc(26 * var(--u));
+      background-image:
+        linear-gradient(
+          90deg,
+          transparent calc(18 * var(--u)),
+          rgb(200 80 70 / 0.45) calc(18 * var(--u)) calc(19.5 * var(--u)),
+          transparent calc(19.5 * var(--u))
+        ),
+        repeating-linear-gradient(
+          transparent 0 calc(20 * var(--u)),
+          rgb(90 120 160 / 0.22) calc(20 * var(--u)) calc(21 * var(--u))
+        ),
+        radial-gradient(ellipse at 70% 90%, rgb(160 110 50 / 0.16), transparent 60%);
+      background-position:
+        0 0,
+        0 calc(9 * var(--u)),
+        0 0;
+    }
+
+    & .note-page__chapter {
+      font-size: max(14px, calc(17 * var(--u)));
+    }
+
+    & .note-page__note {
+      font-size: max(12px, calc(13.4 * var(--u)));
+      line-height: calc(21 * var(--u));
+    }
+
+    & .note-page__signature {
+      font-size: max(12px, calc(13.6 * var(--u)));
+    }
+
+    & .note-page__flap span {
+      font-size: max(13px, calc(16 * var(--u)));
+    }
+  }
+
+  /* Without the motion: a page that has been reached is simply open. */
+  @media (prefers-reduced-motion: reduce) {
+    & .note-page__sheet,
+    & .note-page__flap {
+      transition: none;
+    }
+
+    &.note-page_state_folded .note-page__sheet {
+      clip-path: var(--clip-open);
+    }
+
+    &.note-page_state_folded .note-page__flap {
+      transform: rotateX(-180deg);
+    }
+  }
+}
