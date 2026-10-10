@@ -4,6 +4,8 @@ import { allBotSeeds } from "@/lib/adventure/adventure-bots";
 import { botSeedOf } from "@/lib/chess/bots/roster";
 import { gameEnd } from "@/lib/chess/game-end";
 import { replayLiveGame } from "@/lib/chess/live-game";
+import { adventureOf } from "@/lib/adventure/adventures";
+import { encounterStatesOf, totalsOf, type AdventureGame } from "@/services/adventure/adventure-rules";
 import { outcomeFor } from "@/services/play/play-rules";
 import { DEMO_ADVENTURE_GAMES, DEMO_PLAYED_GAMES, demoGameEnd } from "./seed-play";
 
@@ -65,5 +67,28 @@ describe("DEMO_ADVENTURE_GAMES", () => {
     const outcomes = DEMO_ADVENTURE_GAMES.map((game) => outcomeFor(demoGameEnd(game)!.resultCode, game.seat));
     expect(outcomes.filter((outcome) => outcome === "win")).toHaveLength(4);
     expect(outcomes.filter((outcome) => outcome === "loss")).toHaveLength(5);
+  });
+
+  it("leaves the adventure at 4 of 12 like the mockup: ★★★, ★★, ★ and ★★★, and a lost first try at the fifth", () => {
+    const adventure = adventureOf("cuaderno-del-viajero")!;
+    const games: AdventureGame[] = DEMO_ADVENTURE_GAMES.map((game, index) => {
+      const encounter = adventure.encounters.find((candidate) => game.bot.endsWith(`-${candidate.slug}`))!;
+      return {
+        order: encounter.order,
+        seat: game.seat,
+        resultCode: demoGameEnd(game)!.resultCode,
+        finishedAt: new Date(index * 60_000),
+      };
+    });
+    const states = encounterStatesOf(adventure.encounters, games);
+    expect(states.slice(0, 4).map((progress) => [progress.state, progress.stars])).toEqual([
+      ["beaten", 3],
+      ["beaten", 2],
+      ["beaten", 1],
+      ["beaten", 3],
+    ]);
+    expect(states[4]).toMatchObject({ state: "available", attempts: 1, stars: 0 });
+    expect(states.slice(5).every((progress) => progress.state === "locked")).toBe(true);
+    expect(totalsOf(states).beaten).toBe(4);
   });
 });

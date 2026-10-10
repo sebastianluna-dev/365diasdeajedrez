@@ -10,8 +10,9 @@ import { avatarToneOf, initialsOf } from "@/lib/avatar-tone";
 import type { GameEnd, GameEndKind } from "@/lib/chess/game-end";
 import { extractMainline } from "@/lib/chess/mainline";
 import type { Prisma } from "@/lib/platform-db/generated/client";
-import { isOpen, outcomeFor } from "./play-rules";
-import type { PlayedGameCard, PlayedGameView, PlayedSeat } from "./play.types";
+import { adventureEncounterOfBot } from "@/lib/adventure/adventures";
+import { isOpen, outcomeFor, seatOf } from "./play-rules";
+import type { PlayedGameAdventure, PlayedGameCard, PlayedGameView, PlayedSeat } from "./play.types";
 
 // Rows of `PlayedGame` → what the screens read. Pure: the queries live in
 // play.service.ts and select exactly `PLAYED_GAME_SELECT`.
@@ -24,7 +25,7 @@ const BOT_SELECT = {
   elo: true,
   country: true,
   fideTitle: true,
-  group: { select: { ring: true } },
+  group: { select: { code: true, ring: true } },
 } as const;
 
 export const PLAYED_GAME_SELECT = {
@@ -92,6 +93,31 @@ export function seatView(user: UserRow | null, bot: BotRow | null, elo: number |
   };
 }
 
+/** What the scoreboard and the level need of each game against a bot. */
+export const SCORE_SELECT = {
+  whiteUserId: true,
+  blackUserId: true,
+  whiteBotId: true,
+  blackBotId: true,
+  whiteElo: true,
+  blackElo: true,
+  finishedAt: true,
+  result: { select: { code: true } },
+} satisfies Prisma.PlayedGameSelect;
+
+export type ScoreRow = Prisma.PlayedGameGetPayload<{ select: typeof SCORE_SELECT }>;
+
+/** The bot across the board from `userId`, and the strength it had then. */
+export function botSideOf(
+  row: ScoreRow,
+  userId: string,
+): { botId: number; botElo: number | null; seat: "white" | "black" } | null {
+  const seat = seatOf(row, userId);
+  if (seat === "white" && row.blackBotId !== null) return { botId: row.blackBotId, botElo: row.blackElo, seat };
+  if (seat === "black" && row.whiteBotId !== null) return { botId: row.whiteBotId, botElo: row.whiteElo, seat };
+  return null;
+}
+
 const KIND_OF_TERMINATION: Record<GameTerminationCode, GameEndKind> = {
   [GAME_TERMINATION.CHECKMATE]: "checkmate",
   [GAME_TERMINATION.STALEMATE]: "stalemate",
@@ -114,6 +140,29 @@ export function gameEndOfCodes(resultCode: GameResultCode, terminationCode: stri
   return { kind: KIND_OF_TERMINATION[code] ?? "aborted", winner, resultCode, terminationCode: code };
 }
 
+/**
+ * The adventure a game belongs to: the one whose hidden group its bot is in.
+ * Null for a game against a gallery bot or between people.
+ */
+export function adventureOfGame(row: Pick<PlayedGameRow, "whiteBot" | "blackBot">): PlayedGameAdventure | null {
+  const bot = row.whiteBot ?? row.blackBot;
+  const found = bot ? adventureEncounterOfBot(bot.group.code, bot.slug) : null;
+  if (!found) return null;
+  const { adventure, encounter } = found;
+  return {
+    slug: adventure.slug,
+    title: adventure.title,
+    encounter: {
+      order: encounter.order,
+      name: encounter.name,
+      role: encounter.role,
+      place: encounter.place,
+      zoneName: adventure.zones.find((zone) => zone.slug === encounter.zone)?.name ?? "",
+      isFinal: encounter.isFinal === true,
+    },
+  };
+}
+
 export function playedGameView(row: PlayedGameRow, viewerSeat: "white" | "black" | null): PlayedGameView {
   const resultCode = row.result.code as GameResultCode;
   return {
@@ -133,6 +182,7 @@ export function playedGameView(row: PlayedGameRow, viewerSeat: "white" | "black"
     lastMoveAt: row.lastMoveAt,
     finishedAt: row.finishedAt,
     viewerSeat,
+    adventure: adventureOfGame(row),
   };
 }
 

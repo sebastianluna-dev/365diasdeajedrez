@@ -5,11 +5,13 @@ import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getSessionRoles, getTeacherContext } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import type { Prisma } from "@/lib/platform-db/generated/client";
-import { PLAYED_GAME_SELECT, playedGameCard, playedGameView } from "./play.mapper";
+import { botSideOf, PLAYED_GAME_SELECT, playedGameCard, playedGameView, SCORE_SELECT } from "./play.mapper";
 import {
+  againstBotsWhere,
   botLevelOf,
   countsForScore,
   levelSeries,
+  openAgainstBotWhere,
   outcomeFor,
   playedGameVisibleWhere,
   seatOf,
@@ -58,19 +60,11 @@ const seatedWhere = (userId: string): Prisma.PlayedGameWhereInput => ({
   OR: [{ whiteUserId: userId }, { blackUserId: userId }],
 });
 
-/** The games of `userId` against a bot, in either colour. */
-const againstBotsWhere = (userId: string): Prisma.PlayedGameWhereInput => ({
-  OR: [
-    { whiteUserId: userId, blackBotId: { not: null } },
-    { blackUserId: userId, whiteBotId: { not: null } },
-  ],
-});
-
 /** The current person's open game against a bot, for «Continuar»: there is at most one. */
 export const getOpenPlayedGame = cache(async (): Promise<OpenGameSummary | null> => {
   const user = await getCurrentUser();
   const row = await getPlatformDb().playedGame.findFirst({
-    where: { finishedAt: null, ...againstBotsWhere(user.id) },
+    where: openAgainstBotWhere(user.id),
     orderBy: { startedAt: "desc" },
     select: PLAYED_GAME_SELECT,
   });
@@ -154,31 +148,6 @@ export async function recentPlayedGamesOf(userId: string, take = PROFILE_RECENT_
     select: PLAYED_GAME_SELECT,
   });
   return rows.map((row) => playedGameCard(row, userId));
-}
-
-/** What the scoreboard and the level need of each game against a bot. */
-const SCORE_SELECT = {
-  whiteUserId: true,
-  blackUserId: true,
-  whiteBotId: true,
-  blackBotId: true,
-  whiteElo: true,
-  blackElo: true,
-  finishedAt: true,
-  result: { select: { code: true } },
-} satisfies Prisma.PlayedGameSelect;
-
-type ScoreRow = Prisma.PlayedGameGetPayload<{ select: typeof SCORE_SELECT }>;
-
-/** The bot across the board from `userId`, and the strength it had then. */
-function botSideOf(
-  row: ScoreRow,
-  userId: string,
-): { botId: number; botElo: number | null; seat: "white" | "black" } | null {
-  const seat = seatOf(row, userId);
-  if (seat === "white" && row.blackBotId !== null) return { botId: row.blackBotId, botElo: row.blackElo, seat };
-  if (seat === "black" && row.whiteBotId !== null) return { botId: row.whiteBotId, botElo: row.whiteElo, seat };
-  return null;
 }
 
 /** `userId`'s record against every bot they have played. */

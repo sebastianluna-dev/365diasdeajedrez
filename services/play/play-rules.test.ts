@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
+  againstBotsWhere,
   botLevelOf,
   countsForScore,
   isOpen,
   levelSeries,
+  openAgainstBotWhere,
   outcomeFor,
   playedGameVisibleWhere,
   seatOf,
@@ -94,5 +96,20 @@ describe("botLevelOf", () => {
     const series = levelSeries(EXAMPLE);
     expect(series).toHaveLength(4);
     expect(series.at(-1)).toEqual({ at: day(8), level: 850 });
+  });
+});
+
+describe("the games against a bot", () => {
+  it("are those where the person holds a seat across from a bot, in either colour", () => {
+    expect(againstBotsWhere("ana")).toEqual({
+      OR: [
+        { whiteUserId: "ana", blackBotId: { not: null } },
+        { blackUserId: "ana", whiteBotId: { not: null } },
+      ],
+    });
+  });
+
+  it("are open when nothing has finished them", () => {
+    expect(openAgainstBotWhere("ana")).toEqual({ finishedAt: null, ...againstBotsWhere("ana") });
   });
 });

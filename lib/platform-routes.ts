@@ -79,6 +79,15 @@ export const platformRoutes = {
   /** «Jugar»: choose a bot and a colour. `?rival=<slug>` opens that bot's sheet. */
   play: "/jugar",
   playAgainst: (botSlug: string) => `/jugar?rival=${encodeURIComponent(botSlug)}`,
+  /** The adventure shelf: the notebooks to open and the ones that are coming. */
+  adventures: "/jugar/aventura",
+  /**
+   * An adventure's map, by the adventure's slug. `victoria` is the order of the
+   * encounter just beaten for the first time: the map plays its victory once
+   * and takes the parameter off the address.
+   */
+  adventureMap: (slug: string, query?: { victoria?: number }) =>
+    `/jugar/aventura/${slug}${query?.victoria ? `?victoria=${query.victoria}` : ""}`,
   /** A played game, live or finished: ONE address for both, read-only for whoever holds no seat. */
   playedGame: (gameId: string) => `/jugar/partidas/${gameId}`,
   /** The own profile: it redirects to `/perfil/<slug>`, so a menu needs no user name. */

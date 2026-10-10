@@ -23,6 +23,21 @@ export interface PlayedSeat {
   title: string | null;
 }
 
+/** The adventure a game belongs to and the encounter it is: the live screen draws it on a page of the notebook. */
+export interface PlayedGameAdventure {
+  slug: string;
+  title: string;
+  encounter: {
+    /** Its place in the story, 1 to 12. */
+    order: number;
+    name: string;
+    role: string;
+    place: string;
+    zoneName: string;
+    isFinal: boolean;
+  };
+}
+
 /** A played game, whole: the live screen and the finished one read it. */
 export interface PlayedGameView {
   id: string;
@@ -44,6 +59,8 @@ export interface PlayedGameView {
   finishedAt: Date | null;
   /** The seat the viewer holds; null when they only read it (their teacher, the staff). */
   viewerSeat: "white" | "black" | null;
+  /** Set when the rival is one of an adventure's: the game is an encounter of its story. */
+  adventure: PlayedGameAdventure | null;
 }
 
 /** A played game in a list, from one person's side. */

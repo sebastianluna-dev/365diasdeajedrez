@@ -5,22 +5,20 @@ import { revalidatePath } from "next/cache";
 import { notFound, redirect } from "next/navigation";
 import { z } from "zod";
 import { PLAY_ENABLED } from "@/constants/platform/features.const";
-import { TIME_CONTROL } from "@/constants/platform/play-codes.const";
 import { GAME_SOURCE, type GameResultCode } from "@/constants/platform/study-codes.const";
-import { closedEnd, gameEnd, resignationEnd } from "@/lib/chess/game-end";
+import { gameEnd, resignationEnd } from "@/lib/chess/game-end";
 import { extractMainline } from "@/lib/chess/mainline";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
-import type { Prisma } from "@/lib/platform-db/generated/client";
 import { platformRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
 import { formCheckbox, formCode, formOptionalText, formText, parseForm } from "@/services/shared/form-schema";
 import type { AutosaveResult } from "@/services/shared/game-record";
 import { writePlayedGameRecord } from "@/services/shared/played-game-record";
-import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
 import { withErrorParam } from "@/services/shared/safe-return-to";
 import { checkAppend } from "./append-rules";
+import { openGame } from "./open-game";
 import { gameEndOfCodes } from "./play.mapper";
 import { currentViewer } from "./play.service";
 import { playedGameVisibleWhere, seatOf } from "./play-rules";
@@ -61,84 +59,6 @@ const COPY_SCHEMA = z.object({
   study: formText(20),
   title: formOptionalText(120),
 });
-
-/** The open game of `userId` against a bot, in either colour. */
-const openAgainstBotWhere = (userId: string): Prisma.PlayedGameWhereInput => ({
-  finishedAt: null,
-  OR: [
-    { whiteUserId: userId, blackBotId: { not: null } },
-    { blackUserId: userId, whiteBotId: { not: null } },
-  ],
-});
-
-/** Moves the person has played in a game: a person counts their own, not the plies. */
-function ownMoves(plyCount: number, seat: "white" | "black"): number {
-  return seat === "white" ? Math.ceil(plyCount / 2) : Math.floor(plyCount / 2);
-}
-
-/**
- * Opens a game against `botId` for `userId` in `color`. With `replace`, the
- * open game against a bot is closed first in the same transaction — lost as
- * abandoned after two moves of one's own, aborted before them — never
- * deleted. Without it, the open game wins: its id is returned instead.
- */
-async function openGame(
-  userId: string,
-  userName: string,
-  bot: { id: number; name: string; elo: number },
-  color: "white" | "black",
-  replace: boolean,
-): Promise<string> {
-  const db = getPlatformDb();
-  const at = new Date();
-  try {
-    return await db.$transaction(async (tx) => {
-      const open = await tx.playedGame.findFirst({
-        where: openAgainstBotWhere(userId),
-        select: { id: true, plyCount: true, whiteUserId: true, blackUserId: true },
-      });
-      if (open && !replace) return open.id;
-      if (open) {
-        const seat = seatOf(open, userId)!;
-        const end = ownMoves(open.plyCount, seat) >= 2 ? closedEnd("abandoned", seat) : closedEnd("aborted", null);
-        await writePlayedGameRecord(tx, { kind: "close", gameId: open.id, expectedPly: open.plyCount, end, at });
-      }
-      const created = await writePlayedGameRecord(tx, {
-        kind: "create",
-        data: {
-          ...(color === "white"
-            ? {
-                whiteUserId: userId,
-                blackBotId: bot.id,
-                whiteName: userName,
-                blackName: bot.name,
-                whiteElo: null,
-                blackElo: bot.elo,
-              }
-            : {
-                whiteBotId: bot.id,
-                blackUserId: userId,
-                whiteName: bot.name,
-                blackName: userName,
-                whiteElo: bot.elo,
-                blackElo: null,
-              }),
-          timeControlCode: TIME_CONTROL.NONE,
-          initialFen: null,
-          at,
-        },
-      });
-      return created.id;
-    });
-  } catch (error) {
-    // Two tabs pressing «Jugar» at once: the second collides with the first's open game and goes to it.
-    if (!isUniqueConstraintError(error, "played_game_white_user_open_vs_bot", "played_game_black_user_open_vs_bot"))
-      throw error;
-    const open = await db.playedGame.findFirst({ where: openAgainstBotWhere(userId), select: { id: true } });
-    if (!open) throw error;
-    return open.id;
-  }
-}
 
 /** «Jugar» against a bot, from its sheet: the bot, the colour, and whether to replace the open game. */
 export async function startPlayedGame(formData: FormData): Promise<void> {

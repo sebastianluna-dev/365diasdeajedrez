@@ -28,6 +28,19 @@ export const MOVE_TRAINER_ENABLED = false as boolean;
 export const PLAY_ENABLED = false as boolean;
 
 /**
+ * «Modo aventura»: the first adventure, «El cuaderno del viajero», a map of
+ * twelve rivals at `/jugar/aventura`, the new cover of `/jugar` and the paper
+ * frame around its games. It lives inside «Jugar», so it needs `PLAY_ENABLED`
+ * too.
+ *
+ * Off: `/jugar` stays the gallery of bots, `/jugar/aventura*` answers 404 and
+ * `startAdventureEncounter` answers `notFound`. It does NOT switch off the
+ * rules of the data — the hidden bot group and the refusal of its bots by
+ * `startPlayedGame` and `rematchPlayedGame` —, which hold whatever this says.
+ */
+export const ADVENTURE_ENABLED = false as boolean;
+
+/**
  * «Herramientas»: the analysis board at `/herramientas/tablero-de-analisis` and
  * the menu that gathers it with the explorer and the trainer. It persists
  * nothing and needs no calibration nor migration, so it can be switched on

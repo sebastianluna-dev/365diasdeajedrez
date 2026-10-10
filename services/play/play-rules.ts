@@ -29,6 +29,20 @@ export function playedGameVisibleWhere(viewer: Viewer): Prisma.PlayedGameWhereIn
   return { OR: seats };
 }
 
+/** The games of `userId` against a bot, in either colour. */
+export const againstBotsWhere = (userId: string): Prisma.PlayedGameWhereInput => ({
+  OR: [
+    { whiteUserId: userId, blackBotId: { not: null } },
+    { blackUserId: userId, whiteBotId: { not: null } },
+  ],
+});
+
+/** The open game of `userId` against a bot, in either colour: there is at most one. */
+export const openAgainstBotWhere = (userId: string): Prisma.PlayedGameWhereInput => ({
+  finishedAt: null,
+  ...againstBotsWhere(userId),
+});
+
 /** The seat a person holds in a game, or null when they hold none (they may only read). */
 export function seatOf(
   game: { whiteUserId: string | null; blackUserId: string | null },
