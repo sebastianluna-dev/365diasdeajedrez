@@ -42,7 +42,11 @@ export const GAME_TERMINATION_LABELS: Record<GameTerminationCode, string> = {
   DRAW_AGREED: "Tablas acordadas",
 };
 
-/** Where a bot belongs: one row each in «Jugar», in this order. */
+/**
+ * Where a bot belongs: one row each in «Jugar», in this order. A group that
+ * is not listed (`BOT_GROUP_LISTED`) holds the rivals of an adventure: they
+ * are not in the gallery and cannot be played from it.
+ */
 export const BOT_GROUP = {
   CHARACTERS: "CHARACTERS",
   MEXICO_OPEN: "MEXICO_OPEN",
@@ -50,6 +54,7 @@ export const BOT_GROUP = {
   MEXICO_LEGENDS: "MEXICO_LEGENDS",
   WORLD_CHAMPIONS: "WORLD_CHAMPIONS",
   ACTIVE: "ACTIVE",
+  ADVENTURE_CUADERNO: "ADVENTURE_CUADERNO",
 } as const;
 
 export type BotGroupCode = (typeof BOT_GROUP)[keyof typeof BOT_GROUP];
@@ -62,6 +67,23 @@ export const BOT_GROUP_LABELS: Record<BotGroupCode, string> = {
   MEXICO_LEGENDS: "Leyendas mexicanas",
   WORLD_CHAMPIONS: "Campeones del mundo",
   ACTIVE: "En activo",
+  ADVENTURE_CUADERNO: "El cuaderno del viajero",
+};
+
+/**
+ * Whether the gallery shows a group. The rivals of an adventure live in a
+ * hidden group (`lib/adventure/adventures/*`): the gallery omits it and
+ * `startPlayedGame`/`rematchPlayedGame` refuse its bots, so only the
+ * adventure's own action can start a game against them, and only in order.
+ */
+export const BOT_GROUP_LISTED: Record<BotGroupCode, boolean> = {
+  CHARACTERS: true,
+  MEXICO_OPEN: true,
+  MEXICO_WOMEN: true,
+  MEXICO_LEGENDS: true,
+  WORLD_CHAMPIONS: true,
+  ACTIVE: true,
+  ADVENTURE_CUADERNO: false,
 };
 
 /**
@@ -84,6 +106,7 @@ export const BOT_GROUP_RING: Record<BotGroupCode, BotRingCode> = {
   MEXICO_LEGENDS: BOT_RING.NONE,
   WORLD_CHAMPIONS: BOT_RING.GOLD,
   ACTIVE: BOT_RING.NONE,
+  ADVENTURE_CUADERNO: BOT_RING.NONE,
 };
 
 export function isBotRingCode(value: string): value is BotRingCode {

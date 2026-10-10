@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BOT_GROUP, BOT_GROUP_RING, isBotRingCode } from "@/constants/platform/play-codes.const";
+import { BOT_GROUP, BOT_GROUP_LISTED, BOT_GROUP_RING, isBotRingCode } from "@/constants/platform/play-codes.const";
 import { federationFlag, FIDE_TITLES } from "@/lib/chess/federations";
 import { BOT_ROSTER, botSeedOf } from "./roster";
 
@@ -24,10 +24,11 @@ describe("BOT_ROSTER", () => {
     expect(BOT_ROSTER.filter((bot) => bot.elo === top).map((bot) => bot.slug)).toEqual(["carlsen"]);
   });
 
-  it("covers every group, each with its ring, in order", () => {
-    expect(new Set(BOT_ROSTER.map((bot) => bot.group))).toEqual(new Set(Object.values(BOT_GROUP)));
+  it("covers every listed group, each with its ring, in order, and none of the hidden ones", () => {
+    const listed = Object.values(BOT_GROUP).filter((code) => BOT_GROUP_LISTED[code]);
+    expect(new Set(BOT_ROSTER.map((bot) => bot.group))).toEqual(new Set(listed));
     for (const ring of Object.values(BOT_GROUP_RING)) expect(isBotRingCode(ring)).toBe(true);
-    for (const code of Object.values(BOT_GROUP)) {
+    for (const code of listed) {
       const orders = BOT_ROSTER.filter((bot) => bot.group === code).map((bot) => bot.order);
       expect(orders).toEqual(orders.map((_, index) => index));
     }

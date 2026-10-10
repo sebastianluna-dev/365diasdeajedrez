@@ -1,6 +1,7 @@
 import {
   BOT_GROUP,
   BOT_GROUP_LABELS,
+  BOT_GROUP_LISTED,
   BOT_GROUP_RING,
   GAME_TERMINATION,
   GAME_TERMINATION_LABELS,
@@ -49,7 +50,9 @@ export function playCatalogSql(): string {
   const groups = upsert(
     "BotGroup",
     ["code", "label", "ring", "order"],
-    Object.values(BOT_GROUP).map((code, order) => [code, BOT_GROUP_LABELS[code], BOT_GROUP_RING[code], order]),
+    Object.values(BOT_GROUP)
+      .filter((code) => BOT_GROUP_LISTED[code])
+      .map((code, order) => [code, BOT_GROUP_LABELS[code], BOT_GROUP_RING[code], order]),
     "code",
     ["label", "ring", "order"],
   );
