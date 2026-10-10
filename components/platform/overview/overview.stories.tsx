@@ -1,6 +1,13 @@
 import { type CSSProperties, Fragment, useRef, useState, type ReactNode } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import Link from "next/link";
+import { AdventureCover } from "@/components/adventure/cover/adventure-cover/adventure-cover.comp";
+import { JourneyMiniature } from "@/components/adventure/cover/journey-miniature/journey-miniature.comp";
+import { NotebookCard } from "@/components/adventure/cover/notebook-card/notebook-card.comp";
+import { Ticket } from "@/components/adventure/cover/ticket/ticket.comp";
+import { AdventureShelf } from "@/components/adventure/shelf/adventure-shelf/adventure-shelf.comp";
+import { NotebookSpine } from "@/components/adventure/shelf/notebook-spine/notebook-spine.comp";
+import { OpenNotebook } from "@/components/adventure/shelf/open-notebook/open-notebook.comp";
 import { BotScoreboard } from "@/components/chess/bot-scoreboard/bot-scoreboard.comp";
 import { ChessBoard } from "@/components/chess/chess-board.comp";
 import { ChessMoveQualityIcon } from "@/components/chess/chess-move-quality-icon.comp";
@@ -144,6 +151,8 @@ import {
   fixturePlayedGames,
 } from "@/lib/testing/fixtures/bots";
 import { staffRoutes } from "@/lib/platform-routes";
+import { ADVENTURE_ART, COMING_ADVENTURES } from "@/lib/adventure/adventures";
+import { fixtureAdventureProgress } from "@/lib/testing/fixtures/adventure";
 import { readTokens, type Theme, tokenContrast } from "@/lib/platform-tokens";
 import type { CourseLevelItem } from "@/services/courses/courses.types";
 import { formatEloRange } from "@/services/courses/level-rules";
@@ -1742,6 +1751,93 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   onPgnChange={() => undefined}
                 />
               </div>
+            </Tile>
+          </Section>
+
+          <Section title="Adventure">
+            <Tile name="AdventureCover" docs="adventure-cover-adventurecover" width={1240} height={800}>
+              <AdventureCover progress={fixtureAdventureProgress({ attemptsOnNext: 1 })} />
+            </Tile>
+            <Tile name="NotebookCard" docs="adventure-cover-notebookcard" width={460} height={560}>
+              <div className="adventure" style={{ padding: 28, background: "var(--adventure-cream)" }}>
+                <NotebookCard progress={fixtureAdventureProgress({ attemptsOnNext: 1 })} />
+              </div>
+            </Tile>
+            <Tile name="Ticket" docs="adventure-cover-ticket" width={760} height={340}>
+              <div
+                className="adventure"
+                style={{ display: "flex", gap: 36, padding: 36, background: "var(--adventure-wood)" }}
+              >
+                <div style={{ flex: 1 }}>
+                  <Ticket
+                    tone="free"
+                    eyebrow="Galería de bots"
+                    title="Partida libre"
+                    description="Elige a cualquier bot de la galería y juega sin seguir la historia."
+                    stub="Cualquier bot"
+                    action={{ href: "/jugar/partida-libre", label: "Elegir un bot" }}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <Ticket
+                    tone="person"
+                    eyebrow="Partida amistosa"
+                    title="Contra una persona"
+                    description="Reta a otro alumno de la plataforma."
+                    stub="Admite dos"
+                    soon
+                  />
+                </div>
+              </div>
+            </Tile>
+            <Tile name="JourneyMiniature" docs="adventure-cover-journeyminiature" width={400} height={560}>
+              <div className="adventure" style={{ background: "var(--adventure-cream-bright)", padding: 12 }}>
+                <JourneyMiniature
+                  art={ADVENTURE_ART["cuaderno-del-viajero"]!.miniature.tall}
+                  states={fixtureAdventureProgress().encounters.map((encounter) => encounter.state)}
+                  variant="tall"
+                  label="El viaje entero: el camino sube de la plaza del barrio al Palacio de los Escaques"
+                />
+              </div>
+            </Tile>
+            <Tile name="AdventureShelf" docs="adventure-shelf-adventureshelf" width={1240} height={880}>
+              <AdventureShelf
+                shelf={{
+                  notebooks: [
+                    {
+                      slug: "cuaderno-del-viajero",
+                      title: "El cuaderno del viajero",
+                      place: "La ciudad",
+                      total: 12,
+                      beaten: 4,
+                      stars: 9,
+                    },
+                  ],
+                  coming: COMING_ADVENTURES,
+                }}
+              />
+            </Tile>
+            <Tile name="OpenNotebook" docs="adventure-shelf-opennotebook" width={460} height={500}>
+              <div className="adventure" style={{ padding: 28, background: "var(--adventure-wood)" }}>
+                <OpenNotebook
+                  notebook={{
+                    slug: "cuaderno-del-viajero",
+                    title: "El cuaderno del viajero",
+                    place: "La ciudad",
+                    total: 12,
+                    beaten: 4,
+                    stars: 9,
+                  }}
+                />
+              </div>
+            </Tile>
+            <Tile name="NotebookSpine" docs="adventure-shelf-notebookspine" width={260} height={380}>
+              <ul
+                className="adventure"
+                style={{ margin: 0, padding: "32px 20px 8px", listStyle: "none", background: "var(--adventure-wood)" }}
+              >
+                <NotebookSpine notebook={COMING_ADVENTURES[0]!} />
+              </ul>
             </Tile>
           </Section>
         </div>

@@ -1,0 +1,97 @@
+/* The journey in one drawing. The scenery is art and keeps its own colours;
+   the path, the stamps and everything that says where the person is read the
+   paper's tokens. */
+.journey-miniature {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+
+  /* The tape the path is printed on, and the red thread sewn along it. */
+  & .journey-miniature__tape {
+    fill: none;
+    stroke: var(--adventure-cream-bright);
+    stroke-width: 9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.95;
+  }
+
+  & .journey-miniature__thread {
+    fill: none;
+    stroke: var(--adventure-thread);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-dasharray: 4 3.5;
+    opacity: 0.55;
+  }
+
+  /* As far as the person has got, the thread is solid. */
+  & .journey-miniature__sewn {
+    fill: none;
+    stroke: var(--adventure-thread);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  & .journey-miniature__paper {
+    stroke-width: 1;
+  }
+
+  & .journey-miniature__stamp_state_beaten .journey-miniature__paper {
+    fill: var(--adventure-kraft-pale);
+    stroke: var(--adventure-kraft);
+  }
+
+  & .journey-miniature__stamp_state_available .journey-miniature__paper {
+    fill: var(--adventure-cream-bright);
+    stroke: var(--adventure-brick-fill);
+    stroke-width: 2;
+  }
+
+  & .journey-miniature__stamp_state_locked .journey-miniature__paper {
+    fill: var(--adventure-empty);
+    stroke: var(--adventure-graphite);
+    stroke-width: 0.6;
+  }
+
+  & .journey-miniature__postmark {
+    fill: none;
+    stroke: var(--adventure-brick-fill);
+    stroke-width: 1.2;
+  }
+
+  & .journey-miniature__pin {
+    fill: var(--adventure-brick-fill);
+    stroke: var(--adventure-cream-bright);
+    stroke-width: 1;
+  }
+
+  & .journey-miniature__lock {
+    fill: none;
+    stroke: var(--adventure-graphite);
+    stroke-width: 1.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* The last page is sealed with wax: brick, whatever its state, with the
+     padlock or the tick in the paper's colour. */
+  & .journey-miniature__wax {
+    fill: var(--adventure-brick-fill);
+    stroke: var(--adventure-brick-fill-deep);
+    stroke-width: 1.2;
+  }
+
+  & .journey-miniature__stamp_final .journey-miniature__lock,
+  & .journey-miniature__check {
+    stroke: var(--adventure-on-brick);
+  }
+
+  & .journey-miniature__check {
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}

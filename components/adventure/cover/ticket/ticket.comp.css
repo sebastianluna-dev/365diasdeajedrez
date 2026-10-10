@@ -1,0 +1,168 @@
+/* A ticket of the desk: a stub and a body, cut out of the paper with a
+   notch on the perforation. */
+.ticket {
+  position: relative;
+  color: var(--adventure-ink);
+  font-family: var(--adventure-font-data);
+  /* The shadow is on the ticket and the notches are cut out of the paper
+     inside it: a filter is applied before a mask, so on one element the
+     shadow would be cut away with the notches. */
+  filter: drop-shadow(0 18px 18px rgba(0, 0, 0, 0.42)) drop-shadow(0 2px 2px rgba(0, 0, 0, 0.25));
+
+  & .ticket__paper {
+    display: grid;
+    grid-template-columns: 74px minmax(0, 1fr);
+    height: 100%;
+    min-height: 214px;
+    mask:
+      radial-gradient(circle 11px at 74px 0, transparent 10.5px, #000 11px) top / 100% 51% no-repeat,
+      radial-gradient(circle 11px at 74px 100%, transparent 10.5px, #000 11px) bottom / 100% 51% no-repeat;
+  }
+
+  & .ticket__stub {
+    display: grid;
+    place-items: center;
+    border-right: 2px dashed var(--adventure-graphite);
+  }
+
+  & .ticket__stub-word {
+    transform: rotate(180deg);
+    writing-mode: vertical-rl;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--adventure-brick);
+  }
+
+  & .ticket__body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 22px 22px 22px 24px;
+
+    /* The printed frame, double. */
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 9px;
+      border: 1.5px solid var(--adventure-graphite);
+      outline: 1px solid var(--adventure-graphite);
+      outline-offset: 3px;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+  }
+
+  & .ticket__eyebrow {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--adventure-brick);
+  }
+
+  & .ticket__title {
+    margin: 4px 0 0;
+    font-family: var(--adventure-font-title);
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.02;
+    color: var(--adventure-ink);
+  }
+
+  & .ticket__description {
+    max-width: 26ch;
+    margin: 0;
+    font-family: var(--adventure-font-title);
+    font-size: 14.5px;
+    line-height: 1.45;
+    color: var(--adventure-ink-soft);
+  }
+
+  /* The pieces printed in the corner of the ticket. */
+  & .ticket__art {
+    position: absolute;
+    right: 20px;
+    bottom: 18px;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    color: var(--adventure-brick);
+    opacity: 0.9;
+  }
+
+  & .ticket__piece {
+    width: 26px;
+    height: 26px;
+  }
+
+  & .ticket__body > .platform-button {
+    position: relative;
+    margin-top: 6px;
+    font-family: var(--platform-font);
+  }
+
+  /* The warm ticket is the way in that works; the quiet one is the paper of a
+     ticket that is not valid yet. */
+  &.ticket_tone_free {
+    transform: rotate(-2.5deg);
+
+    & .ticket__paper {
+      background: var(--adventure-ticket);
+    }
+
+    & .ticket__stub {
+      background: rgba(168, 58, 42, 0.1);
+    }
+  }
+
+  &.ticket_tone_person {
+    transform: rotate(3.5deg) translateX(10px);
+
+    & .ticket__paper {
+      background: var(--adventure-ticket-quiet);
+    }
+
+    & .ticket__stub {
+      background: rgba(35, 49, 79, 0.08);
+    }
+
+    & .ticket__stub-word {
+      color: var(--adventure-ink-soft);
+    }
+
+    & .ticket__art {
+      color: var(--adventure-ink-soft);
+    }
+  }
+
+  & .ticket__soon {
+    align-self: flex-start;
+    margin-top: 6px;
+    padding: 6px 10px 5px;
+    transform: rotate(-4deg);
+    border: 2px solid var(--adventure-brick);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--adventure-brick);
+  }
+
+  @media (width < 768px) {
+    & .ticket__paper {
+      min-height: 0;
+    }
+
+    &.ticket_tone_person {
+      transform: rotate(2deg);
+    }
+  }
+}

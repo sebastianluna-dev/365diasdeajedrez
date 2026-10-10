@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { AdventureCoverSection } from "@/components/adventure/cover/adventure-cover/adventure-cover.section";
 import { PlayLobbySection } from "@/components/platform/sections/play/lobby/play-lobby.section";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
-import { PLAY_ENABLED } from "@/constants/platform/features.const";
+import { ADVENTURE_ENABLED, PLAY_ENABLED } from "@/constants/platform/features.const";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 
@@ -11,7 +12,11 @@ export const metadata: Metadata = {
 };
 
 interface PlayPageProps {
-  /** `?rival=<slug>` opens that bot's popup; `?error=` is what an action bounced back with. */
+  /**
+   * `?rival=<slug>` opens that bot's popup; `?error=` is what an action bounced back with.
+   * Both are the gallery's: with the adventure on, the cover has no popup, and
+   * the address of the gallery is `/jugar/partida-libre`.
+   */
   searchParams: Promise<{ rival?: string; error?: string }>;
 }
 
@@ -21,6 +26,17 @@ export default async function PlayPage({ searchParams }: PlayPageProps) {
   await getCurrentUser();
   const { rival, error } = await searchParams;
   const errorMessage = studentErrorMessage(error);
+
+  // The cover of «Jugar»: the adventure's notebook and two tickets. Without the
+  // adventure, this address stays what it has been, the gallery of bots.
+  if (ADVENTURE_ENABLED) {
+    return (
+      <div className="platform-page platform-page_width_wide">
+        {errorMessage && <PlatformNotice message={errorMessage} />}
+        <AdventureCoverSection />
+      </div>
+    );
+  }
 
   return (
     <div className="platform-page platform-page_width_wide">

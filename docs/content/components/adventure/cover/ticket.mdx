@@ -1,0 +1,63 @@
+---
+description: "A ticket on the cover's desk: a stub, a printed body and one way in, or a «Próximamente» stamp."
+---
+
+# `Ticket`
+
+|            |                                                                                          |
+| ---------- | ---------------------------------------------------------------------------------------- |
+| File       | `components/adventure/cover/ticket/ticket.comp.tsx`                                      |
+| Kind       | Server Component                                                                         |
+| Stylesheet | `ticket.comp.css` → block `.ticket`                                                      |
+| Story      | `ticket.stories.tsx` (`adventure/cover/Ticket`): the free game, coming soon              |
+| Used by    | [`AdventureCover`](/components/adventure/cover/adventure-cover)                          |
+| Uses       | `ChessPawnIcon`, `ChessKnightIcon`, `ChessBishopIcon`, `ChessKingIcon`, `ChessQueenIcon` |
+
+## Purpose
+
+The two other ways into «Jugar»: «Partida libre» (the warm ticket, a link to the gallery of bots) and «Contra una persona» (the quiet one, which carries «Próximamente» and no action). The component receives data — texts, the stub's word, the action — and decides its drawing from `tone`; it takes no children.
+
+The notches are cut out of the paper with a mask on an inner element, and the shadow is on the ticket itself: a filter runs before a mask, so both on one element would cut the shadow away with the notches.
+
+## Props
+
+| Prop          | Type                              | Required | Meaning                                                              |
+| ------------- | --------------------------------- | -------- | -------------------------------------------------------------------- |
+| `tone`        | `"free" \| "person"`              | yes      | Colour, tilt and the pieces printed in the corner.                   |
+| `eyebrow`     | `string`                          | yes      | The small line above the title.                                      |
+| `title`       | `string`                          | yes      | The ticket's name, an `h2`.                                          |
+| `description` | `string`                          | yes      | One sentence.                                                        |
+| `stub`        | `string`                          | yes      | The vertical word on the stub (`aria-hidden`: it repeats the title). |
+| `action`      | `{ href: string; label: string }` | no       | The way in, a platform button.                                       |
+| `soon`        | `boolean`                         | no       | The «Próximamente» stamp, for a ticket that is not valid yet.        |
+
+## Markup & styling
+
+Block `.ticket` (168 lines); the root also carries `.adventure`.
+
+**Elements:** `.ticket__paper`, `__stub`, `__stub-word`, `__body`, `__eyebrow`, `__title`, `__description`, `__art`, `__piece`, `__soon`
+
+**Modifiers and states:** `.ticket_tone_free`, `.ticket_tone_person`
+
+**Tokens:** `--adventure-ticket`, `--adventure-ticket-quiet`, `--adventure-ink`, `--adventure-ink-soft`, `--adventure-graphite`, `--adventure-brick`, `--adventure-font-title`, `--adventure-font-data`
+
+**Media queries:** `(width < 768px)`. No animation.
+
+## Usage
+
+From `components/adventure/cover/adventure-cover/adventure-cover.comp.tsx`:
+
+```tsx
+<Ticket
+  tone="free"
+  eyebrow="Galería de bots"
+  title="Partida libre"
+  description="Elige a cualquier bot de la galería y juega sin seguir la historia."
+  stub="Cualquier bot"
+  action={{ href: platformRoutes.freePlay, label: "Elegir un bot" }}
+/>
+```
+
+## Related
+
+[`AdventureCover`](/components/adventure/cover/adventure-cover).

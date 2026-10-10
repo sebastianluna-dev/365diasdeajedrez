@@ -7,3 +7,20 @@ description: "Index of components/adventure: the paper world of «Jugar»'s adve
 `components/adventure/` is the adventure of «Jugar» («El cuaderno del viajero»): a notebook on a desk, drawn in cut paper. It mirrors no folder of `app/` of its own, because its screens live under `app/(platform)/jugar/`; it has a palette and four fonts of its own (`adventure.css`, described in [Styling](/ui/styling#the-adventures-paper)) and the platform's buttons and popups. What stays of the rest of the platform is the shell: the bar above, the session and the routes.
 
 Every piece sits under an element with the class `.adventure`, which declares the tokens, and every colour is a pair of light and dark, tested by `components/adventure/adventure-tokens.test.ts`.
+
+## `cover/`
+
+| Page                                                                | Kind   | What it is                                                                          |
+| ------------------------------------------------------------------- | ------ | ----------------------------------------------------------------------------------- |
+| [`AdventureCover`](/components/adventure/cover/adventure-cover)     | server | «Jugar» as a desk: the open notebook and two tickets. Also `AdventureCoverSection`. |
+| [`NotebookCard`](/components/adventure/cover/notebook-card)         | server | The notebook's right page: progress, the next rival and the way in.                 |
+| [`Ticket`](/components/adventure/cover/ticket)                      | server | «Partida libre» and «Contra una persona».                                           |
+| [`JourneyMiniature`](/components/adventure/cover/journey-miniature) | server | The whole journey in one drawing, with the stamps in their state.                   |
+
+## `shelf/`
+
+| Page                                                            | Kind   | What it is                                                                    |
+| --------------------------------------------------------------- | ------ | ----------------------------------------------------------------------------- |
+| [`AdventureShelf`](/components/adventure/shelf/adventure-shelf) | server | «Elige tu cuaderno»: the bookshelf. Also `AdventureShelfSection`.             |
+| [`OpenNotebook`](/components/adventure/shelf/open-notebook)     | server | A notebook that can be opened, with the person's count and «Abrir el mapa».   |
+| [`NotebookSpine`](/components/adventure/shelf/notebook-spine)   | server | A closed notebook with its motif and «Próximamente». Also `NotebookCoverArt`. |

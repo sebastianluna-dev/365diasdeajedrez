@@ -50,6 +50,8 @@ const TEXT_PAIRS: readonly (readonly [text: string, background: string])[] = [
   ...["ink", "ink-soft", "graphite", "brick"].flatMap((text) =>
     ["paper", "cream", "cream-bright", "ticket", "ticket-quiet"].map((background) => [text, background] as const),
   ),
+  ["ink", "empty"],
+  ["graphite", "empty"],
   ["ink", "kraft-pale"],
   ["ink-soft", "kraft-pale"],
   ["graphite", "kraft-pale"],

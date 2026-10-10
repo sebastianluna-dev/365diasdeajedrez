@@ -16,14 +16,15 @@ What is in place: the engine client, the bots and their strength ([Bots](/chess/
 
 ## Routes
 
-| Route                               | What it is                                                                                   |
-| ----------------------------------- | -------------------------------------------------------------------------------------------- |
-| `/jugar`                            | The way in: the lobby while `ADVENTURE_ENABLED` is off.                                      |
-| `/jugar/partida-libre`              | «Partida libre», the lobby: the bots by group, «Continuar» for the open game.                |
-| `/jugar/partidas/<id>`              | A game: played while it is open and the viewer holds a seat; read-only for everyone else.    |
-| `/perfil/<slug>`                    | The profile: header, streak, level against bots, scoreboard by bot and the last eight games. |
-| `/perfil/<slug>/partidas`           | Every game, twenty a page, filtered by rival and result.                                     |
-| `/herramientas/tablero-de-analisis` | The analysis board (phase 4).                                                                |
+| Route                               | What it is                                                                                                                  |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `/jugar`                            | The way in: the adventure's cover (the notebook and two tickets) when `ADVENTURE_ENABLED` is on, the lobby while it is off. |
+| `/jugar/partida-libre`              | «Partida libre», the lobby: the bots by group, «Continuar» for the open game.                                               |
+| `/jugar/aventura`                   | The adventure's shelf, behind `ADVENTURE_ENABLED` (404 while it is off).                                                    |
+| `/jugar/partidas/<id>`              | A game: played while it is open and the viewer holds a seat; read-only for everyone else.                                   |
+| `/perfil/<slug>`                    | The profile: header, streak, level against bots, scoreboard by bot and the last eight games.                                |
+| `/perfil/<slug>/partidas`           | Every game, twenty a page, filtered by rival and result.                                                                    |
+| `/herramientas/tablero-de-analisis` | The analysis board (phase 4).                                                                                               |
 
 The three prefixes are in `PROTECTED_PATH_PREFIXES` and in the proxy's matcher; `lib/platform-routes.ts` builds every address (`play`, `freePlay`, `playAgainst`, `playedGame`, `profile`, `userProfile`, `userProfileGames`, `analysisBoard`).
 

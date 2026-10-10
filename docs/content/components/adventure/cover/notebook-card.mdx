@@ -1,0 +1,52 @@
+---
+description: "The right-hand page of the cover's notebook: the adventure, how far the person is, the next rival and the way in."
+---
+
+# `NotebookCard`
+
+|            |                                                                                                                                                                             |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/adventure/cover/notebook-card/notebook-card.comp.tsx`                                                                                                           |
+| Kind       | Server Component                                                                                                                                                            |
+| Stylesheet | `notebook-card.comp.css` → block `.notebook-card`                                                                                                                           |
+| Story      | `notebook-card.stories.tsx` (`adventure/cover/NotebookCard`): four of twelve, fresh, complete, the final page available, with an adventure game open, with a free game open |
+| Used by    | [`AdventureCover`](/components/adventure/cover/adventure-cover)                                                                                                             |
+| Uses       | `platformRoutes.adventureMap`, `adventures`, `playedGame`; `initialsOf` (`lib/avatar-tone`); `ArrowRightIcon`, `LockIcon`, `StarIcon`                                       |
+
+## Purpose
+
+Says, on one page, where the person stands in «El cuaderno del viajero»: the title and premise, «4 de 12 rivales superados» with the stars earned, a strip of twelve stamps in the order of the story, the next rival — «Próximo rival · N.º 5», its role, its strength and zone, and an «Intento 2» tag once there has been a failed try — and the way in.
+
+The stamps carry the rival's initials until the portraits exist (A3): a beaten one is postmarked, the one to play is framed in brick, a locked one shows a padlock and the last page is sealed in wax. The strip is a list with a screen-reader sentence per item («Rival 3, superado»); a locked rival's name is never given.
+
+**The way in** is one platform button: «Empezar la aventura» for a notebook nobody has opened, «Continuar la aventura» after that, «Abrir el mapa» when the twelve are written. With an open game against the adventure's own rival it becomes «Continuar la partida» (to the game), with «Abrir el mapa» as a text link; with a free game open it stays the map's and a line says so, with its own «Continuar la partida». «Elegir otro cuaderno» goes to the shelf.
+
+## Props
+
+| Prop       | Type                    | Required | Meaning                                                        |
+| ---------- | ----------------------- | -------- | -------------------------------------------------------------- |
+| `progress` | `AdventureProgressView` | yes      | The adventure for the person; `current` is null when complete. |
+
+## Markup & styling
+
+Block `.notebook-card` (334 lines); the root also carries `.adventure`.
+
+**Elements:** `.notebook-card__eyebrow`, `__title`, `__premise`, `__progress`, `__count`, `__figure`, `__stars`, `__star`, `__stamps`, `__stamp-item`, `__stamp`, `__stamp-initials`, `__stamp-lock`, `__stamp-elo`, `__sr`, `__next`, `__attempt`, `__rival`, `__next-label`, `__name`, `__role`, `__meta`, `__open`, `__actions`, `__link`
+
+**Modifiers and states:** `.notebook-card__stamp_state_beaten|available|locked`, `.notebook-card__stamp_size_large`, `.notebook-card__stamp_final`, `.notebook-card__next_complete`
+
+**Tokens:** `--adventure-ink`, `--adventure-ink-soft`, `--adventure-graphite`, `--adventure-brick`, `--adventure-brick-fill`, `--adventure-on-brick`, `--adventure-cream`, `--adventure-cream-bright`, `--adventure-kraft-pale`, `--adventure-empty`, `--adventure-ochre`, `--adventure-font-title`, `--adventure-font-data`; the buttons keep `--platform-font`.
+
+**Media queries:** `(width < 768px)`. No animation.
+
+## Usage
+
+From `components/adventure/cover/adventure-cover/adventure-cover.comp.tsx`:
+
+```tsx
+<NotebookCard progress={progress} />
+```
+
+## Related
+
+[`AdventureCover`](/components/adventure/cover/adventure-cover), [`OpenNotebook`](/components/adventure/shelf/open-notebook).

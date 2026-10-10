@@ -83,9 +83,6 @@
   --adventure-font-hand: var(--font-kalam), "Bradley Hand", "Segoe Print", cursive;
   --adventure-font-data: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
-  color: var(--adventure-ink);
-  font-family: var(--adventure-font-data);
-
   :root[data-theme="light"] & {
     color-scheme: light;
   }
