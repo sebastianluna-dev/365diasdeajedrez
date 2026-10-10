@@ -139,24 +139,43 @@ The game itself is the platform's own screen on a page of the notebook: [`PaperF
 
 ## Query budget
 
-Planned: the cover (`/jugar`) ≤ 3, the shelf (`/jugar/aventura`) ≤ 3 and the map (`/jugar/aventura/<slug>`) ≤ 4 on top of the session. By reading the code the cover and the map make **2** (the games and the open game) and the shelf **1**, because the bot's slug comes with each game and no query of the bots is needed. **To be measured on a production build before the switch goes on** (`PLATFORM_DB_LOG=query`, `npm run build && npm run start`, one load at a time, as [Play](/platform/play#seed-and-query-budget) does); the figures go here then.
+Budget: the cover (`/jugar`) ≤ 3, the shelf (`/jugar/aventura`) ≤ 3 and the map (`/jugar/aventura/<slug>`) ≤ 4 on top of the session. **Measured on 2026-10-10** on a production build with the switch on (`PLATFORM_DB_LOG=query`, `next build` and `next start`, three loads of each route, `alumno.demo`), without the session's own query:
+
+| Route                                  | Queries | Of them                                                                                       |
+| -------------------------------------- | ------- | --------------------------------------------------------------------------------------------- |
+| `/jugar` (cover)                       | 2       | the open game, the games against the rivals                                                   |
+| `/jugar/aventura` (shelf)              | 1       | the games against the rivals                                                                  |
+| `/jugar/aventura/cuaderno-del-viajero` | 2       | the open game, the games against the rivals                                                   |
+| `/jugar/partida-libre` (gallery)       | 3       | the groups with their bots, the open game, the games against the bots                         |
+| `/jugar/partidas/<id>` of a rival      | 3       | the game, its score against the bot, the person's databases: the same as a free game (also 3) |
+
+All three loads of each route gave the same count, and the frame added none.
 
 ## Verification in the app
 
-**Not run yet.** The steps below are the plan's. Until now the screens were checked in stories (axe in both themes) and the action's bounce in the app against a database with no progress (0 of 12); the migration `20261009120000_adventure_bots` and the nine demo games are not applied to the local database. To run them: the owner applies the migration and the seed locally (`db:migrate`, `db:seed`, with his go), turns `ADVENTURE_ENABLED` on in the local copy only, and drives the local `next dev` with Playwright and the demo accounts (`alumno.demo@365diasdeajedrez.com`, password `ajedrez365`).
+**Run on 2026-10-10**, with `ADVENTURE_ENABLED` on in the working copy only, against the local database (migration `adventure_bots` and the seed applied: `alumno.demo` at 4 of 12), on `next dev` driven with Playwright and Chrome at 1440×900 and 390×844, with the three demo accounts (`alumno.demo@365diasdeajedrez.com`, `profesor.demo@…`, `staff.demo@…`, password `ajedrez365`). Eleven of the twelve steps passed as written; step 8 passed only in part, because winning a real game was not played (the first win of the owner's seed was left alone).
 
-1. `/jugar` as `alumno.demo`: the cover with 4 of 12, «Intento 2» on the fifth and the two tickets.
-2. `/jugar/partida-libre?rival=beto` opens Beto's popup; `?rival=cuaderno-del-viajero-don-chema` does not open anything.
-3. `/jugar/aventura`: the open notebook and six «Próximamente», with no action on them.
-4. The map: it opens at the fifth stamp; stamps 1–4 cancelled with their keepsakes, 6–12 with a padlock; the seam sewn up to the fifth; the notes open; the row follows the zone; and the three layouts at 1280, 1024, 768 and 375 px.
-5. A locked card has no button, and a post of `startAdventureEncounter` for the sixth answers `?error=encounterLocked`.
-6. «Empezar» with a free game open warns of the replacement; confirming opens a game in the frame «BIBLIOTECA CENTRAL · Sala de lectura» with the bot playing at 783.
-7. Abandoning offers «Volver al mapa», and the stamp now says «Intento 3».
-8. Winning sends to `?victoria=5`: the victory plays once; reloading does not repeat it; the cover says 5 of 12.
-9. «Volver a retar» on the first leaves its ★★★.
-10. The profile and `/inicio`: the games are there, the streak is intact.
-11. `profesor.demo` and `staff.demo` read the game, framed, read-only.
-12. With the switch off: `/jugar` is the gallery and `/jugar/aventura` answers 404.
+| #   | Step                                                                       | Result                                                                                                                                                                                                                                                                                                                                                       |
+| --- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | `/jugar`: cover with 4 of 12, «Intento 2» and the two tickets              | Passes. Nine stars, the fifth stamp as the next rival, «Partida libre» and «Contra una persona» («Próximamente»); no horizontal overflow at 390 px.                                                                                                                                                                                                          |
+| 2   | `?rival=beto` opens Beto; `?rival=cuaderno-del-viajero-don-chema` does not | Passes. The hidden rival opens nothing and the gallery does not list the group.                                                                                                                                                                                                                                                                              |
+| 3   | `/jugar/aventura`: the notebook and six «Próximamente»                     | Passes. The only controls on the page are «Jugar» and «Abrir el mapa».                                                                                                                                                                                                                                                                                       |
+| 4   | The map                                                                    | Passes. It opens at the fifth stamp (scroll 4093 of 7214 px); stamps 1–4 cancelled, 6–12 with a padlock; seam sewn to the fifth; notes of pages 1–3 open and 4–6 «Se abre al llegar»; the row follows the zone; one layout is shown at a time at 1280, 1024, 768 and 375 px (`display` read from the DOM) with no horizontal overflow.                       |
+| 5   | A locked card and a tampered post                                          | Passes. The sixth card has no form; posting `encounter=6` through the fifth card's form bounces back with «Esa página del cuaderno sigue cerrada…» and the map stays at the top.                                                                                                                                                                             |
+| 6   | «Empezar» with a game open                                                 | Passes. The card warns, «Quitar» asks in a `PlatformConfirmPopup` over it, and the game opens in the frame «BIBLIOTECA CENTRAL · Sala de lectura», «Página 5 · Intento 2»; the bot answered `e4` with `e5` and `d4` with `Nc6` (a few seconds each).                                                                                                         |
+| 7   | Abandoning                                                                 | Passes. The game over offers «Volver al mapa» (no «Revancha», no «Otro rival»), the map's address carries no `?victoria=` and the stamp says «Intento 3».                                                                                                                                                                                                    |
+| 8   | Winning sends to `?victoria=5`; reloading does not repeat it               | **Partial.** No game was won. `?victoria=4` (beaten, with the fifth available at «Intento 3») plays nothing, as `isVictoryPlayable` says, and so do `5` (not beaten), `13`, `0` and `abc`. The sequence itself is covered by the stories (axe in both themes) and the unit tests; it is still to be watched once after a real win, and under reduced motion. |
+| 9   | «Volver a retar» on the first                                              | Passes. The game opens on page 1; after abandoning it the stamp still says ★★★ at the first attempt and the cover still says 4 of 12.                                                                                                                                                                                                                        |
+| 10  | The profile and `/inicio`                                                  | Passes. The games are in the profile (16 games); `/inicio` is byte for byte what it was before playing (streak 0, 0 of 30 minutes).                                                                                                                                                                                                                          |
+| 11  | `profesor.demo` and `staff.demo`                                           | Passes. «Partidas jugadas» of the student's page lists the games; an adventure game opens framed, headed «Página n» without «Intento», with no action over it. The staff reads the same game by its address.                                                                                                                                                 |
+| 12  | With the switch off                                                        | Passes. `/jugar` is the gallery (the hidden group is not in it) and `/jugar/aventura*` draw the platform's «No encontramos lo que buscabas» (with status 200, as every 404 of the platform, `/entrenador` included, because the page has streamed its first part). A game against a rival is drawn as any other.                                             |
+
+What the run left in the owner's seed: the game against Anselmo was abandoned after two moves of one's own (the fifth stamp now says «Intento 3» and the profile has one more loss), a «Volver a retar» game against Don Chema was abandoned before moving (a loss that touches neither stars nor keepsake) and the free game against Beto that «Empezar» replaced is an «Anulada». Re-seeding brings the database back to 4 of 12 at «Intento 2».
+
+Two small things the run found and did not change:
+
+- The frame's «Intento k» is the number of games against the rival plus one, so a «Volver a retar» of a beaten rival says «Intento 2» though it counts for nothing.
+- `?victoria=` stays in the address when the victory is not played (the parameter is taken off only when it plays); harmless, since nothing replays on reload.
 
 ## Related
 
