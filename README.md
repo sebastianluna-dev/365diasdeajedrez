@@ -84,7 +84,7 @@ They are restored onto an empty or test database with `pg_restore --no-owner --d
 
 ## Access to the platform
 
-The private area (`/inicio`, `/clases`, `/estudios`, `/cursos`, `/lecciones` (the old lesson URLs, which redirect), `/ajustes`, `/entrenador`, `/explorador`, `/jugar` and `/perfil` (both behind `PLAY_ENABLED`, off), `/herramientas` (behind `ANALYSIS_BOARD_ENABLED`, off), `/profesor`, `/administracion`) requires signing in at `/iniciar-sesion`. The seed leaves three test accounts ready with the password `ajedrez365` (or the one in `PLATFORM_DEMO_PASSWORD`); it is only assigned to accounts that do not have a password yet, so a re-seed never reverts a change made by hand:
+The private area (`/inicio`, `/clases`, `/estudios`, `/cursos`, `/lecciones` (the old lesson URLs, which redirect), `/ajustes`, `/entrenador`, `/explorador`, `/jugar` (with `/jugar/partida-libre` and its games) and `/perfil` (both behind `PLAY_ENABLED`, off), `/herramientas` (behind `ANALYSIS_BOARD_ENABLED`, off), `/profesor`, `/administracion`) requires signing in at `/iniciar-sesion`. The seed leaves three test accounts ready with the password `ajedrez365` (or the one in `PLATFORM_DEMO_PASSWORD`); it is only assigned to accounts that do not have a password yet, so a re-seed never reverts a change made by hand:
 
 | Account                              | Role                 | What they see beyond the student's view |
 | ------------------------------------ | -------------------- | --------------------------------------- |
@@ -139,7 +139,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/ajustes` (the account: the student's details, the theme and the daily goal; reached from the menu behind the avatar of the bar). The platform has a **light and a dark theme**: it follows the machine unless the person chooses, and the choice is the `tema` cookie — see `docs/` → Architecture → Themes.
 - `/entrenador` (the Move Trainer; **switched off**: it answers 404 while `MOVE_TRAINER_ENABLED` in `constants/platform/features.const.ts` is `false`)
 - `/explorador` (search for games by position; student and teacher share it)
-- `/jugar`, `/jugar/partidas/[gameId]` (games against the bots), `/perfil`, `/perfil/[slug]`, `/perfil/[slug]/partidas` (a person's profile and every game they played; seen by them, their teachers and the staff) — **switched off** while `PLAY_ENABLED` is `false`
+- `/jugar` (the way in), `/jugar/partida-libre` (the gallery of bots), `/jugar/partidas/[gameId]` (games against the bots), `/perfil`, `/perfil/[slug]`, `/perfil/[slug]/partidas` (a person's profile and every game they played; seen by them, their teachers and the staff) — **switched off** while `PLAY_ENABLED` is `false`
 - `/herramientas` (goes to the board) and `/herramientas/tablero-de-analisis` — **switched off** while `ANALYSIS_BOARD_ENABLED` is `false`; once on, «Herramientas» in the bar gathers the board with the explorer
 
 **Platform — teacher** (requires an active `Teacher` row)

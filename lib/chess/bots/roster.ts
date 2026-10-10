@@ -16,7 +16,7 @@ import { BOT_GROUP, type BotGroupCode } from "@/constants/platform/play-codes.co
 // them: it is Stockfish, weakened.
 
 export interface BotSeed {
-  /** The bot's address: `/jugar?rival=<slug>`. Never changes. */
+  /** The bot's address: `/jugar/partida-libre?rival=<slug>`. Never changes. */
   slug: string;
   name: string;
   /** The label: 400–2800, never a multiple of 100. */

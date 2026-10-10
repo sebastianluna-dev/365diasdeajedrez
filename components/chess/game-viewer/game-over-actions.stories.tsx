@@ -25,7 +25,7 @@ Reference page: [Components › GameOverActions](/components/chess/game-viewer/g
   args: {
     scoreboard: { you: FIXTURE_STUDENT, rival: FIXTURE_BOT, wins: 3, losses: 1, draws: 0 },
     rematch: fn(async () => {}).mockName("rematchPlayedGame"),
-    otherOpponentHref: "/jugar",
+    otherOpponentHref: "/jugar/partida-libre",
     analysisBoardHref: "/herramientas/tablero-de-analisis?partida=AbC12345",
     onSave: fn().mockName("openSavePopup"),
     onAnalyse: fn().mockName("revealReview"),

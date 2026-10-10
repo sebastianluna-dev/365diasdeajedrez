@@ -131,7 +131,7 @@ export function LiveGameSection({
                     ? {
                         scoreboard,
                         rematch,
-                        otherOpponentHref: platformRoutes.play,
+                        otherOpponentHref: platformRoutes.freePlay,
                         analysisBoardHref,
                         onSave: (event) => savePopup.current?.open(event),
                       }

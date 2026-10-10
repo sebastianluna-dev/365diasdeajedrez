@@ -1624,7 +1624,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               <GameOverActions
                 scoreboard={{ you: FIXTURE_STUDENT, rival: FIXTURE_BOT, wins: 3, losses: 1, draws: 0 }}
                 rematch={async () => undefined}
-                otherOpponentHref="/jugar"
+                otherOpponentHref="/jugar/partida-libre"
                 analysisBoardHref={null}
                 onSave={() => undefined}
                 onAnalyse={() => undefined}

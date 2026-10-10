@@ -65,21 +65,22 @@ export async function startPlayedGame(formData: FormData): Promise<void> {
   if (!PLAY_ENABLED) notFound();
   const user = await getCurrentUser();
   if (!(await allowAction(`${user.id}:play-start`, 20, 60_000)))
-    redirect(withErrorParam(platformRoutes.play, "throttled"));
+    redirect(withErrorParam(platformRoutes.freePlay, "throttled"));
 
   const form = parseForm(START_SCHEMA, formData);
-  if (!form.ok) redirect(withErrorParam(platformRoutes.play, "invalid"));
+  if (!form.ok) redirect(withErrorParam(platformRoutes.freePlay, "invalid"));
   // A hidden group's bots (an adventure's rivals) are not for the gallery: refusing
   // them here is what keeps `?rival=` from skipping the story.
   const bot = await getPlatformDb().bot.findFirst({
     where: { slug: form.data.bot, isActive: true, group: { isListed: true } },
     select: { id: true, name: true, elo: true },
   });
-  if (!bot) redirect(withErrorParam(platformRoutes.play, "botNotFound"));
+  if (!bot) redirect(withErrorParam(platformRoutes.freePlay, "botNotFound"));
 
   const color = form.data.color === "random" ? (randomInt(2) === 0 ? "white" : "black") : form.data.color;
   const gameId = await openGame(user.id, user.displayName, bot, color, form.data.replace);
 
+  revalidatePath(platformRoutes.freePlay);
   revalidatePath(platformRoutes.play);
   redirect(platformRoutes.playedGame(gameId));
 }
@@ -102,11 +103,13 @@ export async function rematchPlayedGame(gameId: string): Promise<void> {
     },
   });
   const bot = previous?.whiteBot ?? previous?.blackBot;
-  if (!previous || !bot?.isActive || !bot.group.isListed) redirect(withErrorParam(platformRoutes.play, "botNotFound"));
+  if (!previous || !bot?.isActive || !bot.group.isListed)
+    redirect(withErrorParam(platformRoutes.freePlay, "botNotFound"));
 
   const color = seatOf(previous, user.id) === "white" ? "black" : "white";
   const next = await openGame(user.id, user.displayName, bot, color, true);
 
+  revalidatePath(platformRoutes.freePlay);
   revalidatePath(platformRoutes.play);
   redirect(platformRoutes.playedGame(next));
 }

@@ -45,7 +45,7 @@ export function BotGallery({ groups, scores, suggestion, you, openGame, initialR
     popup.current?.open(event);
   };
 
-  // A link to `/jugar?rival=<slug>` (a profile's «Jugar de nuevo») opens that bot's popup once.
+  // A link to `/jugar/partida-libre?rival=<slug>` (a profile's «Jugar de nuevo») opens that bot's popup once.
   const openedOnArrival = useRef(false);
   useEffect(() => {
     if (openedOnArrival.current || !picked || picked.slug !== initialRival) return;
