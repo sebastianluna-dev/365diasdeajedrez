@@ -1,0 +1,163 @@
+---
+description: "«Modo aventura»: the story, the rules, the data model, the routes, the art and its pipeline, the live layer, the switch and the checks of «El cuaderno del viajero», the first adventure of «Jugar»."
+---
+
+# Adventure mode («Modo aventura»)
+
+A way into «Jugar» that is an illustrated journey instead of a gallery: a map drawn as a notebook on a desk, twelve rivals along it, and the games against them. The first adventure, **«El cuaderno del viajero»** (`cuaderno-del-viajero`), was chosen by the owner among three mock-ups on 2026-10-09 (the decisions are in `planning/jugar/DEFINICIONES.md`, local). It is built on top of «Jugar» ([Play](/platform/play)) and changes none of its rules: a game against a rival is an ordinary `PlayedGame` against a bot, and playing still never counts toward the streak.
+
+Everything is behind `ADVENTURE_ENABLED`, which is **off** and needs `PLAY_ENABLED` too (see [The switch](#the-switch)). The screens are described in [the components](/components/adventure); this page is the story, the rules, the data, the art and how to check it.
+
+## The story
+
+«En el club, el Profe Leal te regala un cuaderno viejo: cada página es una partida que alguien jugó en la ciudad hace treinta años. Sigues sus pasos y escribes tus propias páginas.» Each page of the notebook is a zone of a city, with a note in the hand of «J.» (the author, who waits in the last one) that is read on arriving, and two rivals:
+
+| Zone (copy)             | Page of the notebook              | Rivals (strength borrowed from)                                                         |
+| ----------------------- | --------------------------------- | --------------------------------------------------------------------------------------- |
+| Plaza de las Jacarandas | «Aquí empezó todo»                | 1 Don Chema (Tere, 412) · 2 Chayo Ríos (Beto, 547)                                      |
+| Club La Torre           | «Una página arrancada»            | 3 Profe Leal (Lupita, 668) · 4 Toñito Garza (Beto, 547)                                 |
+| Biblioteca Central      | «La dedicatoria sin firma»        | 5 Anselmo Quiroga (Don Chuy, 783) · 6 Inés Cárdenas (Mariana, 891)                      |
+| Abierto del Malecón     | «La partida contra el capitán»    | 7 Doña Cuca (Don Chuy, 783) · 8 Capitán Olmo (Profe Ramírez, 1036)                      |
+| Gran Hotel Alameda      | «El torneo que nunca terminó»     | 9 Maestro Ibarra (Mariana, 891) · 10 Leonor Aldama, «la Condesa» (Ximena, 1174)         |
+| Palacio de los Escaques | «El autor del cuaderno te espera» | 11 Valeria Soto (Profe Ramírez, 1036) · 12 Julián Esparza, «el Viajero» (Rodrigo, 1309) |
+
+The story, not the strength, orders the rivals, so the level goes up and down (the third zone rises, the fourth drops back and climbs again) and tops out at the last page, 1309. The second page is torn: it is drawn with a ragged edge. Each rival has a phrase, a favourite opening, a style, a place of its own inside the zone, a difficulty from 1 to 5 relative to the adventure («Fácil», «Accesible», «Intermedio», «Exigente», «Muy exigente») and a keepsake. All of it is code: `lib/adventure/adventures/cuaderno-del-viajero.ts`, in Spanish as the student reads it.
+
+## The rules
+
+- **The story waits.** Only a win opens the next page. A draw or a loss is tried again with no limit. The first page is open from the start; the last one opens only after the other eleven are beaten (`isFinal`).
+- **Attempts.** A game counts when it is closed with a result (`countsForScore`): an aborted game counts for nothing, a resignation or an abandonment is a loss, a draw is an attempt. Attempts run up to the first win, inclusive; a later win changes nothing.
+- **Stars.** By attempts: the first try gives ★★★, the second or third ★★, any later one ★. A beaten rival is **cancelled** (its stamp gets a dated postmark); the one to play is **pinned**; the rest are a **blind proof** with a padlock.
+- **Keepsakes.** Beating a rival leaves something of theirs stuck in the notebook (a bottle cap, a popsicle stick with «¡jaque!», the club's membership card with the person's name…); until then it is a sealed envelope on the rival's card.
+- **«Volver a retar».** A beaten rival can be played again, as many times as one wants, and it touches neither stars nor keepsake: those belong to the first win.
+- **Abandoning counts as an attempt.** There is one open game against a bot at a time (the partial unique indexes of `PlayedGame` are intact): starting a rival with another game open asks first, and the answer closes that game as «Abandonar» would — abandoned after two moves of one's own, aborted before.
+- **The ending.** Beating the twelfth page completes the notebook: the map has no rival to play and the count says 12 of 12.
+
+## The data model
+
+No table and no writer were added. What changed in the database is one column, **`BotGroup.isListed`** (default `true`), and the rows of the migration `20261009120000_adventure_bots`: the group `ADVENTURE_CUADERNO` (`isListed` false) and the 12 rivals, which `npm run bots:sql` printed inside the block that has the whole catalog ([Data model](/platform/data-model)).
+
+- **Progress is derived from `PlayedGame`.** Stars, attempts and which page is open are pure functions of the person's games against the adventure's bots (`services/adventure/adventure-rules.ts`: `starsForAttempts`, `attemptsOf`, `firstWinOf`, `encounterStatesOf`, `canStartEncounter`, `isVictoryPlayable`, `progressBeforeVictory`), so they can never disagree with the games, and a bot's game of the adventure shows up in the profile, the teacher's «Partidas jugadas» and the scoreboard with no extra work.
+- **A rival is a `Bot` of a hidden group.** The gallery omits the group (`listBotGroups`, `getBotBySlug`), and `startPlayedGame` and `rematchPlayedGame` refuse its bots (`botNotFound`), so `?rival=` cannot skip the story. These rules hold whatever `ADVENTURE_ENABLED` says.
+- **`elo` is a measured label.** A rival's `elo` equals the label of the gallery bot it borrows (`strengthOf`), which the calibration measured; nothing in an adventure is calibrated, and `lib/adventure/adventures.test.ts` keeps them in step ([Bots → Borrowed strengths](/chess/bots#borrowed-strengths)). The rivals are not in `BOT_ROSTER`; `allBotSeeds()` (`lib/adventure/adventure-bots.ts`) joins them to the roster for the seed and `bots:sql`.
+- **The bot's slug is `<adventure>-<rival>`** (`cuaderno-del-viajero-don-chema`), so none collides with a gallery bot. `PlayedGameView.adventure` is derived from the bot's group in the mapper, with no query of its own.
+- **The content is code**, like `BOT_ROSTER`: a **roster** (`lib/adventure/adventures/<slug>.ts`: the story, the zones, the rivals) and the placements of the art (`<slug>.art.ts`), registered in `lib/adventure/adventures.ts` (`ADVENTURES`, `ADVENTURE_ART`, `COMING_ADVENTURES`, `adventureOf`, `adventureBotSlug`, `adventureEncounterOfBot`). The types are in `adventure.types.ts`.
+- **The demo seed** leaves `alumno.demo` at 4 of 12 with nine games (`DEMO_ADVENTURE_GAMES` in `prisma/seed-play.ts`) — see [Play → Seed](/platform/play#seed-and-query-budget).
+
+## Routes
+
+| Route                                          | What it is                                                                                                                                                                                   |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/jugar`                                       | The cover when `ADVENTURE_ENABLED` is on: the open notebook and two tickets, [`AdventureCover`](/components/adventure/cover/adventure-cover). The gallery of bots while it is off.           |
+| `/jugar/partida-libre`                         | «Partida libre»: the gallery of bots, as it was at `/jugar` (`?rival=` opens a bot, `?error=`). Always on, with `PLAY_ENABLED`.                                                              |
+| `/jugar/aventura`                              | The shelf, [`AdventureShelf`](/components/adventure/shelf/adventure-shelf): the notebook that can be opened and the six that are «Próximamente».                                             |
+| `/jugar/aventura/<slug>`                       | The map, [`AdventureMap`](/components/adventure/map/adventure-map). 404 for a slug with no adventure.                                                                                        |
+| `/jugar/aventura/<slug>?victoria=<1..12>`      | Coming back from the **first** win over that rival: the map plays the victory once. Anything else is ignored.                                                                                |
+| `/jugar/aventura/<slug>?error=encounterLocked` | What `startAdventureEncounter` bounces back with for a locked page: «Esa página del cuaderno sigue cerrada. Vence al rival anterior para abrirla.» The page does not scroll the notice away. |
+| `/jugar/partidas/<id>`                         | A game against a rival is drawn in a [`PaperFrame`](/components/adventure/paper-frame/paper-frame) when the switch is on; the same address as any game.                                      |
+
+`lib/platform-routes.ts` builds them (`play`, `freePlay`, `playAgainst`, `adventures`, `adventureMap(slug, { victoria })`, `playedGame`). The proxy and `PROTECTED_PATH_PREFIXES` did not change: `/jugar/:path*` already covered them. Without `PLAY_ENABLED` all of them answer 404; without `ADVENTURE_ENABLED` the shelf and the map answer 404 and `/jugar` is the gallery.
+
+## Services and the action
+
+`services/adventure/`, the usual `{service, mapper, types, rules, actions}`:
+
+| Piece                                     | Signature                                                    | What it does                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ----------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `getAdventureShelf`                       | `() => Promise<AdventureShelfView>`                          | The notebooks with their count and stars, and the ones that are coming. One query (the games against the adventure's rivals, tied to a rival by the bot's slug in the same query).                                                                                                                                                                                                                                         |
+| `getAdventureProgress`                    | `(slug: string) => Promise<AdventureProgressView \| null>`   | Every encounter with its state, attempts, stars, the day and length of the win (`beatenAt`, `winPlies`), the one to play (`current`), the totals and the open game. Two queries: the games, and `getOpenPlayedGame()` in parallel.                                                                                                                                                                                         |
+| `startAdventureEncounter`                 | `(formData: FormData) => Promise<void>` (`"use server"`)     | «Empezar» and «Volver a retar». Order of the house: both switches (`notFound` otherwise) → `getCurrentUser()` → `allowAction("<id>:play-start", 20, 60 000)` → zod `{ adventure, encounter 1..12, color, replace }` → `adventureOf` → `canStartEncounter` (locked: `?error=encounterLocked`) → the active bot of the group → `openGame` → `revalidatePath` (the map, the shelf and `/jugar`) → `redirect(playedGame(id))`. |
+| `openGame` (`services/play/open-game.ts`) | `(userId, userName, bot, color, replace) => Promise<string>` | The helper `startPlayedGame`, `rematchPlayedGame` and this action share (a `"use server"` module may only export actions). Writes only through `writePlayedGameRecord`, in a transaction.                                                                                                                                                                                                                                  |
+
+**The server enforces the story**: a form posted for a locked page is bounced whatever the screen drew. `services/play/no-activity.test.ts` walks `services/adventure` too: nothing here reaches the activity log.
+
+## The switch
+
+`ADVENTURE_ENABLED` (`constants/platform/features.const.ts`, `false as boolean`, and `PLAY_ENABLED` must be on). What it gates:
+
+- the new cover of `/jugar` (off: the gallery, as before);
+- `/jugar/aventura` and `/jugar/aventura/<slug>` (off: 404);
+- `startAdventureEncounter` (off: `notFound`);
+- the paper frame and «Volver al mapa» of a game against a rival (off: the game is drawn as any other).
+
+What it does **not** gate: the rules of the data (`isListed` and the refusal of hidden bots hold always), the migration, the seed and `/jugar/partida-libre`. Switching it on is a one-line commit of its own, with the owner's go (`TODOS.md`, T48).
+
+## The art
+
+The scenery of the map is **static and exported**, not drawn by hand in the app; what lives (seam, stamps, keepsakes, pages, card) is drawn from data over it.
+
+```bash
+npm run adventure:art -- planning/jugar/proposals/aventura/propuesta-b-v2.html cuaderno-del-viajero
+```
+
+`scripts/adventure-art.ts` opens the mock-up (local, git-ignored) in Chromium through Playwright, runs the mock-up's own drawing code, and writes ([Scripts](/operations/scripts-and-seed)):
+
+| Output                                                                                       | Weight today (`cuaderno-del-viajero`) | Notes                                                                                                          |
+| -------------------------------------------------------------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `public/aventuras/<slug>/escritorio.svg`                                                     | 363 KB                                | The desktop layout, from 1024px. The viewBox carries the mock-up's bleed (700 units past each side, 40 above). |
+| `…/tableta.svg`                                                                              | 332 KB                                | From 768px.                                                                                                    |
+| `…/movil.svg`                                                                                | 263 KB                                | Below 768px.                                                                                                   |
+| `…/miniatura-alta.svg`, `…/miniatura-ancha.svg`                                              | 111 KB, 69 KB                         | The cover's journey: tall for the open notebook, wide for a phone and the shelf.                               |
+| `components/adventure/portraits/<rival>-portrait.comp.tsx` ×12 + `<slug>-portraits.const.ts` | —                                     | Engraved portraits as components (ids from `useId`).                                                           |
+| `components/adventure/keepsakes/<slug>-keepsakes.const.tsx` + `sealed-envelope.comp.tsx`     | —                                     | The twelve keepsakes' drawings and the envelope.                                                               |
+| `components/adventure/map/{player-token,needle}.comp.tsx`, `path-marks.const.ts`             | —                                     | The pieces of the live layer the mock-up draws.                                                                |
+
+The scenery carries **no live part** — only the paper tape of the path stays in it. The script warns when a file passes ~400 KB (then a pass of `svgo` is worth it), formats every `.tsx` with Prettier's API so `format:check` passes after a run, and never touches a database. A generated file is not edited by hand: edit the mock-up and run it again. An SVG shown as an image cannot load fonts, so the few signs written in the scenery use the monospace fallback. `components/adventure/art.test.ts` requires the five SVGs, a portrait for every rival and a keepsake for every order.
+
+### Adding a new map
+
+1. **The art.** Draw the mock-up (same shape as `propuesta-b-v2.html`: `ESCENARIO`, `CARAS`, `recuerdoSVG`), then `npm run adventure:art -- <mockup.html> <slug>`.
+2. **The registries of the art.** One line in each record of `components/adventure/adventure-art.const.ts` (`ADVENTURE_PORTRAITS`, `ADVENTURE_KEEPSAKES`) for the files the script wrote.
+3. **The group of bots.** A code in `constants/platform/play-codes.const.ts`: `BOT_GROUP.ADVENTURE_<NAME>`, its label, its ring and `BOT_GROUP_LISTED` false.
+4. **The roster and the placements.** `lib/adventure/adventures/<slug>.ts` (the story, the zones, the rivals with their `strengthOf`) and `<slug>.art.ts` (the three layouts: path, stamps, pages, keepsakes, hints, token, notes; the two miniatures). One line in `ADVENTURES` and `ADVENTURE_ART` of `lib/adventure/adventures.ts`, and the notebook leaves `COMING_ADVENTURES`.
+5. **The rows.** `npm run bots:sql` into a **new** migration (never an old one); `prisma/play-catalog-sql.test.ts` fails until it says what the script prints.
+6. **The tests.** `adventures.test.ts` and `art.test.ts` check the story, the borrowed labels, a waypoint per rival on each path and the art; `lib/testing/fixtures/adventure.ts` feeds the stories.
+7. **Docs.** This page, and a line in the pages of the components that name the first adventure.
+
+Two things in the code still know about **one** adventure of **twelve** rivals, and a second map has to open them: the cover reads a fixed slug (`COVER_ADVENTURE` in `adventure-cover.section.tsx`), and the action's schema, the map page's `?victoria=` and `adventures.test.ts` say 12 (`IMPROVEMENTS.md`).
+
+## The live layer
+
+`AdventureMapSection` reads the progress and the person's card and hands the client map plain data; the map draws **all three layouts** in the page and the stylesheet shows the one that fits (**desktop from 1024px, tablet from 768, phone below**), so the server renders the same markup for every device and nothing flashes. The layouts not shown are `display: none`. Each [`MapLayer`](/components/adventure/map/map-layer) is the exported scenery (`next/image`, wider than the world and clipped) and, over it, in this order: a veil for the night, the seam, and the live layer proper.
+
+- **Percentages of the art.** Everything placed goes in `left/top/width` percentages of the world's box, so it stays on the drawing at any width; what is measured (type, labels) uses `--u`, one unit of the art as a length (`100cqw / --art-width`, the world being a size container), with a floor so a phone still reads it. `lib/adventure/map-geometry.ts` (pure, tested) holds the geometry ported from the mock-up.
+- **The seam.** A Catmull-Rom spline through the layout's waypoints (`path`, one per rival), split at the waypoint of the rival to play: the stretch walked is sewn in red over the tape and the stretch ahead is in pencil, with the **needle** and its thread at the end, the pencil notes with their arrows and the «¡me toca!» over the available stamp. A complete adventure walks the whole path.
+- **The live pieces.** Per zone its [`NotePage`](/components/adventure/note-page/note-page) (open once the zone is reached, folded and closed before — «Se abre al llegar» —, torn for the club); per rival its [`Keepsake`](/components/adventure/keepsakes/keepsake) (only when beaten) and its [`EncounterStamp`](/components/adventure/stamp/encounter-stamp); the «Salida» flag and the person's token beside the stamp to play. [`MapHud`](/components/adventure/map/map-hud) is the row over the map: the way back, the zone it follows as one scrolls, and the count.
+- **The map opens at the stamp to play** (55 % of the window, instantly; the last one when it is complete) unless a notice is on screen.
+- **The card.** Pressing a stamp opens the rival's [`RivalCard`](/components/adventure/rival-card/rival-card) in a `PlatformPopup` (`phone="sheet"`): the colour to play with and «Empezar» or «Volver a retar»; a locked rival has no form. With another game open the button asks in a `PlatformConfirmPopup` (verb «Quitar») opened over the card.
+- **The victory.** Coming back from the first win (`?victoria=`, put there only by «Volver al mapa» of a first win), the map starts from the map as it was before (`progressBeforeVictory`) and plays once, in phases whose durations start from the mock-up's (`VICTORY_DURATIONS`, about 8.8 s in all): `rest` 700 ms → `release` 500 (the pin comes out) → `postmark` 800 (the stamp is cancelled, thud) → `stars` 1080 (one by one) → `keepsake` 900 (it is stuck down) → `seam` 1800 (sewn to the next rival under a mask, the needle leading, the camera following it when both stamps do not fit) → `unlock` 1100 (the padlock falls) → `arrive` 500 (the stamp is inked and pinned) → `token` 1400 (it hops along the seam) → `done` (the count goes up). The last page skips the four after `keepsake`. It takes the parameter off the address with `history.replaceState`, so reloading does not repeat it, and plays nothing for a made-up or old win (`isVictoryPlayable`).
+- **Reduced motion.** Under `prefers-reduced-motion: reduce` nothing animates: the victory is not played (`matchMedia`, as an external store) and the map shows its end; every animation of the stamps, the token and the call has its `reduce` block, which the convention test requires.
+
+The game itself is the platform's own screen on a page of the notebook: [`PaperFrame`](/components/adventure/paper-frame/paper-frame) is headed «BIBLIOTECA CENTRAL · Sala de lectura», «Página n · Intento k» and «Mapa», has **no rematch**, and over it `GameOverActions` offers «Volver al mapa» in place of «Revancha» and «Otro rival» (the analysis, the board, «Guardar en un estudio» and the scoreboard stay). A teacher or the staff read the game with the frame and no actions. The end of the game is still said in the players' strips and under the board, never over it.
+
+## Accessibility
+
+- A stamp is one `<button>` with `aria-haspopup="dialog"` whose `aria-label` says everything the drawing says: «Anselmo Quiroga, rival 5 de 12, nivel aproximado 783, disponible, intento 2». The scenery (`alt=""`), the seam with its pencil notes and the stamp's drawing are hidden from a screen reader; each layer is a `<section aria-label="Mapa de …">`, and each page of the notebook a labelled block («Página n del cuaderno: …») whose text is read once the zone is reached.
+- The rival's card is a `PlatformPopup` (named by its title, focus to its first control, Escape and the cross close it) and the replacement is a `PlatformConfirmPopup` (the platform's pieces, no `<dialog>` of the adventure's own). A closed page of the notebook says only that it opens on arriving.
+- The state is never colour alone: stars and «Intento n» are text, the padlock is an icon with the stamp's label, and the count is written beside the bar.
+- Every story of `adventure/` goes through axe in both themes (`npm run test:storybook`); the paper's colours are `light-dark()` pairs held to 4.5:1 by `components/adventure/adventure-tokens.test.ts`.
+
+## Query budget
+
+Planned: the cover (`/jugar`) ≤ 3, the shelf (`/jugar/aventura`) ≤ 3 and the map (`/jugar/aventura/<slug>`) ≤ 4 on top of the session. By reading the code the cover and the map make **2** (the games and the open game) and the shelf **1**, because the bot's slug comes with each game and no query of the bots is needed. **To be measured on a production build before the switch goes on** (`PLATFORM_DB_LOG=query`, `npm run build && npm run start`, one load at a time, as [Play](/platform/play#seed-and-query-budget) does); the figures go here then.
+
+## Verification in the app
+
+**Not run yet.** The steps below are the plan's. Until now the screens were checked in stories (axe in both themes) and the action's bounce in the app against a database with no progress (0 of 12); the migration `20261009120000_adventure_bots` and the nine demo games are not applied to the local database. To run them: the owner applies the migration and the seed locally (`db:migrate`, `db:seed`, with his go), turns `ADVENTURE_ENABLED` on in the local copy only, and drives the local `next dev` with Playwright and the demo accounts (`alumno.demo@365diasdeajedrez.com`, password `ajedrez365`).
+
+1. `/jugar` as `alumno.demo`: the cover with 4 of 12, «Intento 2» on the fifth and the two tickets.
+2. `/jugar/partida-libre?rival=beto` opens Beto's popup; `?rival=cuaderno-del-viajero-don-chema` does not open anything.
+3. `/jugar/aventura`: the open notebook and six «Próximamente», with no action on them.
+4. The map: it opens at the fifth stamp; stamps 1–4 cancelled with their keepsakes, 6–12 with a padlock; the seam sewn up to the fifth; the notes open; the row follows the zone; and the three layouts at 1280, 1024, 768 and 375 px.
+5. A locked card has no button, and a post of `startAdventureEncounter` for the sixth answers `?error=encounterLocked`.
+6. «Empezar» with a free game open warns of the replacement; confirming opens a game in the frame «BIBLIOTECA CENTRAL · Sala de lectura» with the bot playing at 783.
+7. Abandoning offers «Volver al mapa», and the stamp now says «Intento 3».
+8. Winning sends to `?victoria=5`: the victory plays once; reloading does not repeat it; the cover says 5 of 12.
+9. «Volver a retar» on the first leaves its ★★★.
+10. The profile and `/inicio`: the games are there, the streak is intact.
+11. `profesor.demo` and `staff.demo` read the game, framed, read-only.
+12. With the switch off: `/jugar` is the gallery and `/jugar/aventura` answers 404.
+
+## Related
+
+[Play](/platform/play) · [Bots → Borrowed strengths](/chess/bots#borrowed-strengths) · [Data model](/platform/data-model) · [Scripts](/operations/scripts-and-seed) · [Styling → The adventure's paper](/ui/styling#the-adventures-paper) · [Routing](/architecture/routing) · [Adventure components](/components/adventure).
