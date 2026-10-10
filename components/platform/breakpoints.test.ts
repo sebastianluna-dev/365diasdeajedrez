@@ -14,7 +14,14 @@ import { describe, expect, it } from "vitest";
 const ROOT = fileURLToPath(new URL("../../", import.meta.url));
 
 /** The stylesheets drawn with the platform's tokens; the same list as the corners' rule. */
-const PLATFORM_STYLES = ["app/(platform)", "app/(auth)", "components/platform", "components/auth", "components/chess"];
+const PLATFORM_STYLES = [
+  "app/(platform)",
+  "app/(auth)",
+  "components/platform",
+  "components/auth",
+  "components/chess",
+  "components/adventure",
+];
 
 /** Tailwind's breakpoints: sm, md, lg, xl, 2xl. */
 const BREAKPOINTS = new Set([640, 768, 1024, 1280, 1536]);

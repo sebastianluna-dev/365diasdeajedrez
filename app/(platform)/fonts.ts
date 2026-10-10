@@ -91,3 +91,99 @@ export const poppins = localFont({
   display: "swap",
   preload: false,
 });
+
+/**
+ * The adventure's four fonts (`components/adventure/adventure.css`): the paper
+ * world has a voice of its own, a notebook written by hand and typed on top.
+ * All four are under the SIL Open Font License 1.1, each with its text beside
+ * it in `public/fonts/<name>-OFL.txt`, and all four are Google Fonts' own
+ * files, the Latin subset they serve (U+0000-00FF with the punctuation, the
+ * euro and the ligatures: every accent and the inverted marks Spanish asks
+ * for). None is preloaded, for the reason the others are not: only a page of
+ * the adventure draws them.
+ *
+ * To fetch them again: take the `/* latin *\/` block of
+ * `https://fonts.googleapis.com/css2?family=<Family>&display=swap` (asked with
+ * a current browser's user agent, so it answers in woff2) and download its
+ * `src`. The Latin block is all the notebook needs: its copy is Spanish.
+ */
+
+/**
+ * The titles and the printed copy. A variable font, so the two files are the
+ * whole 400 to 700 range, with its `SOFT` and `WONK` axes (the stylesheet
+ * sets them); the italic is a file of its own.
+ */
+export const fraunces = localFont({
+  src: [
+    {
+      path: "../../public/fonts/fraunces-normal-variable.woff2",
+      weight: "400 700",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/fraunces-italic-variable.woff2",
+      weight: "400 700",
+      style: "italic",
+    },
+  ],
+  variable: "--font-fraunces",
+  display: "swap",
+  preload: false,
+});
+
+/** The pencil notes in the margins, 500 to 700. */
+export const caveat = localFont({
+  src: [
+    {
+      path: "../../public/fonts/caveat-variable.woff2",
+      weight: "500 700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-caveat",
+  display: "swap",
+  preload: false,
+});
+
+/** The hand of the notebook's pages: the pages of 1994 and the keepsakes. */
+export const kalam = localFont({
+  src: [
+    {
+      path: "../../public/fonts/kalam-400.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/kalam-700.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-kalam",
+  display: "swap",
+  preload: false,
+});
+
+/** The typed data: labels, figures and buttons, in three weights. */
+export const plexMono = localFont({
+  src: [
+    {
+      path: "../../public/fonts/ibm-plex-mono-400.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/ibm-plex-mono-500.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/ibm-plex-mono-600.woff2",
+      weight: "600",
+      style: "normal",
+    },
+  ],
+  variable: "--font-plex-mono",
+  display: "swap",
+  preload: false,
+});

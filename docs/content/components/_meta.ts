@@ -6,6 +6,7 @@ const meta: MetaRecord = {
   platform: "Platform",
   auth: "Auth",
   chess: "Chess",
+  adventure: "Adventure",
 };
 
 export default meta;

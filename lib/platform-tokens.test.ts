@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  ADVENTURE_TOKEN_SET,
   COLOUR_GROUPS,
   FILLS,
   TEXT_PAIRS,
@@ -182,5 +183,43 @@ describe("groupColours", () => {
       const claimants = COLOUR_GROUPS.filter(({ pattern }) => pattern.test(name)).map((group) => group.name);
       expect(claimants, name).toHaveLength(1);
     }
+  });
+});
+
+describe("a token set other than the platform's", () => {
+  const PAPER = `
+/* The header names .adventure, but not as a block. */
+.adventure {
+  color-scheme: light dark;
+  --adventure-ink: light-dark(#23314f, #efe6d2);
+  /* A shadow, with its pairs inside. */
+  --adventure-shadow: 0 1px light-dark(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5));
+  --platform-bg: #ffffff;
+
+  :root[data-theme="light"] & {
+    color-scheme: light;
+  }
+}
+.adventure__card {
+  --adventure-card: #000000;
+}
+`;
+
+  it("reads the block of its own selector and the names of its own prefix", () => {
+    const tokens = readTokens(PAPER, ADVENTURE_TOKEN_SET);
+    expect([...tokens.keys()]).toEqual(["--adventure-ink", "--adventure-shadow"]);
+    expect(colourOf(tokens, "--adventure-ink", "dark")).toBe("#efe6d2");
+  });
+
+  it("keeps the note of a token, as the platform's do", () => {
+    const declarations = readTokenDeclarations(PAPER, ADVENTURE_TOKEN_SET);
+    expect(declarations.map(({ name, note }) => [name, note])).toEqual([
+      ["--adventure-ink", null],
+      ["--adventure-shadow", "A shadow, with its pairs inside."],
+    ]);
+  });
+
+  it("finds nothing of the platform's in a stylesheet that is not its", () => {
+    expect(readTokens(PAPER).size).toBe(0);
   });
 });

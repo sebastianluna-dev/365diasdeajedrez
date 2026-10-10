@@ -32,7 +32,7 @@ const PAGES: Record<string, string> = {
 
 /** The overview sheet, and the products whose stories it shows: the site's are not the platform's pieces. */
 const OVERVIEW = "components/platform/overview/overview.stories.tsx";
-const ON_THE_SHEET = ["platform/", "chess/", "icons/"];
+const ON_THE_SHEET = ["platform/", "chess/", "icons/", "adventure/"];
 
 /** The stories of those products without a tile on the sheet, and why. */
 const NOT_ON_THE_SHEET: Record<string, string> = {

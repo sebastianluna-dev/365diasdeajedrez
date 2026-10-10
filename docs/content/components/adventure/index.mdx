@@ -1,0 +1,9 @@
+---
+description: "Index of components/adventure: the paper world of «Jugar»'s adventure, its tokens and fonts, and the screens built on them."
+---
+
+# Adventure components
+
+`components/adventure/` is the adventure of «Jugar» («El cuaderno del viajero»): a notebook on a desk, drawn in cut paper. It mirrors no folder of `app/` of its own, because its screens live under `app/(platform)/jugar/`; it has a palette and four fonts of its own (`adventure.css`, described in [Styling](/ui/styling#the-adventures-paper)) and the platform's buttons and popups. What stays of the rest of the platform is the shell: the bar above, the session and the routes.
+
+Every piece sits under an element with the class `.adventure`, which declares the tokens, and every colour is a pair of light and dark, tested by `components/adventure/adventure-tokens.test.ts`.

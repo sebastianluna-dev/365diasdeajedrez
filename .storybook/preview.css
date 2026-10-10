@@ -77,12 +77,67 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Fraunces";
+  src: url("/fonts/fraunces-normal-variable.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Fraunces";
+  src: url("/fonts/fraunces-italic-variable.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Caveat";
+  src: url("/fonts/caveat-variable.woff2") format("woff2");
+  font-weight: 500 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Kalam";
+  src: url("/fonts/kalam-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Kalam";
+  src: url("/fonts/kalam-700.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("/fonts/ibm-plex-mono-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("/fonts/ibm-plex-mono-500.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("/fonts/ibm-plex-mono-600.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+
 :root {
   --font-gramatika: "Gramatika";
   --font-suisse: "Suisse Intl";
   --font-chessglyph: "ChessGlyph";
   --font-sf-pro: "SF Pro Display";
   --font-poppins: "Poppins";
+  --font-fraunces: "Fraunces";
+  --font-caveat: "Caveat";
+  --font-kalam: "Kalam";
+  --font-plex-mono: "IBM Plex Mono";
 }
 
 /* No min-height: in the Docs page every story is inlined and a full-viewport

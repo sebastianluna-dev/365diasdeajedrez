@@ -4,9 +4,40 @@
 // about writing one on another. It takes the text and never opens a file, so
 // the convention test (which reads the stylesheet from disk) and Storybook's
 // foundations pages (which import it raw) measure exactly the same thing.
+//
+// The adventure's paper has a palette of its own with the same shape — its
+// block is `.adventure` of components/adventure/adventure.css and its names
+// start with `--adventure-` — so the readers take a `TokenSet` saying where
+// the tokens are and how they are named, and the platform's is the default.
+
+/** Where a family of tokens is declared and how its names begin. */
+export interface TokenSet {
+  /** What every name starts with: `--platform-`. */
+  prefix: string;
+  /** The rule that declares them, as the stylesheet writes it: `:root`, `.adventure`. */
+  selector: string;
+  /** The stylesheet, from the repository's root. */
+  file: string;
+}
 
 /** Where the tokens are declared, from the repository's root. */
 export const TOKENS_FILE = "app/(platform)/platform.css";
+
+/** The platform's tokens: the `:root` of platform.css. */
+export const PLATFORM_TOKEN_SET: TokenSet = { prefix: "--platform-", selector: ":root", file: TOKENS_FILE };
+
+/** The adventure's: the `.adventure` block of its own stylesheet. */
+export const ADVENTURE_TOKEN_SET: TokenSet = {
+  prefix: "--adventure-",
+  selector: ".adventure",
+  file: "components/adventure/adventure.css",
+};
+
+const escapeForRegExp = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** A declaration of a token of the set: its name and its value, up to the `;`. */
+const declarationOf = (set: TokenSet): RegExp =>
+  new RegExp(`(${escapeForRegExp(set.prefix)}[a-z0-9-]+)\\s*:\\s*([^;]+);`, "g");
 
 export const THEMES = ["light", "dark"] as const;
 export type Theme = (typeof THEMES)[number];
@@ -15,7 +46,7 @@ export type Theme = (typeof THEMES)[number];
 export const TEXT_MINIMUM = 4.5;
 
 export const PAIR = /^light-dark\(\s*(#[0-9a-f]{6})\s*,\s*(#[0-9a-f]{6})\s*\)$/i;
-export const ALIAS = /^var\((--platform-[a-z0-9-]+)\)$/;
+export const ALIAS = /^var\((--[a-z0-9-]+)\)$/;
 export const HEX = /^#[0-9a-f]{6}$/i;
 
 /** The name, the value as written (on one line) and the comment written right above it, if any. */
@@ -29,9 +60,9 @@ export function withoutComments(css: string): string {
   return css.replace(/\/\*[\s\S]*?\*\//g, "");
 }
 
-/** The body of the first `:root` block: the one that declares the tokens. */
-function rootBlockOf(css: string): string {
-  return /:root\s*\{([\s\S]*?)\n\}/.exec(css)?.[1] ?? "";
+/** The body of the first block of the set's selector: the one that declares the tokens. */
+function rootBlockOf(css: string, set: TokenSet): string {
+  return new RegExp(`(?:^|\\n)${escapeForRegExp(set.selector)}\\s*\\{([\\s\\S]*?)\\n\\}`).exec(css)?.[1] ?? "";
 }
 
 /**
@@ -40,10 +71,13 @@ function rootBlockOf(css: string): string {
  * between it and the declaration: a comment that opens a group (the borders'
  * "two line weights") is the note of the first token of it, not of the rest.
  */
-export function readTokenDeclarations(css: string): TokenDeclaration[] {
-  const block = rootBlockOf(css);
+export function readTokenDeclarations(css: string, set: TokenSet = PLATFORM_TOKEN_SET): TokenDeclaration[] {
+  const block = rootBlockOf(css, set);
   const declarations: TokenDeclaration[] = [];
-  const pattern = /\/\*([\s\S]*?)\*\/|(--platform-[a-z0-9-]+)\s*:\s*([^;]+);|[^\s]/g;
+  const pattern = new RegExp(
+    `\\/\\*([\\s\\S]*?)\\*\\/|(${escapeForRegExp(set.prefix)}[a-z0-9-]+)\\s*:\\s*([^;]+);|[^\\s]`,
+    "g",
+  );
   let note: string | null = null;
   for (const match of block.matchAll(pattern)) {
     const [, comment, name, value] = match;
@@ -61,10 +95,10 @@ export function readTokenDeclarations(css: string): TokenDeclaration[] {
 }
 
 /** Every token of the `:root` block, by name, its value on a single line. */
-export function readTokens(css: string): Map<string, string> {
-  const block = withoutComments(rootBlockOf(css));
+export function readTokens(css: string, set: TokenSet = PLATFORM_TOKEN_SET): Map<string, string> {
+  const block = withoutComments(rootBlockOf(css, set));
   return new Map(
-    [...block.matchAll(/(--platform-[a-z0-9-]+)\s*:\s*([^;]+);/g)].map((match) => [
+    [...block.matchAll(declarationOf(set))].map((match) => [
       match[1] ?? "",
       (match[2] ?? "").replace(/\s+/g, " ").trim(),
     ]),
@@ -107,6 +141,59 @@ export function tokenContrast(
   const textColour = colourOf(tokens, text, theme);
   const backgroundColour = colourOf(tokens, background, theme);
   return textColour && backgroundColour ? contrastOf(textColour, backgroundColour) : 0;
+}
+
+// --- What a stylesheet writes on what -------------------------------------------
+
+export type Rule = { selector: string; declarations: string };
+
+/** The rules of a stylesheet with the declarations that are their OWN, nested rules left out. */
+export function rulesOf(css: string): Rule[] {
+  const rules: Rule[] = [];
+  const open: Rule[] = [{ selector: "", declarations: "" }];
+  let pending = "";
+  for (const character of withoutComments(css)) {
+    if (character === "{") {
+      open.push({ selector: pending.trim().replace(/\s+/g, " "), declarations: "" });
+      pending = "";
+    } else if (character === "}") {
+      const rule = open.pop();
+      if (rule) rules.push({ ...rule, declarations: rule.declarations + pending });
+      pending = "";
+    } else if (character === ";") {
+      const current = open[open.length - 1];
+      if (current) current.declarations += `${pending};`;
+      pending = "";
+    } else {
+      pending += character;
+    }
+  }
+  return rules;
+}
+
+/** The token a rule's own `color` reads, when it reads one of the set. */
+export function ownColourOf(rule: Rule, set: TokenSet): string | undefined {
+  const prefix = escapeForRegExp(set.prefix);
+  return new RegExp(`(?:^|;)\\s*color\\s*:\\s*var\\(\\s*(${prefix}[a-z0-9-]+)\\s*[,)]`).exec(rule.declarations)?.[1];
+}
+
+/** The token a rule's own `background` or `background-color` reads, when it reads one of the set. */
+export function ownBackgroundOf(rule: Rule, set: TokenSet): string | undefined {
+  const prefix = escapeForRegExp(set.prefix);
+  return new RegExp(`(?:^|;)\\s*background(?:-color)?\\s*:\\s*var\\(\\s*(${prefix}[a-z0-9-]+)\\s*[,)]`).exec(
+    rule.declarations,
+  )?.[1];
+}
+
+/** A control that is switched off is exempt from the minimum (WCAG 1.4.3, inactive components). */
+const INACTIVE = /:disabled|\[disabled\]|\[data-disabled\]|\[aria-disabled(?:="true")?\]/;
+
+/** Switched off in every selector of the list; `:not(:disabled)` is the control that is ON. */
+export function isInactive(selector: string): boolean {
+  return selector
+    .replace(/:not\([^)]*\)/g, "")
+    .split(",")
+    .every((one) => INACTIVE.test(one));
 }
 
 /** The surfaces a page or a card is made of: white in the light theme. */

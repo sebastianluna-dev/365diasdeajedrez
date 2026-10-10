@@ -5,14 +5,18 @@ import { describe, expect, it } from "vitest";
 import {
   COLOUR_GROUPS,
   PAIR,
+  PLATFORM_TOKEN_SET,
   TEXT_MINIMUM,
   TEXT_PAIRS,
   THEMES,
   TOKENS_FILE,
   colourOf,
+  isInactive,
+  ownBackgroundOf,
+  ownColourOf,
   readTokens,
+  rulesOf,
   tokenContrast,
-  withoutComments,
 } from "@/lib/platform-tokens";
 
 // The platform's colours live in ONE place, the `:root` block of platform.css,
@@ -79,54 +83,14 @@ function shortfallsOf(text: string, background: string): string[] {
   });
 }
 
-type Rule = { selector: string; declarations: string };
-
-/** The rules of a stylesheet with the declarations that are their OWN, nested rules left out. */
-function rulesOf(css: string): Rule[] {
-  const rules: Rule[] = [];
-  const open: Rule[] = [{ selector: "", declarations: "" }];
-  let pending = "";
-  for (const character of withoutComments(css)) {
-    if (character === "{") {
-      open.push({ selector: pending.trim().replace(/\s+/g, " "), declarations: "" });
-      pending = "";
-    } else if (character === "}") {
-      const rule = open.pop();
-      if (rule) rules.push({ ...rule, declarations: rule.declarations + pending });
-      pending = "";
-    } else if (character === ";") {
-      const current = open[open.length - 1];
-      if (current) current.declarations += `${pending};`;
-      pending = "";
-    } else {
-      pending += character;
-    }
-  }
-  return rules;
-}
-
-const OWN_COLOUR = /(?:^|;)\s*color\s*:\s*var\(\s*(--platform-[a-z0-9-]+)\s*[,)]/;
-const OWN_BACKGROUND = /(?:^|;)\s*background(?:-color)?\s*:\s*var\(\s*(--platform-[a-z0-9-]+)\s*[,)]/;
-
-/** A control that is switched off is exempt from the minimum (WCAG 1.4.3, inactive components). */
-const INACTIVE = /:disabled|\[disabled\]|\[data-disabled\]|\[aria-disabled(?:="true")?\]/;
-
-/** Switched off in every selector of the list; `:not(:disabled)` is the control that is ON. */
-function isInactive(selector: string): boolean {
-  return selector
-    .replace(/:not\([^)]*\)/g, "")
-    .split(",")
-    .every((one) => INACTIVE.test(one));
-}
-
 type Written = { where: string; text: string; background: string };
 
 /** Every rule of the platform that sets, itself, both a text colour and the fill behind it. */
 function writtenPairs(): Written[] {
   return PLATFORM_STYLES.flatMap((directory) => filesOf(join(ROOT, directory), [".css"])).flatMap((path) =>
     rulesOf(readFileSync(path, "utf8")).flatMap((rule) => {
-      const text = OWN_COLOUR.exec(rule.declarations)?.[1];
-      const background = OWN_BACKGROUND.exec(rule.declarations)?.[1];
+      const text = ownColourOf(rule, PLATFORM_TOKEN_SET);
+      const background = ownBackgroundOf(rule, PLATFORM_TOKEN_SET);
       if (!text || !background || isInactive(rule.selector)) return [];
       return [{ where: `${relative(ROOT, path)} ${rule.selector}`, text, background }];
     }),

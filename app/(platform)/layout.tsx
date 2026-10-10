@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { THEME_COOKIE_NAME, themeOf } from "@/constants/platform/theme.const";
 import "@/app/(frontend)/globals.css";
 import { chessGlyph, gramatika, suisseIntl } from "@/app/(frontend)/fonts";
-import { poppins, sfProDisplay } from "@/app/(platform)/fonts";
+import { caveat, fraunces, kalam, plexMono, poppins, sfProDisplay } from "@/app/(platform)/fonts";
 import { PlatformShell } from "@/components/platform/sections/shell/platform-shell.section";
 import "./platform.css";
 
@@ -43,7 +43,7 @@ export default async function PlatformLayout({ children }: { children: ReactNode
       lang="es"
       data-scroll-behavior="smooth"
       data-theme={theme}
-      className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable} ${sfProDisplay.variable} ${poppins.variable}`}
+      className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable} ${sfProDisplay.variable} ${poppins.variable} ${fraunces.variable} ${caveat.variable} ${kalam.variable} ${plexMono.variable}`}
     >
       <body className="platform-theme">
         <a className="skip-link" href="#contenido">

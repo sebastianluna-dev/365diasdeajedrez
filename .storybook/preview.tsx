@@ -12,7 +12,7 @@ type Theme = "site" | "platform";
 // toggles the class, which reproduces either layout exactly. The chess pieces
 // and the icons belong to both products but are drawn with the platform's
 // tokens, so "auto" gives them the platform's theme too.
-const PLATFORM_TITLES = ["platform/", "auth/", "chess/", "icons/"];
+const PLATFORM_TITLES = ["platform/", "auth/", "chess/", "icons/", "adventure/"];
 
 function themeFor(global: string, title: string): Theme {
   if (global === "site" || global === "platform") return global;
@@ -49,7 +49,14 @@ const preview: Preview = {
     // then the pieces both products share, and the site.
     options: {
       storySort: {
-        order: ["platform", ["Overview", "foundations", "primitives", "shared", "sections"], "icons", "chess", "site"],
+        order: [
+          "platform",
+          ["Overview", "foundations", "primitives", "shared", "sections"],
+          "icons",
+          "chess",
+          "adventure",
+          "site",
+        ],
       },
     },
   },
