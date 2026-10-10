@@ -154,11 +154,11 @@ export interface AdventureLayout {
   path: readonly ArtPathStop[];
   /** Each zone's page, by zone slug. */
   pages: Readonly<Record<string, ArtPagePlacement>>;
-  /** Where each keepsake is stuck, by order; only the ones the art has room drawn for. */
+  /** Where each keepsake is stuck, by order: one for every encounter. */
   keepsakes: Readonly<Record<number, ArtKeepsakePlacement>>;
   /** The player's token beside a stamp: its offset by order, and the default. */
   token: { byOrder: Readonly<Record<number, ArtPoint>>; offset: ArtPoint };
-  /** The note that points at the stamp available, by order. */
+  /** The note that points at the stamp available, by order: one for every encounter. */
   hints: Readonly<Record<number, ArtHint>>;
   /** Notes in pencil on the margins of the pages. */
   notes: readonly ArtPencilNote[];

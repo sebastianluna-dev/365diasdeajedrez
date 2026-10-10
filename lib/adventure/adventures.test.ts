@@ -111,11 +111,21 @@ describe.each(ADVENTURES)("the adventure «$title»", (adventure) => {
       }
     });
 
-    it("places a page for every zone and a keepsake only for an encounter that exists", () => {
+    it("places a page for every zone, and a keepsake and a hint for every encounter", () => {
       for (const layout of [art!.desktop, art!.tablet, art!.mobile]) {
         expect(Object.keys(layout.pages).sort()).toEqual(adventure.zones.map((zone) => zone.slug).sort());
         expect(layout.zones.map((band) => band.zone).sort()).toEqual(adventure.zones.map((zone) => zone.slug).sort());
-        for (const key of Object.keys(layout.keepsakes)) expect(orders).toContain(Number(key));
+        expect(
+          Object.keys(layout.keepsakes)
+            .map(Number)
+            .sort((a, b) => a - b),
+        ).toEqual(orders);
+        expect(
+          Object.keys(layout.hints)
+            .map(Number)
+            .sort((a, b) => a - b),
+        ).toEqual(orders);
+        for (const key of Object.keys(layout.token.byOrder)) expect(orders).toContain(Number(key));
         for (const key of Object.keys(layout.tilt)) expect(orders).toContain(Number(key));
         expect(Object.keys(layout.tilt)).toHaveLength(12);
       }
