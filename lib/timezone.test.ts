@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDateTimeLocal, parseDateTimeLocal, safeTimeZone } from "./timezone";
+import { classTimeZone, dayRangeIn, formatDateTimeLocal, parseDateTimeLocal, safeTimeZone } from "./timezone";
 
 describe("formatDateTimeLocal", () => {
   it("pinta el instante UTC en la zona pedida", () => {
@@ -46,5 +46,31 @@ describe("safeTimeZone", () => {
 
   it("conserva una zona IANA válida", () => {
     expect(safeTimeZone("Europe/Madrid")).toBe("Europe/Madrid");
+  });
+});
+
+describe("dayRangeIn", () => {
+  it("corta el día en la zona pedida: las 21:00 del 13 en Ciudad de México siguen siendo el 13", () => {
+    // 03:00 UTC of the 14th is 21:00 of the 13th in Mexico City (UTC−6).
+    const range = dayRangeIn(new Date("2026-10-14T03:00:00.000Z"), "America/Mexico_City");
+    expect(range.key).toBe("2026-10-13");
+    expect(range.start.toISOString()).toBe("2026-10-13T06:00:00.000Z");
+    expect(range.end.toISOString()).toBe("2026-10-14T06:00:00.000Z");
+  });
+
+  it("en UTC el mismo instante ya es el 14", () => {
+    expect(dayRangeIn(new Date("2026-10-14T03:00:00.000Z"), "UTC").key).toBe("2026-10-14");
+  });
+});
+
+describe("classTimeZone", () => {
+  it("conserva la zona válida del profesor", () => {
+    expect(classTimeZone("Europe/Madrid")).toEqual({ timeZone: "Europe/Madrid", missing: false });
+  });
+
+  it("sin zona, o con una que no existe, usa la de la academia y lo dice: nunca UTC", () => {
+    expect(classTimeZone(null)).toEqual({ timeZone: "America/Mexico_City", missing: true });
+    expect(classTimeZone(undefined)).toEqual({ timeZone: "America/Mexico_City", missing: true });
+    expect(classTimeZone("Marte/Olympus")).toEqual({ timeZone: "America/Mexico_City", missing: true });
   });
 });
