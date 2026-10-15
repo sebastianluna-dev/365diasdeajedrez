@@ -1,0 +1,67 @@
+---
+description: "«Programar una clase de …» (ADM-6): a paid class without a date gets one, in a new individual class or in a group class with a seat free; the action comes as a prop."
+---
+
+# `ScheduleSeatPopup`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/schedule-seat-popup/schedule-seat-popup.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Stylesheet | `schedule-seat-popup.comp.css` → block `.schedule-seat__form`                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Story      | `schedule-seat-popup.stories.tsx` (`platform/shared/ScheduleSeatPopup`): open (`play`), the group choice disabled, a group class available (`play`)                                                                                                                                                                                                                                                                                                                                                  |
+| Used by    | [`PaymentCard`](/components/platform/sections/staff/payments/payment-card) (each row «Por programar»), [`StudentPaymentsSection`](/components/platform/sections/staff/payments/student-payments-section) (the balance's «Programar»); the agenda's «Por programar» queue (phase 5)                                                                                                                                                                                                                   |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup) (`md`, a sheet on a phone), [`PlatformForm`](/components/platform/shared/platform-form), [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards), [`PlatformSelect`](/components/platform/shared/platform-select), [`ClassSlotFields`](/components/platform/shared/class-slot-fields), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `scheduleSeat` as a prop (`services/staff-classes/staff-classes.actions.ts`), the states of `services/shared/form-state.ts`, `withNoticeParam`, `formatClassWhen`                                                                                                                                                                                                                                                                                                                                    |
+
+## Purpose
+
+A class a student paid for and that has no date yet («por programar») gets one here, without leaving the student's record: in a new class of their own, dated with their rhythm, or in a group class that still has a seat. The seat spends the payment it belongs to, never another.
+
+## Props
+
+| Prop                                 | Type                                                                     | Required | Meaning                                                                       |
+| ------------------------------------ | ------------------------------------------------------------------------ | -------- | ----------------------------------------------------------------------------- |
+| `paymentId`                          | `string`                                                                 | yes      | The payment the seat spends.                                                  |
+| `studentName`                        | `string`                                                                 | yes      | «Programar una clase de Alumno Demo».                                         |
+| `seatLabel`                          | `string`                                                                 | yes      | «Clase 4 de 4 del pago del jue 1 oct · Profesor: GM Profesor Demo».           |
+| `teachers`                           | `TeacherOption[]`                                                        | yes      | The active teachers.                                                          |
+| `rhythm`                             | `RhythmDefaults`                                                         | yes      | What the new class opens with: the student's teacher, day, hour and duration. |
+| `groupClasses`                       | `OpenGroupClassOption[]`                                                 | yes      | The group classes ahead, with their seats and why one cannot be chosen.       |
+| `timeZone`, `nowIso`                 | `string`                                                                 | yes      | The academy's zone, and when the page was read.                               |
+| `scheduleSeat`                       | `(paymentId, prev: PopupFormState, formData) => Promise<PopupFormState>` | yes      | The server action; a stub in Storybook.                                       |
+| `launcherLabel`, `launcherClassName` | `string`                                                                 | no       | The button that opens it («Programar», a small button).                       |
+
+## Behaviour
+
+The form follows the [popup-form pattern](/conventions#server-actions): `useActionState`, the fields open again with what was sent when the action fails (the field's message under it), and on `status: "done"` the host closes the popup and replaces the address with `?aviso=seatScheduled.<minutes>.<duration>`, which the page says as «Clase programada: mié 21 oct · 12:00–13:00.». The content is remounted on every use (its key moves in the popup's `onClose`). The line under the fields says when the class will be, in the academy's zone, as the fields change.
+
+## Markup & styling
+
+Block `.schedule-seat__form` (41 lines): a column with the foot over a hairline; on a phone the foot sticks to the bottom with its button full width.
+
+**Elements:** `.schedule-seat__seat`, `.schedule-seat__preview`, `.schedule-seat__foot`
+
+**Breakpoints:** `(width < 640px)`.
+
+**Tokens:** `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-track`
+
+## Usage
+
+```tsx
+<ScheduleSeatPopup
+  paymentId={payment.id}
+  studentName={student.displayName}
+  seatLabel={label}
+  teachers={teachers}
+  rhythm={rhythm}
+  groupClasses={groupClasses}
+  timeZone={timeZone}
+  nowIso={nowIso}
+  scheduleSeat={scheduleSeat}
+/>
+```
+
+## Related
+
+- [`RegisterPaymentPopup`](/components/platform/shared/register-payment-popup), which dates the classes of a payment as it is registered.

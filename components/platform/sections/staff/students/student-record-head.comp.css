@@ -1,0 +1,4 @@
+/* The head of a student's record: the page's own head, with the tabs under it. */
+.student-record-head {
+  margin-bottom: var(--platform-space-2);
+}

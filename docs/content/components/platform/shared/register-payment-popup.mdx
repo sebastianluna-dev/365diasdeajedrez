@@ -1,0 +1,75 @@
+---
+description: "«Registrar pago» (ADM-2) and «Editar pago»: the student, the payment, the «Sin pago» classes it covers and the classes it dates on a weekly rhythm, with the line that sums it up; the actions come as props."
+---
+
+# `RegisterPaymentPopup`
+
+Also exports `RegisterPaymentButton` (a launcher with the popup behind it, as a button or as a row's word), and the types `RegisterPaymentPopupHandle` and `RegisterPaymentPreset`.
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/register-payment-popup/register-payment-popup.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Stylesheet | `register-payment-popup.comp.css` → block `.register-payment__form`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Story      | `register-payment-popup.stories.tsx` (`platform/shared/RegisterPaymentPopup`): open (`play`), with a fixed student, covering a class «Sin pago», «Dejarlas por programar», edit mode, a student without teacher chosen from the select, and a server error that keeps what was typed                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Used by    | [`StudentRecordHead`](/components/platform/sections/staff/students/student-record-head) («Registrar pago»), [`StudentPaymentsSection`](/components/platform/sections/staff/payments/student-payments-section) («Registrar» on a class without a payment), [`PaymentCard`](/components/platform/sections/staff/payments/payment-card) («Editar pago»); the agenda's queues (phase 5)                                                                                                                                                                                                                                                                                                                                                           |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup) (`lg`, a sheet on a phone), [`PlatformForm`](/components/platform/shared/platform-form), [`PlatformSelect`](/components/platform/shared/platform-select), [`PlatformDatePicker`](/components/platform/shared/platform-date-picker), [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards) (`line`), [`PlatformCheckCards`](/components/platform/shared/platform-check-cards), [`ClassSlotFields`](/components/platform/shared/class-slot-fields), [`PlatformActionsMenu`](/components/platform/shared/platform-actions-menu), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `registerPayment`, `updatePayment`, `loadPaymentContext`, `loadTeacherBusy` as props (`services/staff-payments/staff-payments.actions.ts`); `planPaymentSeats`, `validateClassSchedule`, `weeklyDates`, `slotInstant`; `formatClassAmount`, `perClassAmount`, `formatClassWhen`; `CLASS_FIELD_ERRORS`; `withNoticeParam`                                                                                                                                                                                                                                                                                                                                                                                                                      |
+
+## Purpose
+
+The one form where money enters: what a student paid, and what it buys. Registering it also dates its classes — a weekly rhythm filled from the student's last class, each row with its day, its hour and its duration, or left «por programar», or taken to a group class — so the staff does not come back to date them one by one. The amount is written with the currency beside it and the help «$350.00 por clase» under it (D14: no «$» drawn inside the field).
+
+## Props
+
+| Prop                                                                        | Type                              | Required                                | Meaning                                                                           |
+| --------------------------------------------------------------------------- | --------------------------------- | --------------------------------------- | --------------------------------------------------------------------------------- |
+| `fixedStudent`                                                              | `{ id, displayName, email }`      | no                                      | The student the popup opens on; without it, `students` fills a select.            |
+| `students`                                                                  | `{ label, options }[]`            | no                                      | Every student, grouped by their teacher (`listPaymentStudents`).                  |
+| `payment`                                                                   | `Pick<StaffPaymentView, …>`       | no                                      | Edit mode: the payment's own fields and the least it may cover (`minClassCount`). |
+| `teachers`                                                                  | `TeacherOption[]`                 | yes                                     |                                                                                   |
+| `groupClasses`                                                              | `OpenGroupClassOption[]`          | yes                                     | Where a row may go with «Llevar a una clase grupal».                              |
+| `timeZone`, `nowIso`                                                        | `string`                          | yes                                     |                                                                                   |
+| `registerPayment`, `updatePayment`, `loadPaymentContext`, `loadTeacherBusy` | functions                         | yes (`updatePayment` only in edit mode) | The server actions, as props.                                                     |
+| `ref`                                                                       | `Ref<RegisterPaymentPopupHandle>` | no                                      | `open(event, preset?)` and `close()`.                                             |
+
+`RegisterPaymentButton` takes the same props plus `variant` (`button`, `row`), `label` and `preset` (`{ studentId?, cover? }`).
+
+## Behaviour
+
+- **The context of a student** («Profesor: … · Le queda 1 clase (hoy 19:00) · Último pago: …») is read through `loadPaymentContext` when the student is known, and «Repetir ese pago» fills the amount, the currency and the count from the last payment.
+- **The rows follow the rhythm** until one is touched: the first class's day, hour and duration, every seven days, as many as the payment buys minus the «Sin pago» classes it covers. A row's «…» leaves it «por programar» or takes it to a group class; «Programar» brings it back to the rhythm.
+- **Warnings, not refusals**: an overlap of the teacher (`loadTeacherBusy` when the teacher changes), of the student, of another row of the same payment, or a date past, is said under the row.
+- **The foot sums it up** in a live region: «Valentina Cruz · $1,400.00 MXN · 4 clases ($350.00 por clase) · 3 con fecha y 1 por programar», recounted with `planPaymentSeats`.
+- The [popup-form pattern](/conventions#server-actions): a failure comes back field by field with what was typed, every control reopening on it; a success closes the popup and the page says «Pago registrado: …» from `?aviso=paymentRegistered.<n>.<fechadas>.<por programar>`.
+
+## Markup & styling
+
+Block `.register-payment__form` (172 lines): sections one under the other, the foot over a hairline, stuck to the bottom on a phone.
+
+**Elements:** `.register-payment__body`, `__section`, `__heading`, `__student`, `__avatar`, `__student-text`, `__student-name`, `__student-email`, `__context`, `__amount`, `__count`, `__count-input`, `__hint`, `__rhythm`, `__slots`, `__slot`, `__slot-head`, `__slot-name`, `__slot-later`, `__foot`, `__foot-line`
+
+**Breakpoints:** `(width < 640px)`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-surface`, `--platform-surface-soft`, `--platform-text`, `--platform-text-muted`, `--platform-track`
+
+## Usage
+
+From `components/platform/sections/staff/students/student-record-head.comp.tsx`:
+
+```tsx
+<RegisterPaymentButton
+  fixedStudent={student}
+  teachers={teachers}
+  groupClasses={groupClasses}
+  timeZone={STUDY_DAY_TIMEZONE}
+  nowIso={nowIso}
+  registerPayment={registerPayment}
+  loadPaymentContext={loadPaymentContext}
+  loadTeacherBusy={loadTeacherBusy}
+/>
+```
+
+## Related
+
+- [`ScheduleSeatPopup`](/components/platform/shared/schedule-seat-popup), [`PaymentCard`](/components/platform/sections/staff/payments/payment-card); [Classes › Payments](/platform/classes#payments).

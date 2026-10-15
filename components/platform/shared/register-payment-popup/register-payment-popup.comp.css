@@ -1,0 +1,172 @@
+/* The content of «Registrar pago»: sections one under the other, the foot
+   with the line that sums the payment up and the button. A sheet on a phone. */
+.register-payment__form {
+  display: flex;
+  flex-direction: column;
+
+  & .register-payment__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-8);
+    padding: var(--platform-space-6);
+  }
+
+  & .register-payment__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+  }
+
+  & .register-payment__heading {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--platform-text-muted);
+  }
+
+  /* The fixed student: initials in a disc, the name and the email. */
+  & .register-payment__student {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+  }
+
+  & .register-payment__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-size: var(--platform-type-sm);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  & .register-payment__student-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  & .register-payment__student-name {
+    font-size: var(--platform-type-lg);
+    font-weight: 700;
+  }
+
+  & .register-payment__student-email {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .register-payment__context {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+  }
+
+  /* The amount and its currency side by side. */
+  & .register-payment__amount {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--platform-space-3);
+  }
+
+  & .register-payment__count {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+  }
+
+  & .register-payment__count-input {
+    max-width: 120px;
+  }
+
+  & .register-payment__hint {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .register-payment__rhythm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-4);
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface-soft);
+  }
+
+  & .register-payment__slots {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .register-payment__slot {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-4);
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+  }
+
+  & .register-payment__slot-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-3);
+  }
+
+  & .register-payment__slot-name {
+    font-size: var(--platform-type-md);
+    font-weight: 700;
+  }
+
+  & .register-payment__slot-later {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+  }
+
+  /* The foot: the line that sums it up and the button, over a hairline; stuck to the bottom on a phone. */
+  & .register-payment__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-4) var(--platform-space-6);
+    box-shadow: inset 0 1px 0 var(--platform-track);
+    background: var(--platform-surface);
+  }
+
+  & .register-payment__foot-line {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    line-height: 1.4;
+    color: var(--platform-text-muted);
+  }
+
+  @media (width < 640px) {
+    & .register-payment__amount {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    & .register-payment__foot {
+      position: sticky;
+      bottom: 0;
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+}

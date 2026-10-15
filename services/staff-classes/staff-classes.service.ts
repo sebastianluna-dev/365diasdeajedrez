@@ -1,4 +1,9 @@
-import type { ClassStatusCode, TranscriptStatusCode } from "@/constants/platform/class-codes.const";
+import {
+  CLASS_FORMAT,
+  CLASS_STATUS,
+  type ClassStatusCode,
+  type TranscriptStatusCode,
+} from "@/constants/platform/class-codes.const";
 import type { CurrencyCode } from "@/constants/platform/currency-codes.const";
 import { STUDY_DAY_TIMEZONE } from "@/constants/platform/timezones.const";
 import { formatClassAmount } from "@/lib/format-class-amount";
@@ -9,6 +14,7 @@ import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { staffRoutes } from "@/lib/platform-routes";
 import { classDetailInclude, classPhaseOf, classTitleOf, mapClassBlocks } from "@/services/classes/classes.mapper";
+import type { OpenGroupClassOption, TeacherOption } from "@/services/staff-payments/staff-payments.types";
 import type { StaffClassDetail, StaffClassFilters, StaffClassSummary } from "./staff-classes.types";
 
 // Global view of classes for support. The staff READS everything (payments
@@ -169,6 +175,57 @@ function seatLabelOf(
     return parts.join(" · ");
   }
   return seat.isFree ? "Gratis" : "Sin pago";
+}
+
+/** The group classes still ahead with a seat free, for «Programar» in a group class; the student's own and the full ones are marked. */
+export async function listOpenGroupClasses(now: Date, studentId?: string): Promise<OpenGroupClassOption[]> {
+  await requireStaff();
+  const rows = await getPlatformDb().class.findMany({
+    where: {
+      format: { code: CLASS_FORMAT.GROUP },
+      status: { code: CLASS_STATUS.SCHEDULED },
+      scheduledAt: { gt: now },
+    },
+    select: {
+      id: true,
+      title: true,
+      scheduledAt: true,
+      durationMin: true,
+      capacity: true,
+      teacher: { select: { displayName: true } },
+      participants: { where: { seatMovedAt: null }, select: { userId: true } },
+    },
+    orderBy: { scheduledAt: "asc" },
+  });
+  return rows.map((row) => {
+    const seated = row.participants.length;
+    const capacity = row.capacity ?? seated;
+    const inIt = studentId !== undefined && row.participants.some((seat) => seat.userId === studentId);
+    return {
+      classId: row.id,
+      title: row.title ?? "Clase grupal",
+      startIso: row.scheduledAt.toISOString(),
+      durationMin: row.durationMin,
+      teacherName: row.teacher.displayName,
+      seated,
+      capacity,
+      ...(inIt
+        ? { disabledReason: "Ya está en esta clase" }
+        : seated >= capacity
+          ? { disabledReason: "Completa" }
+          : {}),
+    };
+  });
+}
+
+/** The active teachers, for the selects that date a class. */
+export async function listActiveTeacherOptions(): Promise<TeacherOption[]> {
+  await requireStaff();
+  return getPlatformDb().teacher.findMany({
+    where: { isActive: true },
+    select: { id: true, displayName: true },
+    orderBy: { displayName: "asc" },
+  });
 }
 
 /** Teachers for the listing's filter. */

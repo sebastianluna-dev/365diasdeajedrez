@@ -1,0 +1,34 @@
+---
+description: "How a student names themselves on the pages of their record: the name, the email with their teacher, «Registrar pago», and the tabs «Cuenta» and «Pagos y clases»; drawn by the record's layout."
+---
+
+# `StudentRecordHead`
+
+|            |                                                                                                                                                                               |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/students/student-record-head.comp.tsx`                                                                                                    |
+| Kind       | Server Component                                                                                                                                                              |
+| Stylesheet | `student-record-head.comp.css` → block `.student-record-head` (on the page's `.platform-page__head`)                                                                          |
+| Used by    | `app/(platform)/administracion/alumnos/[userId]/(ficha)/layout.tsx`                                                                                                           |
+| Composes   | [`RegisterPaymentPopup`](/components/platform/shared/register-payment-popup) (`RegisterPaymentButton`), [`StaffTabs`](/components/platform/shared/staff-tabs) (`studentTabs`) |
+| Writes     | `registerPayment()`, `loadPaymentContext()`, `loadTeacherBusy()` — imported here and handed to the popup as props                                                             |
+
+## Purpose
+
+The record of a student is two pages since 2026-10-15 («Cuenta», «Pagos y clases»), and this is what both share: the layout draws it, so the head does not blink between them. «Crear clase» joins the actions in phase 5 of the classes rebuild.
+
+## Props
+
+| Prop           | Type                     | Required | Meaning                            |
+| -------------- | ------------------------ | -------- | ---------------------------------- |
+| `student`      | `StaffStudentDetail`     | yes      | Read once by the layout (`cache`). |
+| `teachers`     | `TeacherOption[]`        | yes      | For the payment popup.             |
+| `groupClasses` | `OpenGroupClassOption[]` | yes      | For the payment popup.             |
+
+## Markup & styling
+
+Block `.student-record-head` (4 lines): the page's head with its actions ([page actions](/ui/styling#global-helpers)), the tabs under it.
+
+## Related
+
+- [`StudentAdminDetailSection`](/components/platform/sections/staff/students/student-admin-detail-section), the «Cuenta» page.

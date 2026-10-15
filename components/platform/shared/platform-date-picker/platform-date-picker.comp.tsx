@@ -211,7 +211,9 @@ export function PlatformDatePicker({
           type="button"
           className={triggerClassName}
           disabled={disabled}
-          aria-required={required || undefined}
+          // No `aria-required` here: a plain button does not take it (axe,
+          // `aria-allowed-attr`). The hidden input is what the form requires,
+          // and the field's label says it with its «Opcional» or its absence.
           data-placeholder={selected ? undefined : ""}
           {...triggerProps}
         >

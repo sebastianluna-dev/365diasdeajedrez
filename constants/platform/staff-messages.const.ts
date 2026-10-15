@@ -11,6 +11,7 @@
 export const STAFF_ERROR_MESSAGES: Record<string, string> = {
   invalid: "Revisa los datos: falta algún campo obligatorio o tiene un formato incorrecto.",
   status: "Esa clase ya está finalizada o cancelada.",
+  paymentStarted: "Este pago ya cubre clases dadas: corrígelo con «Editar pago».",
   throttled: "Demasiadas operaciones seguidas. Espera un momento y vuelve a intentarlo.",
   email: "Ese email no tiene un formato válido.",
   emailTaken: "Ya existe una cuenta con ese email.",

@@ -1,0 +1,68 @@
+---
+description: "One payment of a student: its figures, its classes in order as «clase n de m» with the ones still to date offering «Programar», folded when every class was given, and the «…» that edits or deletes it."
+---
+
+# `PaymentCard`
+
+Also `PaymentCardMenu` (`payment-card-menu.comp.tsx`, client): the «…» with its two popups as siblings.
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/platform/sections/staff/payments/payment-card/payment-card.comp.tsx`, `payment-card-menu.comp.tsx`                                                                                                                                                                                                                                                                                                                          |
+| Kind       | Server Component (the menu is a Client Component)                                                                                                                                                                                                                                                                                                                                                                                       |
+| Stylesheet | `payment-card.comp.css` → block `.payment-card`                                                                                                                                                                                                                                                                                                                                                                                         |
+| Story      | `payment-card.stories.tsx` (`platform/sections/staff/payments/PaymentCard`): open, all taken (folded), with a returned seat, with a moved seat, deletable (`play`), not deletable (`play`)                                                                                                                                                                                                                                              |
+| Used by    | [`StudentPaymentsSection`](/components/platform/sections/staff/payments/student-payments-section)                                                                                                                                                                                                                                                                                                                                       |
+| Composes   | [`ClassWhen`](/components/platform/shared/class-when), [`ClassStatusTag`](/components/platform/shared/class-status-tag), [`ScheduleSeatPopup`](/components/platform/shared/schedule-seat-popup), [`PlatformActionsMenu`](/components/platform/shared/platform-actions-menu), [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup), [`RegisterPaymentPopup`](/components/platform/shared/register-payment-popup) |
+| Uses       | `StaffPaymentView` (`services/staff-payments/staff-payments.types.ts`); the actions as props                                                                                                                                                                                                                                                                                                                                            |
+
+## Purpose
+
+What a payment bought and where it went, seat by seat, in the order the classes happen: a no-show counts, a cancelled class gave the seat back, a moved seat is history and the seat it went to says so. The card receives data and the actions as functions; it mounts no component it is given.
+
+## Props
+
+| Prop                                                       | Type                                                                                                   | Required | Meaning                                             |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------- | --------------------------------------------------- |
+| `payment`                                                  | `StaffPaymentView`                                                                                     | yes      |                                                     |
+| `student`                                                  | `{ id, displayName, teacherName }`                                                                     | yes      |                                                     |
+| `teachers`, `groupClasses`, `rhythm`, `timeZone`, `nowIso` |                                                                                                        | yes      | What the «Programar» and «Editar pago» popups need. |
+| `actions`                                                  | `{ scheduleSeat, deletePayment, updatePayment, registerPayment, loadPaymentContext, loadTeacherBusy }` | yes      | The server actions; stubs in Storybook.             |
+
+## Behaviour
+
+- Each row: the ordinal in a disc (none for a moved seat), when, the class, its phase and its mark («Asistió», «Faltó», «Faltó · reprogramada al …»), «Grupal».
+- A row «Por programar» per class still to date, each with a [`ScheduleSeatPopup`](/components/platform/shared/schedule-seat-popup).
+- `allTaken` folds the card in a `<details>` whose summary says «Todas tomadas · Ver sus 4 clases».
+- The «…»: «Editar pago» opens the register popup in edit mode; «Eliminar pago» asks with the confirmation (what stays «Sin pago» among its consequences) and is greyed with its reason as a second line once a class of the payment was given (D19).
+
+## Markup & styling
+
+Block `.payment-card` (135 lines).
+
+**Elements:** `.payment-card__head`, `__heading`, `__title`, `__facts`, `__seats`, `__seat`, `__ordinal`, `__seat-when`, `__seat-note`, `__seat-title`, `__seat-tags`, `__folded`, `__summary`, `__summary-link`
+
+**Modifiers and states:** `.payment-card__seat_state_moved`, `.payment-card__seat_state_later`
+
+**Breakpoints:** `(width < 768px)`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-border-strong`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-track`
+
+## Usage
+
+```tsx
+<PaymentCard
+  payment={payment}
+  student={student}
+  teachers={teachers}
+  groupClasses={groupClasses}
+  rhythm={rhythm}
+  timeZone={timeZone}
+  nowIso={nowIso}
+  actions={actions}
+/>
+```
+
+## Related
+
+- [Classes › Payments](/platform/classes#payments).

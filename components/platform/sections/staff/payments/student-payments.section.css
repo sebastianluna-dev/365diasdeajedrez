@@ -1,0 +1,110 @@
+/* The balance, the payments, the classes without a payment. */
+.student-payments {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-6);
+
+  & .student-payments__figures {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--platform-space-4);
+    margin: 0;
+  }
+
+  & .student-payments__figure {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-4);
+    border-radius: 8px;
+    background: var(--platform-bg);
+  }
+
+  & .student-payments__figure-label {
+    order: 2;
+    font-size: var(--platform-type-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--platform-text-muted);
+  }
+
+  & .student-payments__figure-value {
+    order: 1;
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-2xl);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--platform-text);
+  }
+
+  & .student-payments__figure-action {
+    order: 3;
+    margin: var(--platform-space-2) 0 0;
+  }
+
+  & .student-payments__balance-line {
+    margin: var(--platform-space-4) 0 0;
+    font-size: var(--platform-type-lg);
+    color: var(--platform-text-muted);
+  }
+
+  & .student-payments__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+  }
+
+  & .student-payments__empty {
+    margin: 0;
+    color: var(--platform-text-muted);
+  }
+
+  /* The classes that wait for a payment: a warning border on the card. */
+  & .student-payments__unpaid {
+    border: 1px solid var(--platform-warning-border);
+  }
+
+  & .student-payments__unpaid-list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .student-payments__unpaid-row {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-3) 0;
+    box-shadow: inset 0 1px 0 var(--platform-track);
+  }
+
+  & .student-payments__unpaid-when {
+    font-size: var(--platform-type-md);
+    font-weight: 600;
+  }
+
+  & .student-payments__unpaid-title {
+    overflow: hidden;
+    font-size: var(--platform-type-md);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (width < 768px) {
+    & .student-payments__figures {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    & .student-payments__unpaid-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    & .student-payments__unpaid-title {
+      grid-column: 1 / -1;
+    }
+  }
+}

@@ -103,6 +103,15 @@ Until phases 5–7 draw the new screens, the old ones run on the writers: the te
 
 `lib/testing/fixtures/classes.ts` holds a slice of the demo as the rules read it — a class in every phase, a payment with seats in every state, a group class — fixed to Wednesday 14 October 2026 at 11:40 in Mexico City, so a test says «at 11:40» and means it on any machine.
 
+## Payments
+
+The staff's «Pagos y clases» (ADM-7), «Registrar pago» (ADM-2) and «Programar» (ADM-6), built in phase 4 (2026-10-15):
+
+- **Reads** (`services/staff-payments/`): `getStudentPayments(userId)` gives the balance in three figures (por programar, programadas, tomadas), each payment as a card (`mapPayment`: its figures, its seats in order with «clase n de m», whether it opens folded because every class was given, and whether it can still be deleted) and the classes that wait for a payment (`unpaidSeatWhere`); `getPaymentContext(userId, now)` gives «Registrar pago» what it says of a student before anything is typed — «Profesor: … · Le queda 1 clase (hoy 19:00) · Último pago: …» — plus the rhythm `suggestRhythm` takes from their last class, their last meeting link, and the calendars the overlap warnings read. Every amount leaves the service formatted («$1,400.00 MXN», «$350.00 por clase»).
+- **Writes**: `registerPayment` creates the `ClassPayment` row — the one file that may — and does the rest through the writers in one transaction: covers the «Sin pago» classes ticked (`syncClassSeat`, mode `cover`), creates the dated classes (`createClassRecord`) with their seats, and seats the student in the group classes chosen; the `Class` rows it touches are locked first, by id. A writer's refusal undoes everything and comes back as a field error with what was typed. `updatePayment` never lets `classCount` go below the seats that count (`countingSeatsOf`); `deletePayment` works only while no class of the payment started, and its seats stay «Sin pago». `scheduleSeat` dates a paid class without one. The form is read by `readRegisterPaymentForm` (`payment-form.ts`): the payment's fields, the classes it covers, and the rows `slot.<i>.*`, with `planPaymentSeats` refusing more dated classes than it buys.
+- **Screens**: the student's record became a layout with tabs («Cuenta», «Pagos y clases»); the head carries «Registrar pago». The pieces: [`RegisterPaymentPopup`](/components/platform/shared/register-payment-popup), [`ScheduleSeatPopup`](/components/platform/shared/schedule-seat-popup), [`ClassSlotFields`](/components/platform/shared/class-slot-fields), [`PaymentCard`](/components/platform/sections/staff/payments/payment-card), [`StudentPaymentsSection`](/components/platform/sections/staff/payments/student-payments-section). The amount is written with its currency beside it and the per-class figure under it (D14); a payment that cannot be deleted keeps its entry on the «…» menu, greyed, with the reason as a second line (D19).
+- **Notices**: `paymentRegistered.<n>.<dated>.<later>`, `paymentUpdated`, `paymentDeleted.<unpaid>` and `seatScheduled.<minutes>.<duration>`, read by `readNotice`.
+
 ## Verified in the app
 
 Phase 2, on 2026-10-15, against the local database seeded with `SEED_NOW=2026-10-15T18:00:00Z`, driven with Playwright over the three demo accounts on the OLD screens (the new ones come in phases 4–7):
@@ -118,6 +127,19 @@ Phase 2, on 2026-10-15, against the local database seeded with `SEED_NOW=2026-10
 | 7   | `alumno.demo`   | the page of «Ataques al rey en el centro» under `/clases/` | «Qué vimos» and the Opera game: a finished class shows what comes after.                                                                                                                                                                          |
 | 8   | `alumno.demo`   | `/estudios/clases` and `/inicio`                           | The Opera game, under «Las partidas que se han visto en tus clases»; «Próxima clase» names the Najdorf.                                                                                                                                           |
 
+Phase 4, on 2026-10-15, against the same seed, as `staff.demo` on the NEW screens:
+
+| #   | Where                                       | Seen                                                                                                                                                                                       |
+| --- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 9   | Alumno Demo's «Pagos y clases»              | «Le quedan 3 clases: 2 programadas y 1 por programar»; the September payment folded under its month; the October one open with its classes and the one «Por programar» with «Programar».   |
+| 10  | «Registrar pago»                            | The context line of the last payment, «Repetir ese pago», four rhythm rows with their dates and the foot line that counts them; a field error reopens the sheet with what was typed.       |
+| 11  | «Registrar pago» → «Dejarlas por programar» | `?aviso=paymentRegistered.4.0.4`: «Pago registrado: 4 clases por programar.»                                                                                                               |
+| 12  | «Programar» on a seat without date          | «Clase programada: jue 22 oct · 19:00–20:00.» and the seat moves to its date.                                                                                                              |
+| 13  | «Eliminar pago» from the payment's menu     | The confirmation on top of the card; «Pago eliminado. 1 clase quedó «Sin pago».»; a started payment keeps its reason as the menu's second line.                                            |
+| 14  | The same at 390 px                          | The sheet rises from the bottom with its foot fixed (it measured 358 px wide at x = 0 on a 390 px viewport, a pre-existing trait of `.platform-dialog_phone_sheet` to look at in phase 5). |
+
+The class those checks created was deleted by hand afterwards; the database is the seed's again.
+
 The migration left two one-class payments made from the old seed's paid seats; the seed now adopts them (it deletes the payments of the demo accounts it does not own and covers their seats again through `syncClassSeat`), so after a seed the demo's balances are the story's: the October payment of Alumno Demo has one class to schedule, Valentina and Diego one class left, Mateo two.
 
 ## What is built
@@ -125,4 +147,6 @@ The migration left two one-class payments made from the old seed's paid seats; t
 - **Phase 1 (2026-10-14)**: the rules, the formats, the codes and the fixtures above, with their tests. Nothing in the app reads them yet.
 - **Phase 2a–2b (2026-10-15)**: `recordUserActivity` runs in the caller's transaction; the model, the migration (applied locally; pending in production until the release), the four writers with their fake-database tests, the two guards, and every reader and old screen on top of them.
 - **Phase 2c (2026-10-15)**: class material reaches a student only through a block they may see, in the four reads that start from the blocks (`studentVisibleClassBlockWhere`).
+- **Phase 3 (2026-10-15)**: the primitives (page actions, tag tones), the extended form pieces, nine shared pieces of a class, the popup-form pattern with `?aviso=`, and the renderer with a head per block.
+- **Phase 4 (2026-10-15)**: payments — «Pagos y clases», «Registrar pago» with its classes, «Programar» a paid class.
 - **Phase 2d (2026-10-15)**: the demo — five classmates, five payments, twenty classes with a class in every phase, a group class, a free one, a no-show moved to a new date and a staff change of attendance (`prisma/seed-classes.ts`; [Scripts & seed](/operations/scripts-and-seed)).

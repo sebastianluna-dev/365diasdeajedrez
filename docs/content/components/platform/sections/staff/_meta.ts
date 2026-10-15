@@ -7,6 +7,7 @@ const meta: MetaRecord = {
   assignments: "assignments/",
   courses: "courses/",
   classes: "classes/",
+  payments: "payments/",
 };
 
 export default meta;

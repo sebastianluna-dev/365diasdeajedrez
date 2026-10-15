@@ -1,0 +1,42 @@
+---
+description: "«Pagos y clases» of a student (ADM-7): the balance in three figures, each payment with its classes, and the classes that wait for a payment; the section imports the actions and hands them down."
+---
+
+# `StudentPaymentsSection`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/payments/student-payments.section.tsx`                                                                                                                                                                                                                                                                                                                                                                                           |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Stylesheet | `student-payments.section.css` → block `.student-payments`                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Used by    | `/administracion/alumnos/[userId]/pagos`                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Composes   | [`PaymentCard`](/components/platform/sections/staff/payments/payment-card), [`ScheduleSeatPopup`](/components/platform/shared/schedule-seat-popup), [`RegisterPaymentPopup`](/components/platform/shared/register-payment-popup) (`RegisterPaymentButton` as a row's word), [`ClassWhen`](/components/platform/shared/class-when), [`ClassStatusTag`](/components/platform/shared/class-status-tag), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Reads      | `StudentPaymentsView` from `getStudentPayments()` · `services/staff-payments/staff-payments.service.ts`                                                                                                                                                                                                                                                                                                                                                              |
+| Writes     | `scheduleSeat()`, `deletePayment()`, `updatePayment()`, `registerPayment()`, `loadPaymentContext()`, `loadTeacherBusy()` — imported here and handed to the client pieces as props                                                                                                                                                                                                                                                                                    |
+
+## Purpose
+
+Where the staff sees what a student paid and what is left: «1 por programar · 2 programadas · 5 tomadas», «Le quedan 3 clases: 2 programadas y 1 por programar. Las clases pagadas no caducan.», the payments newest first, and the classes «Sin pago» with «Registrar» at the end of each row, which opens the payment popup with that class ticked.
+
+## Props
+
+| Prop                                 | Type                  | Required | Meaning                                                           |
+| ------------------------------------ | --------------------- | -------- | ----------------------------------------------------------------- |
+| `view`                               | `StudentPaymentsView` | yes      |                                                                   |
+| `teachers`, `groupClasses`, `rhythm` |                       | yes      | What the popups need.                                             |
+| `notice`                             | `string`              | no       | The success the address says (`readNotice`), as a success notice. |
+| `errorCode`                          | `string`              | no       | `?error=`, translated with `STAFF_ERROR_MESSAGES`.                |
+
+## Markup & styling
+
+Block `.student-payments` (110 lines): the balance's three figures in the display font over the canvas's grey; the «Clases sin pago» card with the warning border.
+
+**Elements:** `.student-payments__balance`, `__figures`, `__figure`, `__figure-label`, `__figure-value`, `__figure-action`, `__balance-line`, `__list`, `__empty`, `__unpaid`, `__unpaid-list`, `__unpaid-row`, `__unpaid-when`, `__unpaid-title`
+
+**Breakpoints:** `(width < 768px)`.
+
+**Tokens:** `--platform-bg`, `--platform-font-display`, `--platform-text`, `--platform-text-muted`, `--platform-track`, `--platform-warning-border`
+
+## Related
+
+- [`StudentRecordHead`](/components/platform/sections/staff/students/student-record-head), the head and the tabs above it; [Classes › Payments](/platform/classes#payments).

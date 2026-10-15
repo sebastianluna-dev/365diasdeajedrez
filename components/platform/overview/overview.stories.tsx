@@ -113,6 +113,12 @@ import { CopyLinkButton } from "@/components/platform/shared/copy-link-button/co
 import { FilterPills } from "@/components/platform/shared/filter-pills/filter-pills.comp";
 import { PlatformActionsMenu } from "@/components/platform/shared/platform-actions-menu/platform-actions-menu.comp";
 import { PlatformSearchField } from "@/components/platform/shared/platform-search-field/platform-search-field.comp";
+import { ClassSlotFields } from "@/components/platform/shared/class-slot-fields/class-slot-fields.comp";
+import { RegisterPaymentButton } from "@/components/platform/shared/register-payment-popup/register-payment-popup.comp";
+import { ScheduleSeatPopup } from "@/components/platform/shared/schedule-seat-popup/schedule-seat-popup.comp";
+import { PaymentCard } from "@/components/platform/sections/staff/payments/payment-card/payment-card.comp";
+import { popupFormDone } from "@/services/shared/form-state";
+import type { StaffPaymentView } from "@/services/staff-payments/staff-payments.types";
 import { CLASS_PHASE } from "@/constants/platform/class-codes.const";
 import { CLASSES_NOW, CLASSES_TIME_ZONE, cdmx } from "@/lib/testing/fixtures/classes";
 import { SyllabusList } from "@/components/platform/sections/staff/courses/syllabus-list/syllabus-list.comp";
@@ -250,6 +256,64 @@ const OVERVIEW_CLASS_ROW: ClassRowData = {
   action: { kind: "link", label: "Agregar enlace", href: "/administracion/clases/c2" },
 };
 
+/** The October payment of the demo, for the payments' tiles. */
+const OVERVIEW_PAYMENT: StaffPaymentView = {
+  id: "pay-1",
+  paidOnIso: "2026-10-01T00:00:00.000Z",
+  paidOnLabel: "jue 1 oct 2026",
+  amount: "1400.00",
+  currencyCode: "MXN",
+  amountLabel: "$1,400.00 MXN",
+  perClassLabel: "$350.00 por clase",
+  classCount: 4,
+  reference: "Transferencia 8841",
+  note: null,
+  recordedByName: "Staff Demo",
+  seats: [
+    {
+      classId: "c1",
+      href: "/administracion/clases/c1",
+      ordinal: 1,
+      title: "Ataques al rey en el centro",
+      startIso: cdmx("2026-10-07", "12:00").toISOString(),
+      durationMin: 60,
+      phase: CLASS_PHASE.DONE,
+      attended: true,
+      isGroup: false,
+    },
+    {
+      classId: "c2",
+      href: "/administracion/clases/c2",
+      ordinal: 2,
+      title: "Repaso de la Najdorf: tus dudas",
+      startIso: cdmx("2026-10-14", "12:00").toISOString(),
+      durationMin: 60,
+      phase: CLASS_PHASE.OPEN,
+      attended: null,
+      isGroup: false,
+    },
+  ],
+  taken: 1,
+  scheduled: 1,
+  toSchedule: 2,
+  returned: 0,
+  allTaken: false,
+  canDelete: false,
+  deleteReason: "Este pago ya cubre clases dadas: corrígelo con «Editar pago».",
+  seatsLeftUnpaid: 2,
+  minClassCount: 2,
+};
+const OVERVIEW_TEACHERS = [{ id: "t-1", displayName: "GM Profesor Demo" }];
+const OVERVIEW_RHYTHM = { teacherId: "t-1", firstDate: "2026-10-21", time: "12:00", durationMin: 60 };
+const OVERVIEW_PAYMENT_ACTIONS = {
+  scheduleSeat: async () => popupFormDone("seatScheduled", [0, 60]),
+  deletePayment: async () => undefined,
+  updatePayment: async () => popupFormDone("paymentUpdated"),
+  registerPayment: async () => popupFormDone("paymentRegistered", [4, 3, 1]),
+  loadPaymentContext: async () => null,
+  loadTeacherBusy: async () => [],
+};
+
 const SWATCHES = [
   "accent",
   "accent-soft",
@@ -317,7 +381,6 @@ const ICONS = [
   CaretRightIcon,
   CheckIcon,
   AngleRightIcon,
-  CircleCheckIcon,
   CircleCheckIcon,
   ClipboardIcon,
   XmarkIcon,
@@ -1504,6 +1567,57 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 <span>https://zoom.us/j/11111111111</span>
                 <CopyLinkButton url="https://zoom.us/j/11111111111" label="Copiar el enlace de la reunión" />
               </div>
+            </Tile>
+            <Tile name="ClassSlotFields" docs="platform-shared-classslotfields" width={560} height={168}>
+              {/* Its three fields are `PlatformFormField`s, which live inside a `PlatformForm`. */}
+              <PlatformForm onSubmit={(event) => event.preventDefault()}>
+                <ClassSlotFields
+                  namePrefix="slot.0"
+                  defaultValue={{ date: "2026-10-21", time: "19:00", durationMin: 60 }}
+                  timeZone={CLASSES_TIME_ZONE}
+                />
+              </PlatformForm>
+            </Tile>
+            <Tile name="RegisterPaymentPopup" docs="platform-shared-registerpaymentpopup" width={400} height={96}>
+              <RegisterPaymentButton
+                fixedStudent={{
+                  id: "u-v",
+                  displayName: "Valentina Cruz",
+                  email: "valentina.demo@365diasdeajedrez.com",
+                }}
+                teachers={OVERVIEW_TEACHERS}
+                groupClasses={[]}
+                timeZone={CLASSES_TIME_ZONE}
+                nowIso={CLASSES_NOW.toISOString()}
+                registerPayment={OVERVIEW_PAYMENT_ACTIONS.registerPayment}
+                loadPaymentContext={OVERVIEW_PAYMENT_ACTIONS.loadPaymentContext}
+                loadTeacherBusy={OVERVIEW_PAYMENT_ACTIONS.loadTeacherBusy}
+              />
+            </Tile>
+            <Tile name="ScheduleSeatPopup" docs="platform-shared-scheduleseatpopup" width={400} height={96}>
+              <ScheduleSeatPopup
+                paymentId="pay-1"
+                studentName="Alumno Demo"
+                seatLabel="Clase 3 de 4 del pago del jue 1 oct · Profesor: GM Profesor Demo"
+                teachers={OVERVIEW_TEACHERS}
+                rhythm={OVERVIEW_RHYTHM}
+                groupClasses={[]}
+                timeZone={CLASSES_TIME_ZONE}
+                nowIso={CLASSES_NOW.toISOString()}
+                scheduleSeat={OVERVIEW_PAYMENT_ACTIONS.scheduleSeat}
+              />
+            </Tile>
+            <Tile name="PaymentCard" docs="platform-sections-staff-payments-paymentcard" width={820} height={360}>
+              <PaymentCard
+                payment={OVERVIEW_PAYMENT}
+                student={{ id: "u-demo", displayName: "Alumno Demo", teacherName: "GM Profesor Demo" }}
+                teachers={OVERVIEW_TEACHERS}
+                groupClasses={[]}
+                rhythm={OVERVIEW_RHYTHM}
+                timeZone={CLASSES_TIME_ZONE}
+                nowIso={CLASSES_NOW.toISOString()}
+                actions={OVERVIEW_PAYMENT_ACTIONS}
+              />
             </Tile>
           </Section>
 

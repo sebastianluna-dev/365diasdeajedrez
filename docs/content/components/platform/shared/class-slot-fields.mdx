@@ -1,0 +1,64 @@
+---
+description: "The three fields that date a class — day, hour, duration — each in its own field, with the line that says the hours are the academy's and the warnings the schedule rules gave, said and never blocking."
+---
+
+# `ClassSlotFields`
+
+|            |                                                                                                                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/class-slot-fields/class-slot-fields.comp.tsx`                                                                                                                                                 |
+| Kind       | Client Component                                                                                                                                                                                                          |
+| Stylesheet | `class-slot-fields.comp.css` → block `.class-slot-fields`                                                                                                                                                                 |
+| Story      | `class-slot-fields.stories.tsx` (`platform/shared/ClassSlotFields`): empty, filled, with warnings, an odd duration, inside a popup (`play`)                                                                               |
+| Used by    | [`RegisterPaymentPopup`](/components/platform/shared/register-payment-popup) (the rhythm and each row), [`ScheduleSeatPopup`](/components/platform/shared/schedule-seat-popup); «Crear clase» and «Reprogramar» (phase 5) |
+| Composes   | [`PlatformFormField`](/components/platform/shared/platform-form), [`PlatformDatePicker`](/components/platform/shared/platform-date-picker), [`PlatformSelect`](/components/platform/shared/platform-select)               |
+| Uses       | `classTimeOptions` (`constants/platform/class-slots.const.ts`), `durationOptions` (`services/shared/class-schedule-rules.ts`), `timeZoneLabel`; `TriangleExclamationIcon` in Classic Solid                                |
+
+## Purpose
+
+Every form that dates a class asks the same three things; asking them the same way everywhere is the point. The hours are the academy's ([D7](/platform/classes#the-phase-of-a-class)), and the line under the fields says so.
+
+## Props
+
+| Prop           | Type                                       | Required            | Meaning                                                                                                |
+| -------------- | ------------------------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------ |
+| `namePrefix`   | `string`                                   | yes                 | `slot.0` sends `slot.0.date`, `slot.0.time`, `slot.0.duration`; `""` sends `date`, `time`, `duration`. |
+| `defaultValue` | `{ date?, time?, durationMin? }`           | no                  | What the fields open with.                                                                             |
+| `timeZone`     | `string`                                   | yes                 | The academy's; written under the fields («Horas de Ciudad de México»).                                 |
+| `warnings`     | `string[]`                                 | no                  | What `validateClassSchedule` warned about, already in words.                                           |
+| `min`, `max`   | `string`                                   | no                  | The day picker's bounds, `yyyy-mm-dd`.                                                                 |
+| `required`     | `boolean`                                  | no · default `true` |                                                                                                        |
+| `onChange`     | `(value: Partial<ClassSlotValue>) => void` | no                  | Every change, with the whole value, for the preview line and the warnings.                             |
+| `serverError`  | `string`                                   | no                  | A message the server sent for this slot, under the day.                                                |
+
+## Behaviour
+
+- The duration list is `durationOptions(current)`: the five of the scale, plus the odd one a class already has (50 min), so dating it again does not change it in silence.
+- The warnings are said in the warning ink with a triangle and **no live role**: they never block, since documenting a class after the fact, or next to another, is legitimate.
+- The day picker is remounted under its saved value (`savedValueKey`), so a form that comes back with an error opens on what was typed.
+
+## Markup & styling
+
+Block `.class-slot-fields` (51 lines): three columns (the day wider), one column under 640px.
+
+**Elements:** `.class-slot-fields__row`, `.class-slot-fields__zone`, `.class-slot-fields__warnings`, `.class-slot-fields__warning`, `.class-slot-fields__warning-icon`
+
+**Breakpoints:** `(width < 640px)`.
+
+**Tokens:** `--platform-text-muted`, `--platform-warning-ink`
+
+## Usage
+
+```tsx
+<ClassSlotFields
+  namePrefix={`slot.${index}`}
+  defaultValue={slot.value}
+  timeZone={timeZone}
+  warnings={warnings}
+  onChange={update}
+/>
+```
+
+## Related
+
+- [`ClassWhen`](/components/platform/shared/class-when), which says the result in words.

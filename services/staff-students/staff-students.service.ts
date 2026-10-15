@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
@@ -57,7 +58,7 @@ export async function listStudents(query?: string): Promise<StaffStudentSummary[
   }));
 }
 
-export async function getStudentAdminDetail(userId: string): Promise<StaffStudentDetail | null> {
+export const getStudentAdminDetail = cache(async (userId: string): Promise<StaffStudentDetail | null> => {
   await requireStaff();
 
   const user = await getPlatformDb().user.findUnique({
@@ -139,4 +140,4 @@ export async function getStudentAdminDetail(userId: string): Promise<StaffStuden
       coverage: participation.paymentId !== null ? "paid" : participation.isFree ? "free" : "unpaid",
     })),
   };
-}
+});
