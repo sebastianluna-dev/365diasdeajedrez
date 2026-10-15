@@ -100,6 +100,8 @@ The private area (`/inicio`, `/clases`, `/estudios`, `/cursos`, `/lecciones` (th
 
 There is no roles table and no column on `User`: **the role is the existence of a row** (`Teacher`, `Staff`), and they are orthogonal — the same person can be a teacher and staff, and is still a student. They are resolved in the same query as the session (no extra queries) and are exposed only through `lib/platform-auth/roles.ts`, whose `requireTeacher()` / `requireStaff()` are the first `await` of every page and every server action of those panels. A teacher is **deactivated** (`Teacher.isActive`), never deleted: their classes and assignments are history.
 
+With a class, the staff does everything that dates it or costs money (create, schedule, reschedule, cancel, teacher and link, seats, payments, free classes, attendance changes with a reason, a no-show's new date); the teacher prepares the content, takes attendance and finalizes their assigned classes; the student sees their classes, their classmates by name and their balance, never an amount. `services/shared/class-roles.test.ts` keeps that frontier.
+
 The `admin`/`editor` roles of `payload/collections/Users.ts` belong to **Payload**, the CMS of the public site: another database, another login, and they do not mix with this.
 
 How it is put together:
@@ -171,6 +173,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - **PGN is the source of the chess content** (`Lesson.pgn`, `Game.pgn`): there are no per-move tables and no relational trees of moves.
 - Some invariants are expressed as CHECK constraints and hand-written indexes in the migrations (`prisma/migrations`); the rest is validated in the service layer. The header of `prisma/schema.prisma` documents them. Among them, the partial index `teacher_student_one_active`, which is the last word on "one active teacher per student" (the service closes the previous assignment before creating the new one, but only the index separates two simultaneous requests).
 - **Authorisation inside the `where`**: teacher and staff reads filter by role and membership in the query itself; there is no "read and then check". For writes there are centralised guards in `lib/platform-auth/guards.ts`. Hiding a button never authorises anything: every action revalidates on the server.
+- **A derived column has one writer** (`services/shared/`): seats, attendance, status and schedule of a class are written only by `syncClassSeat`/`moveClassSeat`, `recordAttendance`, `transitionClassStatus` and `createClassRecord`/`syncClassSchedule`/`syncClassMeeting`, each taking the Prisma client as its first parameter to run inside the caller's transaction; what a payment has left is derived on reading (`paymentSeats`), never stored. `class-writers.test.ts` reads every write of the app and keeps it so.
 - **Reordering lists with `@@unique([parent, order])`** (class blocks, chapters, lessons, exercises) always goes through `services/shared/reorder.ts`: PostgreSQL validates the index row by row, so a direct swap throws P2002 intermittently.
 
 ## Next.js documentation convention
