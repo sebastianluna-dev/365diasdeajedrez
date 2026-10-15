@@ -12,15 +12,21 @@
 // nothing, since an instant without a link promised the student a link that
 // did not exist.
 //
-// Pure module: the teacher's actions write with it, and both the student's
-// and the teacher's mappers read with it.
+// The link also CLOSES: half an hour after the class ends nobody is coming
+// back in, and a class that nobody finalized must not keep offering «Entrar a
+// la clase» a day later (`meetingVisibleUntil`).
+//
+// Pure module: the staff's actions write with it (through
+// `classMeetingColumns`), and the mappers of the student, the teacher and the
+// staff read with it.
 
-/** The link opens half an hour early by default. */
+/** The link opens half an hour early by default, and stays half an hour after the end. */
 const MEETING_VISIBLE_LEAD_MS = 30 * 60 * 1000;
+const MEETING_VISIBLE_TAIL_MS = 30 * 60 * 1000;
 
 /**
- * What `Class.meetingUrlVisibleFrom` stores, its only writer: the instant the
- * teacher chose, or null for the default — and null, chosen or not, for a
+ * What `Class.meetingUrlVisibleFrom` stores, its only computation: the instant
+ * the staff chose, or null for the default — and null, chosen or not, for a
  * class without a link.
  */
 export function storedMeetingVisibleFrom(meetingUrl: string | null, chosen: Date | null): Date | null {
@@ -35,4 +41,13 @@ export function storedMeetingVisibleFrom(meetingUrl: string | null, chosen: Date
 export function meetingVisibleFrom(meetingUrl: string | null, scheduledAt: Date, stored: Date | null): Date | null {
   if (meetingUrl === null) return null;
   return stored ?? new Date(scheduledAt.getTime() - MEETING_VISIBLE_LEAD_MS);
+}
+
+/**
+ * When the link stops being offered: half an hour after the class ends. Past
+ * it, the mappers send no link whatever the status says, and the student's
+ * page turns to the review of the class.
+ */
+export function meetingVisibleUntil(endsAt: Date): Date {
+  return new Date(endsAt.getTime() + MEETING_VISIBLE_TAIL_MS);
 }

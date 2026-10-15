@@ -3,9 +3,12 @@
 // The codes come from constants/platform/*; the labels are in Spanish.
 
 import { ACTIVITY_TYPE, STAT_METRIC, SUBJECT_TYPE } from "../constants/platform/activity-codes.const";
+import { CURRENCY } from "../constants/platform/currency-codes.const";
 import { CONTENT_ROLE } from "../constants/platform/course-codes.const";
 import {
   CLASS_BLOCK_KIND,
+  CLASS_BLOCK_VISIBILITY,
+  CLASS_FORMAT,
   CLASS_STATUS,
   MEETING_PROVIDER,
   TRANSCRIPT_STATUS,
@@ -254,6 +257,23 @@ export const CATALOG_VALUES = {
     [TRANSCRIPT_STATUS.PENDING, "Pendiente"],
     [TRANSCRIPT_STATUS.READY, "Lista"],
     [TRANSCRIPT_STATUS.FAILED, "Fallida"],
+  ],
+  // The classes of the three roles (`planning/clases/PLAN.md`): the tables
+  // arrive with their migration; the catalogs are listed here first so the
+  // seed and the labels agree from the start.
+  classFormat: [
+    [CLASS_FORMAT.INDIVIDUAL, "Individual"],
+    [CLASS_FORMAT.GROUP, "Grupal"],
+  ],
+  classBlockVisibility: [
+    [CLASS_BLOCK_VISIBILITY.BEFORE, "Para preparar"],
+    [CLASS_BLOCK_VISIBILITY.AFTER, "Después de la clase"],
+    [CLASS_BLOCK_VISIBILITY.TEACHER, "Guion del profesor"],
+  ],
+  currency: [
+    [CURRENCY.MXN, "Peso mexicano"],
+    [CURRENCY.USD, "Dólar estadounidense"],
+    [CURRENCY.EUR, "Euro"],
   ],
   activityType: [
     [ACTIVITY_TYPE.LESSON_COMPLETED, "Lección completada"],

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { meetingVisibleFrom, storedMeetingVisibleFrom } from "./meeting-visible-from";
+import { meetingVisibleFrom, meetingVisibleUntil, storedMeetingVisibleFrom } from "./meeting-visible-from";
 
 const SCHEDULED_AT = new Date("2026-09-15T17:00:00.000Z");
 const CHOSEN = new Date("2026-09-15T16:00:00.000Z");
@@ -47,5 +47,11 @@ describe("meetingVisibleFrom", () => {
       const stored = storedMeetingVisibleFrom(URL, chosen);
       expect(meetingVisibleFrom(URL, SCHEDULED_AT, stored)).toEqual(chosen ?? new Date("2026-09-15T16:30:00.000Z"));
     }
+  });
+});
+
+describe("meetingVisibleUntil", () => {
+  it("cierra el enlace media hora después del fin de la clase", () => {
+    expect(meetingVisibleUntil(new Date("2026-10-14T19:00:00.000Z"))).toEqual(new Date("2026-10-14T19:30:00.000Z"));
   });
 });

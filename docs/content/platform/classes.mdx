@@ -1,0 +1,70 @@
+---
+description: "Classes («clases»): the rules that do not bend, the phase a class is in, what a payment covers, who may do what to a class, and the pure functions every screen of the staff, the teacher and the student decide with."
+---
+
+# Classes («Clases»)
+
+A live class is given by a teacher to one student or to a group, over a meeting link, at a time the academy's staff set. On 2026-10-14 the owner rewrote who does what — the staff creates every class and registers every payment; the teacher sees only their assigned classes, prepares their content, takes attendance and finalizes them; the student sees their classes and how many paid ones they have left — and the module is being rebuilt around those rules, in phases (the plan lives in `planning/clases/PLAN.md`, local). This page is the part that is built; what each phase adds is noted at its end.
+
+## The rules that do not bend
+
+- **A paid class is spent by being in a class that was not cancelled**, whether or not the student came. A no-show spends it; the staff can give that class another date at any time, also after it happened, and the seat moves with its payment, so the payment never pays twice.
+- **Attendance never moves money.** The teacher passes the list; the staff may change a mark after a report, with a reason that is recorded and that the teacher sees. Neither changes what a payment covers.
+- **Paid classes never expire.** There is no expiry anywhere, and the student is told «No caducan».
+- **«Gratis» is not «Sin pago».** A free seat is a staff decision (a diagnosis, a courtesy): it is charged to nobody, counts in no balance and sits in no queue. «Sin pago» is a payment still pending, which the queues chase.
+- **The student never sees an amount**: the day of their payment, how many classes it bought and how many are left.
+- **In a group class the students see each other's names**, never each other's payments.
+- **A class is never deleted: it is cancelled**, and a cancelled or finished class never comes back. A mistake is fixed with another class.
+
+## The phase of a class
+
+The status (`ClassStatus`: SCHEDULED, COMPLETED, CANCELLED; an old LIVE row reads as SCHEDULED) is what somebody wrote. The **phase** is what the clock makes of it, derived on every read by `classPhase` (`services/shared/class-phase.ts`) and never stored:
+
+| Phase            | When                                                                   | What the screens say                        |
+| ---------------- | ---------------------------------------------------------------------- | ------------------------------------------- |
+| `UPCOMING`       | Scheduled, before the link opens (or without a link, before it starts) | «Programada»                                |
+| `OPEN`           | From the instant the link opens (`meetingVisibleFrom`) until it starts | «Enlace abierto»                            |
+| `IN_PROGRESS`    | Between `scheduledAt` and `endsAt`                                     | «En vivo»                                   |
+| `AWAITING_CLOSE` | Ended and nobody finalized it                                          | «Por finalizar» (the student: «Finalizada») |
+| `DONE`           | COMPLETED                                                              | «Finalizada»                                |
+| `CANCELLED`      | CANCELLED                                                              | «Cancelada»                                 |
+
+The link is offered from `meetingVisibleFrom` (the chosen instant, or half an hour before) to `meetingVisibleUntil` (half an hour after the end): past it, no mapper sends it, whatever the status. `classPhaseInstants` lists the instants the phase changes at, so a page can refresh at each one, and `studentClassView` decides whether the student's page looks ahead (how to join, what to prepare) or reviews the class, which happens when the link closes.
+
+Every function receives `now` and a zone; none reads the clock or the process's zone. The teacher reads in `Teacher.timezone` when it is valid and in the academy's (`America/Mexico_City`) otherwise, never in UTC (`classTimeZone`, `lib/timezone.ts`); «Hoy» is cut in that zone with `dayRangeIn`.
+
+## What a payment covers
+
+`services/shared/payment-seats.ts`, counted on read:
+
+- `paymentSeats(payment, seats)`: the seats that **count** (class not cancelled, seat not moved) split into `taken` (ended or finished, no-shows included) and `scheduled`; `toSchedule = classCount − counting`, never negative; `returned` (cancelled classes) and `moved`; and `ordinalOf`, «clase n de m» in chronological order. A free seat, an unpaid one, or another payment's never enters.
+- `studentSeatBalance(payments)`: what is left across the student's payments, oldest first, with no amount in it.
+- `planPaymentSeats`: how a new payment's classes are spread between the seats it covers, the ones dated now and the ones placed in a group, and the error when there are more than it bought.
+- `isUnpaidSeat` and `unpaidSeatWhere`: the ONE definition of «Sin pago» (no payment, not free, not moved, class not cancelled), as a function and as the Prisma `where`; a test keeps them the same.
+
+## Who may do what
+
+`services/shared/class-rules.ts`:
+
+- `editableClassFields(phase)`: before the link opens, everything; open, no rescheduling and no change of students; in progress, also finalize; ended, finalize, cancel (with a warning), change the teacher and the content; done, only the attendance, the seat of a no-show, the content and the notes after the class; cancelled, nothing but duplicate.
+- `attendanceEditableBy({ role, phase, lastChange, seatMoved })`: the teacher passes the list while finalizing and changes their own marks of a finished class; the staff finalizes on the teacher's behalf only once the class ended, and overrides a mark after a report. A mark the staff overrode is closed to the teacher; one the staff wrote while finalizing on their behalf is not.
+- `canTransitionClassStatus(from, to, role)` (`class-status-transitions.ts`): the teacher only to COMPLETED; the staff to COMPLETED or CANCELLED; nothing leaves COMPLETED or CANCELLED; LIVE is never a destination.
+- `canAddParticipants`, `classShapeError`, `canFinalizeClass`, `canMoveSeat`, `classDisplayTitle` («Clase con GM Profesor Demo» for the student, «Clase de Valentina Cruz» for the teacher and the staff, when a class has no topic), `isBlockVisibleToStudent` (to prepare: always; after the class: from its end; the teacher's script: never), `isNewClassBlock`, `planCancellation` (the lines the confirmation reads out, one per coverage) and `blockOrderAfterDrop` (the complete order of a class's blocks after a drop between sections).
+
+## Dating a class
+
+`services/shared/class-schedule-rules.ts`: `validateClassSchedule` refuses a link that would open after the class starts and only warns about an overlap of the teacher or of a student and about a date already past (documenting a class after the fact is legitimate); `weeklyDates`, `suggestRhythm` (the weekday, time and duration of the student's last class, from its next occurrence) and `slotInstant` make the dates a payment's classes are prefilled with; `durationOptions` keeps an old duration on the list so rescheduling does not change it in silence. `storedMeetingProvider` (`meeting-provider.ts`) reads the platform from the link: nobody picks «Zoom» in a form any more.
+
+## Saying when and how much
+
+`lib/format-class-when.ts` writes when a class is the one way, in a zone: «mié 14 oct · 12:00–13:00», «Hoy · …», «Mañana · …», «Ayer · …», the year only when it is not the current one, «(hora de Ciudad de México)» when the reader is told the zone; `formatAgendaDay` heads an agenda's day («Hoy · miércoles 14 de octubre»). `lib/format-class-amount.ts` writes a payment («$1,400.00 MXN») and the per-class figure («$350.00»), in whole cents.
+
+## Codes and fixtures
+
+`constants/platform/class-codes.const.ts` adds `CLASS_FORMAT` (INDIVIDUAL, GROUP), `CLASS_BLOCK_VISIBILITY` (BEFORE «Para preparar», AFTER «Después de la clase», TEACHER «Guion del profesor») and the derived `CLASS_PHASE`; `currency-codes.const.ts` the `CURRENCY` catalog (MXN, USD, EUR); `class-slots.const.ts` the durations and the quarter-hour starting times. Their labels are in `CATALOG_VALUES` (`prisma/seed-data.ts`), ahead of the tables that the next phase's migration creates.
+
+`lib/testing/fixtures/classes.ts` holds the demo as the rules read it — a class in every phase, a payment with seats in every state, a group class — fixed to Wednesday 14 October 2026 at 11:40 in Mexico City, so a test says «at 11:40» and means it on any machine.
+
+## What is built
+
+- **Phase 1 (2026-10-14)**: the rules, the formats, the codes and the fixtures above, with their tests. Nothing in the app reads them yet.
