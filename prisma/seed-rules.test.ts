@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ReorderRow } from "../services/shared/reorder";
-import { buildClasses, CLASS_BLOCKS, COURSES, GAME_DATABASES, IDS } from "./seed-data";
+import { buildClassSchedule, CLASS_BLOCKS } from "./seed-classes";
+import { COURSES, GAME_DATABASES, IDS } from "./seed-data";
 import {
   collectionKeyOf,
   nextClassAfter,
@@ -51,8 +52,8 @@ describe("seedReferenceDate", () => {
 describe("nextClassAfter", () => {
   const now = new Date("2026-10-02T18:00:00Z");
 
-  it("is the seeded class still ahead: three days after the reference instant", () => {
-    expect(nextClassAfter(buildClasses(now), now)).toEqual(new Date("2026-10-05T18:00:00Z"));
+  it("is the seeded class still ahead: the one at 17:00 of the reference day in Mexico City", () => {
+    expect(nextClassAfter(buildClassSchedule(now), now)).toEqual(new Date("2026-10-02T23:00:00Z"));
   });
 
   it("is the earliest of the ones ahead, whatever their order", () => {
@@ -66,7 +67,7 @@ describe("nextClassAfter", () => {
 
   it("is null once every seeded class is behind: weeks after the seed, the demo has no next class", () => {
     const threeWeeksLater = new Date(now.getTime() + 21 * DAY_MS);
-    expect(nextClassAfter(buildClasses(now), threeWeeksLater)).toBeNull();
+    expect(nextClassAfter(buildClassSchedule(now), threeWeeksLater)).toBeNull();
   });
 });
 

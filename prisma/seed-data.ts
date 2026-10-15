@@ -20,7 +20,6 @@ import { DATABASE_KIND, GAME_ANALYSIS_MODE, GAME_RESULT, GAME_SOURCE } from "../
 import { ATTEMPT_CONTEXT, ATTEMPT_RESULT, EXERCISE_MODE } from "../constants/platform/training-codes.const";
 
 import { DEMO_STAFF_EMAIL, DEMO_TEACHER_EMAIL, DEMO_USER_EMAIL } from "../constants/platform/demo-user.const";
-import { mainlinePath } from "../lib/chess/exercise-derivation";
 import { MY_60_MEMORABLE_GAMES } from "./seed-courses/my-60-memorable-games";
 import {
   THINK_LIKE_A_GRANDMASTER,
@@ -356,8 +355,41 @@ export const IDS = {
   gameModelOpocensky: "demoOpoc",
   gameModelAlapin: "demoAlap",
 
+  // The classes demo (prisma/seed-classes.ts): one id per class of the story.
   classPast: "b0000000-0000-4000-8000-000000000001",
   classUpcoming: "b0000000-0000-4000-8000-000000000002",
+  classMateoToday: "b0000000-0000-4000-8000-000000000003",
+  classValentinaToday: "b0000000-0000-4000-8000-000000000004",
+  classGroup: "b0000000-0000-4000-8000-000000000005",
+  classAwaitingClose: "b0000000-0000-4000-8000-000000000006",
+  classCancelled: "b0000000-0000-4000-8000-000000000007",
+  classFreeDiagnosis: "b0000000-0000-4000-8000-000000000008",
+  classDiegoMissed: "b0000000-0000-4000-8000-000000000009",
+  classDiegoPlans: "b0000000-0000-4000-8000-000000000010",
+  classValentinaMissed: "b0000000-0000-4000-8000-000000000011",
+  classValentinaMovedTo: "b0000000-0000-4000-8000-000000000012",
+  classValentina1: "b0000000-0000-4000-8000-000000000013",
+  classValentina2: "b0000000-0000-4000-8000-000000000014",
+  classDemo1: "b0000000-0000-4000-8000-000000000015",
+  classDemo2: "b0000000-0000-4000-8000-000000000016",
+  classDemo3: "b0000000-0000-4000-8000-000000000017",
+  classDemo4: "b0000000-0000-4000-8000-000000000018",
+  classDemoReview: "b0000000-0000-4000-8000-000000000019",
+  classDemoDiagnosis: "b0000000-0000-4000-8000-000000000020",
+
+  // The classmates and their assignments.
+  valentinaUser: "a1000000-0000-4000-8000-000000000001",
+  mateoUser: "a1000000-0000-4000-8000-000000000002",
+  diegoUser: "a1000000-0000-4000-8000-000000000003",
+  luciaUser: "a1000000-0000-4000-8000-000000000004",
+  andreaUser: "a1000000-0000-4000-8000-000000000005",
+
+  // The payments.
+  paymentDemoOld: "b2000000-0000-4000-8000-000000000001",
+  paymentDemo: "b2000000-0000-4000-8000-000000000002",
+  paymentValentina: "b2000000-0000-4000-8000-000000000003",
+  paymentDiego: "b2000000-0000-4000-8000-000000000004",
+  paymentMateo: "b2000000-0000-4000-8000-000000000005",
 
   blockPastIntro: "b1000000-0000-4000-8000-000000000001",
   blockPastGame: "b1000000-0000-4000-8000-000000000002",
@@ -959,101 +991,7 @@ export const GAMES = [
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-export function buildClasses(now: Date) {
-  const pastDate = new Date(now.getTime() - 7 * DAY_MS);
-  const upcomingDate = new Date(now.getTime() + 3 * DAY_MS);
-
-  return [
-    {
-      id: IDS.classPast,
-      teacherId: IDS.teacher,
-      title: "Ataques al rey en el centro",
-      description:
-        "Clase práctica sobre cómo castigar al rey sin enrocar, con la Partida de la Ópera como hilo conductor.",
-      scheduledAt: pastDate,
-      durationMin: 60,
-      status: CLASS_STATUS.COMPLETED,
-      meetingUrl: "https://zoom.us/j/00000000000",
-      // No instant chosen: the link opens half an hour before (meeting-visible-from.ts).
-      meetingUrlVisibleFrom: null as Date | null,
-      recordingUrl: "https://zoom.us/rec/demo-ataques-al-rey",
-      summary:
-        "Vimos los tres errores típicos que dejan al rey en el centro y la técnica de Morphy para explotarlos: desarrollo con amenaza, apertura de columnas y sacrificio de calidad en d7.",
-    },
-    {
-      id: IDS.classUpcoming,
-      teacherId: IDS.teacher,
-      title: "Repaso de la Najdorf: tus dudas",
-      description: "Sesión de preguntas sobre el capítulo 2 del curso de la Siciliana.",
-      scheduledAt: upcomingDate,
-      durationMin: 60,
-      status: CLASS_STATUS.SCHEDULED,
-      meetingUrl: "https://zoom.us/j/11111111111",
-      meetingUrlVisibleFrom: null as Date | null,
-      recordingUrl: null as string | null,
-      summary: null as string | null,
-    },
-  ];
-}
-
-export const CLASS_BLOCKS = [
-  {
-    id: IDS.blockPastIntro,
-    classId: IDS.classPast,
-    order: 1,
-    kind: CLASS_BLOCK_KIND.TEXT,
-    visibility: CLASS_BLOCK_VISIBILITY.AFTER,
-    text: "## Qué vimos\n\nTres señales de que puedes atacar un rey en el centro:\n\n1. Columnas centrales abiertas o semiabiertas.\n2. Ventaja de desarrollo de dos o más piezas.\n3. El rey enemigo sin posibilidad inmediata de enroque.",
-    caption: null as string | null,
-    videoUrl: null as string | null,
-    gameId: null as string | null,
-    lessonId: null as string | null,
-    positionId: null as string | null,
-    movePath: null as string | null,
-  },
-  {
-    id: IDS.blockPastGame,
-    classId: IDS.classPast,
-    order: 2,
-    kind: CLASS_BLOCK_KIND.GAME_REF,
-    visibility: CLASS_BLOCK_VISIBILITY.AFTER,
-    gameId: IDS.gameOpera as string | null,
-    movePath: mainlinePath(19),
-    caption: "La Partida de la Ópera desde 10.Cxb5: la fase decisiva del ataque.",
-    text: null as string | null,
-    videoUrl: null as string | null,
-    lessonId: null as string | null,
-    positionId: null as string | null,
-  },
-  {
-    id: IDS.blockPastLesson,
-    classId: IDS.classPast,
-    order: 3,
-    kind: CLASS_BLOCK_KIND.LESSON_REF,
-    visibility: CLASS_BLOCK_VISIBILITY.AFTER,
-    lessonId: IDS.lsBreakD5 as string | null,
-    movePath: null as string | null,
-    caption: "Repasa la lección de la ruptura ...d5: el mismo principio de apertura del centro.",
-    text: null as string | null,
-    videoUrl: null as string | null,
-    gameId: null as string | null,
-    positionId: null as string | null,
-  },
-  {
-    id: IDS.blockPastVideo,
-    classId: IDS.classPast,
-    order: 4,
-    kind: CLASS_BLOCK_KIND.VIDEO,
-    visibility: CLASS_BLOCK_VISIBILITY.AFTER,
-    videoUrl: "https://www.youtube.com/watch?v=demo-morphy-opera",
-    caption: "Video complementario: Morphy y el desarrollo con amenaza.",
-    text: null as string | null,
-    gameId: null as string | null,
-    lessonId: null as string | null,
-    positionId: null as string | null,
-    movePath: null as string | null,
-  },
-];
+// The classes, their seats, the payments and the blocks live in prisma/seed-classes.ts.
 
 export const CLASS_TRANSCRIPT = {
   classId: IDS.classPast,
@@ -1246,7 +1184,7 @@ export const ACTIVITIES: SeedActivity[] = [
     id: "ac000000-0000-4000-8000-000000000009",
     type: ACTIVITY_TYPE.CLASS_ATTENDED,
     subjectType: SUBJECT_TYPE.CLASS,
-    subjectId: IDS.classPast,
+    subjectId: IDS.classDemoReview,
     topic: null,
     daysAgo: 60,
     meta: { nota: "clase anterior del ciclo" },
@@ -1289,7 +1227,7 @@ export const ACTIVITIES: SeedActivity[] = [
     id: "ac000000-0000-4000-8000-00000000000e",
     type: ACTIVITY_TYPE.CLASS_ATTENDED,
     subjectType: SUBJECT_TYPE.CLASS,
-    subjectId: IDS.classPast,
+    subjectId: IDS.classDemoDiagnosis,
     topic: null,
     daysAgo: 420,
   },

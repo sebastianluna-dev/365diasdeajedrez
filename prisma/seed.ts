@@ -15,23 +15,15 @@ import { PrismaClient, type Prisma } from "../lib/platform-db/generated/client";
 import { hashPassword } from "../lib/platform-auth/password";
 import { indexGamePositions } from "../services/game-positions/game-positions.service";
 import { syncChapterDuration } from "../services/shared/chapter-duration.service";
-import {
-  classMeetingColumns,
-  classScheduleColumns,
-  meetingProviderIds,
-} from "../services/shared/class-schedule.service";
-import { syncClassSeat } from "../services/shared/class-seats.service";
 import type { OrderUpdate, ReorderRow } from "../services/shared/reorder";
 import { rebuildDailyStats } from "../services/shared/daily-stats";
 import {
   ACTIVITIES,
   AUTHOR,
   buildAttempts,
-  buildClasses,
   buildProgress,
   CATALOG_VALUES,
   CONTENT_TYPE_VALUES,
-  CLASS_BLOCKS,
   CLASS_TRANSCRIPT,
   COURSES,
   GAME_DATABASES,
@@ -48,8 +40,9 @@ import {
 import { nextClassAfter, planSeededOrders, resolveCollectionIds, seedReferenceDate } from "./seed-rules";
 import { proposeUserSlug } from "../services/shared/user-slug.service";
 import { seedPlay } from "./seed-play";
+import { buildClassSchedule, CLASS_BLOCKS, CLASSMATE_ASSIGNMENTS, DEMO_CLASSMATES, seedClasses } from "./seed-classes";
+import { createDefaultStudy } from "../services/studies/default-study";
 import { AUTHOR_ROLE } from "../constants/platform/course-codes.const";
-import { CLASS_FORMAT } from "../constants/platform/class-codes.const";
 
 const connectionString = process.env.PLATFORM_DATABASE_URL;
 if (!connectionString) throw new Error("Falta PLATFORM_DATABASE_URL en el entorno (ver .env.example).");
@@ -217,7 +210,7 @@ async function main() {
   // --- Users, author, teacher ----------------------------------------------
   // The password is only set when the account has none yet: that way a re-seed
   // does not revert one that was changed with `npm run user:password`.
-  for (const user of USERS) {
+  for (const user of [...USERS, ...DEMO_CLASSMATES]) {
     const existing = await db.user.findUnique({
       where: { email: user.email },
       select: { passwordHash: true },
@@ -254,19 +247,39 @@ async function main() {
     create: STAFF,
   });
 
-  // Example teacher↔student assignment. The update does NOT touch endedAt on
-  // purpose: if it was closed from the panel, the re-seed does not reopen it (and
+  // Example teacher↔student assignments. The update does NOT touch endedAt on
+  // purpose: if one was closed from the panel, the re-seed does not reopen it (and
   // the partial index teacher_student_one_active would reject a second active one).
-  await db.teacherStudent.upsert({
-    where: { id: TEACHER_STUDENT.id },
-    update: {
-      teacherId: TEACHER_STUDENT.teacherId,
-      studentId: TEACHER_STUDENT.studentId,
-      assignedBy: TEACHER_STUDENT.assignedBy,
-      note: TEACHER_STUDENT.note,
-    },
-    create: TEACHER_STUDENT,
-  });
+  const assignments = [
+    TEACHER_STUDENT,
+    ...CLASSMATE_ASSIGNMENTS.map((assignment) => ({
+      ...assignment,
+      teacherId: IDS.teacher,
+      assignedBy: IDS.staffUser,
+      note: "Asignación de ejemplo creada por el seed.",
+    })),
+  ];
+  for (const assignment of assignments) {
+    await db.teacherStudent.upsert({
+      where: { id: assignment.id },
+      update: {
+        teacherId: assignment.teacherId,
+        studentId: assignment.studentId,
+        assignedBy: assignment.assignedBy,
+        note: assignment.note,
+      },
+      create: assignment,
+    });
+  }
+
+  // Each classmate gets the study every enrolled account has, once.
+  for (const user of DEMO_CLASSMATES) {
+    const study = await db.gameDatabase.findFirst({
+      where: { userId: user.id, isDefault: true },
+      select: { id: true },
+    });
+    if (!study) await db.$transaction((tx) => createDefaultStudy(tx, user.id));
+  }
 
   // --- Courses → chapters → lessons → exercises ----------------------------
   for (const course of COURSES) {
@@ -540,57 +553,9 @@ async function main() {
   }
 
   // --- Classes -------------------------------------------------------------
-  // The seed is the documented exception to the single writers (docs/ →
-  // Platform → Data model): the facts of a class — its topic, date, status,
-  // marks — are written as data, by fixed id, so re-seeding moves the dates
-  // without writing a «reschedule»; the derived columns come from the same
-  // pure functions the writers spread; and the seats go through their writer.
-  const providerIds = await meetingProviderIds(db);
-  const classes = buildClasses(now);
-  for (const cls of classes) {
-    const classData = {
-      teacherId: cls.teacherId,
-      formatId: idOf(classFormat, CLASS_FORMAT.INDIVIDUAL),
-      capacity: null,
-      title: cls.title,
-      description: cls.description,
-      ...classScheduleColumns(cls.scheduledAt, cls.durationMin),
-      statusId: idOf(classStatus, cls.status),
-      ...classMeetingColumns({ meetingUrl: cls.meetingUrl, visibleFromChosen: cls.meetingUrlVisibleFrom }, providerIds),
-      recordingUrl: cls.recordingUrl,
-      summary: cls.summary,
-      createdById: IDS.staffUser,
-    };
-    await db.class.upsert({
-      where: { id: cls.id },
-      update: classData,
-      create: { id: cls.id, ...classData },
-    });
-
-    // The demo student's seat, only if it is missing: the writer keeps the
-    // payment's invariant for the demo too.
-    const seat = await db.classParticipant.findUnique({
-      where: { classId_userId: { classId: cls.id, userId: IDS.demoUser } },
-      select: { userId: true },
-    });
-    if (!seat) {
-      await db.$transaction((tx) =>
-        syncClassSeat(tx, {
-          classId: cls.id,
-          studentId: IDS.demoUser,
-          coverage: "unpaid",
-          addedById: IDS.staffUser,
-          mode: "add",
-        }),
-      );
-    }
-    // The mark is a fact: a past class was attended, a future one has no list yet.
-    const isPast = cls.scheduledAt < now;
-    await db.classParticipant.update({
-      where: { classId_userId: { classId: cls.id, userId: IDS.demoUser } },
-      data: { attended: isPast ? true : null },
-    });
-  }
+  // The payments, the classes, their seats and their marks (prisma/seed-classes.ts).
+  await seedClasses(db, now, { status: classStatus, format: classFormat });
+  const classes = buildClassSchedule(now);
 
   // The teacher may have reordered, added or deleted the blocks of a seeded
   // class; the ones the seed does not own are kept, as with the exercises.

@@ -85,13 +85,14 @@ They are restored onto an empty or test database with `pg_restore --no-owner --d
 
 ## Access to the platform
 
-The private area (`/inicio`, `/clases`, `/estudios`, `/cursos`, `/lecciones` (the old lesson URLs, which redirect), `/ajustes`, `/entrenador`, `/explorador`, `/jugar` (with `/jugar/partida-libre`, `/jugar/aventura`, `/jugar/aventura/[adventureSlug]` and its games) and `/perfil` (both behind `PLAY_ENABLED`, off; the cover of `/jugar` and the adventure's shelf and map need `ADVENTURE_ENABLED` too, off), `/herramientas` (behind `ANALYSIS_BOARD_ENABLED`, off), `/profesor`, `/administracion`) requires signing in at `/iniciar-sesion`. The seed leaves three test accounts ready with the password `ajedrez365` (or the one in `PLATFORM_DEMO_PASSWORD`); it is only assigned to accounts that do not have a password yet, so a re-seed never reverts a change made by hand:
+The private area (`/inicio`, `/clases`, `/estudios`, `/cursos`, `/lecciones` (the old lesson URLs, which redirect), `/ajustes`, `/entrenador`, `/explorador`, `/jugar` (with `/jugar/partida-libre`, `/jugar/aventura`, `/jugar/aventura/[adventureSlug]` and its games) and `/perfil` (both behind `PLAY_ENABLED`, off; the cover of `/jugar` and the adventure's shelf and map need `ADVENTURE_ENABLED` too, off), `/herramientas` (behind `ANALYSIS_BOARD_ENABLED`, off), `/profesor`, `/administracion`) requires signing in at `/iniciar-sesion`. The seed leaves eight test accounts ready with the password `ajedrez365` (or the one in `PLATFORM_DEMO_PASSWORD`); it is only assigned to accounts that do not have a password yet, so a re-seed never reverts a change made by hand:
 
-| Account                              | Role                 | What they see beyond the student's view |
-| ------------------------------------ | -------------------- | --------------------------------------- |
-| `alumno.demo@365diasdeajedrez.com`   | Student              | —                                       |
-| `profesor.demo@365diasdeajedrez.com` | Teacher              | `/profesor/*`                           |
-| `staff.demo@365diasdeajedrez.com`    | Administrator/Editor | `/administracion/*`                     |
+| Account                                                                                                       | Role                         | What they see beyond the student's view |
+| ------------------------------------------------------------------------------------------------------------- | ---------------------------- | --------------------------------------- |
+| `alumno.demo@365diasdeajedrez.com`                                                                            | Student                      | —                                       |
+| `profesor.demo@365diasdeajedrez.com`                                                                          | Teacher                      | `/profesor/*`                           |
+| `staff.demo@365diasdeajedrez.com`                                                                             | Administrator/Editor         | `/administracion/*`                     |
+| `valentina.demo@…`, `mateo.demo@…`, `diego.demo@…`, `lucia.demo@…`, `andrea.demo@…` (`@365diasdeajedrez.com`) | Students of the classes demo | —                                       |
 
 **There is no public sign-up**: in an academy a student exists because somebody enrols them. The administration team does it from `/administracion/alumnos/nuevo`, which generates a temporary password and shows it once (there is no email service). `npm run user:create` still exists as an alternative route from the command line.
 
