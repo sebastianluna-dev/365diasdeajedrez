@@ -72,7 +72,6 @@ const POSITION: ClassBlockView = {
   caption: "Juegan las blancas: ¿cómo construyen el puente?",
   position: { fen: "1K1k4/1P6/8/8/8/8/r7/2R5 w - - 0 1", orientation: "white", title: "Lucena" },
 };
-const FILE: ClassBlockView = { id: "b6", kind: "FILE", visibility: "AFTER", caption: "Ejercicios para la semana" };
 
 const meta = {
   title: "platform/shared/ClassContentRenderer",
@@ -81,11 +80,14 @@ const meta = {
     docs: {
       description: {
         component: `
-A class's material, block by block in its order, each drawn by its kind: text
-(a line that starts with «## » is a subheading), a video and a file as link
-cards, a game and a lesson inside \`GameViewer\` with a link to open them in
-full, and a position as a \`StaticDiagram\`. The chess blocks are references to
-the original material, not copies.
+A class's material, block by block in its order, each an article with the
+icon of its kind, its heading and its lead: text (a line that starts with
+«## » is a subheading), a video as a link out, a game and a lesson inside
+\`GameViewer\` — the game with its players and result, and with its next moves
+hidden when its study says so — with a link to open them in full, and a
+position as a \`StaticDiagram\`. The chess blocks are references to the
+original material, not copies. A block added after the class started wears
+«Nuevo»; \`groups="byVisibility"\` folds the blocks by who sees them.
 
 Source: \`components/platform/shared/class-content-renderer/class-content-renderer.comp.tsx\`.
 Reference page: [Components › ClassContentRenderer](/components/platform/shared/class-content-renderer) in the docs site.
@@ -93,9 +95,10 @@ Reference page: [Components › ClassContentRenderer](/components/platform/share
       },
     },
   },
-  args: { blocks: [TEXT, VIDEO, GAME, LESSON_REF, POSITION, FILE] },
+  args: { blocks: [TEXT, VIDEO, GAME, LESSON_REF, POSITION], groups: "none" },
   argTypes: {
     blocks: { control: "object", description: "`ClassBlockView[]` from `services/classes/classes.types`, in order." },
+    groups: { control: "inline-radio", options: ["none", "byVisibility"] },
   },
   decorators: [
     (Story) => (
@@ -146,5 +149,51 @@ export const Lesson: Story = { args: { blocks: [LESSON_REF] } };
 /** A position, as a static diagram with its caption. */
 export const Position: Story = { args: { blocks: [POSITION] } };
 
-/** A video and a file, as link cards. */
-export const VideoAndFile: Story = { name: "Video and file", args: { blocks: [VIDEO, FILE] } };
+/** A video, as a link out: the arrow, and «(se abre en una pestaña nueva)» for a screen reader. */
+export const Video: Story = { args: { blocks: [VIDEO] } };
+
+/** A game with its record: the players' strips and the result around the board, and the next moves hidden. */
+export const GameWithPlayers: Story = {
+  name: "Game with players",
+  args: {
+    blocks: [
+      {
+        ...GAME,
+        title: "La partida que comentamos",
+        game: {
+          ...GAME.game,
+          players: {
+            white: { name: "Morphy, Paul", country: "USA" },
+            black: { name: "Duke Karl / Count Isouard", country: "FRA" },
+          },
+          result: "1-0",
+          conceal: true,
+          pinnedComment: "¿Qué jugarías tú por las blancas?",
+        },
+      },
+    ],
+  },
+};
+
+/** A block added after the class started: «Nuevo» beside its heading. */
+export const NewBlock: Story = { name: "New block", args: { blocks: [{ ...TEXT, isNew: true }] } };
+
+/** A lesson the block cited and that no longer exists. */
+export const MissingLesson: Story = {
+  name: "Missing lesson",
+  args: { blocks: [{ ...LESSON_REF, lesson: { ...LESSON_REF.lesson, missing: true } }] },
+};
+
+/** Folded by visibility, as the staff's sheet reads a class: to prepare, after the class, and the script folded. */
+export const ByVisibility: Story = {
+  name: "By visibility",
+  args: {
+    groups: "byVisibility",
+    blocks: [
+      TEXT,
+      LESSON_REF,
+      { ...GAME, visibility: "AFTER" },
+      { id: "b7", kind: "TEXT", visibility: "TEACHER", text: "Preguntas para abrir: ¿por qué 5...a6?" },
+    ],
+  },
+};

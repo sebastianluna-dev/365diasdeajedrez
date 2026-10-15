@@ -24,11 +24,28 @@ export interface ClassesView {
   past: ClassSummary[];
 }
 
-/** When a block reaches the students: to prepare, after the class, or never (the teacher's script). */
+/** A player of a game seen in class, for the strips around the board. */
+export interface ClassGamePlayer {
+  name: string;
+  elo?: number;
+  title?: string;
+  /** FIDE's three-letter federation code. */
+  country?: string;
+}
+
+/**
+ * What every block carries: its visibility (to prepare, after the class, or
+ * never: the teacher's script), and, filled by the mapper of phase 7 and
+ * optional until then, its own title and whether it is new.
+ */
 interface ClassBlockBase {
   id: string;
   caption?: string;
   visibility: ClassBlockVisibilityCode;
+  /** The block's heading; without one, the kind's own word or the material's name. */
+  title?: string;
+  /** Added after the class started and less than a week ago (`isNewClassBlock`): the «Nuevo» mark. */
+  isNew?: boolean;
 }
 
 export type ClassBlockView =
@@ -37,7 +54,20 @@ export type ClassBlockView =
   | (ClassBlockBase & {
       kind: "GAME_REF";
       /** `href` only when the game lives in a study; the transcribed one has nowhere to open. */
-      game: { id: string; label: string; pgn: string; href?: string; movePath?: string };
+      game: {
+        id: string;
+        label: string;
+        pgn: string;
+        href?: string;
+        movePath?: string;
+        /** The strips around the board and the result, when the game's record has them. */
+        players?: { white: ClassGamePlayer; black: ClassGamePlayer };
+        result?: string;
+        orientation?: "white" | "black";
+        /** The study's «Ocultar los siguientes movimientos»: the next moves come out as the reader steps. */
+        conceal?: boolean;
+        pinnedComment?: string;
+      };
     })
   | (ClassBlockBase & {
       kind: "LESSON_REF";
@@ -49,6 +79,8 @@ export type ClassBlockView =
         orientation: "white" | "black";
         href: string;
         movePath?: string;
+        /** The lesson the block cited is gone: the block says so instead of drawing it. */
+        missing?: boolean;
       };
     })
   | (ClassBlockBase & {

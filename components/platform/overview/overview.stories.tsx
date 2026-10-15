@@ -1831,7 +1831,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 onSelectPly={() => {}}
               />
             </Tile>
-            <Tile name="ClassContentRenderer" docs="platform-shared-classcontentrenderer" width={400} height={272}>
+            <Tile name="ClassContentRenderer" docs="platform-shared-classcontentrenderer" width={400} height={420}>
               <ClassContentRenderer
                 blocks={[
                   {
