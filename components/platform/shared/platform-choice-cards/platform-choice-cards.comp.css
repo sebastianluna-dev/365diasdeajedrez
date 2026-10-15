@@ -101,6 +101,37 @@
     color: var(--platform-text-muted);
   }
 
+  /* A row of narrow cells for options that are a word or a figure: as many
+     as fit at 72px, the label centred and regular, the mark smaller and
+     tucked in the corner so the cell stays narrow. */
+  &.platform-choice-cards_layout_line {
+    grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+    gap: var(--platform-space-2);
+  }
+
+  &.platform-choice-cards_layout_line .platform-choice-cards__card {
+    align-items: center;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-3) var(--platform-space-4);
+    text-align: center;
+  }
+
+  &.platform-choice-cards_layout_line .platform-choice-cards__mark {
+    top: 6px;
+    right: 6px;
+    width: 14px;
+    height: 14px;
+  }
+
+  &.platform-choice-cards_layout_line .platform-choice-cards__card[data-state="checked"] .platform-choice-cards__mark {
+    border-width: 4px;
+  }
+
+  &.platform-choice-cards_layout_line .platform-choice-cards__label {
+    font-size: var(--platform-type-md);
+    font-weight: 600;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     & .platform-choice-cards__mark {
       transition: none;

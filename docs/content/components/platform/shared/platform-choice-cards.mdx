@@ -6,14 +6,14 @@ description: "One choice among a few, each drawn as a card, on Radix's RadioGrou
 
 Also exports the type `PlatformChoiceCardOption`.
 
-|            |                                                                                   |
-| ---------- | --------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/platform-choice-cards/platform-choice-cards.comp.tsx` |
-| Kind       | Client Component                                                                  |
-| Stylesheet | `platform-choice-cards.comp.css` → block `.platform-choice-cards`                 |
-| Story      | `platform-choice-cards.stories.tsx` (`platform/shared/PlatformChoiceCards`)       |
-| Used by    | [`NewStudy`](/components/platform/sections/studies/studies-list/new-study)        |
-| Uses       | `RadioGroup` from `radix-ui`                                                      |
+|            |                                                                                                                                                                                                                       |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-choice-cards/platform-choice-cards.comp.tsx`                                                                                                                                     |
+| Kind       | Client Component                                                                                                                                                                                                      |
+| Stylesheet | `platform-choice-cards.comp.css` → block `.platform-choice-cards`                                                                                                                                                     |
+| Story      | `platform-choice-cards.stories.tsx` (`platform/shared/PlatformChoiceCards`): the kinds of a study, labels alone, a line of figures, a line with a cell that cannot be chosen, and a required line with nothing chosen |
+| Used by    | [`NewStudy`](/components/platform/sections/studies/studies-list/new-study)                                                                                                                                            |
+| Uses       | `RadioGroup` from `radix-ui`                                                                                                                                                                                          |
 
 ## Purpose
 
@@ -21,17 +21,18 @@ When a choice has two to four options and each deserves a line of explanation, a
 
 ## Props
 
-| Prop              | Type                         | Required | Meaning                                                                                                                                                                      |
-| ----------------- | ---------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `options`         | `PlatformChoiceCardOption[]` | yes      | `{ value, label, meta?, description?, icon? }` per card, in order. `meta` is a short fact between the label and the description (a range, a figure). The icon is decorative. |
-| `name`            | `string`                     | no       | Name of the hidden native radio.                                                                                                                                             |
-| `value`           | `string`                     | no       | Controlled value.                                                                                                                                                            |
-| `defaultValue`    | `string`                     | no       | Initial choice. Give one whenever the group is `required`.                                                                                                                   |
-| `onValueChange`   | `(value: string) => void`    | no       | Called with the new value.                                                                                                                                                   |
-| `required`        | `boolean`                    | no       |                                                                                                                                                                              |
-| `disabled`        | `boolean`                    | no       |                                                                                                                                                                              |
-| `aria-labelledby` | `string`                     | no       | Id of the element that names the group. `PlatformFormGroup` sets it.                                                                                                         |
-| `aria-label`      | `string`                     | no       | A name when there is no visible label.                                                                                                                                       |
+| Prop              | Type                         | Required | Meaning                                                                                                                                                                                                                                                                                                             |
+| ----------------- | ---------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `options`         | `PlatformChoiceCardOption[]` | yes      | `{ value, label, meta?, description?, icon? }` per card, in order. `meta` is a short fact between the label and the description (a range, a figure). The icon is decorative.                                                                                                                                        |
+| `name`            | `string`                     | no       | Name of the hidden native radio.                                                                                                                                                                                                                                                                                    |
+| `value`           | `string`                     | no       | Controlled value.                                                                                                                                                                                                                                                                                                   |
+| `defaultValue`    | `string`                     | no       | Initial choice. Give one whenever the group is `required`.                                                                                                                                                                                                                                                          |
+| `onValueChange`   | `(value: string) => void`    | no       | Called with the new value.                                                                                                                                                                                                                                                                                          |
+| `layout`          | `"stacked" \| "line"`        | no       | `stacked` (default): label, meta and description piled up, as many columns as fit. `line` (2026-10-15): a row of narrow cells for options that are a word or a figure — «1 · 2 · 4 · 8 · Otra», «Asistió · Faltó» —, as many as fit at 72px, each its label centred and regular, with a smaller mark in the corner. |
+| `required`        | `boolean`                    | no       | With `required` and no `defaultValue`, the form that holds the group will not submit until one is chosen: give [`PlatformFormGroup`](/components/platform/shared/platform-form#platformformgroup) a `valueMissing`, or the refusal is silent.                                                                       |
+| `disabled`        | `boolean`                    | no       |                                                                                                                                                                                                                                                                                                                     |
+| `aria-labelledby` | `string`                     | no       | Id of the element that names the group. `PlatformFormGroup` sets it.                                                                                                                                                                                                                                                |
+| `aria-label`      | `string`                     | no       | A name when there is no visible label.                                                                                                                                                                                                                                                                              |
 
 ## Behaviour
 
@@ -42,7 +43,9 @@ When a choice has two to four options and each deserves a line of explanation, a
 
 ## Markup & styling
 
-Block `.platform-choice-cards`, a grid of `repeat(auto-fit, minmax(150px, 1fr))`: as many cards per row as fit, one column on a phone.
+Block `.platform-choice-cards` (140 lines), a grid of `repeat(auto-fit, minmax(150px, 1fr))`: as many cards per row as fit, one column on a phone.
+
+**Modifiers and states:** `.platform-choice-cards_layout_line` on the block: `repeat(auto-fit, minmax(72px, 1fr))` with the scale's `space-2` gap; each card centres its label (`type-md`, 600) with `space-3`/`space-4` padding, and its mark shrinks to 14px in the corner (a 4px ring when chosen).
 
 **Elements:** `.platform-choice-cards__card`, `.platform-choice-cards__mark`, `.platform-choice-cards__icon`, `.platform-choice-cards__label`, `.platform-choice-cards__meta`, `.platform-choice-cards__description`
 

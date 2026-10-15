@@ -113,6 +113,15 @@
     height: 1lh;
   }
 
+  /* What has to be written first (the reason, the note): the form's fields,
+     one under the other, hung under the description like the rest. */
+  & .platform-confirm-popup__fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+    margin-left: calc(44px + var(--platform-space-4));
+  }
+
   /* What one has to agree to: a box on the canvas's grey with a danger
      border, the whole of it the label. The muted grey, since it is a fill. */
   & .platform-confirm-popup__acknowledgement {

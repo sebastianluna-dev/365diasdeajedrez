@@ -22,6 +22,11 @@ interface PlatformCheckCardsProps {
    * columns, and each card's text on a single line, the meta beside the label.
    */
   layout?: "stacked" | "line";
+  /**
+   * Cards a filter took off the screen: they stay mounted, `hidden`, so a
+   * chosen one that the filter does not show is still sent with the form.
+   */
+  hiddenValues?: readonly string[];
   disabled?: boolean;
   /** Id of the element that names the group, usually a `PlatformFormGroup` label. */
   "aria-labelledby"?: string;
@@ -54,6 +59,7 @@ function CheckCards({
   defaultValue,
   onValueChange,
   layout = "stacked",
+  hiddenValues,
   disabled,
   ...labelling
 }: PlatformCheckCardsProps) {
@@ -83,6 +89,7 @@ function CheckCards({
           // A card of its own can be ruled out while the group's rule says so
           // (see `reachableLevels`), with the group still working.
           disabled={disabled || option.disabled}
+          hidden={hiddenValues?.includes(option.value)}
           className="platform-check-cards__card"
         >
           <Checkbox.Indicator className="platform-check-cards__mark" forceMount>

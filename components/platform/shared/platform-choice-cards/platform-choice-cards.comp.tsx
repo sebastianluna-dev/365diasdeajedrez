@@ -22,6 +22,13 @@ interface PlatformChoiceCardsProps {
   options: PlatformChoiceCardOption[];
   /** The name of the hidden native radio that carries the value in the form. */
   name?: string;
+  /**
+   * `stacked` (default) piles label, meta and description in as many columns
+   * as fit. `line` is for options that are a word or a figure — «1 · 2 · 4 ·
+   * 8 · Otra», «Asistió · Faltó» —: a row of narrow cells, as many as fit,
+   * each its label centred, with a smaller mark in the corner.
+   */
+  layout?: "stacked" | "line";
   value?: string;
   defaultValue?: string;
   onValueChange?: (value: string) => void;
@@ -43,9 +50,15 @@ interface PlatformChoiceCardsProps {
  * a save that changed it, it starts again from what was saved instead of going
  * back, on the form's reset, to what it showed when the page was loaded.
  */
-export function PlatformChoiceCards({ options, ...rootProps }: PlatformChoiceCardsProps) {
+export function PlatformChoiceCards({ options, layout = "stacked", ...rootProps }: PlatformChoiceCardsProps) {
   return (
-    <RadioGroup.Root key={savedValueKey(rootProps.defaultValue)} className="platform-choice-cards" {...rootProps}>
+    <RadioGroup.Root
+      key={savedValueKey(rootProps.defaultValue)}
+      className={
+        layout === "line" ? "platform-choice-cards platform-choice-cards_layout_line" : "platform-choice-cards"
+      }
+      {...rootProps}
+    >
       {options.map((option) => (
         <RadioGroup.Item key={option.value} value={option.value} className="platform-choice-cards__card">
           {/* Drawn from the card's own `data-state`: a ring that thickens, the

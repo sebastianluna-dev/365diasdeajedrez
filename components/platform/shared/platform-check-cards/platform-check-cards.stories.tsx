@@ -87,3 +87,18 @@ export const LabelsOnly: Story = {
     defaultValue: ["OPENINGS"],
   },
 };
+
+/** Filtered: two cards a search took off the screen stay mounted and hidden, and the chosen one among them is still sent. */
+export const Filtered: Story = {
+  args: {
+    options: [
+      { value: "valentina", label: "Valentina Cruz" },
+      { value: "mateo", label: "Mateo Ríos" },
+      { value: "diego", label: "Diego Salas" },
+      { value: "andrea", label: "Andrea López" },
+    ],
+    defaultValue: ["mateo"],
+    hiddenValues: ["mateo", "andrea"],
+    "aria-label": "Alumnos",
+  },
+};

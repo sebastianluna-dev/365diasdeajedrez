@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within } from "storybook/test";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
+import { PlatformChoiceCards } from "@/components/platform/shared/platform-choice-cards/platform-choice-cards.comp";
 import { PlatformForm, PlatformFormField, PlatformFormGroup } from "./platform-form.comp";
 
 interface FormArgs {
@@ -172,4 +173,48 @@ export const OptionalGroup: Story = {
       </PlatformFormGroup>
     </PlatformForm>
   ),
+};
+
+const COUNTS = [
+  { value: "1", label: "1" },
+  { value: "2", label: "2" },
+  { value: "4", label: "4" },
+  { value: "8", label: "8" },
+];
+
+/** A group with a message from the server under it: `serverError` renders it and marks the group invalid. */
+export const GroupServerError: Story = {
+  name: "Group with server error",
+  render: () => (
+    <PlatformForm>
+      <PlatformFormGroup
+        label="Clases"
+        serverError="Entre las clases con fecha y las cubiertas hay 5, y el pago es de 4."
+      >
+        <PlatformChoiceCards layout="line" options={COUNTS} defaultValue="4" name="classCount" />
+      </PlatformFormGroup>
+    </PlatformForm>
+  ),
+};
+
+/** A required group submitted with nothing chosen: the browser's bubble is replaced by the message under the group. */
+export const GroupValueMissing: Story = {
+  name: "Group with value missing",
+  render: () => (
+    <PlatformForm onSubmit={(event) => event.preventDefault()}>
+      <PlatformFormGroup label="Clases" valueMissing="Elige cuántas clases cubre el pago.">
+        <PlatformChoiceCards layout="line" options={COUNTS} name="classCount" required />
+      </PlatformFormGroup>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button type="submit" className="platform-button">
+          Registrar pago
+        </button>
+      </div>
+    </PlatformForm>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "Registrar pago" }));
+    await expect(canvas.getByText("Elige cuántas clases cubre el pago.")).toBeVisible();
+  },
 };

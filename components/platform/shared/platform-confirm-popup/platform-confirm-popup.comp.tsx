@@ -2,10 +2,12 @@
 
 import { useId, useImperativeHandle, useRef, useState, type Ref } from "react";
 import { Checkbox } from "radix-ui";
+import { BanIcon } from "@/components/icons/ban-icon.comp";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
 import { CircleMinusIcon } from "@/components/icons/circle-minus-icon.comp";
 import { TrashCanIcon } from "@/components/icons/trash-can-icon.comp";
 import { TriangleExclamationIcon } from "@/components/icons/triangle-exclamation-icon.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import "./platform-confirm-popup.comp.css";
 
@@ -37,16 +39,43 @@ export interface PlatformConfirmAcknowledgement {
   label: string;
 }
 
-/** The two verbs a confirmation asks with: «Eliminar» destroys, «Quitar» takes out of where it is. */
-export type PlatformConfirmVerb = "Eliminar" | "Quitar";
+/**
+ * The three verbs a confirmation asks with: «Eliminar» destroys, «Quitar»
+ * takes out of where it is, «Cancelar» closes a class for good (history, not
+ * destruction: the seats go back to their payments).
+ */
+export type PlatformConfirmVerb = "Eliminar" | "Quitar" | "Cancelar";
+
+/** A field the confirmation asks to fill before acting: the reason of a cancellation. */
+export interface PlatformConfirmField {
+  name: string;
+  label: string;
+  required?: boolean;
+  maxLength?: number;
+  hint?: string;
+  placeholder?: string;
+}
 
 export interface PlatformConfirmPopupProps {
   /**
    * «Eliminar» (the default) destroys: the bin, and a warning that it cannot
    * be undone. «Quitar» takes something out of where it is: the minus, and no
-   * warning unless `note` gives one.
+   * warning unless `note` gives one. «Cancelar» closes a class: the ban sign,
+   * and the warning that another class is the way to give it another day.
    */
   verb?: PlatformConfirmVerb;
+  /**
+   * What the way out says. «Cancelar» by default; with the verb «Cancelar»
+   * it is «Volver», so the two buttons never say the same word.
+   */
+  exitLabel?: string;
+  /**
+   * What has to be written before confirming — the reason of a cancellation,
+   * the note the students read —, each a `PlatformFormField` with a
+   * textarea. With fields the form is a `PlatformForm`: the browser holds a
+   * required one empty, or one too long, before anything is sent.
+   */
+  fields?: PlatformConfirmField[];
   /** What is destroyed or taken out, by its name: the title reads «¿{verb} «{subject}»?». */
   subject: string;
   /**
@@ -90,11 +119,19 @@ export interface PlatformConfirmPopupProps {
 const NOTES: Record<PlatformConfirmVerb, string | null> = {
   Eliminar: "Esta acción no se puede deshacer.",
   Quitar: null,
+  Cancelar: "No se puede deshacer: para darla otro día, crea otra clase.",
 };
 
 const PENDING_LABELS: Record<PlatformConfirmVerb, string> = {
   Eliminar: "Eliminando…",
   Quitar: "Quitando…",
+  Cancelar: "Cancelando…",
+};
+
+const ICONS: Record<PlatformConfirmVerb, typeof TrashCanIcon> = {
+  Eliminar: TrashCanIcon,
+  Quitar: CircleMinusIcon,
+  Cancelar: BanIcon,
 };
 
 /**
@@ -118,6 +155,8 @@ const PENDING_LABELS: Record<PlatformConfirmVerb, string> = {
  */
 export function PlatformConfirmPopup({
   verb = "Eliminar",
+  exitLabel,
+  fields,
   subject,
   title,
   description,
@@ -157,7 +196,10 @@ export function PlatformConfirmPopup({
   // something to agree to, and the button waits for it.
   const blocked = acknowledgement !== undefined && !acknowledged;
   const warning = note === undefined ? NOTES[verb] : note;
-  const Icon = verb === "Eliminar" ? TrashCanIcon : CircleMinusIcon;
+  const Icon = ICONS[verb];
+  const exit = exitLabel ?? (verb === "Cancelar" ? "Volver" : "Cancelar");
+  // With fields the form validates them before sending; without, a plain form is enough.
+  const Shell = fields && fields.length > 0 ? PlatformForm : "form";
 
   /**
    * The form's action: the one given, then the closing. A redirecting action
@@ -186,7 +228,7 @@ export function PlatformConfirmPopup({
         onClose?.();
       }}
     >
-      <form action={submit} className="platform-confirm-popup__form">
+      <Shell action={submit} className="platform-confirm-popup__form">
         <div className="platform-confirm-popup__head">
           <span className="platform-confirm-popup__icon" aria-hidden="true">
             <Icon variant="duotone-solid" className="platform-confirm-popup__icon-glyph" />
@@ -222,6 +264,21 @@ export function PlatformConfirmPopup({
           </p>
         )}
 
+        {fields && fields.length > 0 && (
+          <div className="platform-confirm-popup__fields">
+            {fields.map((field) => (
+              <PlatformFormField key={field.name} name={field.name} label={field.label} hint={field.hint}>
+                <textarea
+                  rows={3}
+                  required={field.required}
+                  maxLength={field.maxLength}
+                  placeholder={field.placeholder}
+                />
+              </PlatformFormField>
+            ))}
+          </div>
+        )}
+
         {acknowledgement && (
           <label htmlFor={checkId} className="platform-confirm-popup__acknowledgement">
             {/* The box IS the field the server requires: the primitive's hidden
@@ -244,7 +301,7 @@ export function PlatformConfirmPopup({
 
         <div className="platform-confirm-popup__foot">
           <button type="button" className="platform-button" onClick={() => dialogRef.current?.close()}>
-            Cancelar
+            {exit}
           </button>
           <SubmitButton
             className="platform-button platform-button_variant_danger"
@@ -254,7 +311,7 @@ export function PlatformConfirmPopup({
             {confirmLabel}
           </SubmitButton>
         </div>
-      </form>
+      </Shell>
     </dialog>
   );
 }

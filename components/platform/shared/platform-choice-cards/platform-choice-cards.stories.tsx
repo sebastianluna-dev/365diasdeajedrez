@@ -34,6 +34,7 @@ Reference page: [Components › PlatformChoiceCards](/components/platform/shared
     options: { control: "object", description: "Value, label and one-line description per card." },
     defaultValue: { control: "select", options: KINDS.map((kind) => kind.value), description: "Initial choice." },
     disabled: { control: "boolean" },
+    layout: { control: "inline-radio", options: ["stacked", "line"], description: "`line`: a row of narrow cells." },
   },
   decorators: [
     (Story) => (
@@ -53,4 +54,38 @@ export const Default: Story = {};
 /** Two cards without descriptions: the label alone. */
 export const LabelsOnly: Story = {
   args: { options: KINDS.slice(0, 2).map(({ value, label }) => ({ value, label })), defaultValue: "TOURNAMENT" },
+};
+
+const COUNTS = [
+  { value: "1", label: "1" },
+  { value: "2", label: "2" },
+  { value: "4", label: "4" },
+  { value: "8", label: "8" },
+  { value: "other", label: "Otra" },
+];
+
+/** `layout="line"`: a row of narrow cells for options that are a figure («¿Cuántas clases?»), one chosen. */
+export const Line: Story = {
+  args: { layout: "line", options: COUNTS, defaultValue: "4", "aria-label": "Clases" },
+};
+
+/** A line with a cell that cannot be chosen: offered, greyed, skipped by the arrows. */
+export const LineWithDisabled: Story = {
+  name: "Line with disabled",
+  args: {
+    layout: "line",
+    options: [
+      { value: "yes", label: "Asistió" },
+      { value: "no", label: "Faltó" },
+      { value: "moved", label: "Reprogramada", disabled: true },
+    ],
+    defaultValue: "yes",
+    "aria-label": "Asistencia",
+  },
+};
+
+/** Required and nothing chosen yet: every mark is an empty ring; the form that holds it will not submit until one is. */
+export const RequiredUnanswered: Story = {
+  name: "Required, unanswered",
+  args: { layout: "line", options: COUNTS, defaultValue: undefined, required: true, "aria-label": "Clases" },
 };

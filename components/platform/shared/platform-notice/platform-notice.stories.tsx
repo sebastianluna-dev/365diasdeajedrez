@@ -25,7 +25,7 @@ Reference page: [Components › PlatformNotice](/components/platform/shared/plat
   args: { message: STAFF_ERROR_MESSAGES.deleteBlocked ?? "", variant: "error" },
   argTypes: {
     message: { control: "text", description: "The text, already translated by the page." },
-    variant: { control: "inline-radio", options: ["error", "success", "info"] },
+    variant: { control: "inline-radio", options: ["error", "success", "info", "warning"] },
   },
   decorators: [
     (Story) => (
@@ -48,4 +48,12 @@ export const Success: Story = { args: { message: "Cuenta creada.", variant: "suc
 /** Information: a PGN import that brought in less than the file had, in the importer's own words. */
 export const Info: Story = {
   args: { message: pgnImportNotice({ imported: 498, skippedEmpty: 2, overLimit: 0 }), variant: "info" },
+};
+
+/** A warning about the page, read where it is (no live role): the teacher without a time zone of their own. */
+export const Warning: Story = {
+  args: {
+    message: "Sin zona horaria configurada: las horas se muestran en la de la academia (Ciudad de México).",
+    variant: "warning",
+  },
 };

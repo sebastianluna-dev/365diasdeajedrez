@@ -252,6 +252,14 @@ function TextareaFrame({ label, info, children }: TextareaFrameProps) {
 
 interface PlatformFormGroupProps {
   label: string;
+  /** A failure the server reported for this group, shown as its message. */
+  serverError?: string;
+  /**
+   * What to say when the group is required and nothing was chosen on submit.
+   * Without it, a required group of cards blocks the form in silence: the
+   * browser's bubble goes to the hidden native radio, which nobody sees.
+   */
+  valueMissing?: string;
   /**
    * The group may be left with nothing chosen (a set of check cards with no
    * minimum): it gets «Opcional» beside its label. Said here because a group
@@ -266,15 +274,41 @@ interface PlatformFormGroupProps {
 /**
  * A field whose control is a group, not one element: a `<label>` cannot name
  * a radio group, so the label is plain text and the control is pointed at it
- * with `aria-labelledby`. Same look as a field; no validity messages, because
- * a group with a default is never invalid.
+ * with `aria-labelledby`. Same look as a field. Its messages are two: what
+ * the server said (`serverError`), and `valueMissing` when a required group
+ * was submitted with nothing chosen — heard on the `invalid` event the hidden
+ * native control fires, in capture, since the event does not bubble — until
+ * the next change.
  */
-export function PlatformFormGroup({ label, optional = false, children: control, hint }: PlatformFormGroupProps) {
+export function PlatformFormGroup({
+  label,
+  optional = false,
+  children: control,
+  hint,
+  serverError,
+  valueMissing,
+}: PlatformFormGroupProps) {
   const labelId = useId();
+  const messageId = useId();
   const children = useResolvedElement(control);
+  const [missing, setMissing] = useState(false);
+  const message = serverError ?? (missing ? valueMissing : undefined);
 
   return (
-    <div role="group" aria-labelledby={labelId} className="platform-form__field">
+    <div
+      role="group"
+      aria-labelledby={labelId}
+      aria-describedby={message ? messageId : undefined}
+      className="platform-form__field"
+      data-invalid={message ? "" : undefined}
+      onInvalidCapture={(event) => {
+        if (!valueMissing) return;
+        // The browser's bubble would point at a hidden control: the message under the group says it instead.
+        event.preventDefault();
+        setMissing(true);
+      }}
+      onChangeCapture={() => setMissing(false)}
+    >
       <div className="platform-form__label-row">
         <span id={labelId} className="platform-form__label">
           {label}
@@ -283,6 +317,11 @@ export function PlatformFormGroup({ label, optional = false, children: control, 
       </div>
       {cloneElement(children, { "aria-labelledby": labelId })}
       {hint && <span className="platform-form__hint">{hint}</span>}
+      {message && (
+        <span id={messageId} className="platform-form__message" role="alert">
+          {message}
+        </span>
+      )}
     </div>
   );
 }

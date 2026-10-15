@@ -24,6 +24,8 @@ interface ConfirmArgs {
   settles: boolean;
   /** Whether it is opened over a popup, as from a form's foot, or alone, as from a card. */
   stacked: boolean;
+  /** Fields to fill before confirming: the reason of a cancellation. */
+  withFields: boolean;
 }
 
 /** A confirmation behind its trigger; stacked, the trigger is the red word at the foot of a popup. */
@@ -37,6 +39,7 @@ function ConfirmSample({
   confirmLabel,
   settles,
   stacked,
+  withFields,
 }: ConfirmArgs) {
   const popup = useRef<PlatformPopupHandle>(null);
   const confirm = useRef<PlatformConfirmPopupHandle>(null);
@@ -50,6 +53,20 @@ function ConfirmSample({
       description={description}
       consequences={consequences}
       acknowledgement={acknowledgement ? { name: "confirmDelete", label: acknowledgement } : undefined}
+      fields={
+        withFields
+          ? [
+              {
+                name: "reason",
+                label: "Motivo",
+                required: true,
+                maxLength: 300,
+                hint: "Lo ve el profesor, no el alumno.",
+              },
+              { name: "note", label: "Nota para los alumnos", maxLength: 300 },
+            ]
+          : undefined
+      }
       action={action}
       confirmLabel={confirmLabel}
       onDone={() => popup.current?.close()}
@@ -135,6 +152,7 @@ Reference page: [Components › PlatformConfirmPopup](/components/platform/share
     },
   },
   args: {
+    withFields: false,
     verb: "Eliminar",
     subject: "Finales de torres",
     title: "",
@@ -229,5 +247,26 @@ export const CancelKeepsPopup: Story = {
     await openStacked({ canvasElement });
     // The popup beneath has a «Cancelar» of its own: the confirmation's is the one.
     await userEvent.click(within(confirmationOf(canvasElement)).getByRole("button", { name: "Cancelar" }));
+  },
+};
+
+/**
+ * «Cancelar»: the ban sign, the note that another class is the way to give it another day, «Cancelando…», and the
+ * way out says «Volver», never the same word as the button. With a reason to write first, which the browser requires.
+ */
+export const CancelWithReason: Story = {
+  name: "Cancelar with reason",
+  args: {
+    verb: "Cancelar",
+    subject: "Táctica de la semana",
+    title: "¿Cancelar la clase «Táctica de la semana»?",
+    description: "Diego Salas pierde la fecha; su clase pagada vuelve a su pago, por programar.",
+    consequences: ["El profesor la deja de ver en su día.", "Lo preparado se conserva en la clase cancelada."],
+    acknowledgement: "",
+    confirmLabel: "Cancelar la clase",
+    withFields: true,
+  },
+  play: async ({ canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole("button", { name: "Cancelar la clase" }));
   },
 };
