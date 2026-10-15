@@ -1,59 +1,36 @@
 ---
-description: "The teacher's home: three counters, today's classes, the next seven days, the classes still to document (attendance or summary missing) and the three main actions."
+description: "The teacher's panel (PROF-1): the next class with how to join it, the classes that wait to be finalized with «Finalizar» on each row, and this week by day; the section hands the finalizing action down."
 ---
 
 # `TeacherDashboardSection`
 
-|            |                                                                                                                        |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/teacher/dashboard/teacher-dashboard.section.tsx`                                         |
-| Kind       | Server Component (async)                                                                                               |
-| Stylesheet | `teacher-dashboard.section.css` → block `.teacher-dashboard`                                                           |
-| Used by    | `/profesor`                                                                                                            |
-| Composes   | [`LocalDateTime`](/components/platform/shared/local-datetime), [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads      | `getTeacherDashboard()` · `services/teacher/teacher.service.ts`                                                        |
-| Uses       | `teacherRoutes` from `lib/platform-routes`; `TeacherClassBrief` from `services/teacher/teacher.types`                  |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/dashboard/teacher-dashboard.section.tsx`                                                                                                                                                                                                                                                                                                                          |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                        |
+| Stylesheet | `teacher-dashboard.section.css` → block `.teacher-dashboard`                                                                                                                                                                                                                                                                                                                                            |
+| Used by    | `/profesor`                                                                                                                                                                                                                                                                                                                                                                                             |
+| Composes   | [`ClassDateTile`](/components/platform/shared/class-date-tile), [`ClassStatusTag`](/components/platform/shared/class-status-tag), [`MeetingJoinCard`](/components/platform/shared/meeting-join-card) (`full`, teacher), [`ClassRow`](/components/platform/shared/class-row), [`ClassAgenda`](/components/platform/shared/class-agenda), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Reads      | `TeacherDashboard` from `getTeacherDashboard()` · `services/teacher/teacher.service.ts`                                                                                                                                                                                                                                                                                                                 |
+| Writes     | `finalizeClass()` · `services/teacher-classes/teacher-classes.actions.ts` — imported here and handed to the rows as a prop                                                                                                                                                                                                                                                                              |
 
 ## Purpose
 
-What a teacher needs on arrival: what I have today, what is coming, and what I still have to document. No analytics. The "Pendientes de documentar" card is the useful one: classes already held whose attendance or summary is missing, each tagged with what is missing, so nothing stays half-recorded.
+What the teacher does first: enter the next class, finalize the ones that ended, prepare the week's. Nothing is created here: the dates, the students and the links are the staff's (the page says so under the greeting). The page draws the head («Hola, GM Profesor Demo. Hoy tienes 3 clases.») and, with the link open, the [`ClassJoinBar`](/components/platform/shared/class-join-bar) beside the page.
 
 ## Props
 
-This component takes no props. The page opens with `requireTeacher()`; the service reads the teacher's classes and assignments.
-
-## Behaviour
-
-- Three metric cards: classes today, classes in the next seven days, active assigned students.
-- Three lists (`today`, `upcoming`, `pending`) rendered by the local `ClassRow` (title linked, local date and time, duration, participant count, status tag). The pending list uses a date-only `LocalDateTime` and adds "Falta asistencia" / "Falta resumen" tags from `needsAttendance` and `needsSummary`.
-- Empty texts are inline for the first two; the pending card uses an [`EmptyState`](/components/platform/shared/empty-state) ("Todo al día").
-- Footer buttons link to new class, students and all classes.
+| Prop                     | Type               | Required | Meaning                                    |
+| ------------------------ | ------------------ | -------- | ------------------------------------------ |
+| `dashboard`              | `TeacherDashboard` | yes      | `next`, `awaitingClose`, `week`, the zone. |
+| `notice`, `errorMessage` | `string`           | no       | What the address said, in words.           |
 
 ## Markup & styling
 
-Block `.teacher-dashboard` (83 lines).
+Block `.teacher-dashboard` (122 lines): the next class as a card — the tile, the tag, the title, the people, the chips as a line, the join card and «Preparar la clase» —, the groups with their heading, the rows, and «Ver todas mis clases».
 
-**Elements:** `.teacher-dashboard__metrics`, `.teacher-dashboard__metric`, `.teacher-dashboard__metric-value`, `.teacher-dashboard__metric-label`, `.teacher-dashboard__list`, `.teacher-dashboard__class`, `.teacher-dashboard__class-title`, `.teacher-dashboard__class-meta`, `.teacher-dashboard__empty`, `.teacher-dashboard__actions`
+**Elements:** `.teacher-dashboard__eyebrow`, `.teacher-dashboard__next`, `.teacher-dashboard__next-body`, `.teacher-dashboard__next-text`, `.teacher-dashboard__next-title`, `.teacher-dashboard__next-people`, `.teacher-dashboard__next-chips`, `.teacher-dashboard__next-actions`, `.teacher-dashboard__group`, `.teacher-dashboard__group-title`, `.teacher-dashboard__rows`, `.teacher-dashboard__row`, `.teacher-dashboard__note`, `.teacher-dashboard__empty`, `.teacher-dashboard__all`, `.teacher-dashboard__all-link`, `.teacher-dashboard__all-icon`
 
-No modifiers.
+**Breakpoints:** `(width < 640px)`.
 
-**Other classes it renders:** `.platform-card`, `.platform-card__title`, `.platform-tag`, `.platform-button`.
-
-**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-font`, `--platform-text`, `--platform-text-muted`
-
-**Breakpoints:** `(width < 1024px)` stacks the metrics.
-
-## Usage
-
-From `app/(platform)/profesor/page.tsx`:
-
-```tsx
-import { TeacherDashboardSection } from "@/components/platform/sections/teacher/dashboard/teacher-dashboard.section";
-
-<TeacherDashboardSection />;
-```
-
-## Related
-
-- [`TeacherClassesSection`](/components/platform/sections/teacher/classes/teacher-classes-section), [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section) (where attendance and summary are recorded).
-- [Teacher & staff panels](/platform/teacher-and-staff).
+**Tokens:** `--platform-shadow-card`, `--platform-text`, `--platform-text-muted`

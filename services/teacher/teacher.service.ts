@@ -1,89 +1,89 @@
+import { academyWhatsappHref } from "@/constants/platform/academy-contact.const";
 import { CLASS_STATUS } from "@/constants/platform/class-codes.const";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { requireTeacher } from "@/lib/platform-auth/roles";
-import { formatSpanishDate } from "@/lib/format-spanish-date";
-import { teacherRoutes } from "@/lib/platform-routes";
-import { classTitleOf } from "@/services/classes/classes.mapper";
-import { mapTeacherClassBrief, teacherClassBriefInclude } from "./teacher.mapper";
-import type { TeacherDashboard, TeacherPendingClass, TeacherProfile } from "./teacher.types";
+import { dayRangeIn } from "@/lib/timezone";
+import { mapTeacherClassRow, teacherJoinData, teacherPhaseOf } from "@/services/teacher-classes/teacher-classes.mapper";
+import { teacherClassSelect, teacherZone, toTeacherSource } from "@/services/teacher-classes/teacher-classes.service";
+import { groupTeacherWeek } from "./teacher.mapper";
+import type { TeacherDashboard, TeacherProfile } from "./teacher.types";
 
 // Services of the teacher panel. Identity and role ALWAYS through
 // requireTeacher() (never an id coming from the client) and the authorisation
 // goes inside the `where`: there is no "read and then check".
 
-const UPCOMING_WINDOW_DAYS = 7;
-const PENDING_LIMIT = 8;
+const WEEK_DAYS = 7;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
-function startOfDay(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-}
-
+/**
+ * The panel (PROF-1): the next class with how to join it, the classes that
+ * ended and wait to be finalized, and this week by day — all cut in the
+ * teacher's zone (D7), the academy's when they have none.
+ */
 export async function getTeacherDashboard(): Promise<TeacherDashboard> {
   const { teacher } = await requireTeacher();
   const db = getPlatformDb();
-
   const now = new Date();
-  const dayStart = startOfDay(now);
-  const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
-  const windowEnd = new Date(dayEnd.getTime() + UPCOMING_WINDOW_DAYS * 24 * 60 * 60 * 1000);
+  const zone = await teacherZone(teacher.id);
+  const timeZone = zone.timeZone;
+  const today = dayRangeIn(now, timeZone);
+  const weekEnd = new Date(today.start.getTime() + WEEK_DAYS * DAY_MS);
+  const notCancelled = { status: { code: { not: CLASS_STATUS.CANCELLED } } } as const;
 
-  const [todayRows, upcomingRows, activeStudentCount, pendingRows] = await Promise.all([
-    db.class.findMany({
-      where: { teacherId: teacher.id, scheduledAt: { gte: dayStart, lt: dayEnd } },
-      include: teacherClassBriefInclude,
+  const [nextRow, awaitingRows, weekRows, todayCount] = await Promise.all([
+    db.class.findFirst({
+      where: { teacherId: teacher.id, ...notCancelled, endsAt: { gte: now } },
+      select: { ...teacherClassSelect, description: true, meetingProvider: { select: { label: true } } },
       orderBy: { scheduledAt: "asc" },
     }),
     db.class.findMany({
-      where: { teacherId: teacher.id, scheduledAt: { gte: dayEnd, lt: windowEnd } },
-      include: teacherClassBriefInclude,
+      where: { teacherId: teacher.id, status: { code: CLASS_STATUS.SCHEDULED }, endsAt: { lt: now } },
+      select: teacherClassSelect,
+      orderBy: { endsAt: "asc" },
+    }),
+    db.class.findMany({
+      where: { teacherId: teacher.id, ...notCancelled, scheduledAt: { gte: today.start, lt: weekEnd } },
+      select: teacherClassSelect,
       orderBy: { scheduledAt: "asc" },
     }),
-    db.teacherStudent.count({ where: { teacherId: teacher.id, endedAt: null } }),
-    // "Pending": classes that ended and nobody finalized, and finished ones with
-    // a seat nobody marked or without a summary. It is the teacher's real work
-    // list after giving the class.
-    db.class.findMany({
-      where: {
-        teacherId: teacher.id,
-        OR: [
-          { status: { code: CLASS_STATUS.SCHEDULED }, endsAt: { lt: now } },
-          { status: { code: CLASS_STATUS.COMPLETED }, summary: null },
-          { status: { code: CLASS_STATUS.COMPLETED }, participants: { some: { attended: null, seatMovedAt: null } } },
-        ],
-      },
-      select: {
-        id: true,
-        title: true,
-        scheduledAt: true,
-        summary: true,
-        format: { select: { code: true } },
-        teacher: { select: { displayName: true } },
-        participants: {
-          where: { seatMovedAt: null },
-          select: { attended: true, user: { select: { displayName: true } } },
-        },
-      },
-      orderBy: { scheduledAt: "desc" },
-      take: PENDING_LIMIT,
+    db.class.count({
+      where: { teacherId: teacher.id, ...notCancelled, scheduledAt: { gte: today.start, lt: today.end } },
     }),
   ]);
-
-  const pending: TeacherPendingClass[] = pendingRows.map((row) => ({
-    id: row.id,
-    title: classTitleOf(row, "teacher"),
-    dateLabel: formatSpanishDate(row.scheduledAt),
-    scheduledAtIso: row.scheduledAt.toISOString(),
-    needsAttendance: row.participants.some((seat) => seat.attended === null),
-    needsSummary: row.summary === null || row.summary.trim().length === 0,
-    href: teacherRoutes.classDetail(row.id),
-  }));
+  const context = { now, timeZone, teacherName: teacher.displayName };
+  const next = nextRow
+    ? (() => {
+        const source = toTeacherSource(nextRow);
+        const row = mapTeacherClassRow(source, context);
+        return {
+          row,
+          join: teacherJoinData(
+            { ...source, providerLabel: nextRow.meetingProvider?.label ?? null },
+            teacherPhaseOf(source, now),
+            {
+              now,
+              timeZone,
+              whatsappHref: academyWhatsappHref(`Hola, soy ${teacher.displayName}. Sobre la clase «${row.title}»:`),
+            },
+          ),
+          description: nextRow.description,
+        };
+      })()
+    : null;
 
   return {
     displayName: teacher.displayName,
-    today: todayRows.map(mapTeacherClassBrief),
-    upcoming: upcomingRows.map(mapTeacherClassBrief),
-    activeStudentCount,
-    pending,
+    timeZone,
+    timeZoneMissing: zone.missing,
+    nowIso: now.toISOString(),
+    todayCount,
+    next,
+    awaitingClose: awaitingRows.map((row) => mapTeacherClassRow(toTeacherSource(row), context)),
+    week: groupTeacherWeek(
+      weekRows.map((row) => mapTeacherClassRow(toTeacherSource(row), context)),
+      timeZone,
+      now,
+    ),
   };
 }
 

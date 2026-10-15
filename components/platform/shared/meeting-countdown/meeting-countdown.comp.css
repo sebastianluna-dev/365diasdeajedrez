@@ -1,0 +1,12 @@
+/* The countdown: the line as its host styles it, and the live region, which
+   says its words to a screen reader without being seen. */
+.meeting-countdown {
+  & .meeting-countdown__live {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}

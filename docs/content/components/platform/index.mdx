@@ -159,24 +159,25 @@ description: "Index of components/platform: the shared primitives and every sect
 
 ## `sections/teacher/` — `/profesor`
 
-| Page                                                                                                              | Kind   | What it is                                                    |
-| ----------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------- |
-| [`TeacherDashboardSection`](/components/platform/sections/teacher/dashboard/teacher-dashboard-section)            | server | Today, the week, classes still to document.                   |
-| [`TeacherProfileSection`](/components/platform/sections/teacher/profile/teacher-profile-section)                  | server | Name, title, bio, photo, time zone.                           |
-| [`AssignedStudentsSection`](/components/platform/sections/teacher/students/assigned-students-section)             | server | Active assignments, searchable.                               |
-| [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section)  | server | A student's progress, read-only.                              |
-| [`StudentStudyViewSection`](/components/platform/sections/teacher/students/student-study-view-section)            | server | A student's study seen by the teacher.                        |
-| [`StudentGameViewSection`](/components/platform/sections/teacher/students/student-game-view-section)              | server | A student's game with "Usar en una clase".                    |
-| [`TeacherClassesSection`](/components/platform/sections/teacher/classes/teacher-classes-section)                  | server | The teacher's classes by status.                              |
-| [`ClassFormSection`](/components/platform/sections/teacher/classes/class-form-section)                            | server | Create or edit a class's metadata.                            |
-| [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section)         | server | Transitions, participants, attendance, block editor, preview. |
-| [`AttendanceForm`](/components/platform/sections/teacher/classes/attendance-form)                                 | server | One checkbox per participant.                                 |
-| [`ClassBlockEditor`](/components/platform/sections/teacher/classes/class-block-editor/class-block-editor)         | client | The class content editor.                                     |
-| [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form)                        | client | The fields of one block by kind.                              |
-| [`GameSelector`](/components/platform/sections/teacher/classes/class-block-editor/game-selector)                  | client | Referenceable games grouped by owner.                         |
-| [`LessonReferenceField`](/components/platform/sections/teacher/classes/class-block-editor/lesson-reference-field) | client | A lesson by id, previewed as validation.                      |
-| [`PositionSelector`](/components/platform/sections/teacher/classes/class-block-editor/position-selector)          | client | The teacher's saved diagrams.                                 |
-| [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker)             | client | Picks a block's opening position in the viewer.               |
+| Page                                                                                                              | Kind   | What it is                                                 |
+| ----------------------------------------------------------------------------------------------------------------- | ------ | ---------------------------------------------------------- |
+| [`TeacherDashboardSection`](/components/platform/sections/teacher/dashboard/teacher-dashboard-section)            | server | The next class, the ones to finalize, the week.            |
+| [`TeacherProfileSection`](/components/platform/sections/teacher/profile/teacher-profile-section)                  | server | Name, title, bio, photo, time zone.                        |
+| [`AssignedStudentsSection`](/components/platform/sections/teacher/students/assigned-students-section)             | server | Active assignments, searchable.                            |
+| [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section)  | server | A student's progress, read-only.                           |
+| [`StudentStudyViewSection`](/components/platform/sections/teacher/students/student-study-view-section)            | server | A student's study seen by the teacher.                     |
+| [`StudentGameViewSection`](/components/platform/sections/teacher/students/student-game-view-section)              | server | A student's game with "Usar en una clase".                 |
+| [`TeacherClassesSection`](/components/platform/sections/teacher/classes/teacher-classes-section)                  | server | «Clases que imparto» by view, with «Ver más».              |
+| [`TeacherClassesSearch`](/components/platform/sections/teacher/classes/teacher-classes-search)                    | client | The search that replaces the address.                      |
+| [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section)         | server | The material by section, and the lane.                     |
+| [`ClassBlockList`](/components/platform/sections/teacher/classes/class-block-list)                                | client | The blocks by section, sortable, as the student sees them. |
+| [`BlockPopup`](/components/platform/sections/teacher/classes/class-block-editor/block-popup)                      | client | «Agregar un bloque» / «Editar el bloque».                  |
+| [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form)                        | client | The fields of one block by kind.                           |
+| [`GameSelector`](/components/platform/sections/teacher/classes/class-block-editor/game-selector)                  | client | Referenceable games grouped by owner.                      |
+| [`LessonReferenceField`](/components/platform/sections/teacher/classes/class-block-editor/lesson-reference-field) | client | A lesson by id, previewed as validation.                   |
+| [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker)             | client | Picks a block's opening position in the viewer.            |
+| [`TopicPopup`](/components/platform/sections/teacher/classes/topic-popup)                                         | client | «Editar el tema».                                          |
+| [`AfterNotesPopup`](/components/platform/sections/teacher/classes/after-notes-popup)                              | client | The summary and the recording, after the class.            |
 
 ## `sections/staff/` — `/administracion`
 

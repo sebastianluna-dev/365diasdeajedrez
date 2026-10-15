@@ -1,0 +1,41 @@
+---
+description: "How a class is joined, for whoever reads it: «Entrar a la clase» while the link is open, the countdown, the link to copy; before it opens, when; without one, that the staff will add it; three densities."
+---
+
+# `MeetingJoinCard`
+
+|            |                                                                                                                                                                                                                                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/meeting-join-card/meeting-join-card.comp.tsx` (also `meeting-join-card.types.ts`: `MeetingJoinData`)                                                                                                                                                                                                            |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                            |
+| Stylesheet | `meeting-join-card.comp.css` → block `.meeting-join`                                                                                                                                                                                                                                                                                        |
+| Story      | `meeting-join-card.stories.tsx` (`platform/shared/MeetingJoinCard`): student open, teacher open, staff open, upcoming, in progress, after end, closed, no link, compact, bar                                                                                                                                                                |
+| Used by    | [`TeacherDashboardSection`](/components/platform/sections/teacher/dashboard/teacher-dashboard-section) (`full`), [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section) (`compact`), [`ClassJoinBar`](/components/platform/shared/class-join-bar) (`bar`); the student's pages (phase 7) |
+| Composes   | [`MeetingCountdown`](/components/platform/shared/meeting-countdown), [`CopyLinkButton`](/components/platform/shared/copy-link-button)                                                                                                                                                                                                       |
+| Uses       | `meetingJoinState` (exported here), `formatClassHours`                                                                                                                                                                                                                                                                                      |
+
+## Purpose
+
+One piece for the three roles: the services map a class to `MeetingJoinData` — the link as the reader may see it (null for the student until the server lets it through), whether a link exists, the platform, the instants — and the card decides what to draw from `meetingJoinState`: `none` (no link: «El enlace todavía no está. Administración lo agregará antes de la clase.» and «Escríbenos» to the academy's WhatsApp), `waiting` («Zoom · el enlace se abre a las 11:30 · …»), `open`, `live` and `tail` («Entrar a la clase», or «Volver a entrar» from the end to half an hour after, with the countdown and «Copiar el enlace»), `closed` («La clase terminó a las 13:00.»). The staff only copies. «Entrar a la clase» opens in a new tab and says so to a screen reader.
+
+## Props
+
+| Prop               | Type                                                                                                                         | Required | Meaning                                                      |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------ |
+| `…MeetingJoinData` | `{ phase, meetingUrl, hasLink, providerLabel, startIso, endIso, visibleFromIso, untilIso, nowIso, timeZone, whatsappHref? }` | yes      | What the class is, as the service mapped it for this reader. |
+| `audience`         | `"student" \| "teacher" \| "staff"`                                                                                          | yes      | The staff gets no button.                                    |
+| `density`          | `"full" \| "compact" \| "bar"`                                                                                               | no       | A page's card (default), a lane's row, the fixed bar.        |
+
+## Markup & styling
+
+Block `.meeting-join` (81 lines): the button and the text beside or under it; `_density_full` stacks them, `_density_compact` shrinks the line, `_density_bar` puts the words left and the button right on one line.
+
+**Elements:** `.meeting-join__enter`, `.meeting-join__text`, `.meeting-join__line`, `.meeting-join__whatsapp`, `.meeting-join__whatsapp-icon`, `.meeting-join__sr`
+
+**Modifiers:** `.meeting-join_density_full`, `.meeting-join_density_compact`, `.meeting-join_density_bar`, `.meeting-join_state_<state>`
+
+**Tokens:** `--platform-text`, `--platform-text-muted`
+
+## Related
+
+- [Classes](/platform/classes), «The meeting link».

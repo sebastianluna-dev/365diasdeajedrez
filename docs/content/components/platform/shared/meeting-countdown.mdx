@@ -1,0 +1,33 @@
+---
+description: "How long until the class, in words that follow the clock, with a live region for the changes that matter; it asks the server for the page again at the instants the class changes phase."
+---
+
+# `MeetingCountdown`
+
+|            |                                                                                                                                                                                         |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/meeting-countdown/meeting-countdown.comp.tsx` (also `use-meeting-countdown.hook.ts`, `use-refresh-at-instants.hook.ts`, `meeting-refresh.ts` with its test) |
+| Kind       | Client Component                                                                                                                                                                        |
+| Stylesheet | `meeting-countdown.comp.css` → block `.meeting-countdown`                                                                                                                               |
+| Story      | `meeting-countdown.stories.tsx` (`platform/shared/MeetingCountdown`): far ahead, soon, started                                                                                          |
+| Used by    | [`MeetingJoinCard`](/components/platform/shared/meeting-join-card)                                                                                                                      |
+| Uses       | `formatClassHours` (`lib/format-class-when.ts`), `meetingRefreshDelay`                                                                                                                  |
+
+## Purpose
+
+The only client leaf of a join card. It ticks («Empieza en 20 min», «La clase ya empezó · termina a las 13:00», «La clase terminó a las 13:00.»), says the changes that matter in a live region («Faltan 5 minutos», «El enlace ya está disponible», «La clase ya empezó»), and — since the link never travels ahead of time — asks the router for the page again at each instant the class changes phase (`useRefreshAtInstants`: when the link opens, when the class starts, ends, and when the link closes), every minute while the class runs, and, when the link should be there and is not, again with a wait that grows each time (`meetingRefreshDelay`, moved here from the student's `MeetingAccess` on 2026-10-15).
+
+## Props
+
+| Prop                         | Type             | Required | Meaning                                                                                                 |
+| ---------------------------- | ---------------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| `startIso`, `endIso`         | `string`         | yes      |                                                                                                         |
+| `visibleFromIso`, `untilIso` | `string \| null` | yes      | When the link opens and when it stops being offered; null without a link.                               |
+| `hasLink`                    | `boolean`        | yes      | The page was read with the link at hand (the retry is for when it should be and is not).                |
+| `nowIso`, `timeZone`         | `string`         | yes      | The instant the page was read — the server and the browser draw the same words — and the reader's zone. |
+
+## Markup & styling
+
+Block `.meeting-countdown` (12 lines): the line as its host styles it, and the live region, hidden.
+
+**Elements:** `.meeting-countdown__line`, `.meeting-countdown__live`

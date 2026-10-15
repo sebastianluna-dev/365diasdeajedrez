@@ -1,13 +1,12 @@
 import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
+  "block-popup": "BlockPopup",
   "block-form": "BlockForm",
   "block-game-field": "BlockGameField",
-  "class-block-editor": "ClassBlockEditor",
   "game-selector": "GameSelector",
   "lesson-reference-field": "LessonReferenceField",
   "move-path-picker": "MovePathPicker",
-  "position-selector": "PositionSelector",
 };
 
 export default meta;

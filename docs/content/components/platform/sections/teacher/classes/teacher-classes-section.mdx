@@ -1,60 +1,36 @@
 ---
-description: "The teacher's classes as three PlatformTables (today, upcoming, past) behind a status filter that lives in the URL, plus the 'Crear una clase' button."
+description: "«Clases que imparto»: the four views as pills, the search, and the rows — the past ones as a table above 640px —, twenty at a time with «Ver más»."
 ---
 
 # `TeacherClassesSection`
 
-|            |                                                                                                                              |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/teacher/classes/teacher-classes.section.tsx`                                                   |
-| Kind       | Server Component (async)                                                                                                     |
-| Stylesheet | `teacher-classes.section.css` → block `.teacher-classes`                                                                     |
-| Used by    | `/profesor/clases`                                                                                                           |
-| Composes   | [`PlatformTable`](/components/platform/shared/platform-table), [`LocalDateTime`](/components/platform/shared/local-datetime) |
-| Reads      | `getTeacherClasses(statusCode)` · `services/teacher-classes/teacher-classes.service.ts`                                      |
-| Uses       | `CLASS_STATUS`, `ClassStatusCode` from `constants/platform/class-codes.const`; `teacherRoutes` from `lib/platform-routes`    |
-
-## Purpose
-
-"Mis clases" for a teacher. The status filter is a row of links (`?status=`), so it is shareable and the back button undoes it; the service applies it in the `where`. The result is then split into today, upcoming and past on the server, each in its own table with the same columns.
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/teacher-classes.section.tsx`                                                                                                                                                                                                                                                                                                                                                                                              |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Stylesheet | `teacher-classes.section.css` → block `.teacher-classes`                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Used by    | `/profesor/clases`                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Composes   | [`FilterPills`](/components/platform/shared/filter-pills), [`TeacherClassesSearch`](/components/platform/sections/teacher/classes/teacher-classes-search), [`ClassRow`](/components/platform/shared/class-row), [`PlatformTable`](/components/platform/shared/platform-table), [`ClassWhen`](/components/platform/shared/class-when), [`ClassStatusTag`](/components/platform/shared/class-status-tag), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Reads      | `TeacherClassesView` from `getTeacherClasses()` · `services/teacher-classes/teacher-classes.service.ts`                                                                                                                                                                                                                                                                                                                                                                 |
+| Writes     | `finalizeClass()` — imported here and handed to the rows as a prop                                                                                                                                                                                                                                                                                                                                                                                                      |
 
 ## Props
 
-| Prop         | Type              | Required | Meaning                                                |
-| ------------ | ----------------- | -------- | ------------------------------------------------------ |
-| `statusCode` | `ClassStatusCode` | no       | Filter from `?status=`, already validated by the page. |
+| Prop                     | Type                 | Required | Meaning                                                         |
+| ------------------------ | -------------------- | -------- | --------------------------------------------------------------- |
+| `view`                   | `TeacherClassesView` | yes      | The filters, the rows, the total and the count «Por finalizar». |
+| `notice`, `errorMessage` | `string`             | no       |                                                                 |
 
 ## Behaviour
 
-- `STATUS_FILTERS` renders "Todas", "Programadas", "En vivo", "Terminadas", "Canceladas" as links with `aria-current` on the active one.
-- The split uses the server's local midnight: `today` is within the current day, `upcoming` after it (reversed so the soonest is first), `past` before it. Being server time rather than the teacher's zone is a known approximation.
-- `ClassesTable` renders title (linked), local date and time, duration, participants, attended, status tag; `minWidth` 780. Each of the three takes its own `label` («Clases de hoy», «Próximas clases», «Clases pasadas»), the name of its scrolling box, so the three regions are told apart.
+«Próximas · Por finalizar · 1 · Pasadas · Canceladas», each a link that changes the address (`?vista=&q=&pagina=`); «Por finalizar» rows carry «Finalizar», which opens the popup in place. «Pasadas» is a `PlatformTable` (Fecha, Clase, Alumnos, Asistencia, Material) above 640px and `ClassRow` cards below it. «Ver más» adds a page of twenty.
 
 ## Markup & styling
 
-Block `.teacher-classes` (50 lines).
+Block `.teacher-classes` (71 lines): the bar, the cards, the past table above 640px and its cards below, «Ver más» with the count.
 
-**Elements:** `.teacher-classes__bar`, `.teacher-classes__filters`, `.teacher-classes__filter`, `.teacher-classes__group`, `.teacher-classes__group-title`
+**Elements:** `.teacher-classes__bar`, `.teacher-classes__empty`, `.teacher-classes__cards`, `.teacher-classes__card`, `.teacher-classes__past`, `.teacher-classes__past-table`, `.teacher-classes__past-cards`, `.teacher-classes__more`, `.teacher-classes__count`
 
-**Modifiers and states:** `.teacher-classes__filter_active`
+**Breakpoints:** `(width < 640px)`.
 
-**Other classes it renders:** `.platform-button`, `.platform-tag`.
-
-**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`
-
-No media queries; the tables scroll.
-
-## Usage
-
-From `app/(platform)/profesor/clases/page.tsx`:
-
-```tsx
-import { TeacherClassesSection } from "@/components/platform/sections/teacher/classes/teacher-classes.section";
-
-<TeacherClassesSection statusCode={toStatusCode(status)} />;
-```
-
-## Related
-
-- [`ClassFormSection`](/components/platform/sections/teacher/classes/class-form-section) (create), [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section).
-- The staff's global view: [`StaffClassesSection`](/components/platform/sections/staff/classes/staff-classes-section).
+**Tokens:** `--platform-surface`, `--platform-shadow-card`, `--platform-text-muted`

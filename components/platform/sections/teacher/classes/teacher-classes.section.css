@@ -1,7 +1,9 @@
+/* «Clases que imparto»: the pills and the search, then the rows as cards
+   or, for the past ones, a table above 640px. */
 .teacher-classes {
   display: flex;
   flex-direction: column;
-  gap: var(--platform-space-6);
+  gap: var(--platform-space-5);
 
   & .teacher-classes__bar {
     display: flex;
@@ -11,40 +13,59 @@
     gap: var(--platform-space-3);
   }
 
-  & .teacher-classes__filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--platform-space-2);
-  }
-
-  & .teacher-classes__filter {
-    padding: var(--platform-space-2) var(--platform-space-4);
-    border-radius: 1000px;
-    font-size: var(--platform-type-lg);
-    font-weight: 600;
+  & .teacher-classes__empty {
+    margin: 0;
+    padding: var(--platform-space-6);
+    border-radius: 8px;
+    background: var(--platform-surface);
     color: var(--platform-text-muted);
-    background: var(--platform-surface-neutral);
   }
 
-  & .teacher-classes__filter:hover {
-    color: var(--platform-text);
-  }
-
-  & .teacher-classes__filter_active {
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
-  }
-
-  & .teacher-classes__group {
+  & .teacher-classes__cards {
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-3);
+    gap: var(--platform-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
-  & .teacher-classes__group-title {
+  & .teacher-classes__card {
+    border-radius: 8px;
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .teacher-classes__past {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+  }
+
+  /* The table above 640px; the cards below it. */
+  & .teacher-classes__past-cards {
+    display: none;
+  }
+
+  & .teacher-classes__more {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-4);
     margin: 0;
-    font-size: var(--platform-type-xl);
-    font-weight: 700;
-    color: var(--platform-text);
+  }
+
+  & .teacher-classes__count {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  @media (width < 640px) {
+    & .teacher-classes__past-table {
+      display: none;
+    }
+
+    & .teacher-classes__past-cards {
+      display: flex;
+    }
   }
 }

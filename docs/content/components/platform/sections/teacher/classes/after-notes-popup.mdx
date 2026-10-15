@@ -1,0 +1,27 @@
+---
+description: "«Después de la clase»: the summary and the recording, both optional, once the class is done."
+---
+
+# `AfterNotesPopup`
+
+|            |                                                                                                                                                                                                                                                                                                                                                       |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/after-notes-popup/after-notes-popup.comp.tsx`                                                                                                                                                                                                                                                           |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                      |
+| Stylesheet | `after-notes-popup.comp.css` → block `.after-notes__form`                                                                                                                                                                                                                                                                                             |
+| Story      | `after-notes-popup.stories.tsx` (`platform/sections/teacher/classes/AfterNotesPopup`): open (`play`)                                                                                                                                                                                                                                                  |
+| Used by    | [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section) (`AfterNotesButton`, the lane's «Editar»)                                                                                                                                                                                                   |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup) (`md`), [`PlatformForm`, `PlatformFormField`](/components/platform/shared/platform-form), [`OptionalFields`](/components/platform/shared/optional-fields), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `updateClassAfterNotes` as a prop, the states of `services/shared/form-state.ts`, `withNoticeParam`                                                                                                                                                                                                                                                   |
+
+## Behaviour
+
+The [popup-form pattern](/conventions#server-actions): the fields open again with what was sent when the server refuses, and on success the address says `?aviso=afterNotesSaved`.
+
+## Markup & styling
+
+Block `.after-notes__form` (14 lines): a column with the foot over a hairline.
+
+**Elements:** `.after-notes__foot`
+
+**Tokens:** `--platform-track`

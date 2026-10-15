@@ -4,15 +4,15 @@ description: "Picks the opening position of a game or lesson block: fetches the 
 
 # `MovePathPicker`
 
-|            |                                                                                                         |
-| ---------- | ------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/teacher/classes/class-block-editor/move-path-picker.comp.tsx`             |
-| Kind       | Client Component                                                                                        |
-| Stylesheet | `move-path-picker.comp.css` → block `.move-path-picker`                                                 |
-| Used by    | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form)              |
-| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer)                                               |
-| Writes     | `fetchReferencePgn()` · `services/teacher-classes/teacher-classes.actions.ts` (a read behind an action) |
-| Uses       | `CLASS_BLOCK_KIND` from `constants/platform/class-codes.const`                                          |
+|            |                                                                                                                                                                         |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/class-block-editor/move-path-picker.comp.tsx`                                                                             |
+| Kind       | Client Component                                                                                                                                                        |
+| Stylesheet | `move-path-picker.comp.css` → block `.move-path-picker`                                                                                                                 |
+| Used by    | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form)                                                                              |
+| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer)                                                                                                               |
+| Uses       | `fetchReferencePgn` as a prop (`FetchReferencePgn`, exported here): the read behind an action, handed down since 2026-10-15 so the pieces with a story import no action |
+| Uses       | `CLASS_BLOCK_KIND` from `constants/platform/class-codes.const`                                                                                                          |
 
 ## Purpose
 

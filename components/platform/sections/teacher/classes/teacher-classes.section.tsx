@@ -1,125 +1,134 @@
 import Link from "next/link";
-import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
+import { ClassRow } from "@/components/platform/shared/class-row/class-row.comp";
+import { ClassStatusTag } from "@/components/platform/shared/class-status-tag/class-status-tag.comp";
+import { ClassWhen } from "@/components/platform/shared/class-when/class-when.comp";
+import { FilterPills } from "@/components/platform/shared/filter-pills/filter-pills.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import {
   PlatformTable,
   PlatformTableCell,
   PlatformTableRow,
 } from "@/components/platform/shared/platform-table/platform-table.comp";
-import { CLASS_STATUS, type ClassStatusCode } from "@/constants/platform/class-codes.const";
 import { teacherRoutes } from "@/lib/platform-routes";
-import { getTeacherClasses } from "@/services/teacher-classes/teacher-classes.service";
-import type { TeacherClassSummary } from "@/services/teacher-classes/teacher-classes.types";
+import { finalizeClass } from "@/services/teacher-classes/teacher-classes.actions";
+import type { TeacherClassesTab, TeacherClassesView } from "@/services/teacher-classes/teacher-classes.types";
+import { TeacherClassesSearch } from "./teacher-classes-search.comp";
 import "./teacher-classes.section.css";
 
 interface TeacherClassesSectionProps {
-  /** Filter by status; comes from searchParams and is applied in the `where`. */
-  statusCode?: ClassStatusCode;
+  view: TeacherClassesView;
+  notice?: string;
+  errorMessage?: string;
 }
 
-const STATUS_FILTERS: { label: string; code?: ClassStatusCode }[] = [
-  { label: "Todas" },
-  { label: "Programadas", code: CLASS_STATUS.SCHEDULED },
-  { label: "En vivo", code: CLASS_STATUS.LIVE },
-  { label: "Terminadas", code: CLASS_STATUS.COMPLETED },
-  { label: "Canceladas", code: CLASS_STATUS.CANCELLED },
+const TABS: { vista: TeacherClassesTab; label: string }[] = [
+  { vista: "proximas", label: "Próximas" },
+  { vista: "por-finalizar", label: "Por finalizar" },
+  { vista: "pasadas", label: "Pasadas" },
+  { vista: "canceladas", label: "Canceladas" },
 ];
 
-function ClassesTable({
-  label,
-  classes,
-  emptyLabel,
-}: {
-  label: string;
-  classes: TeacherClassSummary[];
-  emptyLabel: string;
-}) {
-  return (
-    <PlatformTable
-      label={label}
-      columns={[
-        "Clase",
-        "Fecha",
-        { label: "Duración", align: "right" },
-        { label: "Alumnos", align: "right" },
-        { label: "Asistieron", align: "right" },
-        "Estado",
-      ]}
-      emptyLabel={emptyLabel}
-      minWidth={780}
-    >
-      {classes.map((item) => (
-        <PlatformTableRow key={item.id}>
-          <PlatformTableCell strong>
-            <Link href={item.href}>{item.title}</Link>
-          </PlatformTableCell>
-          <PlatformTableCell>
-            <LocalDateTime iso={item.scheduledAtIso} fallback={`${item.dateLabel} · ${item.timeLabel}`} />
-          </PlatformTableCell>
-          <PlatformTableCell align="right">{item.durationMin} min</PlatformTableCell>
-          <PlatformTableCell align="right">{item.participantCount}</PlatformTableCell>
-          <PlatformTableCell align="right">{item.attendedCount}</PlatformTableCell>
-          <PlatformTableCell>
-            <span className="platform-tag">{item.statusLabel}</span>
-          </PlatformTableCell>
-        </PlatformTableRow>
-      ))}
-    </PlatformTable>
-  );
-}
-
-export async function TeacherClassesSection({ statusCode }: TeacherClassesSectionProps) {
-  const classes = await getTeacherClasses(statusCode);
-
-  const startOfToday = new Date();
-  startOfToday.setHours(0, 0, 0, 0);
-  const endOfToday = startOfToday.getTime() + 24 * 60 * 60 * 1000;
-
-  const today = classes.filter((item) => {
-    const at = new Date(item.scheduledAtIso).getTime();
-    return at >= startOfToday.getTime() && at < endOfToday;
-  });
-  const upcoming = classes.filter((item) => new Date(item.scheduledAtIso).getTime() >= endOfToday).reverse();
-  const past = classes.filter((item) => new Date(item.scheduledAtIso).getTime() < startOfToday.getTime());
+/**
+ * «Clases que imparto»: the four views as pills, the search, and the rows —
+ * «Pasadas» as a table above 640px and as cards below it (§2.4 of the plan)
+ * —, twenty at a time with «Ver más». A Server Component: it imports the
+ * finalizing action and hands it to the rows as a prop.
+ */
+export function TeacherClassesSection({ view, notice, errorMessage }: TeacherClassesSectionProps) {
+  const { filters, rows, total, page, pageSize, awaitingCloseCount, timeZone, nowIso } = view;
+  const serverActions = { finalize: finalizeClass };
+  const emptyLine =
+    filters.vista === "proximas"
+      ? "No tienes clases próximas."
+      : filters.vista === "por-finalizar"
+        ? "Nada por finalizar."
+        : filters.vista === "pasadas"
+          ? "Todavía no has dado ninguna clase."
+          : "No tienes clases canceladas.";
 
   return (
     <div className="teacher-classes">
+      {errorMessage && <PlatformNotice message={errorMessage} />}
+      {notice && <PlatformNotice message={notice} variant="success" />}
       <div className="teacher-classes__bar">
-        <nav className="teacher-classes__filters" aria-label="Filtrar por estado">
-          {STATUS_FILTERS.map((filter) => {
-            const href = filter.code ? `${teacherRoutes.classes}?status=${filter.code}` : teacherRoutes.classes;
-            const isActive = filter.code === statusCode;
-            return (
-              <Link
-                key={filter.label}
-                href={href}
-                aria-current={isActive ? "page" : undefined}
-                className={`teacher-classes__filter${isActive ? " teacher-classes__filter_active" : ""}`}
-              >
-                {filter.label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <Link href={teacherRoutes.newClass} className="platform-button">
-          Crear una clase
-        </Link>
+        <FilterPills
+          label="Vista"
+          pills={TABS.map((tab) => ({
+            label: tab.label,
+            href: teacherRoutes.classesFiltered({ vista: tab.vista, q: filters.q }),
+            active: tab.vista === filters.vista,
+            ...(tab.vista === "por-finalizar" && awaitingCloseCount > 0 ? { count: awaitingCloseCount } : {}),
+          }))}
+        />
+        <TeacherClassesSearch filters={filters} />
       </div>
 
-      <section className="teacher-classes__group">
-        <h2 className="teacher-classes__group-title">Hoy</h2>
-        <ClassesTable label="Clases de hoy" classes={today} emptyLabel="No tienes clases hoy." />
-      </section>
+      {rows.length === 0 ? (
+        <p className="teacher-classes__empty">{emptyLine}</p>
+      ) : filters.vista === "pasadas" ? (
+        <div className="teacher-classes__past">
+          <div className="teacher-classes__past-table">
+            <PlatformTable
+              label="Clases pasadas"
+              columns={["Fecha", "Clase", "Alumnos", "Asistencia", "Material"]}
+              minWidth={760}
+            >
+              {rows.map((row) => (
+                <PlatformTableRow key={row.id}>
+                  <PlatformTableCell>
+                    <ClassWhen
+                      startIso={row.startIso}
+                      durationMin={row.durationMin}
+                      timeZone={timeZone}
+                      nowIso={nowIso}
+                    />
+                  </PlatformTableCell>
+                  <PlatformTableCell strong>
+                    <Link href={row.href}>{row.title}</Link> <ClassStatusTag phase={row.phase} audience="teacher" />
+                  </PlatformTableCell>
+                  <PlatformTableCell>{row.studentsLabel}</PlatformTableCell>
+                  <PlatformTableCell>{row.attendanceLabel}</PlatformTableCell>
+                  <PlatformTableCell>{row.materialLabel}</PlatformTableCell>
+                </PlatformTableRow>
+              ))}
+            </PlatformTable>
+          </div>
+          <ul className="teacher-classes__cards teacher-classes__past-cards">
+            {rows.map((row) => (
+              <li key={row.id} className="teacher-classes__card">
+                <ClassRow row={row} audience="teacher" />
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <ul className="teacher-classes__cards">
+          {rows.map((row) => (
+            <li key={row.id} className="teacher-classes__card">
+              <ClassRow row={row} audience="teacher" serverActions={serverActions} />
+            </li>
+          ))}
+        </ul>
+      )}
 
-      <section className="teacher-classes__group">
-        <h2 className="teacher-classes__group-title">Próximas</h2>
-        <ClassesTable label="Próximas clases" classes={upcoming} emptyLabel="No tienes clases próximas." />
-      </section>
-
-      <section className="teacher-classes__group">
-        <h2 className="teacher-classes__group-title">Pasadas</h2>
-        <ClassesTable label="Clases pasadas" classes={past} emptyLabel="Todavía no has impartido ninguna clase." />
-      </section>
+      {rows.length < total && (
+        <p className="teacher-classes__more">
+          <Link
+            href={teacherRoutes.classesFiltered({ vista: filters.vista, q: filters.q, pagina: page + 1 })}
+            className="platform-button"
+          >
+            Ver más
+          </Link>
+          <span className="teacher-classes__count">
+            {rows.length} de {total}
+          </span>
+        </p>
+      )}
+      {rows.length >= total && total > pageSize && (
+        <p className="teacher-classes__count">
+          {total} clase{total === 1 ? "" : "s"}
+        </p>
+      )}
     </div>
   );
 }

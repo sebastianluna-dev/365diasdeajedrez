@@ -1,0 +1,21 @@
+/* The record's head: the phase above the title, the pen beside it, the
+   description under the subtitle. */
+.teacher-class-page {
+  & .teacher-class-page__tags {
+    display: flex;
+    gap: var(--platform-space-2);
+    margin: 0;
+  }
+
+  & .teacher-class-page__title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+  }
+
+  & .teacher-class-page__description {
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    color: var(--platform-text-muted);
+  }
+}

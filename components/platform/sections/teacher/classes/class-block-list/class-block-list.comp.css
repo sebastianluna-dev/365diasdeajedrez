@@ -1,0 +1,177 @@
+/* The material as the teacher edits it: three sections, each a list of rows
+   with the grip, the folded block and its menu, and what can be added at
+   the foot. «Ver como alumno» shows the student's render instead. */
+.class-block-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-6);
+
+  & .class-block-list__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-3);
+  }
+
+  & .class-block-list__title {
+    margin: 0;
+    font-size: var(--platform-type-xl);
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .class-block-list__band {
+    margin: 0 0 var(--platform-space-4);
+    padding: var(--platform-space-3) var(--platform-space-4);
+    border-radius: 8px;
+    background: var(--platform-accent-wash);
+    font-size: var(--platform-type-md);
+    font-weight: 600;
+    color: var(--platform-accent-ink);
+  }
+
+  & .class-block-list__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+  }
+
+  & .class-block-list__section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--platform-space-2) var(--platform-space-3);
+  }
+
+  & .class-block-list__section-title {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-block-list__section-note {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .class-block-list__rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .class-block-list__row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: start;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-2) var(--platform-space-3);
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface);
+  }
+
+  & .class-block-list__row_state_dragging {
+    position: relative;
+    z-index: 1;
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .class-block-list__grip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: none;
+    color: var(--platform-text-muted);
+    cursor: grab;
+    touch-action: none;
+  }
+
+  & .class-block-list__grip:hover {
+    color: var(--platform-text);
+  }
+
+  & .class-block-list__grip:focus-visible {
+    outline: 2px solid var(--platform-accent-ink);
+    outline-offset: 2px;
+  }
+
+  & .class-block-list__grip svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  & .class-block-list__block {
+    min-width: 0;
+  }
+
+  & .class-block-list__summary {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    min-height: 32px;
+    cursor: pointer;
+    list-style: none;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text);
+  }
+
+  & .class-block-list__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  & .class-block-list__summary:focus-visible {
+    outline: 2px solid var(--platform-accent-ink);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  & .class-block-list__kind {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-block-list__kind-word {
+    flex: none;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-block-list__name {
+    overflow: hidden;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .class-block-list__body {
+    padding: var(--platform-space-3) 0 var(--platform-space-2);
+  }
+
+  & .class-block-list__add {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-4);
+    margin: 0;
+  }
+
+  & .class-block-list__empty {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+}

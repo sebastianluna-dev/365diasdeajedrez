@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { FinalizeClassButton } from "@/components/platform/shared/finalize-class-popup/finalize-class-popup.comp";
 import { MeetingLinkButton } from "@/components/platform/shared/meeting-link-popup/meeting-link-popup.comp";
 import type { ClassRowActionData, ClassRowData, ClassRowServerActions } from "../class-row/class-row.types";
 
@@ -12,9 +13,10 @@ interface ClassRowActionProps {
 
 /**
  * The action of a `ClassRow` that opens a popup instead of leading
- * somewhere: the meeting link (the staff's agenda). The only client leaf of
- * a row, so the row and the agenda stay on the server. Without the server
- * action the row leads to the class instead, where the same popup is.
+ * somewhere: the meeting link (the staff's agenda) or finalizing the class
+ * (the teacher's panel). The only client leaf of a row, so the row and the
+ * agenda stay on the server. Without the server action the row leads to the
+ * class instead, where the same popup is.
  */
 export function ClassRowAction({ action, row, serverActions }: ClassRowActionProps) {
   if (action.kind === "meeting" && serverActions?.setMeeting) {
@@ -27,6 +29,17 @@ export function ClassRowAction({ action, row, serverActions }: ClassRowActionPro
         timeZone={row.timeZone}
         nowIso={row.nowIso}
         setMeeting={serverActions.setMeeting}
+      />
+    );
+  }
+  if (action.kind === "finalize" && serverActions?.finalize) {
+    return (
+      <FinalizeClassButton
+        variant="row"
+        label={action.label}
+        mode="finalize"
+        action={serverActions.finalize}
+        {...action.finalize}
       />
     );
   }

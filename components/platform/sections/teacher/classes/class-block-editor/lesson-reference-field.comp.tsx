@@ -3,7 +3,7 @@
 import { PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 
 interface LessonReferenceFieldProps {
-  value: string;
+  defaultValue?: string;
   onChange: (lessonId: string) => void;
 }
 
@@ -15,7 +15,7 @@ interface LessonReferenceFieldProps {
  * appears, the id is no good. The real decision is the server's, which also
  * requires its course to be published.
  */
-export function LessonReferenceField({ value, onChange }: LessonReferenceFieldProps) {
+export function LessonReferenceField({ defaultValue, onChange }: LessonReferenceFieldProps) {
   return (
     <PlatformFormField
       name="lessonId"
@@ -24,7 +24,7 @@ export function LessonReferenceField({ value, onChange }: LessonReferenceFieldPr
     >
       <input
         type="text"
-        value={value}
+        defaultValue={defaultValue}
         onChange={(event) => onChange(event.target.value.trim())}
         inputMode="numeric"
         maxLength={40}

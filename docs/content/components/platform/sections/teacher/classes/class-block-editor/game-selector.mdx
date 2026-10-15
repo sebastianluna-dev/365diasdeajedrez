@@ -19,11 +19,11 @@ The games a teacher may cite in a class: their own studies' games and those of t
 
 ## Props
 
-| Prop       | Type                       | Required | Meaning                                                                                    |
-| ---------- | -------------------------- | -------- | ------------------------------------------------------------------------------------------ |
-| `groups`   | `ReferenceableGameGroup[]` | yes      | `{ ownerLabel, studyName, studyId, isOwn, games: { id, label }[] }[]`. Empty shows a hint. |
-| `value`    | `string`                   | yes      | The selected `gameId`.                                                                     |
-| `onChange` | `(gameId: string) => void` | yes      |                                                                                            |
+| Prop           | Type                       | Required | Meaning                                                                                    |
+| -------------- | -------------------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `groups`       | `ReferenceableGameGroup[]` | yes      | `{ ownerLabel, studyName, studyId, isOwn, games: { id, label }[] }[]`. Empty shows a hint. |
+| `defaultValue` | `string`                   | yes      | The selected `gameId`.                                                                     |
+| `onChange`     | `(gameId: string) => void` | yes      |                                                                                            |
 
 ## Behaviour
 

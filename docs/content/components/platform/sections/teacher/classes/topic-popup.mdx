@@ -1,0 +1,27 @@
+---
+description: "«Editar el tema»: the title the students see and the description, from the pen beside the class's title."
+---
+
+# `TopicPopup`
+
+|            |                                                                                                                                                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/teacher/classes/topic-popup/topic-popup.comp.tsx`                                                                                                                                                                                                      |
+| Kind       | Client Component                                                                                                                                                                                                                                                                     |
+| Stylesheet | `topic-popup.comp.css` → block `.topic-popup__form`                                                                                                                                                                                                                                  |
+| Story      | `topic-popup.stories.tsx` (`platform/sections/teacher/classes/TopicPopup`): open (`play`)                                                                                                                                                                                            |
+| Used by    | `app/(platform)/profesor/clases/[classId]/page.tsx` (`TopicButton`, the square pen beside the title)                                                                                                                                                                                 |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup) (`sm`), [`PlatformForm`, `PlatformFormField`](/components/platform/shared/platform-form), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `updateClassTopic` as a prop, the states of `services/shared/form-state.ts`, `withNoticeParam`                                                                                                                                                                                       |
+
+## Behaviour
+
+The [popup-form pattern](/conventions#server-actions): the fields open again with what was sent when the server refuses, and on success the address says `?aviso=topicSaved`.
+
+## Markup & styling
+
+Block `.topic-popup__form` (14 lines): a column with the foot over a hairline.
+
+**Elements:** `.topic-popup__foot`
+
+**Tokens:** `--platform-track`

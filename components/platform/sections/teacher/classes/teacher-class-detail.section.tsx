@@ -1,194 +1,171 @@
 import Link from "next/link";
-import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer/class-content-renderer.comp";
-import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
-import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
-import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
+import { WhatsappIcon } from "@/components/icons/whatsapp-icon.comp";
+import { AttendanceRow } from "@/components/platform/shared/attendance-row/attendance-row.comp";
+import { MeetingJoinCard } from "@/components/platform/shared/meeting-join-card/meeting-join-card.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
-import type { ClassStatusCode } from "@/constants/platform/class-codes.const";
-import { CLASS_STATUS } from "@/constants/platform/class-codes.const";
-import { TEACHER_ERROR_MESSAGES } from "@/constants/platform/teacher-messages.const";
-import { teacherRoutes } from "@/lib/platform-routes";
-import type { ClassBlockView } from "@/services/classes/classes.types";
-import { addParticipant, setClassStatus } from "@/services/teacher-classes/teacher-classes.actions";
-import { nextClassStatuses } from "@/services/shared/class-status-transitions";
-import type { TeacherClassDetail } from "@/services/teacher-classes/teacher-classes.types";
-import type { AssignedStudentSummary } from "@/services/teacher-students/teacher-students.types";
-import { AttendanceForm } from "./attendance-form.comp";
-import { ClassBlockEditor } from "./class-block-editor/class-block-editor.comp";
-import type { BlockFormOptions } from "./class-block-editor/block-form.comp";
+import { formatClassHours } from "@/lib/format-class-when";
+import {
+  addClassBlock,
+  deleteClassBlock,
+  fetchReferencePgn,
+  reorderClassBlocks,
+  updateClassAfterNotes,
+  updateClassBlock,
+} from "@/services/teacher-classes/teacher-classes.actions";
+import type { ReferenceableGameGroup, TeacherClassDetail } from "@/services/teacher-classes/teacher-classes.types";
+import { AfterNotesButton } from "./after-notes-popup/after-notes-popup.comp";
+import { ClassBlockList } from "./class-block-list/class-block-list.comp";
 import "./teacher-class-detail.section.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
-import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface TeacherClassDetailSectionProps {
   classDetail: TeacherClassDetail;
-  /** The blocks mapped as the student will see them. */
-  previewBlocks: ClassBlockView[];
-  /** Students with an active assignment: candidates to enrol. */
-  students: AssignedStudentSummary[];
-  blockOptions: BlockFormOptions;
-  /** Game preselected when arriving from "Usar en una clase". */
+  games: ReferenceableGameGroup[];
+  /** A game chosen elsewhere («Usar en una clase»): the block popup opens on it. */
   initialGameId?: string;
-  errorCode?: string;
+  notice?: string;
+  errorMessage?: string;
 }
 
-const STATUS_ACTION_LABELS: Record<ClassStatusCode, string> = {
-  [CLASS_STATUS.SCHEDULED]: "Volver a programada",
-  [CLASS_STATUS.LIVE]: "Empezar la clase",
-  [CLASS_STATUS.COMPLETED]: "Marcar como terminada",
-  [CLASS_STATUS.CANCELLED]: "Cancelar la clase",
-};
-
+/**
+ * The teacher's record of a class (PROF-2): the material to prepare, by
+ * section, as the student sees it; and the lane with the meeting, the
+ * students and their marks (with the staff's changes), what was written
+ * after the class, and the staff's facts. A Server Component: it imports
+ * the actions and hands them to the client pieces as props.
+ */
 export function TeacherClassDetailSection({
   classDetail,
-  previewBlocks,
-  students,
-  blockOptions,
+  games,
   initialGameId,
-  errorCode,
+  notice,
+  errorMessage,
 }: TeacherClassDetailSectionProps) {
-  const errorMessage = errorCode ? (TEACHER_ERROR_MESSAGES[errorCode] ?? TEACHER_ERROR_MESSAGES.invalid) : undefined;
-  const enrolledIds = new Set(classDetail.participants.map((participant) => participant.userId));
-  const enrollable = students.filter((student) => !enrolledIds.has(student.id));
+  const { timeZone, editable, students, afterNotes, join } = classDetail;
+  const endHour = formatClassHours(new Date(classDetail.endIso), 0, timeZone).split("–")[0] ?? "";
+  const studentLabel = classDetail.isGroup ? "tus alumnos" : (students[0]?.displayName ?? "el alumno");
+  const seated = students.filter((student) => !student.mark.moved);
+  const moved = students.filter((student) => student.mark.moved);
+
   return (
     <div className="teacher-class">
-      {errorMessage && <PlatformNotice message={errorMessage} />}
-
-      <section className="platform-card">
-        <div className="teacher-class__head">
-          <h2 className="platform-card__title">Datos de la clase</h2>
-          <Link href={teacherRoutes.classEdit(classDetail.id)} className="platform-button">
-            Editar
-          </Link>
-        </div>
-
-        <dl className="teacher-class__facts">
-          <div className="teacher-class__fact">
-            <dt className="teacher-class__fact-label">Cuándo</dt>
-            <dd className="teacher-class__fact-value">
-              <LocalDateTime
-                iso={classDetail.scheduledAtIso}
-                fallback={`${classDetail.dateLabel} · ${classDetail.timeLabel}`}
-              />
-              {` · ${classDetail.durationMin} min`}
-            </dd>
-          </div>
-          <div className="teacher-class__fact">
-            <dt className="teacher-class__fact-label">Estado</dt>
-            <dd className="teacher-class__fact-value">
-              <span className="platform-tag">{classDetail.statusLabel}</span>
-            </dd>
-          </div>
-          {classDetail.meetingProviderLabel && (
-            <div className="teacher-class__fact">
-              <dt className="teacher-class__fact-label">Reunión</dt>
-              <dd className="teacher-class__fact-value">
-                {/* The teacher always sees the link: they are the one who sets it. The
-                    student is shown it only from meetingUrlVisibleFrom. */}
-                {classDetail.meetingUrl ? (
-                  <a href={classDetail.meetingUrl} target="_blank" rel="noreferrer">
-                    {classDetail.meetingProviderLabel}
-                  </a>
-                ) : (
-                  classDetail.meetingProviderLabel
-                )}
-              </dd>
-            </div>
-          )}
-          {classDetail.meetingUrlVisibleFromIso && (
-            <div className="teacher-class__fact">
-              <dt className="teacher-class__fact-label">Enlace visible desde</dt>
-              <dd className="teacher-class__fact-value">
-                <LocalDateTime iso={classDetail.meetingUrlVisibleFromIso} fallback="" />
-              </dd>
-            </div>
-          )}
-          {classDetail.recordingUrl && (
-            <div className="teacher-class__fact">
-              <dt className="teacher-class__fact-label">Grabación</dt>
-              <dd className="teacher-class__fact-value">
-                <a href={classDetail.recordingUrl} target="_blank" rel="noreferrer">
-                  Ver grabación
-                </a>
-              </dd>
-            </div>
-          )}
-        </dl>
-
-        <div className="teacher-class__status-actions">
-          {/* The valid transitions are decided by a pure function, and the action
-              checks them again on the server. */}
-          {nextClassStatuses(classDetail.statusCode, "teacher").map((status) => (
-            <form key={status} action={setClassStatus.bind(null, classDetail.id)}>
-              <input type="hidden" name="statusCode" value={status} />
-              <SubmitButton className="platform-button" pendingLabel="Actualizando…">
-                {STATUS_ACTION_LABELS[status]}
-              </SubmitButton>
-            </form>
-          ))}
-        </div>
-
-        {classDetail.description && <p className="teacher-class__description">{classDetail.description}</p>}
-        {classDetail.summary && (
-          <div className="teacher-class__summary">
-            <h3 className="teacher-class__summary-title">Resumen</h3>
-            <p className="teacher-class__summary-text">{classDetail.summary}</p>
-          </div>
-        )}
-      </section>
-
-      <section className="platform-card">
-        <h2 className="platform-card__title">Alumnos y asistencia</h2>
-        <AttendanceForm classId={classDetail.id} participants={classDetail.participants} />
-
-        {enrollable.length > 0 && (
-          <PlatformForm className="teacher-class__enroll" action={addParticipant.bind(null, classDetail.id)}>
-            <PlatformFormField name="studentId" label="Inscribir a un alumno">
-              <PlatformSelect
-                required
-                placeholder="Elige un alumno…"
-                options={enrollable.map((student) => ({ value: student.id, label: student.displayName }))}
-              />
-            </PlatformFormField>
-            <SubmitButton className="platform-button" pendingLabel="Inscribiendo…">
-              Inscribir
-            </SubmitButton>
-          </PlatformForm>
-        )}
-      </section>
-
-      {classDetail.transcript && (
-        <section className="platform-card">
-          <h2 className="platform-card__title">Transcripción</h2>
-          <p className="teacher-class__transcript">
-            {classDetail.transcript.statusLabel}
-            {classDetail.transcript.hasText ? " · texto disponible" : " · sin texto todavía"}
-          </p>
-        </section>
-      )}
-
-      <section className="platform-card">
-        <h2 className="platform-card__title">Editor de contenido</h2>
-        <ClassBlockEditor
-          classId={classDetail.id}
-          blocks={classDetail.blocks}
-          options={blockOptions}
-          initialGameId={initialGameId}
-        />
-      </section>
-
-      <section className="platform-card">
-        <h2 className="platform-card__title">Vista previa</h2>
-        <p className="teacher-class__preview-hint">Así lo verá el alumno.</p>
-        {previewBlocks.length > 0 ? (
-          <ClassContentRenderer blocks={previewBlocks} />
-        ) : (
-          <EmptyState
-            title="Esta clase todavía no tiene contenido"
-            description="Agrega textos, videos, partidas, lecciones o posiciones para preparar la sesión."
+      <div className="teacher-class__main">
+        {errorMessage && <PlatformNotice message={errorMessage} />}
+        {notice && <PlatformNotice message={notice} variant="success" />}
+        {classDetail.cancellation && (
+          <PlatformNotice
+            variant="info"
+            message={`Administración canceló esta clase${classDetail.cancellation.reason ? `: «${classDetail.cancellation.reason}»` : "."}${classDetail.cancellation.note ? ` Mensaje a los alumnos: «${classDetail.cancellation.note}»` : ""}`}
           />
         )}
-      </section>
+        {classDetail.timeZoneMissing && (
+          <PlatformNotice
+            variant="info"
+            message="Las horas se muestran en la hora de Ciudad de México. Elige tu zona en «Mi ficha»."
+          />
+        )}
+        <section className="platform-card">
+          <ClassBlockList
+            classId={classDetail.id}
+            blocks={classDetail.blocks}
+            views={classDetail.views}
+            phase={classDetail.phase}
+            editable={editable.content}
+            studentLabel={studentLabel.charAt(0).toUpperCase() + studentLabel.slice(1)}
+            groupSize={seated.length}
+            endHour={endHour}
+            options={{ games }}
+            initialGameId={initialGameId}
+            actions={{ addClassBlock, updateClassBlock, deleteClassBlock, reorderClassBlocks, fetchReferencePgn }}
+          />
+        </section>
+      </div>
+
+      <aside className="teacher-class__lane" aria-label="La clase">
+        <section className="teacher-class__fact">
+          <h2 className="teacher-class__fact-label">Reunión</h2>
+          <MeetingJoinCard {...join} audience="teacher" density="compact" />
+          {classDetail.meetingVisibleLine && (
+            <p className="teacher-class__fact-line">{classDetail.meetingVisibleLine}</p>
+          )}
+        </section>
+
+        <section className="teacher-class__fact">
+          <h2 className="teacher-class__fact-label">{classDetail.isGroup ? "Alumnos" : "Alumno"}</h2>
+          <div className="teacher-class__students">
+            {[...seated, ...moved].map((student) => (
+              <div key={student.userId} className="teacher-class__student">
+                <AttendanceRow
+                  student={{ id: student.userId, displayName: student.displayName }}
+                  details={student.isAssigned ? [] : ["No es tu alumno: ves su nombre, no su ficha"]}
+                  mark={student.mark}
+                  mode="read"
+                />
+                {student.href && (
+                  <Link href={student.href} className="teacher-class__student-link">
+                    Ver su ficha
+                  </Link>
+                )}
+              </div>
+            ))}
+            {students.length === 0 && <p className="teacher-class__fact-line">Sin alumnos todavía.</p>}
+          </div>
+        </section>
+
+        <section className="teacher-class__fact">
+          <div className="teacher-class__fact-head">
+            <h2 className="teacher-class__fact-label">Después de la clase</h2>
+            {editable.afterNotes && (
+              <AfterNotesButton
+                classId={classDetail.id}
+                summary={afterNotes.summary}
+                recordingUrl={afterNotes.recordingUrl}
+                updateClassAfterNotes={updateClassAfterNotes}
+              />
+            )}
+          </div>
+          {afterNotes.closedAtLabel ? (
+            <>
+              <p className="teacher-class__fact-line">
+                Finalizada {afterNotes.closedByName ? `por ${afterNotes.closedByName} ` : ""}el{" "}
+                {afterNotes.closedAtLabel.replace(", ", " a las ")}
+              </p>
+              <dl className="teacher-class__after">
+                <div>
+                  <dt>Resumen</dt>
+                  <dd>{afterNotes.summary ?? "Sin resumen"}</dd>
+                </div>
+                <div>
+                  <dt>Grabación</dt>
+                  <dd>
+                    {afterNotes.recordingUrl ? (
+                      <a href={afterNotes.recordingUrl} target="_blank" rel="noreferrer">
+                        {afterNotes.recordingUrl.replace(/^https?:\/\//, "")}
+                      </a>
+                    ) : (
+                      "Sin grabación"
+                    )}
+                  </dd>
+                </div>
+              </dl>
+            </>
+          ) : (
+            <p className="teacher-class__fact-line">Al finalizar la clase dejarás aquí el resumen y la grabación.</p>
+          )}
+        </section>
+
+        <section className="teacher-class__fact">
+          <h2 className="teacher-class__fact-label">Datos de administración</h2>
+          <p className="teacher-class__fact-line">{classDetail.adminLine}</p>
+          <p className="teacher-class__fact-line">
+            ¿Hay que cambiar la hora o el alumno?{" "}
+            <a href={classDetail.whatsappHref} target="_blank" rel="noreferrer" className="teacher-class__whatsapp">
+              <WhatsappIcon className="teacher-class__whatsapp-icon" />
+              Escribe a administración
+            </a>
+            .
+          </p>
+        </section>
+      </aside>
     </div>
   );
 }

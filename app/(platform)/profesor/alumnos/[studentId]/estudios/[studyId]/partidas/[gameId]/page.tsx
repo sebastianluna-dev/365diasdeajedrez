@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { StudentGameViewSection } from "@/components/platform/sections/teacher/students/student-game-view.section";
-import { CLASS_STATUS } from "@/constants/platform/class-codes.const";
-import { getTeacherClasses } from "@/services/teacher-classes/teacher-classes.service";
+import { listUpcomingClassesWith } from "@/services/teacher-classes/teacher-classes.service";
 import { getAssignedStudentDetail, getStudentGame } from "@/services/teacher-students/teacher-students.service";
 
 interface StudentGamePageProps {
@@ -20,7 +19,7 @@ export default async function StudentGamePage({ params }: StudentGamePageProps) 
   const [game, student, scheduledClasses] = await Promise.all([
     getStudentGame(studentId, studyId, gameId),
     getAssignedStudentDetail(studentId),
-    getTeacherClasses(CLASS_STATUS.SCHEDULED),
+    listUpcomingClassesWith(studentId),
   ]);
   if (!game || !student) notFound();
 

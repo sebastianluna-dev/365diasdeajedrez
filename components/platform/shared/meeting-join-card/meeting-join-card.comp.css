@@ -1,0 +1,81 @@
+/* The join card: the button and, beside or under it, the line with the
+   platform and the countdown and the copy. Three densities: the page's
+   card, a lane's row, the fixed bar. */
+.meeting-join {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--platform-space-3) var(--platform-space-4);
+
+  & .meeting-join__text {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-2) var(--platform-space-3);
+    min-width: 0;
+  }
+
+  & .meeting-join__line {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+  }
+
+  & .meeting-join__whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+    font-size: var(--platform-type-md);
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .meeting-join__whatsapp-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  & .meeting-join__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  &.meeting-join_density_full {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  &.meeting-join_density_full .meeting-join__line {
+    font-size: var(--platform-type-lg);
+  }
+
+  &.meeting-join_density_compact .meeting-join__line {
+    font-size: var(--platform-type-sm);
+  }
+
+  /* The bar: the words on the left, the button at the right, one line. */
+  &.meeting-join_density_bar {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+
+  &.meeting-join_density_bar .meeting-join__enter {
+    order: 2;
+    flex: none;
+  }
+
+  &.meeting-join_density_bar .meeting-join__text {
+    order: 1;
+  }
+
+  &.meeting-join_density_bar .meeting-join__line {
+    font-size: var(--platform-type-sm);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

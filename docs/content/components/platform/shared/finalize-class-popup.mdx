@@ -1,0 +1,41 @@
+---
+description: "«Finalizar la clase» (PROF-3) and its two other uses: every student's attendance as rows to write, «Marcar a todos», the count, the summary and the recording when finalizing, the reason when the staff finalizes on the teacher's behalf."
+---
+
+# `FinalizeClassPopup`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/finalize-class-popup/finalize-class-popup.comp.tsx` (also `finalize-class-popup.types.ts`: `FinalizeClassData`, `FinalizeClassAction`)                                                                                                                                                                                                                                                                                |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Stylesheet | `finalize-class-popup.comp.css` → block `.finalize-class__form`                                                                                                                                                                                                                                                                                                                                                                                   |
+| Story      | `finalize-class-popup.stories.tsx` (`platform/shared/FinalizeClassPopup`): finalize individual, finalize group, missing mark, change, change with a locked row, change with a moved row, staff (all with `play`)                                                                                                                                                                                                                                  |
+| Used by    | [`ClassRowAction`](/components/platform/shared/class-row-action) («Finalizar» on a row), `app/(platform)/profesor/clases/[classId]/page.tsx` (the accent, and «Cambiar la asistencia»), [`ClassHeaderActions`](/components/platform/sections/staff/classes/class-header-actions) (`staff`)                                                                                                                                                        |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup) (`md`, a sheet on a phone), [`PlatformForm`, `PlatformFormField`](/components/platform/shared/platform-form), [`AttendanceRow`](/components/platform/shared/attendance-row) (`edit`), [`OptionalFields`](/components/platform/shared/optional-fields), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `finalizeClass`, `changeAttendance` or `finalizeClassAsStaff` as a prop, the states of `services/shared/form-state.ts`, `withNoticeParam`                                                                                                                                                                                                                                                                                                         |
+
+## Purpose
+
+Three moments, one popup. `finalize` (the teacher, PROF-3): «¿Quién vino?», the summary and the recording, both optional, and «Al finalizar, Diego Salas verá si asistió, tu resumen y la grabación.». `change` (D3): the teacher corrects their own marks of a finished class, «Cambiar una marca no duplica la actividad del alumno.»; a mark the staff overrode and a moved seat read, without cards. `staff` (D1): «Finalizar la clase en nombre de GM Profesor Demo», only the list, with «Motivo». In a group class, «Marcar a todos» and «3 de 4 asistieron» in `aria-live`. No trigger of its own; `FinalizeClassButton` draws one (`variant` `accent`, `button` or `row`; `openOnMount` for `?finalizar=1`).
+
+## Props
+
+| Prop                 | Type                                                                                       | Required | Meaning                                                |
+| -------------------- | ------------------------------------------------------------------------------------------ | -------- | ------------------------------------------------------ |
+| `…FinalizeClassData` | `{ classId, classTitle, whenLine, isGroup, teacherName, students, summary, recordingUrl }` | yes      | Each student with their `AttendanceMarkView`.          |
+| `mode`               | `"finalize" \| "change" \| "staff"`                                                        | yes      |                                                        |
+| `action`             | `(classId, prev, formData) => Promise<PopupFormState>`                                     | yes      | The marks travel as `attendance.<id>` = `yes` \| `no`. |
+
+## Behaviour
+
+The [popup-form pattern](/conventions#server-actions). A row sent without a mark gets «Marca si Diego Salas asistió o faltó.» from the browser and, if the server is reached anyway, `missingMark` on the row and on the form. On success the address says `?aviso=classFinalized` (the page composes «Clase finalizada. Diego Salas ya ve tu resumen.») or `attendanceChanged`.
+
+## Markup & styling
+
+Block `.finalize-class__form` (77 lines): a column with the foot over a hairline; on a phone the foot sticks to the bottom with its button full width.
+
+**Elements:** `.finalize-class__context`, `.finalize-class__section`, `.finalize-class__section-head`, `.finalize-class__heading`, `.finalize-class__rows`, `.finalize-class__count`, `.finalize-class__line`, `.finalize-class__foot`
+
+**Breakpoints:** `(width < 640px)`.
+
+**Tokens:** `--platform-surface`, `--platform-text-muted`, `--platform-track`

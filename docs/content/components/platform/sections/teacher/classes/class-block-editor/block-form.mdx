@@ -1,83 +1,37 @@
 ---
-description: "The fields of one class block by kind: text, video URL, a game transcribed on the GameViewer's editing mode or referenced from a study, a lesson by id, a saved position; plus the move-path picker and a caption."
+description: "The fields of a block by kind, inside the block popup's form: the text, the video's address, the game transcribed or cited, the lesson by id with its viewer as the check, the opening position, and the caption."
 ---
 
 # `BlockForm`
 
-Also exports the `BlockFormOptions` type.
-
-|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/teacher/classes/class-block-editor/block-form.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| Stylesheet | `block-form.comp.css` → block `.block-form`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Used by    | [`ClassBlockEditor`](/components/platform/sections/teacher/classes/class-block-editor/class-block-editor); the detail section imports the `BlockFormOptions` type                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| Composes   | [`BlockGameField`](/components/platform/sections/teacher/classes/class-block-editor/block-game-field), [`GameSelector`](/components/platform/sections/teacher/classes/class-block-editor/game-selector), [`LessonReferenceField`](/components/platform/sections/teacher/classes/class-block-editor/lesson-reference-field), [`PositionSelector`](/components/platform/sections/teacher/classes/class-block-editor/position-selector), [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker), [`PlatformForm` and `PlatformFormField`](/components/platform/shared/platform-form) |
-| Uses       | `CLASS_BLOCK_KIND`, `ClassBlockKindCode` from `constants/platform/class-codes.const`; `platformRoutes` from `lib/platform-routes`; `ReferenceableGameGroup`, `PositionOption`, `TeacherClassBlock` from `services/teacher-classes/teacher-classes.types`                                                                                                                                                                                                                                                                                                                                                                         |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/class-block-editor/block-form.comp.tsx` (also exports `BlockFormOptions`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Stylesheet | `block-form.comp.css` → block `.block-form`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Used by    | [`BlockPopup`](/components/platform/sections/teacher/classes/class-block-editor/block-popup)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Composes   | [`PlatformFormField`, `PlatformFormGroup`](/components/platform/shared/platform-form), [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards) («Transcribir» · «De un estudio»), [`BlockGameField`](/components/platform/sections/teacher/classes/class-block-editor/block-game-field), [`GameSelector`](/components/platform/sections/teacher/classes/class-block-editor/game-selector), [`LessonReferenceField`](/components/platform/sections/teacher/classes/class-block-editor/lesson-reference-field), [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker) |
+| Uses       | `platformRoutes.gameDetail` («Anotar esta partida»)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 ## Purpose
 
-One form per block, whatever its kind, a [`PlatformForm`](/components/platform/shared/platform-form) whose fields are `PlatformFormField`s (those of the selectors included); the kind decides which fields render. A required field left empty says so under it and nothing is sent. State here is interface only (which reference is chosen, which position is marked); saving is always the bound server action, which revalidates the fields on its own.
-
-For a **game** block, transcribing in [`BlockGameField`](/components/platform/sections/teacher/classes/class-block-editor/block-game-field), the ordinary viewer in its editing mode, is the main path: the game lives in the block, not in a study, and the field brings its own "Pegar un PGN" box. Discussing a game a student played is the second route, folded into a `<details>` because it is not the usual case; when that game belongs to one of the teacher's own studies, a link offers to annotate it on its own screen.
+Not a form since 2026-10-15: the fields only, inside the popup's `PlatformForm`. For a game, «Transcribir» (the board) and «De un estudio» (a game of the teacher's or of an assigned student's) are mutually exclusive cards; in a group class a student's game warns «Los 4 alumnos de la clase verán esta partida de Mateo Ríos.». The lesson is cited by id, and its viewer under the field is the check.
 
 ## Props
 
-| Prop          | Type                           | Required | Meaning                                                                 |
-| ------------- | ------------------------------ | -------- | ----------------------------------------------------------------------- |
-| `action`      | `(formData: FormData) => void` | yes      | Server action already bound to the class (and the block, when editing). |
-| `kind`        | `ClassBlockKindCode`           | yes      | Which fields to render; sent as a hidden `kind` field.                  |
-| `options`     | `BlockFormOptions`             | yes      | `{ games: ReferenceableGameGroup[], positions: PositionOption[] }`.     |
-| `block`       | `TeacherClassBlock`            | no       | Existing values when editing (or the game prefill).                     |
-| `submitLabel` | `string`                       | yes      | "Guardar bloque" / "Agregar bloque".                                    |
-| `onCancel`    | `() => void`                   | no       | Renders the cancel button.                                              |
-
-## Behaviour
-
-| `kind`         | Fields                                                                                                                                                                                  |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TEXT`         | `text` textarea (max 10 000, "## " for subheadings).                                                                                                                                    |
-| `VIDEO`        | `videoUrl` (`type="url"`, required).                                                                                                                                                    |
-| `GAME_REF`     | `BlockGameField name="pgn"` with the block's PGN; folded `GameSelector` for a student's game (`gameId`), plus "Anotar esta partida" when `annotatableStudyOf` finds it in an own study. |
-| `LESSON_REF`   | `LessonReferenceField` (`lessonId`).                                                                                                                                                    |
-| `POSITION_REF` | `PositionSelector` (`positionId`).                                                                                                                                                      |
-| all            | `caption` (max 200).                                                                                                                                                                    |
-
-- `supportsMovePath` is true for lessons and for game blocks that reference a student's game (a transcribed game is traversed on its own board and needs no second viewer). Then a hidden `movePath` input and the [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker) render; a broken saved path shows a `role="alert"` warning explaining the student will see the block from the start.
-- `gameId`, `lessonId`, `positionId` and `movePath` are controlled so the pickers can write them; everything else is uncontrolled with `defaultValue`.
+| Prop                | Type                         | Required | Meaning                                                              |
+| ------------------- | ---------------------------- | -------- | -------------------------------------------------------------------- |
+| `kind`              | `ClassBlockKindCode`         | yes      | Which fields to draw.                                                |
+| `options`           | `BlockFormOptions`           | yes      | `{ games: ReferenceableGameGroup[] }`.                               |
+| `block`             | `Partial<TeacherClassBlock>` | no       | The block being edited, or the preset of a new one.                  |
+| `values`, `errors`  | `Record<string, …>`          | no       | What was sent before the server refused, and what it said, by field. |
+| `groupSize`         | `number`                     | no       |                                                                      |
+| `fetchReferencePgn` | `FetchReferencePgn`          | yes      | For the position picker.                                             |
 
 ## Markup & styling
 
-Block `.block-form` (46 lines).
+Block `.block-form` (26 lines): the fields one under the other, a warning in the warning tone, an error in the danger's.
 
-**Elements:** `.block-form__alternative` (the `<details>`), `.block-form__annotate`, `.block-form__warning`, `.block-form__actions`
+**Elements:** `.block-form__warning`, `.block-form__error`, `.block-form__annotate`
 
-No modifiers.
-
-**Other classes it renders:** `.platform-button`.
-
-**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
-
-No media queries.
-
-## Usage
-
-From `components/platform/sections/teacher/classes/class-block-editor/class-block-editor.comp.tsx`:
-
-```tsx
-import { BlockForm, type BlockFormOptions } from "./block-form.comp";
-
-<BlockForm
-  action={updateClassBlock.bind(null, classId, block.id)}
-  kind={block.kind}
-  options={options}
-  block={block}
-  submitLabel="Guardar bloque"
-  onCancel={() => setEditingId(null)}
-/>;
-```
-
-## Related
-
-- [`ClassContentRenderer`](/components/platform/shared/class-content-renderer) renders what this saves.
-- The `addClassBlock` / `updateClassBlock` validation per kind in `services/teacher-classes/teacher-classes.actions.ts`.
+**Tokens:** `--platform-danger`, `--platform-warning-ink`, `--platform-warning-soft`

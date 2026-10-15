@@ -149,7 +149,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/profesor`
 - `/profesor/alumnos`, `/profesor/alumnos/[studentId]`
 - `/profesor/alumnos/[studentId]/estudios/[studyId]`, `…/partidas/[gameId]` (**read-only** access to the studies of their assigned students)
-- `/profesor/clases`, `/profesor/clases/nuevo`, `/profesor/clases/[classId]`, `/profesor/clases/[classId]/editar`
+- `/profesor/clases` («Clases que imparto»), `/profesor/clases/[classId]` (the material, the meeting, the attendance; the staff creates and schedules the classes)
 - `/profesor/perfil` («Mi ficha» in the teacher's menu: the public card the student sees)
 
 **Platform — administration** (requires a `Staff` row; `/admin` belongs to Payload)

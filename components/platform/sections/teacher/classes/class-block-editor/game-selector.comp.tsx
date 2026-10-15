@@ -6,7 +6,8 @@ import { PlatformSelect } from "@/components/platform/shared/platform-select/pla
 
 interface GameSelectorProps {
   groups: ReferenceableGameGroup[];
-  value: string;
+  /** What it opens with: the select keeps its own value, and says each change. */
+  defaultValue?: string;
   onChange: (gameId: string) => void;
 }
 
@@ -15,7 +16,7 @@ interface GameSelectorProps {
  * their active students). Only id and label: PGNs are requested one at a time
  * when a preview is needed.
  */
-export function GameSelector({ groups, value, onChange }: GameSelectorProps) {
+export function GameSelector({ groups, defaultValue, onChange }: GameSelectorProps) {
   return (
     <PlatformFormField
       name="gameId"
@@ -23,7 +24,7 @@ export function GameSelector({ groups, value, onChange }: GameSelectorProps) {
       hint={groups.length === 0 ? "No hay partidas disponibles todavía." : undefined}
     >
       <PlatformSelect
-        value={value}
+        defaultValue={defaultValue}
         onValueChange={onChange}
         required
         placeholder="Elige una partida…"

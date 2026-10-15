@@ -129,10 +129,17 @@ export const teacherRoutes = {
   studentStudy: (studentId: string, studyId: string) => `/profesor/alumnos/${studentId}/estudios/${studyId}`,
   studentGame: (studentId: string, studyId: string, gameId: string) =>
     `/profesor/alumnos/${studentId}/estudios/${studyId}/partidas/${gameId}`,
+  /** The teacher's classes: `?vista=proximas|por-finalizar|pasadas|canceladas&q=&pagina=`. */
   classes: "/profesor/clases",
-  newClass: "/profesor/clases/nuevo",
+  classesFiltered: (filters: { vista?: string; q?: string; pagina?: number }) => {
+    const params = new URLSearchParams();
+    if (filters.vista && filters.vista !== "proximas") params.set("vista", filters.vista);
+    if (filters.q) params.set("q", filters.q);
+    if (filters.pagina && filters.pagina > 1) params.set("pagina", String(filters.pagina));
+    const query = params.toString();
+    return query ? `/profesor/clases?${query}` : "/profesor/clases";
+  },
   classDetail: (classId: string) => `/profesor/clases/${classId}`,
-  classEdit: (classId: string) => `/profesor/clases/${classId}/editar`,
   profile: "/profesor/perfil",
 } as const;
 

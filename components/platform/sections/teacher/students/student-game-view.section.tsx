@@ -1,16 +1,15 @@
 import Link from "next/link";
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
-import { teacherRoutes } from "@/lib/platform-routes";
 import type { GameView } from "@/services/studies/studies.types";
-import type { TeacherClassSummary } from "@/services/teacher-classes/teacher-classes.types";
+import type { UpcomingClassWith } from "@/services/teacher-classes/teacher-classes.types";
 import "./student-game-view.section.css";
 
 interface StudentGameViewSectionProps {
   /** Whose game it is: the subtitle says so, since nothing else on the screen does. */
   studentName: string;
   game: GameView;
-  /** The teacher's scheduled classes: destinations of "Usar en una clase". */
-  scheduledClasses: TeacherClassSummary[];
+  /** The teacher's classes ahead with this student: destinations of «Usar en una clase». */
+  scheduledClasses: UpcomingClassWith[];
 }
 
 /**
@@ -47,11 +46,8 @@ export function StudentGameViewSection({ studentName, game, scheduledClasses }: 
             <ul className="student-game__use-list">
               {scheduledClasses.map((teacherClass) => (
                 <li key={teacherClass.id}>
-                  <Link
-                    href={`${teacherRoutes.classDetail(teacherClass.id)}?gameId=${game.id}`}
-                    className="platform-button"
-                  >
-                    {teacherClass.title} · {teacherClass.dateLabel}
+                  <Link href={`${teacherClass.href}?gameId=${game.id}`} className="platform-button">
+                    {teacherClass.title} · {teacherClass.whenLabel}
                   </Link>
                 </li>
               ))}
@@ -59,8 +55,7 @@ export function StudentGameViewSection({ studentName, game, scheduledClasses }: 
           </>
         ) : (
           <p className="student-game__use-hint">
-            No tienes clases programadas. <Link href={teacherRoutes.newClass}>Crea una</Link> para poder usar esta
-            partida.
+            No tienes clases próximas con este alumno; las programa administración.
           </p>
         )}
       </div>

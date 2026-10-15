@@ -1,0 +1,31 @@
+/* The fixed strip at the foot of a phone's screen, only under 1024px: it
+   rises when mounted and keeps still under reduced motion. */
+.class-join-bar {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 20;
+  display: none;
+  padding: var(--platform-space-3) var(--platform-space-4);
+  padding-bottom: calc(var(--platform-space-3) + env(safe-area-inset-bottom, 0px));
+  background: var(--platform-surface);
+  box-shadow: 0 -1px 0 var(--platform-border);
+  animation: class-join-bar-in 200ms ease-out both;
+
+  @media (width < 1024px) {
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes class-join-bar-in {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}

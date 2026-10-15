@@ -1,0 +1,77 @@
+/* The content of «Finalizar la clase»: the class, the rows with their
+   heading and «Marcar a todos», the count, the optional fields, the line
+   and the foot. A sheet on a phone. */
+.finalize-class__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-5);
+  padding: var(--platform-space-6);
+
+  & .finalize-class__context {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+  }
+
+  & .finalize-class__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+  }
+
+  & .finalize-class__section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-3);
+  }
+
+  & .finalize-class__heading {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--platform-text-muted);
+  }
+
+  & .finalize-class__rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+  }
+
+  & .finalize-class__count {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    font-weight: 600;
+    color: var(--platform-text-muted);
+  }
+
+  & .finalize-class__line {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+  }
+
+  & .finalize-class__foot {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: var(--platform-space-4);
+    box-shadow: inset 0 1px 0 var(--platform-track);
+  }
+
+  @media (width < 640px) {
+    & .finalize-class__foot {
+      position: sticky;
+      bottom: 0;
+      padding-bottom: var(--platform-space-4);
+      background: var(--platform-surface);
+    }
+
+    & .finalize-class__foot .platform-button {
+      flex: 1;
+    }
+  }
+}

@@ -1,0 +1,30 @@
+---
+description: "«Entrar a la clase» stuck to the bottom of a phone's screen while the link is open: the join card at its bar density in a fixed strip, only under 1024px, always a sibling of the page."
+---
+
+# `ClassJoinBar`
+
+|            |                                                                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/class-join-bar/class-join-bar.comp.tsx`                                                    |
+| Kind       | Server Component                                                                                                       |
+| Stylesheet | `class-join-bar.comp.css` → block `.class-join-bar`                                                                    |
+| Story      | `class-join-bar.stories.tsx` (`platform/shared/ClassJoinBar`): open, in progress, teacher                              |
+| Used by    | `app/(platform)/profesor/page.tsx`, `app/(platform)/profesor/clases/[classId]/page.tsx`; the student's pages (phase 7) |
+| Composes   | [`MeetingJoinCard`](/components/platform/shared/meeting-join-card) (`density="bar"`)                                   |
+
+## Purpose
+
+On a phone the button to enter has to be where the thumb is (D20). The bar is drawn by the PAGE as a sibling of `.platform-page`, never inside it: the page's entrance animation leaves a transform that would make it the containing block of anything fixed (§2.4 of the plan). The page reserves the bar's height with `platform-page_foot_join-bar` (`platform.css`), under 1024px only, where the bar is drawn.
+
+## Props
+
+The join card's data and `audience`, without `density`.
+
+## Markup & styling
+
+Block `.class-join-bar` (31 lines): fixed to the bottom, drawn only under 1024px, with the safe area's inset; it rises when mounted (`class-join-bar-in`, 200 ms), stilled under reduced motion.
+
+**Breakpoints:** `(width < 1024px)`.
+
+**Tokens:** `--platform-surface`, `--platform-border`

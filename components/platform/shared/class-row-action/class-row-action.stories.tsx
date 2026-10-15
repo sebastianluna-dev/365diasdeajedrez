@@ -62,5 +62,35 @@ export const Meeting: Story = {
   },
 };
 
+/** «Finalizar» on a row that waits for the teacher: it opens the finalizing popup. */
+export const Finalize: Story = {
+  args: {
+    action: {
+      kind: "finalize",
+      label: "Finalizar",
+      finalize: {
+        classId: "c6",
+        classTitle: "Defensa Caro-Kann: ideas",
+        whenLine: "lun 12 oct · 17:00–18:00 · Diego Salas",
+        isGroup: false,
+        teacherName: "GM Profesor Demo",
+        students: [{ id: "u-s", displayName: "Diego Salas", mark: { attended: null } }],
+        summary: null,
+        recordingUrl: null,
+      },
+    },
+    row: {
+      href: "/profesor/clases/c6",
+      title: "Defensa Caro-Kann: ideas",
+      timeZone: CLASSES_TIME_ZONE,
+      nowIso: CLASSES_NOW.toISOString(),
+    },
+    serverActions: { finalize: async () => popupFormDone("classFinalized") },
+  },
+  play: async ({ canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole("button", { name: "Finalizar" }));
+  },
+};
+
 /** Without the server action: the word is a link to the class, where the popup is. */
 export const WithoutAction: Story = { name: "Without action", args: { serverActions: undefined } };

@@ -1,4 +1,5 @@
 import { CLASS_STATUS, type ClassFormatCode } from "@/constants/platform/class-codes.const";
+import { lockClasses } from "./class-locks";
 import { classPhase } from "./class-phase";
 import { canAddParticipants, canMoveSeat } from "./class-rules";
 import { classStatusIds, type ClassStatusReader } from "./class-status.service";
@@ -80,16 +81,8 @@ export interface SyncClassSeatInput {
   mode: "add" | "cover";
 }
 
-/**
- * Locks the given classes, all at once and by id. Locking a row this
- * transaction already holds is a no-op, so a writer may lock again what its
- * caller locked.
- */
-export async function lockClasses(db: Pick<ClassSeatsWriter, "$queryRaw">, classIds: string[]): Promise<void> {
-  const ids = [...new Set(classIds)].sort();
-  if (ids.length === 0) return;
-  await db.$queryRaw`SELECT "id" FROM "Class" WHERE "id" = ANY(${ids}) ORDER BY "id" FOR UPDATE`;
-}
+/** The lock itself lives in class-locks.ts, shared with the attendance writer; the staff's callers take it from here. */
+export { lockClasses };
 
 /** The seats of a payment that count: class not cancelled, seat not moved. */
 async function countingSeats(

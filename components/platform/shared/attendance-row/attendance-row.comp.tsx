@@ -23,6 +23,8 @@ interface AttendanceRowProps {
   /** The field's name in `edit`; `attendance.<student id>` by default. */
   name?: string;
   defaultValue?: "yes" | "no";
+  /** In `edit`: what was chosen, for the host's count («3 de 4 asistieron»). */
+  onValueChange?: (value: "yes" | "no") => void;
   serverError?: string;
 }
 
@@ -41,6 +43,7 @@ export function AttendanceRow({
   mode,
   name,
   defaultValue,
+  onValueChange,
   serverError,
 }: AttendanceRowProps) {
   const editing = mode === "edit" && !mark.locked && !mark.moved;
@@ -66,6 +69,7 @@ export function AttendanceRow({
             layout="line"
             required
             defaultValue={defaultValue}
+            onValueChange={(value) => onValueChange?.(value === "yes" ? "yes" : "no")}
             options={[
               { value: "yes", label: "Asistió" },
               { value: "no", label: "Faltó" },

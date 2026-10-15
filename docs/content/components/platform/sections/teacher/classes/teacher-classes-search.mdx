@@ -1,0 +1,20 @@
+---
+description: "The text «Clases que imparto» keeps: a search box that replaces the address after a pause; a filter, not a form."
+---
+
+# `TeacherClassesSearch`
+
+|            |                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/teacher/classes/teacher-classes-search.comp.tsx`                   |
+| Kind       | Client Component                                                                                 |
+| Stylesheet | none                                                                                             |
+| Used by    | [`TeacherClassesSection`](/components/platform/sections/teacher/classes/teacher-classes-section) |
+| Composes   | [`PlatformSearchField`](/components/platform/shared/platform-search-field) (no `name`)           |
+| Uses       | `teacherRoutes.classesFiltered`                                                                  |
+
+## Props
+
+| Prop      | Type                    | Required | Meaning                                          |
+| --------- | ----------------------- | -------- | ------------------------------------------------ |
+| `filters` | `TeacherClassesFilters` | yes      | The view is kept; the text travels after 300 ms. |

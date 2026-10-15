@@ -19,11 +19,11 @@ The teacher reads a student's game and, if it is worth discussing, takes it to c
 
 ## Props
 
-| Prop               | Type                    | Required | Meaning                                                                               |
-| ------------------ | ----------------------- | -------- | ------------------------------------------------------------------------------------- |
-| `studentName`      | `string`                | yes      | Whose game it is: the subtitle opens with «Partida de …».                             |
-| `game`             | `GameView`              | yes      | The game with `pgn`, players, record fields, `studyHref`, `studyName`, `sourceLabel`. |
-| `scheduledClasses` | `TeacherClassSummary[]` | yes      | Destinations of "Usar en una clase". Empty shows a hint with a link to create one.    |
+| Prop               | Type                  | Required | Meaning                                                                                                                                             |
+| ------------------ | --------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `studentName`      | `string`              | yes      | Whose game it is: the subtitle opens with «Partida de …».                                                                                           |
+| `game`             | `GameView`            | yes      | The game with `pgn`, players, record fields, `studyHref`, `studyName`, `sourceLabel`.                                                               |
+| `scheduledClasses` | `UpcomingClassWith[]` | yes      | The teacher's classes ahead WITH this student (`listUpcomingClassesWith`): destinations of «Usar en una clase». Empty says the staff programs them. |
 
 ## Behaviour
 

@@ -1,0 +1,38 @@
+---
+description: "«Agregar un bloque» / «Editar el bloque»: what it is, when the student sees it, and its fields by kind; submitted by hand, with the action as a prop."
+---
+
+# `BlockPopup`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/class-block-editor/block-popup.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                           |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Stylesheet | `block-popup.comp.css` → block `.block-popup__form`                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Story      | `block-popup.stories.tsx` (`platform/sections/teacher/classes/class-block-editor/BlockPopup`): text, game, lesson, video, group warning (all with `play`)                                                                                                                                                                                                                                                                                                                        |
+| Used by    | [`ClassBlockList`](/components/platform/sections/teacher/classes/class-block-list)                                                                                                                                                                                                                                                                                                                                                                                               |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup) (`lg`, a sheet on a phone), [`PlatformForm`, `PlatformFormGroup`](/components/platform/shared/platform-form), [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards), [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `addClassBlock`, `updateClassBlock` and `fetchReferencePgn` as props; `KIND_LABELS` (exported here)                                                                                                                                                                                                                                                                                                                                                                              |
+
+## Purpose
+
+No trigger of its own: the block list opens it through its `ref` with a preset — a kind and a section for a new block, the block to edit, a game chosen elsewhere («Usar en una clase»). «¿Qué vas a agregar?» (Texto · Partida · Lección · Video; fixed when editing) and «¿Cuándo lo ve el alumno?» (Para preparar · Después de la clase · Guion del profesor) are cards; the fields are [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form)'s. Submitted by hand (`onSubmit` → `startTransition(formAction)`), so React's reset does not reach the controlled pieces inside the fields.
+
+## Props
+
+| Prop                                                     | Type        | Required | Meaning                                          |
+| -------------------------------------------------------- | ----------- | -------- | ------------------------------------------------ |
+| `classId`                                                | `string`    | yes      |                                                  |
+| `options`                                                | `{ games }` | yes      |                                                  |
+| `groupSize`, `endHour`, `studentLabel`                   |             | yes      | The words of the cards and of the group warning. |
+| `addClassBlock`, `updateClassBlock`, `fetchReferencePgn` |             | yes      | The server actions.                              |
+
+## Markup & styling
+
+Block `.block-popup__form` (28 lines): a column with the foot over a hairline; on a phone the foot sticks to the bottom with its button full width.
+
+**Elements:** `.block-popup__foot`
+
+**Breakpoints:** `(width < 640px)`.
+
+**Tokens:** `--platform-surface`, `--platform-track`

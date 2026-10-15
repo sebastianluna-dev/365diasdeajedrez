@@ -2,6 +2,8 @@
 
 import { useRef } from "react";
 import { BanIcon } from "@/components/icons/ban-icon.comp";
+import { FinalizeClassButton } from "@/components/platform/shared/finalize-class-popup/finalize-class-popup.comp";
+import type { FinalizeClassAction } from "@/components/platform/shared/finalize-class-popup/finalize-class-popup.types";
 import { PlatformActionsMenu } from "@/components/platform/shared/platform-actions-menu/platform-actions-menu.comp";
 import {
   PlatformConfirmPopup,
@@ -9,7 +11,7 @@ import {
 } from "@/components/platform/shared/platform-confirm-popup/platform-confirm-popup.comp";
 import type { RegisterPaymentPopupProps } from "@/components/platform/shared/register-payment-popup/register-payment-popup.comp";
 import { RegisterPaymentButton } from "@/components/platform/shared/register-payment-popup/register-payment-popup.comp";
-import { CLASS_FORMAT } from "@/constants/platform/class-codes.const";
+import { CLASS_FORMAT, CLASS_PHASE } from "@/constants/platform/class-codes.const";
 import { formatClassWhen } from "@/lib/format-class-when";
 import { staffRoutes } from "@/lib/platform-routes";
 import { planCancellation } from "@/services/shared/class-rules";
@@ -39,14 +41,16 @@ export interface ClassHeaderActionsProps {
     loadTeacherBusy: (teacherId: string) => Promise<BusySlotView[]>;
     registerPayment: RegisterPaymentPopupProps["registerPayment"];
     loadPaymentContext: RegisterPaymentPopupProps["loadPaymentContext"];
+    finalizeClassAsStaff: FinalizeClassAction;
   };
 }
 
 /**
  * The actions in the head of a class's record, by phase (§2.4 of the plan):
  * ahead of time, «Agregar alumnos» (the accent, in a group class with a
- * seat free), «Reprogramar» and «Cancelar la clase»; once it ran, nothing
- * but the cancellation while it waits to be finalized; finished, the accent
+ * seat free), «Reprogramar» and «Cancelar la clase»; once it ended and
+ * waits, «Finalizar la clase en nombre de …» (D1) beside the cancellation;
+ * finished, the accent
  * is «Reprogramar» when exactly one student missed and was not moved, or
  * «Registrar pago» when a seat has none. The «…» always offers «Duplicar».
  * The cancellation (ADM-5) is a confirmation mounted as a sibling, with the
@@ -107,6 +111,15 @@ export function ClassHeaderActions({
           nowIso={nowIso}
           rescheduleClass={actions.rescheduleClass}
           loadTeacherBusy={actions.loadTeacherBusy}
+        />
+      )}
+      {editable.finalize && classDetail.phase === CLASS_PHASE.AWAITING_CLOSE && (
+        <FinalizeClassButton
+          variant="accent"
+          mode="staff"
+          label={`Finalizar en nombre de ${teacher.displayName}`}
+          action={actions.finalizeClassAsStaff}
+          {...classDetail.finalize}
         />
       )}
       {editable.moveSeat && noShows.length === 1 && noShows[0] && (

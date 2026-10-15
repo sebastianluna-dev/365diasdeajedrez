@@ -581,6 +581,23 @@ export const getClassAdminDetail = cache(async (classId: string): Promise<StaffC
         : null,
     blocks: mapClassBlocks(blocksRow.blocks, { audience: "staff", phase }),
     history,
+    finalize: {
+      classId: row.id,
+      classTitle: staffClassTitle(agendaRow),
+      whenLine: `${formatClassWhen({ start: row.scheduledAt, durationMin: row.durationMin, timeZone, now })} · ${
+        row.format.code === CLASS_FORMAT.GROUP ? `${seated.length} alumnos` : (seated[0]?.displayName ?? "")
+      }`,
+      isGroup: row.format.code === CLASS_FORMAT.GROUP,
+      teacherName: row.teacher.displayName,
+      students: seated.map((seat) => ({
+        id: seat.userId,
+        displayName: seat.displayName,
+        details: [seat.email],
+        mark: seat.mark,
+      })),
+      summary: row.summary,
+      recordingUrl: row.recordingUrl,
+    },
   };
 });
 

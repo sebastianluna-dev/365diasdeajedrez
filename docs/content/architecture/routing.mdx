@@ -60,13 +60,13 @@ URLs are Spanish because the product is. The single source of truth for private-
 
 ### Teacher (active `Teacher` row)
 
-| URL                                                                                                             | Page                                                                          |
-| --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `/profesor`                                                                                                     | Teacher dashboard.                                                            |
-| `/profesor/alumnos`, `/profesor/alumnos/[studentId]`                                                            | Assigned students (active assignment only).                                   |
-| `/profesor/alumnos/[studentId]/estudios/[studyId]`, `…/partidas/[gameId]`                                       | **Read-only** view of a student's studies.                                    |
-| `/profesor/clases`, `/profesor/clases/nuevo`, `/profesor/clases/[classId]`, `/profesor/clases/[classId]/editar` | Classes the teacher gives: create, detail, edit metadata/participants/blocks. |
-| `/profesor/perfil`                                                                                              | Display name, title, bio, photo, timezone.                                    |
+| URL                                                                       | Page                                                                                                                                                                                                                                               |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/profesor`                                                               | Teacher dashboard.                                                                                                                                                                                                                                 |
+| `/profesor/alumnos`, `/profesor/alumnos/[studentId]`                      | Assigned students (active assignment only).                                                                                                                                                                                                        |
+| `/profesor/alumnos/[studentId]/estudios/[studyId]`, `…/partidas/[gameId]` | **Read-only** view of a student's studies.                                                                                                                                                                                                         |
+| `/profesor/clases`, `/profesor/clases/[classId]`                          | «Clases que imparto» (`?vista=&q=&pagina=`) and a class's record: the material by section, the meeting, the attendance (`?finalizar=1` opens «Finalizar la clase»), the summary. The teacher no longer creates nor schedules classes (2026-10-15). |
+| `/profesor/perfil`                                                        | Display name, title, bio, photo, timezone.                                                                                                                                                                                                         |
 
 ### Staff (`Staff` row)
 

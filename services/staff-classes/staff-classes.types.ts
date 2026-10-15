@@ -1,6 +1,7 @@
 import type { AttendanceMarkView } from "@/components/platform/shared/attendance-row/attendance-row.types";
 import type { ClassAgendaDay } from "@/components/platform/shared/class-agenda/class-agenda.comp";
 import type { ClassRowData } from "@/components/platform/shared/class-row/class-row.types";
+import type { FinalizeClassData } from "@/components/platform/shared/finalize-class-popup/finalize-class-popup.types";
 import type { MeetingLinkCurrent } from "@/components/platform/shared/meeting-link-popup/meeting-link-popup.types";
 import type { ClassFormatCode, ClassPhaseCode } from "@/constants/platform/class-codes.const";
 import type { ClassBlockView } from "@/services/classes/classes.types";
@@ -136,6 +137,8 @@ export interface StaffClassDetail {
   reschedule: { previousStartIso: string; byName: string | null; atIso: string; note: string | null } | null;
   blocks: ClassBlockView[];
   history: ClassHistoryEntry[];
+  /** «Finalizar la clase en nombre de …» (D1): the popup's data, for a class that ended and waits. */
+  finalize: FinalizeClassData;
 }
 
 /** A student as «Crear clase» and «Agregar alumnos» list them. */

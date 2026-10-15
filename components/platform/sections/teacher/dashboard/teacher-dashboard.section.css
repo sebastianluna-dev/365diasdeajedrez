@@ -1,83 +1,122 @@
+/* The panel: the next class as a card with its tile and its join card, the
+   classes to finalize, and the week. */
 .teacher-dashboard {
   display: flex;
   flex-direction: column;
   gap: var(--platform-space-6);
 
-  & .teacher-dashboard__metrics {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--platform-space-4);
-
-    @media (width < 1024px) {
-      grid-template-columns: 1fr;
-    }
+  & .teacher-dashboard__eyebrow {
+    margin: 0 0 var(--platform-space-4);
+    font-size: var(--platform-type-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--platform-text-muted);
   }
 
-  & .teacher-dashboard__metric {
+  & .teacher-dashboard__next-body {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--platform-space-5);
+  }
+
+  & .teacher-dashboard__next-text {
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-1);
+    align-items: flex-start;
+    gap: var(--platform-space-2);
+    min-width: 0;
   }
 
-  & .teacher-dashboard__metric-value {
-    font-family: var(--platform-font);
-    font-size: var(--platform-type-3xl);
+  & .teacher-dashboard__next-title {
+    margin: 0;
+    font-size: var(--platform-type-2xl);
     font-weight: 700;
     color: var(--platform-text);
   }
 
-  & .teacher-dashboard__metric-label {
-    font-size: var(--platform-type-lg);
+  & .teacher-dashboard__next-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  & .teacher-dashboard__next-title a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  & .teacher-dashboard__next-people,
+  & .teacher-dashboard__next-chips {
+    margin: 0;
+    font-size: var(--platform-type-md);
     color: var(--platform-text-muted);
   }
 
-  & .teacher-dashboard__list {
+  & .teacher-dashboard__next-actions {
+    margin: var(--platform-space-2) 0 0;
+  }
+
+  & .teacher-dashboard__group {
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-3);
+  }
+
+  & .teacher-dashboard__group-title {
+    margin: 0;
+    font-size: var(--platform-type-xl);
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .teacher-dashboard__rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  & .teacher-dashboard__class {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--platform-space-3);
-    padding: var(--platform-space-3) 0;
-    border-bottom: 1px solid var(--platform-border);
+  & .teacher-dashboard__row {
+    border-radius: 8px;
+    box-shadow: var(--platform-shadow-card);
   }
 
-  & .teacher-dashboard__class:last-child {
-    border-bottom: 0;
-    padding-bottom: 0;
-  }
-
-  & .teacher-dashboard__class-title {
-    font-size: var(--platform-type-lg);
-    font-weight: 600;
-    color: var(--platform-text);
-  }
-
-  & .teacher-dashboard__class-title:hover {
-    color: var(--platform-accent-ink);
-  }
-
-  & .teacher-dashboard__class-meta {
-    font-size: var(--platform-type-lg);
-    color: var(--platform-text-muted);
-  }
-
+  & .teacher-dashboard__note,
   & .teacher-dashboard__empty {
     margin: 0;
-    font-size: var(--platform-type-lg);
+    font-size: var(--platform-type-md);
     color: var(--platform-text-muted);
   }
 
-  & .teacher-dashboard__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--platform-space-3);
+  & .teacher-dashboard__all {
+    margin: 0;
+  }
+
+  & .teacher-dashboard__all-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+    font-size: var(--platform-type-md);
+    font-weight: 700;
+    color: var(--platform-text);
+    text-decoration: none;
+  }
+
+  & .teacher-dashboard__all-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  & .teacher-dashboard__all-icon {
+    width: 10px;
+    height: 10px;
+  }
+
+  @media (width < 640px) {
+    & .teacher-dashboard__next-body {
+      flex-direction: column;
+    }
   }
 }

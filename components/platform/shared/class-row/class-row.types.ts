@@ -1,5 +1,9 @@
 import type { ClassPhaseCode } from "@/constants/platform/class-codes.const";
 import type {
+  FinalizeClassAction,
+  FinalizeClassData,
+} from "@/components/platform/shared/finalize-class-popup/finalize-class-popup.types";
+import type {
   MeetingLinkCurrent,
   SetMeetingAction,
 } from "@/components/platform/shared/meeting-link-popup/meeting-link-popup.types";
@@ -29,17 +33,19 @@ export interface ClassRowChip {
 
 /**
  * The action at the end of a row, as data: a link the row draws itself, or
- * the meeting link, which opens its popup through `ClassRowAction` with the
- * server action the section hands down in `serverActions`. Finalizing a
- * class joins it with phase 6.
+ * one that opens a popup through `ClassRowAction` with the server action
+ * the section hands down in `serverActions`: the meeting link (the staff's
+ * agenda) or finalizing the class (the teacher's panel).
  */
 export type ClassRowActionData =
   | { kind: "link"; label: string; href: string }
-  | { kind: "meeting"; label: string; classId: string; current: MeetingLinkCurrent };
+  | { kind: "meeting"; label: string; classId: string; current: MeetingLinkCurrent }
+  | { kind: "finalize"; label: string; finalize: FinalizeClassData };
 
 /** The server actions a row's action may need, passed as functions from the section; stubs in Storybook. */
 export interface ClassRowServerActions {
   setMeeting?: SetMeetingAction;
+  finalize?: FinalizeClassAction;
 }
 
 export interface ClassRowData {

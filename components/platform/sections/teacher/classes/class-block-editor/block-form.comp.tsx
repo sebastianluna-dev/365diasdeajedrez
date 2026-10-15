@@ -2,111 +2,151 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
-import { platformRoutes } from "@/lib/platform-routes";
+import { PlatformChoiceCards } from "@/components/platform/shared/platform-choice-cards/platform-choice-cards.comp";
+import { PlatformFormField, PlatformFormGroup } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { CLASS_BLOCK_KIND, type ClassBlockKindCode } from "@/constants/platform/class-codes.const";
-import type {
-  PositionOption,
-  ReferenceableGameGroup,
-  TeacherClassBlock,
-} from "@/services/teacher-classes/teacher-classes.types";
+import { platformRoutes } from "@/lib/platform-routes";
+import type { ReferenceableGameGroup, TeacherClassBlock } from "@/services/teacher-classes/teacher-classes.types";
 import { BlockGameField } from "./block-game-field.comp";
 import { GameSelector } from "./game-selector.comp";
 import { LessonReferenceField } from "./lesson-reference-field.comp";
-import { MovePathPicker } from "./move-path-picker.comp";
-import { PositionSelector } from "./position-selector.comp";
+import { MovePathPicker, type FetchReferencePgn } from "./move-path-picker.comp";
 import "./block-form.comp.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
 export interface BlockFormOptions {
   games: ReferenceableGameGroup[];
-  positions: PositionOption[];
 }
 
 interface BlockFormProps {
-  /** Server action already bound to the classId (and the blockId, when editing). */
-  action: (formData: FormData) => void;
   kind: ClassBlockKindCode;
   options: BlockFormOptions;
-  block?: TeacherClassBlock;
-  submitLabel: string;
-  onCancel?: () => void;
+  /** The block being edited, or the preset of a new one. */
+  block?: Partial<TeacherClassBlock>;
+  /** What the form sent before the server refused it, by field. */
+  values?: Record<string, string | string[]>;
+  /** What the server said, by field. */
+  errors?: Record<string, string | undefined>;
+  /** A group class: a student's game is seen by every student of it. */
+  groupSize?: number;
+  fetchReferencePgn: FetchReferencePgn;
 }
 
 /** Study the chosen game belongs to, if the teacher can annotate it. */
-function annotatableStudyOf(groups: BlockFormOptions["games"], gameId: string): string | null {
+function annotatableStudyOf(groups: ReferenceableGameGroup[], gameId: string): string | null {
   if (gameId.length === 0) return null;
   const group = groups.find((candidate) => candidate.games.some((game) => game.id === gameId));
   return group?.isOwn ? group.studyId : null;
 }
 
-/**
- * Fields of a block by kind. The state that lives here is interface only
- * (which reference is chosen, which position is marked): saving is always a
- * server action, which revalidates the fields on its own.
- */
-export function BlockForm({ action, kind, options, block, submitLabel, onCancel }: BlockFormProps) {
-  const [gameId, setGameId] = useState(block?.gameId ?? "");
-  const [lessonId, setLessonId] = useState(block?.lessonId ?? "");
-  const [positionId, setPositionId] = useState(block?.positionId ?? "");
-  const [movePath, setMovePath] = useState(block?.movePath ?? "");
+/** Whose study the chosen game is in, when it is a student's. */
+function ownerOf(groups: ReferenceableGameGroup[], gameId: string): string | null {
+  const group = groups.find((candidate) => candidate.games.some((game) => game.id === gameId));
+  return group && !group.isOwn ? group.ownerLabel : null;
+}
 
-  const referenceId = kind === CLASS_BLOCK_KIND.GAME_REF ? gameId : lessonId;
-  // Only for the lesson and for a student's game: the transcribed one is
+/**
+ * The fields of a block by kind, inside the block popup's form: the text, the
+ * video's address, the game — transcribed on the board or cited from a
+ * study, one or the other —, the lesson by id with its viewer as the check,
+ * the opening position of a game or a lesson, and the caption. The state
+ * that lives here is interface only (which reference is chosen, which
+ * position is marked); saving is the popup's.
+ */
+export function BlockForm({
+  kind,
+  options,
+  block,
+  values = {},
+  errors = {},
+  groupSize,
+  fetchReferencePgn,
+}: BlockFormProps) {
+  const text = (name: string, fallback = "") =>
+    typeof values[name] === "string" ? (values[name] as string) : fallback;
+  const [source, setSource] = useState<"pgn" | "game">(
+    text("source", block?.gameId && !block?.pgn ? "game" : "pgn") === "game" ? "game" : "pgn",
+  );
+  const [gameId, setGameId] = useState(text("gameId", block?.gameId ?? ""));
+  const [lessonId, setLessonId] = useState(text("lessonId", block?.lessonId ?? ""));
+  const [movePath, setMovePath] = useState(text("movePath", block?.movePath ?? ""));
+
+  const referenceId = kind === CLASS_BLOCK_KIND.GAME_REF ? (source === "game" ? gameId : "") : lessonId;
+  // Only for the lesson and for a cited game: the transcribed one is
   // traversed on its own board, so it needs no second viewer.
   const supportsMovePath =
-    kind === CLASS_BLOCK_KIND.LESSON_REF || (kind === CLASS_BLOCK_KIND.GAME_REF && gameId.length > 0);
+    kind === CLASS_BLOCK_KIND.LESSON_REF || (kind === CLASS_BLOCK_KIND.GAME_REF && referenceId.length > 0);
   const annotatableStudyId = annotatableStudyOf(options.games, gameId);
+  const owner = ownerOf(options.games, gameId);
 
   return (
-    <PlatformForm className="block-form" action={action}>
-      <input type="hidden" name="kind" value={kind} />
-
+    <div className="block-form">
       {kind === CLASS_BLOCK_KIND.TEXT && (
-        <PlatformFormField name="text" label="Texto" hint="Se admiten párrafos y subtítulos con «## ».">
-          <textarea defaultValue={block?.text ?? ""} maxLength={10000} required />
+        <PlatformFormField
+          name="text"
+          label="Texto"
+          hint="Se admiten párrafos y subtítulos con «## »."
+          serverError={errors.text}
+        >
+          <textarea defaultValue={text("text", block?.text ?? "")} rows={6} maxLength={10000} required />
         </PlatformFormField>
       )}
 
       {kind === CLASS_BLOCK_KIND.VIDEO && (
         <PlatformFormField
           name="videoUrl"
-          label="URL del video"
-          hint="Enlace http(s) a la grabación o al video de apoyo."
+          label="Dirección del video"
+          hint="Enlace al video de apoyo o a la grabación."
+          serverError={errors.videoUrl}
         >
-          <input type="url" defaultValue={block?.videoUrl ?? ""} maxLength={500} required />
+          <input type="url" defaultValue={text("videoUrl", block?.videoUrl ?? "")} maxLength={500} required />
         </PlatformFormField>
       )}
 
       {kind === CLASS_BLOCK_KIND.GAME_REF && (
         <>
-          {/* Transcribing is the main path: there is nothing to choose beforehand.
-              The field already brings its panel to paste a PGN if the teacher has
-              one. The game lives in the block, not in a study. */}
-          <BlockGameField name="pgn" defaultPgn={block?.pgn ?? undefined} />
-
-          {/* Second route: discuss in class the game a student played without
-              typing it again. Folded, because it is not the usual case. */}
-          <details className="block-form__alternative">
-            <summary>…o traer la partida de un alumno</summary>
-            <GameSelector groups={options.games} value={gameId} onChange={setGameId} />
-            {annotatableStudyId && (
-              <p className="block-form__annotate">
-                {/* The game is annotated on its own screen: there the owner plays
-                    on the board and comments from the list. */}
-                <Link href={platformRoutes.gameDetail(annotatableStudyId, gameId)} className="platform-button">
-                  Anotar esta partida
-                </Link>
-              </p>
-            )}
-          </details>
+          <PlatformFormGroup label="La partida">
+            <PlatformChoiceCards
+              name="source"
+              layout="line"
+              defaultValue={source}
+              onValueChange={(value) => setSource(value === "game" ? "game" : "pgn")}
+              options={[
+                { value: "pgn", label: "Transcribir", description: "Juega las jugadas en el tablero o pega el PGN." },
+                { value: "game", label: "De un estudio", description: "Una partida tuya o de un alumno asignado." },
+              ]}
+            />
+          </PlatformFormGroup>
+          {source === "pgn" ? (
+            <>
+              <BlockGameField name="pgn" defaultPgn={text("pgn", block?.pgn ?? "")} />
+              {errors.pgn && <p className="block-form__error">{errors.pgn}</p>}
+            </>
+          ) : (
+            <>
+              <GameSelector groups={options.games} defaultValue={gameId || undefined} onChange={setGameId} />
+              {errors.gameId && <p className="block-form__error">{errors.gameId}</p>}
+              {owner && groupSize !== undefined && groupSize > 1 && (
+                <p className="block-form__warning">
+                  Los {groupSize} alumnos de la clase verán esta partida de {owner}.
+                </p>
+              )}
+              {annotatableStudyId && (
+                <p className="block-form__annotate">
+                  <Link href={platformRoutes.gameDetail(annotatableStudyId, gameId)} className="platform-button">
+                    Anotar esta partida
+                  </Link>
+                </p>
+              )}
+            </>
+          )}
         </>
       )}
 
-      {kind === CLASS_BLOCK_KIND.LESSON_REF && <LessonReferenceField value={lessonId} onChange={setLessonId} />}
-
-      {kind === CLASS_BLOCK_KIND.POSITION_REF && (
-        <PositionSelector positions={options.positions} value={positionId} onChange={setPositionId} />
+      {kind === CLASS_BLOCK_KIND.LESSON_REF && (
+        <>
+          <LessonReferenceField defaultValue={lessonId} onChange={setLessonId} />
+          {errors.lessonId && <p className="block-form__error">{errors.lessonId}</p>}
+        </>
       )}
 
       {supportsMovePath && (
@@ -123,22 +163,14 @@ export function BlockForm({ action, kind, options, block, submitLabel, onCancel 
             referenceId={referenceId}
             value={movePath}
             onChange={setMovePath}
+            fetchReferencePgn={fetchReferencePgn}
           />
         </>
       )}
 
-      <PlatformFormField name="caption" label="Pie o nota">
-        <input type="text" defaultValue={block?.caption ?? ""} maxLength={200} />
+      <PlatformFormField name="caption" label="Pie o nota" serverError={errors.caption}>
+        <input type="text" defaultValue={text("caption", block?.caption ?? "")} maxLength={200} />
       </PlatformFormField>
-
-      <div className="block-form__actions">
-        <SubmitButton className="platform-button platform-button_variant_ink">{submitLabel}</SubmitButton>
-        {onCancel && (
-          <button type="button" className="platform-button" onClick={onCancel}>
-            Cancelar
-          </button>
-        )}
-      </div>
-    </PlatformForm>
+    </div>
   );
 }

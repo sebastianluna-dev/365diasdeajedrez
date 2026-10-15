@@ -2,7 +2,7 @@ import { ACTIVITY_TYPE, SUBJECT_TYPE } from "@/constants/platform/activity-codes
 import { CLASS_PHASE, CLASS_STATUS } from "@/constants/platform/class-codes.const";
 import { classPhase } from "./class-phase";
 import { attendanceEditableBy, type AttendanceEdit, type ClassActorRole } from "./class-rules";
-import { lockClasses } from "./class-seats.service";
+import { lockClasses } from "./class-locks";
 import { classStatusIds, type ClassStatusReader } from "./class-status.service";
 import { recordUserActivity, type ActivityWriter } from "./user-activity.service";
 

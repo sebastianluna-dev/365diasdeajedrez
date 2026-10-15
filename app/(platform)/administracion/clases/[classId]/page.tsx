@@ -14,6 +14,7 @@ import { staffRoutes } from "@/lib/platform-routes";
 import {
   addClassParticipants,
   cancelClass,
+  finalizeClassAsStaff,
   rescheduleClass,
   rescheduleStudentSeat,
 } from "@/services/staff-classes/staff-classes.actions";
@@ -59,6 +60,8 @@ function noticeText(notice: ClassNotice | null, classDetail: StaffClassDetail): 
       return "Enlace agregado.";
     case "meetingChanged":
       return "Enlace cambiado.";
+    case "classFinalized":
+      return `Clase finalizada en nombre de ${classDetail.teacher.displayName}.`;
     case "attendanceChanged": {
       const seat = classDetail.seats.find((item) => item.userId === notice.args[0]);
       if (!seat) return "Asistencia cambiada.";
@@ -95,6 +98,7 @@ export default async function StaffClassPage({ params, searchParams }: StaffClas
     loadTeacherBusy,
     registerPayment,
     loadPaymentContext,
+    finalizeClassAsStaff,
   };
 
   return (

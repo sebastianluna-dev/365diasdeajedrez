@@ -2,93 +2,316 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 import {
   CLASS_BLOCK_KIND,
   CLASS_BLOCK_VISIBILITY,
-  CLASS_FORMAT,
   CLASS_STATUS,
   type ClassBlockKindCode,
-  type ClassStatusCode,
+  type ClassBlockVisibilityCode,
 } from "@/constants/platform/class-codes.const";
-import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
-import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
-import {
-  assertTeacherCanReferenceGame,
-  assertTeacherHasStudent,
-  assertTeacherOwnsClass,
-} from "@/lib/platform-auth/guards";
-import { requireTeacher, type TeacherContext } from "@/lib/platform-auth/roles";
 import { PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
+import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
+import { assertTeacherCanReferenceGame, assertTeacherOwnsClass } from "@/lib/platform-auth/guards";
+import { requireTeacher } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import type { Prisma } from "@/lib/platform-db/generated/client";
-import { teacherRoutes } from "@/lib/platform-routes";
+import { platformRoutes, staffRoutes, teacherRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
-import { parseDateTimeLocal, safeTimeZone } from "@/lib/timezone";
-import { z } from "zod";
-import {
-  formInt,
-  formOptionalText,
-  formOptionalUrl,
-  formText,
-  parseForm,
-  readIds,
-} from "@/services/shared/form-schema";
-import { getPgnForReference } from "./teacher-classes.service";
-import { planDenseRenumber, planSwap, nextOrder, type MoveDirection } from "@/services/shared/reorder";
-import { withErrorParam } from "@/services/shared/safe-return-to";
 import { recordAttendance } from "@/services/shared/class-attendance.service";
-import { classPhase } from "@/services/shared/class-phase";
-import { canFinalizeClass } from "@/services/shared/class-rules";
-import { createClassRecord, syncClassMeeting, syncClassSchedule } from "@/services/shared/class-schedule.service";
-import { removeClassSeat, syncClassSeat } from "@/services/shared/class-seats.service";
+import { editableClassFields } from "@/services/shared/class-rules";
 import { transitionClassStatus } from "@/services/shared/class-status.service";
-import { meetingVisibleFrom } from "@/services/shared/meeting-visible-from";
+import { formOptionalText, formOptionalUrl, formText, parseForm } from "@/services/shared/form-schema";
+import {
+  popupFormDone,
+  popupFormError,
+  readFormValues,
+  type FieldError,
+  type PopupFormState,
+} from "@/services/shared/form-state";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
+import { nextOrder, planDenseRenumber, planFullReorder } from "@/services/shared/reorder";
+import { withErrorParam, withNoticeParam } from "@/services/shared/safe-return-to";
+import { gameBlockSource } from "./block-rules";
+import { getPgnForReference } from "./teacher-classes.service";
+import { teacherPhaseOf } from "./teacher-classes.mapper";
 
-// Writes of the teacher panel. Rules that are NOT negotiable:
-// - Every action opens with requireTeacher(); those that receive a classId
-//   continue with assertTeacherOwnsClass. They are reachable by direct POST, so
-//   hiding a button protects nothing.
-// - Catalogs are connected by `code`, never by id.
-// - Errors come back by redirect with `?error=<code>` (message map in
-//   constants/platform/teacher-messages.const.ts).
-// - When a class is, how it is joined, its status, its seats and its marks are
-//   written ONLY by the shared writers of services/shared/ (class-schedule,
-//   class-status, class-seats, class-attendance), inside this file's
-//   transaction. This file writes the columns that are the teacher's alone:
-//   title, description, recording and summary, and the blocks.
-//
-// These are the OLD screens, kept on top of the writers until phase 6 retires
-// them.
+// Writes of the teacher panel: the topic, the blocks, the attendance and
+// what is written after the class. Rules that are NOT negotiable:
+// - Every action opens with requireTeacher() and, with a classId, continues
+//   with assertTeacherOwnsClass. They are reachable by direct POST.
+// - When a class is, how it is joined, who is in it and its status are the
+//   staff's; the teacher writes only through the shared writers of
+//   services/shared/ (attendance, status when finalizing) and the columns that
+//   are theirs alone: title, description, summary, recording and the blocks.
+// - The popup actions return a `PopupFormState`; the ones a confirmation
+//   runs redirect with the notice.
 
-const CLASS_META_SCHEMA = z.object({
-  title: formText(120),
-  description: formOptionalText(500),
-  // `datetime-local` values: the teacher's wall-clock time, converted with THEIR zone below.
-  scheduledAt: formText(40),
-  durationMin: formInt(15, 480),
-  // The form still sends `meetingProviderCode`; it is ignored: the platform is
-  // read from the link by the writer (`classMeetingColumns`).
-  meetingUrl: formOptionalUrl(2000),
-  meetingUrlVisibleFrom: z.string().trim().max(40).optional(),
-});
-/** Which `?error=` code names each field of the class form. */
-const CLASS_META_ERROR: Record<string, string> = {
-  title: "title",
-  scheduledAt: "schedule",
-  durationMin: "duration",
-  meetingUrl: "meetingUrl",
-  meetingUrlVisibleFrom: "schedule",
-};
-const CLASS_EXTRA_SCHEMA = z.object({ recordingUrl: formOptionalUrl(2000), summary: formOptionalText(5000) });
-const STATUS_SCHEMA = z.object({
-  statusCode: formText(32).refine((value) => (Object.values(CLASS_STATUS) as string[]).includes(value)),
-});
-const STUDENT_SCHEMA = z.object({ studentId: formText(64) });
-const ATTENDANCE_SCHEMA = z.object({ attended: z.array(z.string().trim().max(64)) });
+const WINDOW_MS = 60_000;
+
+/** Revalidates every page that draws the class: the teacher's, the staff's and the student's. */
+function revalidateClass(classId: string): void {
+  revalidatePath(teacherRoutes.classDetail(classId));
+  revalidatePath(teacherRoutes.classes);
+  revalidatePath(teacherRoutes.home);
+  revalidatePath(staffRoutes.staffClassDetail(classId));
+  revalidatePath(staffRoutes.classes);
+  revalidatePath(platformRoutes.classDetail(classId));
+  revalidatePath(platformRoutes.classes);
+  revalidatePath(platformRoutes.dashboard);
+}
+
+async function openClass(classId: string, key: string, limit: number) {
+  const { teacher, user } = await requireTeacher();
+  await assertTeacherOwnsClass(teacher.id, classId);
+  const throttled = !(await allowAction(`${user.id}:${key}`, limit, WINDOW_MS));
+  return { teacher, user, throttled };
+}
+
+/** The phase the class is in now, for what it allows. */
+async function phaseOf(classId: string, now: Date) {
+  const row = await getPlatformDb().class.findUnique({
+    where: { id: classId },
+    select: {
+      scheduledAt: true,
+      endsAt: true,
+      meetingUrl: true,
+      meetingUrlVisibleFrom: true,
+      status: { select: { code: true } },
+      participants: { where: { seatMovedAt: null }, select: { userId: true } },
+    },
+  });
+  if (!row) return null;
+  return {
+    phase: teacherPhaseOf({ ...row, statusCode: row.status.code as typeof CLASS_STATUS.SCHEDULED }, now),
+    seatIds: row.participants.map((seat) => seat.userId),
+  };
+}
+
+const TOPIC_SCHEMA = z.object({ title: formText(120), description: formOptionalText(500) });
+
+/** «Editar el tema»: the title (required) and the description. */
+export async function updateClassTopic(
+  classId: string,
+  prev: PopupFormState,
+  formData: FormData,
+): Promise<PopupFormState> {
+  void prev;
+  const values = readFormValues(formData, ["title", "description"]);
+  const { throttled } = await openClass(classId, "class-topic", 60);
+  if (throttled) return popupFormError({}, values, { code: "throttled" });
+  const parsed = parseForm(TOPIC_SCHEMA, formData);
+  if (!parsed.ok)
+    return popupFormError({ [parsed.field]: { code: parsed.field === "title" ? "topic" : "invalid" } }, values);
+  const current = await phaseOf(classId, new Date());
+  if (!current || !editableClassFields(current.phase).topic) return popupFormError({}, values, { code: "notEditable" });
+
+  await getPlatformDb().class.update({
+    where: { id: classId },
+    data: { title: parsed.data.title, description: parsed.data.description },
+  });
+  revalidateClass(classId);
+  return popupFormDone("topicSaved");
+}
+
+/** The marks a form sent, `attendance.<id>` = yes | no, for the given seats. */
+function readMarks(
+  formData: FormData,
+  seatIds: string[],
+): { marks: { studentId: string; attended: boolean }[]; missing: string[] } {
+  const marks: { studentId: string; attended: boolean }[] = [];
+  const missing: string[] = [];
+  for (const studentId of seatIds) {
+    const value = formData.get(`attendance.${studentId}`);
+    if (value === "yes" || value === "no") marks.push({ studentId, attended: value === "yes" });
+    else missing.push(studentId);
+  }
+  return { marks, missing };
+}
+
+const AFTER_SCHEMA = z.object({ summary: formOptionalText(5000), recordingUrl: formOptionalUrl(2000) });
+
+/**
+ * «Finalizar la clase» (PROF-3): every seat marked, the summary and the
+ * recording if written, and the class COMPLETED — in one transaction, through
+ * `recordAttendance` and `transitionClassStatus`.
+ */
+export async function finalizeClass(
+  classId: string,
+  prev: PopupFormState,
+  formData: FormData,
+): Promise<PopupFormState> {
+  void prev;
+  const marksSent = [...formData.keys()].filter((key) => key.startsWith("attendance."));
+  const values = readFormValues(formData, ["summary", "recordingUrl", ...marksSent]);
+  const { user, throttled } = await openClass(classId, "class-finalize", 20);
+  if (throttled) return popupFormError({}, values, { code: "throttled" });
+  const parsed = parseForm(AFTER_SCHEMA, formData);
+  if (!parsed.ok) return popupFormError({ [parsed.field]: { code: parsed.field } }, values);
+  const now = new Date();
+  const current = await phaseOf(classId, now);
+  if (!current || !editableClassFields(current.phase).finalize)
+    return popupFormError({}, values, { code: "notEditable" });
+  const { marks, missing } = readMarks(formData, current.seatIds);
+  if (missing.length > 0) {
+    return popupFormError(
+      Object.fromEntries(missing.map((id) => [`attendance.${id}`, { code: "missingMark" }])),
+      values,
+      { code: "missingMark" },
+    );
+  }
+
+  const outcome = await getPlatformDb()
+    .$transaction(async (tx) => {
+      const marked = await recordAttendance(tx, {
+        classId,
+        marks,
+        actor: { userId: user.id, role: "teacher" },
+        mode: "finalize",
+        reason: null,
+        now,
+      });
+      if (!marked.ok) return { ok: false as const, code: marked.code };
+      await tx.class.update({
+        where: { id: classId },
+        data: { summary: parsed.data.summary, recordingUrl: parsed.data.recordingUrl },
+      });
+      const closed = await transitionClassStatus(tx, {
+        classId,
+        to: CLASS_STATUS.COMPLETED,
+        actor: { userId: user.id, role: "teacher" },
+        now,
+      });
+      if (!closed.written) throw new Refused("classClosed");
+      return { ok: true as const };
+    })
+    .catch((error: unknown) => {
+      if (error instanceof Refused) return { ok: false as const, code: error.code };
+      throw error;
+    });
+  if (!outcome.ok) return popupFormError({}, values, { code: outcome.code });
+
+  revalidateClass(classId);
+  return popupFormDone("classFinalized");
+}
+
+/** A refusal inside the transaction: thrown so the writes roll back. */
+class Refused extends Error {
+  constructor(readonly code: string) {
+    super(`refused: ${code}`);
+  }
+}
+
+/** «Cambiar la asistencia» of a finished class (D3): the teacher's own marks, logged, no reason. */
+export async function changeAttendance(
+  classId: string,
+  prev: PopupFormState,
+  formData: FormData,
+): Promise<PopupFormState> {
+  void prev;
+  const marksSent = [...formData.keys()].filter((key) => key.startsWith("attendance."));
+  const values = readFormValues(formData, marksSent);
+  const { user, throttled } = await openClass(classId, "class-attendance", 30);
+  if (throttled) return popupFormError({}, values, { code: "throttled" });
+  const now = new Date();
+  const current = await phaseOf(classId, now);
+  if (!current || !editableClassFields(current.phase).changeAttendance)
+    return popupFormError({}, values, { code: "notEditable" });
+  const { marks } = readMarks(formData, current.seatIds);
+  if (marks.length === 0) return popupFormError({}, values, { code: "attendanceRequired" });
+
+  const result = await getPlatformDb().$transaction((tx) =>
+    recordAttendance(tx, {
+      classId,
+      marks,
+      actor: { userId: user.id, role: "teacher" },
+      mode: "change",
+      reason: null,
+      now,
+    }),
+  );
+  if (!result.ok) return popupFormError({}, values, { code: result.code });
+
+  revalidateClass(classId);
+  return popupFormDone("attendanceChanged");
+}
+
+/** «Después de la clase»: the summary and the recording, both optional, once the class is done. */
+export async function updateClassAfterNotes(
+  classId: string,
+  prev: PopupFormState,
+  formData: FormData,
+): Promise<PopupFormState> {
+  void prev;
+  const values = readFormValues(formData, ["summary", "recordingUrl"]);
+  const { throttled } = await openClass(classId, "class-after", 60);
+  if (throttled) return popupFormError({}, values, { code: "throttled" });
+  const parsed = parseForm(AFTER_SCHEMA, formData);
+  if (!parsed.ok) return popupFormError({ [parsed.field]: { code: parsed.field } }, values);
+  const current = await phaseOf(classId, new Date());
+  if (!current || !editableClassFields(current.phase).afterNotes)
+    return popupFormError({}, values, { code: "notEditable" });
+
+  await getPlatformDb().class.update({
+    where: { id: classId },
+    data: { summary: parsed.data.summary, recordingUrl: parsed.data.recordingUrl },
+  });
+  revalidateClass(classId);
+  return popupFormDone("afterNotesSaved");
+}
+
+const VISIBILITY = z.enum([
+  CLASS_BLOCK_VISIBILITY.BEFORE,
+  CLASS_BLOCK_VISIBILITY.AFTER,
+  CLASS_BLOCK_VISIBILITY.TEACHER,
+]);
+
+/**
+ * The order of the class's blocks after a drop or a step: the FULL list
+ * (`blockOrderAfterDrop`), and the moved block's visibility when the drop
+ * crossed a section. `planFullReorder` discards an incomplete list.
+ */
+export async function reorderClassBlocks(
+  classId: string,
+  orderedIds: string[],
+  moved?: { blockId: string; visibility: ClassBlockVisibilityCode },
+): Promise<{ ok: boolean }> {
+  const { throttled } = await openClass(classId, "class-block-order", 120);
+  if (throttled) return { ok: false };
+  const ids = orderedIds.filter((id): id is string => typeof id === "string" && id.length > 0 && id.length <= 64);
+  if (ids.length !== orderedIds.length) return { ok: false };
+  const visibility = moved ? VISIBILITY.safeParse(moved.visibility) : null;
+  if (visibility && !visibility.success) return { ok: false };
+
+  const db = getPlatformDb();
+  try {
+    await db.$transaction(async (tx) => {
+      const rows = await tx.classBlock.findMany({ where: { classId }, select: { id: true, order: true } });
+      const updates = planFullReorder(rows, ids);
+      if (updates.length === 0 && rows.length !== ids.length) throw new Refused("order");
+      for (const update of updates) {
+        await tx.classBlock.update({ where: { id: update.id }, data: { order: update.order } });
+      }
+      if (moved && visibility?.success) {
+        await tx.classBlock.updateMany({
+          where: { id: moved.blockId, classId },
+          data: { visibility: { connect: { code: visibility.data } } } as Prisma.ClassBlockUpdateManyMutationInput,
+        });
+      }
+    });
+  } catch (error) {
+    if (error instanceof Refused || isUniqueConstraintError(error, "ClassBlock_classId_order_key", "order"))
+      return { ok: false };
+    throw error;
+  }
+  revalidateClass(classId);
+  return { ok: true };
+}
+
 const BLOCK_COMMON_SCHEMA = z.object({
-  kind: formText(32).refine((value) => (Object.values(CLASS_BLOCK_KIND) as string[]).includes(value)),
+  kind: z.enum([CLASS_BLOCK_KIND.TEXT, CLASS_BLOCK_KIND.VIDEO, CLASS_BLOCK_KIND.GAME_REF, CLASS_BLOCK_KIND.LESSON_REF]),
+  visibility: VISIBILITY,
   caption: formOptionalText(200),
   movePath: formOptionalText(200),
 });
@@ -98,327 +321,95 @@ const BLOCK_GAME_SCHEMA = z.object({
   pgn: z.string().trim().max(PGN_MAX_LENGTH).optional(),
   gameId: z.string().trim().max(64).optional(),
 });
-const MOVE_SCHEMA = z.object({ blockId: formText(64), direction: z.enum(["up", "down"]) });
-
-function fail(path: string, code: string): never {
-  redirect(withErrorParam(path, code));
-}
-
-/**
- * A writer's refusal, thrown INSIDE a transaction so everything written before
- * it rolls back, and turned into the redirect once outside. A `redirect()`
- * thrown inside the transaction would roll it back too, but the error code is
- * decided here and read in one place.
- */
-class ClassWriteRefused extends Error {
-  constructor(readonly code: string) {
-    super(`class write refused: ${code}`);
-  }
-}
-
-/** Runs `write` in a transaction and answers a refusal with the form's error. */
-async function transactionOrFail<T>(failPath: string, write: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T> {
-  try {
-    return await getPlatformDb().$transaction(write);
-  } catch (error) {
-    if (error instanceof ClassWriteRefused) fail(failPath, error.code);
-    throw error;
-  }
-}
-
-async function teacherTimeZone(teacherId: string): Promise<string> {
-  const row = await getPlatformDb().teacher.findUnique({ where: { id: teacherId }, select: { timezone: true } });
-  return safeTimeZone(row?.timezone);
-}
-
-interface ClassMetaInput {
-  title: string;
-  description: string | null;
-  scheduledAt: Date;
-  durationMin: number;
-  meetingUrl: string | null;
-  /** The instant the teacher chose for the link to open, or null for the default. */
-  meetingVisibleFromChosen: Date | null;
-}
-
-/** Reads and validates the metadata common to creating and editing a class. */
-async function readClassMeta(
-  formData: FormData,
-  teacher: TeacherContext["teacher"],
-  failPath: string,
-): Promise<ClassMetaInput> {
-  const parsed = parseForm(CLASS_META_SCHEMA, formData);
-  if (!parsed.ok) fail(failPath, CLASS_META_ERROR[parsed.field] ?? "invalid");
-  const { title, description, durationMin, meetingUrl } = parsed.data;
-
-  const timeZone = await teacherTimeZone(teacher.id);
-  // The input is `datetime-local`: the teacher's wall-clock time, which is
-  // converted to UTC with THEIR zone (or UTC if they have none configured).
-  const scheduledAt = parseDateTimeLocal(parsed.data.scheduledAt, timeZone);
-  if (!scheduledAt) fail(failPath, "schedule");
-
-  // A malformed instant is an error even without a link, where it is not stored.
-  const visibleFromRaw = parsed.data.meetingUrlVisibleFrom ?? "";
-  const chosenVisibleFrom = visibleFromRaw.length > 0 ? parseDateTimeLocal(visibleFromRaw, timeZone) : null;
-  if (visibleFromRaw.length > 0 && chosenVisibleFrom === null) fail(failPath, "schedule");
-
-  // What is stored («only a chosen instant, and only with a link») is the
-  // writer's business: the chosen instant travels as it is.
-  return { title, description, scheduledAt, durationMin, meetingUrl, meetingVisibleFromChosen: chosenVisibleFrom };
-}
-
-/** Which `?error=` code answers each refusal of `createClassRecord`. */
-const CREATE_CLASS_ERROR: Record<"capacity" | "groupTitle" | "meetingOpensLate", string> = {
-  capacity: "invalid",
-  groupTitle: "title",
-  meetingOpensLate: "schedule",
-};
-
-export async function createClass(formData: FormData): Promise<void> {
-  const { teacher, user } = await requireTeacher();
-  if (!(await allowAction(`${user.id}:class-create`, 20, 3_600_000))) fail(teacherRoutes.newClass, "throttled");
-
-  const meta = await readClassMeta(formData, teacher, teacherRoutes.newClass);
-
-  // Initial participants: only students with an active assignment. Each is checked
-  // one by one against the database, never by whatever comes ticked in the form.
-  const studentIds = formData.getAll("studentIds").filter((value): value is string => typeof value === "string");
-  for (const studentId of studentIds) await assertTeacherHasStudent(teacher.id, studentId);
-
-  // The old form has no format: two or more students make a group class, with
-  // room for exactly them; otherwise it is individual.
-  const group = studentIds.length >= 2;
-  const classId = await transactionOrFail(teacherRoutes.newClass, async (tx) => {
-    const record = await createClassRecord(tx, {
-      teacherId: teacher.id,
-      formatCode: group ? CLASS_FORMAT.GROUP : CLASS_FORMAT.INDIVIDUAL,
-      capacity: group ? Math.max(2, studentIds.length) : null,
-      title: meta.title,
-      description: meta.description,
-      scheduledAt: meta.scheduledAt,
-      durationMin: meta.durationMin,
-      meetingUrl: meta.meetingUrl,
-      meetingVisibleFromChosen: meta.meetingVisibleFromChosen,
-      createdById: user.id,
-    });
-    if (!record.ok) throw new ClassWriteRefused(CREATE_CLASS_ERROR[record.code]);
-
-    // Every seat starts «Sin pago»: the old screen knows nothing of payments.
-    for (const studentId of studentIds) {
-      const seat = await syncClassSeat(tx, {
-        classId: record.id,
-        studentId,
-        coverage: "unpaid",
-        addedById: user.id,
-        mode: "add",
-      });
-      if (!seat.ok) throw new ClassWriteRefused("student");
-    }
-    return record.id;
-  });
-
-  revalidatePath(teacherRoutes.classes);
-  revalidatePath(teacherRoutes.home);
-  redirect(teacherRoutes.classDetail(classId));
-}
-
-export async function updateClassMeta(classId: string, formData: FormData): Promise<void> {
-  const { teacher, user } = await requireTeacher();
-  await assertTeacherOwnsClass(teacher.id, classId);
-
-  const editPath = teacherRoutes.classEdit(classId);
-  if (!(await allowAction(`${user.id}:class-update`, 60, 60_000))) fail(editPath, "throttled");
-
-  const meta = await readClassMeta(formData, teacher, editPath);
-  const extra = parseForm(CLASS_EXTRA_SCHEMA, formData);
-  if (!extra.ok) fail(editPath, "invalid");
-
-  const now = new Date();
-  await transactionOrFail(editPath, async (tx) => {
-    // The teacher's own columns; `teacherId` never appears here: a class does
-    // not change teacher. When it is and how it is joined go through the writers.
-    const current = await tx.class.update({
-      where: { id: classId },
-      data: {
-        title: meta.title,
-        description: meta.description,
-        recordingUrl: extra.data.recordingUrl,
-        summary: extra.data.summary,
-      },
-      select: { scheduledAt: true, durationMin: true },
-    });
-
-    // The reschedule is asked for only when the date or the duration changed:
-    // the writer refuses a finished class before comparing, and the old form
-    // is also how the teacher adds the summary and the recording afterwards.
-    const rescheduled =
-      current.scheduledAt.getTime() !== meta.scheduledAt.getTime() || current.durationMin !== meta.durationMin;
-    if (rescheduled) {
-      const schedule = await syncClassSchedule(
-        tx,
-        classId,
-        { scheduledAt: meta.scheduledAt, durationMin: meta.durationMin, note: null },
-        user.id,
-        now,
-      );
-      if (!schedule.ok) throw new ClassWriteRefused(schedule.code === "classClosed" ? "status" : "schedule");
-    }
-
-    const meeting = await syncClassMeeting(tx, classId, {
-      meetingUrl: meta.meetingUrl,
-      visibleFromChosen: meta.meetingVisibleFromChosen,
-    });
-    if (!meeting.ok) throw new ClassWriteRefused("schedule");
-  });
-
-  revalidatePath(teacherRoutes.classes);
-  revalidatePath(teacherRoutes.classDetail(classId));
-  redirect(teacherRoutes.classDetail(classId));
-}
-
-export async function setClassStatus(classId: string, formData: FormData): Promise<void> {
-  const { teacher, user } = await requireTeacher();
-  await assertTeacherOwnsClass(teacher.id, classId);
-
-  const detailPath = teacherRoutes.classDetail(classId);
-  if (!(await allowAction(`${user.id}:class-status`, 60, 60_000))) fail(detailPath, "throttled");
-
-  const status = parseForm(STATUS_SCHEMA, formData);
-  if (!status.ok) fail(detailPath, "status");
-  // The teacher only finalizes: cancelling is the staff's, and «En vivo» is a
-  // phase of the hour, never a status anybody presses.
-  if (status.data.statusCode !== CLASS_STATUS.COMPLETED) fail(detailPath, "status");
-
-  const { written } = await transitionClassStatus(getPlatformDb(), {
-    classId,
-    to: CLASS_STATUS.COMPLETED,
-    actor: { userId: user.id, role: "teacher" },
-    now: new Date(),
-  });
-  if (!written) fail(detailPath, "status");
-
-  revalidatePath(teacherRoutes.classes);
-  revalidatePath(detailPath);
-  revalidatePath(teacherRoutes.home);
-}
-
-export async function addParticipant(classId: string, formData: FormData): Promise<void> {
-  const { teacher, user } = await requireTeacher();
-  await assertTeacherOwnsClass(teacher.id, classId);
-
-  const detailPath = teacherRoutes.classDetail(classId);
-  if (!(await allowAction(`${user.id}:class-participant`, 60, 60_000))) fail(detailPath, "throttled");
-
-  const parsed = parseForm(STUDENT_SCHEMA, formData);
-  if (!parsed.ok) fail(detailPath, "student");
-  const { studentId } = parsed.data;
-  await assertTeacherHasStudent(teacher.id, studentId);
-
-  let seat: Awaited<ReturnType<typeof syncClassSeat>>;
-  try {
-    seat = await getPlatformDb().$transaction((tx) =>
-      syncClassSeat(tx, { classId, studentId, coverage: "unpaid", addedById: user.id, mode: "add" }),
-    );
-  } catch (error) {
-    // The writer reports a student already there without writing, but two adds
-    // that race past its check meet the primary key: the same answer.
-    if (isUniqueConstraintError(error, "ClassParticipant_pkey", "classId")) fail(detailPath, "student");
-    throw error;
-  }
-  if (!seat.ok) fail(detailPath, "student");
-
-  revalidatePath(detailPath);
-}
-
-/**
- * Takes a student out of a class. The student comes bound, like the class, and
- * not in the form's data: the «Quitar» of each row is a button with an action
- * of its own, and React leaves such a button out of the data it sends. It is
- * read as any input would be — a string, or nothing — and the writer's `where`
- * is what authorises: only a participant of this teacher's class who left no
- * trace (no mark, seat not moved) can be removed.
- */
-export async function removeParticipant(classId: string, studentId: unknown): Promise<void> {
-  const { teacher, user } = await requireTeacher();
-  await assertTeacherOwnsClass(teacher.id, classId);
-
-  const detailPath = teacherRoutes.classDetail(classId);
-  if (!(await allowAction(`${user.id}:class-participant`, 60, 60_000))) fail(detailPath, "throttled");
-
-  const { removed } = await removeClassSeat(getPlatformDb(), {
-    classId,
-    studentId: typeof studentId === "string" ? studentId : "",
-  });
-  if (!removed) fail(detailPath, "participantLocked");
-
-  revalidatePath(detailPath);
-}
-
-export async function markAttendance(classId: string, formData: FormData): Promise<void> {
-  const { teacher, user } = await requireTeacher();
-  await assertTeacherOwnsClass(teacher.id, classId);
-
-  const detailPath = teacherRoutes.classDetail(classId);
-  if (!(await allowAction(`${user.id}:class-attendance`, 60, 60_000))) fail(detailPath, "throttled");
-
-  const db = getPlatformDb();
-  const now = new Date();
-  const classRow = await db.class.findUniqueOrThrow({
-    where: { id: classId },
-    select: {
-      scheduledAt: true,
-      endsAt: true,
-      meetingUrl: true,
-      meetingUrlVisibleFrom: true,
-      status: { select: { code: true } },
-      participants: { select: { userId: true, seatMovedAt: true } },
-    },
-  });
-
-  const attendance = parseForm(ATTENDANCE_SCHEMA, formData);
-  const attendedNow = new Set(attendance.ok ? attendance.data.attended : []);
-
-  // The old screen has one list for both moments: passing it while the class
-  // runs or right after (finalize) and correcting it once the class is done
-  // (change). The writer checks the mode against the phase again.
-  const phase = classPhase(
-    {
-      statusCode: classRow.status.code as ClassStatusCode,
-      scheduledAt: classRow.scheduledAt,
-      endsAt: classRow.endsAt,
-      visibleFrom: meetingVisibleFrom(classRow.meetingUrl, classRow.scheduledAt, classRow.meetingUrlVisibleFrom),
-      hasLink: classRow.meetingUrl !== null,
-    },
-    now,
-  );
-  const mode = canFinalizeClass(phase) ? "finalize" : "change";
-  // One mark per seat that is still in the class: a moved seat is history.
-  const marks = classRow.participants
-    .filter((participant) => participant.seatMovedAt === null)
-    .map((participant) => ({ studentId: participant.userId, attended: attendedNow.has(participant.userId) }));
-
-  // The marks, their log and the students' activity land together or not at all.
-  const result = await db.$transaction((tx) =>
-    recordAttendance(tx, { classId, marks, actor: { userId: user.id, role: "teacher" }, mode, reason: null, now }),
-  );
-  if (!result.ok) fail(detailPath, result.code);
-
-  revalidatePath(detailPath);
-  revalidatePath(teacherRoutes.home);
-}
+const BLOCK_LESSON_SCHEMA = z.object({ lessonId: formText(40) });
+const BLOCK_FIELDS = [
+  "kind",
+  "visibility",
+  "caption",
+  "movePath",
+  "text",
+  "videoUrl",
+  "pgn",
+  "gameId",
+  "lessonId",
+  "source",
+];
 
 interface BlockFields {
   gameId: string | null;
   lessonId: string | null;
-  positionId: string | null;
   text: string | null;
   videoUrl: string | null;
   movePath: string | null;
-  /** Game transcribed in the block; it is not a reference, it is content. */
   pgn: string | null;
 }
 
-/** Fields of the block in a `create`: the references that do not apply are omitted. */
+/** A field the form refused, with its code. */
+class BlockRefused extends Error {
+  constructor(
+    readonly field: string,
+    readonly fieldError: FieldError,
+  ) {
+    super(`block refused: ${field} ${fieldError.code}`);
+  }
+}
+
+/**
+ * The block's fields by its kind, every other one null: what the
+ * `class_block_single_ref` CHECK asks for, and what keeps a change of kind
+ * from leaving the old kind's data behind.
+ */
+async function readBlockFields(
+  kind: ClassBlockKindCode,
+  movePath: string | null,
+  formData: FormData,
+  teacher: { id: string; userId: string },
+): Promise<BlockFields> {
+  const empty: BlockFields = { gameId: null, lessonId: null, text: null, videoUrl: null, movePath: null, pgn: null };
+  switch (kind) {
+    case CLASS_BLOCK_KIND.TEXT: {
+      const parsed = parseForm(BLOCK_TEXT_SCHEMA, formData);
+      if (!parsed.ok) throw new BlockRefused("text", { code: "blockText" });
+      return { ...empty, text: parsed.data.text };
+    }
+    case CLASS_BLOCK_KIND.VIDEO: {
+      const parsed = parseForm(BLOCK_VIDEO_SCHEMA, formData);
+      if (!parsed.ok || parsed.data.videoUrl === null) throw new BlockRefused("videoUrl", { code: "blockVideo" });
+      return { ...empty, videoUrl: parsed.data.videoUrl };
+    }
+    case CLASS_BLOCK_KIND.GAME_REF: {
+      const parsed = parseForm(BLOCK_GAME_SCHEMA, formData);
+      if (!parsed.ok)
+        throw new BlockRefused(parsed.field, { code: parsed.field === "pgn" ? "blockPgnTooLong" : "blockRef" });
+      const source = gameBlockSource(parsed.data);
+      if ("error" in source) throw new BlockRefused("pgn", { code: source.error });
+      if (source.kind === "pgn") {
+        // The board validates on the client for convenience; what decides is this.
+        const tree = parsePgnTree(source.pgn);
+        if (tree === null) throw new BlockRefused("pgn", { code: "blockPgn" });
+        if (tree.children.length === 0) throw new BlockRefused("pgn", { code: "blockPgnEmpty" });
+        return { ...empty, pgn: source.pgn, movePath };
+      }
+      // The assignment is checked HERE, on insertion: a block already made stays valid if the student is reassigned.
+      await assertTeacherCanReferenceGame(teacher, source.gameId);
+      return { ...empty, gameId: source.gameId, movePath };
+    }
+    case CLASS_BLOCK_KIND.LESSON_REF: {
+      const parsed = parseForm(BLOCK_LESSON_SCHEMA, formData);
+      if (!parsed.ok) throw new BlockRefused("lessonId", { code: "blockRef" });
+      // Only lessons of PUBLISHED courses: the block offers a link to open it, and in a draft that leads nowhere.
+      const lesson = await getPlatformDb().lesson.findFirst({
+        where: { id: parsed.data.lessonId, chapter: { course: { status: { code: COURSE_STATUS.PUBLISHED } } } },
+        select: { id: true },
+      });
+      if (!lesson) throw new BlockRefused("lessonId", { code: "blockRef" });
+      return { ...empty, lessonId: lesson.id, movePath };
+    }
+    default:
+      throw new BlockRefused("kind", { code: "blockKind" });
+  }
+}
+
 function toCreateData(fields: BlockFields) {
   return {
     text: fields.text,
@@ -427,16 +418,10 @@ function toCreateData(fields: BlockFields) {
     pgn: fields.pgn,
     ...(fields.gameId ? { game: { connect: { id: fields.gameId } } } : {}),
     ...(fields.lessonId ? { lesson: { connect: { id: fields.lessonId } } } : {}),
-    ...(fields.positionId ? { position: { connect: { id: fields.positionId } } } : {}),
   };
 }
 
-/**
- * Fields of the block in an `update`. Here the references that do not apply are
- * explicitly DISCONNECTED: when a block's kind changes the previous pointer has
- * to be left null or the `class_block_single_ref` CHECK would go off (and the
- * block would drag along data of the old kind).
- */
+/** In an update the references that no longer apply are DISCONNECTED, or the CHECK goes off. */
 function toUpdateData(fields: BlockFields) {
   return {
     text: fields.text,
@@ -445,232 +430,120 @@ function toUpdateData(fields: BlockFields) {
     pgn: fields.pgn,
     game: fields.gameId ? { connect: { id: fields.gameId } } : { disconnect: true },
     lesson: fields.lessonId ? { connect: { id: fields.lessonId } } : { disconnect: true },
-    position: fields.positionId ? { connect: { id: fields.positionId } } : { disconnect: true },
+    position: { disconnect: true },
   };
 }
 
-/**
- * Fields of the block according to its kind, with ALL those that do not apply
- * set to null. It is what the `class_block_single_ref` CHECK requires (at most
- * one reference) and it keeps a change of kind from leaving orphaned data of the
- * previous one.
- */
-async function readBlockFields(
-  kind: ClassBlockKindCode,
-  common: BlockCommon,
-  formData: FormData,
-  teacher: TeacherContext["teacher"],
-  teacherUserId: string,
-  failPath: string,
-): Promise<BlockFields> {
-  const empty: BlockFields = {
-    gameId: null,
-    lessonId: null,
-    positionId: null,
-    text: null,
-    videoUrl: null,
-    movePath: null,
-    pgn: null,
-  };
-  const movePath = common.movePath;
-  const db = getPlatformDb();
-
-  switch (kind) {
-    case CLASS_BLOCK_KIND.TEXT: {
-      const parsed = parseForm(BLOCK_TEXT_SCHEMA, formData);
-      if (!parsed.ok) fail(failPath, "blockText");
-      return { ...empty, text: parsed.data.text };
-    }
-
-    case CLASS_BLOCK_KIND.VIDEO: {
-      const parsed = parseForm(BLOCK_VIDEO_SCHEMA, formData);
-      if (!parsed.ok || parsed.data.videoUrl === null) fail(failPath, "blockVideo");
-      return { ...empty, videoUrl: parsed.data.videoUrl };
-    }
-
-    case CLASS_BLOCK_KIND.GAME_REF: {
-      // The game transcribed in the block is the main route and wins over the
-      // referenced one, just as when rendering it. If it comes, a student's is not
-      // even looked at: the teacher chose to transcribe.
-      const parsed = parseForm(BLOCK_GAME_SCHEMA, formData);
-      if (!parsed.ok) fail(failPath, parsed.field === "pgn" ? "blockPgnTooLong" : "blockRef");
-      const pgn = parsed.data.pgn ?? "";
-      if (pgn.length > 0) {
-        // The board validates on the client for convenience; what decides is this.
-        const tree = parsePgnTree(pgn);
-        if (tree === null) fail(failPath, "blockPgn");
-        if (tree.children.length === 0) fail(failPath, "blockPgnEmpty");
-        return { ...empty, pgn, movePath };
-      }
-
-      const gameId = parsed.data.gameId ?? "";
-      if (gameId.length === 0) fail(failPath, "blockRef");
-      // The assignment is validated HERE, on insertion: an already created block stays
-      // valid even if the student is reassigned afterwards (§8.3 of the plan).
-      await assertTeacherCanReferenceGame({ id: teacher.id, userId: teacherUserId }, gameId);
-      return { ...empty, gameId, movePath };
-    }
-
-    case CLASS_BLOCK_KIND.LESSON_REF: {
-      const { lessonId } = readIds(formData, "lessonId");
-      // Only lessons of PUBLISHED courses: the block offers the student a link to open
-      // it, and in a draft that link leads nowhere.
-      const lesson = await db.lesson.findFirst({
-        where: { id: lessonId, chapter: { course: { status: { code: COURSE_STATUS.PUBLISHED } } } },
-        select: { id: true },
-      });
-      if (!lesson) fail(failPath, "blockRef");
-      return { ...empty, lessonId: lesson.id, movePath };
-    }
-
-    case CLASS_BLOCK_KIND.POSITION_REF: {
-      const { positionId } = readIds(formData, "positionId");
-      const position = await db.position.findFirst({
-        where: { id: positionId, userId: teacherUserId, ownerType: { code: OWNER_TYPE.TEACHER } },
-        select: { id: true },
-      });
-      if (!position) fail(failPath, "blockRef");
-      return { ...empty, positionId: position.id };
-    }
-
-    case CLASS_BLOCK_KIND.FILE:
-      // Without an upload pipeline of its own yet: the block stores the link in the
-      // caption and serves as a marker for the material.
-      return empty;
-
-    default:
-      fail(failPath, "blockKind");
+async function readBlock(formData: FormData, teacher: { id: string; userId: string }) {
+  const common = parseForm(BLOCK_COMMON_SCHEMA, formData);
+  if (!common.ok) {
+    throw new BlockRefused(common.field, {
+      code: common.field === "kind" ? "blockKind" : common.field === "visibility" ? "blockVisibility" : "invalid",
+    });
   }
+  const fields = await readBlockFields(common.data.kind, common.data.movePath, formData, teacher);
+  return { common: common.data, fields };
 }
 
-interface BlockCommon {
-  kind: ClassBlockKindCode;
-  caption: string | null;
-  movePath: string | null;
+/** «Agregar un bloque»: its kind, when the student sees it, and its fields. */
+export async function addClassBlock(
+  classId: string,
+  prev: PopupFormState,
+  formData: FormData,
+): Promise<PopupFormState> {
+  void prev;
+  const values = readFormValues(formData, BLOCK_FIELDS);
+  const { teacher, user, throttled } = await openClass(classId, "class-block", 120);
+  if (throttled) return popupFormError({}, values, { code: "throttled" });
+  const current = await phaseOf(classId, new Date());
+  if (!current || !editableClassFields(current.phase).content)
+    return popupFormError({}, values, { code: "notEditable" });
+
+  try {
+    const { common, fields } = await readBlock(formData, { id: teacher.id, userId: user.id });
+    const db = getPlatformDb();
+    const count = await db.classBlock.count({ where: { classId } });
+    await db.classBlock.create({
+      data: {
+        class: { connect: { id: classId } },
+        order: nextOrder(count),
+        kind: { connect: { code: common.kind } },
+        visibility: { connect: { code: common.visibility } },
+        caption: common.caption,
+        ...toCreateData(fields),
+      },
+    });
+  } catch (error) {
+    if (error instanceof BlockRefused) return popupFormError({ [error.field]: error.fieldError }, values);
+    throw error;
+  }
+  revalidateClass(classId);
+  return popupFormDone("blockAdded");
 }
 
-/** What every block carries whatever its kind: the kind itself, the caption and the position. */
-function readBlockCommon(formData: FormData, failPath: string): BlockCommon {
-  const parsed = parseForm(BLOCK_COMMON_SCHEMA, formData);
-  if (!parsed.ok) fail(failPath, parsed.field === "kind" ? "blockKind" : "invalid");
-  return { ...parsed.data, kind: parsed.data.kind as ClassBlockKindCode };
+/** «Editar el bloque». */
+export async function updateClassBlock(
+  classId: string,
+  blockId: string,
+  prev: PopupFormState,
+  formData: FormData,
+): Promise<PopupFormState> {
+  void prev;
+  const values = readFormValues(formData, BLOCK_FIELDS);
+  const { teacher, user, throttled } = await openClass(classId, "class-block", 120);
+  if (throttled) return popupFormError({}, values, { code: "throttled" });
+  const current = await phaseOf(classId, new Date());
+  if (!current || !editableClassFields(current.phase).content)
+    return popupFormError({}, values, { code: "notEditable" });
+
+  try {
+    const { common, fields } = await readBlock(formData, { id: teacher.id, userId: user.id });
+    const db = getPlatformDb();
+    // Looked up with classId in the where: a blockId of another class matches nothing.
+    const block = await db.classBlock.findFirst({ where: { id: blockId, classId }, select: { id: true } });
+    if (!block) return popupFormError({}, values, { code: "blockMissing" });
+    await db.classBlock.update({
+      where: { id: block.id },
+      data: {
+        kind: { connect: { code: common.kind } },
+        visibility: { connect: { code: common.visibility } },
+        caption: common.caption,
+        ...toUpdateData(fields),
+      },
+    });
+  } catch (error) {
+    if (error instanceof BlockRefused) return popupFormError({ [error.field]: error.fieldError }, values);
+    throw error;
+  }
+  revalidateClass(classId);
+  return popupFormDone("blockSaved");
 }
 
-export async function addClassBlock(classId: string, formData: FormData): Promise<void> {
-  const { teacher, user } = await requireTeacher();
-  await assertTeacherOwnsClass(teacher.id, classId);
-
+/** «Eliminar» a block, from its confirmation; the rest are renumbered densely. */
+export async function deleteClassBlock(classId: string, blockId: string, formData: FormData): Promise<void> {
+  void formData;
   const detailPath = teacherRoutes.classDetail(classId);
-  if (!(await allowAction(`${user.id}:class-block`, 120, 60_000))) fail(detailPath, "throttled");
+  const { throttled } = await openClass(classId, "class-block", 120);
+  if (throttled) redirect(withErrorParam(detailPath, "throttled"));
+  const current = await phaseOf(classId, new Date());
+  if (!current || !editableClassFields(current.phase).content) redirect(withErrorParam(detailPath, "notEditable"));
 
-  const common = readBlockCommon(formData, detailPath);
-  const fields = await readBlockFields(common.kind, common, formData, teacher, user.id, detailPath);
-
-  const db = getPlatformDb();
-  const count = await db.classBlock.count({ where: { classId } });
-
-  await db.classBlock.create({
-    data: {
-      class: { connect: { id: classId } },
-      order: nextOrder(count),
-      kind: { connect: { code: common.kind } },
-      // The old editor has no sections: every block is «para preparar», which is
-      // what every block was before visibility existed.
-      visibility: { connect: { code: CLASS_BLOCK_VISIBILITY.BEFORE } },
-      caption: common.caption,
-      ...toCreateData(fields),
-    },
-  });
-
-  revalidatePath(detailPath);
-  revalidatePath(`/classes/${classId}`);
-}
-
-export async function updateClassBlock(classId: string, blockId: string, formData: FormData): Promise<void> {
-  const { teacher, user } = await requireTeacher();
-  await assertTeacherOwnsClass(teacher.id, classId);
-
-  const detailPath = teacherRoutes.classDetail(classId);
-  if (!(await allowAction(`${user.id}:class-block`, 120, 60_000))) fail(detailPath, "throttled");
-
-  const common = readBlockCommon(formData, detailPath);
-  const fields = await readBlockFields(common.kind, common, formData, teacher, user.id, detailPath);
-
-  // The block is looked up with classId in the where: a blockId from another class
-  // does not match and the action ends without writing anything.
-  const db = getPlatformDb();
-  const block = await db.classBlock.findFirst({ where: { id: blockId, classId }, select: { id: true } });
-  if (!block) fail(detailPath, "blockMissing");
-
-  await db.classBlock.update({
-    where: { id: block.id },
-    data: {
-      kind: { connect: { code: common.kind } },
-      caption: common.caption,
-      ...toUpdateData(fields),
-    },
-  });
-
-  revalidatePath(detailPath);
-  revalidatePath(`/classes/${classId}`);
-}
-
-export async function deleteClassBlock(classId: string, formData: FormData): Promise<void> {
-  const { teacher, user } = await requireTeacher();
-  await assertTeacherOwnsClass(teacher.id, classId);
-
-  const detailPath = teacherRoutes.classDetail(classId);
-  if (!(await allowAction(`${user.id}:class-block`, 120, 60_000))) fail(detailPath, "throttled");
-
-  const { blockId } = readIds(formData, "blockId");
-  const db = getPlatformDb();
-
-  await db.$transaction(async (tx) => {
+  await getPlatformDb().$transaction(async (tx) => {
     const deleted = await tx.classBlock.deleteMany({ where: { id: blockId, classId } });
     if (deleted.count === 0) return;
-
-    // Dense renumbering: the updates go in ascending order, with the gap ahead, so as
-    // not to clash with @@unique([classId, order]).
     const remaining = await tx.classBlock.findMany({ where: { classId }, select: { id: true, order: true } });
     for (const update of planDenseRenumber(remaining)) {
       await tx.classBlock.update({ where: { id: update.id }, data: { order: update.order } });
     }
   });
-
-  revalidatePath(detailPath);
-  revalidatePath(`/classes/${classId}`);
-}
-
-export async function moveClassBlock(classId: string, formData: FormData): Promise<void> {
-  const { teacher, user } = await requireTeacher();
-  await assertTeacherOwnsClass(teacher.id, classId);
-
-  const detailPath = teacherRoutes.classDetail(classId);
-  if (!(await allowAction(`${user.id}:class-block-move`, 120, 60_000))) fail(detailPath, "throttled");
-
-  const parsed = parseForm(MOVE_SCHEMA, formData);
-  if (!parsed.ok) fail(detailPath, "invalid");
-  const { blockId, direction } = parsed.data;
-
-  const db = getPlatformDb();
-  await db.$transaction(async (tx) => {
-    const blocks = await tx.classBlock.findMany({ where: { classId }, select: { id: true, order: true } });
-    // planSwap goes through a temporary out-of-range order: without that, the direct
-    // swap would violate the unique index halfway.
-    for (const update of planSwap(blocks, blockId, direction satisfies MoveDirection)) {
-      await tx.classBlock.update({ where: { id: update.id }, data: { order: update.order } });
-    }
-  });
-
-  revalidatePath(detailPath);
-  revalidatePath(`/classes/${classId}`);
+  revalidateClass(classId);
+  redirect(withNoticeParam(detailPath, "blockDeleted"));
 }
 
 /**
- * PGN of a resource for the position picker of the block editor. It is a server
- * action and not a direct call to the service because whoever needs it is a
- * client component; it authorises exactly like creating the block (inside
- * `getPgnForReference`).
+ * PGN of a resource for the position picker of the block popup. A server
+ * action because whoever needs it is a client component; it authorises
+ * exactly like creating the block (inside `getPgnForReference`).
  */
 export async function fetchReferencePgn(
   kind: typeof CLASS_BLOCK_KIND.GAME_REF | typeof CLASS_BLOCK_KIND.LESSON_REF,

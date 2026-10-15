@@ -10,11 +10,9 @@ import { PROJECT_ROOT, reach } from "@/lib/testing/module-reach";
 // — may reach the writers of seats and schedules, the staff's class services
 // or the payments, and none of them may so much as name a payment.
 //
-// TEMPORARY exception, until phase 6 retires the old teacher screens: the old
-// actions (`services/teacher-classes/teacher-classes.actions.ts`) still create
-// classes and seat students through the writers. They are reported but not
-// followed (`stopAt`), so what lies ONLY behind them is allowed; a second
-// teacher-side module reaching a staff writer is not.
+// No exceptions: since phase 6 (2026-10-15) the teacher neither creates nor
+// schedules classes nor seats students; their actions reach only the
+// attendance and status writers.
 
 const TEACHER_SIDE = [
   "services/teacher-classes",
@@ -28,7 +26,6 @@ const STAFF_ONLY = [
   "services/staff-classes/",
   "services/staff-payments/",
 ];
-const OLD_TEACHER_ACTIONS = join(PROJECT_ROOT, "services/teacher-classes/teacher-classes.actions.ts");
 const PAYMENT_TOKEN = /\b(?:classPayment|ClassPayment)\b/;
 
 function sourcesOf(folder: string): string[] {
@@ -48,10 +45,8 @@ describe("the teacher's side", () => {
   });
 
   it("reaches no writer of seats or schedules, nor the staff's class or payment services", () => {
-    const stopAt = new Set([OLD_TEACHER_ACTIONS]);
     const offenders = files.flatMap((file) =>
-      reach(file, stopAt)
-        .filter((reached) => reached !== OLD_TEACHER_ACTIONS)
+      reach(file)
         .map((reached) => relative(PROJECT_ROOT, reached))
         .filter((reached) => STAFF_ONLY.some((forbidden) => reached.startsWith(forbidden)))
         .map((reached) => `${relative(PROJECT_ROOT, file)} → ${reached}`),

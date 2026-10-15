@@ -458,6 +458,14 @@ html body.platform-theme[data-scroll-locked] {
   max-width: none;
 }
 
+/* A page with a `ClassJoinBar` beside it reserves the bar's height under
+   1024px, where the bar is drawn, so nothing ends up under it. */
+@media (width < 1024px) {
+  .platform-page_foot_join-bar {
+    padding-bottom: var(--platform-space-24);
+  }
+}
+
 .platform-page.platform-page_height_screen {
   height: 100%;
   min-height: 0;
@@ -577,6 +585,14 @@ html body.platform-theme[data-scroll-locked] {
   grid-column: 2;
   grid-row: 1 / span 2;
   justify-content: flex-end;
+}
+
+/* Everything else in the head — the way back, the tags, the title, the
+   subtitle, a description — stays in the first column, however many there
+   are: the actions span two rows, and the third would otherwise be placed
+   beside them. */
+.platform-page__head:has(> .platform-page__actions) > :not(.platform-page__actions) {
+  grid-column: 1;
 }
 
 @media (width < 640px) {

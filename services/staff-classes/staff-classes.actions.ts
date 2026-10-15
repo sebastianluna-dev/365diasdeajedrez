@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { CLASS_FORMAT, CLASS_STATUS, type ClassFormatCode } from "@/constants/platform/class-codes.const";
+import { CLASS_FORMAT, CLASS_PHASE, CLASS_STATUS, type ClassFormatCode } from "@/constants/platform/class-codes.const";
 import { STUDY_DAY_TIMEZONE } from "@/constants/platform/timezones.const";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
@@ -482,6 +482,78 @@ export async function changeAttendanceAsStaff(
   revalidateClass(classId);
   revalidatePath(platformRoutes.dashboard);
   return popupFormDone("attendanceChanged", [studentId]);
+}
+
+const STAFF_FINALIZE_SCHEMA = z.object({ reason: formText(300) });
+
+/**
+ * «Finalizar la clase en nombre de GM Profesor Demo» (D1): only once the
+ * class ended and nobody finalized it, only the attendance, always with a
+ * reason the teacher reads — the marks stay theirs to change.
+ */
+export async function finalizeClassAsStaff(
+  classId: string,
+  prev: PopupFormState,
+  formData: FormData,
+): Promise<PopupFormState> {
+  void prev;
+  const staff = await requireStaff();
+  const marksSent = [...formData.keys()].filter((key) => key.startsWith("attendance."));
+  const values = readFormValues(formData, ["reason", ...marksSent]);
+  if (await throttled("class-finalize", 20)) return popupFormError({}, values, { code: "throttled" });
+  const parsed = parseForm(STAFF_FINALIZE_SCHEMA, formData);
+  if (!parsed.ok) return popupFormError({ reason: { code: "reasonRequired" } }, values);
+  const now = new Date();
+  const current = await readClassPhase(classId, now);
+  if (!current || current.phase !== CLASS_PHASE.AWAITING_CLOSE)
+    return popupFormError({}, values, { code: "notEditable" });
+
+  const db = getPlatformDb();
+  const seats = await db.classParticipant.findMany({ where: { classId, seatMovedAt: null }, select: { userId: true } });
+  const marks: { studentId: string; attended: boolean }[] = [];
+  const missing: string[] = [];
+  for (const seat of seats) {
+    const value = formData.get(`attendance.${seat.userId}`);
+    if (value === "yes" || value === "no") marks.push({ studentId: seat.userId, attended: value === "yes" });
+    else missing.push(seat.userId);
+  }
+  if (missing.length > 0) {
+    return popupFormError(
+      Object.fromEntries(missing.map((id) => [`attendance.${id}`, { code: "missingMark" }])),
+      values,
+      { code: "missingMark" },
+    );
+  }
+
+  const outcome = await db
+    .$transaction(async (tx) => {
+      const marked = await recordAttendance(tx, {
+        classId,
+        marks,
+        actor: { userId: staff.user.id, role: "staff" },
+        mode: "finalize",
+        reason: parsed.data.reason,
+        now,
+      });
+      if (!marked.ok) return { ok: false as const, code: marked.code };
+      const closed = await transitionClassStatus(tx, {
+        classId,
+        to: CLASS_STATUS.COMPLETED,
+        actor: { userId: staff.user.id, role: "staff" },
+        now,
+      });
+      if (!closed.written) refuse("reason", "classClosed");
+      return { ok: true as const };
+    })
+    .catch((error: unknown) => {
+      if (error instanceof ClassRefused) return { ok: false as const, code: error.fieldError.code };
+      throw error;
+    });
+  if (!outcome.ok) return popupFormError({}, values, { code: outcome.code });
+
+  revalidateClass(classId);
+  revalidatePath(platformRoutes.dashboard);
+  return popupFormDone("classFinalized");
 }
 
 const SEAT_WHERE_SCHEMA = z.object({ where: z.enum(["new", "group", "later"]) });

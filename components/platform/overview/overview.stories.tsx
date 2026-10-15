@@ -126,10 +126,25 @@ import { RescheduleSeatButton } from "@/components/platform/sections/staff/class
 import { AttendanceRow } from "@/components/platform/shared/attendance-row/attendance-row.comp";
 import { ClassRowAction } from "@/components/platform/shared/class-row-action/class-row-action.comp";
 import { MeetingLinkButton } from "@/components/platform/shared/meeting-link-popup/meeting-link-popup.comp";
+import { AfterNotesButton } from "@/components/platform/sections/teacher/classes/after-notes-popup/after-notes-popup.comp";
+import {
+  BlockPopup,
+  type BlockPopupHandle,
+} from "@/components/platform/sections/teacher/classes/class-block-editor/block-popup.comp";
+import { ClassBlockList } from "@/components/platform/sections/teacher/classes/class-block-list/class-block-list.comp";
+import { TopicButton } from "@/components/platform/sections/teacher/classes/topic-popup/topic-popup.comp";
+import { FinalizeClassButton } from "@/components/platform/shared/finalize-class-popup/finalize-class-popup.comp";
+import { MeetingCountdown } from "@/components/platform/shared/meeting-countdown/meeting-countdown.comp";
+import { MeetingJoinCard } from "@/components/platform/shared/meeting-join-card/meeting-join-card.comp";
 import { PaymentCard } from "@/components/platform/sections/staff/payments/payment-card/payment-card.comp";
 import { popupFormDone } from "@/services/shared/form-state";
 import type { StaffPaymentView } from "@/services/staff-payments/staff-payments.types";
-import { CLASS_FORMAT, CLASS_PHASE } from "@/constants/platform/class-codes.const";
+import {
+  CLASS_BLOCK_KIND,
+  CLASS_BLOCK_VISIBILITY,
+  CLASS_FORMAT,
+  CLASS_PHASE,
+} from "@/constants/platform/class-codes.const";
 import { CLASSES_NOW, CLASSES_TIME_ZONE, cdmx } from "@/lib/testing/fixtures/classes";
 import { SyllabusList } from "@/components/platform/sections/staff/courses/syllabus-list/syllabus-list.comp";
 import { TempPasswordNotice } from "@/components/platform/sections/staff/students/temp-password-notice.comp";
@@ -360,6 +375,58 @@ const OVERVIEW_SEAT_ACTIONS = {
   loadPaymentContext: async () => null,
   loadTeacherBusy: async () => [],
 };
+const OVERVIEW_JOIN = {
+  phase: CLASS_PHASE.OPEN,
+  meetingUrl: "https://zoom.us/j/11111111111",
+  hasLink: true,
+  providerLabel: "Zoom",
+  startIso: cdmx("2026-10-14", "12:00").toISOString(),
+  endIso: cdmx("2026-10-14", "13:00").toISOString(),
+  visibleFromIso: cdmx("2026-10-14", "11:30").toISOString(),
+  untilIso: cdmx("2026-10-14", "13:30").toISOString(),
+  nowIso: CLASSES_NOW.toISOString(),
+  timeZone: CLASSES_TIME_ZONE,
+};
+const OVERVIEW_FINALIZE = {
+  classId: "c6",
+  classTitle: "Defensa Caro-Kann: ideas",
+  whenLine: "lun 12 oct · 17:00–18:00 · Diego Salas",
+  isGroup: false,
+  teacherName: "GM Profesor Demo",
+  students: [{ id: "u-s", displayName: "Diego Salas", mark: { attended: null } }],
+  summary: null,
+  recordingUrl: null,
+};
+const OVERVIEW_PGN = "1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 *";
+
+/** A host for the block popup's tile: a button that opens it. */
+function BlockPopupTrigger() {
+  const popup = useRef<BlockPopupHandle>(null);
+  return (
+    <>
+      <button
+        type="button"
+        className="platform-button"
+        onClick={(event) =>
+          popup.current?.open(event, { kind: CLASS_BLOCK_KIND.TEXT, visibility: CLASS_BLOCK_VISIBILITY.BEFORE })
+        }
+      >
+        Agregar un bloque
+      </button>
+      <BlockPopup
+        ref={popup}
+        classId="c2"
+        options={{ games: [] }}
+        groupSize={1}
+        endHour="13:00"
+        studentLabel="Alumno Demo"
+        addClassBlock={async () => popupFormDone("blockAdded")}
+        updateClassBlock={async () => popupFormDone("blockSaved")}
+        fetchReferencePgn={async () => OVERVIEW_PGN}
+      />
+    </>
+  );
+}
 const OVERVIEW_PAYMENT_ACTIONS = {
   scheduleSeat: async () => popupFormDone("seatScheduled", [0, 60]),
   deletePayment: async () => undefined,
@@ -1847,6 +1914,96 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 timeZone={CLASSES_TIME_ZONE}
                 nowIso={CLASSES_NOW.toISOString()}
                 rescheduleStudentSeat={async () => popupFormDone("seatRescheduled", [29_900_000, 60])}
+              />
+            </Tile>
+            <Tile name="MeetingCountdown" docs="platform-shared-meetingcountdown" width={400} height={56}>
+              <MeetingCountdown {...OVERVIEW_JOIN} hasLink />
+            </Tile>
+            <Tile name="MeetingJoinCard" docs="platform-shared-meetingjoincard" width={640} height={132} surface>
+              <MeetingJoinCard {...OVERVIEW_JOIN} audience="teacher" density="full" />
+            </Tile>
+            <Tile name="ClassJoinBar" docs="platform-shared-classjoinbar" width={400} height={96}>
+              <MeetingJoinCard {...OVERVIEW_JOIN} audience="student" density="bar" />
+            </Tile>
+            <Tile name="FinalizeClassPopup" docs="platform-shared-finalizeclasspopup" width={400} height={72}>
+              <FinalizeClassButton
+                mode="finalize"
+                action={async () => popupFormDone("classFinalized")}
+                {...OVERVIEW_FINALIZE}
+              />
+            </Tile>
+            <Tile
+              name="ClassBlockList"
+              docs="platform-sections-teacher-classes-classblocklist"
+              width={820}
+              height={420}
+              surface
+            >
+              <ClassBlockList
+                classId="c2"
+                blocks={[
+                  {
+                    id: "b1",
+                    order: 1,
+                    kind: CLASS_BLOCK_KIND.TEXT,
+                    visibility: CLASS_BLOCK_VISIBILITY.BEFORE,
+                    text: "Trae tus dudas",
+                    caption: "Trae tus dudas",
+                    isMovePathBroken: false,
+                  },
+                ]}
+                views={[
+                  {
+                    id: "b1",
+                    kind: "TEXT",
+                    visibility: "BEFORE",
+                    title: "Trae tus dudas",
+                    isNew: false,
+                    text: "Apunta tus dudas.",
+                  },
+                ]}
+                phase={CLASS_PHASE.OPEN}
+                editable
+                studentLabel="Alumno Demo"
+                groupSize={1}
+                endHour="13:00"
+                options={{ games: [] }}
+                actions={{
+                  addClassBlock: async () => popupFormDone("blockAdded"),
+                  updateClassBlock: async () => popupFormDone("blockSaved"),
+                  deleteClassBlock: async () => undefined,
+                  reorderClassBlocks: async () => ({ ok: true }),
+                  fetchReferencePgn: async () => OVERVIEW_PGN,
+                }}
+              />
+            </Tile>
+            <Tile
+              name="BlockPopup"
+              docs="platform-sections-teacher-classes-class-block-editor-blockpopup"
+              width={400}
+              height={72}
+            >
+              <BlockPopupTrigger />
+            </Tile>
+            <Tile name="TopicPopup" docs="platform-sections-teacher-classes-topicpopup" width={400} height={72}>
+              <TopicButton
+                classId="c2"
+                topic="Repaso de la Najdorf: tus dudas"
+                description={null}
+                updateClassTopic={async () => popupFormDone("topicSaved")}
+              />
+            </Tile>
+            <Tile
+              name="AfterNotesPopup"
+              docs="platform-sections-teacher-classes-afternotespopup"
+              width={400}
+              height={72}
+            >
+              <AfterNotesButton
+                classId="c1"
+                summary="Vimos los tres errores típicos."
+                recordingUrl={null}
+                updateClassAfterNotes={async () => popupFormDone("afterNotesSaved")}
               />
             </Tile>
           </Section>

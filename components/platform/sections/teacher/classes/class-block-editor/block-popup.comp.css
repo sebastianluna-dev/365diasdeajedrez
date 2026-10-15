@@ -1,0 +1,28 @@
+/* The content of «Agregar un bloque»: the two questions, the fields and
+   the foot. A sheet on a phone. */
+.block-popup__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-5);
+  padding: var(--platform-space-6);
+
+  & .block-popup__foot {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: var(--platform-space-4);
+    box-shadow: inset 0 1px 0 var(--platform-track);
+  }
+
+  @media (width < 640px) {
+    & .block-popup__foot {
+      position: sticky;
+      bottom: 0;
+      padding-bottom: var(--platform-space-4);
+      background: var(--platform-surface);
+    }
+
+    & .block-popup__foot .platform-button {
+      flex: 1;
+    }
+  }
+}

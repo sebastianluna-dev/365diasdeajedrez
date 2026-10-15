@@ -20,8 +20,3 @@ export function canTransitionClassStatus(from: ClassStatusCode, to: ClassStatusC
   if (to === CLASS_STATUS.CANCELLED) return role === "staff";
   return false;
 }
-
-/** The statuses a role may move a class to from its current one (to draw the buttons). */
-export function nextClassStatuses(from: ClassStatusCode, role: ClassActorRole): readonly ClassStatusCode[] {
-  return [CLASS_STATUS.COMPLETED, CLASS_STATUS.CANCELLED].filter((to) => canTransitionClassStatus(from, to, role));
-}

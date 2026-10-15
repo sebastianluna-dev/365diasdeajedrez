@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { meetingRefreshDelay } from "./meeting-refresh";
+import { meetingRefreshDelay } from "@/components/platform/shared/meeting-countdown/meeting-refresh";
 import "./meeting-access.comp.css";
 
 interface MeetingAccessProps {

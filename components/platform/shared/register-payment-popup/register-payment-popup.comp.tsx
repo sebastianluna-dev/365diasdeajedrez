@@ -139,8 +139,9 @@ export function RegisterPaymentPopup({ ref, ...props }: RegisterPaymentPopupProp
       phone="sheet"
       onClose={() => setUse((count) => count + 1)}
     >
+      {/* Remounted per use AND per preset: a launcher that opens it on other classes to cover starts from them. */}
       <RegisterPaymentForm
-        key={use}
+        key={`${use}:${preset.studentId ?? ""}:${(preset.cover ?? []).join(",")}`}
         {...props}
         preset={preset}
         onDone={(notice) => {

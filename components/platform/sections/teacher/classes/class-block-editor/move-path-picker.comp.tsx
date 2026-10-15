@@ -3,8 +3,13 @@
 import { useEffect, useState } from "react";
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
 import { CLASS_BLOCK_KIND } from "@/constants/platform/class-codes.const";
-import { fetchReferencePgn } from "@/services/teacher-classes/teacher-classes.actions";
 import "./move-path-picker.comp.css";
+
+/** `fetchReferencePgn` of the teacher's actions, handed down as a prop. */
+export type FetchReferencePgn = (
+  kind: typeof CLASS_BLOCK_KIND.GAME_REF | typeof CLASS_BLOCK_KIND.LESSON_REF,
+  id: string,
+) => Promise<string | null>;
 
 interface MovePathPickerProps {
   kind: typeof CLASS_BLOCK_KIND.GAME_REF | typeof CLASS_BLOCK_KIND.LESSON_REF;
@@ -12,6 +17,8 @@ interface MovePathPickerProps {
   /** Dotted path already saved, if any. */
   value: string;
   onChange: (path: string) => void;
+  /** The server action that reads the PGN; a stub in Storybook. */
+  fetchReferencePgn: FetchReferencePgn;
 }
 
 /**
@@ -29,7 +36,7 @@ interface LoadedPgn {
  * `onPathChange`. There is no second viewer nor a PGN editor — it is the same
  * component the student will see.
  */
-export function MovePathPicker({ kind, referenceId, value, onChange }: MovePathPickerProps) {
+export function MovePathPicker({ kind, referenceId, value, onChange, fetchReferencePgn }: MovePathPickerProps) {
   const [loaded, setLoaded] = useState<LoadedPgn | null>(null);
   const [currentPath, setCurrentPath] = useState(value);
 
@@ -48,7 +55,7 @@ export function MovePathPicker({ kind, referenceId, value, onChange }: MovePathP
     return () => {
       cancelled = true;
     };
-  }, [kind, referenceId]);
+  }, [kind, referenceId, fetchReferencePgn]);
 
   if (referenceId.length === 0) return null;
 
