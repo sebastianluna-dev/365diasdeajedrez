@@ -87,6 +87,11 @@ describe("CLASS_FIELD_ERRORS", () => {
       "groupTitle",
       "capacity",
       "throttled",
+      "seatNotRemovable",
+      "studentsRequired",
+      "tooManyStudents",
+      "teacherInactive",
+      "notEditable",
     ]) {
       expect(CLASS_FIELD_ERRORS[code], code).toBeTruthy();
     }

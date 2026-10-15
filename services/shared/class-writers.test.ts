@@ -88,7 +88,7 @@ const COLUMN_WRITERS: Record<Model, Record<string, string[]>> = {
     closedBy: [STATUS],
     // When its attendance was first taken.
     attendanceTakenAt: [ATTENDANCE],
-    // Its teacher: set at creation, and changed by the staff (`setClassTeacher`, phase 4).
+    // Its teacher: set at creation, and changed by the staff (`setClassTeacher`).
     teacherId: [SCHEDULE, STAFF_CLASSES],
     teacher: [SCHEDULE, STAFF_CLASSES],
     // What it is called and what it is about: the teacher and the staff edit them.
@@ -96,8 +96,7 @@ const COLUMN_WRITERS: Record<Model, Record<string, string[]>> = {
     description: [SCHEDULE, STAFF_CLASSES, TEACHER_CLASSES],
     // What the teacher writes after the class.
     summary: [TEACHER_CLASSES],
-    // TEMPORARY: the staff's `setRecordingUrl` still writes the link; phase 5 removes it.
-    recordingUrl: [TEACHER_CLASSES, STAFF_CLASSES],
+    recordingUrl: [TEACHER_CLASSES],
   },
   classParticipant: {
     // How a seat is covered, who added it, and the move of a no-show's seat.

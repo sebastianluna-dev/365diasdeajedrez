@@ -1,0 +1,58 @@
+/* The content of «Agregar alumnos»: the class and its free seats, the
+   cards, a row «Entra …» per chosen student, and the foot. A sheet on a
+   phone. */
+.add-students__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-5);
+  padding: var(--platform-space-6);
+
+  & .add-students__class {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+  }
+
+  & .add-students__entry {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    padding-top: var(--platform-space-3);
+    border-top: 1px solid var(--platform-track);
+  }
+
+  & .add-students__warning {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--platform-space-2);
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .add-students__warning-icon {
+    flex: none;
+    width: 14px;
+    height: 1lh;
+  }
+
+  & .add-students__foot {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: var(--platform-space-4);
+    box-shadow: inset 0 1px 0 var(--platform-track);
+  }
+
+  @media (width < 640px) {
+    & .add-students__foot {
+      position: sticky;
+      bottom: 0;
+      padding-bottom: var(--platform-space-4);
+      background: var(--platform-surface);
+    }
+
+    & .add-students__foot .platform-button {
+      flex: 1;
+    }
+  }
+}

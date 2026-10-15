@@ -1,56 +1,69 @@
 ---
-description: "The global read view of every class: a GET filter form (teacher, status, date range, title) and a PlatformTable; filters travel in the URL and are applied by the page's service."
+description: "The staff's agenda (ADM-1): the three views as pills, the teacher and the text as filters, the classes by day or the past ones as a table, and the queues beside them; the section imports the actions and hands them down."
 ---
 
 # `StaffClassesSection`
 
-|            |                                                                                                                                                                                                                                                                                                                                                              |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/staff/classes/staff-classes.section.tsx`                                                                                                                                                                                                                                                                                       |
-| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                             |
-| Stylesheet | `staff-classes.section.css` → block `.staff-classes`                                                                                                                                                                                                                                                                                                         |
-| Used by    | `/administracion/clases`                                                                                                                                                                                                                                                                                                                                     |
-| Composes   | [`PlatformTable`](/components/platform/shared/platform-table), [`PlatformForm` and `PlatformFormField`](/components/platform/shared/platform-form), [`PlatformSelect`](/components/platform/shared/platform-select), [`PlatformDatePicker`](/components/platform/shared/platform-date-picker), [`LocalDateTime`](/components/platform/shared/local-datetime) |
-| Uses       | `CLASS_STATUS` from `constants/platform/class-codes.const`; `staffRoutes` from `lib/platform-routes`; `StaffClassSummary`, `StaffClassFilters` from `services/staff-classes/staff-classes.types`                                                                                                                                                             |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/classes/staff-classes.section.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Stylesheet | `staff-classes.section.css` → block `.staff-agenda`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Used by    | `/administracion/clases`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Composes   | [`FilterPills`](/components/platform/shared/filter-pills), [`AgendaFilters`](/components/platform/sections/staff/classes/agenda-filters), [`ClassAgenda`](/components/platform/shared/class-agenda), [`ClassRow`](/components/platform/shared/class-row), [`PlatformTable`](/components/platform/shared/platform-table), [`ClassWhen`](/components/platform/shared/class-when), [`ClassStatusTag`](/components/platform/shared/class-status-tag), [`StaffClassQueues`](/components/platform/sections/staff/classes/staff-class-queues), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Reads      | `StaffAgendaView` and `StaffQueuesView` from `getStaffAgenda()` and `getStaffQueues()` · `services/staff-classes/staff-classes.service.ts`                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Writes     | `setClassMeeting()`, `scheduleSeat()`, `registerPayment()`, `loadPaymentContext()`, `loadTeacherBusy()` — imported here and handed to the client pieces as props                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 
 ## Purpose
 
-Every class of every teacher, for oversight. The page parses the URL into typed filters and queries; this section renders the filter form pre-filled with the **raw** URL values (so what the user typed stays as typed, even if the service normalised it) and the table.
+Where the staff lives: today's classes and the week's, what needs attention, and the way to every other screen of the module. The page composes the head («Hoy es miércoles 14 de octubre · 3 clases hoy y 5 esta semana», «Crear clase», «Registrar pago»); this section draws the rest.
 
 ## Props
 
-| Prop         | Type                                      | Required | Meaning                                                                 |
-| ------------ | ----------------------------------------- | -------- | ----------------------------------------------------------------------- |
-| `classes`    | `StaffClassSummary[]`                     | yes      | The filtered rows.                                                      |
-| `teachers`   | `{ id, displayName }[]`                   | yes      | For the teacher select.                                                 |
-| `filters`    | `StaffClassFilters`                       | yes      | The parsed filters (accepted for symmetry; the form uses `rawFilters`). |
-| `rawFilters` | `{ teacherId?, status?, from?, to?, q? }` | yes      | The URL values, to re-render the form as is.                            |
+| Prop                       | Type                                        | Required | Meaning                                                                      |
+| -------------------------- | ------------------------------------------- | -------- | ---------------------------------------------------------------------------- |
+| `agenda`                   | `StaffAgendaView`                           | yes      | The filters, the days, the foot, the past page and the cancelled rows.       |
+| `queues`                   | `StaffQueuesView`                           | yes      | What the queues list.                                                        |
+| `teacherFilter`            | `{ id, displayName }[]`                     | yes      | Every teacher, for the filter (a deactivated one still has classes to list). |
+| `teachers`, `groupClasses` | `TeacherOption[]`, `OpenGroupClassOption[]` | yes      | What the popups that date a class need.                                      |
+| `notice`, `errorMessage`   | `string`                                    | no       | What the address said, already in words.                                     |
 
 ## Behaviour
 
-A GET filter on the platform's form, [`PlatformForm`](/components/platform/shared/platform-form) with `action={staffRoutes.classes}`: teacher and status selects (`PlatformSelect`, «Todos» as the empty option), two date pickers (`PlatformDatePicker`) and a title search, each a `PlatformFormField` that gives its control the `name` the URL carries. None is required, so no field ever shows a message, and the focus and the selects keep the form's blue. Then a table with title (linked), teacher, local date and time, status tag, participants and attended. Empty label: "Ninguna clase coincide con esos filtros."
+- **«Próximas»** (the default): `ClassAgenda` with the rows by day until `hasta` (six days from today by default) and the foot «Hasta el martes 20 de octubre · Ver la semana siguiente», which adds a week to `hasta`. A row without a link offers «Agregar», which opens the meeting-link popup in place.
+- **«Pasadas»**: a `PlatformTable` (date, class, teacher, phase, students, attended) fifty at a time with «Mostrando 1–2 de 2» and «Anteriores»/«Siguientes»; under 640px the same rows as `ClassRow` cards (§2.4 of the plan: the table is not touched).
+- **«Canceladas»**: `ClassRow` cards, newest first.
+- The filters are the address (`?vista=&profesor=&q=&hasta=&pagina=`): the pills and `AgendaFilters` push it, so a filter can be shared and the back button undoes it.
 
 ## Markup & styling
 
-Block `.staff-classes` (19 lines): the filter row. The form is `PlatformForm`, a column of its own, so the row says `flex-direction: row` (its two classes outweigh `.platform-form`'s one); each field grows from 170px and the button sits at their foot.
+Block `.staff-agenda` (91 lines): two columns, the agenda and the queues (320px), one under the other below 1024px; the bar with the pills on the left and the filters on the right; the past table above 640px and the cards below it; the paging line.
 
-**Elements:** `.staff-classes__filters`
+**Elements:** `.staff-agenda__main`, `.staff-agenda__bar`, `.staff-agenda__empty`, `.staff-agenda__cards`, `.staff-agenda__card`, `.staff-agenda__past`, `.staff-agenda__past-table`, `.staff-agenda__past-cards`, `.staff-agenda__paging`, `.staff-agenda__paging-link`, `.staff-agenda__aside`
 
-**Other selectors it styles:** `.platform-form__field` (`PlatformFormField`'s root).
+**Other selectors it styles:** `.agenda-filters` (`AgendaFilters`'s root, a row that wraps).
 
-No tokens or media queries of its own.
+**Breakpoints:** `(width < 1024px)`, `(width < 640px)`.
+
+**Tokens:** `--platform-surface`, `--platform-shadow-card`, `--platform-text`, `--platform-text-muted`
 
 ## Usage
 
 From `app/(platform)/administracion/clases/page.tsx`:
 
 ```tsx
-import { StaffClassesSection } from "@/components/platform/sections/staff/classes/staff-classes.section";
-
-<StaffClassesSection classes={classes} teachers={teachers} filters={filters} rawFilters={raw} />;
+<StaffClassesSection
+  agenda={agenda}
+  queues={queues}
+  teacherFilter={teacherFilter}
+  teachers={teachers}
+  groupClasses={groupClasses}
+  notice={noticeText}
+  errorMessage={errorMessage}
+/>
 ```
 
 ## Related
 
-- [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section).
-- The teacher's own list: [`TeacherClassesSection`](/components/platform/sections/teacher/classes/teacher-classes-section).
+- [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section), where a row leads.
+- [Classes](/platform/classes).

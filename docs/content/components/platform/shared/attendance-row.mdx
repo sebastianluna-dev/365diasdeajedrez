@@ -1,0 +1,64 @@
+---
+description: "One student of a class and their attendance mark: to write, as «Asistió» and «Faltó» in a line, or to read, with who marked and who changed it; the same words for the staff and the teacher."
+---
+
+# `AttendanceRow`
+
+|            |                                                                                                                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/shared/attendance-row/attendance-row.comp.tsx` (also `attendance-row.types.ts`: `AttendanceStudent`, `AttendanceMarkView`)                                                                          |
+| Kind       | Server Component (no reads of its own, so it also sits inside a popup)                                                                                                                                                   |
+| Stylesheet | `attendance-row.comp.css` → block `.attendance-row`                                                                                                                                                                      |
+| Story      | `attendance-row.stories.tsx` (`platform/shared/AttendanceRow`): edit unmarked, edit marked, with error, read attended, read absent, read unmarked, read changed by staff, locked, moved, moved back                      |
+| Used by    | [`ClassSeatRow`](/components/platform/sections/staff/classes/class-seat-row) (read); the finalizing popup and the teacher's record (phase 6, edit)                                                                       |
+| Composes   | [`PlayerAvatar`](/components/chess/player-avatar) (`sm`), [`PlatformFormGroup`](/components/platform/shared/platform-form), [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards) (`layout="line"`) |
+| Uses       | `initialsOf`, `avatarToneOf` (`lib/avatar-tone.ts`)                                                                                                                                                                      |
+
+## Purpose
+
+The attendance of a student is written once by whoever passes the list and read many times after, by the staff and by the teacher, and both have to read the same thing: the mark, who marked it («Marcó GM Profesor Demo · mié 14 oct, 20:12») and, after a report, who changed it and why («Cambió Staff Demo · jue 15 oct, 10:05 · «Faltó» → «Asistió»: «…»», §3.5 of the plan). So the row is one piece with two modes, and the services map a seat to `AttendanceMarkView` instead of each screen spelling the lines.
+
+## Props
+
+| Prop           | Type                  | Required | Meaning                                                                                                                         |
+| -------------- | --------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `student`      | `{ id, displayName }` | yes      | The initials and the tone come from them.                                                                                       |
+| `details`      | `string[]`            | no       | Lines under the name: the email, how the seat is covered.                                                                       |
+| `mark`         | `AttendanceMarkView`  | yes      | `attended` (null is «Sin pasar lista»), `markedLine?`, `changedLine?`, `locked?`, `moved?: { label, href? }`, `replacesLabel?`. |
+| `mode`         | `"read" \| "edit"`    | yes      | A locked or moved seat reads even in `edit`.                                                                                    |
+| `name`         | `string`              | no       | The field's name in `edit`; `attendance.<student id>` by default; the cards send `yes` or `no`.                                 |
+| `defaultValue` | `"yes" \| "no"`       | no       | The current mark, when changing one's own marks.                                                                                |
+| `serverError`  | `string`              | no       | What the server said about this seat.                                                                                           |
+
+## Behaviour
+
+- **Edit**: the two cards in a line inside a `PlatformFormGroup` named by the student, `required` with nothing chosen, and `valueMissing` «Marca si Diego Salas asistió o faltó.» when the form is sent without a mark.
+- **Read**: «Asistió» in the success tone with `UserCheckIcon`, «Faltó» neutral with `UserXmarkIcon`, «Sin pasar lista»; the lines under the tag; a moved seat shows its label as the tag, a link when the new class is known («Faltó · reprogramada al vie 16 oct»); a locked change carries a lock.
+
+## Markup & styling
+
+Block `.attendance-row` (78 lines): a grid of the portrait, the name with its details and the mark at the end, right-aligned; `_mode_edit` drops the third column; under 640px the mark goes under the name.
+
+**Elements:** `.attendance-row__who`, `.attendance-row__name`, `.attendance-row__detail`, `.attendance-row__mark`, `.attendance-row__moved`, `.attendance-row__line`, `.attendance-row__lock`
+
+**Modifiers:** `.attendance-row_mode_edit`, `.attendance-row__line_kind_changed`
+
+**Breakpoints:** `(width < 640px)`.
+
+**Tokens:** `--platform-text`, `--platform-text-muted`
+
+## Usage
+
+```tsx
+<AttendanceRow
+  student={{ id: seat.userId, displayName: seat.displayName }}
+  details={[seat.email, seat.coverage.label]}
+  mark={seat.mark}
+  mode="read"
+/>
+```
+
+## Related
+
+- [`ClassSeatRow`](/components/platform/sections/staff/classes/class-seat-row), which draws it with the words at its end.
+- [Classes](/platform/classes), «The attendance log».

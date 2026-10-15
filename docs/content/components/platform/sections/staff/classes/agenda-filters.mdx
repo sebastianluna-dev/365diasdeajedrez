@@ -1,0 +1,31 @@
+---
+description: "The teacher and the text the agenda keeps: a select and a search box that push the address; a filter, not a form."
+---
+
+# `AgendaFilters`
+
+|            |                                                                                                                                                                                                                       |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/classes/agenda-filters.comp.tsx`                                                                                                                                                  |
+| Kind       | Client Component                                                                                                                                                                                                      |
+| Stylesheet | none (its row is said by `.staff-agenda`)                                                                                                                                                                             |
+| Used by    | [`StaffClassesSection`](/components/platform/sections/staff/classes/staff-classes-section)                                                                                                                            |
+| Composes   | [`PlatformSelect`](/components/platform/shared/platform-select) (`tone="accent"`, «Todos los profesores» as the empty option), [`PlatformSearchField`](/components/platform/shared/platform-search-field) (no `name`) |
+| Uses       | `staffRoutes.classesFiltered` (`lib/platform-routes.ts`)                                                                                                                                                              |
+
+## Purpose
+
+The pattern of `PlayedGamesFilters`: a change replaces the address and the page re-reads. The text travels after a pause of 300 ms, not on every key; the view and `hasta` are kept.
+
+## Props
+
+| Prop       | Type                    | Required | Meaning                    |
+| ---------- | ----------------------- | -------- | -------------------------- |
+| `filters`  | `StaffAgendaFilters`    | yes      | What the address says now. |
+| `teachers` | `{ id, displayName }[]` | yes      | Every teacher.             |
+
+## Usage
+
+```tsx
+<AgendaFilters filters={filters} teachers={teacherFilter} />
+```

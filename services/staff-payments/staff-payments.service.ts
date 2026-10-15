@@ -21,7 +21,9 @@ import {
 import type {
   BusySlotView,
   PaymentContext,
+  PaymentOrdinals,
   SeatToSchedule,
+  StudentBalanceRow,
   StudentPaymentsView,
   UnpaidSeatView,
 } from "./staff-payments.types";
@@ -280,6 +282,14 @@ export async function getPaymentContext(userId: string, now: Date): Promise<Paym
   };
 }
 
+/** The last class a student's payments seat, cancelled and moved ones aside, for their rhythm. */
+function lastPaidClass(seats: PaymentSeatRow[]): { scheduledAt: Date; durationMin: number } | null {
+  const last = seats
+    .filter((seat) => seat.seatMovedAt === null && seat.class.statusCode !== CLASS_STATUS.CANCELLED)
+    .sort((left, right) => right.class.scheduledAt.getTime() - left.class.scheduledAt.getTime())[0];
+  return last ? { scheduledAt: last.class.scheduledAt, durationMin: last.class.durationMin } : null;
+}
+
 /** The paid classes still without a date, by payment: the «Por programar» queue. */
 export async function listSeatsToSchedule(now: Date): Promise<SeatToSchedule[]> {
   await requireStaff();
@@ -290,22 +300,97 @@ export async function listSeatsToSchedule(now: Date): Promise<SeatToSchedule[]> 
     },
     orderBy: [{ paidOn: "asc" }, { id: "asc" }],
   });
+  const seatsOfStudent = new Map<string, PaymentSeatRow[]>();
+  for (const payment of payments) {
+    seatsOfStudent.set(payment.studentId, [
+      ...(seatsOfStudent.get(payment.studentId) ?? []),
+      ...payment.seats.map(toSeatRow),
+    ]);
+  }
   return payments.flatMap((payment) => {
     const card = mapPayment(toPaymentRow(payment), now);
     if (card.toSchedule === 0) return [];
     const student = toStudent(payment.student);
+    const day = formatClassDay(new Date(payment.paidOn.getTime() + 12 * 60 * 60 * 1000), "UTC", now);
+    const ordinal = card.seats.filter((seat) => seat.ordinal > 0).length + 1;
+    const rhythm = suggestRhythm(lastPaidClass(seatsOfStudent.get(student.id) ?? []), now, STUDY_DAY_TIMEZONE);
     return [
       {
         paymentId: payment.id,
         studentId: student.id,
         studentName: student.displayName,
-        label: `${card.toSchedule} de su pago del ${formatClassDay(new Date(payment.paidOn.getTime() + 12 * 60 * 60 * 1000), "UTC", now)}`,
+        label: `${card.toSchedule} de su pago del ${day}`,
+        seatLabel: `Clase ${ordinal} de ${card.classCount} del pago del ${day}${student.teacherName ? ` · Profesor: ${student.teacherName}` : ""}`,
         count: card.toSchedule,
         teacherId: student.teacherId,
+        rhythm: { teacherId: student.teacherId, ...rhythm },
         href: staffRoutes.studentPayments(student.id),
       },
     ];
   });
+}
+
+/**
+ * Every student with what they have left, counted from their payments: the
+ * «Por renovar» queue, and what «Crear clase» says under each name. Sorted
+ * by name.
+ */
+export async function listStudentBalances(now: Date): Promise<StudentBalanceRow[]> {
+  await requireStaff();
+  const db = getPlatformDb();
+  const [users, payments] = await Promise.all([
+    db.user.findMany({ where: { teacher: null, staff: null }, select: studentSelect, orderBy: { displayName: "asc" } }),
+    db.classPayment.findMany({ include: paymentInclude, orderBy: [{ paidOn: "asc" }, { id: "asc" }] }),
+  ]);
+  const byStudent = new Map<string, typeof payments>();
+  for (const payment of payments) {
+    byStudent.set(payment.studentId, [...(byStudent.get(payment.studentId) ?? []), payment]);
+  }
+  return users.map((user) => {
+    const own = byStudent.get(user.id) ?? [];
+    const cards = own.map((payment) => ({ payment, card: mapPayment(toPaymentRow(payment), now) }));
+    const oldest = cards.find(({ card }) => card.scheduled + card.toSchedule > 0);
+    const next = own
+      .flatMap((payment) => payment.seats.map(toSeatRow))
+      .filter((seat) => seat.seatMovedAt === null && seat.class.statusCode !== CLASS_STATUS.CANCELLED)
+      .filter((seat) => seat.class.scheduledAt.getTime() >= now.getTime())
+      .sort((left, right) => left.class.scheduledAt.getTime() - right.class.scheduledAt.getTime())[0];
+    const sum = (pick: (card: ReturnType<typeof mapPayment>) => number) =>
+      cards.reduce((total, { card }) => total + pick(card), 0);
+    return {
+      student: toStudent(user),
+      hasPayments: own.length > 0,
+      left: sum((card) => card.scheduled + card.toSchedule),
+      scheduled: sum((card) => card.scheduled),
+      toSchedule: sum((card) => card.toSchedule),
+      oldestPaymentWithLeft: oldest ? { id: oldest.payment.id, paidOn: oldest.payment.paidOn } : null,
+      nextScheduled: next ? { scheduledAt: next.class.scheduledAt, durationMin: next.class.durationMin } : null,
+    };
+  });
+}
+
+/** «Clase n de m» of each counting seat of the given payments, for a class's record. */
+export async function paymentOrdinals(paymentIds: string[], now: Date): Promise<Map<string, PaymentOrdinals>> {
+  await requireStaff();
+  if (paymentIds.length === 0) return new Map();
+  const payments = await getPlatformDb().classPayment.findMany({
+    where: { id: { in: paymentIds } },
+    include: paymentInclude,
+  });
+  return new Map(
+    payments.map((payment) => {
+      const card = mapPayment(toPaymentRow(payment), now);
+      return [
+        payment.id,
+        {
+          classCount: payment.classCount,
+          ordinalOf: Object.fromEntries(
+            card.seats.filter((seat) => seat.ordinal > 0).map((seat) => [seat.classId, seat.ordinal]),
+          ),
+        },
+      ];
+    }),
+  );
 }
 
 /** Every student, grouped by their teacher, for «Registrar pago» opened without one. */

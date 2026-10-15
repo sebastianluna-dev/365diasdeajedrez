@@ -1,0 +1,45 @@
+/* The content of «Reprogramar la clase»: the class, the fields, the line
+   «Antes → Ahora», the note and the foot. A sheet on a phone. */
+.reschedule-class__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-5);
+  padding: var(--platform-space-6);
+
+  & .reschedule-class__class {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+  }
+
+  & .reschedule-class__change {
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    color: var(--platform-text-muted);
+  }
+
+  & .reschedule-class__after {
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .reschedule-class__foot {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: var(--platform-space-4);
+    box-shadow: inset 0 1px 0 var(--platform-track);
+  }
+
+  @media (width < 640px) {
+    & .reschedule-class__foot {
+      position: sticky;
+      bottom: 0;
+      padding-bottom: var(--platform-space-4);
+      background: var(--platform-surface);
+    }
+
+    & .reschedule-class__foot .platform-button {
+      flex: 1;
+    }
+  }
+}

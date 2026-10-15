@@ -1,61 +1,152 @@
+/* The record: the cards on the left, the lane on the right; one column
+   below 1024px. */
 .staff-class {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
   gap: var(--platform-space-6);
+  align-items: start;
 
-  & .staff-class__facts {
+  & .staff-class__main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-6);
+    min-width: 0;
+  }
+
+  & .staff-class__card-head {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--platform-space-6);
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--platform-space-2) var(--platform-space-4);
+    margin-bottom: var(--platform-space-4);
+  }
+
+  & .staff-class__card-head .platform-card__title {
     margin: 0;
+  }
+
+  & .staff-class__card-meta {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .staff-class__seats {
+    display: flex;
+    flex-direction: column;
+  }
+
+  & .staff-class__empty {
+    margin: 0;
+    color: var(--platform-text-muted);
+  }
+
+  & .staff-class__note {
+    margin: var(--platform-space-4) 0 0;
+    padding: var(--platform-space-3) var(--platform-space-4);
+    border-radius: 8px;
+    background: var(--platform-surface-neutral);
+    font-size: var(--platform-type-sm);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+  }
+
+  & .staff-class__closed {
+    margin: 0 0 var(--platform-space-4);
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+  }
+
+  & .staff-class__after {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    margin: 0;
+  }
+
+  & .staff-class__after-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+  }
+
+  & .staff-class__after-item dt {
+    font-size: var(--platform-type-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--platform-text-muted);
+  }
+
+  & .staff-class__after-item dd {
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    line-height: 1.55;
+    color: var(--platform-text);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  /* The lane: facts one under the other, each with its label and its word. */
+  & .staff-class__lane {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-5);
+    padding: var(--platform-space-5);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
   }
 
   & .staff-class__fact {
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-1);
+    gap: var(--platform-space-2);
+  }
+
+  & .staff-class__fact-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--platform-space-3);
   }
 
   & .staff-class__fact-label {
-    font-size: var(--platform-type-sm);
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
     color: var(--platform-text-muted);
   }
 
   & .staff-class__fact-value {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-2);
     margin: 0;
-    font-size: var(--platform-type-lg);
+    font-size: var(--platform-type-md);
+    color: var(--platform-text);
+    overflow-wrap: anywhere;
+  }
+
+  & .staff-class__fact-value_tone_muted {
+    color: var(--platform-text-muted);
+  }
+
+  & .staff-class__fact-line {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .staff-class__link {
     color: var(--platform-text);
   }
 
-  & .staff-class__summary {
-    margin: var(--platform-space-4) 0 0;
-    font-size: var(--platform-type-lg);
-    line-height: 1.55;
-    color: var(--platform-text-muted);
-    white-space: pre-wrap;
-  }
-
-  & .staff-class__note {
-    margin: 0 0 var(--platform-space-4);
-    font-size: var(--platform-type-lg);
-    color: var(--platform-text-muted);
-  }
-
-  /* A field and its button in a row that wraps, the button at the field's
-     foot. Each form is `PlatformForm`, a column of its own: the row is said
-     here. */
-  & .staff-class__support {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: var(--platform-space-3);
-    margin-bottom: var(--platform-space-4);
-
-    & .platform-form__field {
-      flex: 1 1 320px;
-    }
+  @media (width < 1024px) {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

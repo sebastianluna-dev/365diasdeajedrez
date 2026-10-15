@@ -19,12 +19,13 @@ The agenda of the two roles that manage classes: days one under the other, each 
 
 ## Props
 
-| Prop        | Type                                                                       | Required | Meaning                                              |
-| ----------- | -------------------------------------------------------------------------- | -------- | ---------------------------------------------------- |
-| `days`      | `{ key: string; label: string; isToday: boolean; rows: ClassRowData[] }[]` | yes      | Only the days with classes; empty draws `emptyLine`. |
-| `audience`  | `"staff" \| "teacher"`                                                     | yes      | Handed to every row.                                 |
-| `emptyLine` | `string`                                                                   | yes      | «No hay clases esta semana.»                         |
-| `foot`      | `{ label: string; href: string }`                                          | no       | «Ver la semana siguiente».                           |
+| Prop            | Type                                                                       | Required | Meaning                                                                   |
+| --------------- | -------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------- |
+| `days`          | `{ key: string; label: string; isToday: boolean; rows: ClassRowData[] }[]` | yes      | Only the days with classes; empty draws `emptyLine`.                      |
+| `audience`      | `"staff" \| "teacher"`                                                     | yes      | Handed to every row.                                                      |
+| `emptyLine`     | `string`                                                                   | yes      | «No hay clases esta semana.»                                              |
+| `foot`          | `{ label: string; href: string }`                                          | no       | «Ver la semana siguiente».                                                |
+| `serverActions` | `ClassRowServerActions`                                                    | no       | `{ setMeeting? }`, handed to every row for the actions that open a popup. |
 
 ## Behaviour
 

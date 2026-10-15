@@ -1,8 +1,22 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { CalendarPlusIcon } from "@/components/icons/calendar-plus-icon.comp";
 import { StaffClassesSection } from "@/components/platform/sections/staff/classes/staff-classes.section";
-import { CLASS_STATUS, type ClassStatusCode } from "@/constants/platform/class-codes.const";
+import { RegisterPaymentButton } from "@/components/platform/shared/register-payment-popup/register-payment-popup.comp";
+import { CLASS_FIELD_ERRORS, readNotice } from "@/constants/platform/class-messages.const";
+import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { requireStaff } from "@/lib/platform-auth/roles";
-import { listAllClasses, listTeacherFilterOptions } from "@/services/staff-classes/staff-classes.service";
+import { staffRoutes } from "@/lib/platform-routes";
+import {
+  getStaffAgenda,
+  getStaffQueues,
+  listActiveTeacherOptions,
+  listOpenGroupClasses,
+  listTeacherFilterOptions,
+} from "@/services/staff-classes/staff-classes.service";
+import type { StaffAgendaTab } from "@/services/staff-classes/staff-classes.types";
+import { loadPaymentContext, loadTeacherBusy, registerPayment } from "@/services/staff-payments/staff-payments.actions";
+import { listPaymentStudents } from "@/services/staff-payments/staff-payments.service";
 
 // The title is resolved with the role, like the page itself: without it the
 // response carries not even the panel's name (IMPROVEMENTS #26).
@@ -12,44 +26,89 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 interface StaffClassesPageProps {
-  searchParams: Promise<{ teacherId?: string; status?: string; from?: string; to?: string; q?: string }>;
+  searchParams: Promise<{
+    vista?: string;
+    profesor?: string;
+    q?: string;
+    hasta?: string;
+    pagina?: string;
+    aviso?: string;
+    error?: string;
+  }>;
 }
 
-function toStatusCode(value: string | undefined): ClassStatusCode | undefined {
-  return value && (Object.values(CLASS_STATUS) as string[]).includes(value) ? (value as ClassStatusCode) : undefined;
-}
+const TABS: StaffAgendaTab[] = ["proximas", "pasadas", "canceladas"];
 
-/** "YYYY-MM-DD" → instant, or undefined when the date is not valid. */
-function toDate(value: string | undefined, endOfDay = false): Date | undefined {
-  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return undefined;
-  const date = new Date(`${value}T${endOfDay ? "23:59:59.999" : "00:00:00.000"}Z`);
-  return Number.isNaN(date.getTime()) ? undefined : date;
-}
-
+/** The staff's agenda (ADM-1). */
 export default async function StaffClassesPage({ searchParams }: StaffClassesPageProps) {
   await requireStaff();
   const raw = await searchParams;
-
+  const now = new Date();
   const filters = {
-    teacherId: raw.teacherId || undefined,
-    statusCode: toStatusCode(raw.status),
-    from: toDate(raw.from),
-    to: toDate(raw.to, true),
-    q: raw.q,
+    vista: TABS.includes(raw.vista as StaffAgendaTab) ? (raw.vista as StaffAgendaTab) : "proximas",
+    teacherId: raw.profesor || undefined,
+    q: raw.q?.trim() || undefined,
+    hasta: raw.hasta,
+    pagina: Math.max(1, Number.parseInt(raw.pagina ?? "1", 10) || 1),
   };
 
-  const [classes, teachers] = await Promise.all([listAllClasses(filters), listTeacherFilterOptions()]);
+  const [agenda, queues, teacherFilter, teachers, groupClasses, students] = await Promise.all([
+    getStaffAgenda(filters),
+    getStaffQueues(),
+    listTeacherFilterOptions(),
+    listActiveTeacherOptions(),
+    listOpenGroupClasses(now),
+    listPaymentStudents(),
+  ]);
+
+  const notice = readNotice(raw.aviso);
+  const noticeText =
+    notice?.text ??
+    (notice?.code === "meetingAdded" || notice?.code === "meetingChanged"
+      ? (() => {
+          const classId = notice.args[0];
+          const title = agenda.days.flatMap((day) => day.rows).find((row) => row.id === classId)?.title;
+          if (notice.code === "meetingChanged") return title ? `Enlace cambiado en «${title}».` : "Enlace cambiado.";
+          return title ? `Enlace agregado a «${title}».` : "Enlace agregado.";
+        })()
+      : undefined);
+  const errorMessage = raw.error
+    ? (CLASS_FIELD_ERRORS[raw.error] ?? STAFF_ERROR_MESSAGES[raw.error] ?? STAFF_ERROR_MESSAGES.invalid)
+    : undefined;
 
   return (
-    <div className="platform-page staff-classes-page">
+    <div className="platform-page platform-page_width_wide staff-classes-page">
       <header className="platform-page__head">
         <h1 className="platform-page__title">Clases</h1>
-        <p className="platform-page__subtitle">
-          Vista global de lectura. Desde aquí sólo se corrige la grabación o se cancela una clase.
-        </p>
+        <p className="platform-page__subtitle">{agenda.headline}</p>
+        <div className="platform-page__actions">
+          <Link href={staffRoutes.newClass()} className="platform-button">
+            <CalendarPlusIcon variant="classic-solid" className="platform-button__icon" />
+            Crear clase
+          </Link>
+          <RegisterPaymentButton
+            variant="accent"
+            students={students}
+            teachers={teachers}
+            groupClasses={groupClasses}
+            timeZone={agenda.timeZone}
+            nowIso={agenda.nowIso}
+            registerPayment={registerPayment}
+            loadPaymentContext={loadPaymentContext}
+            loadTeacherBusy={loadTeacherBusy}
+          />
+        </div>
       </header>
 
-      <StaffClassesSection classes={classes} teachers={teachers} filters={filters} rawFilters={raw} />
+      <StaffClassesSection
+        agenda={agenda}
+        queues={queues}
+        teacherFilter={teacherFilter}
+        teachers={teachers}
+        groupClasses={groupClasses}
+        notice={noticeText ?? undefined}
+        errorMessage={errorMessage}
+      />
     </div>
   );
 }

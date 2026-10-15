@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { meetingVisibleFrom, meetingVisibleUntil, storedMeetingVisibleFrom } from "./meeting-visible-from";
+import {
+  meetingVisibleFrom,
+  meetingVisibleUntil,
+  storedMeetingVisibleFrom,
+  meetingVisibleChoice,
+  meetingVisibleOptionOf,
+} from "./meeting-visible-from";
 
 const SCHEDULED_AT = new Date("2026-09-15T17:00:00.000Z");
 const CHOSEN = new Date("2026-09-15T16:00:00.000Z");
@@ -53,5 +59,29 @@ describe("meetingVisibleFrom", () => {
 describe("meetingVisibleUntil", () => {
   it("cierra el enlace media hora después del fin de la clase", () => {
     expect(meetingVisibleUntil(new Date("2026-10-14T19:00:00.000Z"))).toEqual(new Date("2026-10-14T19:30:00.000Z"));
+  });
+});
+
+describe("the «visible from» choices of a form", () => {
+  const start = new Date("2026-10-14T23:00:00.000Z");
+  const now = new Date("2026-10-14T17:40:00.000Z");
+
+  it("names the option a chosen instant matches, and «keep» for any other", () => {
+    expect(meetingVisibleOptionOf(null, start)).toBe("30");
+    expect(meetingVisibleOptionOf(new Date("2026-10-14T22:00:00.000Z"), start)).toBe("60");
+    expect(meetingVisibleOptionOf(new Date("2026-10-13T23:00:00.000Z"), start)).toBe("1440");
+    expect(meetingVisibleOptionOf(new Date("2026-10-14T21:45:00.000Z"), start)).toBe("keep");
+  });
+
+  it("turns a choice into the instant to store", () => {
+    expect(meetingVisibleChoice("30", start, now, null)).toEqual({ ok: true, chosen: null });
+    expect(meetingVisibleChoice("now", start, now, null)).toEqual({ ok: true, chosen: now });
+    expect(meetingVisibleChoice("180", start, now, null)).toEqual({
+      ok: true,
+      chosen: new Date("2026-10-14T20:00:00.000Z"),
+    });
+    const kept = new Date("2026-10-14T21:45:00.000Z");
+    expect(meetingVisibleChoice("keep", start, now, kept)).toEqual({ ok: true, chosen: kept });
+    expect(meetingVisibleChoice("7", start, now, null)).toEqual({ ok: false });
   });
 });

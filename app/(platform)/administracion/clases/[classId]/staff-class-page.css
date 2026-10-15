@@ -1,0 +1,9 @@
+/* The record's head: the phase and the format as tags above the title. */
+.staff-class-page {
+  & .staff-class-page__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-2);
+    margin: 0;
+  }
+}

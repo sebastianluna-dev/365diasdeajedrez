@@ -125,4 +125,13 @@ export const CLASS_FIELD_ERRORS: Record<string, string> = {
   tooManySeats: "Hay más clases con fecha y cubiertas que las que paga.",
   classCountBelowSeats: "El pago no puede cubrir menos clases de las que ya tiene con fecha o tomadas.",
   paidOnFuture: "La fecha del pago no puede ser futura.",
+  seatNotRemovable: "Esa plaza ya tiene marca o se movió: no se quita.",
+  studentRequired: "Elige un alumno.",
+  studentsRequired: "Elige al menos un alumno.",
+  tooManyStudents: "Elegiste más alumnos de los que caben.",
+  teacherInactive: "Ese profesor está desactivado.",
+  visibleFrom: "Elige cuándo ven el enlace.",
+  notEditable: "Esa acción ya no está disponible en esta fase de la clase: recarga la página.",
+  schedule: "Elige el día, la hora y la duración.",
+  meetingUrl: "El enlace tiene que ser una dirección web (https://…).",
 };

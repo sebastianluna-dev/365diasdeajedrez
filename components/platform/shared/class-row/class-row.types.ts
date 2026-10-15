@@ -1,4 +1,8 @@
 import type { ClassPhaseCode } from "@/constants/platform/class-codes.const";
+import type {
+  MeetingLinkCurrent,
+  SetMeetingAction,
+} from "@/components/platform/shared/meeting-link-popup/meeting-link-popup.types";
 
 // What a row of classes draws, as data: the services map a class to it and
 // the sections hand it to `ClassRow` and `ClassAgenda`. No component travels
@@ -6,7 +10,16 @@ import type { ClassPhaseCode } from "@/constants/platform/class-codes.const";
 
 /** What a chip of the row says, by its icon. */
 export type ClassRowChipIcon =
-  "no-link" | "unpaid" | "free" | "group" | "prepare" | "after" | "script" | "no-content" | "no-topic";
+  | "no-link"
+  | "unpaid"
+  | "free"
+  | "group"
+  | "prepare"
+  | "after"
+  | "script"
+  | "no-content"
+  | "no-topic"
+  | "teacher-inactive";
 
 export interface ClassRowChip {
   label: string;
@@ -15,11 +28,19 @@ export interface ClassRowChip {
 }
 
 /**
- * The action at the end of a row, as data. This phase knows the link; the
- * ones that open a popup (the meeting link, finalizing) come with phases 5
- * and 6 through `ClassRowAction`.
+ * The action at the end of a row, as data: a link the row draws itself, or
+ * the meeting link, which opens its popup through `ClassRowAction` with the
+ * server action the section hands down in `serverActions`. Finalizing a
+ * class joins it with phase 6.
  */
-export type ClassRowActionData = { kind: "link"; label: string; href: string };
+export type ClassRowActionData =
+  | { kind: "link"; label: string; href: string }
+  | { kind: "meeting"; label: string; classId: string; current: MeetingLinkCurrent };
+
+/** The server actions a row's action may need, passed as functions from the section; stubs in Storybook. */
+export interface ClassRowServerActions {
+  setMeeting?: SetMeetingAction;
+}
 
 export interface ClassRowData {
   id: string;

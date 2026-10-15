@@ -9,17 +9,21 @@ import { HandHoldingDollarIcon } from "@/components/icons/hand-holding-dollar-ic
 import { LinkSlashIcon } from "@/components/icons/link-slash-icon.comp";
 import { LockIcon } from "@/components/icons/lock-icon.comp";
 import { PenLineIcon } from "@/components/icons/pen-line-icon.comp";
+import { UsersSlashIcon } from "@/components/icons/users-slash-icon.comp";
 import { ClassDateTile } from "@/components/platform/shared/class-date-tile/class-date-tile.comp";
+import { ClassRowAction } from "@/components/platform/shared/class-row-action/class-row-action.comp";
 import { ClassStatusTag } from "@/components/platform/shared/class-status-tag/class-status-tag.comp";
 import { dayKeyIn } from "@/lib/timezone";
 import { formatClassHours } from "@/lib/format-class-when";
-import type { ClassRowChipIcon, ClassRowData } from "./class-row.types";
+import type { ClassRowChipIcon, ClassRowData, ClassRowServerActions } from "./class-row.types";
 import "./class-row.comp.css";
 
 interface ClassRowProps {
   row: ClassRowData;
   /** Whose list it is: the words of the tag and the chips differ. */
   audience: "staff" | "teacher";
+  /** The server actions an action of the row may open a popup with. */
+  serverActions?: ClassRowServerActions;
 }
 
 const CHIP_ICONS: Record<ClassRowChipIcon, typeof LinkSlashIcon> = {
@@ -32,6 +36,7 @@ const CHIP_ICONS: Record<ClassRowChipIcon, typeof LinkSlashIcon> = {
   script: LockIcon,
   "no-content": FileMinusIcon,
   "no-topic": PenLineIcon,
+  "teacher-inactive": UsersSlashIcon,
 };
 
 /**
@@ -41,7 +46,7 @@ const CHIP_ICONS: Record<ClassRowChipIcon, typeof LinkSlashIcon> = {
  * over the whole row, and the action sits above it; nothing interactive is
  * nested. A card under 640px.
  */
-export function ClassRow({ row, audience }: ClassRowProps) {
+export function ClassRow({ row, audience, serverActions }: ClassRowProps) {
   const start = new Date(row.startIso);
   const now = new Date(row.nowIso);
   const isToday = dayKeyIn(start, row.timeZone) === dayKeyIn(now, row.timeZone);
@@ -80,10 +85,12 @@ export function ClassRow({ row, audience }: ClassRowProps) {
         </ul>
       )}
       <div className="class-row__action">
-        {row.action ? (
+        {row.action?.kind === "link" ? (
           <Link href={row.action.href} className="platform-row-action">
             {row.action.label}
           </Link>
+        ) : row.action ? (
+          <ClassRowAction action={row.action} row={row} serverActions={serverActions} />
         ) : (
           <ChevronRightIcon variant="classic-solid" className="class-row__chevron" />
         )}

@@ -1,19 +1,91 @@
-.staff-classes {
-  display: flex;
-  flex-direction: column;
-  gap: var(--platform-space-5);
+/* The agenda and its queues: two columns, the queues under the agenda
+   below 1024px. */
+.staff-agenda {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--platform-space-6);
+  align-items: start;
 
-  /* The filters in a row that wraps, the button at the fields' foot. The form
-     is `PlatformForm`, a column of its own: the row is said here. */
-  & .staff-classes__filters {
+  & .staff-agenda__main {
     display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: var(--platform-space-3);
+    flex-direction: column;
+    gap: var(--platform-space-5);
+    min-width: 0;
+  }
 
-    & .platform-form__field {
-      flex: 1 1 170px;
+  /* The pills on the left, the filters on the right; they wrap when short of room. */
+  & .staff-agenda__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-3);
+  }
+
+  & .agenda-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-2);
+  }
+
+  & .staff-agenda__empty {
+    margin: 0;
+    padding: var(--platform-space-6);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    color: var(--platform-text-muted);
+  }
+
+  & .staff-agenda__cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .staff-agenda__card {
+    border-radius: 8px;
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .staff-agenda__past {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+  }
+
+  /* The table above 640px; the cards below it. */
+  & .staff-agenda__past-cards {
+    display: none;
+  }
+
+  & .staff-agenda__paging {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-4);
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .staff-agenda__paging-link {
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  @media (width < 1024px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (width < 640px) {
+    & .staff-agenda__past-table {
+      display: none;
+    }
+
+    & .staff-agenda__past-cards {
+      display: flex;
     }
   }
 }

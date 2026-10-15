@@ -1,0 +1,46 @@
+---
+description: "«Reprogramar la clase de …» (ADM-10): a no-show's seat goes to a new individual class, to a group class with a seat free, or back to its payment, keeping its coverage."
+---
+
+# `RescheduleSeatPopup`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/classes/reschedule-seat-popup/reschedule-seat-popup.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Stylesheet | `reschedule-seat-popup.comp.css` → block `.reschedule-seat__form`                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Story      | `reschedule-seat-popup.stories.tsx` (`platform/sections/staff/classes/RescheduleSeatPopup`): new class (`play`), new class with an inactive teacher (`play`), group (`play`), later (`play`)                                                                                                                                                                                                                                                                                                                                                   |
+| Used by    | [`ClassSeatRow`](/components/platform/sections/staff/classes/class-seat-row) («Reprogramar»), [`ClassHeaderActions`](/components/platform/sections/staff/classes/class-header-actions) (the accent, with one no-show)                                                                                                                                                                                                                                                                                                                          |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup) (`md`, a sheet on a phone), [`PlatformForm`, `PlatformFormField`, `PlatformFormGroup`](/components/platform/shared/platform-form), [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards), [`ClassSlotFields`](/components/platform/shared/class-slot-fields), [`PlatformSelect`](/components/platform/shared/platform-select), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `rescheduleStudentSeat` as a prop (`moveClassSeat`, with `createClassRecord` for a new class), the states of `services/shared/form-state.ts`, `withNoticeParam`                                                                                                                                                                                                                                                                                                                                                                                |
+
+## Purpose
+
+«Reprogramar la clase de …», from the staff's record of a class. No trigger of its own; a host opens it through its `ref`, and the exported button draws a launcher. The form is remounted on every use (its key moves in the popup's `onClose`); on success the host closes it and puts the notice in the address.
+
+## Props
+
+| Prop                       | Type                                                              | Required | Meaning                                                                                            |
+| -------------------------- | ----------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------- |
+| `classId`, `student`       |                                                                   | yes      |                                                                                                    |
+| `context`                  | `string`                                                          | yes      | «Faltó el mié 14 oct · es la clase 4 de 4 de su pago del mar 15 sep · Profesor: GM Profesor Demo». |
+| `startIso`, `durationMin`  |                                                                   | yes      | The missed class: the new one opens on its day and hour.                                           |
+| `teacher`                  | `{ id, displayName, isActive }`                                   | yes      | The old teacher; when deactivated the form asks for one.                                           |
+| `teachers`, `groupClasses` |                                                                   | yes      |                                                                                                    |
+| `hasPayment`               | `boolean`                                                         | yes      | «Dejarla por programar» only for a seat that spends a payment (D4).                                |
+| `timeZone`, `nowIso`       | `string`                                                          | yes      |                                                                                                    |
+| `rescheduleStudentSeat`    | `(classId, studentId, prev, formData) => Promise<PopupFormState>` | yes      |                                                                                                    |
+
+## Behaviour
+
+«¿Dónde?»: «En una clase nueva» (Fecha, Hora, Duración, the line «vie 16 oct · 19:00–20:00 (hora de Ciudad de México)»; the new class takes the old one's teacher, topic, description and link), «En una clase grupal» (the open ones, «Taller de finales de torre · sáb 17 oct · 2 plazas libres»), «Dejarla por programar». «Nota para Valentina Cruz» is optional. The lines: «Su clase pasa a la nueva fecha con el mismo pago: no gasta otra.», «La clase del mié 14 oct queda en su historial como «Faltó · reprogramada».». On success the address says `?aviso=seatRescheduled.<minutes>.<duration>` («Clase reprogramada al vie 16 oct · 19:00–20:00: no gasta otra.») or `seatReturned` («La clase volvió a su pago, por programar.»).
+
+## Markup & styling
+
+Block `.reschedule-seat__form` (52 lines): a column with the foot over a hairline; on a phone the foot sticks to the bottom with its button full width.
+
+**Elements:** `.reschedule-seat__context`, `.reschedule-seat__preview`, `.reschedule-seat__lines`, `.reschedule-seat__foot`
+
+**Breakpoints:** `(width < 640px)`.
+
+**Tokens:** `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-track`

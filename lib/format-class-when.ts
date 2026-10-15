@@ -119,6 +119,19 @@ export function formatClassDay(date: Date, timeZone: string, now: Date): string 
   return `${WEEKDAYS_SHORT[parts.weekday]} ${parts.day} ${MONTHS_SHORT[parts.month - 1]}${year}`;
 }
 
+/** «mié 14 oct, 20:12»: when something was done, for a history or a mark. */
+export function formatClassStamp(date: Date, timeZone: string, now: Date): string {
+  return `${formatClassDay(date, timeZone, now)}, ${localParts(date, timeZone).time}`;
+}
+
+/** «miércoles 14 de octubre», from a "yyyy-mm-dd" key, with the year when it is not today's. */
+export function formatLongDay(dayKey: string, todayKey: string): string {
+  const [year = 0, month = 0, day = 0] = dayKey.split("-").map(Number);
+  const [todayYear = 0] = todayKey.split("-").map(Number);
+  const weekday = WEEKDAYS_LONG[new Date(`${dayKey}T00:00:00.000Z`).getUTCDay()] ?? "";
+  return `${weekday} ${day} de ${MONTHS_LONG[month - 1]}${year === todayYear ? "" : ` de ${year}`}`;
+}
+
 /** The three words of a date tile: «mié», 14, «oct», in the zone. */
 export function classDayParts(date: Date, timeZone: string): { weekday: string; day: number; month: string } {
   const parts = localParts(date, timeZone);

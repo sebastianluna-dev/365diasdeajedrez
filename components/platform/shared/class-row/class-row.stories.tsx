@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { CLASS_PHASE } from "@/constants/platform/class-codes.const";
 import { CLASSES_NOW, CLASSES_TIME_ZONE, cdmx } from "@/lib/testing/fixtures/classes";
+import { popupFormDone } from "@/services/shared/form-state";
 import { ClassRow } from "./class-row.comp";
 import type { ClassRowData } from "./class-row.types";
 
@@ -77,7 +78,7 @@ export const StaffUnpaid: Story = {
   },
 };
 
-/** A free diagnosis without a link yet. */
+/** A free diagnosis without a link yet: «Agregar» opens the meeting-link popup through `ClassRowAction`. */
 export const StaffFree: Story = {
   name: "Staff, free",
   args: {
@@ -92,8 +93,19 @@ export const StaffFree: Story = {
         { label: "Gratis", icon: "free", tone: "success" },
         { label: "Sin enlace", icon: "no-link", tone: "warning" },
       ],
-      action: { kind: "link", label: "Agregar enlace", href: "/administracion/clases/c8" },
+      action: {
+        kind: "meeting",
+        label: "Agregar",
+        classId: "c8",
+        current: {
+          meetingUrl: null,
+          visibleFromIso: null,
+          startIso: cdmx("2026-10-16", "18:00").toISOString(),
+          durationMin: 60,
+        },
+      },
     },
+    serverActions: { setMeeting: async () => popupFormDone("meetingAdded", ["c8"]) },
   },
 };
 

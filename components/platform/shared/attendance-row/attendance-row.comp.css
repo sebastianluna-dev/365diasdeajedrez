@@ -1,0 +1,78 @@
+/* A student and their mark: the portrait, the name with its details, and
+   the mark at the end — a tag with its lines, or the two cards to write it. */
+.attendance-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--platform-space-3);
+
+  &.attendance-row_mode_edit {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+  }
+
+  & .attendance-row__who {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+    min-width: 0;
+  }
+
+  & .attendance-row__name {
+    font-size: var(--platform-type-lg);
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .attendance-row__detail {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+    overflow-wrap: anywhere;
+  }
+
+  & .attendance-row__mark {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--platform-space-1);
+    text-align: right;
+  }
+
+  & .attendance-row__moved {
+    text-decoration: none;
+  }
+
+  & .attendance-row__moved:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  & .attendance-row__line {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+    max-width: 36ch;
+  }
+
+  & .attendance-row__line_kind_changed {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: var(--platform-space-1);
+    color: var(--platform-text);
+  }
+
+  & .attendance-row__lock {
+    flex: none;
+    width: 12px;
+    height: 1lh;
+  }
+
+  @media (width < 640px) {
+    grid-template-columns: auto minmax(0, 1fr);
+
+    & .attendance-row__mark {
+      grid-column: 2;
+      align-items: flex-start;
+      text-align: left;
+    }
+  }
+}

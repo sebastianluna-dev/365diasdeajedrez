@@ -1,0 +1,60 @@
+---
+description: "«Agregar el enlace de la reunión», or «Cambiar …» when the class has one: the link and when the students get to see it; the action comes as a prop."
+---
+
+# `MeetingLinkPopup`
+
+|            |                                                                                                                                                                                                                                                                                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/meeting-link-popup/meeting-link-popup.comp.tsx` (also `meeting-link-popup.types.ts`: `MeetingLinkCurrent`, `SetMeetingAction`)                                                                                                                                                                                           |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                     |
+| Stylesheet | `meeting-link-popup.comp.css` → block `.meeting-link__form`                                                                                                                                                                                                                                                                                          |
+| Story      | `meeting-link-popup.stories.tsx` (`platform/shared/MeetingLinkPopup`): add (`play`), change (`play`), opens late (`play`)                                                                                                                                                                                                                            |
+| Used by    | [`ClassRowAction`](/components/platform/shared/class-row-action) (the agenda's «Agregar»), [`StaffClassQueues`](/components/platform/sections/staff/classes/staff-class-queues) («Sin enlace»), [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section) (the lane's «Cambiar»)                           |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup) (`sm`, a sheet on a phone), [`PlatformForm`](/components/platform/shared/platform-form), [`PlatformSelect`](/components/platform/shared/platform-select), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `setClassMeeting` as a prop (`services/staff-classes/staff-classes.actions.ts`), `MEETING_VISIBLE_OPTIONS` and `meetingVisibleOptionOf` (`services/shared/meeting-visible-from.ts`), the states of `services/shared/form-state.ts`                                                                                                                   |
+
+## Purpose
+
+The staff puts the link on every class (O2), from wherever the class is seen: the agenda's row, the queue «Sin enlace», the record's lane. One popup, no trigger of its own — a host opens it through its `ref`, and `MeetingLinkButton` draws a launcher («Agregar» or «Cambiar», by the current link; `variant` `row` or `button`).
+
+## Props
+
+| Prop                    | Type                 | Required | Meaning                                                                                               |
+| ----------------------- | -------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
+| `classId`, `classTitle` | `string`             | yes      | The class, named under the title with when it is.                                                     |
+| `current`               | `MeetingLinkCurrent` | yes      | `{ meetingUrl, visibleFromIso, startIso, durationMin }`: the link as it stands and when the class is. |
+| `timeZone`, `nowIso`    | `string`             | yes      | The academy's zone, and when the page was read.                                                       |
+| `setMeeting`            | `SetMeetingAction`   | yes      | `(classId, prev, formData) => Promise<PopupFormState>`; a stub in Storybook.                          |
+
+## Behaviour
+
+The [popup-form pattern](/conventions#server-actions). Two fields: the link (`url`, required) and «Los alumnos ven el enlace», a select of minutes before the start («30 minutos antes de empezar» is the default and stores nothing, «1 hora antes», «3 horas antes», «El día anterior», «Desde ahora») plus, when the class holds an instant none of them matches, «Desde el mié 14 oct, 15:45» to keep it. On success the host closes it and the address says `?aviso=meetingAdded.<classId>` or `meetingChanged.<classId>`, which the page turns into «Enlace agregado a «Plan de aperturas con blancas».» when it has the class at hand.
+
+## Markup & styling
+
+Block `.meeting-link__form` (34 lines): a column with the foot over a hairline; on a phone the foot sticks to the bottom with its button full width.
+
+**Elements:** `.meeting-link__class`, `.meeting-link__foot`
+
+**Breakpoints:** `(width < 640px)`.
+
+**Tokens:** `--platform-surface`, `--platform-text-muted`, `--platform-track`
+
+## Usage
+
+```tsx
+<MeetingLinkButton
+  label="Agregar"
+  classId={item.classId}
+  classTitle={item.title}
+  current={item.current}
+  timeZone={timeZone}
+  nowIso={nowIso}
+  setMeeting={setClassMeeting}
+/>
+```
+
+## Related
+
+- [`ClassRow`](/components/platform/shared/class-row), whose meeting action opens it.

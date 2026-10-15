@@ -1,0 +1,43 @@
+---
+description: "«Cambiar la asistencia de …» (ADM-9): the staff's override after a report, with the current mark chosen, a reason the teacher reads, and the lines that say what it does and does not do."
+---
+
+# `ChangeAttendancePopup`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/classes/change-attendance-popup/change-attendance-popup.comp.tsx`                                                                                                                                                                                                                                                                                                     |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                          |
+| Stylesheet | `change-attendance-popup.comp.css` → block `.change-attendance__form`                                                                                                                                                                                                                                                                                                                                     |
+| Story      | `change-attendance-popup.stories.tsx` (`platform/sections/staff/classes/ChangeAttendancePopup`): open (`play`), reason missing (`play`)                                                                                                                                                                                                                                                                   |
+| Used by    | [`ClassSeatRow`](/components/platform/sections/staff/classes/class-seat-row) («Cambiar», `ChangeAttendanceButton`)                                                                                                                                                                                                                                                                                        |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup) (`sm`, a sheet on a phone), [`PlatformForm`, `PlatformFormField`, `PlatformFormGroup`](/components/platform/shared/platform-form), [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `changeAttendanceAsStaff` as a prop (`recordAttendance` with the staff's role and the mode `override`), the states of `services/shared/form-state.ts`, `withNoticeParam`                                                                                                                                                                                                                                  |
+
+## Purpose
+
+«Cambiar la asistencia», from the staff's record of a class. No trigger of its own; a host opens it through its `ref`, and the exported button draws a launcher. The form is remounted on every use (its key moves in the popup's `onClose`); on success the host closes it and puts the notice in the address.
+
+## Props
+
+| Prop                       | Type                                                              | Required | Meaning                                                                                |
+| -------------------------- | ----------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------- |
+| `classId`, `student`       |                                                                   | yes      |                                                                                        |
+| `context`                  | `string`                                                          | yes      | «Clase de Valentina Cruz · mié 14 oct · 19:00–20:00 · GM Profesor Demo marcó «Faltó»». |
+| `attended`                 | `boolean \| null`                                                 | yes      | The mark that stands, chosen.                                                          |
+| `teacherName`, `staffName` | `string`                                                          | yes      | «Lo ve GM Profesor Demo junto al cambio.», «por Staff Demo».                           |
+| `changeAttendance`         | `(classId, studentId, prev, formData) => Promise<PopupFormState>` | yes      |                                                                                        |
+
+## Behaviour
+
+«Asistencia» (Asistió · Faltó, with «Elige «Asistió» o «Faltó».» when sent empty), «Motivo del cambio» (required, 300, «Escribe el motivo del cambio.»), and the lines «Queda registrado: «Faltó» → «Asistió», por Staff Demo, con este motivo.», «La clase pagada sigue gastada: la asistencia no mueve el pago.», «Valentina Cruz verá «Asististe» en la clase.». A seat already moved is not offered («La plaza ya se reprogramó: su asistencia no se cambia.» if it is sent anyway). On success the address says `?aviso=attendanceChanged.<userId>`, which the page turns into «Asistencia de Valentina Cruz cambiada: «Asistió».».
+
+## Markup & styling
+
+Block `.change-attendance__form` (45 lines): a column with the foot over a hairline; on a phone the foot sticks to the bottom with its button full width.
+
+**Elements:** `.change-attendance__context`, `.change-attendance__lines`, `.change-attendance__foot`
+
+**Breakpoints:** `(width < 640px)`.
+
+**Tokens:** `--platform-surface`, `--platform-text-muted`, `--platform-track`

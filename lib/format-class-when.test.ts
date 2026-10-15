@@ -5,7 +5,9 @@ import {
   formatAgendaDay,
   formatClassDay,
   formatClassHours,
+  formatClassStamp,
   formatClassWhen,
+  formatLongDay,
   timeZoneLabel,
 } from "./format-class-when";
 
@@ -101,5 +103,20 @@ describe("classDayParts", () => {
       day: 15,
       month: "oct",
     });
+  });
+});
+
+describe("formatClassStamp", () => {
+  it("escribe el día corto y la hora del momento", () => {
+    expect(formatClassStamp(cdmx("2026-10-14", "20:12"), zone, CLASSES_NOW)).toBe("mié 14 oct, 20:12");
+    expect(formatClassStamp(cdmx("2025-09-15", "10:20"), zone, CLASSES_NOW)).toBe("lun 15 sep 2025, 10:20");
+  });
+});
+
+describe("formatLongDay", () => {
+  it("escribe el día largo, con el año sólo cuando no es el de hoy", () => {
+    expect(formatLongDay("2026-10-14", "2026-10-14")).toBe("miércoles 14 de octubre");
+    expect(formatLongDay("2026-10-20", "2026-10-14")).toBe("martes 20 de octubre");
+    expect(formatLongDay("2027-01-04", "2026-10-14")).toBe("lunes 4 de enero de 2027");
   });
 });

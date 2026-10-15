@@ -1,0 +1,37 @@
+---
+description: "What happened to a class, in order: who created it and with what, who was added, each reschedule, the close with its marks, every staff change and every seat moved."
+---
+
+# `ClassHistory`
+
+|            |                                                                                                     |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/classes/class-history.comp.tsx`                                 |
+| Kind       | Server Component                                                                                    |
+| Stylesheet | `class-history.comp.css` → block `.class-history`                                                   |
+| Used by    | [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section) |
+| Uses       | `ClassHistoryEntry` from `buildClassHistory` (`services/shared/class-history.ts`)                   |
+
+## Purpose
+
+The record keeps no log of its own: `buildClassHistory` reads the columns the writers keep (who and when) and gives the lines — «lun 12 oct, 18:05 · Staff Demo creó la clase», «… agregó a Alumno Demo, Mateo Ríos y Diego Salas», «mié 14 oct, 20:12 · GM Profesor Demo finalizó la clase · Valentina Cruz: faltó» — and this piece draws them.
+
+## Props
+
+| Prop      | Type                  | Required | Meaning                                 |
+| --------- | --------------------- | -------- | --------------------------------------- |
+| `entries` | `ClassHistoryEntry[]` | yes      | `{ atIso, stamp, text }`, oldest first. |
+
+## Markup & styling
+
+Block `.class-history` (37 lines): a rail on the left, a stamp in small caps and the line under it.
+
+**Elements:** `.class-history__entry`, `.class-history__stamp`, `.class-history__text`; `.class-history__empty` for «Sin historial.»
+
+**Tokens:** `--platform-text`, `--platform-text-muted`, `--platform-track`
+
+## Usage
+
+```tsx
+<ClassHistory entries={classDetail.history} />
+```

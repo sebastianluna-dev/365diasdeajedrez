@@ -1,0 +1,44 @@
+---
+description: "«Agregar alumnos» (ADM-4): the students as cards, the ones already in the class greyed, and under them how each chosen one enters: with their payment, with the payment pending, or free."
+---
+
+# `AddStudentsPopup`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/classes/add-students-popup/add-students-popup.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Stylesheet | `add-students-popup.comp.css` → block `.add-students__form`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Story      | `add-students-popup.stories.tsx` (`platform/sections/staff/classes/AddStudentsPopup`): open (`play`), full (`play`), not assigned (`play`)                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Used by    | [`ClassHeaderActions`](/components/platform/sections/staff/classes/class-header-actions) (`AddStudentsButton`)                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup) (`md`, a sheet on a phone), [`PlatformForm`, `PlatformFormGroup`](/components/platform/shared/platform-form), [`PlatformCheckCards`](/components/platform/shared/platform-check-cards), [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards), [`PlatformSearchField`](/components/platform/shared/platform-search-field), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `addClassParticipants` as a prop; `SchedulableStudent`, the states of `services/shared/form-state.ts`, `withNoticeParam`                                                                                                                                                                                                                                                                                                                                                                                                                   |
+
+## Purpose
+
+«Agregar alumnos», from the staff's record of a class. No trigger of its own; a host opens it through its `ref`, and the exported button draws a launcher. The form is remounted on every use (its key moves in the popup's `onClose`); on success the host closes it and puts the notice in the address.
+
+## Props
+
+| Prop                    | Type                                                   | Required | Meaning                                                                     |
+| ----------------------- | ------------------------------------------------------ | -------- | --------------------------------------------------------------------------- |
+| `classId`, `classTitle` | `string`                                               | yes      |                                                                             |
+| `seatsFree`             | `number`                                               | yes      | «2 plazas libres»; with none the button waits.                              |
+| `seatedIds`             | `string[]`                                             | yes      | Their cards are greyed: «Ya está en la clase».                              |
+| `students`              | `SchedulableStudent[]`                                 | yes      |                                                                             |
+| `teacher`               | `{ id, displayName }`                                  | yes      | A student not assigned to them is said under their row.                     |
+| `addClassParticipants`  | `(classId, prev, formData) => Promise<PopupFormState>` | yes      | A seat per student, in one transaction; a refusal takes the others with it. |
+
+## Behaviour
+
+Submitted by hand, as [`NewClassForm`](/components/platform/sections/staff/classes/new-class-form) is, so React's reset does not reach the controlled cards. The same cards and the same «Entra» as [`NewClassForm`](/components/platform/sections/staff/classes/new-class-form) (D6): «Con su pago» only with classes left, «Con el pago pendiente», «Gratis». On success the address says `?aviso=participantsAdded.<n>`: «2 alumnos agregados.».
+
+## Markup & styling
+
+Block `.add-students__form` (58 lines): a column with the foot over a hairline; on a phone the foot sticks to the bottom with its button full width.
+
+**Elements:** `.add-students__class`, `.add-students__entry`, `.add-students__warning`, `.add-students__warning-icon`, `.add-students__foot`
+
+**Breakpoints:** `(width < 640px)`.
+
+**Tokens:** `--platform-surface`, `--platform-text-muted`, `--platform-track`

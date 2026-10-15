@@ -51,3 +51,41 @@ export function meetingVisibleFrom(meetingUrl: string | null, scheduledAt: Date,
 export function meetingVisibleUntil(endsAt: Date): Date {
   return new Date(endsAt.getTime() + MEETING_VISIBLE_TAIL_MS);
 }
+
+/**
+ * The field «Los alumnos ven el enlace», as the forms offer it: minutes
+ * before the start; «now» opens it at once; «keep» leaves what is chosen.
+ */
+export const MEETING_VISIBLE_OPTIONS = [
+  { value: "30", label: "30 minutos antes de empezar" },
+  { value: "60", label: "1 hora antes" },
+  { value: "180", label: "3 horas antes" },
+  { value: "1440", label: "El día anterior" },
+  { value: "now", label: "Desde ahora" },
+] as const;
+
+/** The option a chosen instant matches, «30» for the default, «keep» when it is none of them. */
+export function meetingVisibleOptionOf(chosen: Date | null, scheduledAt: Date): string {
+  if (chosen === null) return "30";
+  const minutes = Math.round((scheduledAt.getTime() - chosen.getTime()) / 60_000);
+  return MEETING_VISIBLE_OPTIONS.some((option) => option.value === String(minutes)) ? String(minutes) : "keep";
+}
+
+/**
+ * The instant to STORE for a form's choice: null for the default, `now` for
+ * «Desde ahora», the minutes before the start otherwise, and what was chosen
+ * for «keep». Null for a value that is none of those.
+ */
+export function meetingVisibleChoice(
+  value: string,
+  scheduledAt: Date,
+  now: Date,
+  kept: Date | null,
+): { ok: true; chosen: Date | null } | { ok: false } {
+  if (value === "30") return { ok: true, chosen: null };
+  if (value === "now") return { ok: true, chosen: now };
+  if (value === "keep") return { ok: true, chosen: kept };
+  const option = MEETING_VISIBLE_OPTIONS.find((item) => item.value === value);
+  if (!option) return { ok: false };
+  return { ok: true, chosen: new Date(scheduledAt.getTime() - Number(value) * 60_000) };
+}

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ClassRow } from "@/components/platform/shared/class-row/class-row.comp";
-import type { ClassRowData } from "@/components/platform/shared/class-row/class-row.types";
+import type { ClassRowData, ClassRowServerActions } from "@/components/platform/shared/class-row/class-row.types";
 import "./class-agenda.comp.css";
 
 export interface ClassAgendaDay {
@@ -20,6 +20,8 @@ interface ClassAgendaProps {
   emptyLine: string;
   /** A link at the foot: «Ver la semana siguiente». */
   foot?: { label: string; href: string };
+  /** The server actions the rows' actions may need. */
+  serverActions?: ClassRowServerActions;
 }
 
 /**
@@ -27,7 +29,7 @@ interface ClassAgendaProps {
  * any, with a line when none does and a link at the foot to the next
  * stretch of days.
  */
-export function ClassAgenda({ days, audience, emptyLine, foot }: ClassAgendaProps) {
+export function ClassAgenda({ days, audience, emptyLine, foot, serverActions }: ClassAgendaProps) {
   return (
     <div className="class-agenda">
       {days.length === 0 ? (
@@ -44,7 +46,7 @@ export function ClassAgenda({ days, audience, emptyLine, foot }: ClassAgendaProp
             <ul className="class-agenda__rows">
               {day.rows.map((row) => (
                 <li key={row.id} className="class-agenda__row">
-                  <ClassRow row={row} audience={audience} />
+                  <ClassRow row={row} audience={audience} serverActions={serverActions} />
                 </li>
               ))}
             </ul>

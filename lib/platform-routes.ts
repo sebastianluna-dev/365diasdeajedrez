@@ -172,6 +172,26 @@ export const staffRoutes = {
   lessonDetail: (courseId: string, chapterId: string, lessonId: string) =>
     `/administracion/cursos/${courseId}/capitulos/${chapterId}/lecciones/${lessonId}`,
   classes: "/administracion/clases",
+  /** The agenda with its filters in the address: `?vista=proximas|pasadas|canceladas&profesor=&q=&hasta=&pagina=`. */
+  classesFiltered: (filters: { vista?: string; profesor?: string; q?: string; hasta?: string; pagina?: number }) => {
+    const params = new URLSearchParams();
+    if (filters.vista && filters.vista !== "proximas") params.set("vista", filters.vista);
+    if (filters.profesor) params.set("profesor", filters.profesor);
+    if (filters.q) params.set("q", filters.q);
+    if (filters.hasta) params.set("hasta", filters.hasta);
+    if (filters.pagina && filters.pagina > 1) params.set("pagina", String(filters.pagina));
+    const query = params.toString();
+    return query ? `/administracion/clases?${query}` : "/administracion/clases";
+  },
+  /** «Crear clase»: `?formato=grupal`, `?alumno=<userId>`, `?duplicar=<classId>`. */
+  newClass: (params: { formato?: "grupal"; alumno?: string; duplicar?: string } = {}) => {
+    const query = new URLSearchParams();
+    if (params.formato) query.set("formato", params.formato);
+    if (params.alumno) query.set("alumno", params.alumno);
+    if (params.duplicar) query.set("duplicar", params.duplicar);
+    const text = query.toString();
+    return text ? `/administracion/clases/nueva?${text}` : "/administracion/clases/nueva";
+  },
   staffClassDetail: (classId: string) => `/administracion/clases/${classId}`,
 } as const;
 

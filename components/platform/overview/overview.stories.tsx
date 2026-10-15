@@ -116,10 +116,20 @@ import { PlatformSearchField } from "@/components/platform/shared/platform-searc
 import { ClassSlotFields } from "@/components/platform/shared/class-slot-fields/class-slot-fields.comp";
 import { RegisterPaymentButton } from "@/components/platform/shared/register-payment-popup/register-payment-popup.comp";
 import { ScheduleSeatPopup } from "@/components/platform/shared/schedule-seat-popup/schedule-seat-popup.comp";
+import { AddStudentsButton } from "@/components/platform/sections/staff/classes/add-students-popup/add-students-popup.comp";
+import { ChangeAttendanceButton } from "@/components/platform/sections/staff/classes/change-attendance-popup/change-attendance-popup.comp";
+import { ChangeTeacherButton } from "@/components/platform/sections/staff/classes/change-teacher-popup/change-teacher-popup.comp";
+import { ClassSeatRow } from "@/components/platform/sections/staff/classes/class-seat-row/class-seat-row.comp";
+import { NewClassForm } from "@/components/platform/sections/staff/classes/new-class-form/new-class-form.comp";
+import { RescheduleClassButton } from "@/components/platform/sections/staff/classes/reschedule-class-popup/reschedule-class-popup.comp";
+import { RescheduleSeatButton } from "@/components/platform/sections/staff/classes/reschedule-seat-popup/reschedule-seat-popup.comp";
+import { AttendanceRow } from "@/components/platform/shared/attendance-row/attendance-row.comp";
+import { ClassRowAction } from "@/components/platform/shared/class-row-action/class-row-action.comp";
+import { MeetingLinkButton } from "@/components/platform/shared/meeting-link-popup/meeting-link-popup.comp";
 import { PaymentCard } from "@/components/platform/sections/staff/payments/payment-card/payment-card.comp";
 import { popupFormDone } from "@/services/shared/form-state";
 import type { StaffPaymentView } from "@/services/staff-payments/staff-payments.types";
-import { CLASS_PHASE } from "@/constants/platform/class-codes.const";
+import { CLASS_FORMAT, CLASS_PHASE } from "@/constants/platform/class-codes.const";
 import { CLASSES_NOW, CLASSES_TIME_ZONE, cdmx } from "@/lib/testing/fixtures/classes";
 import { SyllabusList } from "@/components/platform/sections/staff/courses/syllabus-list/syllabus-list.comp";
 import { TempPasswordNotice } from "@/components/platform/sections/staff/students/temp-password-notice.comp";
@@ -305,6 +315,51 @@ const OVERVIEW_PAYMENT: StaffPaymentView = {
 };
 const OVERVIEW_TEACHERS = [{ id: "t-1", displayName: "GM Profesor Demo" }];
 const OVERVIEW_RHYTHM = { teacherId: "t-1", firstDate: "2026-10-21", time: "12:00", durationMin: 60 };
+const OVERVIEW_STUDENTS = [
+  {
+    id: "u-d",
+    displayName: "Alumno Demo",
+    email: "alumno.demo@365diasdeajedrez.com",
+    teacherId: "t-1",
+    teacherName: "GM Profesor Demo",
+    toSchedule: 2,
+    oldestPaymentLabel: "pago del jue 1 oct",
+    hasPayments: true,
+  },
+  {
+    id: "u-l",
+    displayName: "Lucía Herrera",
+    email: "lucia.herrera@ejemplo.com",
+    teacherId: null,
+    teacherName: null,
+    toSchedule: 0,
+    oldestPaymentLabel: null,
+    hasPayments: false,
+  },
+];
+const OVERVIEW_MEETING = {
+  meetingUrl: null,
+  visibleFromIso: null,
+  startIso: cdmx("2026-10-14", "17:00").toISOString(),
+  durationMin: 60,
+};
+const OVERVIEW_CLASS = {
+  id: "c4",
+  title: "Clase de Valentina Cruz",
+  startIso: cdmx("2026-10-14", "19:00").toISOString(),
+  durationMin: 60,
+  timeZone: CLASSES_TIME_ZONE,
+  nowIso: CLASSES_NOW.toISOString(),
+  teacher: { id: "t-1", displayName: "GM Profesor Demo", isActive: true },
+};
+const OVERVIEW_SEAT_ACTIONS = {
+  removeClassParticipant: async () => undefined,
+  changeAttendanceAsStaff: async () => popupFormDone("attendanceChanged", ["u-v"]),
+  rescheduleStudentSeat: async () => popupFormDone("seatRescheduled", [29_900_000, 60]),
+  registerPayment: async () => popupFormDone("paymentRegistered", [1, 1, 0]),
+  loadPaymentContext: async () => null,
+  loadTeacherBusy: async () => [],
+};
 const OVERVIEW_PAYMENT_ACTIONS = {
   scheduleSeat: async () => popupFormDone("seatScheduled", [0, 60]),
   deletePayment: async () => undefined,
@@ -1617,6 +1672,181 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 timeZone={CLASSES_TIME_ZONE}
                 nowIso={CLASSES_NOW.toISOString()}
                 actions={OVERVIEW_PAYMENT_ACTIONS}
+              />
+            </Tile>
+            <Tile name="MeetingLinkPopup" docs="platform-shared-meetinglinkpopup" width={400} height={72}>
+              <MeetingLinkButton
+                variant="button"
+                classId="c3"
+                classTitle="Plan de aperturas con blancas"
+                current={OVERVIEW_MEETING}
+                timeZone={CLASSES_TIME_ZONE}
+                nowIso={CLASSES_NOW.toISOString()}
+                setMeeting={async () => popupFormDone("meetingAdded", ["c3"])}
+              />
+            </Tile>
+            <Tile name="ClassRowAction" docs="platform-shared-classrowaction" width={400} height={72}>
+              <ClassRowAction
+                action={{ kind: "meeting", label: "Agregar", classId: "c3", current: OVERVIEW_MEETING }}
+                row={{
+                  href: "/administracion/clases/c3",
+                  title: "Plan de aperturas con blancas",
+                  timeZone: CLASSES_TIME_ZONE,
+                  nowIso: CLASSES_NOW.toISOString(),
+                }}
+                serverActions={{ setMeeting: async () => popupFormDone("meetingAdded", ["c3"]) }}
+              />
+            </Tile>
+            <Tile name="AttendanceRow" docs="platform-shared-attendancerow" width={640} height={200} surface>
+              <PlatformForm onSubmit={(event) => event.preventDefault()}>
+                <AttendanceRow
+                  student={{ id: "u-v", displayName: "Valentina Cruz" }}
+                  details={["valentina.demo@365diasdeajedrez.com", "Pago del mar 15 sep · clase 4 de 4"]}
+                  mark={{
+                    attended: true,
+                    markedLine: "Marcó GM Profesor Demo · mié 14 oct, 20:12",
+                    changedLine: "Cambió Staff Demo · jue 15 oct, 10:05 · «Faltó» → «Asistió»: «Se le cayó el audio.»",
+                  }}
+                  mode="read"
+                />
+              </PlatformForm>
+            </Tile>
+            <Tile
+              name="ClassSeatRow"
+              docs="platform-sections-staff-classes-classseatrow"
+              width={820}
+              height={120}
+              surface
+            >
+              <ClassSeatRow
+                seat={{
+                  userId: "u-v",
+                  displayName: "Valentina Cruz",
+                  email: "valentina.demo@365diasdeajedrez.com",
+                  coverage: { kind: "paid", paymentId: "p-v", label: "Pago del mar 15 sep · clase 4 de 4" },
+                  attended: false,
+                  mark: { attended: false, markedLine: "Marcó GM Profesor Demo · mié 14 oct, 20:12" },
+                  markedByName: "GM Profesor Demo",
+                  isAssigned: true,
+                  moved: false,
+                  can: { remove: false, register: false, changeAttendance: true, moveSeat: true },
+                  moveContext:
+                    "Faltó el mié 14 oct · es la clase 4 de 4 de su pago del mar 15 sep · Profesor: GM Profesor Demo",
+                }}
+                classDetail={OVERVIEW_CLASS}
+                teachers={OVERVIEW_TEACHERS}
+                groupClasses={[]}
+                staffName="Staff Demo"
+                actions={OVERVIEW_SEAT_ACTIONS}
+              />
+            </Tile>
+            <Tile name="NewClassForm" docs="platform-sections-staff-classes-newclassform" width={960} height={720}>
+              <NewClassForm
+                defaults={{
+                  format: CLASS_FORMAT.INDIVIDUAL,
+                  capacity: null,
+                  title: "",
+                  description: "",
+                  teacherId: "t-1",
+                  date: "2026-10-21",
+                  time: "12:00",
+                  durationMin: 60,
+                  meetingUrl: "",
+                  studentId: "u-d",
+                  duplicateOf: null,
+                }}
+                teachers={OVERVIEW_TEACHERS}
+                students={OVERVIEW_STUDENTS}
+                timeZone={CLASSES_TIME_ZONE}
+                nowIso={CLASSES_NOW.toISOString()}
+                createClass={async () => popupFormDone("classCreated")}
+                loadTeacherBusy={async () => []}
+              />
+            </Tile>
+            <Tile
+              name="RescheduleClassPopup"
+              docs="platform-sections-staff-classes-rescheduleclasspopup"
+              width={400}
+              height={72}
+            >
+              <RescheduleClassButton
+                classId="c5"
+                classTitle="Taller de finales de torre"
+                startIso={cdmx("2026-10-17", "10:00").toISOString()}
+                durationMin={90}
+                teacherId="t-1"
+                teacherName="GM Profesor Demo"
+                timeZone={CLASSES_TIME_ZONE}
+                nowIso={CLASSES_NOW.toISOString()}
+                rescheduleClass={async () => popupFormDone("classRescheduled")}
+                loadTeacherBusy={async () => []}
+              />
+            </Tile>
+            <Tile
+              name="ChangeTeacherPopup"
+              docs="platform-sections-staff-classes-changeteacherpopup"
+              width={400}
+              height={72}
+            >
+              <ChangeTeacherButton
+                classId="c5"
+                classTitle="Taller de finales de torre"
+                current={{ id: "t-1", displayName: "GM Profesor Demo", isActive: true }}
+                teachers={OVERVIEW_TEACHERS}
+                setClassTeacher={async () => popupFormDone("teacherChanged")}
+              />
+            </Tile>
+            <Tile
+              name="AddStudentsPopup"
+              docs="platform-sections-staff-classes-addstudentspopup"
+              width={400}
+              height={72}
+            >
+              <AddStudentsButton
+                classId="c5"
+                classTitle="Taller de finales de torre"
+                seatsFree={2}
+                seatedIds={[]}
+                students={OVERVIEW_STUDENTS}
+                teacher={{ id: "t-1", displayName: "GM Profesor Demo" }}
+                addClassParticipants={async () => popupFormDone("participantsAdded", [1])}
+              />
+            </Tile>
+            <Tile
+              name="ChangeAttendancePopup"
+              docs="platform-sections-staff-classes-changeattendancepopup"
+              width={400}
+              height={72}
+            >
+              <ChangeAttendanceButton
+                classId="c4"
+                student={{ id: "u-v", displayName: "Valentina Cruz" }}
+                context="Clase de Valentina Cruz · mié 14 oct · 19:00–20:00 · GM Profesor Demo marcó «Faltó»"
+                attended={false}
+                teacherName="GM Profesor Demo"
+                staffName="Staff Demo"
+                changeAttendance={async () => popupFormDone("attendanceChanged", ["u-v"])}
+              />
+            </Tile>
+            <Tile
+              name="RescheduleSeatPopup"
+              docs="platform-sections-staff-classes-rescheduleseatpopup"
+              width={400}
+              height={72}
+            >
+              <RescheduleSeatButton
+                classId="c4"
+                student={{ id: "u-v", displayName: "Valentina Cruz" }}
+                context="Faltó el mié 14 oct · es la clase 4 de 4 de su pago del mar 15 sep · Profesor: GM Profesor Demo"
+                startIso={cdmx("2026-10-14", "19:00").toISOString()}
+                durationMin={60}
+                teacher={{ id: "t-1", displayName: "GM Profesor Demo", isActive: true }}
+                teachers={OVERVIEW_TEACHERS}
+                groupClasses={[]}
+                hasPayment
+                timeZone={CLASSES_TIME_ZONE}
+                nowIso={CLASSES_NOW.toISOString()}
+                rescheduleStudentSeat={async () => popupFormDone("seatRescheduled", [29_900_000, 60])}
               />
             </Tile>
           </Section>

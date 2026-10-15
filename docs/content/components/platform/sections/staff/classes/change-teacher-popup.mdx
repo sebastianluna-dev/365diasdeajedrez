@@ -1,0 +1,42 @@
+---
+description: "«Cambiar profesor» (ADM-4): one of the active teachers; the content stays with the class."
+---
+
+# `ChangeTeacherPopup`
+
+|            |                                                                                                                                                                                                                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/classes/change-teacher-popup/change-teacher-popup.comp.tsx`                                                                                                                                                                                                                                  |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                 |
+| Stylesheet | `change-teacher-popup.comp.css` → block `.change-teacher__form`                                                                                                                                                                                                                                                                  |
+| Story      | `change-teacher-popup.stories.tsx` (`platform/sections/staff/classes/ChangeTeacherPopup`): open (`play`)                                                                                                                                                                                                                         |
+| Used by    | [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section) (the lane's «Cambiar», `ChangeTeacherButton`)                                                                                                                                                                                |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup) (`sm`), [`PlatformForm`](/components/platform/shared/platform-form), [`PlatformSelect`](/components/platform/shared/platform-select), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `setClassTeacher` as a prop, the states of `services/shared/form-state.ts`, `withNoticeParam`                                                                                                                                                                                                                                    |
+
+## Purpose
+
+«Cambiar profesor», from the staff's record of a class. No trigger of its own; a host opens it through its `ref`, and the exported button draws a launcher. The form is remounted on every use (its key moves in the popup's `onClose`); on success the host closes it and puts the notice in the address.
+
+## Props
+
+| Prop                    | Type                                                   | Required | Meaning                                                                             |
+| ----------------------- | ------------------------------------------------------ | -------- | ----------------------------------------------------------------------------------- |
+| `classId`, `classTitle` | `string`                                               | yes      |                                                                                     |
+| `current`               | `{ id, displayName, isActive }`                        | yes      | Chosen when active; said as deactivated otherwise.                                  |
+| `teachers`              | `TeacherOption[]`                                      | yes      | The active teachers.                                                                |
+| `setClassTeacher`       | `(classId, prev, formData) => Promise<PopupFormState>` | yes      | The only column the staff's actions write by hand: the teacher has no derived twin. |
+
+## Behaviour
+
+On success the address says `?aviso=teacherChanged`, which the page turns into «Profesor cambiado: GM Profesor Demo.». The way a class of a deactivated teacher («Profesor desactivado» in the agenda and the queues) gets one again.
+
+## Markup & styling
+
+Block `.change-teacher__form` (20 lines): a column with the foot over a hairline.
+
+**Elements:** `.change-teacher__class`, `.change-teacher__foot`
+
+**Breakpoints:** none.
+
+**Tokens:** `--platform-text-muted`, `--platform-track`

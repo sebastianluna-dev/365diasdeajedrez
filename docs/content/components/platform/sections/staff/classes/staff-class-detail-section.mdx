@@ -1,57 +1,68 @@
 ---
-description: "Everything about a class for staff, payments included, rendered with the student's ClassContentRenderer; exactly two actions, setting the recording URL and cancelling with a note."
+description: "The record of a class for the staff (ADM-4; ADM-8 once finished): the students with their seats and marks, what was written after the class, the content as the students will see it, and the lane with when, who, the link and the history."
 ---
 
 # `StaffClassDetailSection`
 
-|            |                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/classes/staff-class-detail.section.tsx`                                                                                                                                                                                                                                                                                                                                               |
-| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                          |
-| Stylesheet | `staff-class-detail.section.css` → block `.staff-class`                                                                                                                                                                                                                                                                                                                                                                   |
-| Used by    | `/administracion/clases/[classId]`                                                                                                                                                                                                                                                                                                                                                                                        |
-| Composes   | [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`PlatformTable`](/components/platform/shared/platform-table), [`PlatformForm` and `PlatformFormField`](/components/platform/shared/platform-form), [`PlatformNotice`](/components/platform/shared/platform-notice), [`LocalDateTime`](/components/platform/shared/local-datetime), [`EmptyState`](/components/platform/shared/empty-state) |
-| Writes     | `setRecordingUrl()`, `cancelClassAsStaff()` · `services/staff-classes/staff-classes.actions.ts`                                                                                                                                                                                                                                                                                                                           |
-| Uses       | `CLASS_STATUS` from `constants/platform/class-codes.const`; `STAFF_ERROR_MESSAGES`; `StaffClassDetail` from `services/staff-classes/staff-classes.types`                                                                                                                                                                                                                                                                  |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/classes/staff-class-detail.section.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Stylesheet | `staff-class-detail.section.css` → block `.staff-class`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Used by    | `/administracion/clases/[classId]`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Composes   | [`ClassSeatRow`](/components/platform/sections/staff/classes/class-seat-row), [`ClassContentRenderer`](/components/platform/shared/class-content-renderer) (`groups="byVisibility"`), [`EmptyState`](/components/platform/shared/empty-state), [`RescheduleClassPopup`](/components/platform/sections/staff/classes/reschedule-class-popup) (the lane's «Reprogramar»), [`ChangeTeacherPopup`](/components/platform/sections/staff/classes/change-teacher-popup) («Cambiar»), [`MeetingLinkPopup`](/components/platform/shared/meeting-link-popup) («Cambiar»/«Agregar»), [`ClassHistory`](/components/platform/sections/staff/classes/class-history), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Reads      | `StaffClassDetail` from `getClassAdminDetail()` · `services/staff-classes/staff-classes.service.ts`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Writes     | `rescheduleClass()`, `setClassTeacher()`, `setClassMeeting()`, `removeClassParticipant()`, `changeAttendanceAsStaff()`, `rescheduleStudentSeat()`, `registerPayment()`, `loadPaymentContext()`, `loadTeacherBusy()` — imported here and handed to the client pieces as props                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
 ## Purpose
 
-Staff sees the whole class, including what the student does not (payments) and what the teacher composed (the blocks, through the same renderer). It may do exactly two things: set the recording URL, and cancel the class with a note that is stamped into the summary as a support action. Content, attendance and data belong to the teacher, and the card says so.
+One page for a class in every phase: ahead of time it is where students are added and taken out and the class is moved; finished, it is where a mark is corrected with a reason and a no-show is given another date. The head's actions are [`ClassHeaderActions`](/components/platform/sections/staff/classes/class-header-actions), drawn by the page.
 
 ## Props
 
-| Prop          | Type               | Required | Meaning                                                                                            |
-| ------------- | ------------------ | -------- | -------------------------------------------------------------------------------------------------- |
-| `classDetail` | `StaffClassDetail` | yes      | Facts, `summary?`, `recordingUrl?`, `participants[]` with payment fields, `blocks`, `transcript?`. |
-| `errorCode`   | `string`           | no       | `?error=` translated with `STAFF_ERROR_MESSAGES`.                                                  |
+| Prop                       | Type               | Required | Meaning                                       |
+| -------------------------- | ------------------ | -------- | --------------------------------------------- |
+| `classDetail`              | `StaffClassDetail` | yes      |                                               |
+| `teachers`, `groupClasses` |                    | yes      | What the popups need.                         |
+| `staffName`                | `string`           | yes      | Who is acting, for «por Staff Demo» in ADM-9. |
+| `notice`, `errorMessage`   | `string`           | no       | What the address said, in words.              |
 
 ## Behaviour
 
-Five cards: facts (teacher, when, status, provider) with the summary; support with the two forms, each a [`PlatformForm`](/components/platform/shared/platform-form) with one `PlatformFormField` and its button (the recording URL may be left empty and says «Opcional»; the cancel form shows only while the class is not already cancelled, and its note is required: sent empty, the field shows «Este campo es obligatorio.» instead of submitting); participants in a [`PlatformTable`](/components/platform/shared/platform-table) with attended («Sí», «No» or «Sin pasar lista») and one «Plaza» column (`seatLabel`: «Pago del jue 1 oct · $1,400.00 MXN · Transferencia 8841», «Gratis» or «Sin pago»); content or an [`EmptyState`](/components/platform/shared/empty-state); transcript status and text.
+- A cancelled class opens with who cancelled it, when, the reason and the message the students read; a rescheduled one with where it came from.
+- **Alumnos**: «4 de 6 plazas · 1 sin pago» (or «Asistencia: 0 de 1» once finished); a `ClassSeatRow` per seat, the moved ones last and faded; after a no-show the note «Una falta gasta la clase pagada. …».
+- **Después de la clase** (finished): «Finalizada por GM Profesor Demo el mié 14 oct a las 20:12», the summary and the recording, or «Sin resumen» and «Sin grabación».
+- **Contenido**: «Lo prepara GM Profesor Demo. Lo ves como lo verán los alumnos.», the blocks by visibility, the teacher's script folded.
+- **The lane**: Horario (with «Reprogramar» while the class has not started), Profesor (with «Cambiar» while it has not finished; «Desactivado» as a tag), Reunión (the platform, the link, «Los alumnos lo ven desde las 9:30.», with «Cambiar» or «Agregar»), Historial.
 
 ## Markup & styling
 
-Block `.staff-class` (61 lines). Each support form is `PlatformForm`, a column of its own, so `.staff-class__support` says `flex-direction: row`: the field grows from 320px and its button sits at its foot.
+Block `.staff-class` (152 lines): two columns, the cards and the lane (320px), one under the other below 1024px; a card's head with its title and its meta; the facts of the lane with their small caps label.
 
-**Elements:** `.staff-class__facts`, `.staff-class__fact`, `.staff-class__fact-label`, `.staff-class__fact-value`, `.staff-class__summary`, `.staff-class__note`, `.staff-class__support`
+**Elements:** `.staff-class__main`, `.staff-class__card-head`, `.staff-class__card-meta`, `.staff-class__seats`, `.staff-class__empty`, `.staff-class__note`, `.staff-class__closed`, `.staff-class__after`, `.staff-class__after-item`, `.staff-class__lane`, `.staff-class__fact`, `.staff-class__fact-head`, `.staff-class__fact-label`, `.staff-class__fact-value`, `.staff-class__fact-line`, `.staff-class__link`
 
-**Other selectors it styles:** `.platform-form__field` (`PlatformFormField`'s root).
+**Modifiers:** `.staff-class__fact-value_tone_muted`
 
-**Tokens:** `--platform-text`, `--platform-text-muted`
+**Breakpoints:** `(width < 1024px)`.
 
-No media queries.
+**Tokens:** `--platform-surface`, `--platform-surface-neutral`, `--platform-shadow-card`, `--platform-text`, `--platform-text-muted`
 
 ## Usage
 
 From `app/(platform)/administracion/clases/[classId]/page.tsx`:
 
 ```tsx
-import { StaffClassDetailSection } from "@/components/platform/sections/staff/classes/staff-class-detail.section";
-
-<StaffClassDetailSection classDetail={classDetail} errorCode={error} />;
+<StaffClassDetailSection
+  classDetail={classDetail}
+  teachers={teachers}
+  groupClasses={groupClasses}
+  staffName={staff.user.displayName}
+  notice={notice}
+  errorMessage={errorMessage}
+/>
 ```
 
 ## Related
 
-- [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section), [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section).
-- Payments in [Data model](/platform/data-model).
+- [`ClassHeaderActions`](/components/platform/sections/staff/classes/class-header-actions).
+- [Classes](/platform/classes).

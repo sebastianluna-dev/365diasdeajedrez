@@ -115,9 +115,31 @@ export interface SeatToSchedule {
   studentName: string;
   /** «2 de su pago del mié 14 oct». */
   label: string;
+  /** «Clase 4 de 4 del pago del jue 1 oct · Profesor: GM Profesor Demo», for «Programar». */
+  seatLabel: string;
   count: number;
   teacherId: string | null;
+  /** What the new class opens with: the student's last paid class. */
+  rhythm: RhythmDefaults;
   href: string;
+}
+
+/** What a student has, counted from their payments, for the queues and the students' lists. Never an amount. */
+export interface StudentBalanceRow {
+  student: { id: string; displayName: string; email: string; teacherId: string | null; teacherName: string | null };
+  hasPayments: boolean;
+  left: number;
+  scheduled: number;
+  toSchedule: number;
+  /** The oldest payment with a class left: the one a seat spends (D13). */
+  oldestPaymentWithLeft: { id: string; paidOn: Date } | null;
+  nextScheduled: { scheduledAt: Date; durationMin: number } | null;
+}
+
+/** «Clase n de m» of a payment's counting seats, by class. */
+export interface PaymentOrdinals {
+  classCount: number;
+  ordinalOf: Record<string, number>;
 }
 
 export interface TeacherOption {

@@ -1,0 +1,34 @@
+---
+description: "«Crear clase» (ADM-3): the Server Component that hands the form its actions."
+---
+
+# `NewClassSection`
+
+|            |                                                                                                                                                                                                |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/classes/new-class.section.tsx`                                                                                                                             |
+| Kind       | Server Component                                                                                                                                                                               |
+| Stylesheet | none                                                                                                                                                                                           |
+| Used by    | `/administracion/clases/nueva`                                                                                                                                                                 |
+| Composes   | [`NewClassForm`](/components/platform/sections/staff/classes/new-class-form)                                                                                                                   |
+| Writes     | `createClass()` · `services/staff-classes/staff-classes.actions.ts`; `loadTeacherBusy()` · `services/staff-payments/staff-payments.actions.ts` — imported here and handed to the form as props |
+
+## Props
+
+| Prop                   | Type                                      | Required | Meaning                                                                 |
+| ---------------------- | ----------------------------------------- | -------- | ----------------------------------------------------------------------- |
+| `defaults`             | `NewClassDefaults`                        | yes      | What the page worked out from `?formato=`, `?alumno=` and `?duplicar=`. |
+| `teachers`, `students` | `TeacherOption[]`, `SchedulableStudent[]` | yes      | The active teachers; every student with what they have.                 |
+| `timeZone`, `nowIso`   | `string`                                  | yes      |                                                                         |
+
+## Usage
+
+```tsx
+<NewClassSection
+  defaults={defaults}
+  teachers={teachers}
+  students={students}
+  timeZone={STUDY_DAY_TIMEZONE}
+  nowIso={now.toISOString()}
+/>
+```

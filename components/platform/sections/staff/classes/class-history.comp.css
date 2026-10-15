@@ -1,0 +1,37 @@
+/* The history: a stamp and a line per entry, hung on a thin rail. */
+.class-history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  & .class-history__entry {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+    padding-left: var(--platform-space-4);
+    border-left: 2px solid var(--platform-track);
+  }
+
+  & .class-history__stamp {
+    font-size: var(--platform-type-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-history__text {
+    font-size: var(--platform-type-sm);
+    line-height: 1.5;
+    color: var(--platform-text);
+  }
+}
+
+.class-history__empty {
+  margin: 0;
+  font-size: var(--platform-type-sm);
+  color: var(--platform-text-muted);
+}

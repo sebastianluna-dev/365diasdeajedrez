@@ -1,0 +1,37 @@
+---
+description: "The action of a ClassRow that opens a popup instead of leading somewhere: the meeting link in the staff's agenda; the only client leaf of a row."
+---
+
+# `ClassRowAction`
+
+|            |                                                                                                     |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/class-row-action/class-row-action.comp.tsx`                             |
+| Kind       | Client Component                                                                                    |
+| Stylesheet | none (it draws `.platform-row-action` of `platform.css`)                                            |
+| Story      | `class-row-action.stories.tsx` (`platform/shared/ClassRowAction`): meeting (`play`), without action |
+| Used by    | [`ClassRow`](/components/platform/shared/class-row)                                                 |
+| Composes   | [`MeetingLinkPopup`](/components/platform/shared/meeting-link-popup) (`MeetingLinkButton`)          |
+| Uses       | `ClassRowActionData`, `ClassRowServerActions` (`class-row/class-row.types.ts`)                      |
+
+## Purpose
+
+A row of classes is a Server Component and stays one; what needs a click handler is this leaf. The row's action is data (`ClassRowActionData`, §2.4 of the plan): a `link` the row draws itself, or a `meeting` the row hands here with the server action the section passed down in `serverActions`. Finalizing a class joins it with phase 6.
+
+## Props
+
+| Prop            | Type                                                              | Required | Meaning                                                                        |
+| --------------- | ----------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------ |
+| `action`        | `{ kind: "meeting"; label; classId; current }`                    | yes      | What the word does.                                                            |
+| `row`           | `Pick<ClassRowData, "href" \| "title" \| "timeZone" \| "nowIso">` | yes      | The class, for the popup's line and the fallback link.                         |
+| `serverActions` | `{ setMeeting? }`                                                 | no       | Without `setMeeting` the word is a link to the class, where the same popup is. |
+
+## Usage
+
+```tsx
+<ClassRowAction action={row.action} row={row} serverActions={serverActions} />
+```
+
+## Related
+
+- [`ClassAgenda`](/components/platform/shared/class-agenda), which passes `serverActions` to every row.

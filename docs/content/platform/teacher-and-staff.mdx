@@ -69,9 +69,18 @@ While `PLAY_ENABLED` is on, the student's page also carries «Partidas jugadas»
 
 There are no source entities any more: the page `/administracion/entidades` and the field of the form that cited one (the publisher of a book, the platform of a digital course) were taken out on 2026-09-27.
 
-### Classes (support) — `/administracion/clases`
+### Classes (staff) — `/administracion/clases`
 
-`services/staff-classes/`: global read view with filters (teacher, status, date range, text); each seat says how it is covered («Pago del jue 1 oct · $1,400.00 MXN · Transferencia 8841», «Gratis» or «Sin pago») and every block comes with its visibility. Two actions until the rebuild's phase 5: `setRecordingUrl` (the documented temporary exception of the writers' guard) and `cancelClassAsStaff`, which is `transitionClassStatus` with the staff's role and keeps the note as `cancelReason`.
+`services/staff-classes/` owns the staff's classes (2026-10-15, phase 5 of the [classes rebuild](/platform/classes)). The readers, each opening with `requireStaff()`:
+
+- `getStaffAgenda({ vista, teacherId, q, hasta, pagina })`: «Próximas» by day from today until `hasta` (six days by default), «Pasadas» paged fifty at a time, «Canceladas»; the headline counts today's classes and the week's. The rows are `ClassRowData` for `ClassRow`, mapped by `staff-classes.mapper.ts` (chips «Sin enlace», «1 sin pago», «Gratis», «Profesor desactivado»; a class without a link carries the meeting action).
+- `getStaffQueues()`: «Por programar» (`listSeatsToSchedule` of the payments), «Por finalizar» (SCHEDULED and ended; warning from a day after), «Sin enlace» (the next 48 hours), «Sin pago» (`unpaidSeatWhere`), «Profesor desactivado», «Por renovar» (`listStudentBalances`, one class or none left).
+- `getClassAdminDetail(classId)` (cached per request): every seat with its coverage («Pago del jue 1 oct · clase 3 de 4» — the ordinal from `paymentOrdinals` of the payments —, «Gratis», «Sin pago»), its mark with who wrote it and who changed it (`AttendanceMarkView`), whether the student is assigned to the teacher, what the staff may do with it (`can`), what was written after the class, the blocks for the student's renderer with their visibility, and the history (`buildClassHistory`, `services/shared/class-history.ts`: read from the columns the writers keep, never a log of its own).
+- `listSchedulableStudents()`, `getClassDuplicate(classId)`, `listOpenGroupClasses`, `listActiveTeacherOptions`, `listTeacherFilterOptions`.
+
+The actions (`staff-classes.actions.ts`), each with `requireStaff()`, a one-minute window of attempts and a check of what the phase allows (`editableClassFields`), writing only through the writers of `services/shared/`: `createClass` (ADM-3: `createClassRecord` and a `syncClassSeat` per student with the coverage the staff chose — «Con su pago» is `auto`, the oldest payment with a class left; «Con el pago pendiente» is `unpaid`; «Gratis» is `free` — in one transaction; redirects to the record with `?aviso=classCreated`), `rescheduleClass` (`syncClassSchedule`), `setClassTeacher` (the one column written by hand: the teacher has no derived twin; active teachers only), `setClassMeeting` (`syncClassMeeting`; the «visible from» choice is `meetingVisibleChoice`), `addClassParticipants`, `removeClassParticipant` (`removeClassSeat`: only a seat with no mark and never moved), `cancelClass` (ADM-5: `transitionClassStatus` with the staff's role, the reason and the note; the notice counts the paid seats that went back), `changeAttendanceAsStaff` (ADM-9: `recordAttendance`, role `staff`, mode `override`, reason required), `rescheduleStudentSeat` (ADM-10: `moveClassSeat` to a new class made with `createClassRecord` — the old teacher, topic, description and link —, to a group class, or back to its payment) and `scheduleSeat` (ADM-6). `setRecordingUrl` and `cancelClassAsStaff` are gone, and the writers' guard has no exception left.
+
+The amounts stay in `services/staff-payments`: a seat says which payment it spends, never what it cost.
 
 ## Forms
 

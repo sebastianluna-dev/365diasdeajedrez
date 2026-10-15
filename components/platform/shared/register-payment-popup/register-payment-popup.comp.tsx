@@ -11,6 +11,7 @@ import {
   type Ref,
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { ReceiptIcon } from "@/components/icons/receipt-icon.comp";
 import {
   ClassSlotFields,
   type ClassSlotValue,
@@ -152,11 +153,17 @@ export function RegisterPaymentPopup({ ref, ...props }: RegisterPaymentPopupProp
 }
 
 interface RegisterPaymentButtonProps extends Omit<RegisterPaymentPopupProps, "ref"> {
-  /** `button` is the head's; `row` is the word at the end of a queue's row. */
-  variant?: "button" | "row";
+  /** `accent` is a page's main action, with the receipt; `button` a plain one; `row` the word at the end of a queue's row. */
+  variant?: "accent" | "button" | "row";
   label?: string;
   preset?: RegisterPaymentPreset;
 }
+
+const LAUNCHER_CLASS: Record<NonNullable<RegisterPaymentButtonProps["variant"]>, string> = {
+  accent: "platform-button platform-button_variant_accent",
+  button: "platform-button",
+  row: "platform-row-action",
+};
 
 /** A launcher with the popup behind it. */
 export function RegisterPaymentButton({
@@ -168,11 +175,8 @@ export function RegisterPaymentButton({
   const popup = useRef<RegisterPaymentPopupHandle>(null);
   return (
     <>
-      <button
-        type="button"
-        className={variant === "row" ? "platform-row-action" : "platform-button"}
-        onClick={(event) => popup.current?.open(event, preset)}
-      >
+      <button type="button" className={LAUNCHER_CLASS[variant]} onClick={(event) => popup.current?.open(event, preset)}>
+        {variant === "accent" && <ReceiptIcon variant="classic-solid" className="platform-button__icon" />}
         {label}
       </button>
       <RegisterPaymentPopup ref={popup} {...props} />

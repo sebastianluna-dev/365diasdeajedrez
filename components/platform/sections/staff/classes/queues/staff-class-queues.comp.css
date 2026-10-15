@@ -1,0 +1,111 @@
+/* The queues beside the agenda: three cards that fold, each a heading with
+   its count and rows of a name, a line and the word at the end. */
+.staff-class-queues {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-4);
+
+  & .staff-class-queues__card {
+    padding: var(--platform-space-4) var(--platform-space-5);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .staff-class-queues__summary {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  & .staff-class-queues__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  & .staff-class-queues__summary:focus-visible {
+    outline: 2px solid var(--platform-accent-ink);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  & .staff-class-queues__title {
+    font-size: var(--platform-type-lg);
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .staff-class-queues__meta {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .staff-class-queues__group {
+    margin-top: var(--platform-space-4);
+  }
+
+  & .staff-class-queues__group-label {
+    margin: 0 0 var(--platform-space-2);
+    font-size: var(--platform-type-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--platform-text-muted);
+  }
+
+  & .staff-class-queues__card > .staff-class-queues__rows {
+    margin-top: var(--platform-space-4);
+  }
+
+  & .staff-class-queues__rows {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .staff-class-queues__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-2) 0;
+    border-top: 1px solid var(--platform-track);
+  }
+
+  & .staff-class-queues__row:first-child {
+    border-top: 0;
+  }
+
+  /* «Por finalizar» for more than a day: the warning ink on its text. */
+  & .staff-class-queues__row_tone_warning .staff-class-queues__line {
+    color: var(--platform-warning-ink);
+    font-weight: 600;
+  }
+
+  & .staff-class-queues__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text);
+  }
+
+  & .staff-class-queues__name {
+    font-weight: 600;
+    color: var(--platform-text);
+    text-decoration: none;
+  }
+
+  & a.staff-class-queues__name:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  & .staff-class-queues__line {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+}

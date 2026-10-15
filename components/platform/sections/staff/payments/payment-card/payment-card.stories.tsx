@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { userEvent, within } from "storybook/test";
 import { CLASS_PHASE } from "@/constants/platform/class-codes.const";
 import { CLASSES_NOW, CLASSES_TIME_ZONE, cdmx } from "@/lib/testing/fixtures/classes";
-import { popupFormDone, type PopupFormState } from "@/services/shared/form-state";
+import { popupFormDone } from "@/services/shared/form-state";
 import type { PaymentSeatView, StaffPaymentView } from "@/services/staff-payments/staff-payments.types";
 import { PaymentCard } from "./payment-card.comp";
 

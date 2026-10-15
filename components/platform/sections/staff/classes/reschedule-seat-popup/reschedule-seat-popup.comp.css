@@ -1,0 +1,52 @@
+/* The content of «Reprogramar la clase de …»: the context, where, the
+   fields, the note, the two lines and the foot. A sheet on a phone. */
+.reschedule-seat__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-5);
+  padding: var(--platform-space-6);
+
+  & .reschedule-seat__context {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+  }
+
+  & .reschedule-seat__preview {
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .reschedule-seat__lines {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    margin: 0;
+    padding: 0 0 0 var(--platform-space-4);
+    font-size: var(--platform-type-sm);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+  }
+
+  & .reschedule-seat__foot {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: var(--platform-space-4);
+    box-shadow: inset 0 1px 0 var(--platform-track);
+  }
+
+  @media (width < 640px) {
+    & .reschedule-seat__foot {
+      position: sticky;
+      bottom: 0;
+      padding-bottom: var(--platform-space-4);
+      background: var(--platform-surface);
+    }
+
+    & .reschedule-seat__foot .platform-button {
+      flex: 1;
+    }
+  }
+}

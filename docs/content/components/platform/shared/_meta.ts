@@ -2,11 +2,13 @@ import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
   "activity-list": "ActivityList",
+  "attendance-row": "AttendanceRow",
   "board-loading": "BoardLoading",
   "board-skeleton": "BoardSkeleton",
   "class-agenda": "ClassAgenda",
   "class-date-tile": "ClassDateTile",
   "class-row": "ClassRow",
+  "class-row-action": "ClassRowAction",
   "class-slot-fields": "ClassSlotFields",
   "class-status-tag": "ClassStatusTag",
   "class-when": "ClassWhen",
@@ -21,6 +23,7 @@ const meta: MetaRecord = {
   "game-settings": "GameSettings",
   "image-upload": "ImageUpload",
   "local-datetime": "LocalDateTime",
+  "meeting-link-popup": "MeetingLinkPopup",
   "optional-fields": "OptionalFields",
   "optional-mark": "OptionalMark",
   "platform-check-cards": "PlatformCheckCards",

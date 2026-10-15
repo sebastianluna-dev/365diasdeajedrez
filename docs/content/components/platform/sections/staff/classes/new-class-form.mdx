@@ -1,0 +1,66 @@
+---
+description: "«Crear clase» (ADM-3): the format, the topic, when, who gives it and how it is joined, the students each with how they enter, and the summary with the button, sticky beside the fields."
+---
+
+# `NewClassForm`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/classes/new-class-form/new-class-form.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Stylesheet | `new-class-form.comp.css` → block `.new-class-form`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Story      | `new-class-form.stories.tsx` (`platform/sections/staff/classes/NewClassForm`): group (`play`), individual, individual free (`play`), duplicate, with errors (`play`), many students (`play`)                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Used by    | [`NewClassSection`](/components/platform/sections/staff/classes/new-class-section)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Composes   | [`PlatformForm`, `PlatformFormField`, `PlatformFormGroup`](/components/platform/shared/platform-form), [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards), [`PlatformCheckCards`](/components/platform/shared/platform-check-cards) (`hiddenValues`), [`PlatformSelect`](/components/platform/shared/platform-select), [`PlatformSearchField`](/components/platform/shared/platform-search-field) (no `name`), [`ClassSlotFields`](/components/platform/shared/class-slot-fields), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `createClass` and `loadTeacherBusy` as props, `validateClassSchedule`, `MEETING_VISIBLE_OPTIONS`, the states of `services/shared/form-state.ts`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+
+## Purpose
+
+The one screen that makes a class. Five sections — Formato, Tema, Cuándo, Profesor y reunión, Alumnos — and the summary, which is inside the `PlatformForm` with the `SubmitButton` (§2.4 of the plan: `SubmitButton` reads `useFormStatus`, which sees only its ancestor form), sticky beside the fields and, under 640px, a strip stuck to the foot of the form with the seats line and the button (D20).
+
+## Props
+
+| Prop                 | Type                                          | Required | Meaning                                                                                                                            |
+| -------------------- | --------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `defaults`           | `NewClassDefaults`                            | yes      | Format, capacity, title, description, teacher, day, hour, duration, link, the student `?alumno=` named, and the «Copia de …» line. |
+| `teachers`           | `TeacherOption[]`                             | yes      | The active teachers.                                                                                                               |
+| `students`           | `SchedulableStudent[]`                        | yes      | Every student with their classes to schedule and the payment a seat would spend.                                                   |
+| `timeZone`, `nowIso` | `string`                                      | yes      |                                                                                                                                    |
+| `createClass`        | `(prev, formData) => Promise<PopupFormState>` | yes      | Redirects to the record on success; returns the errors by field otherwise.                                                         |
+| `loadTeacherBusy`    | `(teacherId) => Promise<BusySlotView[]>`      | yes      | For the overlap warnings.                                                                                                          |
+
+## Behaviour
+
+- **Format** changes what is required: a group class needs a title and a capacity (2 to 12, `Plazas`); an individual one a student from a select, with «Entra» under it.
+- **Students** (group): cards with «Usará una clase de su pago del jue 1 oct · 2 por programar», «Sin clases por programar» or «Sin clases pagadas»; from eight students a search box hides the cards that do not match without unmounting them, so a ticked one still travels. Under the cards, one row «Entra Alumno Demo» per ticked student (D6): «Con su pago» (only with classes left; the oldest payment, D13), «Con el pago pendiente», «Gratis», with the help «Queda en «Sin pago» hasta que registres su pago. «Gratis» no se cobra ni sale en los pendientes.». A student with another teacher, or none, is said under their row, never refused.
+- **The counter** «4 de 6 plazas» is `aria-live`; the summary says «4 de 6 plazas · 3 con pago · 1 sin pago» (and «· 1 gratis») and lists «Alumno Demo — pago del jue 1 oct», «Lucía Herrera — sin pago».
+- **The form is submitted by hand** (`onSubmit` → `startTransition(() => formAction(new FormData(form)))`, `pending` handed to the button): a `<form action>` is reset by React when the action settles, and the reset reaches Radix's controlled cards and selects, which answer it by changing their value — a ticked student would go.
+- **Errors** come back by field with what was typed (`values`), the cards and selects included; «Elegiste 3 alumnos y la clase tiene 2 plazas.» sits on the students group.
+
+## Markup & styling
+
+Block `.new-class-form` (168 lines): two columns, the fields and the summary (320px, sticky at the top); one column below 1024px; under 640px the summary is a strip stuck to the bottom that keeps only the seats line and the button.
+
+**Elements:** `.new-class-form__fields`, `.new-class-form__section`, `.new-class-form__heading`, `.new-class-form__when`, `.new-class-form__students-head`, `.new-class-form__counter`, `.new-class-form__entry`, `.new-class-form__warning`, `.new-class-form__warning-icon`, `.new-class-form__summary`, `.new-class-form__facts`, `.new-class-form__fact`, `.new-class-form__seats`, `.new-class-form__seat`, `.new-class-form__submit`
+
+**Breakpoints:** `(width < 1024px)`, `(width < 640px)`.
+
+**Tokens:** `--platform-surface`, `--platform-shadow-card`, `--platform-text`, `--platform-text-muted`, `--platform-track`
+
+## Usage
+
+```tsx
+<NewClassForm
+  defaults={defaults}
+  teachers={teachers}
+  students={students}
+  timeZone={timeZone}
+  nowIso={nowIso}
+  createClass={createClass}
+  loadTeacherBusy={loadTeacherBusy}
+/>
+```
+
+## Related
+
+- [`AddStudentsPopup`](/components/platform/sections/staff/classes/add-students-popup), the same students and the same «Entra» for a class that exists.

@@ -1,0 +1,42 @@
+---
+description: "The actions in the head of a class's record, by phase: «Agregar alumnos», «Reprogramar», «Cancelar la clase», «Registrar pago», and the «…» with «Duplicar»; the cancellation is a confirmation mounted as a sibling."
+---
+
+# `ClassHeaderActions`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/classes/class-header-actions.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Stylesheet | none (it sits in the page's `.platform-page__actions`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Used by    | `/administracion/clases/[classId]`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Composes   | [`AddStudentsPopup`](/components/platform/sections/staff/classes/add-students-popup) (`AddStudentsButton`), [`RescheduleClassPopup`](/components/platform/sections/staff/classes/reschedule-class-popup) (`RescheduleClassButton`), [`RescheduleSeatPopup`](/components/platform/sections/staff/classes/reschedule-seat-popup) (`RescheduleSeatButton`, the accent), [`RegisterPaymentPopup`](/components/platform/shared/register-payment-popup) (`RegisterPaymentButton`, the accent), [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup) (ADM-5), [`PlatformActionsMenu`](/components/platform/shared/platform-actions-menu) |
+| Uses       | `editableClassFields`, `planCancellation` (`services/shared/class-rules.ts`); the actions as props                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+
+## Purpose
+
+What the phase allows (§2.4 of the plan). Ahead of time: «Agregar alumnos» as the accent in a group class with a seat free, «Reprogramar», «Cancelar la clase» (danger, `BanIcon`). Once it ran and waits to be finalized: only the cancellation. Finished: the accent is «Reprogramar» when exactly one student missed and was not moved (it opens that seat's ADM-10), «Registrar pago» when a seat has none, nothing otherwise. The «…» always offers «Duplicar» (`?duplicar=`).
+
+**ADM-5**, the cancellation: a `PlatformConfirmPopup` with the verb «Cancelar» («Volver» as the way out), what goes («La clase del sáb 17 oct · 10:00–11:30 con GM Profesor Demo sale de la agenda. Sus alumnos la verán como cancelada.»), the consequences `planCancellation` reads out («Alumno Demo, Mateo Ríos y Diego Salas recuperan su clase: vuelve a su pago y queda por programar.», «Lucía Herrera no tenía pago: no recupera nada.», «GM Profesor Demo deja de verla en su agenda; el contenido que preparó se conserva.»), the required «Motivo» and the optional «Mensaje para los alumnos».
+
+## Props
+
+| Prop                                   | Type                                                                                                                                  | Required | Meaning               |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------- |
+| `classDetail`                          | `StaffClassDetail`                                                                                                                    | yes      |                       |
+| `teachers`, `students`, `groupClasses` |                                                                                                                                       | yes      | What the popups need. |
+| `actions`                              | `{ addClassParticipants, rescheduleClass, cancelClass, rescheduleStudentSeat, loadTeacherBusy, registerPayment, loadPaymentContext }` | yes      | The server actions.   |
+
+## Usage
+
+```tsx
+<div className="platform-page__actions">
+  <ClassHeaderActions
+    classDetail={classDetail}
+    teachers={teachers}
+    students={students}
+    groupClasses={groupClasses}
+    actions={actions}
+  />
+</div>
+```

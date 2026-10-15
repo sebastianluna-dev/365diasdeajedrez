@@ -1,0 +1,53 @@
+---
+description: "What needs the staff's attention beside the agenda: paid classes without a date, classes nobody finalized, classes without a link, seats without a payment, a deactivated teacher's classes, and students with a class or none left."
+---
+
+# `StaffClassQueues`
+
+|            |                                                                                                                                                                                                                                                                                                             |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/classes/queues/staff-class-queues.comp.tsx`                                                                                                                                                                                                                             |
+| Kind       | Server Component (the launchers are client leaves)                                                                                                                                                                                                                                                          |
+| Stylesheet | `staff-class-queues.comp.css` → block `.staff-class-queues`                                                                                                                                                                                                                                                 |
+| Used by    | [`StaffClassesSection`](/components/platform/sections/staff/classes/staff-classes-section)                                                                                                                                                                                                                  |
+| Composes   | [`ScheduleSeatPopup`](/components/platform/shared/schedule-seat-popup) («Programar»), [`MeetingLinkPopup`](/components/platform/shared/meeting-link-popup) («Agregar»), [`RegisterPaymentPopup`](/components/platform/shared/register-payment-popup) («Registrar», `RegisterPaymentButton` as a row's word) |
+| Uses       | `StaffQueuesView` (`services/staff-classes/staff-classes.types.ts`); the actions as props                                                                                                                                                                                                                   |
+
+## Purpose
+
+Three cards: «Por programar · 1 clase pagada sin fecha» (one row per payment with classes left, «Alumno Demo — 1 de su pago del jue 1 oct», «Programar»); «Necesitan atención · 3», in groups — «Por finalizar:» (warning from a day after the end), «Sin enlace:» (the next 48 hours), «Sin pago:» («Lucía Herrera en Taller de finales de torre», «Registrar» with the class ticked), «Profesor desactivado:» —; «Por renovar · Les queda 1 clase o ninguna» («Valentina Cruz — le queda 1 clase (hoy 19:00)», «Registrar»). Each row's word opens its popup in place.
+
+## Props
+
+| Prop                                             | Type                                                                                 | Required | Meaning                                 |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------ | -------- | --------------------------------------- |
+| `queues`                                         | `StaffQueuesView`                                                                    | yes      |                                         |
+| `teachers`, `groupClasses`, `timeZone`, `nowIso` |                                                                                      | yes      | What the popups need.                   |
+| `actions`                                        | `{ scheduleSeat, setMeeting, registerPayment, loadPaymentContext, loadTeacherBusy }` | yes      | The server actions; stubs in Storybook. |
+
+## Behaviour
+
+Every card is a `<details open>`: it folds, on any width, and opens by default (the plan asked for `<details>` only under 640px; a summary that is a heading on every width is one piece instead of two).
+
+## Markup & styling
+
+Block `.staff-class-queues` (111 lines): the cards, the summary as a heading with its line, the groups with their small caps label, the rows with a hairline between them and the word at the end; a «Por finalizar» older than a day in the warning ink.
+
+**Elements:** `.staff-class-queues__card`, `.staff-class-queues__summary`, `.staff-class-queues__title`, `.staff-class-queues__meta`, `.staff-class-queues__group`, `.staff-class-queues__group-label`, `.staff-class-queues__rows`, `.staff-class-queues__row`, `.staff-class-queues__text`, `.staff-class-queues__name`, `.staff-class-queues__line`
+
+**Modifiers:** `.staff-class-queues__row_tone_warning`
+
+**Tokens:** `--platform-surface`, `--platform-shadow-card`, `--platform-accent-ink`, `--platform-text`, `--platform-text-muted`, `--platform-track`, `--platform-warning-ink`
+
+## Usage
+
+```tsx
+<StaffClassQueues
+  queues={queues}
+  teachers={teachers}
+  groupClasses={groupClasses}
+  timeZone={timeZone}
+  nowIso={nowIso}
+  actions={actions}
+/>
+```

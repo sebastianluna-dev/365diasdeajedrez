@@ -4,7 +4,23 @@ import { userEvent } from "storybook/test";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
 import { CLASS_STATUS } from "@/constants/platform/class-codes.const";
 import { staffRoutes } from "@/lib/platform-routes";
-import type { StaffClassSummary } from "@/services/staff-classes/staff-classes.types";
+
+/** A row of a class list, as the old staff list received it: enough for a table's sample. */
+interface StaffClassSummary {
+  id: string;
+  title: string;
+  teacherId: string;
+  teacherName: string;
+  scheduledAtIso: string;
+  dateLabel: string;
+  timeLabel: string;
+  durationMin: number;
+  statusCode: string;
+  statusLabel: string;
+  participantCount: number;
+  attendedCount: number;
+  href: string;
+}
 import { PlatformTable, PlatformTableCell, PlatformTableRow, type PlatformTableColumn } from "./platform-table.comp";
 
 const COLUMNS: readonly (string | PlatformTableColumn)[] = [

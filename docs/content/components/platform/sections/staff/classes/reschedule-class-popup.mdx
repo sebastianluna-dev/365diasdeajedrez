@@ -1,0 +1,43 @@
+---
+description: "«Reprogramar la clase» (ADM-4): another day, hour or duration for the whole class, with «Antes → Ahora», the teacher's overlaps said and never blocking, and a note the students read."
+---
+
+# `RescheduleClassPopup`
+
+|            |                                                                                                                                                                                                                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/classes/reschedule-class-popup/reschedule-class-popup.comp.tsx`                                                                                                                                                                                                                                                     |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                        |
+| Stylesheet | `reschedule-class-popup.comp.css` → block `.reschedule-class__form`                                                                                                                                                                                                                                                                                     |
+| Story      | `reschedule-class-popup.stories.tsx` (`platform/sections/staff/classes/RescheduleClassPopup`): open (`play`), with overlap (`play`)                                                                                                                                                                                                                     |
+| Used by    | [`ClassHeaderActions`](/components/platform/sections/staff/classes/class-header-actions) (`RescheduleClassButton`, the head's), [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section) (the lane's word)                                                                                                   |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup) (`md`, a sheet on a phone), [`PlatformForm`](/components/platform/shared/platform-form), [`ClassSlotFields`](/components/platform/shared/class-slot-fields), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `rescheduleClass` and `loadTeacherBusy` as props, `validateClassSchedule`, the states of `services/shared/form-state.ts`, `withNoticeParam`                                                                                                                                                                                                             |
+
+## Purpose
+
+«Reprogramar la clase», from the staff's record of a class. No trigger of its own; a host opens it through its `ref`, and the exported button draws a launcher. The form is remounted on every use (its key moves in the popup's `onClose`); on success the host closes it and puts the notice in the address.
+
+## Props
+
+| Prop                                               | Type                                                   | Required | Meaning                                                                 |
+| -------------------------------------------------- | ------------------------------------------------------ | -------- | ----------------------------------------------------------------------- |
+| `classId`, `classTitle`, `startIso`, `durationMin` |                                                        | yes      | The class as it stands.                                                 |
+| `teacherId`, `teacherName`                         | `string`                                               | yes      | Whose calendar the overlaps are read from.                              |
+| `timeZone`, `nowIso`                               | `string`                                               | yes      |                                                                         |
+| `rescheduleClass`                                  | `(classId, prev, formData) => Promise<PopupFormState>` | yes      | `syncClassSchedule` behind it; only a class that has not started moves. |
+| `loadTeacherBusy`                                  | `(teacherId) => Promise<BusySlotView[]>`               | yes      | The class itself is taken off its own list.                             |
+
+## Behaviour
+
+The [popup-form pattern](/conventions#server-actions). The fields open on the class's own day, hour and duration; the line «sáb 17 oct · 10:00–11:30 → sáb 24 oct · 10:00–11:30» follows them; «Nota para los alumnos» is optional. On success the address says `?aviso=classRescheduled`, which the page turns into «Clase reprogramada al sáb 24 oct · 10:00–11:30.».
+
+## Markup & styling
+
+Block `.reschedule-class__form` (45 lines): a column with the foot over a hairline; on a phone the foot sticks to the bottom with its button full width.
+
+**Elements:** `.reschedule-class__class`, `.reschedule-class__change`, `.reschedule-class__before`, `.reschedule-class__after`, `.reschedule-class__foot`
+
+**Breakpoints:** `(width < 640px)`.
+
+**Tokens:** `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-track`

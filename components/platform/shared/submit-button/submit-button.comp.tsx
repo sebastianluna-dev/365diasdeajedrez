@@ -7,6 +7,12 @@ import { SpinnerIcon } from "@/components/icons/spinner-icon.comp";
 interface SubmitButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type"> {
   /** Text shown while the form is being submitted. */
   pendingLabel?: ReactNode;
+  /**
+   * The form is on its way, said by the host: for a form that calls its
+   * action itself from `onSubmit` (inside `startTransition`), which
+   * `useFormStatus` does not see. Either source makes the button busy.
+   */
+  pending?: boolean;
   children: ReactNode;
 }
 
@@ -24,12 +30,14 @@ interface SubmitButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>
  */
 export function SubmitButton({
   pendingLabel = "Guardando…",
+  pending: pendingProp = false,
   children,
   disabled,
   className = "platform-button",
   ...rest
 }: SubmitButtonProps) {
-  const { pending } = useFormStatus();
+  const status = useFormStatus();
+  const pending = status.pending || pendingProp;
   const isButton = className.split(" ").includes("platform-button");
 
   return (

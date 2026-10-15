@@ -1,0 +1,53 @@
+---
+description: "One seat of a class in the staff's record: the student, how the seat is covered, the mark, and the words at its end by what the phase allows — «Registrar», «Quitar», «Cambiar», «Reprogramar»."
+---
+
+# `ClassSeatRow`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Files      | `components/platform/sections/staff/classes/class-seat-row/class-seat-row.comp.tsx`, `remove-seat-button.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Kind       | Server Component (the words are client leaves; `RemoveSeatButton` is one with its confirmation)                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Stylesheet | `class-seat-row.comp.css` → block `.class-seat-row`                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Story      | `class-seat-row.stories.tsx` (`platform/sections/staff/classes/ClassSeatRow`): paid, unpaid, free, absent, moved, changed by staff                                                                                                                                                                                                                                                                                                                                                                                 |
+| Used by    | [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section)                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Composes   | [`AttendanceRow`](/components/platform/shared/attendance-row) (read), [`RegisterPaymentPopup`](/components/platform/shared/register-payment-popup) («Registrar», the class ticked), [`ChangeAttendancePopup`](/components/platform/sections/staff/classes/change-attendance-popup) («Cambiar»), [`RescheduleSeatPopup`](/components/platform/sections/staff/classes/reschedule-seat-popup) («Reprogramar»), [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup) («Quitar», verb «Quitar») |
+| Uses       | `StaffSeatView` (`services/staff-classes/staff-classes.types.ts`); the actions as props                                                                                                                                                                                                                                                                                                                                                                                                                            |
+
+## Props
+
+| Prop                                    | Type                                                                                                                               | Required | Meaning                                                                                                                                                                                                     |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `seat`                                  | `StaffSeatView`                                                                                                                    | yes      | The coverage («Pago del jue 1 oct · clase 3 de 4», «Gratis», «Sin pago»), the mark, and `can` (`remove`, `register`, `changeAttendance`, `moveSeat`), which the mapper derives from the phase and the seat. |
+| `classDetail`                           | `Pick<StaffClassDetail, …>`                                                                                                        | yes      | The class, for the popups' lines.                                                                                                                                                                           |
+| `teachers`, `groupClasses`, `staffName` |                                                                                                                                    | yes      |                                                                                                                                                                                                             |
+| `actions`                               | `{ removeClassParticipant, changeAttendanceAsStaff, rescheduleStudentSeat, registerPayment, loadPaymentContext, loadTeacherBusy }` | yes      |                                                                                                                                                                                                             |
+
+## Behaviour
+
+«Quitar» asks first: «¿Quitar a Lucía Herrera de la clase?», «Sale de «Taller de finales de torre» del sáb 17 oct · 10:00–11:30.», with what the seat was («Su clase vuelve a su pago del jue 1 oct.», «No tenía pago.», «Tenía la clase gratis.»); only a seat with no mark and never moved goes. A moved seat is history: its name in the muted grey, with no word at its end.
+
+## Markup & styling
+
+Block `.class-seat-row` (36 lines): the row and its words at the end, a hairline between rows; `_state_moved` mutes the name; under 640px the words go under the row.
+
+**Elements:** `.class-seat-row__actions`
+
+**Modifiers:** `.class-seat-row_state_moved`
+
+**Breakpoints:** `(width < 640px)`.
+
+**Tokens:** `--platform-text-muted`, `--platform-track`
+
+## Usage
+
+```tsx
+<ClassSeatRow
+  seat={seat}
+  classDetail={classDetail}
+  teachers={teachers}
+  groupClasses={groupClasses}
+  staffName={staffName}
+  actions={seatActions}
+/>
+```

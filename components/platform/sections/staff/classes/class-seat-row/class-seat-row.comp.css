@@ -1,0 +1,36 @@
+/* A seat in the record: the attendance row and the words at its end; a
+   moved seat is history, its name in the muted grey (never faded: the
+   contrast has to hold). */
+.class-seat-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--platform-space-4);
+  padding: var(--platform-space-3) 0;
+  border-top: 1px solid var(--platform-track);
+
+  &:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  &.class-seat-row_state_moved .attendance-row__name {
+    color: var(--platform-text-muted);
+  }
+
+  & .class-seat-row__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--platform-space-3);
+    padding-top: var(--platform-space-1);
+  }
+
+  @media (width < 640px) {
+    grid-template-columns: minmax(0, 1fr);
+
+    & .class-seat-row__actions {
+      justify-content: flex-start;
+    }
+  }
+}
