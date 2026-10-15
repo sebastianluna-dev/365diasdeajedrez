@@ -32,7 +32,7 @@ Classes are stored in UTC and the server does not know the student's time zone. 
 
 ## Markup & styling
 
-No stylesheet. Output is `<time dateTime={iso}>label</time>`; consumers style it through their own elements (`.next-class__schedule`, `.class-card__date`…).
+No stylesheet. Output is `<time dateTime={iso}>label</time>`; consumers style it through their own elements (the staff's and the teacher's tables and records). A class's hour is not drawn with it: the classes read in the academy's zone through `ClassWhen`.
 
 ## Usage
 

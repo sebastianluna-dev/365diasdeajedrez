@@ -53,7 +53,10 @@ description: "Index of components/platform: the shared primitives and every sect
 | [`PlatformError`](/components/platform/shared/platform-error)                | client | The error boundary view with retry and digest.                                                                              |
 | [`LocalDateTime`](/components/platform/shared/local-datetime)                | client | A UTC instant in the browser's zone, without hydration mismatch.                                                            |
 | [`ActivityList`](/components/platform/shared/activity-list)                  | server | The dashboard's activity facts.                                                                                             |
-| [`ClassContentRenderer`](/components/platform/shared/class-content-renderer) | server | A class's blocks by kind, with the single viewer and the static diagram.                                                    |
+| [`ClassContentRenderer`](/components/platform/shared/class-content-renderer) | server | A class's blocks by kind, with the single viewer and the static diagram; «Guardar en un estudio» under a game when offered. |
+| [`ClassCard`](/components/platform/shared/class-card)                        | server | A class as the student's lists draw it: featured with how to join, compact as a row, and the row of a class without a date. |
+| [`PaidClassesCard`](/components/platform/shared/paid-classes-card)           | server | «Tus clases pagadas»: what is left, of which payment, as a figure, a sentence and a bar. Never an amount.                   |
+| [`ClassGameSave`](/components/platform/shared/class-game-save)               | client | «Guardar en un estudio» under a game seen in class, with its popup.                                                         |
 | [`ImageUpload`](/components/platform/shared/image-upload)                    | client | Uploads an image from the browser to Cloudinary and saves it through the action it is given.                                |
 | [`SubmitButton`](/components/platform/shared/submit-button)                  | client | The submit button of every write form: disabled, `aria-busy` and its `pendingLabel` while the action runs.                  |
 
@@ -69,15 +72,15 @@ description: "Index of components/platform: the shared primitives and every sect
 
 ## `sections/dashboard/` — `/inicio`
 
-| Page                                                                                                             | Kind   | What it is                                    |
-| ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------- |
-| [`ProfileSummarySection`](/components/platform/sections/dashboard/profile-summary/profile-summary-section)       | server | Greeting, email, member-since date.           |
-| [`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section) | server | The course in progress and its return lesson. |
-| [`NextClassSection`](/components/platform/sections/dashboard/next-class/next-class-section)                      | server | The first upcoming class.                     |
-| [`StudyGoalSection`](/components/platform/sections/dashboard/study-goal/study-goal-section)                      | server | Daily streak and minutes against the goal.    |
-| [`ActivityStatsSection`](/components/platform/sections/dashboard/activity-stats/activity-stats-section)          | server | Fetches the four ranges for the cards.        |
-| [`StatsCards`](/components/platform/sections/dashboard/activity-stats/stats-cards)                               | client | Metric cards with a period toggle.            |
-| [`RecentActivitySection`](/components/platform/sections/dashboard/recent-activity/recent-activity-section)       | server | The latest activity facts.                    |
+| Page                                                                                                             | Kind   | What it is                                               |
+| ---------------------------------------------------------------------------------------------------------------- | ------ | -------------------------------------------------------- |
+| [`ProfileSummarySection`](/components/platform/sections/dashboard/profile-summary/profile-summary-section)       | server | Greeting, email, member-since date.                      |
+| [`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section) | server | The course in progress and its return lesson.            |
+| [`NextClassSection`](/components/platform/sections/dashboard/next-class/next-class-section)                      | server | The next class as a featured card; first on a class day. |
+| [`StudyGoalSection`](/components/platform/sections/dashboard/study-goal/study-goal-section)                      | server | Daily streak and minutes against the goal.               |
+| [`ActivityStatsSection`](/components/platform/sections/dashboard/activity-stats/activity-stats-section)          | server | Fetches the four ranges for the cards.                   |
+| [`StatsCards`](/components/platform/sections/dashboard/activity-stats/stats-cards)                               | client | Metric cards with a period toggle.                       |
+| [`RecentActivitySection`](/components/platform/sections/dashboard/recent-activity/recent-activity-section)       | server | The latest activity facts.                               |
 
 ## `sections/courses/` — `/cursos`, `/cursos/explorar`, `/cursos/[courseRef]`, `/cursos/[courseRef]/[chapterOrder]/[lessonId]`
 
@@ -132,12 +135,11 @@ description: "Index of components/platform: the shared primitives and every sect
 
 ## `sections/classes/` — `/clases`
 
-| Page                                                                                            | Kind   | What it is                                          |
-| ----------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------- |
-| [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section) | server | Upcoming and past classes.                          |
-| [`ClassCard`](/components/platform/sections/classes/classes-list/class-card)                    | server | One class with its local date.                      |
-| [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section) | server | Header, meeting access, blocks, transcript status.  |
-| [`MeetingAccess`](/components/platform/sections/classes/class-detail/meeting-access)            | client | The video-call link, revealed only when authorised. |
+| Page                                                                                            | Kind   | What it is                                                                                  |
+| ----------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------- |
+| [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section) | server | «Mis clases»: today, the next ones, the classes without a date, the past by month.          |
+| [`ClassAheadSection`](/components/platform/sections/classes/class-detail/class-ahead-section)   | server | The class page ahead of time: how to join, what the staff said, what to prepare.            |
+| [`ClassReviewSection`](/components/platform/sections/classes/class-detail/class-review-section) | server | The class page once over: the mark, the recording, the summary, the material and its index. |
 
 ## `sections/explorer/` — `/explorador`
 
