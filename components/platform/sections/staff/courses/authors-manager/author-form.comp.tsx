@@ -30,10 +30,12 @@ interface AuthorFormProps {
  * the action applies, which is the one that decides). An author who keeps
  * their name keeps their slug.
  *
- * It is one of the few forms on `useActionState`: the dialog stays open over
- * the page, so the outcome comes back here — the error above the fields, the
- * success as the way back to the list — instead of to a `?error=` that the
- * page would render underneath.
+ * On `useActionState`: the dialog stays open over the page, so the outcome
+ * comes back here — the error above the fields, the success as the way back
+ * to the list — instead of to a `?error=` that the page would render
+ * underneath. Since 2026-10-15 that is the pattern of every form in a popup
+ * (`services/shared/form-state.ts`: the action as a prop, what was typed
+ * kept on error, `onDone` with the notice); this one predates it.
  */
 export function AuthorForm({ author, authors, onSaved, onCancel }: AuthorFormProps) {
   const isNew = author === undefined;

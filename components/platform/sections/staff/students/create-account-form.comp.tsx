@@ -11,17 +11,18 @@ import "./create-account-form.comp.css";
 /**
  * Account creation with a temporary password.
  *
- * One of the three forms of the platform (with the password reset and the
- * author form of the «Autores» dialog) that use `useActionState` instead of
- * the `<form action={serverAction}>` + redirect with `?error=` pattern: the
- * action has to RETURN the generated password to
- * show it once, and a password in the URL would end up in the history, the
- * Referer and the logs.
+ * On `useActionState` instead of the `<form action={serverAction}>` +
+ * redirect with `?error=` pattern, because the action has to RETURN the
+ * generated password to show it once, and a password in the URL would end up
+ * in the history, the Referer and the logs. Since 2026-10-15 that is the
+ * pattern of every form in a popup as well (`services/shared/form-state.ts`:
+ * the action comes as a prop, what was typed survives an error, and the
+ * success comes back through `onDone`); this one predates it and still
+ * imports its action.
  *
  * Known and accepted consequence: this form NEEDS JavaScript (without it the
  * `$ACTION_ID` is not emitted and the submit does not reach the server). It is
- * an internal panel, so it is assumed; it is not extended to a form that can
- * do with the redirect.
+ * an internal panel, so it is assumed.
  */
 export function CreateAccountForm() {
   const [state, formAction, isPending] = useActionState(createStudentAccount, ACCOUNT_INITIAL_STATE);

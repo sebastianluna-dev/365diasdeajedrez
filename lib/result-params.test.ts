@@ -2,13 +2,16 @@ import { describe, expect, it } from "vitest";
 import { IMPORT_REPORT_PARAM } from "@/constants/platform/pgn-import-messages.const";
 import { withImportReport } from "@/services/shared/pgn-import-report";
 import { withErrorParam } from "@/services/shared/safe-return-to";
-import { ERROR_PARAM, RESULT_PARAMS, withoutResultParams } from "./result-params";
+import { ERROR_PARAM, NOTICE_PARAM, RESULT_PARAMS, withoutResultParams } from "./result-params";
 
 const at = (path: string) => new URL(path, "https://plataforma.example");
 
 describe("withoutResultParams", () => {
-  it("son el error de una acción y el resultado de una importación", () => {
-    expect(RESULT_PARAMS).toEqual([ERROR_PARAM, IMPORT_REPORT_PARAM]);
+  it("son el error de una acción, el resultado de una importación y el aviso de un éxito", () => {
+    expect(RESULT_PARAMS).toEqual([ERROR_PARAM, IMPORT_REPORT_PARAM, NOTICE_PARAM]);
+    expect(withoutResultParams(at("/administracion/clases?aviso=paymentRegistered.4.3.1"))).toBe(
+      "/administracion/clases",
+    );
   });
 
   it("quita el error y el resultado de una importación", () => {

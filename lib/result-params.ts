@@ -2,8 +2,10 @@ import { IMPORT_REPORT_PARAM } from "@/constants/platform/pgn-import-messages.co
 
 // What a server action leaves in the address it redirects to, for the page to
 // say how it went: the code of a refusal (`?error=throttled`, written by
-// `withErrorParam`) and the result of a PGN import (`?importadas=12.1.0`,
-// written by `withImportReport`). Both are said once. The page draws them from
+// `withErrorParam`), the result of a PGN import (`?importadas=12.1.0`,
+// written by `withImportReport`) and, since 2026-10-15, a success worth
+// telling (`?aviso=paymentRegistered.4.3.1`, written by `withNoticeParam`,
+// read by `readNotice`). All are said once. The page draws them from
 // the address on the server, so for as long as they stayed in it every later
 // render said them again — the one an action that only revalidates asks for, a
 // refresh, going back to the page — over a screen where they were no longer
@@ -16,8 +18,11 @@ import { IMPORT_REPORT_PARAM } from "@/constants/platform/pgn-import-messages.co
 /** The parameter the code of a refused action travels in. */
 export const ERROR_PARAM = "error";
 
+/** The parameter a success travels in: a code and its arguments, numbers or ids, never a name. */
+export const NOTICE_PARAM = "aviso";
+
 /** Every parameter that tells the result of an action. */
-export const RESULT_PARAMS: readonly string[] = [ERROR_PARAM, IMPORT_REPORT_PARAM];
+export const RESULT_PARAMS: readonly string[] = [ERROR_PARAM, IMPORT_REPORT_PARAM, NOTICE_PARAM];
 
 /**
  * The address without the result of an action — path, the rest of the query
