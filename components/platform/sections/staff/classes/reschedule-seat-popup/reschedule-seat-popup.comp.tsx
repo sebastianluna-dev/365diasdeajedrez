@@ -186,7 +186,7 @@ function RescheduleSeatForm({
               description:
                 openGroups.length > 0
                   ? openGroups.length === 1 && openGroups[0]
-                    ? `${openGroups[0].title} · ${formatClassDay(new Date(openGroups[0].startIso), timeZone, now)} · ${openGroups[0].capacity - openGroups[0].seated} plazas libres`
+                    ? `${openGroups[0].title} · ${formatClassDay(new Date(openGroups[0].startIso), timeZone, now)} · ${openGroups[0].capacity - openGroups[0].seated === 1 ? "1 plaza libre" : `${openGroups[0].capacity - openGroups[0].seated} plazas libres`}`
                     : `${openGroups.length} con plazas libres`
                   : "No hay otra clase grupal con plazas libres",
               disabled: openGroups.length === 0,

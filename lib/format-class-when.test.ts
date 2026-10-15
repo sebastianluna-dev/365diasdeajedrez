@@ -35,6 +35,13 @@ describe("formatClassWhen", () => {
     ).toBe("Ayer · 12:00–13:00");
   });
 
+  it("con relative: false escribe la fecha también hoy y mañana, para «al …»", () => {
+    const now = cdmx("2026-10-14", "11:40");
+    expect(
+      formatClassWhen({ start: cdmx("2026-10-15", "12:00"), durationMin: 60, timeZone: zone, now, relative: false }),
+    ).toBe("jue 15 oct · 12:00–13:00");
+  });
+
   it("el año sólo cuando no es el actual, y la zona cuando se pide", () => {
     expect(
       formatClassWhen({ start: cdmx("2025-12-03", "12:00"), durationMin: 60, timeZone: zone, now: CLASSES_NOW }),

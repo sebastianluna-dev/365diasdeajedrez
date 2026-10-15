@@ -43,11 +43,13 @@ export async function generateMetadata({ params }: StaffClassPageProps): Promise
 function noticeText(notice: ClassNotice | null, classDetail: StaffClassDetail): string | undefined {
   if (!notice) return undefined;
   if (notice.text) return notice.text;
+  // «al jue 15 oct», never «al Mañana»: the sentence wants the date.
   const when = formatClassWhen({
     start: new Date(classDetail.startIso),
     durationMin: classDetail.durationMin,
     timeZone: classDetail.timeZone,
     now: new Date(classDetail.nowIso),
+    relative: false,
   });
   switch (notice.code) {
     case "classCreated":

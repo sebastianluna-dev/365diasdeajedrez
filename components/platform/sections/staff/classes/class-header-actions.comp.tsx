@@ -74,11 +74,13 @@ export function ClassHeaderActions({
         : 0;
   const noShows = seated.filter((seat) => seat.can.moveSeat);
   const unpaid = seated.find((seat) => seat.can.register);
+  // «La clase del jue 15 oct», never «del Mañana».
   const when = formatClassWhen({
     start: new Date(classDetail.startIso),
     durationMin: classDetail.durationMin,
     timeZone,
     now: new Date(nowIso),
+    relative: false,
   });
   const consequences = planCancellation({
     phase: classDetail.phase,

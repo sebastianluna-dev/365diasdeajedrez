@@ -29,7 +29,7 @@ One spelling of a class's date and hours, so «mié 14 oct · 12:00–13:00» re
 
 ## Behaviour
 
-A `<time dateTime={startIso}>` whose text is `formatClassWhen`'s. Nothing else.
+A `<time dateTime={startIso}>` whose text is `formatClassWhen`'s. Nothing else. A sentence that says «al …» or «del …» calls `formatClassWhen` with `relative: false`, so it never reads «al Mañana» (the staff's notices and the cancellation's consequences).
 
 ## Markup & styling
 

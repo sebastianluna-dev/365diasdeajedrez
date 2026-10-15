@@ -74,15 +74,24 @@ export interface ClassWhenInput {
   now: Date;
   /** Append the zone's name: «(hora de Ciudad de México)». */
   withZone?: boolean;
+  /** `false`: always the date, never «Hoy», «Mañana» or «Ayer» — for a sentence that says «al …» or «del …». */
+  relative?: boolean;
 }
 
 /** «mié 14 oct · 12:00–13:00», with «Hoy», «Mañana», «Ayer», the year when it differs, and the zone if asked. */
-export function formatClassWhen({ start, durationMin, timeZone, now, withZone = false }: ClassWhenInput): string {
+export function formatClassWhen({
+  start,
+  durationMin,
+  timeZone,
+  now,
+  withZone = false,
+  relative: withRelative = true,
+}: ClassWhenInput): string {
   const from = localParts(start, timeZone);
   const to = localParts(new Date(start.getTime() + durationMin * 60 * 1000), timeZone);
   const today = localParts(now, timeZone);
 
-  const relative = relativeDay(from.key, today.key);
+  const relative = withRelative ? relativeDay(from.key, today.key) : null;
   const year = from.year === today.year ? "" : ` ${from.year}`;
   const day = relative ?? `${WEEKDAYS_SHORT[from.weekday]} ${from.day} ${MONTHS_SHORT[from.month - 1]}${year}`;
   const zone = withZone ? ` (${timeZoneLabel(timeZone)})` : "";
