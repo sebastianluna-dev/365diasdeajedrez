@@ -1,3 +1,53 @@
+/* «Mis clases»: the classes in a column of 616px beside the lane of 304px,
+   stuck; under 1024px the lane goes and the balance folds above the list. */
 .classes-page {
-  /* Structure inherited from .platform-page. */
+  & .classes-page__columns {
+    display: grid;
+    grid-template-columns: minmax(0, 616px) 304px;
+    justify-content: space-between;
+    gap: var(--platform-space-8);
+    align-items: start;
+  }
+
+  & .classes-page__main {
+    min-width: 0;
+  }
+
+  & .classes-page__lane {
+    position: sticky;
+    top: var(--platform-space-6);
+  }
+
+  & .classes-page__balance {
+    display: none;
+  }
+
+  & .classes-page__balance-summary {
+    padding: var(--platform-space-3) var(--platform-space-4);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+    font-size: var(--platform-type-md);
+    font-weight: 600;
+    color: var(--platform-text);
+    cursor: pointer;
+  }
+
+  & .classes-page__balance[open] .classes-page__balance-summary {
+    margin-bottom: var(--platform-space-3);
+  }
+
+  @media (width < 1024px) {
+    & .classes-page__columns {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    & .classes-page__lane {
+      display: none;
+    }
+
+    & .classes-page__balance {
+      display: block;
+    }
+  }
 }

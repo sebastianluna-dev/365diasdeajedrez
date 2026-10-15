@@ -80,8 +80,11 @@ import { WhatsappIcon } from "@/components/icons/whatsapp-icon.comp";
 import { PLATFORM_CSS } from "@/components/platform/foundations/platform-stylesheets.const";
 import { FROM_2XL, FROM_2XL_PROPERTIES, TYPE_STEPS } from "@/components/platform/foundations/scales.const";
 import { useSchemeOnScreen } from "@/components/platform/foundations/use-scheme-on-screen.hook";
-import { MeetingAccess } from "@/components/platform/sections/classes/class-detail/meeting-access.comp";
-import { ClassCard } from "@/components/platform/sections/classes/classes-list/class-card.comp";
+import { ClassAheadSection } from "@/components/platform/sections/classes/class-detail/class-ahead.section";
+import { ClassReviewSection } from "@/components/platform/sections/classes/class-detail/class-review.section";
+import { ClassCard } from "@/components/platform/shared/class-card/class-card.comp";
+import { ClassGameSave } from "@/components/platform/shared/class-game-save/class-game-save.comp";
+import { PaidClassesCard } from "@/components/platform/shared/paid-classes-card/paid-classes-card.comp";
 import { CourseCard } from "@/components/platform/sections/courses/course-card.comp";
 import { LevelScale } from "@/components/platform/sections/courses/course-info/level-scale.comp";
 import { LessonSkeleton } from "@/components/platform/sections/courses/lesson-view/lesson-skeleton.comp";
@@ -146,6 +149,13 @@ import {
   CLASS_PHASE,
 } from "@/constants/platform/class-codes.const";
 import { CLASSES_NOW, CLASSES_TIME_ZONE, cdmx } from "@/lib/testing/fixtures/classes";
+import {
+  STUDENT_BALANCE,
+  STUDENT_WHATSAPP,
+  studentCard,
+  studentDetail,
+  studentJoin,
+} from "@/lib/testing/fixtures/student-classes";
 import { SyllabusList } from "@/components/platform/sections/staff/courses/syllabus-list/syllabus-list.comp";
 import { TempPasswordNotice } from "@/components/platform/sections/staff/students/temp-password-notice.comp";
 import { NewStudyForm } from "@/components/platform/sections/studies/studies-list/new-study/new-study-form.comp";
@@ -617,7 +627,6 @@ const STATS: DashboardStats = {
 };
 
 /** A day and a bit from when the sheet loads: the props take no clock, so the countdown runs on the real one. */
-const CLASS_OPENS = new Date(Date.now() + 27 * 60 * 60_000).toISOString();
 
 /** The tokens of platform.css, read the way the foundations read them. */
 const TOKENS = readTokens(PLATFORM_CSS);
@@ -1222,7 +1231,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             <Tile name="EmptyState" docs="platform-shared-emptystate" width={400} height={280}>
               <EmptyState
                 title="No tienes clases programadas"
-                description="Cuando tu profesor agende una clase aparecerá aquí."
+                description="Cuando administración programe una clase contigo, aparecerá aquí."
                 actionLabel="Ver mis clases"
                 actionHref="/clases"
               />
@@ -1246,14 +1255,6 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             </Tile>
             <Tile name="PlatformError" docs="platform-shared-platformerror" width={400} height={272}>
               <PlatformError retry={() => {}} digest="2817393054" />
-            </Tile>
-            <Tile
-              name="MeetingAccess"
-              docs="platform-sections-classes-class-detail-meetingaccess"
-              width={400}
-              height={144}
-            >
-              <MeetingAccess meetingVisibleFromIso={CLASS_OPENS} providerLabel="Zoom" />
             </Tile>
             <Tile
               name="TempPasswordNotice"
@@ -1505,22 +1506,6 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   reviewCount: 12,
                   isReviewUpToDate: false,
                   reviewHref: "#",
-                }}
-              />
-            </Tile>
-            <Tile name="ClassCard" docs="platform-sections-classes-classes-list-classcard" width={720} height={288}>
-              <ClassCard
-                classSummary={{
-                  id: "c-101",
-                  title: "Finales de torres: la posición de Lucena",
-                  teacherName: "Fernanda Ríos",
-                  scheduledAtIso: "2026-10-09T00:00:00.000Z",
-                  dateLabel: "8 de octubre, 2026",
-                  timeLabel: "18:00 h",
-                  durationMin: 60,
-                  statusCode: "SCHEDULED",
-                  statusLabel: "Programada",
-                  href: "#",
                 }}
               />
             </Tile>
@@ -2004,6 +1989,55 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 summary="Vimos los tres errores típicos."
                 recordingUrl={null}
                 updateClassAfterNotes={async () => popupFormDone("afterNotesSaved")}
+              />
+            </Tile>
+            <Tile name="ClassCard" docs="platform-shared-classcard" width={640} height={232} surface>
+              <ClassCard card={studentCard()} variant="featured" />
+            </Tile>
+            <Tile name="PaidClassesCard" docs="platform-shared-paidclassescard" width={320} height={296}>
+              <PaidClassesCard balance={STUDENT_BALANCE} whatsappHref={STUDENT_WHATSAPP} />
+            </Tile>
+            <Tile name="ClassGameSave" docs="platform-shared-classgamesave" width={400} height={72}>
+              <ClassGameSave
+                classId="c1"
+                blockId="b2"
+                title="Paul Morphy – Duque de Brunswick"
+                studies={[{ id: "s1", name: "Mis partidas" }]}
+                action={async () => {}}
+              />
+            </Tile>
+            <Tile
+              name="ClassAheadSection"
+              docs="platform-sections-classes-class-detail-classaheadsection"
+              width={960}
+              height={640}
+            >
+              <ClassAheadSection classDetail={studentDetail()} />
+            </Tile>
+            <Tile
+              name="ClassReviewSection"
+              docs="platform-sections-classes-class-detail-classreviewsection"
+              width={960}
+              height={640}
+            >
+              <ClassReviewSection
+                classDetail={studentDetail({
+                  view: "review",
+                  join: studentJoin({ phase: CLASS_PHASE.DONE, meetingUrl: null }),
+                  attended: true,
+                  summary: "Vimos los tres errores típicos que dejan al rey en el centro.",
+                  recordingUrl: "https://zoom.us/rec/demo",
+                  blocks: [
+                    {
+                      id: "b1",
+                      kind: "TEXT",
+                      visibility: "AFTER",
+                      title: "Para la próxima",
+                      text: "Resuelve los ejercicios.",
+                    },
+                  ],
+                })}
+                saveGame={{ studies: [{ id: "s1", name: "Mis partidas" }], action: async () => {} }}
               />
             </Tile>
           </Section>

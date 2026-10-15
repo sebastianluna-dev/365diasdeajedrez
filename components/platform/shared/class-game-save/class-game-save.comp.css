@@ -1,0 +1,4 @@
+/* The button under a game seen in class; the popup is its sibling. */
+.class-game-save {
+  display: flex;
+}

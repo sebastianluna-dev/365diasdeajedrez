@@ -5,7 +5,12 @@ import { platformRoutes } from "@/lib/platform-routes";
 import { getUserDashboard } from "@/services/dashboard/dashboard.service";
 import "./continue-studying.section.css";
 
-export async function ContinueStudyingSection() {
+interface ContinueStudyingSectionProps {
+  /** `primary` (default): «Continuar» is the page's accent; `secondary` on a class day, when «Entrar a la clase» is. */
+  emphasis?: "primary" | "secondary";
+}
+
+export async function ContinueStudyingSection({ emphasis = "primary" }: ContinueStudyingSectionProps = {}) {
   const { continueStudying } = await getUserDashboard();
 
   return (
@@ -22,7 +27,7 @@ export async function ContinueStudyingSection() {
           />
           <Link
             href={continueStudying.href}
-            className="platform-button platform-button_variant_accent platform-button_size_lg continue-studying__cta"
+            className={`platform-button${emphasis === "primary" ? " platform-button_variant_accent" : ""} platform-button_size_lg continue-studying__cta`}
           >
             Continuar
           </Link>

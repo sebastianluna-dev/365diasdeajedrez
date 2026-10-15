@@ -6,6 +6,10 @@ import { ParagraphIcon } from "@/components/icons/paragraph-icon.comp";
 import { VideoIcon } from "@/components/icons/video-icon.comp";
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
 import { StaticDiagram } from "@/components/chess/static-diagram.comp";
+import {
+  ClassGameSave,
+  type SaveClassGameAction,
+} from "@/components/platform/shared/class-game-save/class-game-save.comp";
 import { CLASS_BLOCK_VISIBILITY, type ClassBlockVisibilityCode } from "@/constants/platform/class-codes.const";
 import type { ClassBlockView } from "@/services/classes/classes.types";
 import "./class-content-renderer.comp.css";
@@ -19,6 +23,14 @@ interface ClassContentRendererProps {
    * every block (the staff's sheet).
    */
   groups?: "none" | "byVisibility";
+  /** With it, «Guardar en un estudio» under each game: the student's studies and the action, bound to the class. */
+  saveGame?: SaveGameOffer;
+}
+
+export interface SaveGameOffer {
+  classId: string;
+  studies: { id: string; name: string }[];
+  action: SaveClassGameAction;
 }
 
 const KIND_ICONS = {
@@ -85,7 +97,7 @@ function TextBlock({ text }: { text: string }) {
   );
 }
 
-function Block({ block }: { block: ClassBlockView }) {
+function Block({ block, saveGame }: { block: ClassBlockView; saveGame?: SaveGameOffer }) {
   const Icon = KIND_ICONS[block.kind];
   const headingId = `bloque-${block.id}`;
   return (
@@ -124,10 +136,23 @@ function Block({ block }: { block: ClassBlockView }) {
             pinnedComment={block.game.pinnedComment}
             hideNextMoves={block.game.conceal}
           />
-          {block.game.href && (
-            <Link href={block.game.href} className="class-content__game-link">
-              Abrir la partida en Mis estudios
-            </Link>
+          {(block.game.href || saveGame) && (
+            <div className="class-content__game-actions">
+              {block.game.href && (
+                <Link href={block.game.href} className="class-content__game-link">
+                  Abrir la partida
+                </Link>
+              )}
+              {saveGame && (
+                <ClassGameSave
+                  classId={saveGame.classId}
+                  blockId={block.id}
+                  title={block.game.label}
+                  studies={saveGame.studies}
+                  action={saveGame.action}
+                />
+              )}
+            </div>
           )}
         </div>
       )}
@@ -174,13 +199,14 @@ function Block({ block }: { block: ClassBlockView }) {
  * an outgoing link, a game and a lesson inside `GameViewer` (with the game's
  * players and result when its record has them, and with its next moves
  * hidden when its study says so), a position as a `StaticDiagram`. The chess
- * blocks are references to the original material, not copies. A block the
- * teacher added after the class started wears «Nuevo».
+ * blocks are references to the original material, not copies; with
+ * `saveGame`, the student may copy a game into a study of their own. A block
+ * the teacher added after the class started wears «Nuevo».
  *
  * No `"use client"` and no reads, so it is also mounted inside a client
  * component.
  */
-export function ClassContentRenderer({ blocks, groups = "none" }: ClassContentRendererProps) {
+export function ClassContentRenderer({ blocks, groups = "none", saveGame }: ClassContentRendererProps) {
   if (groups === "byVisibility") {
     return (
       <div className="class-content class-content_groups_visibility">
@@ -199,7 +225,7 @@ export function ClassContentRenderer({ blocks, groups = "none" }: ClassContentRe
               </summary>
               <div className="class-content__group-body">
                 {own.map((block) => (
-                  <Block key={block.id} block={block} />
+                  <Block key={block.id} block={block} saveGame={saveGame} />
                 ))}
               </div>
             </details>
@@ -211,7 +237,7 @@ export function ClassContentRenderer({ blocks, groups = "none" }: ClassContentRe
   return (
     <div className="class-content">
       {blocks.map((block) => (
-        <Block key={block.id} block={block} />
+        <Block key={block.id} block={block} saveGame={saveGame} />
       ))}
     </div>
   );

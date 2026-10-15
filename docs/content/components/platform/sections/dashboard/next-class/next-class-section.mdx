@@ -1,38 +1,34 @@
 ---
-description: "The 'Próxima clase' card: the first upcoming class with its teacher, local date and time, duration, status tag and a link to its detail; an empty state otherwise."
+description: "«Próxima clase» on the dashboard: the first class ahead as a featured ClassCard with how to join it, and under it what is left of the payment; or what there is to schedule."
 ---
 
 # `NextClassSection`
 
-|            |                                                                                                                        |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/dashboard/next-class/next-class.section.tsx`                                             |
-| Kind       | Server Component (async)                                                                                               |
-| Stylesheet | `next-class.section.css` → block `.next-class`                                                                         |
-| Used by    | `/inicio`                                                                                                              |
-| Composes   | [`EmptyState`](/components/platform/shared/empty-state), [`LocalDateTime`](/components/platform/shared/local-datetime) |
-| Reads      | `getUserClasses()` · `services/classes/classes.service.ts` (`upcoming[0]`)                                             |
-| Uses       | `platformRoutes` from `lib/platform-routes`                                                                            |
+|            |                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/dashboard/next-class/next-class.section.tsx`                                                            |
+| Kind       | Server Component (async)                                                                                                              |
+| Stylesheet | `next-class.section.css` → block `.next-class`                                                                                        |
+| Used by    | `/inicio`                                                                                                                             |
+| Composes   | [`ClassCard`](/components/platform/shared/class-card) (`variant="featured"`), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads      | `getNextClass()`, `getStudentSeatBalance()` · `services/classes/classes.service.ts`                                                   |
+| Uses       | `platformRoutes` from `lib/platform-routes`                                                                                           |
 
 ## Purpose
 
-The dashboard card for the next scheduled class. It reads the same `getUserClasses()` the classes page uses and takes the first upcoming one, so the dashboard and `/clases` can never disagree about which class is next.
+The first class ahead that is not cancelled, drawn exactly as «Mis clases» draws it — the same card, the same join data —, so the dashboard and `/clases` can never disagree about which class is next or whether its link is open. The foot says what is left («Te quedan 3 clases de tu pago del 1 de octubre · Ver mis clases»). Without a class: «Tienes 1 clase por programar» and «Administración te escribirá para fijar la fecha.» when a payment has classes without a date, else «No tienes clases programadas» with «Cuando administración programe una clase contigo, aparecerá aquí.».
+
+On the day of a class the page puts this section first, across the row, and «Continuar estudiando» steps back to a secondary button ([`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section), `emphasis="secondary"`).
 
 ## Props
 
 This component takes no props.
 
-## Behaviour
-
-Renders title, teacher name, the schedule through [`LocalDateTime`](/components/platform/shared/local-datetime) (server fallback `dateLabel · timeLabel`, replaced by the browser's zone after hydration), the duration, the status tag and a secondary "Ver detalle" button. Without an upcoming class, an empty state links to "Mis clases".
-
 ## Markup & styling
 
-Block `.next-class` (31 lines), inside a `.platform-card`.
+Block `.next-class` (24 lines).
 
-**Elements:** `.next-class__body`, `.next-class__name`, `.next-class__teacher`, `.next-class__schedule`, `.next-class__status`, `.next-class__cta`
-
-**Other classes it renders:** `.platform-card`, `.platform-card__title`, `.platform-tag`, `.platform-tag_variant_accent`, `.platform-button`.
+**Elements:** `.next-class__title`, `.next-class__foot`, `.next-class__link`
 
 **Tokens:** `--platform-text`, `--platform-text-muted`
 
@@ -40,16 +36,9 @@ No media queries.
 
 ## Usage
 
-From `app/(platform)/inicio/page.tsx`:
-
-```tsx
-<div className="dashboard-page__row">
-  <ContinueStudyingSection />
-  <NextClassSection />
-</div>
-```
+From `app/(platform)/inicio/page.tsx`, first on a class day; otherwise in the row beside «Continuar estudiando».
 
 ## Related
 
-- [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section) and [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section).
-- [Student features › Classes](/platform/student).
+- [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section), [`ClassAheadSection`](/components/platform/sections/classes/class-detail/class-ahead-section).
+- [Student features › Dashboard](/platform/student).

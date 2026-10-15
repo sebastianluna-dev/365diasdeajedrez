@@ -134,7 +134,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 **Platform — student** — `app/(platform)` (requires a session)
 
 - `/inicio`
-- `/clases`, `/clases/[classId]`
+- `/clases` (today, upcoming, past by month, the paid classes), `/clases/[classId]` (how to join and what to prepare; once over, the review and «Guardar en un estudio»)
 - `/estudios`, `/estudios/clases` (games seen in class), `/estudios/[studyId]` (redirects to the study's first game; a study without games renders its empty page), `/estudios/[studyId]/partidas/[gameId]`
 - `/cursos` (the courses the student added), `/cursos/explorar` (the catalog; `?nivel=<slug>` narrows it to a level), `/cursos/<slug>` (a course's information page, where it is added), `/cursos/<id>` and `/cursos/<id>/<chapterOrder>` (the course to study; the two share the `[courseRef]` segment)
 - `/cursos/<id>/<chapterOrder>/<lessonId>` (a lesson: it hangs from its chapter so the column of lessons lives in the chapter's `layout.tsx` and is not fetched again on a move to another lesson). `/lecciones/[lessonId]`, where the lessons used to live, answers **308** to it.

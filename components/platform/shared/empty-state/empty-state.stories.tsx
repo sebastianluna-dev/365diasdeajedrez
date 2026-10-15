@@ -20,7 +20,7 @@ Reference page: [Components › EmptyState](/components/platform/shared/empty-st
   },
   args: {
     title: "No tienes clases programadas",
-    description: "Cuando tu profesor agende una clase aparecerá aquí.",
+    description: "Cuando administración programe una clase contigo, aparecerá aquí.",
     actionLabel: "Ver mis clases",
     actionHref: "/clases",
   },

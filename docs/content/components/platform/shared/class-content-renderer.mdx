@@ -22,10 +22,11 @@ Chess blocks are **references** to the original material, not copies: a `GAME_RE
 
 ## Props
 
-| Prop     | Type                       | Required              | Meaning                                                                                                                                                                                                                                                                                                                                                                     |
-| -------- | -------------------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `blocks` | `ClassBlockView[]`         | yes                   | Ordered blocks, each `{ id, kind, visibility, caption?, title?, isNew?, … }` with the kind-specific payload (`text`, `videoUrl`, `game` with its optional `players`, `result`, `orientation`, `conceal` and `pinnedComment`, `lesson` with its optional `missing`, `position`). The optional fields are filled by the student's mapper from phase 7 of the classes rebuild. |
-| `groups` | `"none" \| "byVisibility"` | no · default `"none"` | `byVisibility` draws a `<details>` per visibility — «Para preparar», «Después de la clase», «Guion del profesor» —, the script folded: the staff's sheet, which sees every block.                                                                                                                                                                                           |
+| Prop       | Type                           | Required              | Meaning                                                                                                                                                                                                                                                                                                                                                                     |
+| ---------- | ------------------------------ | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `blocks`   | `ClassBlockView[]`             | yes                   | Ordered blocks, each `{ id, kind, visibility, caption?, title?, isNew?, … }` with the kind-specific payload (`text`, `videoUrl`, `game` with its optional `players`, `result`, `orientation`, `conceal` and `pinnedComment`, `lesson` with its optional `missing`, `position`). The optional fields are filled by the student's mapper from phase 7 of the classes rebuild. |
+| `saveGame` | `{ classId, studies, action }` | no                    | With it, [`ClassGameSave`](/components/platform/shared/class-game-save) under each game: the student's studies and `saveClassGameToStudy`, bound to the class.                                                                                                                                                                                                              |
+| `groups`   | `"none" \| "byVisibility"`     | no · default `"none"` | `byVisibility` draws a `<details>` per visibility — «Para preparar», «Después de la clase», «Guion del profesor» —, the script folded: the staff's sheet, which sees every block.                                                                                                                                                                                           |
 
 ## Behaviour
 
@@ -42,7 +43,7 @@ Every block is an `<article aria-labelledby>` with a head — the kind's icon in
 
 ## Markup & styling
 
-Block `.class-content` (168 lines).
+Block `.class-content` (176 lines).
 
 **Elements:** `.class-content__block`, `.class-content__head`, `.class-content__kind-icon`, `.class-content__title`, `.class-content__caption`, `.class-content__text`, `.class-content__text-heading`, `.class-content__text-paragraph`, `.class-content__link-card`, `.class-content__link-icon`, `.class-content__sr`, `.class-content__missing`, `.class-content__group`, `.class-content__group-summary`, `.class-content__group-count`, `.class-content__group-body`, `.class-content__link-kind`, `.class-content__link-label`, `.class-content__game`, `.class-content__game-link`, `.class-content__caption`
 

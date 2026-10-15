@@ -20,7 +20,9 @@ The card that answers "where was I?". The service picks the first course in prog
 
 ## Props
 
-This component takes no props.
+| Prop       | Type                       | Required                 | Meaning                                                                                                               |
+| ---------- | -------------------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `emphasis` | `"primary" \| "secondary"` | no · default `"primary"` | «Continuar» is the page's accent; `secondary` on a class day, when «Entrar a la clase» is, and the button goes plain. |
 
 ## Behaviour
 
@@ -48,6 +50,8 @@ From `app/(platform)/inicio/page.tsx`:
   <NextClassSection />
 </div>
 ```
+
+On a class day the page draws «Próxima clase» first and this one with `emphasis="secondary"`.
 
 ## Related
 

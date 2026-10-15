@@ -1,0 +1,194 @@
+/* The class page once it is over: the head with the marks, then the
+   summary, the material and the transcript beside the index and «Tu clase». */
+.class-review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-6);
+
+  & .class-review__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-2);
+    margin: 0;
+  }
+
+  & .class-review__moved {
+    color: inherit;
+  }
+
+  & .class-review__title {
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-3xl);
+    line-height: 1.15;
+  }
+
+  & .class-review__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  & .class-review__notice {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-3);
+  }
+
+  & .class-review__notice .platform-notice {
+    flex: 1 1 auto;
+    margin: 0;
+  }
+
+  & .class-review__notice-link {
+    font-size: var(--platform-type-sm);
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .class-review__columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 304px;
+    gap: var(--platform-space-6);
+    align-items: start;
+  }
+
+  & .class-review__main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-6);
+    min-width: 0;
+  }
+
+  & .class-review__summary-text {
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    line-height: 1.65;
+    color: var(--platform-text);
+    white-space: pre-line;
+  }
+
+  & .class-review__material-title {
+    margin: 0 0 var(--platform-space-4);
+    font-size: var(--platform-type-xl);
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .class-review__empty {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+  }
+
+  & .class-review__transcript-summary {
+    font-size: var(--platform-type-xl);
+    font-weight: 700;
+    color: var(--platform-text);
+    cursor: pointer;
+  }
+
+  & .class-review__transcript-text {
+    margin: var(--platform-space-4) 0 0;
+    font-size: var(--platform-type-md);
+    line-height: 1.7;
+    color: var(--platform-text-muted);
+    white-space: pre-line;
+  }
+
+  /* The lane: the index and «Tu clase», stuck while the material scrolls. */
+  & .class-review__lane {
+    position: sticky;
+    top: var(--platform-space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+  }
+
+  & .class-review__index-title {
+    margin: 0 0 var(--platform-space-3);
+    font-size: var(--platform-type-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-review__index-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin: 0;
+    padding-left: var(--platform-space-5);
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .class-review__index-link {
+    color: var(--platform-text);
+    text-decoration: none;
+  }
+
+  & .class-review__index-link:hover {
+    text-decoration: underline;
+  }
+
+  & .class-review__seat-title {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+  }
+
+  & .class-review__seat-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-review__seat-line {
+    margin: 0 0 var(--platform-space-2);
+    font-size: var(--platform-type-md);
+    color: var(--platform-text);
+  }
+
+  & .class-review__seat-line_tone_muted {
+    color: var(--platform-text-muted);
+  }
+
+  & .class-review__seat-link {
+    font-size: var(--platform-type-sm);
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  @media (width < 1024px) {
+    & .class-review__notice {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--platform-space-3);
+    }
+
+    & .class-review__notice .platform-notice {
+      flex: 1 1 auto;
+      margin: 0;
+    }
+
+    & .class-review__notice-link {
+      font-size: var(--platform-type-sm);
+      font-weight: 600;
+      color: var(--platform-text);
+    }
+
+    & .class-review__columns {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    & .class-review__lane {
+      position: static;
+    }
+  }
+}

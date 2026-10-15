@@ -1,10 +1,17 @@
+/* «Mis clases»: the groups one under the other, the past ones by month. */
 .classes-list {
   display: flex;
   flex-direction: column;
   gap: var(--platform-space-8);
 
+  & .classes-list__group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+  }
+
   & .classes-list__group-title {
-    margin: 0 0 var(--platform-space-3);
+    margin: 0;
     font-size: var(--platform-type-xl);
     font-weight: 700;
     color: var(--platform-text);
@@ -14,5 +21,52 @@
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-3);
+  }
+
+  & .classes-list__empty {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+  }
+
+  & .classes-list__month {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+  }
+
+  & .classes-list__month-title {
+    margin: var(--platform-space-2) 0 0;
+    font-size: var(--platform-type-sm);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--platform-text-muted);
+  }
+
+  /* A month that is one payment, spent: a line that unfolds its classes. */
+  & .classes-list__folded-summary {
+    padding: var(--platform-space-3) var(--platform-space-4);
+    border-radius: 8px;
+    background: var(--platform-surface-soft);
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+    cursor: pointer;
+  }
+
+  & .classes-list__folded[open] .classes-list__folded-summary {
+    margin-bottom: var(--platform-space-3);
+  }
+
+  & .classes-list__more {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    margin: var(--platform-space-2) 0 0;
+  }
+
+  & .classes-list__more-count {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
   }
 }

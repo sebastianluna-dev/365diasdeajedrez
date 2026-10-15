@@ -1,0 +1,48 @@
+---
+description: "The student's class page once it is over (ALU-3): whether they came, the recording, the summary, the material with its index, the transcript folded, and «Tu clase» with what is left of the payment."
+---
+
+# `ClassReviewSection`
+
+|            |                                                                                                                                                                                                                                                                                          |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/classes/class-detail/class-review.section.tsx`                                                                                                                                                                                                             |
+| Kind       | Server Component                                                                                                                                                                                                                                                                         |
+| Stylesheet | `class-review.section.css` → block `.class-review`                                                                                                                                                                                                                                       |
+| Story      | `class-review.stories.tsx` (`platform/sections/classes/class-detail/ClassReviewSection`): attended, absent, moved, moved back, awaiting close                                                                                                                                            |
+| Used by    | `/clases/[classId]` once `studentClassView` says `review`                                                                                                                                                                                                                                |
+| Composes   | [`ClassStatusTag`](/components/platform/shared/class-status-tag), [`ClassWhen`](/components/platform/shared/class-when), [`PlatformNotice`](/components/platform/shared/platform-notice), [`ClassContentRenderer`](/components/platform/shared/class-content-renderer) (with `saveGame`) |
+| Uses       | `ClassDetailView`, `ClassBlockView` from `services/classes/classes.types`; `TRANSCRIPT_STATUS`; `platformRoutes`                                                                                                                                                                         |
+
+## Purpose
+
+The page from half an hour after the end on, whether or not the teacher finalized: the phase («Finalizada»), the mark beside it — «Asististe», «No asististe», or where a moved seat went («No asististe · tu clase pasó al vie 16 oct», a link; «… volvió a tu pago») —, the topic, when, and «Ver la grabación» as the page's accent when there is one. Then the teacher's summary, the material («Material de la clase», every block the student may see now, a game with «Guardar en un estudio» under it when the page gives the studies and the action) and the transcript, a `<details>` only when it is «Lista». The lane holds the index («En esta clase», a `nav` of anchors `#bloque-<id>`, drawn with two blocks or more) and «Tu clase» with the coverage, what is left of the payment («Te quedan 3 clases de tu pago del 1 de octubre: …») and «Ver mis clases». The lane sticks from 1024px.
+
+## Props
+
+| Prop           | Type                              | Required | Meaning                                                                       |
+| -------------- | --------------------------------- | -------- | ----------------------------------------------------------------------------- |
+| `classDetail`  | `ClassDetailView`                 | yes      | What `getClassById` gives.                                                    |
+| `saveGame`     | `{ studies, action }`             | no       | The student's studies and `saveClassGameToStudy`; without them, no «Guardar». |
+| `notice`       | `string`                          | no       | The address's notice, in words («Partida guardada en «Mis partidas».»).       |
+| `noticeLink`   | `{ href: string; label: string }` | no       | Where what the notice names is: «Ver la copia».                               |
+| `errorMessage` | `string`                          | no       | What the address's `?error=` says.                                            |
+
+## Markup & styling
+
+Block `.class-review` (194 lines).
+
+**Elements:** `.class-review__tags`, `.class-review__moved`, `.class-review__title`, `.class-review__sr`, `.class-review__notice`, `.class-review__notice-link`, `.class-review__columns`, `.class-review__main`, `.class-review__summary`, `.class-review__summary-text`, `.class-review__material`, `.class-review__material-title`, `.class-review__empty`, `.class-review__transcript`, `.class-review__transcript-summary`, `.class-review__transcript-text`, `.class-review__lane`, `.class-review__index`, `.class-review__index-title`, `.class-review__index-list`, `.class-review__index-link`, `.class-review__seat`, `.class-review__seat-title`, `.class-review__seat-icon`, `.class-review__seat-line`, `.class-review__seat-link`
+
+**Modifiers and states:** `.class-review__seat-line_tone_muted`
+
+**Other classes it renders:** `.platform-page__head`, `.platform-page__back`, `.platform-page__title`, `.platform-page__subtitle`, `.platform-page__actions`, `.platform-tag`, `.platform-tag_variant_{success,warning}`, `.platform-button`, `.platform-button_variant_accent`, `.platform-card`, `.platform-card__title`.
+
+**Breakpoints:** `(width < 1024px)` — one column, the lane no longer sticks.
+
+**Tokens:** `--platform-text`, `--platform-text-muted`, `--platform-font-display`
+
+## Related
+
+- Before: [`ClassAheadSection`](/components/platform/sections/classes/class-detail/class-ahead-section).
+- [`ClassGameSave`](/components/platform/shared/class-game-save), [Student features › Classes](/platform/student).

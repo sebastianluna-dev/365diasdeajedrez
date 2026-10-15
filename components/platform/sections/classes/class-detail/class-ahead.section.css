@@ -1,0 +1,69 @@
+/* The class page ahead of time: the head, the notices, the access card,
+   and «Tu clase» beside what there is to prepare. */
+.class-ahead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-6);
+
+  & .class-ahead__tags {
+    display: flex;
+    gap: var(--platform-space-2);
+    margin: 0;
+  }
+
+  & .class-ahead__title {
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-3xl);
+    line-height: 1.15;
+  }
+
+  & .class-ahead__description {
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    color: var(--platform-text-muted);
+  }
+
+  & .class-ahead__columns {
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    gap: var(--platform-space-6);
+    align-items: start;
+  }
+
+  & .class-ahead__seat-title {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+  }
+
+  & .class-ahead__seat-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-ahead__seat-line {
+    margin: 0 0 var(--platform-space-2);
+    font-size: var(--platform-type-md);
+    color: var(--platform-text);
+  }
+
+  & .class-ahead__prepare-title {
+    margin: 0 0 var(--platform-space-4);
+    font-size: var(--platform-type-xl);
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .class-ahead__empty {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+  }
+
+  @media (width < 1024px) {
+    & .class-ahead__columns {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}

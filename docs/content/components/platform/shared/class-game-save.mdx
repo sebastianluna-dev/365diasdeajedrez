@@ -1,0 +1,38 @@
+---
+description: "«Guardar en un estudio» under a game seen in class: the button and its SaveToStudyPopup, a copy into one of the student's own studies."
+---
+
+# `ClassGameSave`
+
+|            |                                                                                                |
+| ---------- | ---------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/class-game-save/class-game-save.comp.tsx`                          |
+| Kind       | Client Component                                                                               |
+| Stylesheet | `class-game-save.comp.css` → block `.class-game-save`                                          |
+| Story      | `class-game-save.stories.tsx` (`platform/shared/ClassGameSave`): default, open                 |
+| Used by    | [`ClassContentRenderer`](/components/platform/shared/class-content-renderer) (with `saveGame`) |
+| Composes   | [`SaveToStudyPopup`](/components/platform/shared/save-to-study-popup)                          |
+
+## Purpose
+
+The student keeps a game their teacher showed in class: the button («Guardar en un estudio», `BookmarkPlusIcon`) and the popup, a sibling, that asks for the study and a name. The action is `saveClassGameToStudy(classId, blockId, formData)` (`services/classes/classes.actions.ts`), handed down from the page as a prop and bound here to the class and the block: it copies the block's game — its PGN, players and result — as a `Game` of the chosen study, indexed in the same transaction, and comes back to the class with `?aviso=gameSaved.<studyId>.<gameId>`, which the page reads as «Partida guardada en «Mis partidas».» with «Ver la copia». The class keeps its game. No component with a story imports the action.
+
+## Props
+
+| Prop      | Type                                                                      | Required | Meaning                                           |
+| --------- | ------------------------------------------------------------------------- | -------- | ------------------------------------------------- |
+| `classId` | `string`                                                                  | yes      |                                                   |
+| `blockId` | `string`                                                                  | yes      | The game block.                                   |
+| `title`   | `string`                                                                  | yes      | The name the copy is proposed with: the players.  |
+| `studies` | `{ id: string; name: string }[]`                                          | yes      | The student's own studies (`getOwnStudyOptions`). |
+| `action`  | `(classId: string, blockId: string, formData: FormData) => Promise<void>` | yes      | `saveClassGameToStudy`.                           |
+
+## Markup & styling
+
+Block `.class-game-save` (4 lines): the button's row; the popup draws itself.
+
+No media queries.
+
+## Related
+
+- [`SaveToStudyPopup`](/components/platform/shared/save-to-study-popup); the same copy from a played game in [`LiveGameSection`](/components/platform/sections/play/live-game/live-game-section).

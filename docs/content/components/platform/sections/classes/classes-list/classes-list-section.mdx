@@ -1,51 +1,52 @@
 ---
-description: "The /clases page body: upcoming and past classes as cards, each group with its own empty state, read from getUserClasses."
+description: "«Mis clases» (ALU-1): today's classes featured, the next ones as rows with the classes bought without a date among them, and the past ones by month, ten at a time."
 ---
 
 # `ClassesListSection`
 
-|            |                                                                                                                                       |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/classes/classes-list/classes-list.section.tsx`                                                          |
-| Kind       | Server Component (async)                                                                                                              |
-| Stylesheet | `classes-list.section.css` → block `.classes-list`                                                                                    |
-| Used by    | `/clases`                                                                                                                             |
-| Composes   | [`ClassCard`](/components/platform/sections/classes/classes-list/class-card), [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads      | `getUserClasses()` · `services/classes/classes.service.ts`                                                                            |
+|            |                                                                                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/classes/classes-list/classes-list.section.tsx`                                                                         |
+| Kind       | Server Component                                                                                                                                     |
+| Stylesheet | `classes-list.section.css` → block `.classes-list`                                                                                                   |
+| Used by    | `/clases`                                                                                                                                            |
+| Composes   | [`ClassCard`](/components/platform/shared/class-card) (`ClassCard`, `UnscheduledClassCard`), [`EmptyState`](/components/platform/shared/empty-state) |
+| Uses       | `StudentClassesView` from `services/classes/classes.types`; `platformRoutes`                                                                         |
 
 ## Purpose
 
-The student's classes in two groups, "Próximas clases" and "Clases pasadas". The service does the split (by scheduled time against now) and the section only lays it out; the dashboard's [`NextClassSection`](/components/platform/sections/dashboard/next-class/next-class-section) reads the same service and takes the first upcoming one.
+The student's classes in three groups. «Hoy»: today's classes as featured cards, with how to join. «Próximas»: the next ones as rows (the first featured when there is nothing today), and after them one row per class bought without a date («Clase por programar · de tu pago del 1 de octubre»). «Pasadas»: by month, newest first; a month that is one payment, spent, with every class attended, folds into a line («Las cuatro clases de tu pago del 3 de septiembre.») that unfolds its rows. Ten past classes a page: «Ver más» asks the page for one more (`?pasadas=<n>`). Without a class of any kind, one empty state: «Cuando administración programe una clase contigo, aparecerá aquí con su fecha y su enlace.» The balance is not here: the page draws [`PaidClassesCard`](/components/platform/shared/paid-classes-card) beside this.
 
 ## Props
 
-This component takes no props.
-
-## Behaviour
-
-Awaits `{ upcoming, past }`. Each group renders its cards or an empty state with copy specific to it ("No tienes clases programadas" with a hint about the teacher scheduling; "Todavía no has tomado clases").
+| Prop        | Type                 | Required | Meaning                                                |
+| ----------- | -------------------- | -------- | ------------------------------------------------------ |
+| `view`      | `StudentClassesView` | yes      | What `getUserClasses(pastPages)` gives.                |
+| `pastPages` | `number`             | yes      | How many pages are shown; «Ver más» asks for one more. |
 
 ## Markup & styling
 
-Block `.classes-list` (18 lines).
+Block `.classes-list` (72 lines).
 
-**Elements:** `.classes-list__group`, `.classes-list__group-title`, `.classes-list__items`
+**Elements:** `.classes-list__group`, `.classes-list__group-title`, `.classes-list__items`, `.classes-list__empty`, `.classes-list__month`, `.classes-list__month-title`, `.classes-list__folded`, `.classes-list__folded-summary`, `.classes-list__more`, `.classes-list__more-count`
 
-**Tokens:** `--platform-text`
+**Other classes it renders:** `.platform-button`.
 
-No media queries.
+**Tokens:** `--platform-text`, `--platform-text-muted`, `--platform-surface-soft`
+
+No media queries; the page's grid places it.
 
 ## Usage
 
 From `app/(platform)/clases/page.tsx`:
 
 ```tsx
-import { ClassesListSection } from "@/components/platform/sections/classes/classes-list/classes-list.section";
+const view = await getUserClasses(pastPages);
 
-<ClassesListSection />;
+<ClassesListSection view={view} pastPages={pastPages} />;
 ```
 
 ## Related
 
-- [`ClassCard`](/components/platform/sections/classes/classes-list/class-card), [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section).
+- [`ClassCard`](/components/platform/shared/class-card), [`PaidClassesCard`](/components/platform/shared/paid-classes-card), [`ClassAheadSection`](/components/platform/sections/classes/class-detail/class-ahead-section).
 - [Student features › Classes](/platform/student).

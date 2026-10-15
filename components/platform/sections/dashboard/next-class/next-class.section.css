@@ -1,31 +1,24 @@
+/* «Próxima clase»: the heading, the featured card and the foot. */
 .next-class {
-  & .next-class__body {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-2);
-    align-items: flex-start;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-3);
 
-  & .next-class__name {
+  & .next-class__title {
     margin: 0;
     font-size: var(--platform-type-xl);
     font-weight: 700;
     color: var(--platform-text);
   }
 
-  & .next-class__teacher {
+  & .next-class__foot {
     margin: 0;
-    font-size: var(--platform-type-lg);
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-muted);
   }
 
-  & .next-class__schedule {
-    margin: 0;
-    font-size: var(--platform-type-lg);
+  & .next-class__link {
+    font-weight: 600;
     color: var(--platform-text);
-  }
-
-  & .next-class__cta {
-    margin-top: var(--platform-space-2);
   }
 }

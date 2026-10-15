@@ -1,0 +1,47 @@
+---
+description: "The student's class page while it looks ahead (ALU-2): the access card, what the staff said (a new date, a cancellation, a make-up), «Tu clase» with how the seat is covered, and what there is to prepare."
+---
+
+# `ClassAheadSection`
+
+|            |                                                                                                                                                                                                                                                                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/classes/class-detail/class-ahead.section.tsx`                                                                                                                                                                                                                                                                                   |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                              |
+| Stylesheet | `class-ahead.section.css` → block `.class-ahead`                                                                                                                                                                                                                                                                                                              |
+| Story      | `class-ahead.stories.tsx` (`platform/sections/classes/class-detail/ClassAheadSection`): upcoming, open, in progress, after the end, cancelled, cancelled free, rescheduled, make-up                                                                                                                                                                           |
+| Used by    | `/clases/[classId]` while `studentClassView` says `ahead`                                                                                                                                                                                                                                                                                                     |
+| Composes   | [`ClassStatusTag`](/components/platform/shared/class-status-tag), [`ClassWhen`](/components/platform/shared/class-when), [`MeetingJoinCard`](/components/platform/shared/meeting-join-card) (`density="full"`), [`PlatformNotice`](/components/platform/shared/platform-notice), [`ClassContentRenderer`](/components/platform/shared/class-content-renderer) |
+| Uses       | `ClassDetailView` from `services/classes/classes.types`; `platformRoutes`                                                                                                                                                                                                                                                                                     |
+
+## Purpose
+
+The page the student gets from the moment a class is scheduled until half an hour after it ends: the way back («Mis clases»), the phase (the student reads «Finalizada» where the teacher reads «Por finalizar»), the topic in the display face, when and with whom, and the access card — «Entrar a la clase» from the instant the link opens, the countdown before it (the link never travels ahead of time: the server hands it over and the countdown asks for the page again), «Volver a entrar» in the half hour after the end, «Escríbenos» when there is no link yet. Under it, «Tu clase» (`TicketIcon`) with the people line and how the seat is covered — «Clase 2 de 4 de tu pago del 1 de octubre · Individual», «Esta clase es gratis.», or nothing without a payment — and «Para preparar» with the blocks the student may see now.
+
+What the staff did reaches the student as a notice: a new date («Reprogramada desde el mar 13 oct.» and the note), a cancellation («Esta clase se canceló. Te escribiremos para fijar otra fecha. Tu clase volvió a tu pago: la programaremos contigo.» — the last sentence only for a paid seat), a make-up («Es la reposición de tu clase del vie 2 oct. Nota: …»). A cancelled class has no access card and nothing to prepare.
+
+## Props
+
+| Prop           | Type              | Required | Meaning                            |
+| -------------- | ----------------- | -------- | ---------------------------------- |
+| `classDetail`  | `ClassDetailView` | yes      | What `getClassById` gives.         |
+| `notice`       | `string`          | no       | The address's notice, in words.    |
+| `errorMessage` | `string`          | no       | What the address's `?error=` says. |
+
+## Markup & styling
+
+Block `.class-ahead` (69 lines).
+
+**Elements:** `.class-ahead__tags`, `.class-ahead__title`, `.class-ahead__description`, `.class-ahead__access`, `.class-ahead__columns`, `.class-ahead__seat`, `.class-ahead__seat-title`, `.class-ahead__seat-icon`, `.class-ahead__seat-line`, `.class-ahead__prepare`, `.class-ahead__prepare-title`, `.class-ahead__empty`
+
+**Other classes it renders:** `.platform-page__head`, `.platform-page__back`, `.platform-page__title`, `.platform-page__subtitle`, `.platform-card`, `.platform-card__title`.
+
+**Breakpoints:** `(width < 1024px)` — «Tu clase» and «Para preparar» pile up.
+
+**Tokens:** `--platform-text`, `--platform-text-muted`, `--platform-font-display`
+
+## Related
+
+- Afterwards: [`ClassReviewSection`](/components/platform/sections/classes/class-detail/class-review-section).
+- The teacher's and the staff's views of the same class: [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section), [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section).
+- [Student features › Classes](/platform/student).

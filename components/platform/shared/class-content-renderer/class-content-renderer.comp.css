@@ -109,9 +109,17 @@
     white-space: nowrap;
   }
 
+  /* Under a game: the link to its study and «Guardar en un estudio». */
+  & .class-content__game-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-3) var(--platform-space-4);
+    margin-top: var(--platform-space-3);
+  }
+
   & .class-content__game-link {
     display: inline-block;
-    margin-top: var(--platform-space-3);
     font-size: var(--platform-type-lg);
     font-weight: 600;
     color: var(--platform-accent-ink);

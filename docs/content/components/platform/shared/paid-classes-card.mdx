@@ -1,0 +1,42 @@
+---
+description: "«Tus clases pagadas»: how many classes the student still has, of which payment, how they stand (taken, scheduled, to schedule) and the way to ask for more. Never an amount."
+---
+
+# `PaidClassesCard`
+
+|            |                                                                                                                       |
+| ---------- | --------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/paid-classes-card/paid-classes-card.comp.tsx`                                             |
+| Kind       | Server Component                                                                                                      |
+| Stylesheet | `paid-classes-card.comp.css` → block `.paid-classes`                                                                  |
+| Story      | `paid-classes-card.stories.tsx` (`platform/shared/PaidClassesCard`): one payment, several payments, zero, no payments |
+| Used by    | `app/(platform)/clases/page.tsx` (the lane from 1024px; a `<details>` above the list under it)                        |
+| Uses       | `StudentBalanceView` from `services/classes/classes.types`; `WhatsappIcon`                                            |
+
+## Purpose
+
+What the student has, counted when it is read from their payments (`paymentSeats`, `services/shared/payment-seats.ts`) and never stored: the figure «3 clases por tomar» in the display face, the sentence «Te quedan 3 clases de tu pago del 1 de octubre: 2 programadas y 1 por programar.», a bar (`role="img"`, its label the same counts in words) with its legend «● 1 tomada ● 2 programadas ○ 1 por programar», and «La que falta la programa administración contigo. Tus clases pagadas no caducan.». «¿Quieres más clases? Escríbenos» opens the academy's WhatsApp with the message written (`academyWhatsappHref`). Without a payment: «Todavía no tienes clases pagadas.» and «¿Quieres clases? Escríbenos». The student never sees an amount: a payment reaches the card as a day and a count of classes.
+
+## Props
+
+| Prop           | Type                         | Required | Meaning                                                                     |
+| -------------- | ---------------------------- | -------- | --------------------------------------------------------------------------- |
+| `balance`      | `StudentBalanceView \| null` | yes      | `left`, `taken`, `scheduled`, `toSchedule`, `line`; null without a payment. |
+| `whatsappHref` | `string`                     | yes      | The wa.me link with the message written.                                    |
+
+## Markup & styling
+
+Block `.paid-classes` (103 lines), inside a `.platform-card`.
+
+**Elements:** `.paid-classes__figure`, `.paid-classes__line`, `.paid-classes__bar`, `.paid-classes__segment`, `.paid-classes__legend`, `.paid-classes__key`, `.paid-classes__note`, `.paid-classes__ask`, `.paid-classes__ask-icon`, `.paid-classes__sr`
+
+**Modifiers and states:** `.paid-classes__segment_kind_{taken,scheduled}`, `.paid-classes__key_kind_{taken,scheduled,to-schedule}`
+
+**Tokens:** `--platform-text`, `--platform-text-muted`, `--platform-accent`, `--platform-surface-neutral`, `--platform-font-display`
+
+No media queries.
+
+## Related
+
+- The staff's view of the same payments, with amounts: [`PaymentCard`](/components/platform/sections/staff/payments/payment-card).
+- [Classes › Payments](/platform/classes).

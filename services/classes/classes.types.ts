@@ -1,28 +1,15 @@
+import type { MeetingJoinData } from "@/components/platform/shared/meeting-join-card/meeting-join-card.types";
 import type {
   ClassBlockVisibilityCode,
   ClassPhaseCode,
-  ClassStatusCode,
   TranscriptStatusCode,
 } from "@/constants/platform/class-codes.const";
+import type { StudentClassView } from "@/services/shared/class-phase";
 
-export interface ClassSummary {
-  id: string;
-  title: string;
-  teacherName: string;
-  /** Instant in UTC; the interface reformats it in the student's zone. */
-  scheduledAtIso: string;
-  dateLabel: string;
-  timeLabel: string;
-  durationMin: number;
-  statusCode: ClassStatusCode;
-  statusLabel: string;
-  href: string;
-}
-
-export interface ClassesView {
-  upcoming: ClassSummary[];
-  past: ClassSummary[];
-}
+// What the student's screens read. Never an amount, never a classmate's
+// email: a class says who gives it, who else is in it by name, how the seat
+// is covered in classes («Clase 2 de 4 de tu pago del 1 de octubre»), and
+// what there is to prepare or to review.
 
 /** A player of a game seen in class, for the strips around the board. */
 export interface ClassGamePlayer {
@@ -35,8 +22,7 @@ export interface ClassGamePlayer {
 
 /**
  * What every block carries: its visibility (to prepare, after the class, or
- * never: the teacher's script), and, filled by the mapper of phase 7 and
- * optional until then, its own title and whether it is new.
+ * never: the teacher's script), its own title and whether it is new.
  */
 interface ClassBlockBase {
   id: string;
@@ -53,7 +39,7 @@ export type ClassBlockView =
   | (ClassBlockBase & { kind: "VIDEO"; videoUrl: string })
   | (ClassBlockBase & {
       kind: "GAME_REF";
-      /** `href` only when the game lives in a study; the transcribed one has nowhere to open. */
+      /** `href` only when the game lives in a study of the reader's; the transcribed one has nowhere to open. */
       game: {
         id: string;
         label: string;
@@ -95,35 +81,103 @@ export interface ClassTranscriptView {
   text?: string;
 }
 
-export interface ClassDetail {
+/** A class as the student's cards draw it: the featured one, a compact one, a past one. */
+export interface ClassCardData {
   id: string;
-  /** The topic, or «Clase con <profesor>» when it has none. */
+  href: string;
   title: string;
-  /** What the clock makes of the status (`classPhase`), at the instant the page was read. */
   phase: ClassPhaseCode;
-  /** The other students of the class, by name only. */
-  classmates: string[];
-  description?: string;
-  teacherName: string;
-  teacherTitle?: string;
-  /** Instant in UTC; the interface reformats it in the student's zone. */
-  scheduledAtIso: string;
-  dateLabel: string;
-  timeLabel: string;
+  startIso: string;
   durationMin: number;
-  statusCode: ClassStatusCode;
-  statusLabel: string;
-  summary?: string;
-  recordingUrl?: string;
-  meetingProviderLabel?: string;
-  /** Only present when now >= meetingUrlVisibleFrom: the link never reaches the client earlier. */
-  meetingUrl?: string;
-  /**
-   * ISO of when the link will become visible, for the countdown. Only present
-   * while the class HAS a link that is not visible yet: never without a link,
-   * never after the instant.
-   */
-  meetingVisibleFromIso?: string;
+  timeZone: string;
+  nowIso: string;
+  /** «con GM Profesor Demo», «con GM Profesor Demo · Grupal, con Mateo Ríos, Diego Salas y Lucía Herrera». */
+  people: string;
+  /** Blocks the student may see now: «2 para preparar» ahead, «4 bloques» after. */
+  visibleBlocks: number;
+  /** How to join; the featured card draws it. */
+  join: MeetingJoinData | null;
+  /** Once the class ended: whether they came and whether there is a recording. */
+  past: { attended: boolean | null; hasRecording: boolean } | null;
+  /** «No asististe · tu clase pasó al vie 9 oct», with the new class, or «… tu clase volvió a tu pago». */
+  moved: { label: string; href: string | null } | null;
+  /** «Es la reposición de tu clase del vie 2 oct.» */
+  makeUpLabel: string | null;
+  cancelled: boolean;
+}
+
+/** A paid class without a date yet. */
+export interface UnscheduledClassData {
+  paymentId: string;
+  /** «de tu pago del 1 de octubre». */
+  label: string;
+}
+
+export interface PastMonth {
+  key: string;
+  /** «Octubre 2026». */
+  label: string;
+  cards: ClassCardData[];
+  /** The whole month is one payment, every class taken: «Las cuatro clases de tu pago del 3 de septiembre.» */
+  foldedLabel: string | null;
+}
+
+/** What the student has, counted from their payments; never an amount. */
+export interface StudentBalanceView {
+  left: number;
+  taken: number;
+  scheduled: number;
+  toSchedule: number;
+  /** «Te quedan 3 clases de tu pago del 1 de octubre: 2 programadas y 1 por programar.» */
+  line: string;
+  whatsappHref: string;
+}
+
+export interface StudentClassesView {
+  timeZone: string;
+  nowIso: string;
+  today: ClassCardData[];
+  upcoming: ClassCardData[];
+  unscheduled: UnscheduledClassData[];
+  past: PastMonth[];
+  pastTotal: number;
+  pastShown: number;
+  balance: StudentBalanceView | null;
+  /** Today's class whose link is open, for the fixed bar. */
+  joinOpen: MeetingJoinData | null;
+}
+
+export interface ClassDetailView {
+  id: string;
+  title: string;
+  /** Ahead of time (the access card) or afterwards (the review). */
+  view: StudentClassView;
+  phase: ClassPhaseCode;
+  description: string | null;
+  teacherName: string;
+  startIso: string;
+  endIso: string;
+  durationMin: number;
+  timeZone: string;
+  nowIso: string;
+  people: string;
+  classmates: string[];
+  join: MeetingJoinData;
+  /** «Clase 2 de 4 de tu pago del 1 de octubre · Individual», «Esta clase es gratis.», or null without a payment. */
+  coverage: string | null;
+  attended: boolean | null;
+  moved: { label: string; href: string | null } | null;
+  makeUp: { label: string; note: string | null } | null;
+  /** «Reprogramada desde el mar 13 oct», with the staff's note. */
+  rescheduled: { previousLabel: string; note: string | null } | null;
+  /** The class was cancelled: the note the staff wrote, and whether the class went back to a payment. */
+  cancelled: { note: string | null; returnedToPayment: boolean } | null;
+  summary: string | null;
+  recordingUrl: string | null;
   blocks: ClassBlockView[];
-  transcript?: ClassTranscriptView;
+  transcript: ClassTranscriptView | null;
+  /** «Te quedan 3 clases», for the foot of the review. */
+  balanceLine: string | null;
+  whatsappHref: string;
+  href: string;
 }

@@ -1,0 +1,103 @@
+/* «Tus clases pagadas»: the figure, the sentence, the bar with its legend,
+   the note and the way to ask for more. Never an amount. */
+.paid-classes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-3);
+
+  & .platform-card__title {
+    margin-bottom: 0;
+  }
+
+  & .paid-classes__figure {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-3xl);
+    line-height: 1.1;
+    color: var(--platform-text);
+  }
+
+  & .paid-classes__line,
+  & .paid-classes__note {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+  }
+
+  /* The bar: the taken in the ink, the scheduled in the accent, the rest
+     the empty track of what is still to schedule. */
+  & .paid-classes__bar {
+    display: flex;
+    height: 8px;
+    overflow: hidden;
+    border-radius: 1000px;
+    background: var(--platform-surface-neutral);
+  }
+
+  & .paid-classes__segment_kind_taken {
+    background: var(--platform-text);
+  }
+
+  & .paid-classes__segment_kind_scheduled {
+    background: var(--platform-accent);
+  }
+
+  & .paid-classes__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-1) var(--platform-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-muted);
+  }
+
+  & .paid-classes__key {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+  }
+
+  & .paid-classes__key::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--platform-text);
+  }
+
+  & .paid-classes__key_kind_scheduled::before {
+    background: var(--platform-accent);
+  }
+
+  & .paid-classes__key_kind_to-schedule::before {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--platform-text-muted);
+  }
+
+  & .paid-classes__ask {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+    align-self: flex-start;
+    font-size: var(--platform-type-sm);
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .paid-classes__ask-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  & .paid-classes__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}
