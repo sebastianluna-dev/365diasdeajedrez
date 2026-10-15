@@ -534,6 +534,43 @@ html body.platform-theme[data-scroll-locked] {
   color: var(--platform-text-muted);
 }
 
+/* A head with actions is a row: the title and the subtitle on the left, the
+   actions on the right, top-aligned; under 640px the actions take the whole
+   width under the text. A grid, so the markup stays flat (title, subtitle,
+   actions as siblings). */
+.platform-page__head:has(> .platform-page__actions) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--platform-space-6);
+  row-gap: var(--platform-space-2);
+  align-items: start;
+}
+
+.platform-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--platform-space-2);
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  justify-content: flex-end;
+}
+
+@media (width < 640px) {
+  .platform-page__head:has(> .platform-page__actions) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .platform-page__actions {
+    grid-column: 1;
+    grid-row: auto;
+    justify-content: stretch;
+  }
+
+  .platform-page__actions > .platform-button {
+    flex: 1 1 auto;
+  }
+}
+
 .platform-card {
   background: var(--platform-surface);
   border-radius: 8px;
@@ -1076,13 +1113,46 @@ html body.platform-theme[data-scroll-locked] {
 }
 
 .platform-tag {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--platform-space-1);
   padding: var(--platform-space-1) var(--platform-space-3);
   border-radius: 1000px;
   font-size: var(--platform-type-sm);
   font-weight: 500;
+  line-height: 1.4;
   background: var(--platform-surface-neutral);
   color: var(--platform-text-muted);
+}
+
+/* The icon of a tag, in the tag's own colour (a phase, a seat's coverage). */
+.platform-tag__icon {
+  width: 1em;
+  height: 1em;
+  flex: none;
+}
+
+/* The tones. Each is a pair TEXT_PAIRS lists (lib/platform-tokens.ts), so the
+   tokens test checks its contrast in both themes. */
+.platform-tag_variant_warning {
+  background: var(--platform-warning-soft);
+  color: var(--platform-warning-ink);
+}
+
+.platform-tag_variant_success {
+  background: var(--platform-success-soft);
+  color: var(--platform-success-ink);
+}
+
+.platform-tag_variant_wash {
+  background: var(--platform-accent-wash);
+  color: var(--platform-accent-ink);
+}
+
+/* «En vivo»: white on the danger red, the pair the danger button's hover uses. */
+.platform-tag_variant_live {
+  background: var(--platform-danger);
+  color: var(--platform-surface);
 }
 
 .platform-tag_variant_accent {

@@ -859,6 +859,10 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               <div className="overview__row">
                 <span className="platform-tag">Sólo lectura</span>
                 <span className="platform-tag platform-tag_variant_accent">Desactualizado</span>
+                <span className="platform-tag platform-tag_variant_warning">Por finalizar</span>
+                <span className="platform-tag platform-tag_variant_success">Finalizada</span>
+                <span className="platform-tag platform-tag_variant_wash">Enlace abierto</span>
+                <span className="platform-tag platform-tag_variant_live">En vivo</span>
               </div>
             </Tile>
           </Section>

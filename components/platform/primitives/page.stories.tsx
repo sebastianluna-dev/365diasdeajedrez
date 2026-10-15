@@ -8,6 +8,7 @@ interface PageArgs {
   title: string;
   subtitle: string;
   width: (typeof WIDTHS)[number];
+  actions: boolean;
 }
 
 /** How wide the page it sits in is drawn, kept up to date as the window changes. */
@@ -37,7 +38,9 @@ const meta = {
 \`.platform-page\` and its \`__head\`, \`__title\` and \`__subtitle\`: global
 classes of \`app/(platform)/platform.css\`, written straight into the markup
 (there is no component) by every page of the platform, inside the shell's
-\`<main>\`. The stories put it in that \`<main>\`
+\`<main>\`. A head with \`__actions\` (2026-10-15) becomes a row: the title and
+the subtitle on the left, the buttons on the right, and under 640px the
+buttons take the whole width under the text. The stories put it in that \`<main>\`
 (\`.platform-shell__content\`, from \`platform-shell.section.css\`), which is
 what caps a page that does not cap itself; widen the window to see the three
 widths part. The fourth modifier, \`_height_screen\`, is the lesson's and needs
@@ -48,7 +51,7 @@ Reference: [Styling & design tokens › Global helpers](/ui/styling#global-helpe
       },
     },
   },
-  args: { title: "Mis cursos", subtitle: "Los cursos que estás siguiendo.", width: "default" },
+  args: { title: "Mis cursos", subtitle: "Los cursos que estás siguiendo.", width: "default", actions: false },
   argTypes: {
     title: { control: "text", description: "`.platform-page__title`, the page's `h1`." },
     subtitle: { control: "text", description: "`.platform-page__subtitle`." },
@@ -57,6 +60,7 @@ Reference: [Styling & design tokens › Global helpers](/ui/styling#global-helpe
       options: WIDTHS,
       description: "`wide` adds `platform-page_width_wide`, `full` adds `platform-page_width_full`.",
     },
+    actions: { control: "boolean", description: "Adds a `.platform-page__actions` with two buttons to the head." },
   },
   decorators: [
     // The shell's frame without its bar; its full-window height is left out so
@@ -69,11 +73,21 @@ Reference: [Styling & design tokens › Global helpers](/ui/styling#global-helpe
       </div>
     ),
   ],
-  render: ({ title, subtitle, width }) => (
+  render: ({ title, subtitle, width, actions }) => (
     <div className={`platform-page${width === "default" ? "" : ` platform-page_width_${width}`}`}>
       <header className="platform-page__head">
         <h1 className="platform-page__title">{title}</h1>
         <p className="platform-page__subtitle">{subtitle}</p>
+        {actions && (
+          <div className="platform-page__actions">
+            <button type="button" className="platform-button">
+              Registrar pago
+            </button>
+            <button type="button" className="platform-button platform-button_variant_accent">
+              Crear clase
+            </button>
+          </div>
+        )}
       </header>
       <section className="platform-card">
         <h2 className="platform-card__title">Continuar</h2>
@@ -98,3 +112,8 @@ export const Wide: Story = { args: { title: "Defensa siciliana", subtitle: "Cap�
 
 /** `_width_full`: no cap at all. */
 export const Full: Story = { args: { title: "El centro", subtitle: "Capítulo 1 · Lección 4", width: "full" } };
+
+/** `__actions`: the head as a row, the buttons top-aligned on the right; narrow the window under 640px to see them drop under the text. */
+export const Actions: Story = {
+  args: { title: "Clases", subtitle: "Hoy · miércoles 14 de octubre", actions: true },
+};
