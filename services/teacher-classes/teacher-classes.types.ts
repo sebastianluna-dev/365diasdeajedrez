@@ -1,5 +1,6 @@
 import type {
   ClassBlockKindCode,
+  ClassBlockVisibilityCode,
   ClassStatusCode,
   MeetingProviderCode,
   TranscriptStatusCode,
@@ -23,10 +24,9 @@ export interface TeacherClassParticipant {
   userId: string;
   displayName: string;
   email: string;
-  attended: boolean;
+  /** Null is «Sin pasar lista». The teacher never sees payments. */
+  attended: boolean | null;
   joinedAtIso?: string;
-  /** The teacher does not manage payments at this stage; they only see whether one is recorded. */
-  hasPayment: boolean;
 }
 
 /** Block exactly as the teacher edits it: raw data, not the student's render. */
@@ -34,6 +34,8 @@ export interface TeacherClassBlock {
   id: string;
   order: number;
   kind: ClassBlockKindCode;
+  /** When the student sees it: to prepare, after the class, or never. */
+  visibility: ClassBlockVisibilityCode;
   text?: string;
   videoUrl?: string;
   caption?: string;
@@ -51,7 +53,10 @@ export interface TeacherClassBlock {
 
 export interface TeacherClassDetail {
   id: string;
+  /** The topic, or «Clase de <alumno>» when it has none. */
   title: string;
+  /** The topic as stored, for the edit form; "" when there is none. */
+  topic: string;
   description?: string;
   scheduledAtIso: string;
   /** Value for `<input type="datetime-local">`, in the teacher's zone. */

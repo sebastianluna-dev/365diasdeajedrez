@@ -1,10 +1,14 @@
 import type { ClassStatusCode, TranscriptStatusCode } from "@/constants/platform/class-codes.const";
+import type { CurrencyCode } from "@/constants/platform/currency-codes.const";
+import { STUDY_DAY_TIMEZONE } from "@/constants/platform/timezones.const";
+import { formatClassAmount } from "@/lib/format-class-amount";
+import { formatClassDay } from "@/lib/format-class-when";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { formatSpanishTime } from "@/lib/format-spanish-time";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { staffRoutes } from "@/lib/platform-routes";
-import { classDetailInclude, mapClassDetail } from "@/services/classes/classes.mapper";
+import { classDetailInclude, classPhaseOf, classTitleOf, mapClassBlocks } from "@/services/classes/classes.mapper";
 import type { StaffClassDetail, StaffClassFilters, StaffClassSummary } from "./staff-classes.types";
 
 // Global view of classes for support. The staff READS everything (payments
@@ -34,16 +38,20 @@ export async function listAllClasses(filters: StaffClassFilters = {}): Promise<S
       scheduledAt: true,
       durationMin: true,
       status: { select: { code: true, label: true } },
+      format: { select: { code: true } },
       teacher: { select: { displayName: true } },
       _count: { select: { participants: true } },
-      participants: { where: { attended: true }, select: { userId: true } },
+      participants: {
+        where: { seatMovedAt: null },
+        select: { attended: true, user: { select: { displayName: true } } },
+      },
     },
     orderBy: { scheduledAt: "desc" },
   });
 
   return rows.map((row) => ({
     id: row.id,
-    title: row.title,
+    title: classTitleOf(row, "staff"),
     teacherId: row.teacherId,
     teacherName: row.teacher.displayName,
     scheduledAtIso: row.scheduledAt.toISOString(),
@@ -53,7 +61,7 @@ export async function listAllClasses(filters: StaffClassFilters = {}): Promise<S
     statusCode: row.status.code as ClassStatusCode,
     statusLabel: row.status.label,
     participantCount: row._count.participants,
-    attendedCount: row.participants.length,
+    attendedCount: row.participants.filter((seat) => seat.attended === true).length,
     href: staffRoutes.staffClassDetail(row.id),
   }));
 }
@@ -61,6 +69,7 @@ export async function listAllClasses(filters: StaffClassFilters = {}): Promise<S
 export async function getClassAdminDetail(classId: string): Promise<StaffClassDetail | null> {
   await requireStaff();
   const db = getPlatformDb();
+  const now = new Date();
 
   const [row, blocksRow] = await Promise.all([
     db.class.findUnique({
@@ -75,16 +84,18 @@ export async function getClassAdminDetail(classId: string): Promise<StaffClassDe
         recordingUrl: true,
         summary: true,
         status: { select: { code: true, label: true } },
+        format: { select: { code: true } },
         meetingProvider: { select: { label: true } },
         teacher: { select: { displayName: true } },
         participants: {
           select: {
             userId: true,
             attended: true,
-            paidAt: true,
-            amount: true,
-            currency: true,
-            paymentRef: true,
+            isFree: true,
+            seatMovedAt: true,
+            payment: {
+              select: { paidOn: true, amount: true, reference: true, currency: { select: { code: true } } },
+            },
             user: { select: { displayName: true, email: true } },
           },
           orderBy: { user: { displayName: "asc" } },
@@ -92,8 +103,9 @@ export async function getClassAdminDetail(classId: string): Promise<StaffClassDe
         transcript: { select: { text: true, status: { select: { code: true, label: true } } } },
       },
     }),
-    // The blocks are mapped with the STUDENT's mapper: support has to see exactly
-    // what whoever attended the class sees.
+    // The blocks are mapped with the student's mapper, every one of them: the
+    // staff sees what the student sees and what they do not yet (each block
+    // carries its visibility).
     db.class.findUnique({ where: { id: classId }, include: classDetailInclude }),
   ]);
 
@@ -101,7 +113,10 @@ export async function getClassAdminDetail(classId: string): Promise<StaffClassDe
 
   return {
     id: row.id,
-    title: row.title,
+    title: classTitleOf(
+      { ...row, participants: row.participants.filter((seat) => seat.seatMovedAt === null) },
+      "staff",
+    ),
     description: row.description ?? undefined,
     teacherName: row.teacher.displayName,
     scheduledAtIso: row.scheduledAt.toISOString(),
@@ -119,13 +134,9 @@ export async function getClassAdminDetail(classId: string): Promise<StaffClassDe
       displayName: participant.user.displayName,
       email: participant.user.email,
       attended: participant.attended,
-      paidAtLabel: participant.paidAt ? formatSpanishDate(participant.paidAt) : undefined,
-      amountLabel: participant.amount
-        ? `${participant.amount.toString()} ${participant.currency ?? ""}`.trim()
-        : undefined,
-      paymentRef: participant.paymentRef ?? undefined,
+      seatLabel: seatLabelOf(participant, now),
     })),
-    blocks: mapClassDetail(blocksRow, new Date()).blocks,
+    blocks: mapClassBlocks(blocksRow.blocks, { audience: "staff", phase: classPhaseOf(blocksRow, now) }),
     transcript: row.transcript
       ? {
           statusCode: row.transcript.status.code as TranscriptStatusCode,
@@ -134,6 +145,30 @@ export async function getClassAdminDetail(classId: string): Promise<StaffClassDe
         }
       : undefined,
   };
+}
+
+/** «Pago del jue 1 oct · $1,400.00 MXN · Transferencia 8841», «Gratis» or «Sin pago». */
+function seatLabelOf(
+  seat: {
+    isFree: boolean;
+    payment: {
+      paidOn: Date;
+      amount: { toString(): string };
+      reference: string | null;
+      currency: { code: string };
+    } | null;
+  },
+  now: Date,
+): string {
+  if (seat.payment) {
+    const parts = [
+      `Pago del ${formatClassDay(seat.payment.paidOn, STUDY_DAY_TIMEZONE, now)}`,
+      formatClassAmount(seat.payment.amount.toString(), seat.payment.currency.code as CurrencyCode, { withCode: true }),
+      ...(seat.payment.reference ? [seat.payment.reference] : []),
+    ];
+    return parts.join(" · ");
+  }
+  return seat.isFree ? "Gratis" : "Sin pago";
 }
 
 /** Teachers for the listing's filter. */

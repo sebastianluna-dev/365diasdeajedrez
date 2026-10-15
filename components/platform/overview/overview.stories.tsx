@@ -1725,9 +1725,10 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   {
                     id: "b1",
                     kind: "TEXT",
+                    visibility: "BEFORE",
                     text: "## El puente de Lucena\n\nCómo ganar con torre y peón cuando el rey propio está delante del peón.",
                   },
-                  { id: "b6", kind: "FILE", caption: "Ejercicios para la semana" },
+                  { id: "b6", kind: "FILE", visibility: "AFTER", caption: "Ejercicios para la semana" },
                 ]}
               />
             </Tile>

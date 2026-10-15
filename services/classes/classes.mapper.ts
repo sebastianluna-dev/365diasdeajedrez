@@ -1,5 +1,8 @@
 import {
   CLASS_BLOCK_KIND,
+  type ClassBlockVisibilityCode,
+  type ClassFormatCode,
+  type ClassPhaseCode,
   type ClassStatusCode,
   type TranscriptStatusCode,
 } from "@/constants/platform/class-codes.const";
@@ -8,12 +11,60 @@ import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { formatSpanishTime } from "@/lib/format-spanish-time";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { platformRoutes } from "@/lib/platform-routes";
+import { classPhase } from "@/services/shared/class-phase";
+import { classDisplayTitle, isBlockVisibleToStudent, type ClassAudience } from "@/services/shared/class-rules";
 import { lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
-import { meetingVisibleFrom } from "@/services/shared/meeting-visible-from";
+import { meetingVisibleFrom, meetingVisibleUntil } from "@/services/shared/meeting-visible-from";
 import type { ClassBlockView, ClassDetail, ClassSummary } from "./classes.types";
+
+/** What a reader needs of a class row to name it (`classDisplayTitle`). */
+export interface ClassTitleRow {
+  title: string | null;
+  format: { code: string };
+  teacher: { displayName: string };
+  /** The seated students, for «Clase de …»; a student's reader may leave them out. */
+  participants?: { user: { displayName: string } }[];
+}
+
+/** The title a class is shown with: its topic, or who it is with when it has none. */
+export function classTitleOf(row: ClassTitleRow, audience: ClassAudience): string {
+  return classDisplayTitle(
+    {
+      title: row.title,
+      formatCode: row.format.code as ClassFormatCode,
+      teacherName: row.teacher.displayName,
+      studentNames: (row.participants ?? []).map((seat) => seat.user.displayName),
+    },
+    audience,
+  );
+}
+
+/** The phase a row is in, from its clock columns. */
+export function classPhaseOf(
+  row: {
+    status: { code: string };
+    scheduledAt: Date;
+    endsAt: Date;
+    meetingUrl: string | null;
+    meetingUrlVisibleFrom: Date | null;
+  },
+  now: Date,
+): ClassPhaseCode {
+  return classPhase(
+    {
+      statusCode: row.status.code as ClassStatusCode,
+      scheduledAt: row.scheduledAt,
+      endsAt: row.endsAt,
+      visibleFrom: meetingVisibleFrom(row.meetingUrl, row.scheduledAt, row.meetingUrlVisibleFrom),
+      hasLink: row.meetingUrl !== null,
+    },
+    now,
+  );
+}
 
 export const classSummaryInclude = {
   status: true,
+  format: { select: { code: true } },
   teacher: { select: { displayName: true } },
 } satisfies Prisma.ClassInclude;
 
@@ -21,13 +72,21 @@ export type ClassSummaryRow = Prisma.ClassGetPayload<{ include: typeof classSumm
 
 export const classDetailInclude = {
   status: true,
+  format: { select: { code: true } },
   meetingProvider: true,
   teacher: { select: { displayName: true, title: true } },
   transcript: { include: { status: true } },
+  // The seated students, for the classmates' names: never their emails or payments.
+  participants: {
+    where: { seatMovedAt: null },
+    select: { userId: true, user: { select: { displayName: true } } },
+    orderBy: { user: { displayName: "asc" } },
+  },
   blocks: {
     orderBy: { order: "asc" },
     include: {
       kind: true,
+      visibility: { select: { code: true } },
       game: { select: { id: true, white: true, black: true, pgn: true, databaseId: true } },
       // The PGN and the orientation are for rendering the lesson INSIDE the class,
       // not just linking it: the student should not have to leave to see it.
@@ -51,7 +110,7 @@ export type ClassDetailRow = Prisma.ClassGetPayload<{ include: typeof classDetai
 export function mapClassSummary(row: ClassSummaryRow): ClassSummary {
   return {
     id: row.id,
-    title: row.title,
+    title: classTitleOf(row, "student"),
     teacherName: row.teacher.displayName,
     scheduledAtIso: row.scheduledAt.toISOString(),
     dateLabel: formatSpanishDate(row.scheduledAt),
@@ -64,7 +123,11 @@ export function mapClassSummary(row: ClassSummaryRow): ClassSummary {
 }
 
 function mapBlock(block: ClassDetailRow["blocks"][number]): ClassBlockView | null {
-  const base = { id: block.id, caption: block.caption ?? undefined };
+  const base = {
+    id: block.id,
+    caption: block.caption ?? undefined,
+    visibility: block.visibility.code as ClassBlockVisibilityCode,
+  };
 
   switch (block.kind.code) {
     case CLASS_BLOCK_KIND.TEXT:
@@ -139,19 +202,39 @@ function mapBlock(block: ClassDetailRow["blocks"][number]): ClassBlockView | nul
   }
 }
 
-export function mapClassDetail(row: ClassDetailRow, now: Date): ClassDetail {
-  // The meeting link is only exposed once it is visible; before that, the client
-  // receives only the instant it opens at, to render the countdown. That instant
-  // belongs to the link: a class without one gets no countdown whatever the row
-  // stores, since it would promise a link that does not exist and, past the
-  // instant, it would keep asking the server for the page.
+/**
+ * The blocks a reader sees, in order. The student sees what their phase lets
+ * them see (`isBlockVisibleToStudent`); the teacher and the staff see every
+ * block, each with its visibility, so their sheets can split them.
+ */
+export function mapClassBlocks(
+  rows: ClassDetailRow["blocks"],
+  reader: { audience: ClassAudience; phase: ClassPhaseCode },
+): ClassBlockView[] {
+  return rows
+    .map(mapBlock)
+    .filter((block): block is ClassBlockView => block !== null)
+    .filter((block) => reader.audience !== "student" || isBlockVisibleToStudent(block.visibility, reader.phase));
+}
+
+export function mapClassDetail(row: ClassDetailRow, now: Date, viewerId: string | null = null): ClassDetail {
+  // The meeting link is only exposed while it is open: from the instant it
+  // becomes visible to half an hour after the class ends. Before that, the
+  // client receives only the instant it opens at, to render the countdown. That
+  // instant belongs to the link: a class without one gets no countdown whatever
+  // the row stores, since it would promise a link that does not exist and, past
+  // the instant, it would keep asking the server for the page.
   const { meetingUrl } = row;
   const visibleFrom = meetingVisibleFrom(meetingUrl, row.scheduledAt, row.meetingUrlVisibleFrom);
   const opensLater = visibleFrom !== null && now < visibleFrom;
+  const closed = now >= meetingVisibleUntil(row.endsAt);
+  const phase = classPhaseOf(row, now);
 
   return {
     id: row.id,
-    title: row.title,
+    title: classTitleOf(row, "student"),
+    phase,
+    classmates: row.participants.filter((seat) => seat.userId !== viewerId).map((seat) => seat.user.displayName),
     description: row.description ?? undefined,
     teacherName: row.teacher.displayName,
     teacherTitle: row.teacher.title ?? undefined,
@@ -164,9 +247,9 @@ export function mapClassDetail(row: ClassDetailRow, now: Date): ClassDetail {
     summary: row.summary ?? undefined,
     recordingUrl: row.recordingUrl ?? undefined,
     meetingProviderLabel: row.meetingProvider?.label,
-    meetingUrl: meetingUrl !== null && !opensLater ? meetingUrl : undefined,
+    meetingUrl: meetingUrl !== null && !opensLater && !closed ? meetingUrl : undefined,
     meetingVisibleFromIso: opensLater ? visibleFrom?.toISOString() : undefined,
-    blocks: row.blocks.map(mapBlock).filter((block): block is ClassBlockView => block !== null),
+    blocks: mapClassBlocks(row.blocks, { audience: "student", phase }),
     transcript: row.transcript
       ? {
           statusCode: row.transcript.status.code as TranscriptStatusCode,

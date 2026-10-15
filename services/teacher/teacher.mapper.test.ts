@@ -13,6 +13,9 @@ describe("mapTeacherClassBrief", () => {
       scheduledAt: when,
       durationMin: 90,
       status: { code: CLASS_STATUS.COMPLETED, label: "Terminada" },
+      format: { code: "INDIVIDUAL" },
+      teacher: { displayName: "GM Profesor Demo" },
+      participants: [{ user: { displayName: "Alumno Demo" } }],
       _count: { participants: 4 },
     } as unknown as TeacherClassBriefRow;
 

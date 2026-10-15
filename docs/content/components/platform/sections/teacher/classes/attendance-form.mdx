@@ -1,5 +1,5 @@
 ---
-description: "Class attendance as one checkbox per participant, submitted whole to markAttendance so the server decides what changed; removal offered only for participants without attendance or payment."
+description: "Class attendance as one checkbox per participant, submitted whole to markAttendance so the server decides what changed; removal offered only for participants without a mark."
 ---
 
 # `AttendanceForm`
@@ -20,16 +20,16 @@ Marking a student as present records their activity (and with it their statistic
 
 ## Props
 
-| Prop           | Type                        | Required | Meaning                                                                                          |
-| -------------- | --------------------------- | -------- | ------------------------------------------------------------------------------------------------ |
-| `classId`      | `string`                    | yes      | Bound into both actions.                                                                         |
-| `participants` | `TeacherClassParticipant[]` | yes      | `{ userId, displayName, attended, hasPayment }[]`. Empty renders a hint to enrol students first. |
+| Prop           | Type                        | Required | Meaning                                                                                                                     |
+| -------------- | --------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `classId`      | `string`                    | yes      | Bound into both actions.                                                                                                    |
+| `participants` | `TeacherClassParticipant[]` | yes      | `{ userId, displayName, attended }[]` (`attended` null is «Sin pasar lista»). Empty renders a hint to enrol students first. |
 
 ## Behaviour
 
 - `<form action={markAttendance.bind(null, classId)}>` with one [`PlatformCheckbox`](/components/platform/shared/platform-checkbox) per participant (`name="attended" value={userId}`, the student's name as its label) and a "Guardar asistencia" submit.
-- Each row shows "Pago registrado" or "Sin pago registrado".
-- "Quitar" is a submit button with `formAction={removeParticipant.bind(null, classId, participant.userId)}`, rendered only for a participant who left no trace (no attendance, no payment); the server rejects the others anyway. The student is **bound** to the action, not sent as the button's `name`: React leaves a button that has an action of its own out of the form's data, so until 2026-10-02, when it was `name="studentId"`, the id never reached the server and «Quitar» always answered with `participantLocked`.
+- Each row says its mark: «Sin pasar lista», «Asistió» or «Faltó». The teacher never sees payments (since 2026-10-14).
+- "Quitar" is a submit button with `formAction={removeParticipant.bind(null, classId, participant.userId)}`, rendered only for a participant with no mark yet; the server rejects the others anyway. The student is **bound** to the action, not sent as the button's `name`: React leaves a button that has an action of its own out of the form's data, so until 2026-10-02, when it was `name="studentId"`, the id never reached the server and «Quitar» always answered with `participantLocked`.
 
 ## Markup & styling
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { CLASS_STATUS, type ClassStatusCode } from "@/constants/platform/class-codes.const";
-import { canTransitionClassStatus } from "./class-status-transitions";
+import { canTransitionClassStatus, nextClassStatuses } from "./class-status-transitions";
 
 const ALL = Object.values(CLASS_STATUS) as ClassStatusCode[];
 
@@ -29,5 +29,16 @@ describe("canTransitionClassStatus", () => {
         expect(canTransitionClassStatus(from, to, "staff"), `${from} → ${to}`).toBe(false);
       }
     }
+  });
+});
+
+describe("nextClassStatuses", () => {
+  it("lista los destinos de cada papel, para dibujar los botones", () => {
+    expect([...nextClassStatuses(CLASS_STATUS.SCHEDULED, "teacher")]).toEqual([CLASS_STATUS.COMPLETED]);
+    expect([...nextClassStatuses(CLASS_STATUS.SCHEDULED, "staff")]).toEqual([
+      CLASS_STATUS.COMPLETED,
+      CLASS_STATUS.CANCELLED,
+    ]);
+    expect([...nextClassStatuses(CLASS_STATUS.COMPLETED, "staff")]).toEqual([]);
   });
 });

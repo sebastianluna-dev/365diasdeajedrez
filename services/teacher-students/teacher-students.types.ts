@@ -32,7 +32,8 @@ export interface StudentSharedClass {
   dateLabel: string;
   statusCode: ClassStatusCode;
   statusLabel: string;
-  attended: boolean;
+  /** Null is «Sin pasar lista». */
+  attended: boolean | null;
   href: string;
 }
 

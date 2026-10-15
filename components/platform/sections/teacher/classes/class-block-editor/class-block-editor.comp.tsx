@@ -4,7 +4,11 @@ import { ArrowDownIcon } from "@/components/icons/arrow-down-icon.comp";
 import { ArrowUpIcon } from "@/components/icons/arrow-up-icon.comp";
 import { useState } from "react";
 import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
-import { CLASS_BLOCK_KIND, type ClassBlockKindCode } from "@/constants/platform/class-codes.const";
+import {
+  CLASS_BLOCK_KIND,
+  CLASS_BLOCK_VISIBILITY,
+  type ClassBlockKindCode,
+} from "@/constants/platform/class-codes.const";
 import {
   addClassBlock,
   deleteClassBlock,
@@ -56,6 +60,7 @@ export function ClassBlockEditor({ classId, blocks, options, initialGameId }: Cl
         id: "nuevo",
         order: blocks.length + 1,
         kind: CLASS_BLOCK_KIND.GAME_REF,
+        visibility: CLASS_BLOCK_VISIBILITY.BEFORE,
         gameId: initialGameId,
         isMovePathBroken: false,
       }

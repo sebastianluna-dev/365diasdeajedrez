@@ -22,7 +22,12 @@ function teacherRow(overrides: Partial<TeacherClassDetailRow> = {}): TeacherClas
     description: null,
     scheduledAt: SCHEDULED_AT,
     durationMin: 60,
+    endsAt: new Date(SCHEDULED_AT.getTime() + 60 * 60_000),
     statusId: 1,
+    formatId: 1,
+    capacity: null,
+    format: { code: "INDIVIDUAL" },
+    teacher: { displayName: "GM Profesor Demo" },
     meetingProviderId: 1,
     meetingUrl: MEETING_URL,
     meetingUrlVisibleFrom: VISIBLE_FROM,
@@ -105,6 +110,7 @@ describe("mapTeacherClassDetail", () => {
         movePath: "0.0",
         caption: null,
         kind: { id: 3, code: CLASS_BLOCK_KIND.GAME_REF, label: "Partida", order: 2 },
+        visibility: { code: "BEFORE" },
         game: { id: "game-1", white: "Morphy", black: "Duque", pgn: SHORT_PGN },
         lesson: null,
         position: null,
@@ -122,6 +128,7 @@ describe("mapTeacherClassDetail", () => {
         movePath: "0.0.0.0.0.0.0.0",
         caption: null,
         kind: { id: 3, code: CLASS_BLOCK_KIND.GAME_REF, label: "Partida", order: 2 },
+        visibility: { code: "AFTER" },
         game: { id: "game-1", white: "Morphy", black: "Duque", pgn: SHORT_PGN },
         lesson: null,
         position: null,
@@ -132,5 +139,25 @@ describe("mapTeacherClassDetail", () => {
     expect(view.blocks[0]?.isMovePathBroken).toBe(false);
     expect(view.blocks[1]?.isMovePathBroken).toBe(true);
     expect(view.blocks[0]?.referenceLabel).toBe("Morphy – Duque");
+    expect(view.blocks.map((block) => block.visibility)).toEqual(["BEFORE", "AFTER"]);
+  });
+
+  it("nombra la clase sin tema por sus alumnos, y deja el tema vacío para el formulario", () => {
+    const row = teacherRow({
+      title: null,
+      participants: [
+        {
+          userId: "u1",
+          attended: null,
+          joinedAt: null,
+          user: { id: "u1", displayName: "Valentina Cruz", email: "v@x" },
+        },
+      ],
+    } as Partial<TeacherClassDetailRow>);
+    const view = mapTeacherClassDetail(row, "UTC");
+    expect(view.title).toBe("Clase de Valentina Cruz");
+    expect(view.topic).toBe("");
+    expect(view.participants[0]).toMatchObject({ attended: null, displayName: "Valentina Cruz" });
+    expect(JSON.stringify(view)).not.toMatch(/hasPayment|payment/);
   });
 });

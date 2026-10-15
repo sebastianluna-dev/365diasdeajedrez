@@ -1,6 +1,7 @@
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
+import { classTitleOf } from "@/services/classes/classes.mapper";
 import { staffRoutes } from "@/lib/platform-routes";
 import type { StaffStudentDetail, StaffStudentSummary, StudentAssignmentHistoryItem } from "./staff-students.types";
 
@@ -84,14 +85,17 @@ export async function getStudentAdminDetail(userId: string): Promise<StaffStuden
       classParticipants: {
         select: {
           attended: true,
-          paidAt: true,
+          isFree: true,
+          paymentId: true,
           class: {
             select: {
               id: true,
               title: true,
               scheduledAt: true,
               status: { select: { label: true } },
+              format: { select: { code: true } },
               teacher: { select: { displayName: true } },
+              participants: { where: { seatMovedAt: null }, select: { user: { select: { displayName: true } } } },
             },
           },
         },
@@ -126,13 +130,13 @@ export async function getStudentAdminDetail(userId: string): Promise<StaffStuden
     assignments,
     classes: user.classParticipants.map((participation) => ({
       classId: participation.class.id,
-      title: participation.class.title,
+      title: classTitleOf(participation.class, "staff"),
       teacherName: participation.class.teacher.displayName,
       scheduledAtIso: participation.class.scheduledAt.toISOString(),
       dateLabel: formatSpanishDate(participation.class.scheduledAt),
       statusLabel: participation.class.status.label,
       attended: participation.attended,
-      hasPayment: participation.paidAt !== null,
+      coverage: participation.paymentId !== null ? "paid" : participation.isFree ? "free" : "unpaid",
     })),
   };
 }

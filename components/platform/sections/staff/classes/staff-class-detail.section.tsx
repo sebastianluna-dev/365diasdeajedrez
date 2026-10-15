@@ -96,18 +96,18 @@ export function StaffClassDetailSection({ classDetail, errorCode }: StaffClassDe
         <h2 className="platform-card__title">Alumnos</h2>
         <PlatformTable
           label="Alumnos"
-          columns={["Alumno", "Email", "Asistió", "Pago", "Importe", "Referencia"]}
+          columns={["Alumno", "Email", "Asistió", "Plaza"]}
           emptyLabel="Esta clase no tiene alumnos inscritos."
-          minWidth={860}
+          minWidth={720}
         >
           {classDetail.participants.map((participant) => (
             <PlatformTableRow key={participant.userId}>
               <PlatformTableCell strong>{participant.displayName}</PlatformTableCell>
               <PlatformTableCell>{participant.email}</PlatformTableCell>
-              <PlatformTableCell>{participant.attended ? "Sí" : "No"}</PlatformTableCell>
-              <PlatformTableCell>{participant.paidAtLabel ?? "—"}</PlatformTableCell>
-              <PlatformTableCell>{participant.amountLabel ?? "—"}</PlatformTableCell>
-              <PlatformTableCell>{participant.paymentRef ?? "—"}</PlatformTableCell>
+              <PlatformTableCell>
+                {participant.attended === null ? "Sin pasar lista" : participant.attended ? "Sí" : "No"}
+              </PlatformTableCell>
+              <PlatformTableCell>{participant.seatLabel}</PlatformTableCell>
             </PlatformTableRow>
           ))}
         </PlatformTable>

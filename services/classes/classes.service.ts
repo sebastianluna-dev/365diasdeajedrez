@@ -31,5 +31,5 @@ export async function getClassById(classId: string): Promise<ClassDetail | null>
     where: { id: classId, participants: { some: { userId: user.id } } },
     include: classDetailInclude,
   });
-  return row ? mapClassDetail(row, new Date()) : null;
+  return row ? mapClassDetail(row, new Date(), user.id) : null;
 }

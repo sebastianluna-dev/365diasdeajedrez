@@ -4,6 +4,7 @@ import type { StatsRangeKey } from "@/lib/date-ranges";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
+import { classTitleOf } from "@/services/classes/classes.mapper";
 import { getContinueStudyingCourse } from "@/services/courses/courses.service";
 import {
   activityInclude,
@@ -80,7 +81,15 @@ export const getUserDashboard = cache(async (): Promise<DashboardData> => {
       db.course.findMany({ where: { id: { in: ids } }, select: { id: true, name: true } }),
     ),
     readByIds(idsFor(SUBJECT_TYPE.CLASS), (ids) =>
-      db.class.findMany({ where: { id: { in: ids } }, select: { id: true, title: true } }),
+      db.class.findMany({
+        where: { id: { in: ids } },
+        select: {
+          id: true,
+          title: true,
+          format: { select: { code: true } },
+          teacher: { select: { displayName: true } },
+        },
+      }),
     ),
     readByIds(idsFor(SUBJECT_TYPE.GAME), (ids) =>
       db.game.findMany({ where: { id: { in: ids } }, select: { id: true, white: true, black: true } }),
@@ -98,7 +107,7 @@ export const getUserDashboard = cache(async (): Promise<DashboardData> => {
   const subjectNames = new Map<string, string>();
   for (const row of lessons) subjectNames.set(row.id, row.name);
   for (const row of coursesRows) subjectNames.set(row.id, row.name);
-  for (const row of classes) subjectNames.set(row.id, row.title);
+  for (const row of classes) subjectNames.set(row.id, classTitleOf(row, "student"));
   for (const row of games) subjectNames.set(row.id, `${row.white} – ${row.black}`);
   for (const row of exercises) subjectNames.set(row.id, row.lesson.name);
 

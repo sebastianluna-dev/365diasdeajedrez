@@ -31,8 +31,10 @@ export interface StudentClassParticipation {
   scheduledAtIso: string;
   dateLabel: string;
   statusLabel: string;
-  attended: boolean;
-  hasPayment: boolean;
+  /** Null is «Sin pasar lista». */
+  attended: boolean | null;
+  /** How the seat is covered: with a payment, free, or «Sin pago». */
+  coverage: "paid" | "free" | "unpaid";
 }
 
 export interface StaffStudentDetail {

@@ -26,7 +26,7 @@ Everything a teacher may know about an assigned student, in cards: assignment fa
 
 ## Behaviour
 
-- The local `ClassList` renders shared classes with title link, local date, status tag and an "Asistió" tag.
+- The local `ClassList` renders shared classes with title link, local date, status tag and an «Asistió» or «Faltó» tag (none while nobody passed the list).
 - Studies are a [`PlatformTable`](/components/platform/shared/platform-table) whose name links to `teacherRoutes.studentStudy(studentId, studyId)`, the teacher's read-only study view.
 - **«Partidas jugadas»** (`StudentPlayedGamesCard`, planning decision §K, 2026-10-08): the last eight games as [`PlayedGameCard`](/components/platform/shared/played-game-card)s, four to a row, each opening the game read-only, and «Ver su perfil» to `/perfil/<slug>`; without games, a line says so.
 - Activity rows show type and subject labels with a date-only local time; empty renders an [`EmptyState`](/components/platform/shared/empty-state).

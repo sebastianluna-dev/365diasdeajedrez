@@ -2,6 +2,7 @@ import { lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
 import {
   CLASS_BLOCK_KIND,
   type ClassBlockKindCode,
+  type ClassBlockVisibilityCode,
   type ClassStatusCode,
   type MeetingProviderCode,
   type TranscriptStatusCode,
@@ -12,6 +13,7 @@ import { formatSpanishTime } from "@/lib/format-spanish-time";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { teacherRoutes } from "@/lib/platform-routes";
 import { formatDateTimeLocal } from "@/lib/timezone";
+import { classTitleOf } from "@/services/classes/classes.mapper";
 import { meetingVisibleFrom } from "@/services/shared/meeting-visible-from";
 import type { TeacherClassBlock, TeacherClassDetail, TeacherClassSummary } from "./teacher-classes.types";
 
@@ -23,17 +25,22 @@ import type { TeacherClassBlock, TeacherClassDetail, TeacherClassSummary } from 
 
 export const teacherClassSummaryInclude = {
   status: true,
+  format: { select: { code: true } },
+  teacher: { select: { displayName: true } },
   _count: { select: { participants: true } },
-  participants: { where: { attended: true }, select: { userId: true } },
+  participants: { where: { seatMovedAt: null }, select: { attended: true, user: { select: { displayName: true } } } },
 } satisfies Prisma.ClassInclude;
 
 export type TeacherClassSummaryRow = Prisma.ClassGetPayload<{ include: typeof teacherClassSummaryInclude }>;
 
 export const teacherClassDetailInclude = {
   status: true,
+  format: { select: { code: true } },
+  teacher: { select: { displayName: true } },
   meetingProvider: true,
   transcript: { include: { status: true } },
   participants: {
+    where: { seatMovedAt: null },
     include: { user: { select: { id: true, displayName: true, email: true } } },
     orderBy: { user: { displayName: "asc" } },
   },
@@ -41,6 +48,7 @@ export const teacherClassDetailInclude = {
     orderBy: { order: "asc" },
     include: {
       kind: true,
+      visibility: { select: { code: true } },
       game: { select: { id: true, white: true, black: true, pgn: true } },
       lesson: { select: { id: true, name: true, ...lessonPgnSelect, chapter: { select: { name: true } } } },
       position: { select: { id: true, title: true, fen: true } },
@@ -53,7 +61,7 @@ export type TeacherClassDetailRow = Prisma.ClassGetPayload<{ include: typeof tea
 export function mapTeacherClassSummary(row: TeacherClassSummaryRow): TeacherClassSummary {
   return {
     id: row.id,
-    title: row.title,
+    title: classTitleOf(row, "teacher"),
     scheduledAtIso: row.scheduledAt.toISOString(),
     dateLabel: formatSpanishDate(row.scheduledAt),
     timeLabel: formatSpanishTime(row.scheduledAt),
@@ -61,7 +69,7 @@ export function mapTeacherClassSummary(row: TeacherClassSummaryRow): TeacherClas
     statusCode: row.status.code as ClassStatusCode,
     statusLabel: row.status.label,
     participantCount: row._count.participants,
-    attendedCount: row.participants.length,
+    attendedCount: row.participants.filter((seat) => seat.attended === true).length,
     href: teacherRoutes.classDetail(row.id),
   };
 }
@@ -102,6 +110,7 @@ function mapBlock(block: TeacherClassDetailRow["blocks"][number]): TeacherClassB
     id: block.id,
     order: block.order,
     kind,
+    visibility: block.visibility.code as ClassBlockVisibilityCode,
     text: block.text ?? undefined,
     videoUrl: block.videoUrl ?? undefined,
     caption: block.caption ?? undefined,
@@ -118,7 +127,9 @@ function mapBlock(block: TeacherClassDetailRow["blocks"][number]): TeacherClassB
 export function mapTeacherClassDetail(row: TeacherClassDetailRow, timeZone: string): TeacherClassDetail {
   return {
     id: row.id,
-    title: row.title,
+    title: classTitleOf(row, "teacher"),
+    // The topic itself, for the edit form: empty when the class has none.
+    topic: row.title ?? "",
     description: row.description ?? undefined,
     scheduledAtIso: row.scheduledAt.toISOString(),
     scheduledAtInput: formatDateTimeLocal(row.scheduledAt, timeZone),
@@ -151,7 +162,6 @@ export function mapTeacherClassDetail(row: TeacherClassDetailRow, timeZone: stri
       email: participant.user.email,
       attended: participant.attended,
       joinedAtIso: participant.joinedAt?.toISOString(),
-      hasPayment: participant.paidAt !== null,
     })),
     blocks: row.blocks.map(mapBlock),
     transcript: row.transcript

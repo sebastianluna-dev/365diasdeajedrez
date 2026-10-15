@@ -3,6 +3,7 @@ import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { requireTeacher } from "@/lib/platform-auth/roles";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { teacherRoutes } from "@/lib/platform-routes";
+import { classTitleOf } from "@/services/classes/classes.mapper";
 import { mapTeacherClassBrief, teacherClassBriefInclude } from "./teacher.mapper";
 import type { TeacherDashboard, TeacherPendingClass, TeacherProfile } from "./teacher.types";
 
@@ -38,20 +39,29 @@ export async function getTeacherDashboard(): Promise<TeacherDashboard> {
       orderBy: { scheduledAt: "asc" },
     }),
     db.teacherStudent.count({ where: { teacherId: teacher.id, endedAt: null } }),
-    // "Pending documentation": classes already finished without attendance marked or
-    // without a summary. It is the teacher's real work list after giving the class.
+    // "Pending": classes that ended and nobody finalized, and finished ones with
+    // a seat nobody marked or without a summary. It is the teacher's real work
+    // list after giving the class.
     db.class.findMany({
       where: {
         teacherId: teacher.id,
-        status: { code: CLASS_STATUS.COMPLETED },
-        OR: [{ summary: null }, { participants: { some: { attended: false } } }],
+        OR: [
+          { status: { code: CLASS_STATUS.SCHEDULED }, endsAt: { lt: now } },
+          { status: { code: CLASS_STATUS.COMPLETED }, summary: null },
+          { status: { code: CLASS_STATUS.COMPLETED }, participants: { some: { attended: null, seatMovedAt: null } } },
+        ],
       },
       select: {
         id: true,
         title: true,
         scheduledAt: true,
         summary: true,
-        _count: { select: { participants: { where: { attended: false } } } },
+        format: { select: { code: true } },
+        teacher: { select: { displayName: true } },
+        participants: {
+          where: { seatMovedAt: null },
+          select: { attended: true, user: { select: { displayName: true } } },
+        },
       },
       orderBy: { scheduledAt: "desc" },
       take: PENDING_LIMIT,
@@ -60,10 +70,10 @@ export async function getTeacherDashboard(): Promise<TeacherDashboard> {
 
   const pending: TeacherPendingClass[] = pendingRows.map((row) => ({
     id: row.id,
-    title: row.title,
+    title: classTitleOf(row, "teacher"),
     dateLabel: formatSpanishDate(row.scheduledAt),
     scheduledAtIso: row.scheduledAt.toISOString(),
-    needsAttendance: row._count.participants > 0,
+    needsAttendance: row.participants.some((seat) => seat.attended === null),
     needsSummary: row.summary === null || row.summary.trim().length === 0,
     href: teacherRoutes.classDetail(row.id),
   }));

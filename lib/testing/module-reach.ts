@@ -30,14 +30,21 @@ export function resolveImport(from: string, specifier: string): string | null {
 
 const IMPORT = /^\s*(?:import|export)\s[^;]*?from\s+["']([^"']+)["']|^\s*import\s+["']([^"']+)["']/gm;
 
-/** Every project module a file reaches through its imports, itself included. */
-export function reach(entry: string): string[] {
+/**
+ * Every project module a file reaches through its imports, itself included.
+ *
+ * A module in `stopAt` is reported but not followed: what lies ONLY behind it
+ * is not reached (services/shared/class-roles.test.ts lets the teacher's
+ * actions, and nothing else on the teacher's side, pull in the staff's writers).
+ */
+export function reach(entry: string, stopAt: ReadonlySet<string> = new Set()): string[] {
   const seen = new Set<string>();
   const queue = [entry];
   while (queue.length > 0) {
     const file = queue.pop() as string;
     if (seen.has(file)) continue;
     seen.add(file);
+    if (stopAt.has(file)) continue;
     const source = readFileSync(file, "utf8");
     for (const match of source.matchAll(IMPORT)) {
       if (/^\s*(?:import|export)\s+type\s/.test(match[0])) continue;

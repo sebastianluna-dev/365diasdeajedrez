@@ -8,6 +8,7 @@ import { formatRelativeSpanish } from "@/lib/format-relative-spanish";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
+import { classTitleOf } from "@/services/classes/classes.mapper";
 import { platformRoutes } from "@/lib/platform-routes";
 import { getListedDatabasesWhere, getVisibleDatabasesWhere } from "@/services/shared/game-visibility";
 import {
@@ -266,7 +267,14 @@ const getClassGameItems = cache(async (): Promise<ClassGameItem[]> => {
     relationLoadStrategy: "join",
     select: {
       classId: true,
-      class: { select: { title: true, scheduledAt: true } },
+      class: {
+        select: {
+          title: true,
+          scheduledAt: true,
+          format: { select: { code: true } },
+          teacher: { select: { displayName: true } },
+        },
+      },
       game: {
         select: {
           id: true,
@@ -294,7 +302,7 @@ const getClassGameItems = cache(async (): Promise<ClassGameItem[]> => {
       resultLabel: block.game.result.label,
       eco: block.game.eco ?? undefined,
       playedAtLabel: block.game.playedAt ? formatSpanishDate(block.game.playedAt) : undefined,
-      className: block.class.title,
+      className: classTitleOf(block.class, "student"),
       classDate: block.class.scheduledAt.toISOString(),
       classDateLabel: formatSpanishDate(block.class.scheduledAt),
       classDateAgoLabel: formatRelativeSpanish(block.class.scheduledAt),

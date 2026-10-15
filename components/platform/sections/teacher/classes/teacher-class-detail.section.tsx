@@ -10,7 +10,7 @@ import { TEACHER_ERROR_MESSAGES } from "@/constants/platform/teacher-messages.co
 import { teacherRoutes } from "@/lib/platform-routes";
 import type { ClassBlockView } from "@/services/classes/classes.types";
 import { addParticipant, setClassStatus } from "@/services/teacher-classes/teacher-classes.actions";
-import { nextClassStatuses } from "@/services/teacher-classes/class-status-transitions";
+import { nextClassStatuses } from "@/services/shared/class-status-transitions";
 import type { TeacherClassDetail } from "@/services/teacher-classes/teacher-classes.types";
 import type { AssignedStudentSummary } from "@/services/teacher-students/teacher-students.types";
 import { AttendanceForm } from "./attendance-form.comp";
@@ -118,7 +118,7 @@ export function TeacherClassDetailSection({
         <div className="teacher-class__status-actions">
           {/* The valid transitions are decided by a pure function, and the action
               checks them again on the server. */}
-          {nextClassStatuses(classDetail.statusCode).map((status) => (
+          {nextClassStatuses(classDetail.statusCode, "teacher").map((status) => (
             <form key={status} action={setClassStatus.bind(null, classDetail.id)}>
               <input type="hidden" name="statusCode" value={status} />
               <SubmitButton className="platform-button" pendingLabel="Actualizando…">

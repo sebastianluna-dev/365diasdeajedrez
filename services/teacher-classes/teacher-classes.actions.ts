@@ -2,11 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { ACTIVITY_TYPE, SUBJECT_TYPE } from "@/constants/platform/activity-codes.const";
 import {
   CLASS_BLOCK_KIND,
+  CLASS_BLOCK_VISIBILITY,
+  CLASS_FORMAT,
   CLASS_STATUS,
-  MEETING_PROVIDER,
   type ClassBlockKindCode,
   type ClassStatusCode,
 } from "@/constants/platform/class-codes.const";
@@ -21,6 +21,7 @@ import { requireTeacher, type TeacherContext } from "@/lib/platform-auth/roles";
 import { PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
+import type { Prisma } from "@/lib/platform-db/generated/client";
 import { teacherRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { parseDateTimeLocal, safeTimeZone } from "@/lib/timezone";
@@ -35,10 +36,15 @@ import {
 } from "@/services/shared/form-schema";
 import { getPgnForReference } from "./teacher-classes.service";
 import { planDenseRenumber, planSwap, nextOrder, type MoveDirection } from "@/services/shared/reorder";
-import { recordUserActivity } from "@/services/shared/user-activity.service";
 import { withErrorParam } from "@/services/shared/safe-return-to";
-import { storedMeetingVisibleFrom } from "@/services/shared/meeting-visible-from";
-import { canTransitionClassStatus } from "./class-status-transitions";
+import { recordAttendance } from "@/services/shared/class-attendance.service";
+import { classPhase } from "@/services/shared/class-phase";
+import { canFinalizeClass } from "@/services/shared/class-rules";
+import { createClassRecord, syncClassMeeting, syncClassSchedule } from "@/services/shared/class-schedule.service";
+import { removeClassSeat, syncClassSeat } from "@/services/shared/class-seats.service";
+import { transitionClassStatus } from "@/services/shared/class-status.service";
+import { meetingVisibleFrom } from "@/services/shared/meeting-visible-from";
+import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
 
 // Writes of the teacher panel. Rules that are NOT negotiable:
 // - Every action opens with requireTeacher(); those that receive a classId
@@ -47,6 +53,14 @@ import { canTransitionClassStatus } from "./class-status-transitions";
 // - Catalogs are connected by `code`, never by id.
 // - Errors come back by redirect with `?error=<code>` (message map in
 //   constants/platform/teacher-messages.const.ts).
+// - When a class is, how it is joined, its status, its seats and its marks are
+//   written ONLY by the shared writers of services/shared/ (class-schedule,
+//   class-status, class-seats, class-attendance), inside this file's
+//   transaction. This file writes the columns that are the teacher's alone:
+//   title, description, recording and summary, and the blocks.
+//
+// These are the OLD screens, kept on top of the writers until phase 6 retires
+// them.
 
 const CLASS_META_SCHEMA = z.object({
   title: formText(120),
@@ -54,12 +68,8 @@ const CLASS_META_SCHEMA = z.object({
   // `datetime-local` values: the teacher's wall-clock time, converted with THEIR zone below.
   scheduledAt: formText(40),
   durationMin: formInt(15, 480),
-  meetingProviderCode: z
-    .string()
-    .trim()
-    .max(32)
-    .optional()
-    .refine((value) => !value || (Object.values(MEETING_PROVIDER) as string[]).includes(value)),
+  // The form still sends `meetingProviderCode`; it is ignored: the platform is
+  // read from the link by the writer (`classMeetingColumns`).
   meetingUrl: formOptionalUrl(2000),
   meetingUrlVisibleFrom: z.string().trim().max(40).optional(),
 });
@@ -68,7 +78,6 @@ const CLASS_META_ERROR: Record<string, string> = {
   title: "title",
   scheduledAt: "schedule",
   durationMin: "duration",
-  meetingProviderCode: "meetingProvider",
   meetingUrl: "meetingUrl",
   meetingUrlVisibleFrom: "schedule",
 };
@@ -95,6 +104,28 @@ function fail(path: string, code: string): never {
   redirect(withErrorParam(path, code));
 }
 
+/**
+ * A writer's refusal, thrown INSIDE a transaction so everything written before
+ * it rolls back, and turned into the redirect once outside. A `redirect()`
+ * thrown inside the transaction would roll it back too, but the error code is
+ * decided here and read in one place.
+ */
+class ClassWriteRefused extends Error {
+  constructor(readonly code: string) {
+    super(`class write refused: ${code}`);
+  }
+}
+
+/** Runs `write` in a transaction and answers a refusal with the form's error. */
+async function transactionOrFail<T>(failPath: string, write: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T> {
+  try {
+    return await getPlatformDb().$transaction(write);
+  } catch (error) {
+    if (error instanceof ClassWriteRefused) fail(failPath, error.code);
+    throw error;
+  }
+}
+
 async function teacherTimeZone(teacherId: string): Promise<string> {
   const row = await getPlatformDb().teacher.findUnique({ where: { id: teacherId }, select: { timezone: true } });
   return safeTimeZone(row?.timezone);
@@ -105,9 +136,9 @@ interface ClassMetaInput {
   description: string | null;
   scheduledAt: Date;
   durationMin: number;
-  meetingProviderCode: string | null;
   meetingUrl: string | null;
-  meetingUrlVisibleFrom: Date | null;
+  /** The instant the teacher chose for the link to open, or null for the default. */
+  meetingVisibleFromChosen: Date | null;
 }
 
 /** Reads and validates the metadata common to creating and editing a class. */
@@ -126,25 +157,22 @@ async function readClassMeta(
   const scheduledAt = parseDateTimeLocal(parsed.data.scheduledAt, timeZone);
   if (!scheduledAt) fail(failPath, "schedule");
 
-  const providerCode = parsed.data.meetingProviderCode ?? "";
-
   // A malformed instant is an error even without a link, where it is not stored.
   const visibleFromRaw = parsed.data.meetingUrlVisibleFrom ?? "";
   const chosenVisibleFrom = visibleFromRaw.length > 0 ? parseDateTimeLocal(visibleFromRaw, timeZone) : null;
   if (visibleFromRaw.length > 0 && chosenVisibleFrom === null) fail(failPath, "schedule");
 
-  return {
-    title,
-    description,
-    scheduledAt,
-    durationMin,
-    meetingProviderCode: providerCode.length > 0 ? providerCode : null,
-    meetingUrl,
-    // Only a chosen instant is stored: null is «half an hour before», worked out
-    // when the class is read, so it follows the class if it moves.
-    meetingUrlVisibleFrom: storedMeetingVisibleFrom(meetingUrl, chosenVisibleFrom),
-  };
+  // What is stored («only a chosen instant, and only with a link») is the
+  // writer's business: the chosen instant travels as it is.
+  return { title, description, scheduledAt, durationMin, meetingUrl, meetingVisibleFromChosen: chosenVisibleFrom };
 }
+
+/** Which `?error=` code answers each refusal of `createClassRecord`. */
+const CREATE_CLASS_ERROR: Record<"capacity" | "groupTitle" | "meetingOpensLate", string> = {
+  capacity: "invalid",
+  groupTitle: "title",
+  meetingOpensLate: "schedule",
+};
 
 export async function createClass(formData: FormData): Promise<void> {
   const { teacher, user } = await requireTeacher();
@@ -157,25 +185,41 @@ export async function createClass(formData: FormData): Promise<void> {
   const studentIds = formData.getAll("studentIds").filter((value): value is string => typeof value === "string");
   for (const studentId of studentIds) await assertTeacherHasStudent(teacher.id, studentId);
 
-  const created = await getPlatformDb().class.create({
-    data: {
-      teacher: { connect: { id: teacher.id } },
+  // The old form has no format: two or more students make a group class, with
+  // room for exactly them; otherwise it is individual.
+  const group = studentIds.length >= 2;
+  const classId = await transactionOrFail(teacherRoutes.newClass, async (tx) => {
+    const record = await createClassRecord(tx, {
+      teacherId: teacher.id,
+      formatCode: group ? CLASS_FORMAT.GROUP : CLASS_FORMAT.INDIVIDUAL,
+      capacity: group ? Math.max(2, studentIds.length) : null,
       title: meta.title,
       description: meta.description,
       scheduledAt: meta.scheduledAt,
       durationMin: meta.durationMin,
-      status: { connect: { code: CLASS_STATUS.SCHEDULED } },
-      ...(meta.meetingProviderCode ? { meetingProvider: { connect: { code: meta.meetingProviderCode } } } : {}),
       meetingUrl: meta.meetingUrl,
-      meetingUrlVisibleFrom: meta.meetingUrlVisibleFrom,
-      participants: { create: studentIds.map((userId) => ({ user: { connect: { id: userId } } })) },
-    },
-    select: { id: true },
+      meetingVisibleFromChosen: meta.meetingVisibleFromChosen,
+      createdById: user.id,
+    });
+    if (!record.ok) throw new ClassWriteRefused(CREATE_CLASS_ERROR[record.code]);
+
+    // Every seat starts «Sin pago»: the old screen knows nothing of payments.
+    for (const studentId of studentIds) {
+      const seat = await syncClassSeat(tx, {
+        classId: record.id,
+        studentId,
+        coverage: "unpaid",
+        addedById: user.id,
+        mode: "add",
+      });
+      if (!seat.ok) throw new ClassWriteRefused("student");
+    }
+    return record.id;
   });
 
   revalidatePath(teacherRoutes.classes);
   revalidatePath(teacherRoutes.home);
-  redirect(teacherRoutes.classDetail(created.id));
+  redirect(teacherRoutes.classDetail(classId));
 }
 
 export async function updateClassMeta(classId: string, formData: FormData): Promise<void> {
@@ -189,22 +233,42 @@ export async function updateClassMeta(classId: string, formData: FormData): Prom
   const extra = parseForm(CLASS_EXTRA_SCHEMA, formData);
   if (!extra.ok) fail(editPath, "invalid");
 
-  await getPlatformDb().class.update({
-    where: { id: classId },
-    // `teacherId` never appears here: a class does not change teacher.
-    data: {
-      title: meta.title,
-      description: meta.description,
-      scheduledAt: meta.scheduledAt,
-      durationMin: meta.durationMin,
-      meetingProvider: meta.meetingProviderCode
-        ? { connect: { code: meta.meetingProviderCode } }
-        : { disconnect: true },
+  const now = new Date();
+  await transactionOrFail(editPath, async (tx) => {
+    // The teacher's own columns; `teacherId` never appears here: a class does
+    // not change teacher. When it is and how it is joined go through the writers.
+    const current = await tx.class.update({
+      where: { id: classId },
+      data: {
+        title: meta.title,
+        description: meta.description,
+        recordingUrl: extra.data.recordingUrl,
+        summary: extra.data.summary,
+      },
+      select: { scheduledAt: true, durationMin: true },
+    });
+
+    // The reschedule is asked for only when the date or the duration changed:
+    // the writer refuses a finished class before comparing, and the old form
+    // is also how the teacher adds the summary and the recording afterwards.
+    const rescheduled =
+      current.scheduledAt.getTime() !== meta.scheduledAt.getTime() || current.durationMin !== meta.durationMin;
+    if (rescheduled) {
+      const schedule = await syncClassSchedule(
+        tx,
+        classId,
+        { scheduledAt: meta.scheduledAt, durationMin: meta.durationMin, note: null },
+        user.id,
+        now,
+      );
+      if (!schedule.ok) throw new ClassWriteRefused(schedule.code === "classClosed" ? "status" : "schedule");
+    }
+
+    const meeting = await syncClassMeeting(tx, classId, {
       meetingUrl: meta.meetingUrl,
-      meetingUrlVisibleFrom: meta.meetingUrlVisibleFrom,
-      recordingUrl: extra.data.recordingUrl,
-      summary: extra.data.summary,
-    },
+      visibleFromChosen: meta.meetingVisibleFromChosen,
+    });
+    if (!meeting.ok) throw new ClassWriteRefused("schedule");
   });
 
   revalidatePath(teacherRoutes.classes);
@@ -221,16 +285,17 @@ export async function setClassStatus(classId: string, formData: FormData): Promi
 
   const status = parseForm(STATUS_SCHEMA, formData);
   if (!status.ok) fail(detailPath, "status");
-  const target = status.data.statusCode as ClassStatusCode;
-  const db = getPlatformDb();
-  const current = await db.class.findUniqueOrThrow({
-    where: { id: classId },
-    select: { status: { select: { code: true } } },
+  // The teacher only finalizes: cancelling is the staff's, and «En vivo» is a
+  // phase of the hour, never a status anybody presses.
+  if (status.data.statusCode !== CLASS_STATUS.COMPLETED) fail(detailPath, "status");
+
+  const { written } = await transitionClassStatus(getPlatformDb(), {
+    classId,
+    to: CLASS_STATUS.COMPLETED,
+    actor: { userId: user.id, role: "teacher" },
+    now: new Date(),
   });
-
-  if (!canTransitionClassStatus(current.status.code as ClassStatusCode, target)) fail(detailPath, "status");
-
-  await db.class.update({ where: { id: classId }, data: { status: { connect: { code: target } } } });
+  if (!written) fail(detailPath, "status");
 
   revalidatePath(teacherRoutes.classes);
   revalidatePath(detailPath);
@@ -249,11 +314,18 @@ export async function addParticipant(classId: string, formData: FormData): Promi
   const { studentId } = parsed.data;
   await assertTeacherHasStudent(teacher.id, studentId);
 
-  await getPlatformDb().classParticipant.upsert({
-    where: { classId_userId: { classId, userId: studentId } },
-    update: {},
-    create: { classId, userId: studentId },
-  });
+  let seat: Awaited<ReturnType<typeof syncClassSeat>>;
+  try {
+    seat = await getPlatformDb().$transaction((tx) =>
+      syncClassSeat(tx, { classId, studentId, coverage: "unpaid", addedById: user.id, mode: "add" }),
+    );
+  } catch (error) {
+    // The writer reports a student already there without writing, but two adds
+    // that race past its check meet the primary key: the same answer.
+    if (isUniqueConstraintError(error, "ClassParticipant_pkey", "classId")) fail(detailPath, "student");
+    throw error;
+  }
+  if (!seat.ok) fail(detailPath, "student");
 
   revalidatePath(detailPath);
 }
@@ -262,9 +334,9 @@ export async function addParticipant(classId: string, formData: FormData): Promi
  * Takes a student out of a class. The student comes bound, like the class, and
  * not in the form's data: the «Quitar» of each row is a button with an action
  * of its own, and React leaves such a button out of the data it sends. It is
- * read as any input would be — a string, or nothing — and the `where` below is
- * what authorises: only a participant of this teacher's class who left no
- * trace can be removed.
+ * read as any input would be — a string, or nothing — and the writer's `where`
+ * is what authorises: only a participant of this teacher's class who left no
+ * trace (no mark, seat not moved) can be removed.
  */
 export async function removeParticipant(classId: string, studentId: unknown): Promise<void> {
   const { teacher, user } = await requireTeacher();
@@ -273,14 +345,11 @@ export async function removeParticipant(classId: string, studentId: unknown): Pr
   const detailPath = teacherRoutes.classDetail(classId);
   if (!(await allowAction(`${user.id}:class-participant`, 60, 60_000))) fail(detailPath, "throttled");
 
-  const db = getPlatformDb();
-
-  // Only whoever left no trace can be removed: if they attended or paid, the row
-  // is history (and accounting), not an enrolment that can be undone.
-  const removed = await db.classParticipant.deleteMany({
-    where: { classId, userId: typeof studentId === "string" ? studentId : "", attended: false, paidAt: null },
+  const { removed } = await removeClassSeat(getPlatformDb(), {
+    classId,
+    studentId: typeof studentId === "string" ? studentId : "",
   });
-  if (removed.count === 0) fail(detailPath, "participantLocked");
+  if (!removed) fail(detailPath, "participantLocked");
 
   revalidatePath(detailPath);
 }
@@ -293,47 +362,46 @@ export async function markAttendance(classId: string, formData: FormData): Promi
   if (!(await allowAction(`${user.id}:class-attendance`, 60, 60_000))) fail(detailPath, "throttled");
 
   const db = getPlatformDb();
+  const now = new Date();
   const classRow = await db.class.findUniqueOrThrow({
     where: { id: classId },
-    select: { scheduledAt: true, participants: { select: { userId: true, attended: true, joinedAt: true } } },
+    select: {
+      scheduledAt: true,
+      endsAt: true,
+      meetingUrl: true,
+      meetingUrlVisibleFrom: true,
+      status: { select: { code: true } },
+      participants: { select: { userId: true, seatMovedAt: true } },
+    },
   });
 
   const attendance = parseForm(ATTENDANCE_SCHEMA, formData);
   const attendedNow = new Set(attendance.ok ? attendance.data.attended : []);
 
-  const changed = classRow.participants.filter(
-    (participant) => attendedNow.has(participant.userId) !== participant.attended,
+  // The old screen has one list for both moments: passing it while the class
+  // runs or right after (finalize) and correcting it once the class is done
+  // (change). The writer checks the mode against the phase again.
+  const phase = classPhase(
+    {
+      statusCode: classRow.status.code as ClassStatusCode,
+      scheduledAt: classRow.scheduledAt,
+      endsAt: classRow.endsAt,
+      visibleFrom: meetingVisibleFrom(classRow.meetingUrl, classRow.scheduledAt, classRow.meetingUrlVisibleFrom),
+      hasLink: classRow.meetingUrl !== null,
+    },
+    now,
   );
-  if (changed.length === 0) {
-    revalidatePath(detailPath);
-    return;
-  }
+  const mode = canFinalizeClass(phase) ? "finalize" : "change";
+  // One mark per seat that is still in the class: a moved seat is history.
+  const marks = classRow.participants
+    .filter((participant) => participant.seatMovedAt === null)
+    .map((participant) => ({ studentId: participant.userId, attended: attendedNow.has(participant.userId) }));
 
-  await db.$transaction(async (tx) => {
-    for (const participant of changed) {
-      const attended = attendedNow.has(participant.userId);
-      await tx.classParticipant.update({
-        where: { classId_userId: { classId, userId: participant.userId } },
-        data: {
-          attended,
-          // joinedAt is only stamped the first time: the real time is not lost if the
-          // attendance is corrected afterwards.
-          joinedAt: attended ? (participant.joinedAt ?? classRow.scheduledAt) : participant.joinedAt,
-        },
-      });
-      // The attendance counts as the STUDENT's activity: it feeds their statistics
-      // through the only write point that exists for them, in the same transaction
-      // as the mark, so neither can land without the other.
-      if (!attended) continue;
-      await recordUserActivity(tx, {
-        userId: participant.userId,
-        typeCode: ACTIVITY_TYPE.CLASS_ATTENDED,
-        subjectTypeCode: SUBJECT_TYPE.CLASS,
-        subjectId: classId,
-        occurredAt: classRow.scheduledAt,
-      });
-    }
-  });
+  // The marks, their log and the students' activity land together or not at all.
+  const result = await db.$transaction((tx) =>
+    recordAttendance(tx, { classId, marks, actor: { userId: user.id, role: "teacher" }, mode, reason: null, now }),
+  );
+  if (!result.ok) fail(detailPath, result.code);
 
   revalidatePath(detailPath);
   revalidatePath(teacherRoutes.home);
@@ -506,6 +574,9 @@ export async function addClassBlock(classId: string, formData: FormData): Promis
       class: { connect: { id: classId } },
       order: nextOrder(count),
       kind: { connect: { code: common.kind } },
+      // The old editor has no sections: every block is «para preparar», which is
+      // what every block was before visibility existed.
+      visibility: { connect: { code: CLASS_BLOCK_VISIBILITY.BEFORE } },
       caption: common.caption,
       ...toCreateData(fields),
     },

@@ -15,6 +15,12 @@ import { PrismaClient, type Prisma } from "../lib/platform-db/generated/client";
 import { hashPassword } from "../lib/platform-auth/password";
 import { indexGamePositions } from "../services/game-positions/game-positions.service";
 import { syncChapterDuration } from "../services/shared/chapter-duration.service";
+import {
+  classMeetingColumns,
+  classScheduleColumns,
+  meetingProviderIds,
+} from "../services/shared/class-schedule.service";
+import { syncClassSeat } from "../services/shared/class-seats.service";
 import type { OrderUpdate, ReorderRow } from "../services/shared/reorder";
 import { rebuildDailyStats } from "../services/shared/daily-stats";
 import {
@@ -43,6 +49,7 @@ import { nextClassAfter, planSeededOrders, resolveCollectionIds, seedReferenceDa
 import { proposeUserSlug } from "../services/shared/user-slug.service";
 import { seedPlay } from "./seed-play";
 import { AUTHOR_ROLE } from "../constants/platform/course-codes.const";
+import { CLASS_FORMAT } from "../constants/platform/class-codes.const";
 
 const connectionString = process.env.PLATFORM_DATABASE_URL;
 if (!connectionString) throw new Error("Falta PLATFORM_DATABASE_URL en el entorno (ver .env.example).");
@@ -187,8 +194,11 @@ async function main() {
   const gameSource = await seedCatalog(db.gameSource, CATALOG_VALUES.gameSource);
   const gameResult = await seedCatalog(db.gameResult, CATALOG_VALUES.gameResult);
   const classStatus = await seedCatalog(db.classStatus, CATALOG_VALUES.classStatus);
-  const meetingProvider = await seedCatalog(db.meetingProvider, CATALOG_VALUES.meetingProvider);
+  await seedCatalog(db.meetingProvider, CATALOG_VALUES.meetingProvider);
+  const classFormat = await seedCatalog(db.classFormat, CATALOG_VALUES.classFormat);
   const classBlockKind = await seedCatalog(db.classBlockKind, CATALOG_VALUES.classBlockKind);
+  const classBlockVisibility = await seedCatalog(db.classBlockVisibility, CATALOG_VALUES.classBlockVisibility);
+  await seedCatalog(db.currency, CATALOG_VALUES.currency);
   const transcriptStatus = await seedCatalog(db.transcriptStatus, CATALOG_VALUES.transcriptStatus);
   const activityType = await seedCatalog(db.activityType, CATALOG_VALUES.activityType);
   const subjectType = await seedCatalog(db.subjectType, CATALOG_VALUES.subjectType);
@@ -530,20 +540,26 @@ async function main() {
   }
 
   // --- Classes -------------------------------------------------------------
+  // The seed is the documented exception to the single writers (docs/ →
+  // Platform → Data model): the facts of a class — its topic, date, status,
+  // marks — are written as data, by fixed id, so re-seeding moves the dates
+  // without writing a «reschedule»; the derived columns come from the same
+  // pure functions the writers spread; and the seats go through their writer.
+  const providerIds = await meetingProviderIds(db);
   const classes = buildClasses(now);
   for (const cls of classes) {
     const classData = {
       teacherId: cls.teacherId,
+      formatId: idOf(classFormat, CLASS_FORMAT.INDIVIDUAL),
+      capacity: null,
       title: cls.title,
       description: cls.description,
-      scheduledAt: cls.scheduledAt,
-      durationMin: cls.durationMin,
+      ...classScheduleColumns(cls.scheduledAt, cls.durationMin),
       statusId: idOf(classStatus, cls.status),
-      meetingProviderId: idOf(meetingProvider, cls.meetingProvider),
-      meetingUrl: cls.meetingUrl,
-      meetingUrlVisibleFrom: cls.meetingUrlVisibleFrom,
+      ...classMeetingColumns({ meetingUrl: cls.meetingUrl, visibleFromChosen: cls.meetingUrlVisibleFrom }, providerIds),
       recordingUrl: cls.recordingUrl,
       summary: cls.summary,
+      createdById: IDS.staffUser,
     };
     await db.class.upsert({
       where: { id: cls.id },
@@ -551,18 +567,28 @@ async function main() {
       create: { id: cls.id, ...classData },
     });
 
-    const isPast = cls.scheduledAt < now;
-    const participantData = {
-      paidAt: new Date(cls.scheduledAt.getTime() - 5 * DAY_MS),
-      amount: 350,
-      currency: "MXN",
-      attended: isPast,
-      joinedAt: isPast ? cls.scheduledAt : null,
-    };
-    await db.classParticipant.upsert({
+    // The demo student's seat, only if it is missing: the writer keeps the
+    // payment's invariant for the demo too.
+    const seat = await db.classParticipant.findUnique({
       where: { classId_userId: { classId: cls.id, userId: IDS.demoUser } },
-      update: participantData,
-      create: { classId: cls.id, userId: IDS.demoUser, ...participantData },
+      select: { userId: true },
+    });
+    if (!seat) {
+      await db.$transaction((tx) =>
+        syncClassSeat(tx, {
+          classId: cls.id,
+          studentId: IDS.demoUser,
+          coverage: "unpaid",
+          addedById: IDS.staffUser,
+          mode: "add",
+        }),
+      );
+    }
+    // The mark is a fact: a past class was attended, a future one has no list yet.
+    const isPast = cls.scheduledAt < now;
+    await db.classParticipant.update({
+      where: { classId_userId: { classId: cls.id, userId: IDS.demoUser } },
+      data: { attended: isPast ? true : null },
     });
   }
 
@@ -581,6 +607,7 @@ async function main() {
       classId: block.classId,
       order: block.order,
       kindId: idOf(classBlockKind, block.kind),
+      visibilityId: idOf(classBlockVisibility, block.visibility),
       text: block.text,
       videoUrl: block.videoUrl,
       gameId: block.gameId,

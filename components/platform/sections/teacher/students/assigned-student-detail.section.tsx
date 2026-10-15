@@ -33,7 +33,8 @@ function ClassList({ classes, emptyLabel }: { classes: StudentSharedClass[]; emp
             <LocalDateTime iso={item.scheduledAtIso} fallback={item.dateLabel} />
           </span>
           <span className="platform-tag">{item.statusLabel}</span>
-          {item.attended && <span className="platform-tag platform-tag_variant_accent">Asistió</span>}
+          {item.attended === true && <span className="platform-tag platform-tag_variant_accent">Asistió</span>}
+          {item.attended === false && <span className="platform-tag">Faltó</span>}
         </li>
       ))}
     </ul>

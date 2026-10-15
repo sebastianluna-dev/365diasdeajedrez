@@ -3,7 +3,13 @@ import { CLASS_BLOCK_KIND, CLASS_STATUS, TRANSCRIPT_STATUS } from "@/constants/p
 import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { formatSpanishTime } from "@/lib/format-spanish-time";
-import { mapClassDetail, mapClassSummary, type ClassDetailRow, type ClassSummaryRow } from "./classes.mapper";
+import {
+  mapClassBlocks,
+  mapClassDetail,
+  mapClassSummary,
+  type ClassDetailRow,
+  type ClassSummaryRow,
+} from "./classes.mapper";
 
 // Hand-built fixtures with the shape the includes return; the type is asserted
 // because what is tested is the mapping, not Prisma.
@@ -15,6 +21,7 @@ const when = new Date(Date.UTC(2026, 8, 21, 18, 30));
 function block(overrides: Record<string, unknown> & { kind: { code: string } }): BlockRow {
   return {
     id: "b1",
+    visibility: { code: "BEFORE" },
     caption: null,
     text: null,
     videoUrl: null,
@@ -34,13 +41,19 @@ function detail(overrides: Record<string, unknown> = {}): ClassDetailRow {
     description: null,
     scheduledAt: when,
     durationMin: 60,
+    endsAt: new Date(when.getTime() + 60 * 60_000),
     status: { code: CLASS_STATUS.SCHEDULED, label: "Programada" },
+    format: { code: "INDIVIDUAL" },
     meetingProvider: { label: "Zoom" },
     meetingUrl: "https://zoom.us/j/1",
     meetingUrlVisibleFrom: null,
     recordingUrl: null,
     summary: null,
     teacher: { displayName: "Sebastián", title: "MF" },
+    participants: [
+      { userId: "me", user: { displayName: "Alumno Demo" } },
+      { userId: "other", user: { displayName: "Valentina Cruz" } },
+    ],
     transcript: null,
     blocks: [],
     ...overrides,
@@ -55,6 +68,7 @@ describe("mapClassSummary", () => {
       scheduledAt: when,
       durationMin: 45,
       status: { code: CLASS_STATUS.LIVE, label: "En curso" },
+      format: { code: "INDIVIDUAL" },
       teacher: { displayName: "Sebastián" },
     } as unknown as ClassSummaryRow;
 
@@ -74,6 +88,47 @@ describe("mapClassSummary", () => {
 });
 
 describe("mapClassDetail", () => {
+  it("nombra la clase sin tema por su profesor, y a los compañeros sólo por su nombre", () => {
+    const view = mapClassDetail(detail({ title: null }), when, "me");
+    expect(view.title).toBe("Clase con Sebastián");
+    expect(view.classmates).toEqual(["Valentina Cruz"]);
+    expect(view.phase).toBe("IN_PROGRESS");
+    expect(JSON.stringify(view)).not.toMatch(/email|payment/);
+  });
+
+  it("cierra el enlace media hora después del fin, aunque nadie finalizara la clase", () => {
+    const closes = new Date(when.getTime() + 90 * 60_000);
+    expect(mapClassDetail(detail(), new Date(closes.getTime() - 1)).meetingUrl).toBe("https://zoom.us/j/1");
+    const view = mapClassDetail(detail(), closes);
+    expect(view.meetingUrl).toBeUndefined();
+    expect(view.meetingVisibleFromIso).toBeUndefined();
+    expect(view.phase).toBe("AWAITING_CLOSE");
+  });
+
+  it("el alumno ve lo de preparar siempre, lo de después desde el fin, y el guion nunca", () => {
+    const row = detail({
+      blocks: [
+        block({
+          id: "b",
+          kind: { code: CLASS_BLOCK_KIND.TEXT },
+          text: "Trae tus dudas",
+          visibility: { code: "BEFORE" },
+        }),
+        block({ id: "a", kind: { code: CLASS_BLOCK_KIND.TEXT }, text: "Lo que vimos", visibility: { code: "AFTER" } }),
+        block({ id: "t", kind: { code: CLASS_BLOCK_KIND.TEXT }, text: "Preguntas", visibility: { code: "TEACHER" } }),
+      ],
+    });
+    const before = mapClassDetail(row, new Date(when.getTime() - 60_000)).blocks.map((item) => item.id);
+    const after = mapClassDetail(row, new Date(when.getTime() + 61 * 60_000)).blocks.map((item) => item.id);
+    expect(before).toEqual(["b"]);
+    expect(after).toEqual(["b", "a"]);
+    expect(mapClassBlocks(row.blocks, { audience: "staff", phase: "UPCOMING" }).map((item) => item.id)).toEqual([
+      "b",
+      "a",
+      "t",
+    ]);
+  });
+
   it("oculta el enlace de la reunión hasta la hora de visibilidad y deja la cuenta atrás", () => {
     const visibleFrom = new Date(when.getTime() - 15 * 60_000);
     const before = mapClassDetail(detail({ meetingUrlVisibleFrom: visibleFrom }), new Date(visibleFrom.getTime() - 1));

@@ -28,7 +28,7 @@ Operating an account (name, email, password, teacher assignment, class participa
 
 ## Behaviour
 
-Four cards: a `PlatformForm` posting `updateStudent.bind(null, id)` with name and email (`PlatformFormField`s since 2026-10-08: an emptied one shows «Este campo es obligatorio.» under it and nothing is sent) plus a facts list (creation, last login, password state); the [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel) in `byStudent` mode; the [`ResetPasswordForm`](/components/platform/sections/staff/students/reset-password-form); and a [`PlatformTable`](/components/platform/shared/platform-table) of classes with teacher, date, status, attended and payment.
+Four cards: a `PlatformForm` posting `updateStudent.bind(null, id)` with name and email (`PlatformFormField`s since 2026-10-08: an emptied one shows «Este campo es obligatorio.» under it and nothing is sent) plus a facts list (creation, last login, password state); the [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel) in `byStudent` mode; the [`ResetPasswordForm`](/components/platform/sections/staff/students/reset-password-form); and a [`PlatformTable`](/components/platform/shared/platform-table) of classes with teacher, date, status, attended («Sí», «No» or «Sin pasar lista») and the seat's coverage («Pagada», «Gratis» or «Sin pago», from `coverage`).
 
 ## Markup & styling
 

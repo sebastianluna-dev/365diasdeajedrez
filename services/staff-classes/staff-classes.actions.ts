@@ -8,6 +8,7 @@ import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { z } from "zod";
+import { transitionClassStatus } from "@/services/shared/class-status.service";
 import { formOptionalUrl, formText, parseForm } from "@/services/shared/form-schema";
 import { withErrorParam } from "@/services/shared/safe-return-to";
 
@@ -15,6 +16,10 @@ import { withErrorParam } from "@/services/shared/safe-return-to";
 // else. Blocks, attendance, metadata and participants belong to the teacher —
 // if any of those appeared here, two roles would be editing the same thing
 // without either being responsible.
+//
+// These are the OLD screens, kept until phase 6 retires them. The status is
+// written only by `transitionClassStatus`; `setRecordingUrl` writes the
+// recording directly, a documented exception that phase 5 removes.
 
 const RECORDING_SCHEMA = z.object({ recordingUrl: formOptionalUrl(2000) });
 const CANCEL_SCHEMA = z.object({ note: formText(300) });
@@ -40,10 +45,11 @@ export async function setRecordingUrl(classId: string, formData: FormData): Prom
 }
 
 /**
- * Cancels a class from support. It requires a note, which is prepended to the
- * summary with a date stamp: that way there is a trace that the cancellation did
- * not come from the teacher. Cancelling is a class's deletion — there is no
- * physical delete.
+ * Cancels a class from support. It requires a note, kept as the cancellation's
+ * reason (`cancelReason`, with who and when): the trace that the cancellation
+ * did not come from the teacher, without touching the summary, which is theirs.
+ * Cancelling is a class's deletion — there is no physical delete. A class that
+ * is already finished or cancelled is not written (`written: false`).
  */
 export async function cancelClassAsStaff(classId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
@@ -54,26 +60,14 @@ export async function cancelClassAsStaff(classId: string, formData: FormData): P
   if (!parsed.ok) fail(detailPath, "invalid");
   const { note } = parsed.data;
 
-  const db = getPlatformDb();
-  const current = await db.class.findUnique({
-    where: { id: classId },
-    select: { summary: true, status: { select: { code: true } } },
+  const { written } = await transitionClassStatus(getPlatformDb(), {
+    classId,
+    to: CLASS_STATUS.CANCELLED,
+    actor: { userId: staff.user.id, role: "staff" },
+    now: new Date(),
+    cancel: { reason: note, note: null },
   });
-  if (!current) fail(detailPath, "invalid");
-  if (current.status.code === CLASS_STATUS.CANCELLED) fail(detailPath, "status");
-
-  const stamp = new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit" });
-  const trace = `[Soporte ${stamp}] ${note}`;
-
-  await db.class.update({
-    where: { id: classId },
-    data: {
-      status: { connect: { code: CLASS_STATUS.CANCELLED } },
-      // The note is prepended and never replaces what the teacher may have written:
-      // the summary is theirs.
-      summary: current.summary ? `${trace}\n\n${current.summary}` : trace,
-    },
-  });
+  if (!written) fail(detailPath, "status");
 
   revalidatePath(detailPath);
   revalidatePath(staffRoutes.classes);

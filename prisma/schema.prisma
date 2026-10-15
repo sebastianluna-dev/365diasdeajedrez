@@ -22,9 +22,22 @@
 //   studentId WHERE endedAt IS NULL (one active teacher per student).
 // - SourceEntity (unused, see the model): unique index source_entity_name_ci
 //   over lower(name).
+// - Classes (migration 20261014…_class_payments_and_roles): a payment's amount
+//   is positive and buys 1–50 classes; a class lasts more than nothing, a group
+//   seats 2–12 and its end is its start plus its duration; a free seat has no
+//   payment, and a seat is moved only after a no-show.
 // Rules validated in the services layer (impossible in a CHECK without
 // crossing tables): ownerType↔populated column coherence, ClassBlock.kind↔field
-// used.
+// used; and for the classes (see services/shared/, each rule names its writer):
+// format↔capacity and a group's title (classShapeError, createClassRecord); the
+// capacity when adding a seat and a student once per class (syncClassSeat,
+// after locking the class); a free seat never paid nor a paid one freed
+// (syncClassSeat covers only «Sin pago»); a payment's classCount never below
+// the seats that count (updatePayment); a reason whenever the staff writes an
+// attendance mark, and one CLASS_ATTENDED activity per student and class
+// (recordAttendance, after locking the class); and one lock order, every Class
+// row of the transaction first, by id (lockClasses), then the student's
+// payments by (paidOn, id).
 
 generator client {
   provider        = "prisma-client"
@@ -289,6 +302,39 @@ model TranscriptStatus {
   order Int    @default(0)
 
   transcripts ClassTranscript[]
+}
+
+/// Individual or group (constants/platform/class-codes.const.ts, CLASS_FORMAT).
+model ClassFormat {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  classes Class[]
+}
+
+/// When a block of a class reaches its students: to prepare (BEFORE), after
+/// the class (AFTER) or never, the teacher's script (TEACHER).
+model ClassBlockVisibility {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  blocks ClassBlock[]
+}
+
+/// The currencies a payment can be registered in (CURRENCY in
+/// constants/platform/currency-codes.const.ts).
+model Currency {
+  id       Int     @id @default(autoincrement())
+  code     String  @unique
+  label    String
+  order    Int     @default(0)
+  isActive Boolean @default(true)
+
+  payments ClassPayment[]
 }
 
 model ActivityType {
@@ -674,9 +720,20 @@ model User {
   studyShares       StudyShare[]
   studyVisits       StudyVisit[]
   positions         Position[]
-  classParticipants ClassParticipant[]
+  classParticipants ClassParticipant[]   @relation("ClassParticipantUser")
   activities        UserActivity[]
   dailyStats        UserStatDaily[]
+
+  /// Classes: what this user paid for, and what they did as staff or teacher.
+  paymentsAsStudent  ClassPayment[]          @relation("ClassPaymentStudent")
+  paymentsRecorded   ClassPayment[]          @relation("ClassPaymentRecorder")
+  classesCreated     Class[]                 @relation("ClassCreatedBy")
+  classesRescheduled Class[]                 @relation("ClassRescheduledBy")
+  classesCancelled   Class[]                 @relation("ClassCancelledBy")
+  classesClosed      Class[]                 @relation("ClassClosedBy")
+  participantsAdded  ClassParticipant[]      @relation("ClassParticipantAddedBy")
+  seatsMoved         ClassParticipant[]      @relation("ClassSeatMovedBy")
+  attendanceChanges  ClassAttendanceChange[] @relation("ClassAttendanceChangedBy")
 
   /// Games played on the platform, in each seat (never study games).
   playedGamesAsWhite PlayedGame[] @relation("PlayedGameWhiteUser")
@@ -1166,86 +1223,217 @@ model Staff {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+/// What the academy charged a student: an amount for a number of classes. The seats it pays are
+/// the participations that point at it (ClassParticipant.paymentId); how many are left is derived
+/// on reading (paymentSeats), never stored. Paid classes never expire: there is no expiry column.
+/// Written only by registerPayment / updatePayment / deletePayment (services/staff-payments), and
+/// by the seed as demo data.
+model ClassPayment {
+  id           String   @id @default(uuid())
+  studentId    String
+  /// CHECK class_payment_amount_positive (> 0). The amount is the payment's, never a class's.
+  amount       Decimal  @db.Decimal(10, 2)
+  currencyId   Int
+  /// The day it was paid in the academy's calendar (STUDY_DAY_TIMEZONE); never after today.
+  paidOn       DateTime @db.Date
+  /// CHECK class_payment_class_count_range (1–50). Never below the seats that count (updatePayment).
+  classCount   Int
+  reference    String?  @db.VarChar(120)
+  /// Internal: only the staff reads it.
+  note         String?  @db.VarChar(500)
+  /// Null only on the rows the migration made from the old participant columns.
+  recordedById String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  student    User               @relation("ClassPaymentStudent", fields: [studentId], references: [id], onDelete: Restrict)
+  currency   Currency           @relation(fields: [currencyId], references: [id])
+  recordedBy User?              @relation("ClassPaymentRecorder", fields: [recordedById], references: [id], onDelete: SetNull)
+  seats      ClassParticipant[]
+
+  @@index([studentId, paidOn])
+}
+
+/// A live class, given by a teacher to one student or to a group. Its status is what somebody
+/// wrote (SCHEDULED, COMPLETED, CANCELLED; an old LIVE row reads as SCHEDULED); the phase it is
+/// in is worked out from the clock on every read (classPhase, services/shared/class-phase.ts).
+/// A class is never deleted: it is cancelled (transitionClassStatus), and the teacher relation
+/// restricts a teacher's deletion so no paid seat ever goes with it.
 model Class {
   id                    String    @id @default(uuid())
+  /// Set on insert by createClassRecord; changed only by setClassTeacher (staff).
   teacherId             String
-  title                 String
+  /// Set on insert by createClassRecord; never changed. No DB default.
+  formatId              Int
+  /// Null in INDIVIDUAL, 2–12 in GROUP. CHECK class_capacity_range; format↔capacity is a service
+  /// rule. Set on insert by createClassRecord.
+  capacity              Int?
+  /// The topic. Null is «Sin tema»: classDisplayTitle supplies «Clase con …» / «Clase de …».
+  /// Written by the staff on creation (required in GROUP) and then by the teacher (updateClassTopic).
+  title                 String?
   description           String?
-  /// Date and time of the class (UTC).
+  /// Date and time of the class (UTC). CHECK class_duration_positive on durationMin.
+  /// scheduledAt and durationMin are computed only by classScheduleColumns and written through it
+  /// by createClassRecord / syncClassSchedule (services/shared/class-schedule.service.ts).
   scheduledAt           DateTime
   durationMin           Int
+  /// scheduledAt + durationMin, kept so the end can be filtered in SQL. CHECK class_ends_at_derived.
+  /// Computed only by classScheduleColumns; written through it by createClassRecord /
+  /// syncClassSchedule (services/shared/class-schedule.service.ts).
+  endsAt                DateTime
+  /// Set to SCHEDULED on insert by createClassRecord (initialClassStatusData); changed only by
+  /// transitionClassStatus (services/shared/class-status.service.ts).
   statusId              Int
+  /// Deduced from the link by storedMeetingProvider; computed only by classMeetingColumns and
+  /// written through it by createClassRecord / syncClassMeeting.
   meetingProviderId     Int?
+  /// Staff only. Computed by classMeetingColumns; written by createClassRecord / syncClassMeeting.
   meetingUrl            String?
-  /// The instant the teacher CHOSE for the link to become visible; null is the default, half an
+  /// The instant the staff CHOSE for the link to become visible; null is the default, half an
   /// hour before the class, worked out on reading, so it follows the class when it moves. The link
   /// reaches a student only from that instant. Null without a link: the instant belongs to it.
-  /// Only writer: storedMeetingVisibleFrom (services/shared/meeting-visible-from.ts).
+  /// storedMeetingVisibleFrom, through classMeetingColumns; written by createClassRecord /
+  /// syncClassMeeting.
   meetingUrlVisibleFrom DateTime?
+  /// Teacher only: finalizeClass / updateClassAfterNotes.
   recordingUrl          String?
   summary               String?   @db.Text
+  /// Set on insert by createClassRecord.
+  createdById           String?
+  /// The last reschedule only. Only writer: syncClassSchedule.
+  previousScheduledAt   DateTime?
+  rescheduledAt         DateTime?
+  rescheduledById       String?
+  rescheduleNote        String?   @db.VarChar(300)
+  /// Only writer: transitionClassStatus. cancelReason is internal (staff and teacher);
+  /// cancelNote is what the students read.
+  cancelledAt           DateTime?
+  cancelledById         String?
+  cancelReason          String?   @db.VarChar(300)
+  cancelNote            String?   @db.VarChar(300)
+  /// Only writer: transitionClassStatus.
+  closedAt              DateTime?
+  closedById            String?
+  /// Only writer: recordAttendance (services/shared/class-attendance.service.ts).
+  attendanceTakenAt     DateTime?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
-  teacher         Teacher          @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  teacher         Teacher          @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  format          ClassFormat      @relation(fields: [formatId], references: [id])
   status          ClassStatus      @relation(fields: [statusId], references: [id])
   meetingProvider MeetingProvider? @relation(fields: [meetingProviderId], references: [id])
+  createdBy       User?            @relation("ClassCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  rescheduledBy   User?            @relation("ClassRescheduledBy", fields: [rescheduledById], references: [id], onDelete: SetNull)
+  cancelledBy     User?            @relation("ClassCancelledBy", fields: [cancelledById], references: [id], onDelete: SetNull)
+  closedBy        User?            @relation("ClassClosedBy", fields: [closedById], references: [id], onDelete: SetNull)
 
-  participants ClassParticipant[]
+  participants ClassParticipant[] @relation("ClassParticipants")
+  seatsMovedIn ClassParticipant[] @relation("ClassSeatMovedTo")
   blocks       ClassBlock[]
   transcript   ClassTranscript?
 
   @@index([scheduledAt])
   @@index([teacherId, scheduledAt])
+  @@index([statusId, endsAt])
 }
 
+/// A seat: a student in a class. Paid (paymentId), free (isFree) or «Sin pago» (neither). The
+/// ONE definition of «sin pago» is isUnpaidSeat / unpaidSeatWhere (services/shared/payment-seats.ts).
 model ClassParticipant {
-  classId    String
-  userId     String
-  paidAt     DateTime?
-  amount     Decimal?  @db.Decimal(10, 2)
-  currency   String?
-  paymentRef String?
-  attended   Boolean   @default(false)
-  joinedAt   DateTime?
-  createdAt  DateTime  @default(now())
+  classId            String
+  userId             String
+  /// The payment this seat spends; null with isFree false is «Sin pago».
+  /// Only writer: syncClassSeat (services/shared/class-seats.service.ts).
+  paymentId          String?
+  /// «Gratis»: charged to nobody, in no balance and no queue. CHECK class_participant_free_has_no_payment.
+  /// Set only when the seat is added (syncClassSeat, mode "add"); never changed after.
+  isFree             Boolean   @default(false)
+  /// Null is «Sin pasar lista». Only writer: recordAttendance.
+  attended           Boolean?
+  /// Kept, with no writer: reserved for recording the real entry to the call (out of scope).
+  joinedAt           DateTime?
+  /// Only writer: syncClassSeat.
+  addedById          String?
+  /// A no-show's seat given another date (or back to its payment) by the staff; the row stays as
+  /// history («Faltó · reprogramada»). CHECK class_participant_moved_was_absent.
+  /// Only writer: moveClassSeat.
+  seatMovedAt        DateTime?
+  seatMovedById      String?
+  seatMovedToClassId String?
+  seatMoveNote       String?   @db.VarChar(300)
+  createdAt          DateTime  @default(now())
 
-  class Class @relation(fields: [classId], references: [id], onDelete: Cascade)
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  class             Class                   @relation("ClassParticipants", fields: [classId], references: [id], onDelete: Cascade)
+  user              User                    @relation("ClassParticipantUser", fields: [userId], references: [id], onDelete: Cascade)
+  payment           ClassPayment?           @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+  addedBy           User?                   @relation("ClassParticipantAddedBy", fields: [addedById], references: [id], onDelete: SetNull)
+  seatMovedBy       User?                   @relation("ClassSeatMovedBy", fields: [seatMovedById], references: [id], onDelete: SetNull)
+  seatMovedToClass  Class?                  @relation("ClassSeatMovedTo", fields: [seatMovedToClassId], references: [id], onDelete: SetNull)
+  attendanceChanges ClassAttendanceChange[]
 
   @@id([classId, userId])
   /// "This student's classes" from the teacher and staff panels: the composite key
   /// starts with classId and does not serve that access.
   @@index([userId])
+  @@index([paymentId])
+}
+
+/// Every attendance mark, the first one included: who marked, when, from what to what and why.
+/// Append-only. Only writer: recordAttendance (services/shared/class-attendance.service.ts).
+/// The reason is required whenever the staff writes the mark (service rule; D2).
+model ClassAttendanceChange {
+  id           String   @id @default(uuid())
+  classId      String
+  userId       String
+  fromAttended Boolean?
+  toAttended   Boolean
+  reason       String?  @db.VarChar(300)
+  changedById  String?
+  /// A staff change after a report (ADM-9): the teacher sees it with its reason and can no longer
+  /// change that student's mark (D3). False for every other mark, the ones the staff writes when
+  /// finalizing on the teacher's behalf included.
+  isOverride   Boolean  @default(false)
+  changedAt    DateTime @default(now())
+
+  participant ClassParticipant @relation(fields: [classId, userId], references: [classId, userId], onDelete: Cascade)
+  changedBy   User?            @relation("ClassAttendanceChangedBy", fields: [changedById], references: [id], onDelete: SetNull)
+
+  @@index([classId, userId, changedAt])
 }
 
 /// Ordered content of the class. A block uses the field of its kind and the
 /// references are pointers, never copies. CHECK "at most one reference" in the
 /// migration. `movePath` uses the same dotted path as TrainingExercise.path.
 model ClassBlock {
-  id         String  @id @default(uuid())
-  classId    String
-  order      Int
-  kindId     Int
-  text       String? @db.Text
-  videoUrl   String?
-  gameId     String?
-  lessonId   String?
-  positionId String?
-  movePath   String?
-  caption    String?
+  id           String   @id @default(uuid())
+  classId      String
+  order        Int
+  kindId       Int
+  /// When the block reaches the students (BEFORE, AFTER, TEACHER): the teacher's choice.
+  visibilityId Int
+  text         String?  @db.Text
+  videoUrl     String?
+  gameId       String?
+  lessonId     String?
+  positionId   String?
+  movePath     String?
+  caption      String?
   /// Game transcribed by the teacher for this class. It lives here and not as a
   /// `Game` because a teacher may have no study at all, and creating one behind
   /// their back just for this would add an entity they did not ask for.
   ///
   /// When there is a PGN here, it RULES over `gameId`: it is this block's game.
-  pgn        String? @db.Text
+  pgn          String?  @db.Text
+  /// For the «Nuevo» mark on a block added after the class started (isNewClassBlock).
+  createdAt    DateTime @default(now())
 
-  class    Class          @relation(fields: [classId], references: [id], onDelete: Cascade)
-  kind     ClassBlockKind @relation(fields: [kindId], references: [id])
-  game     Game?          @relation(fields: [gameId], references: [id], onDelete: SetNull)
-  lesson   Lesson?        @relation(fields: [lessonId], references: [id], onDelete: SetNull)
-  position Position?      @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  class      Class                @relation(fields: [classId], references: [id], onDelete: Cascade)
+  kind       ClassBlockKind       @relation(fields: [kindId], references: [id])
+  visibility ClassBlockVisibility @relation(fields: [visibilityId], references: [id])
+  game       Game?                @relation(fields: [gameId], references: [id], onDelete: SetNull)
+  lesson     Lesson?              @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+  position   Position?            @relation(fields: [positionId], references: [id], onDelete: SetNull)
 
   @@unique([classId, order])
 }

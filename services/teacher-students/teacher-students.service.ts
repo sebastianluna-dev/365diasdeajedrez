@@ -1,9 +1,10 @@
 import { cache } from "react";
-import type { ClassStatusCode } from "@/constants/platform/class-codes.const";
+import { CLASS_STATUS, type ClassStatusCode } from "@/constants/platform/class-codes.const";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { requireTeacher } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
+import { classTitleOf } from "@/services/classes/classes.mapper";
 import { teacherRoutes } from "@/lib/platform-routes";
 import { gameViewInclude, studyDetailInclude, studySummaryInclude } from "@/services/studies/studies.mapper";
 import type { GameView, StudyDetail } from "@/services/studies/studies.types";
@@ -34,6 +35,14 @@ const findActiveAssignment = cache(async (teacherId: string, studentId: string) 
     select: { id: true, assignedAt: true, note: true },
   });
 });
+
+/** What `classTitleOf` needs of a class, inside a seat's select. */
+const CLASS_TITLE_SELECT = {
+  title: true,
+  format: { select: { code: true } },
+  teacher: { select: { displayName: true } },
+  participants: { where: { seatMovedAt: null }, select: { user: { select: { displayName: true } } } },
+} as const;
 
 export async function getAssignedStudents(query?: string): Promise<AssignedStudentSummary[]> {
   const { teacher } = await requireTeacher();
@@ -76,9 +85,14 @@ export async function getAssignedStudents(query?: string): Promise<AssignedStude
     db.classParticipant.findMany({
       where: {
         userId: { in: studentIds },
-        class: { teacherId: teacher.id, scheduledAt: { gte: new Date() } },
+        seatMovedAt: null,
+        class: {
+          teacherId: teacher.id,
+          scheduledAt: { gte: new Date() },
+          status: { code: { not: CLASS_STATUS.CANCELLED } },
+        },
       },
-      select: { userId: true, class: { select: { title: true, scheduledAt: true } } },
+      select: { userId: true, class: { select: { ...CLASS_TITLE_SELECT, scheduledAt: true } } },
       orderBy: { class: { scheduledAt: "asc" } },
     }),
   ]);
@@ -86,7 +100,12 @@ export async function getAssignedStudents(query?: string): Promise<AssignedStude
   const lastActivityByUser = new Map(lastActivities.map((row) => [row.userId, row._max.occurredAt]));
   const nextClassByUser = new Map<string, { title: string; scheduledAt: Date }>();
   for (const participation of nextClasses) {
-    if (!nextClassByUser.has(participation.userId)) nextClassByUser.set(participation.userId, participation.class);
+    if (!nextClassByUser.has(participation.userId)) {
+      nextClassByUser.set(participation.userId, {
+        title: classTitleOf(participation.class, "teacher"),
+        scheduledAt: participation.class.scheduledAt,
+      });
+    }
   }
 
   return assignments.map((assignment) => {
@@ -138,7 +157,12 @@ export async function getAssignedStudentDetail(studentId: string): Promise<Assig
       select: {
         attended: true,
         class: {
-          select: { id: true, title: true, scheduledAt: true, status: { select: { code: true, label: true } } },
+          select: {
+            ...CLASS_TITLE_SELECT,
+            id: true,
+            scheduledAt: true,
+            status: { select: { code: true, label: true } },
+          },
         },
       },
       orderBy: { class: { scheduledAt: "desc" } },
@@ -198,7 +222,7 @@ export async function getAssignedStudentDetail(studentId: string): Promise<Assig
 
   const mapSharedClass = (row: (typeof classRows)[number]): StudentSharedClass => ({
     id: row.class.id,
-    title: row.class.title,
+    title: classTitleOf(row.class, "teacher"),
     scheduledAtIso: row.class.scheduledAt.toISOString(),
     dateLabel: formatSpanishDate(row.class.scheduledAt),
     statusCode: row.class.status.code as ClassStatusCode,

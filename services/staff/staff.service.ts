@@ -1,6 +1,7 @@
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
+import { classTitleOf } from "@/services/classes/classes.mapper";
 import { staffRoutes } from "@/lib/platform-routes";
 import type { StaffDashboard } from "./staff.types";
 
@@ -42,7 +43,9 @@ export async function getStaffDashboard(): Promise<StaffDashboard> {
         title: true,
         scheduledAt: true,
         status: { select: { label: true } },
+        format: { select: { code: true } },
         teacher: { select: { displayName: true } },
+        participants: { where: { seatMovedAt: null }, select: { user: { select: { displayName: true } } } },
       },
       orderBy: { scheduledAt: "asc" },
     }),
@@ -65,7 +68,7 @@ export async function getStaffDashboard(): Promise<StaffDashboard> {
     })),
     upcomingClasses: upcoming.map((upcomingClass) => ({
       id: upcomingClass.id,
-      title: upcomingClass.title,
+      title: classTitleOf(upcomingClass, "staff"),
       teacherName: upcomingClass.teacher.displayName,
       scheduledAtIso: upcomingClass.scheduledAt.toISOString(),
       dateLabel: formatSpanishDate(upcomingClass.scheduledAt),

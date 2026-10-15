@@ -25,6 +25,12 @@ interface StudentAdminDetailSectionProps {
  * student's studies or games: operating accounts (creation, passwords,
  * assignments) is not the same as reading private content.
  */
+const COVERAGE_LABEL = { paid: "Pagada", free: "Gratis", unpaid: "Sin pago" } as const;
+
+function attendanceLabel(attended: boolean | null): string {
+  return attended === null ? "Sin pasar lista" : attended ? "Sí" : "No";
+}
+
 export function StudentAdminDetailSection({ student, teachers, errorCode }: StudentAdminDetailSectionProps) {
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
 
@@ -98,8 +104,8 @@ export function StudentAdminDetailSection({ student, teachers, errorCode }: Stud
                 <LocalDateTime iso={participation.scheduledAtIso} fallback={participation.dateLabel} withTime={false} />
               </PlatformTableCell>
               <PlatformTableCell>{participation.statusLabel}</PlatformTableCell>
-              <PlatformTableCell>{participation.attended ? "Sí" : "No"}</PlatformTableCell>
-              <PlatformTableCell>{participation.hasPayment ? "Registrado" : "—"}</PlatformTableCell>
+              <PlatformTableCell>{attendanceLabel(participation.attended)}</PlatformTableCell>
+              <PlatformTableCell>{COVERAGE_LABEL[participation.coverage]}</PlatformTableCell>
             </PlatformTableRow>
           ))}
         </PlatformTable>

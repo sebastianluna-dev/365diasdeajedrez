@@ -8,7 +8,9 @@ import type { ClassActorRole } from "./class-rules";
 // is a phase of the hour (`classPhase`) — and an old LIVE row moves on like a
 // SCHEDULED one.
 //
-// Pure function; `transitionClassStatus` (phase 2) consults it before writing.
+// Pure functions; `transitionClassStatus` (class-status.service.ts) consults
+// the first before writing, and the teacher's old detail page draws its
+// buttons from the second until phase 6 retires it.
 
 const OPEN_STATUSES: readonly ClassStatusCode[] = [CLASS_STATUS.SCHEDULED, CLASS_STATUS.LIVE];
 
@@ -17,4 +19,9 @@ export function canTransitionClassStatus(from: ClassStatusCode, to: ClassStatusC
   if (to === CLASS_STATUS.COMPLETED) return true;
   if (to === CLASS_STATUS.CANCELLED) return role === "staff";
   return false;
+}
+
+/** The statuses a role may move a class to from its current one (to draw the buttons). */
+export function nextClassStatuses(from: ClassStatusCode, role: ClassActorRole): readonly ClassStatusCode[] {
+  return [CLASS_STATUS.COMPLETED, CLASS_STATUS.CANCELLED].filter((to) => canTransitionClassStatus(from, to, role));
 }

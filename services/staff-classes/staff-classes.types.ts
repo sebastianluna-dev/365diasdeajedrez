@@ -29,10 +29,10 @@ export interface StaffClassParticipant {
   userId: string;
   displayName: string;
   email: string;
-  attended: boolean;
-  paidAtLabel?: string;
-  amountLabel?: string;
-  paymentRef?: string;
+  /** Null is «Sin pasar lista». */
+  attended: boolean | null;
+  /** How the seat is covered: «Pago del … · $… MXN[ · referencia]», «Gratis» or «Sin pago». */
+  seatLabel: string;
 }
 
 export interface StaffClassDetail {
@@ -51,7 +51,7 @@ export interface StaffClassDetail {
   recordingUrl?: string;
   summary?: string;
   participants: StaffClassParticipant[];
-  /** The blocks exactly as the student sees them (same renderer). */
+  /** Every block, with the student's renderer, each carrying when the student sees it. */
   blocks: ClassBlockView[];
   transcript?: { statusLabel: string; statusCode: TranscriptStatusCode; text?: string };
 }

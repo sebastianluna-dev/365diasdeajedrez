@@ -1,6 +1,7 @@
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
+import { classTitleOf } from "@/services/classes/classes.mapper";
 import { staffRoutes } from "@/lib/platform-routes";
 import type { AssignableStudent, LinkableUser, StaffTeacherDetail, StaffTeacherSummary } from "./staff-teachers.types";
 
@@ -65,6 +66,9 @@ export async function getTeacherAdminDetail(teacherId: string): Promise<StaffTea
           title: true,
           scheduledAt: true,
           status: { select: { label: true } },
+          format: { select: { code: true } },
+          teacher: { select: { displayName: true } },
+          participants: { where: { seatMovedAt: null }, select: { user: { select: { displayName: true } } } },
           _count: { select: { participants: true } },
         },
         orderBy: { scheduledAt: "desc" },
@@ -97,7 +101,7 @@ export async function getTeacherAdminDetail(teacherId: string): Promise<StaffTea
     })),
     classes: teacher.classes.map((teacherClass) => ({
       id: teacherClass.id,
-      title: teacherClass.title,
+      title: classTitleOf(teacherClass, "staff"),
       scheduledAtIso: teacherClass.scheduledAt.toISOString(),
       dateLabel: formatSpanishDate(teacherClass.scheduledAt),
       statusLabel: teacherClass.status.label,

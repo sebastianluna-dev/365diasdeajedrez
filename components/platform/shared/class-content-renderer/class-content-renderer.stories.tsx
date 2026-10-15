@@ -30,17 +30,20 @@ const LESSON = `[Event "Finales de torres"]
 const TEXT: ClassBlockView = {
   id: "b1",
   kind: "TEXT",
+  visibility: "BEFORE",
   text: "## El puente de Lucena\n\nHoy vimos cómo ganar con torre y peón cuando el rey propio está delante del peón.\n\nRepasa la posición antes de la próxima clase.",
 };
 const VIDEO: ClassBlockView = {
   id: "b2",
   kind: "VIDEO",
+  visibility: "AFTER",
   videoUrl: "https://www.youtube.com/watch?v=example",
   caption: "Grabación de la clase",
 };
 const GAME: ClassBlockView = {
   id: "b3",
   kind: "GAME_REF",
+  visibility: "AFTER",
   caption: "La partida que comentamos al final.",
   // The label the mapper gives a study's game: its two players, as the PGN writes them.
   game: {
@@ -53,6 +56,7 @@ const GAME: ClassBlockView = {
 const LESSON_REF: ClassBlockView = {
   id: "b4",
   kind: "LESSON_REF",
+  visibility: "BEFORE",
   lesson: {
     id: "l1",
     name: "La posición de Lucena",
@@ -64,10 +68,11 @@ const LESSON_REF: ClassBlockView = {
 const POSITION: ClassBlockView = {
   id: "b5",
   kind: "POSITION_REF",
+  visibility: "BEFORE",
   caption: "Juegan las blancas: ¿cómo construyen el puente?",
   position: { fen: "1K1k4/1P6/8/8/8/8/r7/2R5 w - - 0 1", orientation: "white", title: "Lucena" },
 };
-const FILE: ClassBlockView = { id: "b6", kind: "FILE", caption: "Ejercicios para la semana" };
+const FILE: ClassBlockView = { id: "b6", kind: "FILE", visibility: "AFTER", caption: "Ejercicios para la semana" };
 
 const meta = {
   title: "platform/shared/ClassContentRenderer",
@@ -113,7 +118,7 @@ export const Text: Story = { args: { blocks: [TEXT] } };
 /** The same text with the CRLF line breaks a form sends: it still breaks into a subheading and two paragraphs. */
 export const TextWithCrlf: Story = {
   name: "Text with CRLF",
-  args: { blocks: [{ ...TEXT, text: TEXT.text?.replace(/\n/g, "\r\n") ?? null }] },
+  args: { blocks: [{ ...TEXT, text: TEXT.text.replace(/\n/g, "\r\n") }] },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { name: "El puente de Lucena" })).toBeVisible();
@@ -131,7 +136,7 @@ export const Game: Story = { args: { blocks: [GAME] } };
 export const TranscribedGame: Story = {
   name: "Transcribed game",
   args: {
-    blocks: [{ ...GAME, game: { ...GAME.game, label: GAME.caption ?? "", href: undefined } }] as ClassBlockView[],
+    blocks: [{ ...GAME, game: { ...GAME.game, label: GAME.caption ?? "", href: undefined } }],
   },
 };
 

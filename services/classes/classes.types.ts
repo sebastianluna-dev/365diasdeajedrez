@@ -1,4 +1,9 @@
-import type { ClassStatusCode, TranscriptStatusCode } from "@/constants/platform/class-codes.const";
+import type {
+  ClassBlockVisibilityCode,
+  ClassPhaseCode,
+  ClassStatusCode,
+  TranscriptStatusCode,
+} from "@/constants/platform/class-codes.const";
 
 export interface ClassSummary {
   id: string;
@@ -19,20 +24,23 @@ export interface ClassesView {
   past: ClassSummary[];
 }
 
+/** When a block reaches the students: to prepare, after the class, or never (the teacher's script). */
+interface ClassBlockBase {
+  id: string;
+  caption?: string;
+  visibility: ClassBlockVisibilityCode;
+}
+
 export type ClassBlockView =
-  | { id: string; kind: "TEXT"; caption?: string; text: string }
-  | { id: string; kind: "VIDEO"; caption?: string; videoUrl: string }
-  | {
-      id: string;
+  | (ClassBlockBase & { kind: "TEXT"; text: string })
+  | (ClassBlockBase & { kind: "VIDEO"; videoUrl: string })
+  | (ClassBlockBase & {
       kind: "GAME_REF";
-      caption?: string;
       /** `href` only when the game lives in a study; the transcribed one has nowhere to open. */
       game: { id: string; label: string; pgn: string; href?: string; movePath?: string };
-    }
-  | {
-      id: string;
+    })
+  | (ClassBlockBase & {
       kind: "LESSON_REF";
-      caption?: string;
       lesson: {
         id: string;
         name: string;
@@ -42,14 +50,12 @@ export type ClassBlockView =
         href: string;
         movePath?: string;
       };
-    }
-  | {
-      id: string;
+    })
+  | (ClassBlockBase & {
       kind: "POSITION_REF";
-      caption?: string;
       position: { fen: string; orientation: "white" | "black"; title?: string };
-    }
-  | { id: string; kind: "FILE"; caption?: string };
+    })
+  | (ClassBlockBase & { kind: "FILE" });
 
 export interface ClassTranscriptView {
   statusCode: TranscriptStatusCode;
@@ -59,7 +65,12 @@ export interface ClassTranscriptView {
 
 export interface ClassDetail {
   id: string;
+  /** The topic, or «Clase con <profesor>» when it has none. */
   title: string;
+  /** What the clock makes of the status (`classPhase`), at the instant the page was read. */
+  phase: ClassPhaseCode;
+  /** The other students of the class, by name only. */
+  classmates: string[];
   description?: string;
   teacherName: string;
   teacherTitle?: string;
