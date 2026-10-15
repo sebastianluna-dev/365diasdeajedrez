@@ -20,15 +20,6 @@ export async function assertTeacherOwnsClass(teacherId: string, classId: string)
   if (!row) notFound();
 }
 
-/** ACTIVE assignment: a reassigned student stops being accessible at once. */
-export async function assertTeacherHasStudent(teacherId: string, studentId: string): Promise<void> {
-  const row = await getPlatformDb().teacherStudent.findFirst({
-    where: { teacherId, studentId, endedAt: null },
-    select: { id: true },
-  });
-  if (!row) notFound();
-}
-
 /**
  * The teacher may reference in a class a game from a study of their own or from
  * a student with an active assignment.

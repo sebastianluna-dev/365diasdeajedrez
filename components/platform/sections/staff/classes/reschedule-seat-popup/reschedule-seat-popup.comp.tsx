@@ -277,8 +277,11 @@ function RescheduleSeatForm({
       </ul>
 
       <div className="reschedule-seat__foot">
-        <SubmitButton className="platform-button platform-button_variant_ink" pendingLabel="Reprogramando…">
-          {where === "later" ? "Devolver la clase" : "Reprogramar"}
+        <SubmitButton
+          className="platform-button platform-button_variant_ink"
+          pendingLabel={where === "later" ? "Dejando por programar…" : "Reprogramando…"}
+        >
+          {where === "later" ? "Dejarla por programar" : "Reprogramar"}
         </SubmitButton>
       </div>
     </PlatformForm>

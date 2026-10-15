@@ -6,13 +6,7 @@
 export const TEACHER_ERROR_MESSAGES: Record<string, string> = {
   invalid: "Revisa los datos: falta algún campo obligatorio o tiene un formato incorrecto.",
   throttled: "Has hecho demasiados cambios seguidos. Espera un momento y vuelve a intentarlo.",
-  title: "El título de la clase es obligatorio.",
-  schedule: "La fecha y la hora de la clase no son válidas.",
-  duration: "La duración debe estar entre 15 y 480 minutos.",
-  meetingUrl: "El enlace de la reunión debe ser una URL http(s) válida.",
-  status: "Ese cambio de estado no está permitido desde el estado actual.",
-  student: "Ese alumno no está asignado a ti, ya está en la clase, o la clase no admite más alumnos.",
-  participantLocked: "No se puede quitar a un alumno que ya tiene una marca de asistencia.",
+  title: "El tema de la clase es obligatorio.",
   // What `recordAttendance` (services/shared/class-attendance.service.ts) refuses.
   notStarted: "La lista se pasa cuando la clase ha empezado.",
   classCancelled: "Esta clase está cancelada: no se pasa lista.",
