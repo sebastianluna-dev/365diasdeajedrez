@@ -139,7 +139,7 @@ export async function searchGamesByPosition(
     }),
     db.game.findMany({
       where: { AND: [...gameConditions, { positions: { some: { positionHash } } }] },
-      include: explorerGameInclude(viewer.userId),
+      include: explorerGameInclude(viewer.userId, new Date()),
       orderBy: [{ playedAt: { sort: "desc", nulls: "last" } }, { createdAt: "desc" }],
       take: GAME_LIMIT,
     }),

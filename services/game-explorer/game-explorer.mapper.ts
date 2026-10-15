@@ -1,6 +1,7 @@
 import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import type { Prisma } from "@/lib/platform-db/generated/client";
+import { studentVisibleClassBlockWhere } from "@/services/shared/class-block-visibility";
 import { platformRoutes, teacherRoutes } from "@/lib/platform-routes";
 import { GAME_ORIGIN_LABEL, gameOriginOf } from "@/services/shared/game-origin";
 import type { ExplorerGame } from "./game-explorer.types";
@@ -10,7 +11,7 @@ import type { ExplorerGame } from "./game-explorer.types";
  * The class block is filtered by the user looking: it only counts as "seen in
  * class" if they were in THAT class.
  */
-export function explorerGameInclude(viewerId: string) {
+export function explorerGameInclude(viewerId: string, now: Date) {
   return {
     result: { select: { label: true } },
     database: {
@@ -26,8 +27,9 @@ export function explorerGameInclude(viewerId: string) {
         },
       },
     },
+    // The class a game was seen in: only through a block the viewer may see.
     classBlocks: {
-      where: { class: { participants: { some: { userId: viewerId } } } },
+      where: studentVisibleClassBlockWhere(viewerId, now),
       select: { classId: true },
       take: 1,
     },

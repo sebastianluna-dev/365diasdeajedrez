@@ -34,5 +34,5 @@ export const getListedDatabasesWhere = cache(async (): Promise<Prisma.GameDataba
 );
 
 export const getVisibleGamesWhere = cache(async (): Promise<Prisma.GameWhereInput> =>
-  buildVisibleGamesWhere(await getViewer()),
+  buildVisibleGamesWhere(await getViewer(), new Date()),
 );

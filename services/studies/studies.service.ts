@@ -9,6 +9,7 @@ import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { classTitleOf } from "@/services/classes/classes.mapper";
+import { studentVisibleClassBlockWhere } from "@/services/shared/class-block-visibility";
 import { platformRoutes } from "@/lib/platform-routes";
 import { getListedDatabasesWhere, getVisibleDatabasesWhere } from "@/services/shared/game-visibility";
 import {
@@ -247,8 +248,8 @@ export async function getGameById(studyId: string, gameId: string): Promise<Game
 
 // --- Games seen in class ---------------------------------------------------
 //
-// They are not a database: they are pointers from the blocks of the classes the
-// student attended (ClassBlock.gameId), and the game may live in their teacher's
+// They are not a database: they are pointers from the blocks of the student's
+// classes (ClassBlock.gameId), and the game may live in their teacher's
 // database. That is why the link leads to the CLASS where it was seen and not to
 // the studies viewer: there they already have access and the context is kept,
 // and it avoids showing them the name of someone else's private database.
@@ -258,11 +259,10 @@ const getClassGameItems = cache(async (): Promise<ClassGameItem[]> => {
   const db = getPlatformDb();
   const user = await getCurrentUser();
 
+  // Only the blocks the student may see: never the teacher's script, and
+  // what is «después de la clase» only once the class ended.
   const blocks = await db.classBlock.findMany({
-    where: {
-      gameId: { not: null },
-      class: { participants: { some: { userId: user.id } } },
-    },
+    where: { AND: [{ gameId: { not: null } }, studentVisibleClassBlockWhere(user.id, new Date())] },
     orderBy: [{ class: { scheduledAt: "desc" } }, { order: "asc" }],
     relationLoadStrategy: "join",
     select: {
@@ -327,7 +327,7 @@ async function getClassGamesSummary(): Promise<StudySummary | null> {
   return {
     id: CLASS_GAMES_ID,
     name: "Partidas de mis clases",
-    description: "Las partidas que se han visto en las clases a las que asististe.",
+    description: "Las partidas que se han visto en tus clases.",
     kindLabel: "Colección",
     kindCode: DATABASE_KIND.COLLECTION,
     gameCount: items.length,

@@ -38,6 +38,7 @@ import {
 } from "@/services/shared/game-record";
 import { readImportedGames, readPastedGame } from "@/services/shared/pgn-import";
 import { withImportReport } from "@/services/shared/pgn-import-report";
+import { studentVisibleClassBlockWhere } from "@/services/shared/class-block-visibility";
 import { withErrorParam } from "@/services/shared/safe-return-to";
 import { studyDetailInclude } from "./studies.mapper";
 import { canChangeKindTo, canCreateKind, studyPermissionsOf } from "./study-rules";
@@ -115,8 +116,9 @@ async function nextGameOrder(db: Prisma.TransactionClient, databaseId: string): 
  * it was copied from.
  *
  * The origin filter is the same one that feeds "Partidas de mis clases": one can
- * only copy from a class one attended. An id from elsewhere does not pass the
- * `where` and drops out of the list without writing anything.
+ * only copy a game a block of one's own classes shows (`studentVisibleClassBlockWhere`).
+ * An id from elsewhere does not pass the `where` and drops out of the list
+ * without writing anything.
  */
 export async function copyClassGamesToStudy(studyId: string, gameIds: string[]): Promise<void> {
   if (gameIds.length === 0) return;
@@ -134,7 +136,7 @@ export async function copyClassGamesToStudy(studyId: string, gameIds: string[]):
   const sources = await db.game.findMany({
     where: {
       id: { in: gameIds.slice(0, PGN_MAX_GAMES) },
-      classBlocks: { some: { class: { participants: { some: { userId: user.id } } } } },
+      classBlocks: { some: studentVisibleClassBlockWhere(user.id, new Date()) },
     },
     select: {
       title: true,

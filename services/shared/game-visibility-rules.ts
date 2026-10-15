@@ -1,4 +1,5 @@
 import type { Prisma } from "@/lib/platform-db/generated/client";
+import { studentVisibleClassBlockWhere } from "./class-block-visibility";
 
 // The visibility RULE, kept apart from whoever asks it.
 //
@@ -49,17 +50,20 @@ export function buildListedDatabasesWhere(viewer: GameViewer): Prisma.GameDataba
  * there are two paths that do not go through the ownership of the database:
  *
  * - those seen in class, which arrive by reference from a class block
- *   (ClassBlock.gameId) and can live in another person's database;
+ *   (ClassBlock.gameId) and can live in another person's database — only
+ *   through a block the student may see (`studentVisibleClassBlockWhere`:
+ *   never the teacher's script, and what is «después de la clase» only once
+ *   the class ended), which is why the rule takes `now`;
  * - those of the collections a teacher shared with them;
  * - those of the students with an ACTIVE assignment, if whoever is looking is
  *   their teacher; the same criterion as the guards in lib/platform-auth/guards.ts.
  */
-export function buildVisibleGamesWhere({ userId, teacherId }: GameViewer): Prisma.GameWhereInput {
+export function buildVisibleGamesWhere({ userId, teacherId }: GameViewer, now: Date): Prisma.GameWhereInput {
   const visible: Prisma.GameWhereInput[] = [
     { database: { userId } },
     { database: { course: { progresses: { some: { userId } } } } },
     { database: { shares: { some: { userId } } } },
-    { classBlocks: { some: { class: { participants: { some: { userId } } } } } },
+    { classBlocks: { some: studentVisibleClassBlockWhere(userId, now) } },
   ];
 
   if (teacherId) {

@@ -22,7 +22,7 @@ export async function ClassGamesSection() {
         </div>
         <h1 className="platform-page__title">Partidas de mis clases</h1>
         <p className="platform-page__subtitle">
-          Las partidas que se vieron en las clases a las que asististe. Cada una se abre en su clase.
+          Las partidas que se han visto en tus clases. Cada una se abre en su clase.
         </p>
       </header>
 
