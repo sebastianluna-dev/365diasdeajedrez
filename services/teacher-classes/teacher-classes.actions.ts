@@ -309,10 +309,10 @@ export async function markAttendance(classId: string, formData: FormData): Promi
     return;
   }
 
-  await db.$transaction(
-    changed.map((participant) => {
+  await db.$transaction(async (tx) => {
+    for (const participant of changed) {
       const attended = attendedNow.has(participant.userId);
-      return db.classParticipant.update({
+      await tx.classParticipant.update({
         where: { classId_userId: { classId, userId: participant.userId } },
         data: {
           attended,
@@ -321,21 +321,19 @@ export async function markAttendance(classId: string, formData: FormData): Promi
           joinedAt: attended ? (participant.joinedAt ?? classRow.scheduledAt) : participant.joinedAt,
         },
       });
-    }),
-  );
-
-  // The attendance counts as the STUDENT's activity: it feeds their statistics
-  // through the only write point that exists for them.
-  for (const participant of changed) {
-    if (!attendedNow.has(participant.userId)) continue;
-    await recordUserActivity({
-      userId: participant.userId,
-      typeCode: ACTIVITY_TYPE.CLASS_ATTENDED,
-      subjectTypeCode: SUBJECT_TYPE.CLASS,
-      subjectId: classId,
-      occurredAt: classRow.scheduledAt,
-    });
-  }
+      // The attendance counts as the STUDENT's activity: it feeds their statistics
+      // through the only write point that exists for them, in the same transaction
+      // as the mark, so neither can land without the other.
+      if (!attended) continue;
+      await recordUserActivity(tx, {
+        userId: participant.userId,
+        typeCode: ACTIVITY_TYPE.CLASS_ATTENDED,
+        subjectTypeCode: SUBJECT_TYPE.CLASS,
+        subjectId: classId,
+        occurredAt: classRow.scheduledAt,
+      });
+    }
+  });
 
   revalidatePath(detailPath);
   revalidatePath(teacherRoutes.home);

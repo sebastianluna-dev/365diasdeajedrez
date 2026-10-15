@@ -70,7 +70,7 @@ export async function recordTrainingAttempt(input: RecordAttemptInput): Promise<
   });
 
   if (input.resultCode === ATTEMPT_RESULT.PASSED) {
-    await recordUserActivity({
+    await recordUserActivity(db, {
       userId: user.id,
       typeCode: ACTIVITY_TYPE.EXERCISE_PASSED,
       subjectTypeCode: SUBJECT_TYPE.EXERCISE,

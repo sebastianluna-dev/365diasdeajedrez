@@ -113,4 +113,4 @@ Behind `PLAY_ENABLED` (off). Games against the bots at `/jugar`, one URL per gam
 
 ## Activity and statistics
 
-`services/shared/user-activity.service.ts` → `recordUserActivity({ userId, typeCode, subjectTypeCode, subjectId, topicId?, occurredAt?, meta? })` appends the fact and upserts the daily aggregate for the metric (and per topic). Callers: lesson/course completion, class attendance (marked by the teacher), exercise passed, game analysed.
+`services/shared/user-activity.service.ts` → `recordUserActivity(db, { userId, typeCode, subjectTypeCode, subjectId, topicId?, occurredAt?, meta? })` appends the fact and upserts the daily aggregate for the metric (and per topic). Like every shared writer it receives the Prisma client (or a transaction) as its first parameter and runs inside the caller's transaction, so a write that is refused afterwards leaves no activity behind. Callers: lesson/course completion, class attendance (marked by the teacher, in the same transaction as the marks), exercise passed, game analysed.

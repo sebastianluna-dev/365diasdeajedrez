@@ -151,7 +151,7 @@ export async function completeLesson(lessonId: string): Promise<void> {
     },
   });
 
-  await recordUserActivity({
+  await recordUserActivity(db, {
     userId: user.id,
     typeCode: ACTIVITY_TYPE.LESSON_COMPLETED,
     subjectTypeCode: SUBJECT_TYPE.LESSON,
@@ -207,7 +207,7 @@ export async function completeLesson(lessonId: string): Promise<void> {
   });
 
   if (courseDone) {
-    await recordUserActivity({
+    await recordUserActivity(db, {
       userId: user.id,
       typeCode: ACTIVITY_TYPE.COURSE_COMPLETED,
       subjectTypeCode: SUBJECT_TYPE.COURSE,
