@@ -1,0 +1,53 @@
+---
+description: "A search box with the magnifying glass and the accent's focus: a filter, not a form; with a name it travels with its form, without one it only narrows what is on screen."
+---
+
+# `PlatformSearchField`
+
+|            |                                                                                                           |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-search-field/platform-search-field.comp.tsx`                         |
+| Kind       | Client Component (`useId`, the change and key handlers)                                                   |
+| Stylesheet | `platform-search-field.comp.css` → block `.platform-search-field`                                         |
+| Story      | `platform-search-field.stories.tsx` (`platform/shared/PlatformSearchField`): empty, filled, inside a form |
+| Used by    | The staff's agenda, «Clases que imparto» and «Agregar alumnos» (phases 5–6 of the rebuild)                |
+| Uses       | `MagnifyingGlassIcon` in Classic Solid                                                                    |
+
+## Purpose
+
+The search of a listing, drawn as the studies' search is: a frame with the glass and a `type="search"` input. **A search is not a form**: it validates nothing and never shows an error, so its focus is the accent's (border `--platform-accent`, ring `--platform-accent-soft`), like every filter.
+
+## Props
+
+| Prop            | Type                      | Required | Meaning                                                                                                        |
+| --------------- | ------------------------- | -------- | -------------------------------------------------------------------------------------------------------------- |
+| `label`         | `string`                  | yes      | The accessible name (a visually hidden label).                                                                 |
+| `placeholder`   | `string`                  | yes      | What it says on screen.                                                                                        |
+| `defaultValue`  | `string`                  | no       |                                                                                                                |
+| `name`          | `string`                  | no       | With a name the field travels with the form around it («q») and Enter submits; without one Enter is swallowed. |
+| `onValueChange` | `(value: string) => void` | no       | Every keystroke, for a filter that narrows what is on screen.                                                  |
+
+## Behaviour
+
+- `autoComplete="off"`; the browser's own clear cross stays.
+- Without a `name`, Enter calls `preventDefault`: the search of «Agregar alumnos» must not submit the class's form.
+
+## Markup & styling
+
+Block `.platform-search-field` (56 lines): a 40px frame; the focus ring is drawn on the frame (`:has(input:focus)`).
+
+**Elements:** `.platform-search-field__label` (visually hidden), `.platform-search-field__icon`, `.platform-search-field__input`
+
+**Tokens:** `--platform-accent`, `--platform-accent-soft`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries; the transition fades the border colour only.
+
+## Usage
+
+```tsx
+<PlatformSearchField label="Buscar clase" placeholder="Buscar por tema, alumno o profesor" name="q" defaultValue={q} />
+```
+
+## Related
+
+- [`FilterPills`](/components/platform/shared/filter-pills), the other filter of a listing.

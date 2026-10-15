@@ -1,0 +1,57 @@
+---
+description: "A row of filters that are links: each pill changes the address, the active one in the accent's tint with a tick and aria-current, a count beside a label."
+---
+
+# `FilterPills`
+
+|            |                                                                                                                  |
+| ---------- | ---------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/filter-pills/filter-pills.comp.tsx`                                                  |
+| Kind       | Server Component                                                                                                 |
+| Stylesheet | `filter-pills.comp.css` → block `.filter-pills`                                                                  |
+| Story      | `filter-pills.stories.tsx` (`platform/shared/FilterPills`): three views, with counts, wrapped in a narrow column |
+| Used by    | The staff's agenda and the teacher's «Clases que imparto» (phases 5–6 of the rebuild)                            |
+| Uses       | `next/link`; `CheckIcon` in Classic Solid                                                                        |
+
+## Purpose
+
+Filters that live in the URL, as every listing's do ([PlatformTable](/components/platform/shared/platform-table)): a pill is a link, so a view can be shared and the back button undoes it. A filter is not a form — it validates nothing and never errs — so its focus is the accent's, like every filter of the platform.
+
+## Props
+
+| Prop    | Type                                                                 | Required | Meaning                                            |
+| ------- | -------------------------------------------------------------------- | -------- | -------------------------------------------------- |
+| `label` | `string`                                                             | yes      | The nav's accessible name: what is being filtered. |
+| `pills` | `{ label: string; href: string; count?: number; active: boolean }[]` | yes      | One per value; exactly one is active.              |
+
+## Behaviour
+
+A `<nav aria-label>` of links; the active one carries `aria-current="page"`, the tick and the accent's tint. The row wraps.
+
+## Markup & styling
+
+Block `.filter-pills` (59 lines): a wrapping row of 32px pills.
+
+**Elements:** `.filter-pills__pill`, `.filter-pills__check`, `.filter-pills__count`
+
+**Modifiers and states:** `.filter-pills__pill_state_active`
+
+**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-border-strong`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`
+
+No media queries; the transition fades colours only.
+
+## Usage
+
+```tsx
+<FilterPills
+  label="Vista"
+  pills={[
+    { label: "Próximas", href: "?vista=proximas", active: view === "proximas" },
+    { label: "Pasadas", href: "?vista=pasadas", active: view === "pasadas" },
+  ]}
+/>
+```
+
+## Related
+
+- [`PlatformSelect`](/components/platform/shared/platform-select) with `tone="accent"`, the filter that is a dropdown.

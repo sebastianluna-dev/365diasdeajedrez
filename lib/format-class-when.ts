@@ -118,3 +118,9 @@ export function formatClassDay(date: Date, timeZone: string, now: Date): string 
   const year = parts.year === today.year ? "" : ` ${parts.year}`;
   return `${WEEKDAYS_SHORT[parts.weekday]} ${parts.day} ${MONTHS_SHORT[parts.month - 1]}${year}`;
 }
+
+/** The three words of a date tile: «mié», 14, «oct», in the zone. */
+export function classDayParts(date: Date, timeZone: string): { weekday: string; day: number; month: string } {
+  const parts = localParts(date, timeZone);
+  return { weekday: WEEKDAYS_SHORT[parts.weekday] ?? "", day: parts.day, month: MONTHS_SHORT[parts.month - 1] ?? "" };
+}

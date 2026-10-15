@@ -1,0 +1,58 @@
+---
+description: "Classes by day: a heading per day and its rows, only the days that have any, a line when none does and a link at the foot to the next stretch of days."
+---
+
+# `ClassAgenda`
+
+|            |                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/shared/class-agenda/class-agenda.comp.tsx`                                                          |
+| Kind       | Server Component                                                                                                         |
+| Stylesheet | `class-agenda.comp.css` → block `.class-agenda`                                                                          |
+| Story      | `class-agenda.stories.tsx` (`platform/shared/ClassAgenda`): the staff's week, the teacher's, today empty, nothing at all |
+| Used by    | The staff's agenda and the teacher's «Clases que imparto» (phases 5–6 of the rebuild)                                    |
+| Composes   | [`ClassRow`](/components/platform/shared/class-row)                                                                      |
+
+## Purpose
+
+The agenda of the two roles that manage classes: days one under the other, each with its heading («Hoy · miércoles 14 de octubre», from `formatAgendaDay`) and its rows. Only the days with classes are drawn; the week's cut and the next stretch are the page's (the `foot` link).
+
+## Props
+
+| Prop        | Type                                                                       | Required | Meaning                                              |
+| ----------- | -------------------------------------------------------------------------- | -------- | ---------------------------------------------------- |
+| `days`      | `{ key: string; label: string; isToday: boolean; rows: ClassRowData[] }[]` | yes      | Only the days with classes; empty draws `emptyLine`. |
+| `audience`  | `"staff" \| "teacher"`                                                     | yes      | Handed to every row.                                 |
+| `emptyLine` | `string`                                                                   | yes      | «No hay clases esta semana.»                         |
+| `foot`      | `{ label: string; href: string }`                                          | no       | «Ver la semana siguiente».                           |
+
+## Behaviour
+
+Each day is a `<section aria-labelledby>` with an `h2` (today's in the accent's ink) and a `<ul>` of rows.
+
+## Markup & styling
+
+Block `.class-agenda` (54 lines).
+
+**Elements:** `.class-agenda__day`, `.class-agenda__heading`, `.class-agenda__rows`, `.class-agenda__row`, `.class-agenda__empty`, `.class-agenda__foot`, `.class-agenda__foot-link`
+
+**Modifiers and states:** `.class-agenda__heading_state_today`
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+```tsx
+<ClassAgenda
+  days={days}
+  audience="staff"
+  emptyLine="No hay clases esta semana."
+  foot={{ label: "Ver la semana siguiente", href }}
+/>
+```
+
+## Related
+
+- [`ClassRow`](/components/platform/shared/class-row), [`FilterPills`](/components/platform/shared/filter-pills).

@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { CLASSES_NOW, CLASSES_TIME_ZONE, cdmx } from "@/lib/testing/fixtures/classes";
-import { formatAgendaDay, formatClassDay, formatClassHours, formatClassWhen, timeZoneLabel } from "./format-class-when";
+import {
+  classDayParts,
+  formatAgendaDay,
+  formatClassDay,
+  formatClassHours,
+  formatClassWhen,
+  timeZoneLabel,
+} from "./format-class-when";
 
 const zone = CLASSES_TIME_ZONE;
 
@@ -83,5 +90,16 @@ describe("timeZoneLabel", () => {
   it("nombra la de la academia y escribe las demás por su id", () => {
     expect(timeZoneLabel("America/Mexico_City")).toBe("hora de Ciudad de México");
     expect(timeZoneLabel("Europe/Madrid")).toBe("hora de Europe/Madrid");
+  });
+});
+
+describe("classDayParts", () => {
+  it("las tres palabras de la ficha del día, en la zona", () => {
+    expect(classDayParts(cdmx("2026-10-14", "23:30"), zone)).toEqual({ weekday: "mié", day: 14, month: "oct" });
+    expect(classDayParts(cdmx("2026-10-14", "23:30"), "Europe/Madrid")).toEqual({
+      weekday: "jue",
+      day: 15,
+      month: "oct",
+    });
   });
 });

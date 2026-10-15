@@ -1,0 +1,62 @@
+---
+description: "The phase of a class as a tag — a word, its icon and its tone — the same on every screen of the three roles; «En vivo» beats."
+---
+
+# `ClassStatusTag`
+
+|            |                                                                                                                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/shared/class-status-tag/class-status-tag.comp.tsx`                                                                                                                                                  |
+| Kind       | Server Component                                                                                                                                                                                                         |
+| Stylesheet | `class-status-tag.comp.css` → block `.class-status-tag` (on the `.platform-tag` primitive)                                                                                                                               |
+| Story      | `class-status-tag.stories.tsx` (`platform/shared/ClassStatusTag`): one story per phase, and «Por finalizar» as the student sees it                                                                                       |
+| Used by    | [`ClassRow`](/components/platform/shared/class-row); the class pages of the three roles (phases 5–7 of the rebuild)                                                                                                      |
+| Uses       | `classPhase` codes (`CLASS_PHASE`, `constants/platform/class-codes.const.ts`); the icons `CalendarIcon`, `VideoIcon`, `HourglassHalfIcon`, `CircleCheckIcon` and `BanIcon` in Classic Solid, inside the tag's own colour |
+
+## Purpose
+
+What a class is doing right now, said the same way everywhere: the phase the clock makes of it ([Classes › The phase of a class](/platform/classes#the-phase-of-a-class)), never the stored status.
+
+## Props
+
+| Prop       | Type                                | Required | Meaning                                                                                                       |
+| ---------- | ----------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------- |
+| `phase`    | `ClassPhaseCode`                    | yes      | `UPCOMING`, `OPEN`, `IN_PROGRESS`, `AWAITING_CLOSE`, `DONE` or `CANCELLED`.                                   |
+| `audience` | `"student" \| "teacher" \| "staff"` | yes      | The student reads «Finalizada» where the teacher and the staff read «Por finalizar»: nothing is theirs to do. |
+
+## Behaviour
+
+| Phase            | Says             | Tone                                            | Icon          |
+| ---------------- | ---------------- | ----------------------------------------------- | ------------- |
+| `UPCOMING`       | «Programada»     | neutral                                         | calendar      |
+| `OPEN`           | «Enlace abierto» | `_variant_wash`                                 | camera        |
+| `IN_PROGRESS`    | «En vivo»        | `_variant_live` (white on the danger red)       | a beating dot |
+| `AWAITING_CLOSE` | «Por finalizar»  | `_variant_warning`                              | hourglass     |
+| `DONE`           | «Finalizada»     | `_variant_success`                              | tick          |
+| `CANCELLED`      | «Cancelada»      | neutral (the muted grey on the neutral surface) | ban           |
+
+The dot of «En vivo» beats with `class-status-tag-pulse` (1.6 s) and stands still under `prefers-reduced-motion`.
+
+## Markup & styling
+
+Block `.class-status-tag` (30 lines), on a `<span class="platform-tag …">`: the tag's colour and icon come from the [primitive](/ui/styling#global-helpers); this block only draws the dot.
+
+**Elements:** `.class-status-tag__dot`
+
+**Animation:** `class-status-tag-pulse`, off under `prefers-reduced-motion`.
+
+**Tokens:** none of its own (the dot is `currentColor`).
+
+No media queries.
+
+## Usage
+
+```tsx
+import { ClassStatusTag } from "@/components/platform/shared/class-status-tag/class-status-tag.comp";
+
+<ClassStatusTag phase={row.phase} audience="staff" />;
+```
+
+## Related
+
+- [`ClassRow`](/components/platform/shared/class-row), [`ClassWhen`](/components/platform/shared/class-when).

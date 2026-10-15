@@ -101,8 +101,20 @@ import { CourseSourceForm } from "@/components/platform/sections/staff/courses/c
 import { NewCourseForm } from "@/components/platform/sections/staff/courses/new-course/new-course-form.comp";
 import { StaffEditorHead } from "@/components/platform/sections/staff/courses/staff-editor.comp";
 import { StaffPanel } from "@/components/platform/sections/staff/courses/staff-panel.comp";
-import { StaffTabs } from "@/components/platform/sections/staff/courses/staff-tabs.comp";
-import { courseTabs } from "@/components/platform/sections/staff/courses/staff-tabs.const";
+import { StaffTabs } from "@/components/platform/shared/staff-tabs/staff-tabs.comp";
+import { courseTabs } from "@/components/platform/shared/staff-tabs/staff-tabs.const";
+import { ClassAgenda } from "@/components/platform/shared/class-agenda/class-agenda.comp";
+import { ClassDateTile } from "@/components/platform/shared/class-date-tile/class-date-tile.comp";
+import { ClassRow } from "@/components/platform/shared/class-row/class-row.comp";
+import type { ClassRowData } from "@/components/platform/shared/class-row/class-row.types";
+import { ClassStatusTag } from "@/components/platform/shared/class-status-tag/class-status-tag.comp";
+import { ClassWhen } from "@/components/platform/shared/class-when/class-when.comp";
+import { CopyLinkButton } from "@/components/platform/shared/copy-link-button/copy-link-button.comp";
+import { FilterPills } from "@/components/platform/shared/filter-pills/filter-pills.comp";
+import { PlatformActionsMenu } from "@/components/platform/shared/platform-actions-menu/platform-actions-menu.comp";
+import { PlatformSearchField } from "@/components/platform/shared/platform-search-field/platform-search-field.comp";
+import { CLASS_PHASE } from "@/constants/platform/class-codes.const";
+import { CLASSES_NOW, CLASSES_TIME_ZONE, cdmx } from "@/lib/testing/fixtures/classes";
 import { SyllabusList } from "@/components/platform/sections/staff/courses/syllabus-list/syllabus-list.comp";
 import { TempPasswordNotice } from "@/components/platform/sections/staff/students/temp-password-notice.comp";
 import { NewStudyForm } from "@/components/platform/sections/studies/studies-list/new-study/new-study-form.comp";
@@ -222,6 +234,21 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
     </section>
   );
 }
+
+/** The class every tile of the classes' pieces shows: the Najdorf of the demo, today at noon, with its link open. */
+const OVERVIEW_CLASS_ROW: ClassRowData = {
+  id: "c2",
+  href: "/administracion/clases/c2",
+  title: "Repaso de la Najdorf: tus dudas",
+  phase: CLASS_PHASE.OPEN,
+  startIso: cdmx("2026-10-14", "12:00").toISOString(),
+  durationMin: 60,
+  timeZone: CLASSES_TIME_ZONE,
+  nowIso: CLASSES_NOW.toISOString(),
+  people: "GM Profesor Demo · Alumno Demo · Individual",
+  chips: [{ label: "Sin enlace", icon: "no-link", tone: "warning" }],
+  action: { kind: "link", label: "Agregar enlace", href: "/administracion/clases/c2" },
+};
 
 const SWATCHES = [
   "accent",
@@ -1315,7 +1342,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
           </Section>
 
           <Section title="Navigation">
-            <Tile name="StaffTabs" docs="platform-sections-staff-courses-stafftabs" surface width={480} height={160}>
+            <Tile name="StaffTabs" docs="platform-shared-stafftabs" surface width={480} height={160}>
               <StaffTabs tabs={courseTabs({ courseId: "4812", chapterCount: 6, gameCount: 148 })} />
             </Tile>
             <Tile name="OutlineList" docs="platform-sections-courses-lesson-view-outlinelist" width={400} height={304}>
@@ -1396,6 +1423,87 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             </Tile>
             <Tile name="PlatformNav" docs="platform-sections-shell-platformnav" surface width={960} height={152}>
               <PlatformNav groups={buildPlatformNavGroups({ isTeacher: false, isStaff: true })} />
+            </Tile>
+          </Section>
+
+          <Section title="Classes">
+            <Tile name="ClassStatusTag" docs="platform-shared-classstatustag" width={400} height={96}>
+              <div className="overview__row">
+                <ClassStatusTag phase={CLASS_PHASE.OPEN} audience="staff" />
+                <ClassStatusTag phase={CLASS_PHASE.IN_PROGRESS} audience="staff" />
+                <ClassStatusTag phase={CLASS_PHASE.AWAITING_CLOSE} audience="teacher" />
+                <ClassStatusTag phase={CLASS_PHASE.DONE} audience="student" />
+              </div>
+            </Tile>
+            <Tile name="ClassWhen" docs="platform-shared-classwhen" width={400} height={96}>
+              <div className="overview__row">
+                <ClassWhen
+                  startIso={OVERVIEW_CLASS_ROW.startIso}
+                  durationMin={60}
+                  timeZone={CLASSES_TIME_ZONE}
+                  nowIso={OVERVIEW_CLASS_ROW.nowIso}
+                  withZone
+                />
+              </div>
+            </Tile>
+            <Tile name="ClassDateTile" docs="platform-shared-classdatetile" width={400} height={112}>
+              <div className="overview__row">
+                <ClassDateTile startIso={OVERVIEW_CLASS_ROW.startIso} timeZone={CLASSES_TIME_ZONE} isToday />
+                <ClassDateTile
+                  startIso={cdmx("2026-10-17", "10:00").toISOString()}
+                  timeZone={CLASSES_TIME_ZONE}
+                  isToday={false}
+                  size="sm"
+                />
+              </div>
+            </Tile>
+            <Tile name="FilterPills" docs="platform-shared-filterpills" width={480} height={96}>
+              <FilterPills
+                label="Vista"
+                pills={[
+                  { label: "Próximas", href: "?vista=proximas", active: true },
+                  { label: "Pasadas", href: "?vista=pasadas", count: 12, active: false },
+                  { label: "Canceladas", href: "?vista=canceladas", active: false },
+                ]}
+              />
+            </Tile>
+            <Tile name="ClassRow" docs="platform-shared-classrow" width={960} height={112}>
+              <ClassRow row={OVERVIEW_CLASS_ROW} audience="staff" />
+            </Tile>
+            <Tile name="ClassAgenda" docs="platform-shared-classagenda" width={960} height={272}>
+              <ClassAgenda
+                audience="staff"
+                emptyLine="No hay clases esta semana."
+                foot={{ label: "Ver la semana siguiente", href: "?hasta=2026-10-27" }}
+                days={[
+                  {
+                    key: "2026-10-14",
+                    label: "Hoy · miércoles 14 de octubre",
+                    isToday: true,
+                    rows: [OVERVIEW_CLASS_ROW],
+                  },
+                ]}
+              />
+            </Tile>
+            <Tile name="PlatformSearchField" docs="platform-shared-platformsearchfield" width={400} height={96}>
+              <PlatformSearchField label="Buscar clase" placeholder="Buscar por tema, alumno o profesor" />
+            </Tile>
+            <Tile name="PlatformActionsMenu" docs="platform-shared-platformactionsmenu" width={400} height={96}>
+              <div className="overview__row overview__row_align_end">
+                <PlatformActionsMenu
+                  label="Acciones del pago"
+                  items={[
+                    { label: "Editar pago", onSelect: () => {} },
+                    { label: "Eliminar pago", onSelect: () => {}, tone: "danger" },
+                  ]}
+                />
+              </div>
+            </Tile>
+            <Tile name="CopyLinkButton" docs="platform-shared-copylinkbutton" width={400} height={96}>
+              <div className="overview__row">
+                <span>https://zoom.us/j/11111111111</span>
+                <CopyLinkButton url="https://zoom.us/j/11111111111" label="Copiar el enlace de la reunión" />
+              </div>
             </Tile>
           </Section>
 

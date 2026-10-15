@@ -99,7 +99,7 @@ export function safeTimeZone(timeZone: string | null | undefined): string {
 }
 
 /** The "yyyy-mm-dd" key of the day an instant falls in, in a zone (as `lib/study-streak.ts` keys days). */
-function dayKeyIn(date: Date, timeZone: string): string {
+export function dayKeyIn(date: Date, timeZone: string): string {
   const wall = wallClockIn(date, timeZone);
   const pad = (value: number) => value.toString().padStart(2, "0");
   return `${wall.year}-${pad(wall.month)}-${pad(wall.day)}`;

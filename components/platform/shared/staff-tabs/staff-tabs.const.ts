@@ -43,3 +43,11 @@ export function chapterTabs({ courseId, chapterId, lessonCount, gameCount }: Cha
     { label: "Partidas", href: staffRoutes.chapterGames(courseId, chapterId), count: gameCount },
   ];
 }
+
+/** The two pages of a student's record (2026-10-15): the account, and the payments with their classes. */
+export function studentTabs(userId: string): StaffTab[] {
+  return [
+    { label: "Cuenta", href: staffRoutes.studentDetail(userId) },
+    { label: "Pagos y clases", href: staffRoutes.studentPayments(userId) },
+  ];
+}

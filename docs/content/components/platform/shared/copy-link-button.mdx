@@ -1,0 +1,50 @@
+---
+description: "A quiet square button that copies a link to the clipboard and says so for two seconds: the tick in place of the copy icon, and «Enlace copiado» in a live region."
+---
+
+# `CopyLinkButton`
+
+|            |                                                                                              |
+| ---------- | -------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/copy-link-button/copy-link-button.comp.tsx`                      |
+| Kind       | Client Component                                                                             |
+| Stylesheet | `copy-link-button.comp.css` → block `.copy-link-button` (the button is a `.platform-button`) |
+| Story      | `copy-link-button.stories.tsx` (`platform/shared/CopyLinkButton`): at rest, copied (`play`)  |
+| Used by    | The class sheets, beside the meeting link (phases 5–6 of the rebuild)                        |
+| Uses       | `CopyIcon` and `CheckIcon` in Classic Solid                                                  |
+
+## Purpose
+
+The meeting link is copied more often than opened by whoever manages the class. One press, two seconds of «copied», and back.
+
+## Props
+
+| Prop    | Type     | Required | Meaning                                                |
+| ------- | -------- | -------- | ------------------------------------------------------ |
+| `url`   | `string` | yes      | What goes to the clipboard.                            |
+| `label` | `string` | yes      | The accessible name: «Copiar el enlace de la reunión». |
+
+## Behaviour
+
+- `navigator.clipboard.writeText`; where it is not available (an insecure context) the button does nothing it cannot do.
+- For two seconds the icon is the tick in the success ink and a visually hidden `role="status"` says «Enlace copiado».
+
+## Markup & styling
+
+Block `.copy-link-button` (19 lines).
+
+**Elements:** `.copy-link-button__done` (the tick's colour), `.copy-link-button__status` (visually hidden)
+
+**Tokens:** `--platform-success-ink`
+
+No media queries.
+
+## Usage
+
+```tsx
+<CopyLinkButton url={cls.meetingUrl} label="Copiar el enlace de la reunión" />
+```
+
+## Related
+
+- [`PlatformActionsMenu`](/components/platform/shared/platform-actions-menu), the other quiet square button of a row.

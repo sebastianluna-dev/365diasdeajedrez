@@ -1,0 +1,59 @@
+/* Filters as pills in a row that wraps: the accent's tint on the active one. */
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--platform-space-2);
+
+  & .filter-pills__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    min-height: 32px;
+    padding: var(--platform-space-1) var(--platform-space-3);
+    border: 1px solid var(--platform-border);
+    border-radius: 1000px;
+    background: var(--platform-surface);
+    color: var(--platform-text-muted);
+    font-size: var(--platform-type-sm);
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      background-color 140ms ease-out,
+      border-color 140ms ease-out,
+      color 140ms ease-out;
+  }
+
+  & .filter-pills__pill:hover {
+    border-color: var(--platform-border-strong);
+    color: var(--platform-text);
+  }
+
+  /* A filter, not a form: the accent's focus. */
+  & .filter-pills__pill:focus-visible {
+    outline: 2px solid var(--platform-accent-ink);
+    outline-offset: 2px;
+  }
+
+  & .filter-pills__pill_state_active {
+    border-color: var(--platform-accent-soft);
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+  }
+
+  & .filter-pills__check {
+    width: 12px;
+    height: 12px;
+  }
+
+  & .filter-pills__count {
+    padding: 0 var(--platform-space-2);
+    border-radius: 1000px;
+    background: var(--platform-surface-neutral);
+    font-size: var(--platform-type-xs);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .filter-pills__pill_state_active .filter-pills__count {
+    background: var(--platform-surface);
+  }
+}

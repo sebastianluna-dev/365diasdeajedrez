@@ -1,0 +1,54 @@
+/* Days one under the other, each a heading and its rows. */
+.class-agenda {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-6);
+
+  & .class-agenda__day {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+  }
+
+  & .class-agenda__heading {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-agenda__heading_state_today {
+    color: var(--platform-accent-ink);
+  }
+
+  & .class-agenda__rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .class-agenda__empty {
+    margin: 0;
+    padding: var(--platform-space-6);
+    border: 1px dashed var(--platform-border);
+    border-radius: 8px;
+    text-align: center;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-agenda__foot {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+  }
+
+  & .class-agenda__foot-link {
+    color: var(--platform-accent-ink);
+    font-weight: 600;
+  }
+}

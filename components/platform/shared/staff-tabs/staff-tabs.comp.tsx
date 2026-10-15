@@ -10,8 +10,8 @@ interface StaffTabsProps {
 }
 
 /**
- * Internal navigation of a panel record: course and chapter are split into
- * tabs that are PAGES.
+ * Internal navigation of a panel record: a course, a chapter and a student
+ * are split into tabs that are PAGES.
  *
  * They are links, not state: each tab has its URL, so it can be shared, the
  * back button works and each one loads only its data — a course's game list

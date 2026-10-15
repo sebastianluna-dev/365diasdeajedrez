@@ -1,0 +1,67 @@
+---
+description: "The «…» menu of a row or a card on Radix's DropdownMenu: a quiet square button and a short list of actions, not modal and not portalled so it works inside a popup; a disabled item carries its reason."
+---
+
+# `PlatformActionsMenu`
+
+|            |                                                                                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-actions-menu/platform-actions-menu.comp.tsx`                                                                    |
+| Kind       | Client Component                                                                                                                                     |
+| Stylesheet | `platform-actions-menu.comp.css` → block `.platform-actions-menu` (the trigger is a `.platform-button`)                                              |
+| Story      | `platform-actions-menu.stories.tsx` (`platform/shared/PlatformActionsMenu`): closed, open (`play`), with a disabled reason, inside a dialog (`play`) |
+| Used by    | The payment card, the class sheets and the blocks' rows (phases 4–6 of the rebuild)                                                                  |
+| Uses       | `DropdownMenu` from `radix-ui`; `EllipsisVerticalIcon` in Classic Solid; `next/link` for an item with `href`                                         |
+
+## Purpose
+
+The actions that do not deserve a button each: a quiet square «…» ([Buttons](/ui/styling#buttons): `_variant_quiet _size_sm _shape_square`) and a list under it, aligned to its right. Keyboard, focus, Escape and a click outside come with the primitive.
+
+## Props
+
+| Prop    | Type                                                                                                              | Required | Meaning                                             |
+| ------- | ----------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------- |
+| `label` | `string`                                                                                                          | yes      | The trigger's accessible name: «Acciones del pago». |
+| `items` | `{ label: string; onSelect?: () => void; href?: string; disabled?: boolean; reason?: string; tone?: "danger" }[]` | yes      | One per action; an `href` makes it a link.          |
+
+## Behaviour
+
+- **Not modal and NOT portalled** (`modal={false}`, no `Portal`): a portal to `<body>` would be inert under a modal `<dialog>`, and these menus live in popups too.
+- **A disabled item stays on the list**, greyed, with its `reason` as a second line — never a tooltip, since a menu item holds no other control (decided D19).
+- Enters in 160 ms (`ease-out`) and leaves in 120 (`ease-in`) on its `data-state`; off under `prefers-reduced-motion`.
+
+## Markup & styling
+
+Block `.platform-actions-menu` (101 lines): a white card of 200–280px with the popup's shadow.
+
+**Elements:** `.platform-actions-menu__item`, `.platform-actions-menu__label`, `.platform-actions-menu__reason`
+
+**Modifiers and states:** `.platform-actions-menu__item_tone_danger`; the primitive's `[data-highlighted]`, `[data-disabled]` and `[data-state]`
+
+**Animation:** `platform-actions-menu-in`, `platform-actions-menu-out`, off under `prefers-reduced-motion`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-bg`, `--platform-danger`, `--platform-danger-soft`, `--platform-shadow-popup`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+```tsx
+<PlatformActionsMenu
+  label="Acciones del pago"
+  items={[
+    { label: "Editar pago", onSelect: () => popup.current?.open() },
+    {
+      label: "Eliminar pago",
+      tone: "danger",
+      disabled: taken > 0,
+      reason: "Ya tiene clases tomadas.",
+      onSelect: () => confirm.current?.open(),
+    },
+  ]}
+/>
+```
+
+## Related
+
+- [`PlatformNavMenu`](/components/platform/shared/platform-nav-menu), the bar's dropdown on the same primitive (portalled, since no dialog is ever open under the bar).

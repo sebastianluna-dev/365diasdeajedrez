@@ -4,13 +4,13 @@ description: "How a course names itself on its three pages: its name, the status
 
 # `CourseRecordHead`
 
-|            |                                                                                                                                                                                                                                            |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/staff/courses/course-record-head.comp.tsx`                                                                                                                                                                   |
-| Kind       | Server Component                                                                                                                                                                                                                           |
-| Stylesheet | None: the header and the tabs bring their own.                                                                                                                                                                                             |
-| Used by    | `app/(platform)/administracion/cursos/[courseId]/(ficha)/layout.tsx`                                                                                                                                                                       |
-| Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`CourseStatusMenu`](/components/platform/sections/staff/courses/course-status-menu), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs) |
+|            |                                                                                                                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/course-record-head.comp.tsx`                                                                                                                                                   |
+| Kind       | Server Component                                                                                                                                                                                                           |
+| Stylesheet | None: the header and the tabs bring their own.                                                                                                                                                                             |
+| Used by    | `app/(platform)/administracion/cursos/[courseId]/(ficha)/layout.tsx`                                                                                                                                                       |
+| Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`CourseStatusMenu`](/components/platform/sections/staff/courses/course-status-menu), [`StaffTabs`](/components/platform/shared/staff-tabs) |
 
 ## Purpose
 
@@ -30,7 +30,7 @@ It is drawn by the record's **layout** and not by each page, for two reasons: th
 
 - The status pill is [`CourseStatusMenu`](/components/platform/sections/staff/courses/course-status-menu) on the three pages, not only on «Curso»: the status is the record's, not that tab's.
 - «Ver en la plataforma» appears only while the course is published, and leads to the student's information page by its slug.
-- The tabs come from `courseTabs()` (`staff-tabs.const.ts`), and which one is current is read from the address by [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs).
+- The tabs come from `courseTabs()` (`staff-tabs.const.ts`), and which one is current is read from the address by [`StaffTabs`](/components/platform/shared/staff-tabs).
 
 ## Related
 

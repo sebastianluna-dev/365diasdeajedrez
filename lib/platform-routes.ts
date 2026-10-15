@@ -148,6 +148,8 @@ export const staffRoutes = {
   students: "/administracion/alumnos",
   newStudent: "/administracion/alumnos/nuevo",
   studentDetail: (userId: string) => `/administracion/alumnos/${userId}`,
+  /** The student's payments and the classes they cover, the second tab of their record. */
+  studentPayments: (userId: string) => `/administracion/alumnos/${userId}/pagos`,
   teachers: "/administracion/profesores",
   newTeacher: "/administracion/profesores/nuevo",
   teacherDetail: (teacherId: string) => `/administracion/profesores/${teacherId}`,

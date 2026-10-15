@@ -1,0 +1,56 @@
+---
+description: "One class in a list of the staff or the teacher: the date tile with the hours, the phase, the topic and the people, the chips and an action; the whole row is the link, as a card under 640px."
+---
+
+# `ClassRow`
+
+|            |                                                                                                                                                                                                                                          |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/platform/shared/class-row/class-row.comp.tsx`, `class-row.types.ts` (`ClassRowData`, `ClassRowChip`, `ClassRowActionData`)                                                                                                   |
+| Kind       | Server Component                                                                                                                                                                                                                         |
+| Stylesheet | `class-row.comp.css` → block `.class-row`                                                                                                                                                                                                |
+| Story      | `class-row.stories.tsx` (`platform/shared/ClassRow`): the staff's upcoming, unpaid, free and live rows, the teacher's to-prepare and awaiting-close rows, a cancelled one, and the card on a phone                                       |
+| Used by    | [`ClassAgenda`](/components/platform/shared/class-agenda); the «Pasadas» lists under 640px (phases 5–6 of the rebuild)                                                                                                                   |
+| Composes   | [`ClassDateTile`](/components/platform/shared/class-date-tile), [`ClassStatusTag`](/components/platform/shared/class-status-tag)                                                                                                         |
+| Uses       | `formatClassHours` and `dayKeyIn`; the chips' icons in Classic Solid (`LinkSlashIcon`, `HandHoldingDollarIcon`, `GiftIcon`, `CalendarUsersIcon`, `EyeIcon`, `ClockIcon`, `LockIcon`, `FileMinusIcon`, `PenLineIcon`); `ChevronRightIcon` |
+
+## Purpose
+
+The row every list of classes is made of, for the two roles that manage them. **It receives data, not components**: `ClassRowData` is what a service maps a class to, and the action at its end is a datum too (`ClassRowActionData`, this phase a link; phases 5 and 6 add the ones that open a popup through `ClassRowAction`). The staff's chips say what needs them («Sin enlace», «1 sin pago», «Gratis», «Grupal · 4 de 6 plazas»); the teacher's say what there is to prepare («2 para preparar», «1 para después», «1 en tu guion», «Sin contenido», «Sin tema») and never a word about money.
+
+## Props
+
+| Prop       | Type                   | Required | Meaning                                                                                        |
+| ---------- | ---------------------- | -------- | ---------------------------------------------------------------------------------------------- |
+| `row`      | `ClassRowData`         | yes      | `{ id, href, title, phase, startIso, durationMin, timeZone, nowIso, people, chips, action? }`. |
+| `audience` | `"staff" \| "teacher"` | yes      | Whose list it is: the tag's words differ.                                                      |
+
+`ClassRowChip` is `{ label, icon, tone? }` with `icon` one of `no-link`, `unpaid`, `free`, `group`, `prepare`, `after`, `script`, `no-content`, `no-topic` and `tone` `warning`, `success` or `neutral`.
+
+## Behaviour
+
+- **The whole row opens the class**: the title is the `<a>`, and its `::after` covers the row (`position: absolute; inset: 0`); the action sits above it (`position: relative; z-index: 1`). Nothing interactive is nested.
+- Today's tile wears the accent (`dayKeyIn` of the start and of `nowIso`, in the reader's zone).
+- Without an action, a chevron says the row leads somewhere.
+
+## Markup & styling
+
+Block `.class-row` (173 lines): a 64px grid of five columns — the date strip (112px), the phase (148px), the topic and the people, the chips (200px), the action (96px).
+
+**Elements:** `.class-row__when`, `.class-row__hours`, `.class-row__status`, `.class-row__what`, `.class-row__title`, `.class-row__people`, `.class-row__chips`, `.class-row__chip`, `.class-row__chip-icon`, `.class-row__action`, `.class-row__chevron`
+
+**Modifiers and states:** `.class-row__chip_tone_warning`, `.class-row__chip_tone_success`
+
+**Breakpoints:** `(width < 1024px)` folds the phase and the chips under the topic; `(width < 640px)` makes the row a card with a border, the strip and the phase on top. The hover fade is off under `prefers-reduced-motion`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-success-ink`, `--platform-success-soft`, `--platform-surface`, `--platform-surface-neutral`, `--platform-surface-soft`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-warning-ink`, `--platform-warning-soft`
+
+## Usage
+
+```tsx
+<ClassRow row={row} audience="staff" />
+```
+
+## Related
+
+- [`ClassAgenda`](/components/platform/shared/class-agenda), which lists them by day.

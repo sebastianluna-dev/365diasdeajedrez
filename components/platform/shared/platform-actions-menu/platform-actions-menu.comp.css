@@ -1,0 +1,101 @@
+/* The list under the «…» button: a white card, one action per line, a
+   reason under an action that cannot be chosen. It comes in in 160ms and goes
+   out in 120 on its `data-state`. */
+.platform-actions-menu {
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-0-5);
+  min-width: 200px;
+  max-width: 280px;
+  padding: var(--platform-space-2);
+  border-radius: 8px;
+  background: var(--platform-surface);
+  box-shadow: var(--platform-shadow-popup);
+  font-size: var(--platform-type-md);
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+
+  &[data-state="open"] {
+    animation: platform-actions-menu-in 160ms ease-out;
+  }
+
+  &[data-state="closed"] {
+    animation: platform-actions-menu-out 120ms ease-in forwards;
+  }
+
+  & .platform-actions-menu__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+    padding: var(--platform-space-2) var(--platform-space-3);
+    border-radius: 8px;
+    color: var(--platform-text);
+    text-decoration: none;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+
+    &[data-highlighted] {
+      background: var(--platform-bg);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-accent-ink);
+      outline-offset: -2px;
+    }
+
+    &[data-disabled] {
+      color: var(--platform-text-muted);
+      cursor: default;
+    }
+  }
+
+  & .platform-actions-menu__item_tone_danger {
+    color: var(--platform-danger);
+  }
+
+  & .platform-actions-menu__item_tone_danger[data-highlighted] {
+    background: var(--platform-danger-soft);
+  }
+
+  & .platform-actions-menu__label {
+    font-weight: 600;
+  }
+
+  & .platform-actions-menu__reason {
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &[data-state="open"],
+    &[data-state="closed"] {
+      animation: none;
+    }
+  }
+}
+
+/* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */
+@keyframes platform-actions-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes platform-actions-menu-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}

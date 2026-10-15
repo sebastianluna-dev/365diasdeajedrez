@@ -1,0 +1,57 @@
+/* A calendar page: the weekday on top, the day large, the month under it. */
+.class-date-tile {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  min-height: 64px;
+  padding: var(--platform-space-1) 0;
+  border: 1px solid var(--platform-border);
+  border-radius: 8px;
+  background: var(--platform-surface-soft);
+  color: var(--platform-text-muted);
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+
+  & .class-date-tile__weekday,
+  & .class-date-tile__month {
+    font-size: var(--platform-type-xs);
+    font-weight: 700;
+  }
+
+  & .class-date-tile__day {
+    font-size: var(--platform-type-2xl);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: var(--platform-text);
+  }
+
+  /* Today: the accent's border and its ink on the figures. */
+  &.class-date-tile_state_today {
+    border-color: var(--platform-accent);
+    background: var(--platform-accent-wash);
+    color: var(--platform-accent-ink);
+  }
+
+  &.class-date-tile_state_today .class-date-tile__day {
+    color: var(--platform-accent-ink);
+  }
+
+  /* The row's size: 44 wide, 52 tall. */
+  &.class-date-tile_size_sm {
+    width: 44px;
+    min-height: 52px;
+    letter-spacing: 0.04em;
+  }
+
+  &.class-date-tile_size_sm .class-date-tile__weekday,
+  &.class-date-tile_size_sm .class-date-tile__month {
+    font-size: var(--platform-type-2xs);
+  }
+
+  &.class-date-tile_size_sm .class-date-tile__day {
+    font-size: var(--platform-type-xl);
+  }
+}

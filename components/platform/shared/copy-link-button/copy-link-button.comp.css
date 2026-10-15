@@ -1,0 +1,19 @@
+/* The button is `.platform-button` (quiet, small, square); this block only
+   colours the tick and hides the live region. */
+.copy-link-button {
+  display: inline-flex;
+  align-items: center;
+
+  & .copy-link-button__done {
+    color: var(--platform-success-ink);
+  }
+
+  & .copy-link-button__status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}

@@ -1,0 +1,30 @@
+/* The tag is `.platform-tag` with its tone (platform.css); this block only
+   draws the beating dot of «En vivo». */
+.class-status-tag {
+  & .class-status-tag__dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: class-status-tag-pulse 1.6s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .class-status-tag__dot {
+      animation: none;
+    }
+  }
+}
+
+/* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */
+@keyframes class-status-tag-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+}

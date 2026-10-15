@@ -1,7 +1,7 @@
 import type { ChapterAdminDetail } from "@/services/staff-courses/staff-courses.types";
 import { StaffEditorHead } from "./staff-editor.comp";
-import { StaffTabs } from "./staff-tabs.comp";
-import { chapterTabs } from "./staff-tabs.const";
+import { StaffTabs } from "@/components/platform/shared/staff-tabs/staff-tabs.comp";
+import { chapterTabs } from "@/components/platform/shared/staff-tabs/staff-tabs.const";
 
 interface ChapterRecordHeadProps {
   chapter: ChapterAdminDetail;

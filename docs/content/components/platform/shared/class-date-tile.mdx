@@ -1,0 +1,53 @@
+---
+description: "The date of a class as a calendar page — weekday, day in large figures, month — in the reader's zone; today's wears the accent's border."
+---
+
+# `ClassDateTile`
+
+|            |                                                                                                                  |
+| ---------- | ---------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/class-date-tile/class-date-tile.comp.tsx`                                            |
+| Kind       | Server Component                                                                                                 |
+| Stylesheet | `class-date-tile.comp.css` → block `.class-date-tile`                                                            |
+| Story      | `class-date-tile.stories.tsx` (`platform/shared/ClassDateTile`): today, another day, the row's size              |
+| Used by    | [`ClassRow`](/components/platform/shared/class-row); the student's class card and the teacher's day (phases 6–7) |
+| Uses       | `classDayParts` (`lib/format-class-when.ts`)                                                                     |
+
+## Purpose
+
+A date one recognises before reading it: «MIÉ · 14 · OCT» as a calendar page, with today in the accent. It is decorative — `aria-hidden` — beside a [`ClassWhen`](/components/platform/shared/class-when) that says the same in words.
+
+## Props
+
+| Prop       | Type           | Required | Meaning                                          |
+| ---------- | -------------- | -------- | ------------------------------------------------ |
+| `startIso` | `string`       | yes      | The class's start.                               |
+| `timeZone` | `string`       | yes      | The zone the reader reads in.                    |
+| `isToday`  | `boolean`      | yes      | The accent's border and wash.                    |
+| `size`     | `"md" \| "sm"` | no       | 64px wide by default; `sm` is the row's 44 × 52. |
+
+## Behaviour
+
+None.
+
+## Markup & styling
+
+Block `.class-date-tile` (57 lines): a column of three words in small capitals, the day in `type-2xl` (800).
+
+**Elements:** `.class-date-tile__weekday`, `.class-date-tile__day`, `.class-date-tile__month`
+
+**Modifiers and states:** `.class-date-tile_state_today` (the accent's border, wash and ink), `.class-date-tile_size_sm` (44 × 52, the day in `type-xl`)
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-border`, `--platform-surface-soft`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+```tsx
+<ClassDateTile startIso={cls.startIso} timeZone={zone} isToday={cls.isToday} size="sm" />
+```
+
+## Related
+
+- [`ClassWhen`](/components/platform/shared/class-when), [`ClassRow`](/components/platform/shared/class-row).

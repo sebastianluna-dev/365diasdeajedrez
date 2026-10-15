@@ -4,8 +4,8 @@ import { platformRoutes } from "@/lib/platform-routes";
 import type { CatalogOption, CourseAdminDetail } from "@/services/staff-courses/staff-courses.types";
 import { CourseStatusMenu } from "./course-status/course-status-menu.comp";
 import { StaffEditorHead } from "./staff-editor.comp";
-import { StaffTabs } from "./staff-tabs.comp";
-import { courseTabs } from "./staff-tabs.const";
+import { StaffTabs } from "@/components/platform/shared/staff-tabs/staff-tabs.comp";
+import { courseTabs } from "@/components/platform/shared/staff-tabs/staff-tabs.const";
 
 interface CourseRecordHeadProps {
   course: CourseAdminDetail;

@@ -1,0 +1,46 @@
+---
+description: "When a class is, the one way on every screen: the short day and the hours in the reader's zone, «Hoy», «Mañana», «Ayer», the year when it differs, the zone when asked."
+---
+
+# `ClassWhen`
+
+|            |                                                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/class-when/class-when.comp.tsx`                                                       |
+| Kind       | Server Component                                                                                                  |
+| Stylesheet | none: a bare `<time>` that inherits                                                                               |
+| Story      | `class-when.stories.tsx` (`platform/shared/ClassWhen`): today, tomorrow, another day, another year, with the zone |
+| Used by    | The class pages and popups of the three roles (phases 4–7 of the rebuild)                                         |
+| Uses       | `formatClassWhen` (`lib/format-class-when.ts`)                                                                    |
+
+## Purpose
+
+One spelling of a class's date and hours, so «mié 14 oct · 12:00–13:00» reads the same in a row, a card, a popup and a notice. The zone is the reader's: the academy's for the staff and the student, the teacher's own for them ([Classes › The phase of a class](/platform/classes#the-phase-of-a-class)).
+
+## Props
+
+| Prop          | Type      | Required | Meaning                                                                           |
+| ------------- | --------- | -------- | --------------------------------------------------------------------------------- |
+| `startIso`    | `string`  | yes      | The start, ISO.                                                                   |
+| `durationMin` | `number`  | yes      |                                                                                   |
+| `timeZone`    | `string`  | yes      | The zone the reader reads in.                                                     |
+| `nowIso`      | `string`  | yes      | The instant the page was read: «Hoy», «Mañana», «Ayer» and the year hang from it. |
+| `withZone`    | `boolean` | no       | Appends «(hora de Ciudad de México)».                                             |
+
+## Behaviour
+
+A `<time dateTime={startIso}>` whose text is `formatClassWhen`'s. Nothing else.
+
+## Markup & styling
+
+No stylesheet: the element inherits the text around it.
+
+## Usage
+
+```tsx
+<ClassWhen startIso={cls.startIso} durationMin={cls.durationMin} timeZone={zone} nowIso={nowIso} />
+```
+
+## Related
+
+- [`ClassDateTile`](/components/platform/shared/class-date-tile), the same date as a tile beside it.

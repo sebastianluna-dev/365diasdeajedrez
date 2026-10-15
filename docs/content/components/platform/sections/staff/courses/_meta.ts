@@ -25,7 +25,6 @@ const meta: MetaRecord = {
   "syllabus-list": "SyllabusList",
   "staff-editor": "StaffEditorHead",
   "staff-panel": "StaffPanel",
-  "staff-tabs": "StaffTabs",
 };
 
 export default meta;
