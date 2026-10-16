@@ -34,13 +34,20 @@ export function dayKey(date: Date, timeZone: string): string {
  * The instant a day starts, to bound queries: the midnight of that date IN that
  * zone, expressed in UTC, which is how dates are stored.
  *
- * The offset is measured at noon and not at midnight: on the night of the clock
- * change, midnight may not exist or may exist twice, and noon always falls
- * cleanly inside the day being asked about.
+ * The offset is measured at noon first: on the night of the clock change,
+ * midnight may not exist or may exist twice, and noon always falls cleanly
+ * inside the day being asked about. But on the day the clock changes between
+ * midnight and noon, midnight had the OTHER offset (Mexico City's last change,
+ * 30 October 2022 at 02:00, started that day at 05:00 UTC, not 06:00), so the
+ * guess is corrected once with the offset at the guess itself, as long as that
+ * still falls on the same day.
  */
 export function startOfDay(key: string, timeZone: string): Date {
+  const midnight = Date.parse(`${key}T00:00:00.000Z`);
   const midday = new Date(`${key}T12:00:00.000Z`);
-  return new Date(Date.parse(`${key}T00:00:00.000Z`) - offsetMsAt(midday, timeZone));
+  const guess = new Date(midnight - offsetMsAt(midday, timeZone));
+  const corrected = new Date(midnight - offsetMsAt(guess, timeZone));
+  return dayKey(corrected, timeZone) === key ? corrected : guess;
 }
 
 /**

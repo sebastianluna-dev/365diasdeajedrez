@@ -7,6 +7,13 @@
 // tuning an opaque factor.
 //
 // Pure module: no Prisma, no React, so it can be exercised whole in tests.
+//
+// Two ladders live here: the line trainer's (`applyReview`, from the moment of
+// the review) and the exercises' (`applyExerciseReview`, D23), whose dates are
+// the start of a study day.
+
+import { STUDY_DAY_TIMEZONE } from "@/constants/platform/timezones.const";
+import { dayKey, startOfDay } from "@/lib/study-streak";
 
 /**
  * Days until the next review, per rung.
@@ -72,4 +79,79 @@ export function isDueForReview(nextReviewAt: Date | null | undefined, now: Date 
 export function accuracyPercent(correctMoves: number, requiredMoves: number): number {
   if (requiredMoves <= 0) return 0;
   return Math.round((Math.min(correctMoves, requiredMoves) / requiredMoves) * 100);
+}
+
+// --- Exercises (D23, D33) --------------------------------------------------------
+
+/**
+ * Days until a failed or hinted exercise comes back, per step. A failure
+ * returns the next study day; each clean solve climbs a step, and a clean
+ * solve on the last one graduates it out of review.
+ */
+export const EXERCISE_REVIEW_INTERVALS_DAYS = [1, 3, 7, 21, 60] as const;
+
+const LAST_EXERCISE_STEP = EXERCISE_REVIEW_INTERVALS_DAYS.length - 1;
+
+/** The step a hinted first solve enters review at: three days, sooner than a clean one, which never returns. */
+const HINTED_ENTRY_STEP = 1;
+
+/**
+ * How a scored attempt went, for the review: «clean» is PASSED with no hint,
+ * «hinted» PASSED with a hint (D33: passed, not perfect), «failed» FAILED,
+ * «Ver la solución» included.
+ */
+export type ExerciseOutcome = "clean" | "hinted" | "failed";
+
+export interface ExerciseReviewState {
+  /** Null: not in review. */
+  reviewStep: number | null;
+}
+
+export interface ExerciseReviewOutcome {
+  reviewStep: number | null;
+  nextReviewAt: Date | null;
+}
+
+/** The start of the study day `days` days after the one `now` falls in. */
+function studyDayStart(now: Date, days: number, timeZone: string): Date {
+  const key = dayKey(now, timeZone);
+  const target = new Date(Date.parse(`${key}T00:00:00.000Z`) + days * DAY_MS).toISOString().slice(0, 10);
+  return startOfDay(target, timeZone);
+}
+
+/**
+ * The review state after a scored attempt:
+ *
+ * | Before                 | clean             | hinted          | failed       |
+ * | ---------------------- | ----------------- | --------------- | ------------ |
+ * | not in review (`null`) | stays out         | step 1 (3 days) | step 0 (1 day) |
+ * | step k < 4             | step k+1          | stays k         | step 0       |
+ * | step 4 (60 days)       | graduates (`null`)| stays 4         | step 0       |
+ *
+ * The date is the START of a study day (STUDY_DAY_TIMEZONE), so an exercise
+ * due «today» is due all day, whatever the hour it failed at.
+ */
+export function applyExerciseReview(
+  state: ExerciseReviewState,
+  outcome: ExerciseOutcome,
+  now: Date,
+  timeZone: string = STUDY_DAY_TIMEZONE,
+): ExerciseReviewOutcome {
+  const current = state.reviewStep === null ? null : Math.min(Math.max(state.reviewStep, 0), LAST_EXERCISE_STEP);
+
+  let reviewStep: number | null;
+  if (outcome === "failed") reviewStep = 0;
+  else if (outcome === "hinted") reviewStep = current ?? HINTED_ENTRY_STEP;
+  else if (current === null || current === LAST_EXERCISE_STEP) reviewStep = null;
+  else reviewStep = current + 1;
+
+  if (reviewStep === null) return { reviewStep: null, nextReviewAt: null };
+  const days = EXERCISE_REVIEW_INTERVALS_DAYS[reviewStep];
+  if (days === undefined) throw new Error(`Sin intervalo de repaso para el paso ${reviewStep}.`);
+  return { reviewStep, nextReviewAt: studyDayStart(now, days, timeZone) };
+}
+
+/** Is the exercise due for review? Without a date it is not in review, so no. */
+export function isExerciseDue(nextReviewAt: Date | null, now: Date): boolean {
+  return nextReviewAt !== null && nextReviewAt.getTime() <= now.getTime();
 }

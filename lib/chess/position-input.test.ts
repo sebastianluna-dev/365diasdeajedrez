@@ -13,6 +13,11 @@ describe("pgnOfFen", () => {
     expect(pgnOfFen("not a fen")).toBeNull();
     expect(pgnOfFen(`${LUCENA} ${"x".repeat(200)}`)).toBeNull();
   });
+
+  it("refuses an impossible check and impossible material, like an exercise's start", () => {
+    expect(pgnOfFen("4k3/8/8/8/8/3n1n2/8/4K3 w - - 0 1")).toBeNull();
+    expect(pgnOfFen("4k3/8/8/P7/8/8/PPPPPPPP/4K3 w - - 0 1")).toBeNull();
+  });
 });
 
 describe("isOpenablePgn", () => {
@@ -20,6 +25,11 @@ describe("isOpenablePgn", () => {
     expect(isOpenablePgn("1. e4 e5 2. Nf3 *")).toBe(true);
     expect(isOpenablePgn(`[FEN "${LUCENA}"]\n[SetUp "1"]\n\n*`)).toBe(true);
     expect(isOpenablePgn("hola")).toBe(false);
+  });
+
+  it("refuses a broken [FEN] instead of opening the standard start, and another variant", () => {
+    expect(isOpenablePgn(`[FEN "P3k3/8/8/8/8/8/8/4K3 w - - 0 1"]\n[SetUp "1"]\n\n1. Kf2 *`)).toBe(false);
+    expect(isOpenablePgn(`[Variant "Atomic"]\n\n1. e4 *`)).toBe(false);
   });
 });
 

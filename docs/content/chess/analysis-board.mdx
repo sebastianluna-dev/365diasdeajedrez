@@ -16,16 +16,16 @@ The study's own viewer — the notation with its variations, the engine, the too
 
 `resolveAnalysisSource` (`services/analysis/analysis.service.ts`) reads the URL through each source's own visibility rule; a source the person may not see opens an empty board, as if nothing had been asked.
 
-| URL                                   | Opens                                                         |
-| ------------------------------------- | ------------------------------------------------------------- |
-| `?fen=<FEN>`                          | The position, if it can exist (`pgnOfFen`, ≤ 120 characters). |
-| `?partida=<playedGameId>`             | A played game (`getPlayedGame`, the profile's visibility).    |
-| `?estudio=<studyId>&partida=<gameId>` | A study's game (`getGameById`, the studies' visibility).      |
-| nothing                               | What the tab kept, or the starting position.                  |
+| URL                                   | Opens                                                                                          |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `?fen=<FEN>`                          | The position, if it can exist (`pgnOfFen`, ≤ 120 characters; no impossible check or material). |
+| `?partida=<playedGameId>`             | A played game (`getPlayedGame`, the profile's visibility).                                     |
+| `?estudio=<studyId>&partida=<gameId>` | A study's game (`getGameById`, the studies' visibility).                                       |
+| nothing                               | What the tab kept, or the starting position.                                                   |
 
 A PGN never travels in the URL. `platformRoutes.analysisBoard(source?)` builds the three.
 
-**Loading a FEN or a PGN** is checked in the browser by `readPositionInput` (`lib/chess/position-input.ts`, pure and tested): a FEN that can exist on a board, kings and all; a PGN with a move or a starting position; the PGN when both fields have text. A failure says «No es un FEN válido.» or «No es un PGN válido.» under its own field and leaves the board as it was.
+**Loading a FEN or a PGN** is checked in the browser by `readPositionInput` (`lib/chess/position-input.ts`, pure and tested): a FEN that can exist on a board, kings and all, with no check or material no game could reach (`positionPlausibility`); a PGN with a move or a starting position, whose `[FEN]` is read as strictly as an exercise's (`readSolutionStart`: a broken one, or another `[Variant]`, is refused rather than opened as the standard start); the PGN when both fields have text. A failure says «No es un FEN válido.» or «No es un PGN válido.» under its own field and leaves the board as it was.
 
 ## Playing a position against the module
 

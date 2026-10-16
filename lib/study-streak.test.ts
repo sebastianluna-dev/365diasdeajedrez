@@ -46,6 +46,24 @@ describe("startOfDay", () => {
     expect(startOfDay("2026-03-01", "Europe/Madrid").toISOString()).toBe("2026-02-28T23:00:00.000Z");
     expect(startOfDay("2026-04-01", "Europe/Madrid").toISOString()).toBe("2026-03-31T22:00:00.000Z");
   });
+
+  it("acierta también el mismo día del cambio, que empieza con el desfase de antes", () => {
+    // Madrid moves forward at 02:00 on 29 March 2026: that day started at 00:00 CET.
+    expect(startOfDay("2026-03-29", "Europe/Madrid").toISOString()).toBe("2026-03-28T23:00:00.000Z");
+    // Mexico City last moved back at 02:00 on 30 October 2022: that day started at 00:00 CDT.
+    expect(startOfDay("2022-10-30", MX).toISOString()).toBe("2022-10-30T05:00:00.000Z");
+    // Santiago skips midnight on 6 September 2026: that day starts at 01:00.
+    expect(startOfDay("2026-09-06", "America/Santiago").toISOString()).toBe("2026-09-06T04:00:00.000Z");
+    for (const [key, zone] of [
+      ["2026-03-29", "Europe/Madrid"],
+      ["2022-10-30", MX],
+      ["2026-09-06", "America/Santiago"],
+      ["2026-11-01", "America/New_York"],
+    ] as const) {
+      expect(dayKey(startOfDay(key, zone), zone)).toBe(key);
+      expect(dayKey(new Date(startOfDay(key, zone).getTime() - 1), zone)).not.toBe(key);
+    }
+  });
 });
 
 describe("streakLength", () => {
