@@ -2,6 +2,7 @@ import type { SolutionProblem, SolutionWarning } from "@/lib/chess/exercise-form
 import { numberedMoveLabel, sanToSpanish } from "@/lib/chess/notation";
 import { parsePgnTree, type PgnTree } from "@/lib/chess/pgn-tree";
 import type { SetupProblem } from "@/lib/chess/position-setup";
+import { SERIES_LIMITS } from "@/constants/platform/exercise.const";
 
 // What the exercise editor says, in one place (docs → Chess → Library for the
 // position setup and the solution's rules). «Ejercicio» is masculine: every
@@ -53,6 +54,14 @@ export const EXERCISE_ERROR_MESSAGES: Record<string, string> = {
   unsupportedVariant: "Sólo se admite el ajedrez estándar.",
   mateInMissing: "Elige en cuántas jugadas es el mate.",
   mateInOnSequence: "Una secuencia no lleva número de jugadas de mate.",
+  seriesTitle: "Escribe un título para la serie.",
+  seriesDescription: "La descripción es demasiado larga.",
+  seriesNotFound: "Esa serie ya no existe o no es tuya.",
+  seriesChanged: "La serie cambió mientras tanto: vuelve a intentarlo.",
+  seriesExercises: "Elige al menos un ejercicio.",
+  seriesNotPickable: "Alguno de esos ejercicios ya no se puede agregar: cierra la ventana y vuelve a abrirla.",
+  seriesFull: `Una serie tiene como máximo ${SERIES_LIMITS.items} ejercicios.`,
+  notAssigned: "Ese alumno ya no está asignado contigo.",
 };
 
 /** What the address's `?aviso=` says on the exercise pages. */
@@ -63,6 +72,13 @@ export const EXERCISE_NOTICES = {
   exerciseArchived: "Ejercicio archivado.",
   exerciseRestored: "Ejercicio restaurado: vuelve a estar listo.",
   exerciseDeleted: "Ejercicio eliminado.",
+  seriesCreated: "Serie creada: agrégale ejercicios y dásela a tus alumnos.",
+  seriesSaved: "Serie guardada.",
+  seriesExercisesAdded: "Ejercicios agregados a la serie.",
+  seriesExerciseRemoved: "Ejercicio quitado de la serie: sigue en tu banco.",
+  seriesDeleted: "Serie eliminada. Sus ejercicios siguen en tu banco.",
+  seriesShared: "Listo: la verá en «Ejercicios».",
+  seriesUnshared: "Ese alumno ya no tiene la serie.",
 } as const satisfies Record<string, string>;
 
 export type ExerciseNoticeCode = keyof typeof EXERCISE_NOTICES;

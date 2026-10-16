@@ -1,0 +1,25 @@
+---
+description: "«Eliminar la serie», at the foot of its page's aside, behind its confirmation: the exercises stay in the bank and the students' attempts in their history."
+---
+
+# `DeleteSeries`
+
+|          |                                                                                                                                    |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| File     | `components/platform/sections/teacher/exercises/delete-series/delete-series.comp.tsx`                                              |
+| Kind     | Client Component (it hosts the confirmation)                                                                                       |
+| Used by  | [`TeacherSeriesEditorSection`](/components/platform/sections/teacher/exercises/teacher-series-editor-section)                      |
+| Composes | [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup)                                                       |
+| Uses     | `action` as a prop: `deleteExerciseSeries` bound to the series, which redirects to the bank's «Series» with `?aviso=seriesDeleted` |
+
+## Props
+
+| Prop           | Type                                    | Required | Meaning                            |
+| -------------- | --------------------------------------- | -------- | ---------------------------------- |
+| `title`        | `string`                                | yes      | What the confirmation names.       |
+| `studentCount` | `number`                                | yes      | Who has it now, said in what goes. |
+| `action`       | `(formData: FormData) => Promise<void>` | yes      | The bound server action.           |
+
+## Behaviour
+
+A small danger button with the bin, and a `PlatformConfirmPopup` («Eliminar»): «Se elimina la serie. Sus ejercicios siguen en tu banco.», then who stops seeing it in «Ejercicios» and that the attempts stay in the students' history (their `seriesId` is set to null by the foreign key). No stylesheet of its own.

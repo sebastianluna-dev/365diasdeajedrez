@@ -61,6 +61,7 @@ const meta: MetaRecord = {
   "schedule-seat-popup": "ScheduleSeatPopup",
   "sortable-dnd": "SortableDnd",
   "staff-tabs": "StaffTabs",
+  "student-share-panel": "StudentSharePanel",
   "study-streak": "StudyStreak",
   "submit-button": "SubmitButton",
   "use-game-autosave-hook": "useGameAutosave",

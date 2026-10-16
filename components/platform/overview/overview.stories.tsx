@@ -110,6 +110,9 @@ import { PlatformTabPanel, PlatformTabs } from "@/components/platform/shared/pla
 import { MovePathPicker } from "@/components/platform/shared/move-path-picker/move-path-picker.comp";
 import { ExerciseAuthoring } from "@/components/platform/shared/exercise-authoring/exercise-authoring.comp";
 import { ExerciseCard } from "@/components/platform/shared/exercise-card/exercise-card.comp";
+import { StudentSharePanel } from "@/components/platform/shared/student-share-panel/student-share-panel.comp";
+import { AddSeriesExercisesButton } from "@/components/platform/sections/teacher/exercises/add-series-exercises-popup/add-series-exercises-popup.comp";
+import { NewSeriesButton } from "@/components/platform/sections/teacher/exercises/series-data-popup/series-data-popup.comp";
 import { courseTabs } from "@/components/platform/shared/staff-tabs/staff-tabs.const";
 import { ClassAgenda } from "@/components/platform/shared/class-agenda/class-agenda.comp";
 import { ClassDateTile } from "@/components/platform/shared/class-date-tile/class-date-tile.comp";
@@ -2369,6 +2372,49 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   restore: async () => undefined,
                   delete: async () => undefined,
                 }}
+              />
+            </Tile>
+            <Tile name="StudentSharePanel" docs="platform-shared-studentsharepanel" width={560} height={344}>
+              <StudentSharePanel
+                subject="series"
+                shares={[
+                  {
+                    userId: "u-d",
+                    displayName: "Alumno Demo",
+                    email: "alumno.demo@365diasdeajedrez.com",
+                    sharedAtLabel: "12 de octubre de 2026",
+                  },
+                ]}
+                students={[
+                  { id: "u-d", displayName: "Alumno Demo", email: "alumno.demo@365diasdeajedrez.com" },
+                  { id: "u-v", displayName: "Valentina Cruz", email: "valentina.demo@365diasdeajedrez.com" },
+                ]}
+                share={async () => undefined}
+                unshare={async () => undefined}
+              />
+            </Tile>
+            <Tile
+              name="SeriesDataPopup"
+              docs="platform-sections-teacher-exercises-seriesdatapopup"
+              width={400}
+              height={72}
+            >
+              <NewSeriesButton save={async () => popupFormDone("seriesSaved")} />
+            </Tile>
+            <Tile
+              name="AddSeriesExercisesPopup"
+              docs="platform-sections-teacher-exercises-addseriesexercisespopup"
+              width={400}
+              height={72}
+            >
+              <AddSeriesExercisesButton
+                seriesId="se000001"
+                exercises={[
+                  { id: "ex000001", title: "Mate del pasillo", facts: "Mate en 1 · 900", topics: "Táctica" },
+                  { id: "ex000002", title: "El mate de Philidor", facts: "Mate en 2 · 1400", topics: "Táctica" },
+                ]}
+                itemCount={3}
+                addExercisesToSeries={async () => popupFormDone("seriesExercisesAdded")}
               />
             </Tile>
             <Tile name="MovePathPicker" docs="platform-shared-movepathpicker" width={960} height={640}>

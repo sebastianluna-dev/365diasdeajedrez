@@ -1,30 +1,36 @@
 ---
-description: "«Ejercicios» of a teacher: what is in use or archived, as pills, and the cards of their own exercises, the last changed first."
+description: "«Ejercicios» of a teacher: what is in use, what is archived and the series, as pills; the cards of their own exercises, the last changed first, or their series."
 ---
 
 # `TeacherExercisesSection`
 
-|            |                                                                                                                                                                                                                                                  |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/teacher/exercises/teacher-exercises.section.tsx`                                                                                                                                                                   |
-| Kind       | Server Component                                                                                                                                                                                                                                 |
-| Stylesheet | `teacher-exercises.section.css` → block `.teacher-exercises`                                                                                                                                                                                     |
-| Used by    | `/profesor/ejercicios` (behind `EXERCISES_ENABLED`)                                                                                                                                                                                              |
-| Composes   | [`FilterPills`](/components/platform/shared/filter-pills), [`ExerciseCard`](/components/platform/shared/exercise-card), [`EmptyState`](/components/platform/shared/empty-state), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Reads      | `TeacherExercisesView` from `getTeacherExercises(tab)` · `services/teacher-exercises/teacher-exercises.service.ts`                                                                                                                               |
-| Writes     | `duplicateTeacherExercise()`, `archiveTeacherExercise()`, `restoreTeacherExercise()`, `deleteTeacherExercise()` — imported here and handed to the cards as props                                                                                 |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/exercises/teacher-exercises.section.tsx`                                                                                                                                                                                                                                                                                                                          |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                        |
+| Stylesheet | `teacher-exercises.section.css` → block `.teacher-exercises`                                                                                                                                                                                                                                                                                                                                            |
+| Used by    | `/profesor/ejercicios` (behind `EXERCISES_ENABLED`)                                                                                                                                                                                                                                                                                                                                                     |
+| Composes   | [`FilterPills`](/components/platform/shared/filter-pills), [`ExerciseCard`](/components/platform/shared/exercise-card), [`EmptyState`](/components/platform/shared/empty-state), [`PlatformNotice`](/components/platform/shared/platform-notice); the page's head adds «Nuevo ejercicio» and [`SeriesDataPopup`](/components/platform/sections/teacher/exercises/series-data-popup) (`NewSeriesButton`) |
+| Reads      | `TeacherExercisesView` from `getTeacherExercises(tab)` · `services/teacher-exercises/teacher-exercises.service.ts`                                                                                                                                                                                                                                                                                      |
+| Writes     | `duplicateTeacherExercise()`, `archiveTeacherExercise()`, `restoreTeacherExercise()`, `deleteTeacherExercise()` — imported here and handed to the cards as props                                                                                                                                                                                                                                        |
 
 ## Props
 
 | Prop                     | Type                   | Required | Meaning                                                         |
 | ------------------------ | ---------------------- | -------- | --------------------------------------------------------------- |
-| `view`                   | `TeacherExercisesView` | yes      | The tab, the cards and the two counts.                          |
+| `view`                   | `TeacherExercisesView` | yes      | The tab, the cards or the series, and the three counts.         |
 | `notice`, `errorMessage` | `string`               | no       | From the page's `?aviso=` (`readExerciseNotice`) and `?error=`. |
 
 ## Behaviour
 
-«En uso · n» and «Archivados · n» are links (`?vista=archivados`); the cards are the teacher's own exercises (`buildOwnExercisesWhere`), two to a row from 1024px. Empty, «En uso» says how to start and links to «Nuevo ejercicio», the page's accent in its header. The row actions redirect back with their notice.
+«En uso · n», «Archivados · n» and «Series · n» are links (`?vista=archivados`, `?vista=series`); the cards are the teacher's own exercises (`buildOwnExercisesWhere`), two to a row from 1024px. Empty, «En uso» says how to start and links to «Nuevo ejercicio», the page's accent in its header. The row actions redirect back with their notice.
+
+On «Series» each of the teacher's series is a row: its title (the link to [its page](/components/platform/sections/teacher/exercises/teacher-series-editor-section)), «5 ejercicios · la tienen 2 alumnos» (only the shares to a student still assigned, `activeSeriesSharesWhere`), its description clamped to two lines, and, in the danger's ink with a triangle, how many of its exercises the students no longer see (`seriesItemAvailability`, the visibility rule's own condition). «Nueva serie», the head's secondary button, opens the popup that creates one and goes to it.
 
 ## Markup & styling
 
-Block `.teacher-exercises` (22 lines): the pills and the list, `(width < 1024px)` one column.
+Block `.teacher-exercises` (96 lines): the pills and the list, `(width < 1024px)` one column; the series' rows.
+
+**Elements:** `.teacher-exercises__list`, `.teacher-exercises__series`, `.teacher-exercises__series-item`, `.teacher-exercises__series-title`, `.teacher-exercises__series-link`, `.teacher-exercises__series-facts`, `.teacher-exercises__series-description`, `.teacher-exercises__series-warning`, `.teacher-exercises__series-warning-icon`
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`

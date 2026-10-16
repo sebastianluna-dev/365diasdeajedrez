@@ -1,0 +1,36 @@
+---
+description: "«Nueva serie» and «Editar la serie»: the title and the description a series' students read before they start."
+---
+
+# `SeriesDataPopup`
+
+|            |                                                                                                                                                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/teacher/exercises/series-data-popup/series-data-popup.comp.tsx`                                                                                                                                                                                        |
+| Kind       | Client Component                                                                                                                                                                                                                                                                     |
+| Stylesheet | `series-data-popup.comp.css` → block `.series-data-popup__form`                                                                                                                                                                                                                      |
+| Story      | `series-data-popup.stories.tsx` (`platform/sections/teacher/exercises/SeriesDataPopup`): edit (`play`), new (`play`), refused (`play`)                                                                                                                                               |
+| Used by    | `/profesor/ejercicios`'s head (`NewSeriesButton`, secondary) and [`TeacherSeriesEditorSection`](/components/platform/sections/teacher/exercises/teacher-series-editor-section) (`EditSeriesButton`, the square pen beside the title)                                                 |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup) (`sm`), [`PlatformForm`, `PlatformFormField`](/components/platform/shared/platform-form), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `save` as a prop (`createExerciseSeries`, or `updateExerciseSeries` bound to the series), `SERIES_LIMITS`, `EXERCISE_ERROR_MESSAGES`, the states of `services/shared/form-state.ts`, `withNoticeParam`                                                                               |
+
+## Props
+
+| Prop     | Type                                          | Required | Meaning                                         |
+| -------- | --------------------------------------------- | -------- | ----------------------------------------------- |
+| `series` | `{ title, description } \| null`              | yes      | The series as stored; `null` for «Nueva serie». |
+| `save`   | `(prev, formData) => Promise<PopupFormState>` | yes      | Through `useActionState`.                       |
+
+`NewSeriesButton` takes only `save`; `EditSeriesButton` takes both.
+
+## Behaviour
+
+The [popup-form pattern](/conventions#server-actions): «Título» (required, 120 characters) and «Descripción» (optional, 1000, «La leen tus alumnos antes de empezar.»), and the fields open again with what was sent when the server refuses. «Crear serie» creates it and the action itself goes to the new series with `?aviso=seriesCreated`; «Guardar la serie» answers `seriesSaved`, and the host closes the popup and puts the notice in the address.
+
+## Markup & styling
+
+Block `.series-data-popup__form` (15 lines): a column with the foot over a hairline.
+
+**Elements:** `.series-data-popup__foot`
+
+**Tokens:** `--platform-track`

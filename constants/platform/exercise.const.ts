@@ -28,3 +28,13 @@ export const EXERCISE_LIMITS = {
   /** A solution with variants and comments; far below the import's PGN ceiling. */
   solutionPgn: 100_000,
 } as const;
+
+/** The limits of a series, shared by its popup's controls and its actions. */
+export const SERIES_LIMITS = {
+  /** `ExerciseSeries.title`, VarChar(120). */
+  title: 120,
+  /** `ExerciseSeries.description`, VarChar(1000). */
+  description: 1000,
+  /** The exercises one series holds: a session's work, not a bank. */
+  items: 100,
+} as const;

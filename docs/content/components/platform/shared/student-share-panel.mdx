@@ -1,0 +1,58 @@
+---
+description: "Who a teacher's material reaches, a collection of studies or a series of exercises: who already has it with «Quitar» on each, and a select of the other students with «Compartir»; two forms against the actions it is given."
+---
+
+# `StudentSharePanel`
+
+|            |                                                                                                                                                                                                                                                                                                                                                          |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/student-share-panel/student-share-panel.comp.tsx`; its data, `student-share-panel.types.ts`                                                                                                                                                                                                                                  |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                         |
+| Stylesheet | `student-share-panel.comp.css` → block `.student-share-panel`                                                                                                                                                                                                                                                                                            |
+| Story      | `student-share-panel.stories.tsx` (`platform/shared/StudentSharePanel`): a series given to one of three, a collection, given to nobody, everyone has it, no students, compact                                                                                                                                                                            |
+| Used by    | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (panel) and [`StudyAside`](/components/platform/sections/studies/game-view/study-aside) (compact) for a collection; [`TeacherSeriesEditorSection`](/components/platform/sections/teacher/exercises/teacher-series-editor-section) (compact) for a series |
+| Composes   | [`PlatformForm`, `PlatformFormField`](/components/platform/shared/platform-form), [`PlatformSelect`](/components/platform/shared/platform-select), [`SubmitButton`](/components/platform/shared/submit-button)                                                                                                                                           |
+| Uses       | `savedValueKey`; `StudentShareRow`, `StudentShareOption`, `StudentShareSubject`, `StudentShareAction` from its types                                                                                                                                                                                                                                     |
+
+## Purpose
+
+A teacher gives their material to their students in two ways: a collection of studies, which the student reads in «Mis estudios», and a series of exercises (D31), which the student solves in «Ejercicios». Both are given and taken back the same way, so both use this one panel. It was the collection's own `ShareCollection` until 2026-10-16, when the series needed the same panel and it moved to `shared/`.
+
+Only the **owner** sees it: whoever receives the material has no business knowing who else has it. A share is a row that exists or does not, so there is no intermediate state worth a Client Component: two forms against the actions it is given, already bound to the collection or the series by the section that mounts it.
+
+## Props
+
+| Prop       | Type                       | Required               | Meaning                                                                                                                                                 |
+| ---------- | -------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `subject`  | `"collection" \| "series"` | yes                    | What is given: the heading («Alumnos con esta colección», «Alumnos con esta serie») and the line under it. Both words are feminine, so the rest is one. |
+| `shares`   | `StudentShareRow[]`        | yes                    | Who already has it: `{ userId, displayName, email, sharedAtLabel }`.                                                                                    |
+| `students` | `StudentShareOption[]`     | yes                    | The students with an active assignment to the teacher: `{ id, displayName, email }`.                                                                    |
+| `share`    | `StudentShareAction`       | yes                    | `(formData) => Promise<void>`: gives it to the `studentId` sent (`shareStudyWithStudent`, `shareSeriesWithStudent`, bound).                             |
+| `unshare`  | `StudentShareAction`       | yes                    | Takes it from the `studentId` sent; the material stays the teacher's.                                                                                   |
+| `layout`   | `"panel" \| "compact"`     | no · default `"panel"` | `panel` is the wide box of a page; `compact` an aside's card: white over a light shadow, each student on two lines and the form stacked.                |
+
+## Behaviour
+
+- The candidates are the students not yet in `shares`. Giving it to someone who already has it would do nothing (both actions are idempotent), but offering it would look like it can be given twice.
+- Each row is a `<form action={unshare}>` with a hidden `studentId` and «Quitar» (`Quitar a <name>` for a screen reader).
+- The share form is a `PlatformForm` with one `PlatformFormField`, «Dársela a», over a [`PlatformSelect`](/components/platform/shared/platform-select) of the candidates («Nombre · correo»; in the compact layout the name alone, because an address is wider than an aside's column), and «Compartir». The select is keyed by the first candidate (`savedValueKey`): once one is given it, it opens on the next instead of the one React's form reset would bring back. With no candidates the line says whether there are no assigned students or everyone has it.
+- The collection's actions answer by revalidating the page; the series' redirect with a notice («Listo: la verá en «Ejercicios».»).
+
+## Markup & styling
+
+Block `.student-share-panel` (161 lines).
+
+**Elements:** `.student-share-panel__head`, `.student-share-panel__title`, `.student-share-panel__hint`, `.student-share-panel__list`, `.student-share-panel__item`, `.student-share-panel__student`, `.student-share-panel__name`, `.student-share-panel__email`, `.student-share-panel__date`, `.student-share-panel__remove` (the row's form), `.student-share-panel__empty`, `.student-share-panel__form`, `.student-share-panel__field`, `.student-share-panel__submit`
+
+**Modifiers:** `.student-share-panel_layout_panel`, `.student-share-panel_layout_compact`
+
+**Other classes it renders:** `.platform-button`, `.platform-button_size_sm`, and `PlatformForm`'s.
+
+**Tokens:** `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries.
+
+## Related
+
+- How a collection appears on the student's side: [`StudiesListSection`](/components/platform/sections/studies/studies-list/studies-list-section) (the `received` group).
+- [Teacher & staff panels](/platform/teacher-and-staff) for assignments.

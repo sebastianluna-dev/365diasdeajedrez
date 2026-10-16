@@ -13,9 +13,18 @@ import {
 } from "@/constants/platform/exercise-codes.const";
 import { emptySolutionPgn } from "@/lib/chess/exercise-format";
 import { teacherRoutes } from "@/lib/platform-routes";
+import { formatSpanishDate } from "@/lib/format-spanish-date";
+import type { StudentShareRow } from "@/components/platform/shared/student-share-panel/student-share-panel.types";
 import { levelOfDifficulty, type DifficultyLevel } from "@/services/shared/exercise-level";
 import { isExerciseContentLocked } from "@/services/shared/exercise-status-transitions";
-import type { TeacherExerciseRow } from "./teacher-exercises.types";
+import { seriesItemAvailability } from "@/services/shared/exercise-visibility-rules";
+import type {
+  SeriesItemData,
+  SeriesItemRow,
+  SeriesPickOption,
+  TeacherExerciseRow,
+  TeacherSeriesCard,
+} from "./teacher-exercises.types";
 
 // From the rows of a teacher's exercises to what the bank and the editor
 // draw. Pure: what a status allows is read from the shared transitions
@@ -157,5 +166,98 @@ export function newExercisePrefill(): ExerciseAuthoringExercise {
     sourceEvent: null,
     sourceYear: null,
     sourceGameId: null,
+  };
+}
+
+// --- Series ------------------------------------------------------------------
+
+/** What a series' item or a pickable exercise says of itself: «Mate en 2 · 1400 · Intermedio». */
+export function exerciseFacts(
+  exercise: { kind: { code: string }; mateIn: number | null; difficulty: number },
+  levels: readonly DifficultyLevel[] = [],
+): string {
+  const level = levelOfDifficulty(exercise.difficulty, levels)?.name;
+  return [exerciseKindLabel(exercise.kind.code as ExerciseKindCode, exercise.mateIn), exercise.difficulty, level]
+    .filter((part) => part !== undefined)
+    .join(" · ");
+}
+
+/**
+ * An item of a series in its editor. The teacher's own exercise opens in
+ * their editor; one of the library's has no page of theirs. Whether the
+ * students still see it is the visibility rule's own condition
+ * (`seriesItemAvailability`), so the warning and what the student gets
+ * cannot disagree.
+ */
+export function mapSeriesItem(
+  row: SeriesItemRow,
+  seriesTeacherId: string,
+  levels: readonly DifficultyLevel[],
+): SeriesItemData {
+  const own = row.exercise.teacherId === seriesTeacherId;
+  return {
+    exerciseId: row.exercise.id,
+    title: row.exercise.title,
+    href: own ? teacherRoutes.exerciseDetail(row.exercise.id) : null,
+    facts: exerciseFacts(row.exercise, levels),
+    availability: seriesItemAvailability(
+      { teacherId: row.exercise.teacherId, statusCode: row.exercise.status.code as ExerciseStatusCode },
+      seriesTeacherId,
+    ),
+  };
+}
+
+/** A series in the bank's «Series» view. */
+export function mapSeriesCard(
+  row: {
+    id: string;
+    title: string;
+    description: string | null;
+    items: Pick<SeriesItemRow["exercise"], "teacherId" | "status">[];
+    shareCount: number;
+  },
+  seriesTeacherId: string,
+): TeacherSeriesCard {
+  return {
+    id: row.id,
+    href: teacherRoutes.exerciseSeries(row.id),
+    title: row.title,
+    description: row.description,
+    itemCount: row.items.length,
+    studentCount: row.shareCount,
+    unavailableCount: row.items.filter(
+      (exercise) =>
+        seriesItemAvailability(
+          { teacherId: exercise.teacherId, statusCode: exercise.status.code as ExerciseStatusCode },
+          seriesTeacherId,
+        ) !== "available",
+    ).length,
+  };
+}
+
+/** An exercise «Agregar ejercicios» offers: its title, its facts and its topics in the catalog's order. */
+export function mapSeriesPickOption(
+  row: Pick<TeacherExerciseRow, "id" | "title" | "difficulty" | "mateIn" | "kind" | "topics">,
+): SeriesPickOption {
+  return {
+    id: row.id,
+    title: row.title,
+    facts: exerciseFacts(row),
+    topics: topicsOf(row)
+      .map((topic) => topic.label)
+      .join(", "),
+  };
+}
+
+/** A student who has the series, as `StudentSharePanel` lists them. */
+export function mapSeriesShare(share: {
+  createdAt: Date;
+  user: { id: string; displayName: string; email: string };
+}): StudentShareRow {
+  return {
+    userId: share.user.id,
+    displayName: share.user.displayName,
+    email: share.user.email,
+    sharedAtLabel: formatSpanishDate(share.createdAt),
   };
 }

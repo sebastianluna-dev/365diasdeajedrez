@@ -1,11 +1,13 @@
 import { NewGame } from "@/components/platform/sections/studies/study-detail/new-game.comp";
-import { ShareCollection } from "@/components/platform/sections/studies/study-detail/share-collection.comp";
 import type { GameListItem } from "@/components/platform/shared/game-list/game-list.comp";
+import { StudentSharePanel } from "@/components/platform/shared/student-share-panel/student-share-panel.comp";
 import {
   clearGameAnnotations,
   clearGameVariations,
   deleteStudyGame,
   reorderStudyGames,
+  shareStudyWithStudent,
+  unshareStudyWithStudent,
   updateGameSettings,
 } from "@/services/studies/studies.actions";
 import type {
@@ -111,7 +113,16 @@ export function StudyAside({ study, results, classGames, kinds, students }: Stud
       </section>
 
       {/* Who a collection reaches: a card of its own, for the owner only. */}
-      {canShare && <ShareCollection studyId={study.id} shares={study.shares} students={students} layout="compact" />}
+      {canShare && (
+        <StudentSharePanel
+          subject="collection"
+          shares={study.shares}
+          students={students}
+          share={shareStudyWithStudent.bind(null, study.id)}
+          unshare={unshareStudyWithStudent.bind(null, study.id)}
+          layout="compact"
+        />
+      )}
     </aside>
   );
 }

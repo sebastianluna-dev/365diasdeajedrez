@@ -1,5 +1,6 @@
 /* The teacher's bank: the view's pills and the cards, two to a row on a wide
-   screen and one under 1024px. */
+   screen and one under 1024px; on «Series», a list of the series, one row
+   each. */
 .teacher-exercises {
   display: flex;
   flex-direction: column;
@@ -12,6 +13,79 @@
     margin: 0;
     padding: 0;
     list-style: none;
+  }
+
+  & .teacher-exercises__series {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .teacher-exercises__series-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-4) var(--platform-space-5);
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface);
+  }
+
+  & .teacher-exercises__series-title {
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    font-weight: 600;
+  }
+
+  & .teacher-exercises__series-link {
+    color: var(--platform-text);
+    text-decoration: none;
+  }
+
+  & .teacher-exercises__series-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  & .teacher-exercises__series-link:focus-visible {
+    outline: 2px solid var(--platform-accent-ink);
+    outline-offset: 2px;
+  }
+
+  & .teacher-exercises__series-facts {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-subtle);
+  }
+
+  & .teacher-exercises__series-description {
+    margin: 0;
+    max-width: 70ch;
+    font-size: var(--platform-type-md);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  & .teacher-exercises__series-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--platform-space-2);
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-danger);
+  }
+
+  & .teacher-exercises__series-warning-icon {
+    flex: none;
+    width: 14px;
+    height: 1lh;
   }
 
   @media (width < 1024px) {

@@ -140,9 +140,10 @@ export const teacherRoutes = {
     return query ? `/profesor/clases?${query}` : "/profesor/clases";
   },
   classDetail: (classId: string) => `/profesor/clases/${classId}`,
-  /** The teacher's bank: `?vista=archivados` lists the archived ones. */
+  /** The teacher's bank: `?vista=archivados` lists the archived ones, `?vista=series` the series. */
   exercises: "/profesor/ejercicios",
   archivedExercises: "/profesor/ejercicios?vista=archivados",
+  exerciseSeriesList: "/profesor/ejercicios?vista=series",
   /**
    * A new exercise; `from` opens it on a move of one of the teacher's study
    * games («Crear ejercicio desde aquí», phase 1b).
@@ -153,6 +154,8 @@ export const teacherRoutes = {
     return `/profesor/ejercicios/nuevo?${params.toString()}`;
   },
   exerciseDetail: (exerciseId: string) => `/profesor/ejercicios/${exerciseId}`,
+  /** A series of the teacher's: its exercises in order, who has it, its title. */
+  exerciseSeries: (seriesId: string) => `/profesor/ejercicios/series/${seriesId}`,
   profile: "/profesor/perfil",
 } as const;
 

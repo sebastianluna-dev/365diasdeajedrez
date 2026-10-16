@@ -1,0 +1,42 @@
+---
+description: "«Agregar ejercicios», from a series' page: the exercises the teacher may give that are not in it yet, as cards to tick, with a search once there are a few; what is chosen goes to the end."
+---
+
+# `AddSeriesExercisesPopup`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/exercises/add-series-exercises-popup/add-series-exercises-popup.comp.tsx`                                                                                                                                                                                                                                                                                                                                                |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Stylesheet | `add-series-exercises-popup.comp.css` → block `.add-series-exercises__form`                                                                                                                                                                                                                                                                                                                                                                                    |
+| Story      | `add-series-exercises-popup.stories.tsx` (`platform/sections/teacher/exercises/AddSeriesExercisesPopup`): open (`play`), two chosen (`play`), changed meanwhile (`play`), nothing left (`play`)                                                                                                                                                                                                                                                                |
+| Used by    | [`TeacherSeriesEditorSection`](/components/platform/sections/teacher/exercises/teacher-series-editor-section) (`AddSeriesExercisesButton`, the page's accent)                                                                                                                                                                                                                                                                                                  |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup) (`md`, a sheet on a phone), [`PlatformForm`, `PlatformFormGroup`](/components/platform/shared/platform-form), [`PlatformCheckCards`](/components/platform/shared/platform-check-cards), [`PlatformSearchField`](/components/platform/shared/platform-search-field), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `addExercisesToSeries` as a prop; `SeriesPickOption`, `SERIES_LIMITS`, `EXERCISE_ERROR_MESSAGES`, `foldForSearch`, the states of `services/shared/form-state.ts`, `withNoticeParam`                                                                                                                                                                                                                                                                            |
+
+## Props
+
+| Prop                   | Type                                                    | Required | Meaning                                                                                                                               |
+| ---------------------- | ------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `seriesId`             | `string`                                                | yes      | Bound into the action.                                                                                                                |
+| `exercises`            | `SeriesPickOption[]`                                    | yes      | What may be added: `buildPickableExercisesWhere` minus what the series holds, the last changed first: `{ id, title, facts, topics }`. |
+| `itemCount`            | `number`                                                | yes      | How many the series holds: with `SERIES_LIMITS.items` (100), how many more fit.                                                       |
+| `addExercisesToSeries` | `(seriesId, prev, formData) => Promise<PopupFormState>` | yes      | Through `useActionState`.                                                                                                             |
+
+## Behaviour
+
+- Submitted by hand (`onSubmit` → `startTransition(() => formAction(data))`, `pending` on its `SubmitButton`), as every form with controlled Radix cards is, so React's reset does not reach them.
+- The search (from six exercises) narrows the cards by title and topics without accents; a chosen card it hides is still sent (`hiddenValues`).
+- The line over the cards says where they go («Van al final de la serie, en el orden de la lista.») and how many are chosen; «Agregar a la serie» waits while more are chosen than fit.
+- The server checks again that each one may be picked now (`seriesNotPickable`), that they fit (`seriesFull`), and skips one already in the series. Two adds at once race for the same orders: the loser's unique violation, recognised by `isUniqueConstraintError` on `ExerciseSeriesItem_pkey` or `ExerciseSeriesItem_seriesId_order_key`, answers «La serie cambió mientras tanto: vuelve a intentarlo.» (`seriesChanged`). On success the address says `?aviso=seriesExercisesAdded`.
+- With nothing to offer it says why: everything ready is already in the series, or the teacher has nothing ready yet.
+
+## Markup & styling
+
+Block `.add-series-exercises__form` (41 lines): a column with the foot over a hairline; on a phone the foot sticks to the bottom with its button full width.
+
+**Elements:** `.add-series-exercises__summary`, `.add-series-exercises__empty`, `.add-series-exercises__foot`
+
+**Breakpoints:** `(width < 640px)`.
+
+**Tokens:** `--platform-surface`, `--platform-text-muted`, `--platform-track`

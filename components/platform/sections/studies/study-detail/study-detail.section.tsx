@@ -1,12 +1,13 @@
 import { STUDY_ERROR_MESSAGES } from "@/constants/platform/student-messages.const";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
+import { StudentSharePanel } from "@/components/platform/shared/student-share-panel/student-share-panel.comp";
 import { DeleteStudy } from "@/components/platform/sections/studies/studies-list/delete-study.comp";
 import type { ClassGameItem, StudentOption, StudyDetail, StudyKindOption } from "@/services/studies/studies.types";
+import { shareStudyWithStudent, unshareStudyWithStudent } from "@/services/studies/studies.actions";
 import { canShareStudy } from "@/services/studies/study-rules";
 import { EditStudy } from "./edit-study.comp";
 import { NewGame } from "./new-game.comp";
-import { ShareCollection } from "./share-collection.comp";
 import "./study-detail.section.css";
 
 interface StudyDetailSectionProps {
@@ -94,7 +95,15 @@ export function StudyDetailSection({
 
       {errorCode && <PlatformNotice message={STUDY_ERROR_MESSAGES[errorCode] ?? "No se pudo completar la acción."} />}
 
-      {canShare && <ShareCollection studyId={study.id} shares={study.shares} students={students} />}
+      {canShare && (
+        <StudentSharePanel
+          subject="collection"
+          shares={study.shares}
+          students={students}
+          share={shareStudyWithStudent.bind(null, study.id)}
+          unshare={unshareStudyWithStudent.bind(null, study.id)}
+        />
+      )}
 
       <EmptyState
         title="Sin partidas todavía"

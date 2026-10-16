@@ -1,0 +1,136 @@
+/* The exercises of a series, in order: a row each with its grip, its place,
+   its title and facts (and the warning when the students no longer see it),
+   «Quitar» and the «…» that moves it one place. */
+.series-items {
+  & .series-items__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .series-items__row {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-2) var(--platform-space-3);
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface);
+  }
+
+  & .series-items__row_state_dragging {
+    position: relative;
+    z-index: 1;
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .series-items__grip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    color: var(--platform-text-muted);
+    cursor: grab;
+    touch-action: none;
+  }
+
+  & .series-items__grip:hover {
+    color: var(--platform-text);
+  }
+
+  & .series-items__grip:focus-visible {
+    outline: 2px solid var(--platform-accent-ink);
+    outline-offset: 2px;
+  }
+
+  & .series-items__grip svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  & .series-items__number {
+    min-width: 2ch;
+    font-size: var(--platform-type-sm);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    text-align: right;
+    color: var(--platform-text-muted);
+  }
+
+  & .series-items__body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+  }
+
+  & .series-items__title {
+    font-size: var(--platform-type-md);
+    font-weight: 600;
+    color: var(--platform-text);
+    overflow-wrap: anywhere;
+    text-decoration: none;
+  }
+
+  & a.series-items__title:hover {
+    text-decoration: underline;
+  }
+
+  & a.series-items__title:focus-visible {
+    outline: 2px solid var(--platform-accent-ink);
+    outline-offset: 2px;
+  }
+
+  & .series-items__facts {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-subtle);
+  }
+
+  & .series-items__warning {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--platform-space-2);
+    font-size: var(--platform-type-sm);
+    color: var(--platform-danger);
+  }
+
+  & .series-items__warning-icon {
+    flex: none;
+    width: 14px;
+    height: 1lh;
+  }
+
+  & .series-items__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+  }
+
+  & .series-items__empty {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+  }
+
+  /* On a phone the row's actions go under what it is, at its right. */
+  @media (width < 640px) {
+    & .series-items__row {
+      grid-template-columns: auto auto minmax(0, 1fr);
+    }
+
+    & .series-items__actions {
+      grid-column: 3;
+      justify-content: flex-end;
+    }
+  }
+}

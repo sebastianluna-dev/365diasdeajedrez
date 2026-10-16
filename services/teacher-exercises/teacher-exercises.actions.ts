@@ -2,7 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { EXERCISE_LIMITS } from "@/constants/platform/exercise.const";
+import { z } from "zod";
+import { EXERCISE_LIMITS, SERIES_LIMITS } from "@/constants/platform/exercise.const";
 import {
   EXERCISE_STATUS,
   type ExerciseKindCode,
@@ -23,8 +24,17 @@ import {
 } from "@/services/shared/exercise-record.service";
 import { transitionOwnExercise, type ExerciseTransitionResult } from "@/services/shared/exercise-status.service";
 import { exerciseReadiness, isExerciseContentLocked } from "@/services/shared/exercise-status-transitions";
-import { buildOwnExercisesWhere } from "@/services/shared/exercise-visibility-rules";
-import { popupFormError, readFormValues, type FieldError, type PopupFormState } from "@/services/shared/form-state";
+import { buildOwnExercisesWhere, buildPickableExercisesWhere } from "@/services/shared/exercise-visibility-rules";
+import { formOptionalText, formText, parseForm, readIds } from "@/services/shared/form-schema";
+import {
+  popupFormDone,
+  popupFormError,
+  readFormValues,
+  type FieldError,
+  type PopupFormState,
+} from "@/services/shared/form-state";
+import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
+import { nextOrder, planDenseRenumber, planFullReorder } from "@/services/shared/reorder";
 import { withErrorParam, withNoticeParam } from "@/services/shared/safe-return-to";
 import { getTeacherGamePgn, isTeacherGame } from "./teacher-exercises.service";
 
@@ -41,6 +51,11 @@ import { getTeacherGamePgn, isTeacherGame } from "./teacher-exercises.service";
 //   editor keeps its board and its fields in the browser and a redirect on a
 //   refusal would lose them; it redirects only when it saved. The row actions
 //   redirect with the notice or the error, as every other action does.
+// - A series (D18, D31) is reached only with its `teacherId` in the `where`;
+//   what it may hold is `buildPickableExercisesWhere`, checked again here
+//   against the database; its order goes through services/shared/reorder.ts,
+//   and a share needs an active assignment with the student, as a
+//   collection's does.
 
 const WINDOW_MS = 60_000;
 
@@ -328,4 +343,309 @@ export async function deleteTeacherExercise(exerciseId: string, formData: FormDa
 export async function fetchTeacherGamePgn(gameId: string): Promise<string | null> {
   if (!EXERCISES_ENABLED) return null;
   return getTeacherGamePgn(gameId);
+}
+
+// --- Series (D18, D31; PLAN.md §6.2) ---------------------------------------
+
+const SERIES_SCHEMA = z.object({
+  title: formText(SERIES_LIMITS.title),
+  description: formOptionalText(SERIES_LIMITS.description),
+});
+
+const SERIES_FIELDS = ["title", "description"] as const;
+
+/** The error code of each field of the series' popup, read by `EXERCISE_ERROR_MESSAGES`. */
+const SERIES_FIELD_ERRORS: Record<string, string> = { title: "seriesTitle", description: "seriesDescription" };
+
+/** A refusal inside a series' transaction: thrown so nothing of the write stays. */
+class SeriesRefused extends Error {
+  constructor(readonly code: string) {
+    super(`The series write was refused: ${code}`);
+  }
+}
+
+/** The bank's «Series» view and the series' own page: what every write of a series changes. */
+function revalidateSeries(seriesId?: string): void {
+  revalidatePath(teacherRoutes.exercises);
+  if (seriesId) revalidatePath(teacherRoutes.exerciseSeries(seriesId));
+}
+
+/** Opens a series action: the teacher, and whether their budget for `key` (by teacher) is spent. */
+async function openSeries(key: string, limit: number) {
+  const { teacher, user } = await requireTeacher();
+  const throttled = !(await allowAction(`${teacher.id}:${key}`, limit, WINDOW_MS));
+  return { teacher, user, throttled };
+}
+
+/** Whether the series is this teacher's: another teacher's is not found. */
+async function ownsSeries(seriesId: string, teacherId: string): Promise<boolean> {
+  const found = await getPlatformDb().exerciseSeries.count({ where: { id: seriesId, teacherId } });
+  return found > 0;
+}
+
+/** The series' title and description from the popup, or the field that failed as the popup's error. */
+function readSeriesForm(formData: FormData, values: Record<string, string | string[]>) {
+  const parsed = parseForm(SERIES_SCHEMA, formData);
+  if (parsed.ok) return { ok: true as const, data: parsed.data };
+  const code = SERIES_FIELD_ERRORS[parsed.field] ?? "invalid";
+  return { ok: false as const, state: popupFormError({ [parsed.field || "title"]: { code } }, values) };
+}
+
+/**
+ * «Nueva serie», from its popup: an empty series of the teacher's. It opens
+ * the new series, where its exercises are added; a refusal comes back to the
+ * popup with what was written.
+ */
+export async function createExerciseSeries(prev: PopupFormState, formData: FormData): Promise<PopupFormState> {
+  void prev;
+  const values = readFormValues(formData, SERIES_FIELDS);
+  if (!EXERCISES_ENABLED) return popupFormError({}, values, { code: "disabled" });
+  const { teacher, user, throttled } = await openSeries("series-edit", 120);
+  if (throttled) return popupFormError({}, values, { code: "throttled" });
+  const read = readSeriesForm(formData, values);
+  if (!read.ok) return read.state;
+
+  const created = await getPlatformDb().exerciseSeries.create({
+    data: { teacherId: teacher.id, createdById: user.id, ...read.data },
+    select: { id: true },
+  });
+  revalidateSeries(created.id);
+  redirect(withNoticeParam(teacherRoutes.exerciseSeries(created.id), "seriesCreated"));
+}
+
+/** «Editar la serie», from its popup: the title and the description its students read. */
+export async function updateExerciseSeries(
+  seriesId: string,
+  prev: PopupFormState,
+  formData: FormData,
+): Promise<PopupFormState> {
+  void prev;
+  const values = readFormValues(formData, SERIES_FIELDS);
+  if (!EXERCISES_ENABLED) return popupFormError({}, values, { code: "disabled" });
+  const { teacher, throttled } = await openSeries("series-edit", 120);
+  if (throttled) return popupFormError({}, values, { code: "throttled" });
+  const read = readSeriesForm(formData, values);
+  if (!read.ok) return read.state;
+
+  const updated = await getPlatformDb().exerciseSeries.updateMany({
+    where: { id: seriesId, teacherId: teacher.id },
+    data: read.data,
+  });
+  if (updated.count === 0) return popupFormError({}, values, { code: "seriesNotFound" });
+  revalidateSeries(seriesId);
+  return popupFormDone("seriesSaved");
+}
+
+/**
+ * «Agregar ejercicios», from its popup: the chosen exercises at the end of
+ * the series, in the order they were offered. Each must be one the teacher
+ * may pick now (D08: their own usable ones and the library's); one already
+ * in the series is skipped. Two adds at once race for the same orders, and
+ * the loser's unique violation answers «La serie cambió mientras tanto».
+ */
+export async function addExercisesToSeries(
+  seriesId: string,
+  prev: PopupFormState,
+  formData: FormData,
+): Promise<PopupFormState> {
+  void prev;
+  const values = readFormValues(formData, ["exercises"]);
+  if (!EXERCISES_ENABLED) return popupFormError({}, values, { code: "disabled" });
+  const { teacher, throttled } = await openSeries("series-edit", 120);
+  if (throttled) return popupFormError({}, values, { code: "throttled" });
+
+  const chosen = [
+    ...new Set(
+      formData
+        .getAll("exercises")
+        .filter((value): value is string => typeof value === "string")
+        .map((value) => value.trim()),
+    ),
+  ];
+  if (chosen.length === 0 || chosen.some((id) => id.length === 0 || id.length > 64)) {
+    return popupFormError({ exercises: { code: "seriesExercises" } }, values);
+  }
+  if (!(await ownsSeries(seriesId, teacher.id))) return popupFormError({}, values, { code: "seriesNotFound" });
+
+  const db = getPlatformDb();
+  try {
+    await db.$transaction(async (tx) => {
+      const items = await tx.exerciseSeriesItem.findMany({
+        where: { seriesId },
+        select: { exerciseId: true, order: true },
+      });
+      const inSeries = new Set(items.map((item) => item.exerciseId));
+      const fresh = chosen.filter((id) => !inSeries.has(id));
+      if (fresh.length === 0) return;
+      if (items.length + fresh.length > SERIES_LIMITS.items) throw new SeriesRefused("seriesFull");
+      const pickable = await tx.exercise.count({
+        where: { AND: [{ id: { in: fresh } }, buildPickableExercisesWhere({ teacherId: teacher.id })] },
+      });
+      if (pickable !== fresh.length) throw new SeriesRefused("seriesNotPickable");
+      // After the last one: an exercise deleted from the bank leaves a gap
+      // (its item goes with it), so the count is not where the list ends.
+      const last = items.reduce((max, item) => Math.max(max, item.order), 0);
+      await tx.exerciseSeriesItem.createMany({
+        data: fresh.map((exerciseId, index) => ({ seriesId, exerciseId, order: nextOrder(last + index) })),
+      });
+      await tx.exerciseSeries.update({ where: { id: seriesId }, data: { updatedAt: new Date() } });
+    });
+  } catch (error) {
+    if (error instanceof SeriesRefused) return popupFormError({}, values, { code: error.code });
+    if (
+      isUniqueConstraintError(error, "ExerciseSeriesItem_pkey", "exerciseId") ||
+      isUniqueConstraintError(error, "ExerciseSeriesItem_seriesId_order_key", "order")
+    ) {
+      return popupFormError({}, values, { code: "seriesChanged" });
+    }
+    throw error;
+  }
+  revalidateSeries(seriesId);
+  return popupFormDone("seriesExercisesAdded");
+}
+
+/**
+ * «Quitar» an exercise from the series: the exercise stays in the bank, and
+ * the attempts made in the series keep it. The rest close the gap
+ * (`planDenseRenumber`).
+ */
+export async function removeExerciseFromSeries(
+  seriesId: string,
+  exerciseId: string,
+  formData: FormData,
+): Promise<void> {
+  void formData;
+  const back = teacherRoutes.exerciseSeries(seriesId);
+  if (!EXERCISES_ENABLED) redirect(withErrorParam(back, "disabled"));
+  const { teacher, throttled } = await openSeries("series-edit", 120);
+  if (throttled) redirect(withErrorParam(back, "throttled"));
+  if (!(await ownsSeries(seriesId, teacher.id)))
+    redirect(withErrorParam(teacherRoutes.exerciseSeriesList, "seriesNotFound"));
+
+  let changed = false;
+  try {
+    await getPlatformDb().$transaction(async (tx) => {
+      await tx.exerciseSeriesItem.deleteMany({ where: { seriesId, exerciseId } });
+      const rest = await tx.exerciseSeriesItem.findMany({
+        where: { seriesId },
+        select: { exerciseId: true, order: true },
+      });
+      const updates = planDenseRenumber(rest.map((item) => ({ id: item.exerciseId, order: item.order })));
+      for (const update of updates) {
+        await tx.exerciseSeriesItem.update({
+          where: { seriesId_exerciseId: { seriesId, exerciseId: update.id } },
+          data: { order: update.order },
+        });
+      }
+      await tx.exerciseSeries.update({ where: { id: seriesId }, data: { updatedAt: new Date() } });
+    });
+  } catch (error) {
+    if (!isUniqueConstraintError(error, "ExerciseSeriesItem_seriesId_order_key", "order")) throw error;
+    changed = true;
+  }
+  if (changed) redirect(withErrorParam(back, "seriesChanged"));
+  revalidateSeries(seriesId);
+  redirect(withNoticeParam(back, "seriesExerciseRemoved"));
+}
+
+/**
+ * The series' order after a drop or a step: the FULL list of its exercises.
+ * Optimistic in the browser; when it is refused (an incomplete list, a race)
+ * nothing is written and the page's revalidation brings the stored order back.
+ */
+export async function reorderExerciseSeries(seriesId: string, orderedIds: string[]): Promise<void> {
+  if (!EXERCISES_ENABLED) return;
+  const { teacher, throttled } = await openSeries("series-edit", 120);
+  if (throttled) return;
+  const ids = orderedIds.filter((id): id is string => typeof id === "string" && id.length > 0 && id.length <= 64);
+  if (ids.length !== orderedIds.length || !(await ownsSeries(seriesId, teacher.id))) return;
+
+  try {
+    await getPlatformDb().$transaction(async (tx) => {
+      const rows = await tx.exerciseSeriesItem.findMany({
+        where: { seriesId },
+        select: { exerciseId: true, order: true },
+      });
+      const updates = planFullReorder(
+        rows.map((row) => ({ id: row.exerciseId, order: row.order })),
+        ids,
+      );
+      for (const update of updates) {
+        await tx.exerciseSeriesItem.update({
+          where: { seriesId_exerciseId: { seriesId, exerciseId: update.id } },
+          data: { order: update.order },
+        });
+      }
+    });
+  } catch (error) {
+    if (!isUniqueConstraintError(error, "ExerciseSeriesItem_seriesId_order_key", "order")) throw error;
+  }
+  revalidateSeries(seriesId);
+}
+
+/**
+ * «Eliminar la serie», from its confirmation. Its exercises stay in the
+ * bank; its students stop seeing it; their attempts stay in their history,
+ * without the series (`TrainingAttempt.seriesId` is set to null by its
+ * foreign key).
+ */
+export async function deleteExerciseSeries(seriesId: string, formData: FormData): Promise<void> {
+  void formData;
+  if (!EXERCISES_ENABLED) redirect(withErrorParam(teacherRoutes.exerciseSeries(seriesId), "disabled"));
+  const { teacher, throttled } = await openSeries("series-edit", 120);
+  if (throttled) redirect(withErrorParam(teacherRoutes.exerciseSeries(seriesId), "throttled"));
+
+  const deleted = await getPlatformDb().exerciseSeries.deleteMany({ where: { id: seriesId, teacherId: teacher.id } });
+  if (deleted.count === 0) redirect(withErrorParam(teacherRoutes.exerciseSeriesList, "seriesNotFound"));
+  revalidateSeries();
+  redirect(withNoticeParam(teacherRoutes.exerciseSeriesList, "seriesDeleted"));
+}
+
+/**
+ * «Compartir» the series with a student (D31). Checked against the database,
+ * as `shareStudyWithStudent` checks a collection: an active teacher
+ * (`requireTeacher`), the series is theirs, and the student has an active
+ * assignment with them. Giving it twice is no error: the unique index on
+ * (series, student) keeps one row.
+ */
+export async function shareSeriesWithStudent(seriesId: string, formData: FormData): Promise<void> {
+  const back = teacherRoutes.exerciseSeries(seriesId);
+  if (!EXERCISES_ENABLED) redirect(withErrorParam(back, "disabled"));
+  const { teacher, throttled } = await openSeries("share-series", 60);
+  if (throttled) redirect(withErrorParam(back, "throttled"));
+  const { studentId } = readIds(formData, "studentId");
+  if (studentId.length === 0) redirect(withErrorParam(back, "invalid"));
+  if (!(await ownsSeries(seriesId, teacher.id)))
+    redirect(withErrorParam(teacherRoutes.exerciseSeriesList, "seriesNotFound"));
+
+  const db = getPlatformDb();
+  const assignment = await db.teacherStudent.findFirst({
+    where: { teacherId: teacher.id, studentId, endedAt: null },
+    select: { id: true },
+  });
+  if (!assignment) redirect(withErrorParam(back, "notAssigned"));
+
+  await db.exerciseSeriesShare.upsert({
+    where: { seriesId_userId: { seriesId, userId: studentId } },
+    update: {},
+    create: { seriesId, userId: studentId, teacherId: teacher.id },
+  });
+  revalidateSeries(seriesId);
+  redirect(withNoticeParam(back, "seriesShared"));
+}
+
+/** «Quitar» a student's share: the series stays the teacher's, and the student's attempts stay in their history. */
+export async function unshareSeriesWithStudent(seriesId: string, formData: FormData): Promise<void> {
+  const back = teacherRoutes.exerciseSeries(seriesId);
+  if (!EXERCISES_ENABLED) redirect(withErrorParam(back, "disabled"));
+  const { teacher, throttled } = await openSeries("share-series", 60);
+  if (throttled) redirect(withErrorParam(back, "throttled"));
+  const { studentId } = readIds(formData, "studentId");
+  if (studentId.length === 0) redirect(withErrorParam(back, "invalid"));
+
+  await getPlatformDb().exerciseSeriesShare.deleteMany({
+    where: { seriesId, userId: studentId, series: { teacherId: teacher.id } },
+  });
+  revalidateSeries(seriesId);
+  redirect(withNoticeParam(back, "seriesUnshared"));
 }

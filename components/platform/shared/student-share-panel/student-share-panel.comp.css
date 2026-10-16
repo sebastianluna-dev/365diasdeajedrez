@@ -1,4 +1,7 @@
-.share-collection {
+/* Who a teacher's material reaches: the heading, the students who have it
+   with «Quitar» on each, and the form that gives it to one more. A wide box
+   of a page (`panel`) or a card of an aside (`compact`). */
+.student-share-panel {
   display: flex;
   flex-direction: column;
   gap: var(--platform-space-5);
@@ -6,13 +9,13 @@
   border-radius: 8px;
   background: var(--platform-surface);
 
-  & .share-collection__head {
+  & .student-share-panel__head {
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-2);
   }
 
-  & .share-collection__title {
+  & .student-share-panel__title {
     margin: 0;
     font-size: var(--platform-type-xl);
     font-weight: 700;
@@ -20,7 +23,7 @@
     color: var(--platform-text);
   }
 
-  & .share-collection__hint {
+  & .student-share-panel__hint {
     margin: 0;
     max-width: 62ch;
     font-size: var(--platform-type-sm);
@@ -29,7 +32,7 @@
     text-wrap: pretty;
   }
 
-  & .share-collection__list {
+  & .student-share-panel__list {
     margin: 0;
     padding: 0;
     list-style: none;
@@ -39,31 +42,31 @@
 
   /* A rule between students and none above or below: the list is already
      inside a card and repeating its border would box it in. */
-  & .share-collection__item + .share-collection__item {
+  & .student-share-panel__item + .student-share-panel__item {
     border-top: 1px solid var(--platform-border);
   }
 
-  & .share-collection__item {
+  & .student-share-panel__item {
     display: flex;
     align-items: center;
     gap: var(--platform-space-4);
     padding: var(--platform-space-3) 0;
   }
 
-  & .share-collection__student {
+  & .student-share-panel__student {
     min-width: 0;
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-0-5);
   }
 
-  & .share-collection__name {
+  & .student-share-panel__name {
     font-size: var(--platform-type-lg);
     font-weight: 600;
     color: var(--platform-text);
   }
 
-  & .share-collection__email {
+  & .student-share-panel__email {
     font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
     overflow: hidden;
@@ -73,87 +76,85 @@
 
   /* The date goes centre-right and leaves the button against the edge: it is
      the least important fact of the row. */
-  & .share-collection__date {
+  & .student-share-panel__date {
     margin-left: auto;
     flex: none;
     font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
   }
 
-  /* The platform's button, small (`.platform-button_size_sm`): a row's way
-     out of the collection. Only its place is said here. */
-  & .share-collection__remove {
+  /* The form around the row's small button (`.platform-button_size_sm`), its
+     way out of the material. Only its place is said here. */
+  & .student-share-panel__remove {
     flex: none;
   }
 
-  & .share-collection__empty {
+  & .student-share-panel__empty {
     margin: 0;
     font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
   }
 
-  & .share-collection__form {
-    display: flex;
+  /* `PlatformForm` stacks its fields; here the select and «Compartir» share
+     a row while there is width for both. */
+  & .student-share-panel__form {
+    min-width: 0;
+    flex-direction: row;
     align-items: flex-end;
     gap: var(--platform-space-3);
     flex-wrap: wrap;
   }
 
-  & .share-collection__field {
+  & .student-share-panel__field {
     flex: 1 1 260px;
     min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-2);
   }
 
-  & .share-collection__label {
-    font-size: var(--platform-type-sm);
-    font-weight: 600;
-    color: var(--platform-text-muted);
+  & .student-share-panel__submit {
+    flex: none;
   }
 
-  /* In the aside: the card's own padding and shadow instead of the panel's
+  /* In an aside: the card's own padding and shadow instead of the panel's
      border, the student on two lines with the date under the name, and the
      form stacked, because a 280px column has no room for a row. */
-  &.share-collection_layout_compact {
+  &.student-share-panel_layout_compact {
     gap: var(--platform-space-4);
     padding: var(--platform-space-4);
-    /* It is the aside's third card and reads like the other two: white on
-       the page's grey, over a light shadow. */
+    /* It reads like the aside's other cards: white on the page's grey, over
+       a light shadow. */
     border-radius: 8px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 
-    & .share-collection__title {
+    & .student-share-panel__title {
       font-size: var(--platform-type-sm);
       letter-spacing: 0.07em;
       text-transform: uppercase;
       color: var(--platform-text-subtle);
     }
 
-    & .share-collection__item {
+    & .student-share-panel__item {
       flex-wrap: wrap;
       gap: var(--platform-space-2) var(--platform-space-3);
     }
 
-    & .share-collection__student {
+    & .student-share-panel__student {
       flex: 1 1 100%;
     }
 
-    & .share-collection__date {
+    & .student-share-panel__date {
       margin-left: 0;
     }
 
-    & .share-collection__remove {
+    & .student-share-panel__remove {
       margin-left: auto;
     }
 
-    & .share-collection__form {
+    & .student-share-panel__form {
       flex-direction: column;
       align-items: stretch;
     }
 
-    & .share-collection__field {
+    & .student-share-panel__field {
       flex: none;
     }
   }

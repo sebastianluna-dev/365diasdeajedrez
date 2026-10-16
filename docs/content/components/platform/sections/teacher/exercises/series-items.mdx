@@ -1,0 +1,43 @@
+---
+description: "The exercises of a series in the order its students solve them: sortable by the grip or with «Subir» and «Bajar», each with its facts, the warning when the students no longer see it, and «Quitar»."
+---
+
+# `SeriesItems`
+
+|            |                                                                                                                                                                                                                                                 |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/exercises/series-items/series-items.comp.tsx`                                                                                                                                                             |
+| Kind       | Client Component                                                                                                                                                                                                                                |
+| Stylesheet | `series-items.comp.css` → block `.series-items`                                                                                                                                                                                                 |
+| Used by    | [`TeacherSeriesEditorSection`](/components/platform/sections/teacher/exercises/teacher-series-editor-section)                                                                                                                                   |
+| Composes   | [`SortableDnd`](/components/platform/shared/sortable-dnd) with `useSortableRows` and `useSortableStep`, [`PlatformActionsMenu`](/components/platform/shared/platform-actions-menu), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `reorder` and `remove` as props (`reorderExerciseSeries`, `removeExerciseFromSeries`); `SeriesItemData` from `services/teacher-exercises/teacher-exercises.types`                                                                               |
+
+## Props
+
+| Prop       | Type                                                                                                      | Required | Meaning                                                                   |
+| ---------- | --------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------- |
+| `seriesId` | `string`                                                                                                  | yes      | Bound into both actions.                                                  |
+| `items`    | `SeriesItemData[]`                                                                                        | yes      | In the series' order: `{ exerciseId, title, href, facts, availability }`. |
+| `actions`  | `{ reorder(seriesId, orderedIds): Promise<void>; remove(seriesId, exerciseId, formData): Promise<void> }` | yes      | The server actions, from the section.                                     |
+
+## Behaviour
+
+- Each row: the grip (dnd-kit; space picks it up, the arrows move it, as every sortable list of the platform), its number, the title — a link to the editor when the exercise is the teacher's own; a library exercise has no page of theirs —, «Mate en 2 · 1400 · Intermedio», «Quitar» (`.platform-row-action`, a `<form>` bound to the exercise) and a «…» with «Subir» and «Bajar», the single-click way to reorder (WCAG 2.5.7).
+- An item its students no longer see says so in the danger's ink with a triangle: «Archivado: tus alumnos ya no lo ven.» for the teacher's archived one, «Ya no está disponible: tus alumnos ya no lo ven.» for anything else out of reach (another teacher's exercise taken out of the library). The condition is `seriesItemAvailability`, the visibility rule's own.
+- A move is applied at once and the whole order is sent (`useSortableRows`); a refused one (an incomplete list, a race) writes nothing, and the page's revalidation brings the stored order back. «Quitar» takes the exercise out of the series and closes the gap; it stays in the bank, and the attempts made in the series keep it.
+- Empty, it says how to add the first ones.
+
+## Markup & styling
+
+Block `.series-items` (136 lines): a list of bordered rows on the surface, a grid of the grip, the number, the body and the actions; under 640px the actions go under the body, at its right.
+
+**Elements:** `.series-items__list`, `.series-items__row`, `.series-items__grip`, `.series-items__number`, `.series-items__body`, `.series-items__title`, `.series-items__facts`, `.series-items__warning`, `.series-items__warning-icon`, `.series-items__actions`, `.series-items__empty`
+
+**Modifiers:** `.series-items__row_state_dragging`
+
+**Other classes it renders:** `.platform-row-action`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-danger`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+**Breakpoints:** `(width < 640px)`.

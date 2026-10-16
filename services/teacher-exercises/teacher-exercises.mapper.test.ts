@@ -2,9 +2,14 @@ import { describe, expect, it } from "vitest";
 import { EXERCISE_STATUS } from "@/constants/platform/exercise-codes.const";
 import { readSolutionStart } from "@/lib/chess/exercise-format";
 import {
+  exerciseFacts,
   exerciseKindLabel,
   mapAuthoringExercise,
   mapExerciseCard,
+  mapSeriesCard,
+  mapSeriesItem,
+  mapSeriesPickOption,
+  mapSeriesShare,
   newExercisePrefill,
   sideToMove,
   teacherExerciseAllowed,
@@ -98,5 +103,83 @@ describe("the editor", () => {
       ok: true,
       startFen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
     });
+  });
+});
+
+describe("the series", () => {
+  const item = (teacherId: string | null, status: string) => ({
+    order: 1,
+    exercise: {
+      id: "ex000001",
+      title: "Mate del pasillo",
+      teacherId,
+      difficulty: 1300,
+      mateIn: 1,
+      kind: { code: "MATE_IN" },
+      status: { code: status },
+    },
+  });
+
+  it("dicen de cada ejercicio su tipo, su dificultad y su nivel", () => {
+    expect(exerciseFacts({ kind: { code: "MATE_IN" }, mateIn: 2, difficulty: 1400 }, LEVELS)).toBe(
+      "Mate en 2 · 1400 · Intermedio",
+    );
+    expect(exerciseFacts({ kind: { code: "SEQUENCE" }, mateIn: null, difficulty: 2000 }, LEVELS)).toBe(
+      "Secuencia · 2000",
+    );
+  });
+
+  it("abren el ejercicio propio en el editor y avisan del que los alumnos ya no ven", () => {
+    expect(mapSeriesItem(item("t1", "READY"), "t1", LEVELS)).toMatchObject({
+      href: "/profesor/ejercicios/ex000001",
+      availability: "available",
+    });
+    expect(mapSeriesItem(item("t1", "ARCHIVED"), "t1", LEVELS).availability).toBe("archived");
+    // Another teacher's exercise taken out of the library: no page of this teacher's, and gone for the students.
+    expect(mapSeriesItem(item("t2", "READY"), "t1", LEVELS)).toMatchObject({ href: null, availability: "unavailable" });
+    expect(mapSeriesItem(item(null, "PUBLISHED"), "t1", LEVELS)).toMatchObject({
+      href: null,
+      availability: "available",
+    });
+  });
+
+  it("cuentan en el banco lo que tienen, quién la tiene y lo que ya no se ve", () => {
+    const card = mapSeriesCard(
+      {
+        id: "se000001",
+        title: "Táctica de la semana",
+        description: null,
+        items: [item("t1", "READY").exercise, item("t1", "ARCHIVED").exercise, item("t2", "DRAFT").exercise],
+        shareCount: 2,
+      },
+      "t1",
+    );
+    expect(card).toEqual({
+      id: "se000001",
+      href: "/profesor/ejercicios/series/se000001",
+      title: "Táctica de la semana",
+      description: null,
+      itemCount: 3,
+      studentCount: 2,
+      unavailableCount: 2,
+    });
+  });
+
+  it("ofrecen al agregar el título, los datos y los temas en el orden del catálogo", () => {
+    expect(mapSeriesPickOption(ROW)).toEqual({
+      id: "ex000001",
+      title: "Mate del pasillo",
+      facts: "Mate en 1 · 1300",
+      topics: "Táctica, Mate del pasillo",
+    });
+  });
+
+  it("dicen desde cuándo la tiene cada alumno", () => {
+    expect(
+      mapSeriesShare({
+        createdAt: new Date("2026-10-12T18:00:00Z"),
+        user: { id: "u1", displayName: "Alumno Demo", email: "alumno.demo@365diasdeajedrez.com" },
+      }),
+    ).toMatchObject({ userId: "u1", displayName: "Alumno Demo", sharedAtLabel: expect.stringContaining("octubre") });
   });
 });
