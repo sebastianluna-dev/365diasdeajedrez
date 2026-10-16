@@ -109,6 +109,7 @@ import { StaffTabs } from "@/components/platform/shared/staff-tabs/staff-tabs.co
 import { PlatformTabPanel, PlatformTabs } from "@/components/platform/shared/platform-tabs/platform-tabs.comp";
 import { MovePathPicker } from "@/components/platform/shared/move-path-picker/move-path-picker.comp";
 import { ExerciseAuthoring } from "@/components/platform/shared/exercise-authoring/exercise-authoring.comp";
+import { DeleteExercise } from "@/components/platform/shared/delete-exercise/delete-exercise.comp";
 import { ExerciseCard } from "@/components/platform/shared/exercise-card/exercise-card.comp";
 import { ExerciseSolver } from "@/components/platform/shared/exercise-solver/exercise-solver.comp";
 import { StudentSharePanel } from "@/components/platform/shared/student-share-panel/student-share-panel.comp";
@@ -2374,6 +2375,9 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   delete: async () => undefined,
                 }}
               />
+            </Tile>
+            <Tile name="DeleteExercise" docs="platform-shared-deleteexercise" width={240} height={80}>
+              <DeleteExercise title="La dama que se entrega" action={async () => undefined} />
             </Tile>
             <Tile name="ExerciseSolver" docs="platform-shared-exercisesolver" width={960} height={600}>
               <ExerciseSolver

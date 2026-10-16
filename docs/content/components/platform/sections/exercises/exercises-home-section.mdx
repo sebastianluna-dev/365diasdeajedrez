@@ -23,7 +23,7 @@ description: "The student's «Ejercicios»: for now one card, «De tu profesor»
 
 The home of «Ejercicios» (D17, PLAN.md §5.1). Until the library (phase 4) only a teacher's series reach a student, so it holds one card, «De tu profesor»: each series given to the student that they may open now — a teacher's only while that teacher is assigned to them (D07) — with its teacher and «4 de 10», and its row's word, «Empezar» or «Continuar» (`.platform-row-action`), to the first exercise not solved yet. Only the exercises they may solve are counted (`seriesItemAvailability`, the visibility rule's own condition).
 
-The screen's one accent is the card's last line, «Continuar con «…»»: the newest series with an exercise left. With nothing given, the empty state says «Tu profesor aún no te ha dado ejercicios.», or, for a student with no teacher who reached the page by its address, «Todavía no tienes ejercicios. Cuando un profesor te dé una serie, aparecerá aquí.» The menu shows «Ejercicios» only to a student with a teacher or a series (`getStudentExerciseAccess`, the `"withTeacher"` rule).
+The screen's one accent is the card's last line, «Continuar con «…»»: the newest series with an exercise left that can count today (not solved, not tried this study day). With nothing given, the empty state says «Tu profesor aún no te ha dado ejercicios.», or, for a student with no teacher who reached the page by its address, «Todavía no tienes ejercicios. Cuando un profesor te dé una serie, aparecerá aquí.» The menu shows «Ejercicios» only to a student with a teacher or a series (`getStudentExerciseAccess`, the `"withTeacher"` rule).
 
 ## Markup & styling
 

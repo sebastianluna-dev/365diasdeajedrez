@@ -9,6 +9,7 @@ import {
   seriesMarks,
   seriesPosition,
   solvableItems,
+  triedTodayOf,
   type SeriesExerciseRow,
   type StudentSeriesRow,
 } from "./exercises.mapper";
@@ -98,6 +99,33 @@ describe("the student's series", () => {
     expect(mapSeriesSummary(row, done).nextHref).toBeNull();
   });
 
+  it("skip what was tried today: it would open unscored, so «Continuar» never loops back to it", () => {
+    // The phase's check: 1 clean, 2 failed, 3 hinted, 4 the solution shown — all today.
+    const row = series([exercise("a"), exercise("b"), exercise("c"), exercise("d"), exercise("e")]);
+    const marks = new Map([
+      ["a", "solved" as const],
+      ["b", "failed" as const],
+      ["c", "solved" as const],
+      ["d", "failed" as const],
+    ]);
+    const today = new Set(["a", "b", "c", "d"]);
+    expect(mapSeriesSummary(row, marks, today).nextHref).toBe("/ejercicios/series/s-1/5");
+    expect(mapStudentSeriesView(row, marks, LEVELS, today).start).toEqual({
+      href: "/ejercicios/series/s-1/5",
+      label: "Continuar",
+    });
+
+    // Nothing left that can count today: no accent, on the series or the home.
+    const allToday = new Set(["a", "b", "c", "d", "e"]);
+    const summary = mapSeriesSummary(row, marks, allToday);
+    expect(summary.nextHref).toBeNull();
+    expect(mapStudentSeriesView(row, marks, LEVELS, allToday).start).toBeNull();
+    expect(continueWithOf([summary])).toBeNull();
+
+    // The next day the failed one is where it goes on.
+    expect(mapSeriesSummary(row, marks).nextHref).toBe("/ejercicios/series/s-1/2");
+  });
+
   it("give the home its one accent: the newest series with something left", () => {
     const done = { ...mapSeriesSummary(series([exercise("a")])), nextHref: null };
     const open = { ...mapSeriesSummary(series([exercise("b")], { id: "s-2", title: "Finales" })) };
@@ -131,5 +159,18 @@ describe("the solve page's data", () => {
     expect(attemptedToday([{ lastAttemptAt: new Date("2026-10-15T18:00:00Z") }], now)).toBe(false);
     // A row created only to hold the family's lock has no attempt.
     expect(attemptedToday([{ lastAttemptAt: null }], now)).toBe(false);
+  });
+
+  it("knows which exercises were tried this study day, by id", () => {
+    const now = new Date("2026-10-16T18:00:00Z");
+    const tried = triedTodayOf(
+      [
+        { exerciseId: "a", lastAttemptAt: new Date("2026-10-16T15:00:00Z") },
+        { exerciseId: "b", lastAttemptAt: new Date("2026-10-15T18:00:00Z") },
+        { exerciseId: "c", lastAttemptAt: null },
+      ],
+      now,
+    );
+    expect([...tried]).toEqual(["a"]);
   });
 });

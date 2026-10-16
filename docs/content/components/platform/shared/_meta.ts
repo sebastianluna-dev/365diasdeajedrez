@@ -18,6 +18,7 @@ const meta: MetaRecord = {
   "current-path-field": "CurrentPathField",
   "class-content-renderer": "ClassContentRenderer",
   "class-game-save": "ClassGameSave",
+  "delete-exercise": "DeleteExercise",
   "edit-game": "EditGame",
   "empty-state": "EmptyState",
   "exercise-authoring": "ExerciseAuthoring",

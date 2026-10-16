@@ -260,6 +260,15 @@ export const NotSaved: Story = {
   render: () => <SolverState exercise={BLACK_MATE} actions={[{ type: "move", san: "Rd1#" }]} save="failed" />,
 };
 
+/** A scored page whose attempt the server did not count (a stale page, a second tab): the result says how it went this time, never «¡Resuelto!». */
+export const SolvedNotCounted: Story = {
+  render: () => <SolverState exercise={BLACK_MATE} actions={[{ type: "move", san: "Rd1#" }]} save="notScored" />,
+  play: async ({ canvas }) => {
+    await waitFor(() => expect(canvas.getByText("Esta vez, sin errores")).toBeVisible());
+    await expect(canvas.queryByText("¡Resuelto!")).toBeNull();
+  },
+};
+
 /** A phone at 390 px: a «Mate en 2» failed at the first move, the head on two lines — the prompt, then the clock, «3 / 5» and «Fallado». */
 export const PhoneFailedMateInTwo: Story = {
   render: () => (

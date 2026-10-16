@@ -37,7 +37,7 @@ const COPY: Record<StudentShareSubject, { title: string; hint: string }> = {
   },
   series: {
     title: "Alumnos con esta serie",
-    hint: "La ven en «Ejercicios» mientras sean tus alumnos y la resuelven en el orden que le diste. Un ejercicio archivado deja de aparecerles.",
+    hint: "La ven en «Ejercicios» mientras sean tus alumnos, con sus ejercicios en el orden que le diste. Un ejercicio archivado deja de aparecerles.",
   },
 };
 

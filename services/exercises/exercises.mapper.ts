@@ -88,19 +88,42 @@ function factsOf(exercise: SeriesExerciseRow, levels: readonly DifficultyLevel[]
     .join(" · ");
 }
 
-/** Where a series goes on: its first exercise not solved yet, or null once all are. */
+/**
+ * Where a series goes on: its first exercise not solved yet that can still
+ * count today, or null once none can. One attempted this study day is
+ * skipped: it would open unscored (§2.7), so the accent would loop the
+ * student back to an exercise that cannot count until tomorrow.
+ */
 function nextUnsolved(
   seriesId: string,
   items: readonly SeriesExerciseRow[],
   marks: ReadonlyMap<string, StudentSeriesMark>,
+  triedToday: ReadonlySet<string>,
 ) {
-  const index = items.findIndex((exercise) => marks.get(exercise.id) !== "solved");
+  const index = items.findIndex((exercise) => marks.get(exercise.id) !== "solved" && !triedToday.has(exercise.id));
   return index < 0 ? null : platformRoutes.exerciseSeriesItem(seriesId, index + 1);
+}
+
+/**
+ * The exercises attempted this study day, by id, from the student's states.
+ * A series item is never a lesson copy, so its solve key is its own id and
+ * its family's state is keyed by it (§2.7).
+ */
+export function triedTodayOf(
+  states: readonly { exerciseId: string; lastAttemptAt: Date | null }[],
+  now: Date,
+): Set<string> {
+  return new Set(
+    states
+      .filter((state) => state.lastAttemptAt !== null && isSameStudyDay(state.lastAttemptAt, now))
+      .map((state) => state.exerciseId),
+  );
 }
 
 export function mapSeriesSummary(
   row: StudentSeriesRow,
   marks: ReadonlyMap<string, StudentSeriesMark> = new Map(),
+  triedToday: ReadonlySet<string> = new Set(),
 ): StudentSeriesSummary {
   const items = solvableItems(row);
   return {
@@ -110,7 +133,7 @@ export function mapSeriesSummary(
     teacherName: row.teacher?.displayName ?? null,
     total: items.length,
     solved: items.filter((exercise) => marks.get(exercise.id) === "solved").length,
-    nextHref: nextUnsolved(row.id, items, marks),
+    nextHref: nextUnsolved(row.id, items, marks, triedToday),
     started: items.some((exercise) => marks.has(exercise.id)),
   };
 }
@@ -125,6 +148,7 @@ export function mapStudentSeriesView(
   row: StudentSeriesRow,
   marks: ReadonlyMap<string, StudentSeriesMark>,
   levels: readonly DifficultyLevel[],
+  triedToday: ReadonlySet<string> = new Set(),
 ): StudentSeriesView {
   const items = solvableItems(row);
   const rows: StudentSeriesItem[] = items.map((exercise, index) => ({
@@ -136,7 +160,7 @@ export function mapStudentSeriesView(
     orientation: playerOfStart(exercise.startFen),
     mark: marks.get(exercise.id) ?? null,
   }));
-  const next = nextUnsolved(row.id, items, marks);
+  const next = nextUnsolved(row.id, items, marks, triedToday);
   return {
     id: row.id,
     title: row.title,

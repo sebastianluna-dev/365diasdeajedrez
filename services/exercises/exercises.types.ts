@@ -21,7 +21,7 @@ export interface StudentSeriesSummary {
   /** The exercises the student may solve in it, and how many of them they solved there. */
   total: number;
   solved: number;
-  /** Where «Empezar»/«Continuar» leads: the first exercise not solved yet; null once all are. */
+  /** Where «Empezar»/«Continuar» leads: the first exercise not solved yet and not tried today; null once none is left. */
   nextHref: string | null;
   /** Whether anything of it was tried: «Continuar» rather than «Empezar». */
   started: boolean;
@@ -32,7 +32,7 @@ export interface StudentExercisesHome {
   hasTeacher: boolean;
   /** Newest given first. */
   series: StudentSeriesSummary[];
-  /** The screen's one accent: the newest series with an exercise left to solve. */
+  /** The screen's one accent: the newest series with an exercise left that can count today. */
   continueWith: { title: string; href: string } | null;
 }
 
@@ -56,7 +56,7 @@ export interface StudentSeriesView {
   teacherName: string | null;
   items: StudentSeriesItem[];
   solved: number;
-  /** The page's accent: to the first exercise not solved yet; null once all are. */
+  /** The page's accent: to the first exercise not solved yet and not tried today; null once none is left. */
   start: ExerciseSolverLink | null;
 }
 

@@ -17,6 +17,7 @@ import {
   seriesMarks,
   seriesPosition,
   solvableItems,
+  triedTodayOf,
   type StudentSeriesRow,
 } from "./exercises.mapper";
 import type { StudentExercisesHome, StudentSeriesExercise, StudentSeriesView } from "./exercises.types";
@@ -70,6 +71,17 @@ async function attemptsIn(userId: string, seriesIds: string[]) {
   });
 }
 
+/** The exercises of these series the student attempted this study day: where «Continuar» does not lead. */
+async function triedTodayIn(userId: string, rows: readonly Pick<StudentSeriesRow, "teacherId" | "items">[]) {
+  const ids = [...new Set(rows.flatMap((row) => solvableItems(row).map((exercise) => exercise.id)))];
+  if (ids.length === 0) return new Set<string>();
+  const states = await getPlatformDb().userExerciseState.findMany({
+    where: { userId, exerciseId: { in: ids }, lastAttemptAt: { not: null } },
+    select: { exerciseId: true, lastAttemptAt: true },
+  });
+  return triedTodayOf(states, new Date());
+}
+
 /**
  * Whether the student has anything in «Ejercicios» (§5.1, phases 1–3): an
  * active teacher, or a series they may open. What the menu's `"withTeacher"`
@@ -92,13 +104,15 @@ export async function getStudentExercisesHome(): Promise<StudentExercisesHome> {
   });
   const given = (row: (typeof rows)[number]) => row.shares[0]?.createdAt.getTime() ?? 0;
   const ordered = [...rows].sort((left, right) => given(right) - given(left) || left.id.localeCompare(right.id));
-  const marks = seriesMarks(
-    await attemptsIn(
+  const [attempts, triedToday] = await Promise.all([
+    attemptsIn(
       viewer.userId,
       ordered.map((row) => row.id),
     ),
-  );
-  const series = ordered.map((row) => mapSeriesSummary(row as StudentSeriesRow, marks.get(row.id)));
+    triedTodayIn(viewer.userId, ordered as StudentSeriesRow[]),
+  ]);
+  const marks = seriesMarks(attempts);
+  const series = ordered.map((row) => mapSeriesSummary(row as StudentSeriesRow, marks.get(row.id), triedToday));
   return { hasTeacher: viewer.activeTeacherId !== null, series, continueWith: continueWithOf(series) };
 }
 
@@ -114,8 +128,12 @@ export async function getStudentSeries(seriesId: string): Promise<StudentSeriesV
     db.level.findMany({ select: LEVEL_SELECT, orderBy: { order: "asc" } }),
   ]);
   if (!row) return null;
-  const marks = seriesMarks(await attemptsIn(viewer.userId, [row.id]));
-  return mapStudentSeriesView(row as StudentSeriesRow, marks.get(row.id) ?? new Map(), levels);
+  const [attempts, triedToday] = await Promise.all([
+    attemptsIn(viewer.userId, [row.id]),
+    triedTodayIn(viewer.userId, [row as StudentSeriesRow]),
+  ]);
+  const marks = seriesMarks(attempts);
+  return mapStudentSeriesView(row as StudentSeriesRow, marks.get(row.id) ?? new Map(), levels, triedToday);
 }
 
 /**

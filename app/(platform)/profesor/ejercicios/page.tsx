@@ -40,8 +40,8 @@ export default async function TeacherExercisesPage({ searchParams }: TeacherExer
       <header className="platform-page__head">
         <h1 className="platform-page__title">Ejercicios</h1>
         <p className="platform-page__subtitle">
-          Los problemas que preparas para tus alumnos: la posición, la solución jugada en el tablero y lo que leen antes
-          y después de resolverlos. Con ellos armas las series que les das.
+          Los ejercicios que preparas para tus alumnos: la posición, la solución jugada en el tablero y lo que leen
+          antes y después de resolverlos. Con ellos armas las series que les das.
         </p>
         <div className="platform-page__actions">
           <Link href={teacherRoutes.newExercise()} className="platform-button platform-button_variant_accent">

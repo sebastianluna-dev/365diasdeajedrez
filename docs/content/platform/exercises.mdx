@@ -128,7 +128,7 @@ It behaves like this:
 - a correct move gets «¡Bien!» and, 450 ms later, the reply with its sound;
 - a wrong move shows in the danger colour for 600 ms and is taken back;
 - the result panel says «¡Resuelto!», «Resuelto con pista», «Fallado» («Jugaste Cf7+; la jugada era Dg8+.») or «Viste la solución», with the explanation and «Ver la solución completa»;
-- after a retry it says only how it went this time, never «¡Resuelto!»;
+- after a retry, or when the server answers that the attempt did not count, it says only how it went this time, never «¡Resuelto!»;
 - the layout is designed for the phone first (D39), including a phone on its side.
 
 **The solution reaches the browser.** The solver runs on the client, so a curious student can read the answer in the page's data, as on Lichess. The server replays every attempt, so forging a result takes the right moves anyway, and there is no ranking at stake. The risk is accepted in `WARNINGS.md` (local), which also says how to undo it: a check per move on the server.
@@ -138,7 +138,7 @@ It behaves like this:
 `submitExerciseAttempt` (`services/exercises/exercises.actions.ts`) is a plain server action, called by the solver the moment the attempt is decided. It returns `{ ok: true, scored, firstSolve }`, or `{ ok: false, reason }`, which the solver shows as «No se guardó el intento.». It runs these steps:
 
 1. Takes the user from the DAL, checks `EXERCISES_ENABLED`, and limits submits to 120 a minute (`${user.id}:exercise-attempt`).
-2. Validates the input with zod. It caps the moves at 200 and clamps the hints to 0–20 and the duration to 0–2 h (`EXERCISE_ATTEMPT_LIMITS`). In phase 1 the context is `SERIES` with its `seriesId`; `PRACTICE` and `REVIEW` are accepted by the schema for phases 4 and 6.
+2. Validates the input with zod (`parseExerciseSubmission`, `services/exercises/exercise-submission.ts`). It caps the moves at 200 and clamps the duration to 0–2 h and the hints to 0–20 (`EXERCISE_ATTEMPT_LIMITS`), the total and each move's `hintsBefore` alike: «Pista» has no cap, so a count above the limit lowers nothing further and never refuses the attempt. In phase 1 the context is `SERIES` with its `seriesId`; `PRACTICE` and `REVIEW` are accepted by the schema for phases 4 and 6.
 3. Reads the exercise through `solvableInContextWhere(context, viewer)`, the same `where` the page read it with. An exercise outside that path is `notFound`.
 4. Replays the moves on the server (`replayAttempt`). The result, the mistake and its SANs are the server's. A sequence that decides nothing, or goes on after the decision, is refused and stores nothing.
 5. Calls `recordExerciseAttempt` in one transaction, then revalidates `/inicio`, `/ejercicios` and the series.
@@ -291,7 +291,7 @@ It does **not** hide the staff lesson panel «Ejercicios» of phase 2, which rep
 The components:
 
 - the editor's: [`PiecePlacementBoard`](/components/chess/piece-placement-board), [`PlatformTabs`](/components/platform/shared/platform-tabs) and [`MovePathPicker`](/components/platform/shared/move-path-picker);
-- the bank's: [`ExerciseCard`](/components/platform/shared/exercise-card);
+- the bank's: [`ExerciseCard`](/components/platform/shared/exercise-card), with its client leaf [`DeleteExercise`](/components/platform/shared/delete-exercise);
 - the series': the section pages under `components/platform/sections/teacher/exercises/` and [`StudentSharePanel`](/components/platform/shared/student-share-panel);
 - the student's: [`ExerciseSolver`](/components/platform/shared/exercise-solver).
 

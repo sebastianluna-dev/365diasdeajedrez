@@ -1,0 +1,26 @@
+---
+description: "«Eliminar», the row word of an exercise of the bank, behind its confirmation: the one piece of ExerciseCard with state."
+---
+
+# `DeleteExercise`
+
+|            |                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/delete-exercise/delete-exercise.comp.tsx`                                                                 |
+| Kind       | Client Component (it hosts the confirmation)                                                                                          |
+| Stylesheet | none (the word is a `.platform-row-action`, the confirmation its own)                                                                 |
+| Story      | `delete-exercise.stories.tsx` (`platform/shared/DeleteExercise`): the row word, and the confirmation open                             |
+| Used by    | [`ExerciseCard`](/components/platform/shared/exercise-card)                                                                           |
+| Composes   | [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup)                                                          |
+| Uses       | `action` as a prop: the card's `actions.delete` bound to the exercise (`deleteTeacherExercise` from the section), a stub in Storybook |
+
+## Props
+
+| Prop     | Type                                    | Required | Meaning                      |
+| -------- | --------------------------------------- | -------- | ---------------------------- |
+| `title`  | `string`                                | yes      | What the confirmation names. |
+| `action` | `(formData: FormData) => Promise<void>` | yes      | The bound server action.     |
+
+## Behaviour
+
+A `.platform-row-action` in the danger's ink, «Eliminar», and a `PlatformConfirmPopup` beside it: «Se elimina el ejercicio con su solución. Si está en alguna serie, sale de ella.», confirmed with «Eliminar ejercicio». It is a leaf of its own so that `ExerciseCard` stays a Server Component: the confirmation's `ref` is the card's only state.

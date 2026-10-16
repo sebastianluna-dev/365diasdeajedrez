@@ -1,12 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
 import type {
   ExerciseAttemptReply,
   ExerciseAttemptSubmission,
 } from "@/components/platform/shared/exercise-solver/exercise-solver.types";
-import { EXERCISE_ATTEMPT_LIMITS } from "@/constants/platform/exercise.const";
 import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
 import { ATTEMPT_CONTEXT } from "@/constants/platform/training-codes.const";
 import { readSolution, replayAttempt } from "@/lib/chess/exercise-solver";
@@ -14,6 +12,7 @@ import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
+import { parseExerciseSubmission } from "@/services/exercises/exercise-submission";
 import { recordExerciseAttempt } from "@/services/shared/exercise-attempt.service";
 import { getExerciseViewer } from "@/services/shared/exercise-visibility";
 import { solvableInContextWhere, type AttemptContextInput } from "@/services/shared/exercise-visibility-rules";
@@ -33,32 +32,6 @@ import type { ExerciseKindCode } from "@/constants/platform/exercise-codes.const
 //   shared writer's (`recordExerciseAttempt`), in one transaction.
 // A student writes attempts, never exercises (exercise-roles.test.ts).
 
-const SUBMISSION_SCHEMA = z.object({
-  exerciseId: z.string().min(1).max(64),
-  context: z.discriminatedUnion("kind", [
-    z.object({ kind: z.literal(ATTEMPT_CONTEXT.SERIES), seriesId: z.string().min(1).max(64) }),
-    z.object({ kind: z.literal(ATTEMPT_CONTEXT.PRACTICE) }),
-    z.object({ kind: z.literal(ATTEMPT_CONTEXT.REVIEW) }),
-  ]),
-  moves: z
-    .array(
-      z.object({
-        san: z.string().min(1).max(12),
-        hintsBefore: z.number().int().min(0).max(EXERCISE_ATTEMPT_LIMITS.hints),
-      }),
-    )
-    .max(EXERCISE_ATTEMPT_LIMITS.moves),
-  hintsUsed: z.number(),
-  solutionShown: z.boolean(),
-  durationMs: z.number(),
-});
-
-/** A number from the browser, kept within what is credible. */
-function clamp(value: number, min: number, max: number): number {
-  if (!Number.isFinite(value)) return min;
-  return Math.min(max, Math.max(min, Math.floor(value)));
-}
-
 /**
  * Records a decided attempt at an exercise. `scored: false` when the exercise
  * was already attempted this study day (nothing moved); `ok: false` with the
@@ -70,9 +43,8 @@ export async function submitExerciseAttempt(input: ExerciseAttemptSubmission): P
   if (!EXERCISES_ENABLED) return { ok: false, reason: "disabled" };
   if (!(await allowAction(`${user.id}:exercise-attempt`, 120, 60_000))) return { ok: false, reason: "throttled" };
 
-  const parsed = SUBMISSION_SCHEMA.safeParse(input);
-  if (!parsed.success) return { ok: false, reason: "invalid" };
-  const submission = parsed.data;
+  const submission = parseExerciseSubmission(input);
+  if (!submission) return { ok: false, reason: "invalid" };
   const context: AttemptContextInput = submission.context;
 
   const db = getPlatformDb();
@@ -99,7 +71,7 @@ export async function submitExerciseAttempt(input: ExerciseAttemptSubmission): P
   if (!solution) return { ok: false, reason: "refused" };
   const replay = replayAttempt(solution, {
     moves: submission.moves,
-    hintsUsed: clamp(submission.hintsUsed, 0, EXERCISE_ATTEMPT_LIMITS.hints),
+    hintsUsed: submission.hintsUsed,
     solutionShown: submission.solutionShown,
   });
   if (!replay.ok) return { ok: false, reason: "refused" };
@@ -112,7 +84,7 @@ export async function submitExerciseAttempt(input: ExerciseAttemptSubmission): P
       contextCode: context.kind,
       seriesId: context.kind === ATTEMPT_CONTEXT.SERIES ? context.seriesId : null,
       outcome: replay.outcome,
-      durationMs: clamp(submission.durationMs, 0, EXERCISE_ATTEMPT_LIMITS.durationMs),
+      durationMs: submission.durationMs,
       now,
     }),
   );

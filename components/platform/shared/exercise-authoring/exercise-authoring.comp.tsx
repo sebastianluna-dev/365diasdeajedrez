@@ -435,7 +435,6 @@ function PositionStep({
   const [flipped, setFlipped] = useState(false);
   const [pasteError, setPasteError] = useState<{ field: "fen" | "pgn"; message: string } | null>(null);
   const [gameId, setGameId] = useState("");
-  const castlingId = useId();
   const { setup } = draft;
   const available = availableCastling(setup.placement);
   const epOptions = enPassantOptions(setup.placement, setup.turn);
@@ -514,11 +513,8 @@ function PositionStep({
               />
             </PlatformFormGroup>
 
-            <div role="group" aria-labelledby={castlingId} className="platform-form__field">
-              <span id={castlingId} className="platform-form__label">
-                Enroques
-              </span>
-              <div className="exercise-authoring__castling">
+            <PlatformFormGroup label="Enroques">
+              <div role="group" className="exercise-authoring__castling">
                 {CASTLING_RIGHTS.map(({ right, label }) => (
                   <PlatformCheckbox
                     key={right}
@@ -532,7 +528,7 @@ function PositionStep({
                   />
                 ))}
               </div>
-            </div>
+            </PlatformFormGroup>
 
             <PlatformFormField
               name="epSquare"
@@ -671,6 +667,7 @@ interface SolutionStepProps {
 
 /** «Solución»: played on the board (D10), its rules checked as it is played. */
 function SolutionStep({ draft, startFen, issue, locked, onSolutionChange }: SolutionStepProps) {
+  const confirmDrop = useRef<PlatformConfirmPopupHandle>(null);
   const mateIn = draft.kind === EXERCISE_KIND.MATE_IN ? Number(draft.mateIn) || null : null;
   const analysis = useMemo(
     () => analyzeSolution({ solutionPgn: draft.solutionPgn, kind: draft.kind, mateIn }),
@@ -733,13 +730,24 @@ function SolutionStep({ draft, startFen, issue, locked, onSolutionChange }: Solu
           </ul>
         )}
         {hasMistakeVariant && !locked && (
-          <button
-            type="button"
-            className="platform-button platform-button_size_sm platform-button_variant_caution"
-            onClick={() => onSolutionChange(dropMistakeVariants(draft.solutionPgn))}
-          >
-            Quitar las variantes marcadas como error
-          </button>
+          <>
+            <button
+              type="button"
+              className="platform-button platform-button_size_sm platform-button_variant_caution"
+              onClick={(event) => confirmDrop.current?.open(event)}
+            >
+              Eliminar las variantes marcadas como error
+            </button>
+            {/* «Eliminar»: the variants leave the solution with what hangs from them, and only playing them again brings them back. */}
+            <PlatformConfirmPopup
+              ref={confirmDrop}
+              subject="las variantes marcadas como error"
+              title="¿Eliminar las variantes marcadas como error?"
+              description="Se eliminan de la solución las variantes marcadas como error, con sus jugadas y sus comentarios."
+              confirmLabel="Eliminar las variantes"
+              action={async () => onSolutionChange(dropMistakeVariants(draft.solutionPgn))}
+            />
+          </>
         )}
       </div>
     </div>
@@ -760,6 +768,7 @@ function DataStep({ draft, startFen, catalogs, locked, issueOf, onChange }: Data
   const difficulty = Number(draft.difficulty);
   const level = Number.isInteger(difficulty) ? levelOfDifficulty(difficulty, catalogs.levels) : null;
   const topicCards = topicCardGroups(catalogs.topics);
+  const sourceId = useId();
   const text = (field: keyof ExerciseDraft) => ({
     value: draft[field] as string,
     onChange: (event: { currentTarget: { value: string } }) => onChange({ [field]: event.currentTarget.value }),
@@ -885,8 +894,10 @@ function DataStep({ draft, startFen, catalogs, locked, issueOf, onChange }: Data
           <textarea rows={4} maxLength={EXERCISE_LIMITS.explanation} {...text("explanation")} />
         </PlatformFormField>
 
-        <div className="exercise-authoring__source">
-          <span className="exercise-authoring__source-title">Origen</span>
+        <div role="group" aria-labelledby={sourceId} className="exercise-authoring__source">
+          <span id={sourceId} className="exercise-authoring__source-title">
+            Origen
+          </span>
           <OptionalFields>
             <div className="exercise-authoring__source-grid">
               <PlatformFormField name="sourceWhite" label="Blancas" serverError={issueOf("sourceWhite")}>

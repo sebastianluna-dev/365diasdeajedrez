@@ -106,7 +106,7 @@ export function TeacherExercisesSection({ view, notice, errorMessage }: TeacherE
         ) : (
           <EmptyState
             title="Todavía no tienes ejercicios."
-            description="Coloca una posición, juega la solución en el tablero y dale un título: tus alumnos lo verán cuando lo marques como listo."
+            description="Coloca una posición, juega la solución en el tablero y dale un título. Cuando esté listo, agrégalo a una serie y dásela a tus alumnos: así lo ven."
             actionLabel="Nuevo ejercicio"
             actionHref={teacherRoutes.newExercise()}
           />

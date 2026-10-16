@@ -1,12 +1,6 @@
-"use client";
-
 import Link from "next/link";
-import { useRef } from "react";
 import { StaticDiagram } from "@/components/chess/static-diagram.comp";
-import {
-  PlatformConfirmPopup,
-  type PlatformConfirmPopupHandle,
-} from "@/components/platform/shared/platform-confirm-popup/platform-confirm-popup.comp";
+import { DeleteExercise } from "@/components/platform/shared/delete-exercise/delete-exercise.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { EXERCISE_STATUS, type ExerciseStatusCode } from "@/constants/platform/exercise-codes.const";
 import type { ExerciseCardActions, ExerciseCardData } from "./exercise-card.types";
@@ -32,10 +26,10 @@ const TAG_VARIANTS: Record<ExerciseStatusCode, string | null> = {
  * opens it, its status, its kind, its difficulty with the level it falls in,
  * the student's moves and its topics; and, with `actions`, the row's words —
  * «Duplicar», «Archivar» or «Restaurar», and «Eliminar» behind its
- * confirmation, only for one nobody has tried yet.
+ * confirmation (`DeleteExercise`, the card's one client leaf), only for one
+ * nobody has tried yet.
  */
 export function ExerciseCard({ exercise, actions }: ExerciseCardProps) {
-  const confirmRef = useRef<PlatformConfirmPopupHandle>(null);
   const variant = TAG_VARIANTS[exercise.statusCode];
   const moves = `${exercise.playerMoves} ${exercise.playerMoves === 1 ? "jugada" : "jugadas"}`;
   const difficulty = exercise.levelName ? `${exercise.difficulty} · ${exercise.levelName}` : `${exercise.difficulty}`;
@@ -89,27 +83,11 @@ export function ExerciseCard({ exercise, actions }: ExerciseCardProps) {
               </form>
             )}
             {exercise.allowed.delete && (
-              <button
-                type="button"
-                className="platform-row-action platform-row-action_variant_danger"
-                onClick={(event) => confirmRef.current?.open(event)}
-              >
-                Eliminar
-              </button>
+              <DeleteExercise title={exercise.title} action={actions.delete.bind(null, exercise.id)} />
             )}
           </div>
         )}
       </div>
-
-      {actions && exercise.allowed.delete && (
-        <PlatformConfirmPopup
-          ref={confirmRef}
-          subject={exercise.title}
-          description="Se elimina el ejercicio con su solución. Si está en alguna serie, sale de ella."
-          confirmLabel="Eliminar ejercicio"
-          action={actions.delete.bind(null, exercise.id)}
-        />
-      )}
     </article>
   );
 }

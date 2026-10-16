@@ -361,7 +361,7 @@ export function analyzeSolution(input: SolutionInput): SolutionAnalysis {
 // --- Shaping a solution ----------------------------------------------------------
 
 /**
- * «Quitar las variantes marcadas como error» (the editor, the D11 seed and the
+ * «Eliminar las variantes marcadas como error» (the editor, the D11 seed and the
  * import): drops every player variant — a player move that is not its node's
  * main child — carrying $2, $4 or $6, with what hangs from it. A PGN chessops
  * cannot read is given back as it came.

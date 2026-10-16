@@ -49,7 +49,9 @@
     color: var(--platform-text-muted);
   }
 
-  /* Who plays: a disc in the pieces' colour, ringed so the white one shows on white. */
+  /* Who plays: a disc in the pieces' colour, ringed so the white one shows on
+     white. Neither colour follows the theme, as the pieces do not: the white
+     is the cream written on ink, light in both, and the black is ink. */
   & .exercise-solver__side {
     width: 14px;
     height: 14px;
@@ -58,7 +60,7 @@
   }
 
   & .exercise-solver__side_color_white {
-    background: var(--platform-surface);
+    background: var(--platform-on-ink);
   }
 
   & .exercise-solver__side_color_black {

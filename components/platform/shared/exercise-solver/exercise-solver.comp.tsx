@@ -233,7 +233,9 @@ export function ExerciseSolverView({
         {over && result ? (
           <ResultPanel
             result={result}
-            mode={mode}
+            // The server's answer wins over the page's mode: an attempt that did not count
+            // (a stale page, a second tab) never says «¡Resuelto!» (§2.7).
+            mode={mode === "solve" && save === "notScored" ? "unscored" : mode}
             explanation={exercise.explanation}
             next={next}
             back={back}

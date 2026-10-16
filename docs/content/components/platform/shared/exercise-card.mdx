@@ -7,11 +7,11 @@ description: "An exercise of a bank: its start position small, the title that op
 |            |                                                                                                                                                                                                |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | File       | `components/platform/shared/exercise-card/exercise-card.comp.tsx`; its data, `exercise-card.types.ts`                                                                                          |
-| Kind       | Client Component (it hosts «Eliminar»'s confirmation)                                                                                                                                          |
+| Kind       | Server Component; «Eliminar» and its confirmation are its client leaf, [`DeleteExercise`](/components/platform/shared/delete-exercise)                                                         |
 | Stylesheet | `exercise-card.comp.css` → block `.exercise-card`                                                                                                                                              |
 | Story      | `exercise-card.stories.tsx` (`platform/shared/ExerciseCard`): a ready mate in 2 nobody has tried, a draft with Black to move and no level, an archived one with attempts, and the confirmation |
 | Used by    | [`TeacherExercisesSection`](/components/platform/sections/teacher/exercises/teacher-exercises-section)                                                                                         |
-| Composes   | [`StaticDiagram`](/components/chess/static-diagram), [`SubmitButton`](/components/platform/shared/submit-button), [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup) |
+| Composes   | [`StaticDiagram`](/components/chess/static-diagram), [`SubmitButton`](/components/platform/shared/submit-button), [`DeleteExercise`](/components/platform/shared/delete-exercise)              |
 | Reads      | `ExerciseCardData`, mapped by `mapExerciseCard` (`services/teacher-exercises/teacher-exercises.mapper.ts`)                                                                                     |
 
 ## Props
@@ -24,7 +24,7 @@ description: "An exercise of a bank: its start position small, the title that op
 ## Behaviour
 
 - The diagram is the start with the side to move at the bottom; the status is a `platform-tag` (a draft plain, a ready one the success's, one in review the warning's, one in the library the accent's) and the kind another («Secuencia», «Mate en 2»).
-- The row's words are `.platform-row-action`: «Duplicar», «Archivar» (a draft or a ready one), «Restaurar» (an archived one), each a `<form>` bound to the id; «Eliminar», in the danger's ink, opens a `PlatformConfirmPopup` (a sibling of the card's body) that names the exercise. It is offered only for one nobody has tried and that is not in review or in the library: with attempts its history stays and it is archived instead.
+- The row's words are `.platform-row-action`: «Duplicar», «Archivar» (a draft or a ready one), «Restaurar» (an archived one), each a `<form>` bound to the id; «Eliminar», in the danger's ink, is `DeleteExercise`, the card's one client leaf: it opens a `PlatformConfirmPopup` that names the exercise. It is offered only for one nobody has tried and that is not in review or in the library: with attempts its history stays and it is archived instead.
 - An archived card's diagram steps back (`opacity: 0.6`).
 
 ## Markup & styling
