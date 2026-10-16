@@ -1,0 +1,89 @@
+---
+description: "The board on which an author sets up an exercise's position: a chessground of its own where every piece moves anywhere, and a palette of the twelve pieces, «Mover» and «Quitar pieza»."
+---
+
+# `PiecePlacementBoard`
+
+|            |                                                                                                                                                                                                                       |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/piece-placement-board/piece-placement-board.comp.tsx`                                                                                                                                               |
+| Kind       | Client Component                                                                                                                                                                                                      |
+| Stylesheet | `piece-placement-board.comp.css` → block `.piece-placement-board`                                                                                                                                                     |
+| Story      | `piece-placement-board.stories.tsx` (`chess/PiecePlacementBoard`): empty, the initial position, a puzzle, flipped, on a phone with a piece chosen and a tap that places it, the palette from the keyboard, and locked |
+| Used by    | The exercise editor's «Posición» step (`ExerciseAuthoring`, from the exercises' phase 1)                                                                                                                              |
+| Uses       | `@lichess-org/chessground` (loaded with the board; its base and `cburnett` piece stylesheets), `ToggleGroup` from `radix-ui`, `EraserIcon` and `HandPointerIcon` from `components/icons/`                             |
+
+## Purpose
+
+D09 of the exercises: an author sets up a position by placing pieces, besides pasting a FEN or picking a move of a game. The board knows nothing of chess rules: every piece goes anywhere (`movable: { free: true, color: "both" }`), there is no turn and no legality. Whose turn it is, the castling rights, the en passant square and whether the position can happen are the editor's controls around it and `validateSetup` from [`lib/chess/position-setup`](/chess/library), which says the refusal under the board.
+
+It is the second component that creates a chessground, after [`ChessBoard`](/components/chess/chess-board): that one plays legal moves of a game, this one edits a placement, and the two configurations share nothing but the drawing of the squares and pieces.
+
+## Props
+
+| Prop                | Type                          | Required               | Meaning                                                                                                                      |
+| ------------------- | ----------------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `placement`         | `string`                      | yes                    | The placement field of a FEN (`6k1/5ppp/8/8/8/8/5PPP/3R2K1`); a whole FEN is read up to its first space. The parent owns it. |
+| `onPlacementChange` | `(placement: string) => void` | yes                    | Called with the new placement after every change made on the board.                                                          |
+| `orientation`       | `"white" \| "black"`          | no · default `"white"` | Which side is at the bottom («Girar el tablero» is the editor's button).                                                     |
+| `disabled`          | `boolean`                     | no · default `false`   | Nothing moves and no tool can be chosen: a teacher's exercise in review or in the library, whose content is locked.          |
+| `defaultTool`       | `PlacementTool`               | no · default `"move"`  | The tool chosen when it mounts. The touch story starts with `"white-knight"`.                                                |
+
+`PlacementTool` is `"move" | "remove" | PlacementPiece`, and `PlacementPiece` a colour and a role, `"white-king"` … `"black-pawn"`; both are exported.
+
+## Behaviour
+
+**Three ways to place.**
+
+- Drag a piece from the palette onto a square (`dragNewPiece(piece, event, true)`): it replaces whatever stood there. Pressing a palette piece also chooses it, on the press and not on the click, because after a drag chessground cancels the touch's click and a tap on a phone would otherwise choose nothing.
+- With a piece chosen, tap squares (the phone's way, and a mouse's too): each tap puts the piece there, and tapping a square that already holds that same piece takes it off. «Quitar pieza» takes off whatever a tap lands on. These taps are the component's own `mousedown`/`touchstart` listeners on the surface (non-passive, so the finger does not scroll the page); chessground hears the same event first and does nothing with it, because no piece is movable while such a tool is chosen.
+- With «Mover» chosen, drag a piece to another square or off the board (`deleteOnDropOff`), or tap it and then its new square. A king moved two squares is only a king (`autoCastle: false`), and no last move or check is marked.
+
+**The parent owns the placement.** Every change on the board calls `onPlacementChange(cg.getFen())`. A `placement` that differs from the board's (the editor's «Posición inicial», «Vaciar el tablero», a pasted FEN) is pushed into chessground; what the board itself reported comes back equal and changes nothing.
+
+**Chessground arrives with the board.** It is imported in the effect that creates the instance, so it costs the page that holds the board nothing until the board mounts, as [`ChessBoardLazy`](/components/chess/chess-board-lazy) does for the game board. Meanwhile the surface paints the empty squares itself, square, so nothing moves when the pieces land. The instance is created again when `disabled` changes, because chessground binds its pointer events only when it is created (`viewOnly`).
+
+**Pieces slide, unless less motion was asked for.** The instance sets `animation: { enabled: !calm }` from `matchMedia("(prefers-reduced-motion: reduce)")`, as `ChessBoard` does: the reduced-motion rule reads stylesheets, and would not see an animation chessground runs from script.
+
+**The palette is one tool of several.** A Radix `ToggleGroup type="single"` labelled «Herramienta» (`role="radiogroup"`, each tool a `role="radio"`): «Rey blanco», «Dama blanca»… «Peón negro», «Mover» and «Quitar pieza», each with its accessible name and a `title`. A tool always stays chosen: pressing the chosen one again does not leave none. From the keyboard, Tab lands on the chosen tool, the arrows walk the others in markup order (the white pieces, «Mover», the black pieces, «Quitar pieza») and Space or Enter chooses one. Choosing a tool is part of filling in a form, so the chosen tool and the focus ring are the selection's blue.
+
+**What the keyboard cannot do.** The squares themselves are chessground's and take no keyboard: a position is set up from the keyboard with «Pegar FEN o PGN», the editor's other way in.
+
+## Markup & styling
+
+Block `.piece-placement-board` (188 lines).
+
+**Layout.** The palette sits beside the board in two columns of seven 48px squares (the white pieces and «Mover» on the left, the black ones and «Quitar pieza» on the right); under 640px it goes under the board in two rows of seven that share its width. Both arrangements line the two colours up piece by piece, from one order of the markup.
+
+**Elements:** `.piece-placement-board__frame`, `.piece-placement-board__surface` (the chessground mount point, painted with the empty squares), `.piece-placement-board__palette` (the `ToggleGroup` root), `.piece-placement-board__tool` (a `ToggleGroup` item; its `[data-state="on"]` is the chosen tool)
+
+**Modifiers and states:** `.piece-placement-board_tool_{move,place,remove}` (a pointer over the board while a tap places or takes off), `.piece-placement-board__tool_kind_piece` (a piece of the palette), `.piece-placement-board__tool_glyph_{w,b}-{king,queen,rook,bishop,knight,pawn}` (the piece SVGs from `public/pieces`), `.piece-placement-board__tool:disabled`
+
+**The chosen tool.** Its border is the selection's blue, doubled inside with an inset shadow; «Mover» and «Quitar pieza» also take the selection's soft fill and their icon its blue. A piece stands on the board's light square (`--board-light`) in both themes, chosen or not: on the dark theme's surface, or on its dark blue fill, a black piece would all but vanish, so the doubled border alone says it is chosen.
+
+**Chessground selectors it restyles:** `cg-board`, `square.selected`, `.cg-wrap coords` (the coordinates at 9px, the board's one font size off the scale, as on `ChessBoard`).
+
+**Tokens:** `--board-dark`, `--board-light`, `--platform-border`, `--platform-border-strong`, `--platform-selection`, `--platform-selection-soft`, `--platform-space-1`, `--platform-space-3`, `--platform-surface`, `--platform-surface-soft`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`. Drawn only inside the platform, so no token carries a fallback for the public site.
+
+**Corners:** 8px on the palette's squares, which are larger than 20px.
+
+**Breakpoints:** `(width < 640px)` puts the palette under the board.
+
+## Usage
+
+```tsx
+import { PiecePlacementBoard } from "@/components/chess/piece-placement-board/piece-placement-board.comp";
+
+<PiecePlacementBoard
+  placement={draft.placement}
+  onPlacementChange={(placement) => setDraft({ ...draft, placement })}
+  orientation={draft.orientation}
+  disabled={permissions.contentLocked}
+/>;
+```
+
+## Related
+
+- [`ChessBoard`](/components/chess/chess-board), the board that plays legal moves.
+- [Chess library](/chess/library) › `position-setup.ts`: `setupFen`, `availableCastling`, `enPassantOptions` and `validateSetup`, which the editor runs on what this board reports.
+- [Board & game viewer › Which one to use](/chess/viewer#which-one-to-use).

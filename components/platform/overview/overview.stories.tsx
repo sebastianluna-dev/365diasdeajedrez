@@ -25,6 +25,7 @@ import { GameTools } from "@/components/chess/game-viewer/game-tools.comp";
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
 import { MoveContextMenu } from "@/components/chess/game-viewer/move-context-menu.comp";
 import { MoveTable } from "@/components/chess/game-viewer/move-table.comp";
+import { PiecePlacementBoard } from "@/components/chess/piece-placement-board/piece-placement-board.comp";
 import { PlayerAvatar } from "@/components/chess/player-avatar/player-avatar.comp";
 import { AbandonPopup } from "@/components/platform/sections/play/live-game/abandon-popup/abandon-popup.comp";
 import { LiveGameBanner } from "@/components/platform/sections/play/live-game/live-game-banner/live-game-banner.comp";
@@ -2267,6 +2268,9 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   ],
                 }}
               />
+            </Tile>
+            <Tile name="PiecePlacementBoard" docs="chess-pieceplacementboard" width={400} height={408}>
+              <PiecePlacementBoard placement="6k1/5ppp/8/8/8/8/5PPP/3R2K1" onPlacementChange={() => undefined} />
             </Tile>
             <Tile name="StaticDiagram" docs="chess-staticdiagram" width={400} height={448}>
               <StaticDiagram fen={LUCENA} caption="La posición de Lucena" />

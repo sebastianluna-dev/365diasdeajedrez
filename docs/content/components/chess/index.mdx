@@ -1,5 +1,5 @@
 ---
-description: "Index of components/chess: the board, the lazy board, the static diagram, the Elo table, the player's portrait and scoreboard, and the game viewer with its parts, hooks and utilities."
+description: "Index of components/chess: the board, the lazy board, the static diagram, the piece-placement board, the Elo table, the player's portrait and scoreboard, and the game viewer with its parts, hooks and utilities."
 ---
 
 # Chess components
@@ -13,6 +13,7 @@ description: "Index of components/chess: the board, the lazy board, the static d
 | [`ChessBoard`](/components/chess/chess-board)                       | client      | The chessground surface: standalone with a PGN (list and toolbar) or controlled with a position; interactive moves validated by chessops, accessible promotion dialog. |
 | [`ChessBoardLazy`](/components/chess/chess-board-lazy)              | client      | `ChessBoard` behind `next/dynamic` with no SSR, mounted when it comes near the viewport; for boards below the fold.                                                    |
 | [`StaticDiagram`](/components/chess/static-diagram)                 | server      | A position as a CSS grid with SVG pieces; no JavaScript.                                                                                                               |
+| [`PiecePlacementBoard`](/components/chess/piece-placement-board)    | client      | A chessground of its own where any piece goes anywhere, with a palette of the twelve pieces, «Mover» and «Quitar pieza»: the exercise editor's piece setup.            |
 | [`EloTable`](/components/chess/elo-table)                           | server      | Label/value grid for ratings and titles, with `EloTable.EloItem`.                                                                                                      |
 | [`ChessMoveQualityIcon`](/components/chess/chess-move-quality-icon) | server-safe | The ten move-quality badge SVGs and `chessMoveQualityIconFor(quality)`.                                                                                                |
 
@@ -46,4 +47,5 @@ description: "Index of components/chess: the board, the lazy board, the static d
 | An illustration on a long public page            | `ChessBoardLazy`.                                            |
 | A board that _is_ the screen (explorer, trainer) | `ChessBoard` directly, controlled.                           |
 | A position that does not move                    | `StaticDiagram`.                                             |
+| An author setting up a position piece by piece   | `PiecePlacementBoard`.                                       |
 | An image of a position or a GIF of a game        | `board-export`, imported on demand.                          |

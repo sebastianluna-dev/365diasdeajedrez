@@ -23,6 +23,10 @@ const TYPE_EXCEPTIONS: Record<string, { value: string; reason: string }> = {
     value: "9px",
     reason: "the board's coordinates, drawn inside a square, where the smallest step (12px) crowds its corner",
   },
+  "components/chess/piece-placement-board/piece-placement-board.comp.css": {
+    value: "9px",
+    reason: "the coordinates of the placement board, drawn inside a square as on ChessBoard",
+  },
   "components/platform/sections/courses/lesson-view/lesson-outline.comp.css": {
     value: "18px",
     reason:

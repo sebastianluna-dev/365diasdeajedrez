@@ -76,8 +76,9 @@ const meta = {
     docs: {
       description: {
         component: `
-The one place chessground is instantiated: every board of the app, on the site
-or in the platform, is this component. Two modes, decided by the props given:
+The board of every game of the app, on the site or in the platform (the only
+other chessground is PiecePlacementBoard, which edits a placement). Two modes,
+decided by the props given:
 
 - **Controlled** (\`position\`): the parent owns the position and the
   navigation, and only the surface renders. This is how the GameViewer, the

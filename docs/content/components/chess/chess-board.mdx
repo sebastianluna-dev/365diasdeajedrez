@@ -16,7 +16,7 @@ description: "The chessground board surface: standalone with a PGN (move list an
 
 ## Purpose
 
-The one place where chessground is instantiated. Every board in the app, on the public site or in the platform, is this component; nothing else imports `@lichess-org/chessground`, so the board's configuration, its piece set and its interaction rules are defined once.
+The board of every game in the app, on the public site or in the platform: the board's configuration, its piece set and its interaction rules are defined here once. The only other chessground is [`PiecePlacementBoard`](/components/chess/piece-placement-board), which edits a placement with no rules at all and shares nothing with this one but the drawing of the squares and pieces.
 
 It works in two modes, decided by which prop is given:
 
@@ -107,6 +107,6 @@ Standalone, from `components/site/sections/home/teacher/teacher.section.tsx` (th
 
 ## Related
 
-- [`ChessBoardLazy`](/components/chess/chess-board-lazy) for boards below the fold; [`StaticDiagram`](/components/chess/static-diagram) when nothing moves.
+- [`ChessBoardLazy`](/components/chess/chess-board-lazy) for boards below the fold; [`StaticDiagram`](/components/chess/static-diagram) when nothing moves; [`PiecePlacementBoard`](/components/chess/piece-placement-board) to set up a position piece by piece.
 - [`GameViewer`](/components/chess/game-viewer/game-viewer) is the component to reach for in the platform; this one is its surface.
 - [Board & game viewer](/chess/viewer#which-one-to-use) has the decision table; [Stockfish, pieces & sounds](/chess/engine-and-assets) covers the piece set and `scripts/sync-pieces.ts`.

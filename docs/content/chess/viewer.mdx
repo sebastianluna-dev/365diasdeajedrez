@@ -1,5 +1,5 @@
 ---
-description: "ChessBoard, ChessBoardLazy, GameViewer and its parts, and StaticDiagram — what each one is for and how they fit together."
+description: "ChessBoard, ChessBoardLazy, GameViewer and its parts, StaticDiagram and PiecePlacementBoard — what each one is for and how they fit together."
 ---
 
 # Board & game viewer
@@ -51,6 +51,10 @@ Parts:
 
 A position as a CSS grid of 64 squares with the piece SVGs from `public/pieces` (`parseFenPlacement`), no chessground, no JavaScript. Used by class position blocks and the blog's diagram block (`context="article"` switches tokens and caption scale).
 
+## `PiecePlacementBoard` — `piece-placement-board/piece-placement-board.comp.tsx` (client)
+
+The exercise editor's piece setup (D09): a chessground of its own where any piece goes anywhere (`movable.free`, no turn, no castling by the king), and a palette of the twelve pieces, «Mover» and «Quitar pieza» as one Radix `ToggleGroup`. A piece is dragged from the palette, or chosen and tapped onto squares; the parent owns the placement and gets every change. Whose turn it is, castling, en passant and whether the position can happen are the editor's, through `validateSetup` (`lib/chess/position-setup.ts`). Its page: [`PiecePlacementBoard`](/components/chess/piece-placement-board).
+
 ## Which one to use
 
 | Need                                                           | Component                                                                            |
@@ -60,3 +64,4 @@ A position as a CSS grid of 64 squares with the piece SVGs from `public/pieces` 
 | Navigate a game with variations, comments, engine, review      | `GameViewer`                                                                         |
 | Let the user build or annotate a game                          | `GameViewer` in editing mode (`editable` + `onPgnChange`), which every editor mounts |
 | Board surface controlled by your own state (trainer, explorer) | `ChessBoard` with `position` (+ `interactive`)                                       |
+| Set up a position piece by piece (the exercise editor)         | `PiecePlacementBoard`                                                                |

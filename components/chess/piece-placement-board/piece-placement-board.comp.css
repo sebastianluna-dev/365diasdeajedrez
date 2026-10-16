@@ -1,0 +1,188 @@
+/* The board on which an author sets up a position, and its palette: beside
+   the board on a wide screen, under it on a phone. Drawn only inside the
+   platform, so its tokens carry no fallback for the public site. */
+
+.piece-placement-board {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--platform-space-3);
+
+  @media (width < 640px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  & .piece-placement-board__frame {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Square, whatever chessground does inside it. */
+  & .piece-placement-board__surface {
+    width: 100%;
+    aspect-ratio: 1;
+  }
+
+  /* Painted with the empty squares only until chessground arrives (it is
+     loaded with the board, and marks the surface `.cg-wrap`), so the pieces
+     land on a board that is already there. Not after: chessground rounds the
+     board down to whole device pixels, and these squares would show at its
+     edge out of step with its own. */
+  & .piece-placement-board__surface:not(.cg-wrap) {
+    background-color: var(--board-light);
+    background-image: conic-gradient(
+      var(--board-dark) 25%,
+      var(--board-light) 0 50%,
+      var(--board-dark) 0 75%,
+      var(--board-light) 0
+    );
+    background-size: 25% 25%;
+  }
+
+  /* --- chessground board surface, as ChessBoard paints it --- */
+  & cg-board {
+    background-color: var(--board-light);
+    background-image: conic-gradient(
+      var(--board-dark) 25%,
+      var(--board-light) 0 50%,
+      var(--board-dark) 0 75%,
+      var(--board-light) 0
+    );
+    background-size: 25% 25%;
+  }
+
+  & cg-board square.selected {
+    background-color: rgba(246, 246, 130, 0.6);
+  }
+
+  /* A tap with a piece or «Quitar pieza» chosen changes the square it lands on. */
+  &.piece-placement-board_tool_place cg-board,
+  &.piece-placement-board_tool_remove cg-board {
+    cursor: pointer;
+  }
+
+  /* The only thing inside the board drawn at a fixed size, as on ChessBoard:
+     the smallest step of the scale, 12px, crowds the corner of a square. */
+  & .cg-wrap coords {
+    font-size: 9px;
+    font-weight: 700;
+  }
+
+  & .cg-wrap coords.ranks coord,
+  & .cg-wrap coords.files coord {
+    color: rgba(22, 17, 13, 0.55);
+  }
+
+  /* Two columns of seven beside the board, the white pieces and «Mover» on
+     the left, the black ones and «Quitar pieza» on the right; two rows of
+     seven under it on a phone. The order of the markup is the keyboard's. */
+  & .piece-placement-board__palette {
+    display: grid;
+    grid-template-columns: repeat(2, 48px);
+    grid-template-rows: repeat(7, 48px);
+    grid-auto-flow: column;
+    gap: var(--platform-space-1);
+
+    @media (width < 640px) {
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      grid-template-rows: none;
+      grid-auto-flow: row;
+    }
+  }
+
+  /* A tool is a square larger than 20px: 8px corners. Its piece is the
+     board's own drawing, from public/pieces. */
+  & .piece-placement-board__tool {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    min-width: 0;
+    padding: 0;
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background-color: var(--platform-surface);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 78%;
+    color: var(--platform-text-muted);
+    cursor: pointer;
+    /* A piece is dragged out of the palette: the finger does not scroll the page. */
+    touch-action: none;
+  }
+
+  & .piece-placement-board__tool svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  & .piece-placement-board__tool:hover:not(:disabled) {
+    border-color: var(--platform-border-strong);
+    color: var(--platform-text);
+  }
+
+  /* Choosing a tool is part of filling in the form: its ring is the
+     selection's blue, as on a field. */
+  & .piece-placement-board__tool:focus-visible {
+    outline-color: var(--platform-selection);
+  }
+
+  /* The chosen tool, in the selection's blue: in the light theme the accent
+     is the red of an error. The border is doubled inside, so it reads on a
+     piece's square too. */
+  & .piece-placement-board__tool[data-state="on"] {
+    border-color: var(--platform-selection);
+    background-color: var(--platform-selection-soft);
+    box-shadow: inset 0 0 0 1px var(--platform-selection);
+    color: var(--platform-selection);
+  }
+
+  /* A piece stands on the board's light square in both themes, chosen or
+     not: on the dark theme's surface, or on its dark blue, a black piece
+     would all but vanish. The doubled blue border says it is chosen. */
+  & .piece-placement-board__tool.piece-placement-board__tool_kind_piece {
+    background-color: var(--board-light);
+  }
+
+  & .piece-placement-board__tool:disabled {
+    color: var(--platform-text-faint);
+    cursor: default;
+  }
+
+  & .piece-placement-board__tool_glyph_w-king {
+    background-image: url("/pieces/w-king.svg");
+  }
+  & .piece-placement-board__tool_glyph_w-queen {
+    background-image: url("/pieces/w-queen.svg");
+  }
+  & .piece-placement-board__tool_glyph_w-rook {
+    background-image: url("/pieces/w-rook.svg");
+  }
+  & .piece-placement-board__tool_glyph_w-bishop {
+    background-image: url("/pieces/w-bishop.svg");
+  }
+  & .piece-placement-board__tool_glyph_w-knight {
+    background-image: url("/pieces/w-knight.svg");
+  }
+  & .piece-placement-board__tool_glyph_w-pawn {
+    background-image: url("/pieces/w-pawn.svg");
+  }
+  & .piece-placement-board__tool_glyph_b-king {
+    background-image: url("/pieces/b-king.svg");
+  }
+  & .piece-placement-board__tool_glyph_b-queen {
+    background-image: url("/pieces/b-queen.svg");
+  }
+  & .piece-placement-board__tool_glyph_b-rook {
+    background-image: url("/pieces/b-rook.svg");
+  }
+  & .piece-placement-board__tool_glyph_b-bishop {
+    background-image: url("/pieces/b-bishop.svg");
+  }
+  & .piece-placement-board__tool_glyph_b-knight {
+    background-image: url("/pieces/b-knight.svg");
+  }
+  & .piece-placement-board__tool_glyph_b-pawn {
+    background-image: url("/pieces/b-pawn.svg");
+  }
+}

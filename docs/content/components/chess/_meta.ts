@@ -5,6 +5,7 @@ const meta: MetaRecord = {
   "chess-board": "ChessBoard",
   "chess-board-lazy": "ChessBoardLazy",
   "static-diagram": "StaticDiagram",
+  "piece-placement-board": "PiecePlacementBoard",
   "player-avatar": "PlayerAvatar",
   "bot-scoreboard": "BotScoreboard",
   "elo-table": "EloTable",
