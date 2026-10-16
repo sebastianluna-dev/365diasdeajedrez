@@ -272,6 +272,7 @@ describe("the teacher's view of an attempt (D24, D45)", () => {
   });
 
   it("escribe el tiempo en segundos o en minutos, y nada sin tiempo", () => {
+    expect(formatAttemptDuration(400)).toBe("menos de 1 s");
     expect(formatAttemptDuration(42_000)).toBe("42 s");
     expect(formatAttemptDuration(65_000)).toBe("1 min 5 s");
     expect(formatAttemptDuration(120_000)).toBe("2 min");
@@ -295,9 +296,10 @@ describe("the teacher's view of an attempt (D24, D45)", () => {
       orientation: "white",
       playedLabel: "Td7",
       expectedLabel: "Td8#",
+      // The expected move first, the played one last: it draws on top.
       arrows: [
-        { from: "d1", to: "d7", tone: "danger" },
         { from: "d1", to: "d8", tone: "success" },
+        { from: "d1", to: "d7", tone: "danger" },
       ],
     });
   });

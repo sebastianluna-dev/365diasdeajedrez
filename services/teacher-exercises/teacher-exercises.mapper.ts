@@ -327,6 +327,7 @@ const OUTCOME_LABELS: Record<ExerciseAttemptOutcome, string> = {
 export function formatAttemptDuration(durationMs: number | null): string | null {
   if (durationMs === null || durationMs < 0) return null;
   const seconds = Math.round(durationMs / 1000);
+  if (seconds === 0) return "menos de 1 s";
   if (seconds < 60) return `${seconds} s`;
   const minutes = Math.floor(seconds / 60);
   const rest = seconds % 60;
@@ -375,9 +376,12 @@ export function mapExerciseAttemptRow(attempt: TeacherAttemptRow, teacherId: str
             orientation: playerOfStart(attempt.exercise?.startFen ?? mistake.fen),
             playedLabel: sanToSpanish(mistake.playedSan),
             expectedLabel: sanToSpanish(mistake.expectedSan),
+            // The expected move first and the played one last: arrows draw in
+            // order, and the two often share the from-square, so the mistake
+            // has to be the one on top.
             arrows: [
-              ...(played ? [{ ...played, tone: "danger" as const }] : []),
               ...(expected ? [{ ...expected, tone: "success" as const }] : []),
+              ...(played ? [{ ...played, tone: "danger" as const }] : []),
             ],
           }
         : null,

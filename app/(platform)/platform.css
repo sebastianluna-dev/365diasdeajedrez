@@ -470,10 +470,9 @@ html body.platform-theme[data-scroll-locked] {
   height: 100%;
   min-height: 0;
   overflow: hidden;
-  /* No entrance animation, and not for the motion's sake: `both` leaves a
-     transform on the element for good, and a transform makes the page the
-     containing block of anything `position: fixed` inside it — which is how
-     the lesson pins its column of lessons to the window's own edges. */
+  /* No entrance animation: the lesson pins its column of lessons to the
+     window's own edges, and a page mid-animation is the containing block of
+     anything `position: fixed` inside it. */
   animation: none;
 
   @media (width < 1280px), (max-height: 620px) {
@@ -499,8 +498,12 @@ html body.platform-theme[data-scroll-locked] {
   /* The page takes the place of the segment's loading fallback in one frame:
      a short fade and rise on mount keeps the swap from being a cut. It runs
      on every mount, so it plays again when a soft navigation remounts the
-     page, which is also when the fallback shows. */
-  animation: platform-page-in 220ms ease-out both;
+     page, which is also when the fallback shows. `backwards`, never `both`:
+     `both` keeps the animated transform applied after the end (Chrome reads
+     it as an identity matrix), which makes the page the containing block of
+     anything `position: fixed` inside it and pushed the move menu off the
+     window's right edge (found 2026-10-16). */
+  animation: platform-page-in 220ms ease-out backwards;
 }
 
 /* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */

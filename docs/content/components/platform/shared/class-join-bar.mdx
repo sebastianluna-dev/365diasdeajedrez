@@ -15,7 +15,7 @@ description: "«Entrar a la clase» stuck to the bottom of a phone's screen whil
 
 ## Purpose
 
-On a phone the button to enter has to be where the thumb is (D20). The bar is drawn by the PAGE as a sibling of `.platform-page`, never inside it: the page's entrance animation leaves a transform that would make it the containing block of anything fixed (§2.4 of the plan). The page reserves the bar's height with `platform-page_foot_join-bar` (`platform.css`), under 1024px only, where the bar is drawn.
+On a phone the button to enter has to be where the thumb is (D20). The bar is drawn by the PAGE as a sibling of `.platform-page`, never inside it: while the page's entrance animation runs, its transform makes it the containing block of anything fixed (§2.4 of the plan; since 2026-10-16 the animation fills `backwards`, so the transform goes once it ends, but a bar must not jump during those 220 ms either). The page reserves the bar's height with `platform-page_foot_join-bar` (`platform.css`), under 1024px only, where the bar is drawn.
 
 ## Props
 
