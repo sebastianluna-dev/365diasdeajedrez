@@ -5,6 +5,7 @@ import {
   formatAgendaDay,
   formatClassDay,
   formatClassHours,
+  formatClassLength,
   formatClassStamp,
   formatClassWhen,
   formatLongDay,
@@ -76,6 +77,15 @@ describe("formatClassWhen", () => {
 describe("formatClassHours", () => {
   it("sólo las horas", () => {
     expect(formatClassHours(cdmx("2026-10-14", "12:00"), 60, zone)).toBe("12:00–13:00");
+  });
+});
+
+describe("formatClassLength", () => {
+  it("minutes under an hour, hours, and hours with their minutes", () => {
+    expect(formatClassLength(45)).toBe("45 min");
+    expect(formatClassLength(60)).toBe("1 h");
+    expect(formatClassLength(90)).toBe("1 h 30");
+    expect(formatClassLength(125)).toBe("2 h 05");
   });
 });
 

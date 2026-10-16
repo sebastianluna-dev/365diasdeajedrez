@@ -1,0 +1,159 @@
+/* A finished class: the board of its material on the left when it has
+   one, the card's text beside it; without a board, the same card at full
+   width. The summary keeps to three lines. Under 640px the board goes on
+   top. */
+.past-class-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-3);
+  min-width: 0;
+  padding: var(--platform-space-4);
+  border-radius: 8px;
+  background: var(--platform-surface);
+  box-shadow: var(--platform-shadow-card);
+  color: var(--platform-text);
+
+  &.past-class-card_board_on {
+    display: grid;
+    grid-template-columns: 236px minmax(0, 1fr);
+    align-items: stretch;
+    column-gap: var(--platform-space-5);
+  }
+
+  & .past-class-card__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  & .past-class-card__board {
+    align-self: start;
+    min-width: 0;
+  }
+
+  & .past-class-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    min-width: 0;
+  }
+
+  & .past-class-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-2);
+    min-height: 28px;
+  }
+
+  & .past-class-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-2);
+  }
+
+  & .past-class-card__hours {
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--platform-text-muted);
+    white-space: nowrap;
+  }
+
+  & .past-class-card__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+  }
+
+  & .past-class-card__title {
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  & .past-class-card__link {
+    color: var(--platform-text);
+    text-decoration: none;
+  }
+
+  & .past-class-card__link:hover {
+    color: var(--platform-accent-ink);
+  }
+
+  & .past-class-card__meta,
+  & .past-class-card__note {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-muted);
+  }
+
+  & .past-class-card__moved {
+    color: var(--platform-accent-ink);
+  }
+
+  & .past-class-card__summary {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    font-size: var(--platform-type-xs);
+    line-height: 1.45;
+    color: var(--platform-text-muted);
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  & .past-class-card__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-2) var(--platform-space-4);
+  }
+
+  & .past-class-card__fact {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .past-class-card__fact-icon {
+    width: 14px;
+    height: 14px;
+    color: var(--platform-text-muted);
+  }
+
+  & .past-class-card__more {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: var(--platform-space-1);
+    margin-top: auto;
+    font-size: var(--platform-type-sm);
+    font-weight: 700;
+    color: var(--platform-accent-ink);
+    text-decoration: none;
+  }
+
+  & .past-class-card__more-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  &.past-class-card_state_cancelled .past-class-card__link {
+    color: var(--platform-text-muted);
+  }
+
+  @media (width < 640px) {
+    &.past-class-card_board_on {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: var(--platform-space-4);
+    }
+  }
+}

@@ -1,21 +1,23 @@
 ---
-description: "«Tus clases pagadas»: how many classes the student still has, of which payment, how they stand (taken, scheduled, to schedule) and the way to ask for more. Never an amount."
+description: "«Tus clases pagadas» as counts: how many classes the student still has, one square per class (taken, scheduled, to schedule), the counts in words and the way to ask for more. Never an amount, never which payment."
 ---
 
 # `PaidClassesCard`
 
-|            |                                                                                                                       |
-| ---------- | --------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/paid-classes-card/paid-classes-card.comp.tsx`                                             |
-| Kind       | Server Component                                                                                                      |
-| Stylesheet | `paid-classes-card.comp.css` → block `.paid-classes`                                                                  |
-| Story      | `paid-classes-card.stories.tsx` (`platform/shared/PaidClassesCard`): one payment, several payments, zero, no payments |
-| Used by    | `app/(platform)/clases/page.tsx` (the lane from 1024px; a `<details>` above the list under it)                        |
-| Uses       | `StudentBalanceView` from `services/classes/classes.types`; `WhatsappIcon`                                            |
+|            |                                                                                                                                         |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/paid-classes-card/paid-classes-card.comp.tsx`                                                               |
+| Kind       | Server Component                                                                                                                        |
+| Stylesheet | `paid-classes-card.comp.css` → block `.paid-classes`                                                                                    |
+| Story      | `paid-classes-card.stories.tsx` (`platform/shared/PaidClassesCard`): one payment, several payments, many classes, zero, no payments     |
+| Used by    | [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section) (the lane; under the list below 1024px) |
+| Uses       | `StudentBalanceView` from `services/classes/classes.types`; `CheckIcon`, `CalendarIcon`, `CalendarClockIcon`, `WhatsappIcon`            |
 
 ## Purpose
 
-What the student has, counted when it is read from their payments (`paymentSeats`, `services/shared/payment-seats.ts`) and never stored: the figure «3 clases por tomar» in the display face, the sentence «Te quedan 3 clases de tu pago del 1 de octubre: 2 programadas y 1 por programar.», a bar (`role="img"`, its label the same counts in words) with its legend «● 1 tomada ● 2 programadas ○ 1 por programar», and «La que falta la programa administración contigo. Tus clases pagadas no caducan.». «¿Quieres más clases? Escríbenos» opens the academy's WhatsApp with the message written (`academyWhatsappHref`). Without a payment: «Todavía no tienes clases pagadas.» and «¿Quieres clases? Escríbenos». The student never sees an amount: a payment reaches the card as a day and a count of classes.
+What the student has, counted when it is read from their payments (`paymentSeats`, `services/shared/payment-seats.ts`) and never stored, **as counts only**: the figure «3 clases por tomar» in the display face, one plain square per class — ticked in green when taken, ringed in the accent when scheduled, a dashed outline when it is still to schedule —, the same counts in words («2 programadas · 1 por programar»), «Tus clases pagadas no caducan.» and «¿Quieres más clases? Escríbenos», which opens the academy's WhatsApp with the message written (`academyWhatsappHref`). Up to twelve classes are drawn as squares; more read as the counts alone. Without a payment: «Todavía no tienes clases pagadas.» and «¿Quieres clases? Escríbenos».
+
+The counts are of the payments still open, added together (with none open, of the last one). Since 2026-10-15 the card never says which payment a class belongs to — no «de tu pago del 1 de octubre», no dates or titles on the squares —, the owner's rule for every student screen: the student reads classes, not packages. Nor an amount: a payment reaches the student's mapper as a day and a count of classes.
 
 ## Props
 
@@ -26,15 +28,15 @@ What the student has, counted when it is read from their payments (`paymentSeats
 
 ## Markup & styling
 
-Block `.paid-classes` (103 lines), inside a `.platform-card`.
+Block `.paid-classes` (123 lines), inside a `.platform-card`.
 
-**Elements:** `.paid-classes__figure`, `.paid-classes__line`, `.paid-classes__bar`, `.paid-classes__segment`, `.paid-classes__legend`, `.paid-classes__key`, `.paid-classes__note`, `.paid-classes__ask`, `.paid-classes__ask-icon`, `.paid-classes__sr`
+**Elements:** `.paid-classes__title`, `.paid-classes__figure`, `.paid-classes__number`, `.paid-classes__squares`, `.paid-classes__square`, `.paid-classes__square-icon`, `.paid-classes__counts`, `.paid-classes__note`, `.paid-classes__ask`, `.paid-classes__ask-icon`, `.paid-classes__sr`
 
-**Modifiers and states:** `.paid-classes__segment_kind_{taken,scheduled}`, `.paid-classes__key_kind_{taken,scheduled,to-schedule}`
+**Modifiers and states:** `.paid-classes__square_kind_{taken,scheduled,to-schedule}`
 
-**Tokens:** `--platform-text`, `--platform-text-muted`, `--platform-accent`, `--platform-surface-neutral`, `--platform-font-display`
+**Breakpoints:** `(width < 640px)` — the squares fill the row, 56px tall.
 
-No media queries.
+**Tokens:** `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-surface`, `--platform-accent`, `--platform-accent-ink`, `--platform-success-soft`, `--platform-success-ink`, `--platform-border-strong`, `--platform-font-display`
 
 ## Related
 

@@ -146,3 +146,11 @@ export function classDayParts(date: Date, timeZone: string): { weekday: string; 
   const parts = localParts(date, timeZone);
   return { weekday: WEEKDAYS_SHORT[parts.weekday] ?? "", day: parts.day, month: MONTHS_SHORT[parts.month - 1] ?? "" };
 }
+
+/** How long a class lasts, as a ticket's stub says it: «45 min», «1 h», «1 h 30». */
+export function formatClassLength(durationMin: number): string {
+  const hours = Math.floor(durationMin / 60);
+  const minutes = durationMin % 60;
+  if (hours === 0) return `${minutes} min`;
+  return minutes === 0 ? `${hours} h` : `${hours} h ${String(minutes).padStart(2, "0")}`;
+}

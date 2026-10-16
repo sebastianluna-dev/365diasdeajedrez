@@ -242,11 +242,13 @@ export const TEXT_PAIRS: readonly (readonly [text: string, background: string])[
   ["text-muted", "variation-soft"],
   // What is chosen: the tick and a chosen day on the selection's fill, its
   // blue as ink on the white, on its tint (a highlighted option, a day under
-  // the pointer) and on its wash (a chosen card's description).
+  // the pointer) and on its wash (a chosen card's description). The text on
+  // that wash: the student's notice of the classes paid without a date.
   ["on-selection", "selection"],
   ["selection", "surface"],
   ["selection", "selection-soft"],
   ["selection", "selection-wash"],
+  ["text", "selection-wash"],
   // A portrait's initials on each of its six tones.
   ...[1, 2, 3, 4, 5, 6].map((tone) => ["on-avatar", `avatar-${tone}`] as const),
 ];

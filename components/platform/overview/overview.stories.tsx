@@ -82,9 +82,9 @@ import { FROM_2XL, FROM_2XL_PROPERTIES, TYPE_STEPS } from "@/components/platform
 import { useSchemeOnScreen } from "@/components/platform/foundations/use-scheme-on-screen.hook";
 import { ClassAheadSection } from "@/components/platform/sections/classes/class-detail/class-ahead.section";
 import { ClassReviewSection } from "@/components/platform/sections/classes/class-detail/class-review.section";
-import { ClassCard } from "@/components/platform/shared/class-card/class-card.comp";
 import { ClassGameSave } from "@/components/platform/shared/class-game-save/class-game-save.comp";
 import { PaidClassesCard } from "@/components/platform/shared/paid-classes-card/paid-classes-card.comp";
+import { PastClassCard } from "@/components/platform/shared/past-class-card/past-class-card.comp";
 import { CourseCard } from "@/components/platform/sections/courses/course-card.comp";
 import { LevelScale } from "@/components/platform/sections/courses/course-info/level-scale.comp";
 import { LessonSkeleton } from "@/components/platform/sections/courses/lesson-view/lesson-skeleton.comp";
@@ -111,6 +111,7 @@ import { ClassDateTile } from "@/components/platform/shared/class-date-tile/clas
 import { ClassRow } from "@/components/platform/shared/class-row/class-row.comp";
 import type { ClassRowData } from "@/components/platform/shared/class-row/class-row.types";
 import { ClassStatusTag } from "@/components/platform/shared/class-status-tag/class-status-tag.comp";
+import { ClassTicket } from "@/components/platform/shared/class-ticket/class-ticket.comp";
 import { ClassWhen } from "@/components/platform/shared/class-when/class-when.comp";
 import { CopyLinkButton } from "@/components/platform/shared/copy-link-button/copy-link-button.comp";
 import { FilterPills } from "@/components/platform/shared/filter-pills/filter-pills.comp";
@@ -151,6 +152,7 @@ import {
 import { CLASSES_NOW, CLASSES_TIME_ZONE, cdmx } from "@/lib/testing/fixtures/classes";
 import {
   STUDENT_BALANCE,
+  STUDENT_PAST_CARD,
   STUDENT_WHATSAPP,
   studentCard,
   studentDetail,
@@ -1991,8 +1993,11 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 updateClassAfterNotes={async () => popupFormDone("afterNotesSaved")}
               />
             </Tile>
-            <Tile name="ClassCard" docs="platform-shared-classcard" width={640} height={232} surface>
-              <ClassCard card={studentCard()} variant="featured" />
+            <Tile name="ClassTicket" docs="platform-shared-classticket" width={760} height={264}>
+              <ClassTicket card={studentCard()} />
+            </Tile>
+            <Tile name="PastClassCard" docs="platform-shared-pastclasscard" width={640} height={268}>
+              <PastClassCard card={STUDENT_PAST_CARD} />
             </Tile>
             <Tile name="PaidClassesCard" docs="platform-shared-paidclassescard" width={320} height={296}>
               <PaidClassesCard balance={STUDENT_BALANCE} whatsappHref={STUDENT_WHATSAPP} />

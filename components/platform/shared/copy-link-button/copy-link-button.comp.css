@@ -1,4 +1,5 @@
-/* The button is `.platform-button` (quiet, small, square); this block only
+/* The button is `.platform-button` (square: quiet and small, or the
+   secondary box at its large size); this block only
    colours the tick and hides the live region. */
 .copy-link-button {
   display: inline-flex;

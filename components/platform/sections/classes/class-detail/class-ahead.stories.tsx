@@ -102,7 +102,7 @@ export const Cancelled: Story = {
       description: null,
       join: studentJoin({ phase: CLASS_PHASE.CANCELLED, meetingUrl: null }),
       cancelled: { note: "Te escribiremos para fijar otra fecha.", returnedToPayment: true },
-      coverage: "De tu pago del 1 de octubre · Individual",
+      coverage: null,
     }),
   },
 };
@@ -139,7 +139,7 @@ export const MakeUp: Story = {
       title: "Clase con GM Profesor Demo",
       description: null,
       makeUp: { label: "Es la reposición de tu clase del vie 2 oct.", note: "Te la reponemos el viernes." },
-      coverage: "Clase 3 de 4 de tu pago del 15 de septiembre · Individual",
+      coverage: null,
     }),
   },
 };

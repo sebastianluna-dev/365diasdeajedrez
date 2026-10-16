@@ -9,17 +9,22 @@ interface CopyLinkButtonProps {
   url: string;
   /** The button's accessible name: «Copiar el enlace de la reunión». */
   label: string;
+  /**
+   * `sm`: quiet and small, beside a line of text; `lg`: the secondary box at
+   * 48px, beside a large «Entrar a la clase» (a class's ticket).
+   */
+  size?: "sm" | "lg";
 }
 
 const COPIED_MS = 2000;
 
 /**
- * A quiet square button that copies a link to the clipboard and says so for
+ * A square button, quiet and small or boxed and large, that copies a link to the clipboard and says so for
  * two seconds: the tick in place of the copy icon, and «Enlace copiado» in a
  * live region a screen reader hears. Where the clipboard is not available
  * (an insecure context), the button stays and does nothing it cannot do.
  */
-export function CopyLinkButton({ url, label }: CopyLinkButtonProps) {
+export function CopyLinkButton({ url, label, size = "sm" }: CopyLinkButtonProps) {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -41,7 +46,11 @@ export function CopyLinkButton({ url, label }: CopyLinkButtonProps) {
     <span className="copy-link-button">
       <button
         type="button"
-        className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square"
+        className={
+          size === "lg"
+            ? "platform-button platform-button_size_lg platform-button_shape_square"
+            : "platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square"
+        }
         aria-label={label}
         onClick={copy}
       >

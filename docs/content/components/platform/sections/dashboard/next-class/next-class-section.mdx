@@ -1,22 +1,22 @@
 ---
-description: "«Próxima clase» on the dashboard: the first class ahead as a featured ClassCard with how to join it, and under it what is left of the payment; or what there is to schedule."
+description: "«Próxima clase» on the dashboard: the first class ahead as its ClassTicket with how to join it, and under it how many classes are left; or what there is to schedule."
 ---
 
 # `NextClassSection`
 
-|            |                                                                                                                                       |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/dashboard/next-class/next-class.section.tsx`                                                            |
-| Kind       | Server Component (async)                                                                                                              |
-| Stylesheet | `next-class.section.css` → block `.next-class`                                                                                        |
-| Used by    | `/inicio`                                                                                                                             |
-| Composes   | [`ClassCard`](/components/platform/shared/class-card) (`variant="featured"`), [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads      | `getNextClass()`, `getStudentSeatBalance()` · `services/classes/classes.service.ts`                                                   |
-| Uses       | `platformRoutes` from `lib/platform-routes`                                                                                           |
+|            |                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/dashboard/next-class/next-class.section.tsx`                                         |
+| Kind       | Server Component (async)                                                                                           |
+| Stylesheet | `next-class.section.css` → block `.next-class`                                                                     |
+| Used by    | `/inicio`                                                                                                          |
+| Composes   | [`ClassTicket`](/components/platform/shared/class-ticket), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads      | `getNextClass()`, `getStudentSeatBalance()` · `services/classes/classes.service.ts`                                |
+| Uses       | `platformRoutes` from `lib/platform-routes`                                                                        |
 
 ## Purpose
 
-The first class ahead that is not cancelled, drawn exactly as «Mis clases» draws it — the same card, the same join data —, so the dashboard and `/clases` can never disagree about which class is next or whether its link is open. The foot says what is left («Te quedan 3 clases de tu pago del 1 de octubre · Ver mis clases»). Without a class: «Tienes 1 clase por programar» and «Administración te escribirá para fijar la fecha.» when a payment has classes without a date, else «No tienes clases programadas» with «Cuando administración programe una clase contigo, aparecerá aquí.».
+The first class ahead that is not cancelled, drawn exactly as «Mis clases» draws it — the same ticket, the same join data —, so the dashboard and `/clases` can never disagree about which class is next or whether its link is open. The foot says what is left, in counts and never of which payment («Te quedan 3 clases · Ver mis clases»). Without a class: «Tienes 1 clase por programar» and «Administración te escribirá para fijar la fecha.» when a payment has classes without a date, else «No tienes clases programadas» with «Cuando administración programe una clase contigo, aparecerá aquí.».
 
 On the day of a class the page puts this section first, across the row, and «Continuar estudiando» steps back to a secondary button ([`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section), `emphasis="secondary"`).
 

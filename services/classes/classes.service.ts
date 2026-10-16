@@ -16,7 +16,7 @@ import {
   mapClassCard,
   mapStudentBalance,
   mapStudentClassDetail,
-  mapUnscheduled,
+  studentBlockSelect,
   studentPhaseOf,
   type StudentClassSource,
   type StudentContext,
@@ -58,7 +58,7 @@ const seatClassSelect = {
     select: { userId: true, user: { select: { displayName: true } } },
     orderBy: { user: { displayName: "asc" } },
   },
-  blocks: { select: { visibility: { select: { code: true } } } },
+  blocks: { orderBy: { order: "asc" }, select: studentBlockSelect },
 } satisfies Prisma.ClassSelect;
 
 const seatSelect = {
@@ -83,7 +83,6 @@ interface StudentSeats {
   sources: StudentClassSource[];
   /** The student's payments, oldest first, each with its count. */
   payments: StudentPaymentCount[];
-  paymentOf: Map<string, StudentPaymentCount>;
 }
 
 function toSource(row: SeatDbRow, userId: string, rows: SeatDbRow[]): StudentClassSource {
@@ -119,7 +118,7 @@ function toSource(row: SeatDbRow, userId: string, rows: SeatDbRow[]): StudentCla
     rescheduleNote: cls.rescheduleNote,
     cancelNote: cls.cancelNote,
     classmates: cls.participants.filter((seat) => seat.userId !== userId).map((seat) => seat.user.displayName),
-    blocks: cls.blocks.map((block) => ({ visibility: block.visibility.code })),
+    blocks: cls.blocks,
     seat,
   };
 }
@@ -163,15 +162,9 @@ const readStudentSeats = cache(async (): Promise<StudentSeats> => {
     userId: user.id,
     displayName: user.displayName,
     now,
-    context: {
-      now,
-      timeZone: STUDY_DAY_TIMEZONE,
-      whatsappHref,
-      ordinalOf: (paymentId, classId) => counted.get(paymentId)?.ordinalOf[classId],
-    },
+    context: { now, timeZone: STUDY_DAY_TIMEZONE, whatsappHref },
     sources,
     payments,
-    paymentOf: new Map(payments.map((payment) => [payment.id, payment])),
   };
 });
 
@@ -190,7 +183,7 @@ function splitAhead(seats: StudentSeats): { ahead: StudentClassSource[]; past: S
   return { ahead, past: past.reverse() };
 }
 
-/** «Mis clases»: today, what comes, what is bought without a date, and the past by month. */
+/** «Mis clases»: today, what comes, how many are paid without a date, and the past by month. */
 export const getUserClasses = cache(async (pastPages: number): Promise<StudentClassesView> => {
   const seats = await readStudentSeats();
   const { context, now } = seats;
@@ -200,10 +193,7 @@ export const getUserClasses = cache(async (pastPages: number): Promise<StudentCl
   const today = cards(ahead.filter((source) => dayKeyIn(source.scheduledAt, context.timeZone) === todayKey));
   const upcoming = cards(ahead.filter((source) => dayKeyIn(source.scheduledAt, context.timeZone) !== todayKey));
   const pastShown = Math.max(1, pastPages) * PAST_PAGE_SIZE;
-  const pastEntries = past.slice(0, pastShown).map((source) => ({
-    card: mapClassCard(source, context),
-    payment: source.seat.payment && !source.seat.isFree ? (seats.paymentOf.get(source.seat.payment.id) ?? null) : null,
-  }));
+  const balance = mapStudentBalance(seats.payments, context);
   const joinOpen =
     today.map((card) => card.join).find((join) => join && ["open", "live", "tail"].includes(meetingJoinState(join))) ??
     null;
@@ -213,12 +203,13 @@ export const getUserClasses = cache(async (pastPages: number): Promise<StudentCl
     nowIso: now.toISOString(),
     today,
     upcoming,
-    unscheduled: mapUnscheduled(seats.payments, now),
-    past: groupPastByMonth(pastEntries, context),
+    toSchedule: balance?.toSchedule ?? 0,
+    past: groupPastByMonth(cards(past.slice(0, pastShown)), context.timeZone),
     pastTotal: past.length,
     pastShown: Math.min(pastShown, past.length),
-    balance: mapStudentBalance(seats.payments, context),
+    balance,
     joinOpen,
+    whatsappHref: context.whatsappHref,
   };
 });
 
@@ -243,7 +234,7 @@ export const getClassById = cache(async (classId: string): Promise<ClassDetailVi
   const row = await getPlatformDb().class.findUnique({ where: { id: classId }, include: classDetailInclude });
   if (!row) return null;
   return mapStudentClassDetail(
-    { ...source, row, viewerId: seats.userId, balanceLine: balanceLineOf(seats.payments, seats.now) },
+    { ...source, row, viewerId: seats.userId, balanceLine: balanceLineOf(seats.payments) },
     seats.context,
   );
 });

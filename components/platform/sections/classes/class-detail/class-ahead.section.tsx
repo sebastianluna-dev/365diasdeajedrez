@@ -21,7 +21,7 @@ interface ClassAheadSectionProps {
 function cancelledMessage(cancelled: NonNullable<ClassDetailView["cancelled"]>): string {
   const parts = ["Esta clase se canceló."];
   if (cancelled.note) parts.push(cancelled.note);
-  if (cancelled.returnedToPayment) parts.push("Tu clase volvió a tu pago: la programaremos contigo.");
+  if (cancelled.returnedToPayment) parts.push("Tu clase pagada sigue en pie: la programaremos contigo.");
   return parts.join(" ");
 }
 
@@ -30,7 +30,8 @@ function cancelledMessage(cancelled: NonNullable<ClassDetailView["cancelled"]>):
  * topic and when, the access card — «Entrar a la clase» when the link is
  * open, the countdown before, «Volver a entrar» in the half hour after the
  * end —, what the staff said (a new date, a cancellation, a make-up), «Tu
- * clase» with how the seat is covered, and what there is to prepare.
+ * clase» with who it is with (and «Esta clase es gratis.» when it is; never
+ * which payment it belongs to), and what there is to prepare.
  */
 export function ClassAheadSection({ classDetail, notice, errorMessage }: ClassAheadSectionProps) {
   const cancelled = classDetail.cancelled !== null;
@@ -93,7 +94,9 @@ export function ClassAheadSection({ classDetail, notice, errorMessage }: ClassAh
 
         {!cancelled && (
           <div className="class-ahead__prepare">
-            <h2 className="class-ahead__prepare-title">Para preparar</h2>
+            <h2 id="para-preparar" className="class-ahead__prepare-title">
+              Para preparar
+            </h2>
             {classDetail.blocks.length > 0 ? (
               <ClassContentRenderer blocks={classDetail.blocks} />
             ) : (

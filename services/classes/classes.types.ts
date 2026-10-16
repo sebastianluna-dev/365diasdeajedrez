@@ -7,9 +7,9 @@ import type {
 import type { StudentClassView } from "@/services/shared/class-phase";
 
 // What the student's screens read. Never an amount, never a classmate's
-// email: a class says who gives it, who else is in it by name, how the seat
-// is covered in classes («Clase 2 de 4 de tu pago del 1 de octubre»), and
-// what there is to prepare or to review.
+// email, and never which payment a class belongs to: a class says who gives
+// it, who else is in it by name, whether it is free, and what there is to
+// prepare or to review; the balance is counts of classes.
 
 /** A player of a game seen in class, for the strips around the board. */
 export interface ClassGamePlayer {
@@ -81,7 +81,15 @@ export interface ClassTranscriptView {
   text?: string;
 }
 
-/** A class as the student's cards draw it: the featured one, a compact one, a past one. */
+/** The board of a past class's card: the position of its first chess block. */
+export interface PastClassBoard {
+  fen: string;
+  orientation: "white" | "black";
+  /** What the board shows, for its accessible name: the position's title, the game's players, the lesson. */
+  label: string;
+}
+
+/** A class as the student's lists draw it: a ticket ahead of time, a card once it is over. */
 export interface ClassCardData {
   id: string;
   href: string;
@@ -93,24 +101,33 @@ export interface ClassCardData {
   nowIso: string;
   /** «con GM Profesor Demo», «con GM Profesor Demo · Grupal, con Mateo Ríos, Diego Salas y Lucía Herrera». */
   people: string;
+  /** The ticket's fields: who gives it, whether it is a group class and who else is in it. */
+  teacherName: string;
+  isGroup: boolean;
+  classmates: string[];
   /** Blocks the student may see now: «2 para preparar» ahead, «4 bloques» after. */
   visibleBlocks: number;
-  /** How to join; the featured card draws it. */
+  /** How to join; the ticket draws it. */
   join: MeetingJoinData | null;
-  /** Once the class ended: whether they came and whether there is a recording. */
-  past: { attended: boolean | null; hasRecording: boolean } | null;
-  /** «No asististe · tu clase pasó al vie 9 oct», with the new class, or «… tu clase volvió a tu pago». */
+  /**
+   * Once the class is over and counts as finished: whether they came, the
+   * recording, the summary and the board of its first chess block (null
+   * when the class has no position, game or lesson to show). Ahead of time
+   * there is none of it: a ticket never shows the class's content.
+   */
+  past: {
+    attended: boolean | null;
+    hasRecording: boolean;
+    summary: string | null;
+    board: PastClassBoard | null;
+  } | null;
+  /** «No asististe · tu clase pasó al vie 9 oct», with the new class, or «… tu clase queda por programar». */
   moved: { label: string; href: string | null } | null;
   /** «Es la reposición de tu clase del vie 2 oct.» */
   makeUpLabel: string | null;
   cancelled: boolean;
-}
-
-/** A paid class without a date yet. */
-export interface UnscheduledClassData {
-  paymentId: string;
-  /** «de tu pago del 1 de octubre». */
-  label: string;
+  /** «Gratis», the only thing a card says about how a class is paid. */
+  isFree: boolean;
 }
 
 export interface PastMonth {
@@ -118,8 +135,6 @@ export interface PastMonth {
   /** «Octubre 2026». */
   label: string;
   cards: ClassCardData[];
-  /** The whole month is one payment, every class taken: «Las cuatro clases de tu pago del 3 de septiembre.» */
-  foldedLabel: string | null;
 }
 
 /** What the student has, counted from their payments; never an amount. */
@@ -128,7 +143,7 @@ export interface StudentBalanceView {
   taken: number;
   scheduled: number;
   toSchedule: number;
-  /** «Te quedan 3 clases de tu pago del 1 de octubre: 2 programadas y 1 por programar.» */
+  /** «Te quedan 3 clases: 2 programadas y 1 por programar.» */
   line: string;
   whatsappHref: string;
 }
@@ -138,13 +153,16 @@ export interface StudentClassesView {
   nowIso: string;
   today: ClassCardData[];
   upcoming: ClassCardData[];
-  unscheduled: UnscheduledClassData[];
+  /** Classes paid and without a date yet: the notice says how many, never of which payment. */
+  toSchedule: number;
   past: PastMonth[];
   pastTotal: number;
   pastShown: number;
   balance: StudentBalanceView | null;
   /** Today's class whose link is open, for the fixed bar. */
   joinOpen: MeetingJoinData | null;
+  /** «Escríbenos»: the academy's WhatsApp with the message written. */
+  whatsappHref: string;
 }
 
 export interface ClassDetailView {
@@ -163,7 +181,7 @@ export interface ClassDetailView {
   people: string;
   classmates: string[];
   join: MeetingJoinData;
-  /** «Clase 2 de 4 de tu pago del 1 de octubre · Individual», «Esta clase es gratis.», or null without a payment. */
+  /** «Esta clase es gratis.», or null: which payment a paid class belongs to is never said. */
   coverage: string | null;
   attended: boolean | null;
   moved: { label: string; href: string | null } | null;
@@ -176,7 +194,7 @@ export interface ClassDetailView {
   recordingUrl: string | null;
   blocks: ClassBlockView[];
   transcript: ClassTranscriptView | null;
-  /** «Te quedan 3 clases», for the foot of the review. */
+  /** «Te quedan 3 clases: 2 programadas y 1 por programar.», for the foot of the review. */
   balanceLine: string | null;
   whatsappHref: string;
   href: string;

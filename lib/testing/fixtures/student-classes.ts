@@ -1,6 +1,11 @@
 import { CLASS_PHASE, type ClassPhaseCode } from "@/constants/platform/class-codes.const";
 import type { MeetingJoinData } from "@/components/platform/shared/meeting-join-card/meeting-join-card.types";
-import type { ClassCardData, ClassDetailView, StudentBalanceView } from "@/services/classes/classes.types";
+import type {
+  ClassCardData,
+  ClassDetailView,
+  PastClassBoard,
+  StudentBalanceView,
+} from "@/services/classes/classes.types";
 import { CLASSES_NOW, CLASSES_TIME_ZONE, cdmx } from "./classes";
 
 // The student's classes as the mappers hand them to the screens, fixed to
@@ -42,12 +47,16 @@ export function studentCard(extra: Partial<ClassCardData> = {}): ClassCardData {
     timeZone: CLASSES_TIME_ZONE,
     nowIso: CLASSES_NOW.toISOString(),
     people: "con GM Profesor Demo",
+    teacherName: "GM Profesor Demo",
+    isGroup: false,
+    classmates: [],
     visibleBlocks: 2,
     join,
     past: null,
     moved: null,
     makeUpLabel: null,
     cancelled: false,
+    isFree: false,
     ...extra,
   };
 }
@@ -88,16 +97,39 @@ export const STUDENT_GROUP_CARD = studentCardAt("2026-10-17", "10:00", 90, CLASS
   href: "/clases/c5",
   title: "Taller de finales de torre",
   people: "con GM Profesor Demo · Grupal, con Mateo Ríos, Diego Salas y Lucía Herrera",
+  isGroup: true,
+  classmates: ["Mateo Ríos", "Diego Salas", "Lucía Herrera"],
   visibleBlocks: 1,
 });
 
-/** Last week's class, attended, with its recording. */
+/** The Opera game at the rook's check on d8: the board of last week's class. */
+export const OPERA_BOARD: PastClassBoard = {
+  fen: "1n1Rkb1r/p4ppp/4q3/4p1B1/4P3/8/PPP2PPP/2K5 b k - 1 17",
+  orientation: "white",
+  label: "Morphy – Duque de Brunswick y Conde Isouard",
+};
+
+/** Last week's class, attended, with its recording, its summary and the board of its game. */
 export const STUDENT_PAST_CARD = studentCardAt("2026-10-07", "12:00", 60, CLASS_PHASE.DONE, {
   id: "c1",
   href: "/clases/c1",
   title: "Ataques al rey en el centro",
   visibleBlocks: 4,
-  past: { attended: true, hasRecording: true },
+  past: {
+    attended: true,
+    hasRecording: true,
+    summary: "Vimos los tres errores típicos que dejan al rey en el centro y la técnica de Morphy para explotarlos.",
+    board: OPERA_BOARD,
+  },
+});
+
+/** A September class with no material: the same card without the board. */
+export const STUDENT_PLAIN_PAST_CARD = studentCardAt("2026-09-26", "12:00", 60, CLASS_PHASE.DONE, {
+  id: "c0",
+  href: "/clases/c0",
+  title: "Finales elementales",
+  visibleBlocks: 0,
+  past: { attended: true, hasRecording: false, summary: null, board: null },
 });
 
 export const STUDENT_BALANCE: StudentBalanceView = {
@@ -105,7 +137,7 @@ export const STUDENT_BALANCE: StudentBalanceView = {
   taken: 1,
   scheduled: 2,
   toSchedule: 1,
-  line: "Te quedan 3 clases de tu pago del 1 de octubre: 2 programadas y 1 por programar.",
+  line: "Te quedan 3 clases: 2 programadas y 1 por programar.",
   whatsappHref: STUDENT_WHATSAPP,
 };
 
@@ -126,7 +158,7 @@ export function studentDetail(extra: Partial<ClassDetailView> = {}): ClassDetail
     people: "con GM Profesor Demo",
     classmates: [],
     join,
-    coverage: "Clase 2 de 4 de tu pago del 1 de octubre · Individual",
+    coverage: null,
     attended: null,
     moved: null,
     makeUp: null,

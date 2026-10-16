@@ -184,6 +184,7 @@ export function ClassReviewSection({
               <TicketIcon className="class-review__seat-icon" />
               Tu clase
             </h2>
+            <p className="class-review__seat-line">{classDetail.people.replace(/^con /, "Con ")}</p>
             {classDetail.coverage && <p className="class-review__seat-line">{classDetail.coverage}</p>}
             {classDetail.makeUp && (
               <p className="class-review__seat-line class-review__seat-line_tone_muted">{classDetail.makeUp.label}</p>

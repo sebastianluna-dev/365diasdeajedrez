@@ -1,0 +1,45 @@
+---
+description: "A class once it is over and counts as finished: «Asististe», the hours, the topic, «Finalizada · con …», the summary, the recording, the blocks and «Ver la clase», led by the board of its first position, game or lesson when it has one."
+---
+
+# `PastClassCard`
+
+|            |                                                                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/past-class-card/past-class-card.comp.tsx`                                                                                                     |
+| Kind       | Server Component                                                                                                                                                          |
+| Stylesheet | `past-class-card.comp.css` → block `.past-class-card`                                                                                                                     |
+| Story      | `past-class-card.stories.tsx` (`platform/shared/PastClassCard`): with board, without board, free, moved, cancelled, phone                                                 |
+| Used by    | [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section) («Pasadas»)                                                               |
+| Composes   | [`StaticDiagram`](/components/chess/static-diagram), [`ClassStatusTag`](/components/platform/shared/class-status-tag) (a cancelled class)                                 |
+| Uses       | `ClassCardData`, `PastClassBoard` from `services/classes/classes.types`; `formatClassHours`, `formatLongDay` from `lib/format-class-when`; `dayKeyIn` from `lib/timezone` |
+
+## Purpose
+
+The other half of the owner's design for the student's classes (2026-10-15): a class turns from its [`ClassTicket`](/components/platform/shared/class-ticket) into this card once it is over and counts as finished (`studentClassView` says «review»: half an hour after the end). The top row says whether the student came («Asististe», «No asististe») and, for a free class, «Gratis», with the hours on the right; then the topic (the link to the class, its day read out for a screen reader), «Finalizada · con GM Profesor Demo», a make-up's or a moved seat's line («No asististe · tu clase pasó al vie 9 oct», a link to the new class), the summary the teacher left (three lines at most), «Grabación», «4 bloques» and «Ver la clase».
+
+**The board only when the class has chess.** `past.board` is the position of the class's first block with chess that the student may see now (`pastBoardOf`, `services/classes/classes.mapper.ts`): a position's FEN as it is, a game's or a lesson's at the move the block points at or, without one, at the end of its main line. A class with only text, videos or files — or a PGN without a move — has no board, and the card is the same without it. The board is a `StaticDiagram`, 236px wide beside the text, named «Tablero de la clase: …» with the position's title, the game's players or the lesson's name. Never which payment the class came from.
+
+## Props
+
+| Prop   | Type            | Required | Meaning                                                                                                             |
+| ------ | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| `card` | `ClassCardData` | yes      | What the mapper gives: `past` (attended, recording, summary, board), the people line, the visible blocks, `isFree`. |
+
+## Markup & styling
+
+Block `.past-class-card` (159 lines), an `<article>` named by its title; a grid of the board and the body with `_board_on`, a column without it.
+
+**Elements:** `.past-class-card__sr`, `.past-class-card__board`, `.past-class-card__body`, `.past-class-card__top`, `.past-class-card__tags`, `.past-class-card__hours`, `.past-class-card__head`, `.past-class-card__title`, `.past-class-card__link`, `.past-class-card__meta`, `.past-class-card__note`, `.past-class-card__moved`, `.past-class-card__summary`, `.past-class-card__facts`, `.past-class-card__fact`, `.past-class-card__fact-icon`, `.past-class-card__more`, `.past-class-card__more-icon`
+
+**Modifiers and states:** `.past-class-card_board_on`, `.past-class-card_state_cancelled`
+
+**Breakpoints:** `(width < 640px)` — the board goes on top of the text.
+
+**Tokens:** `--platform-surface`, `--platform-shadow-card`, `--platform-text`, `--platform-text-muted`, `--platform-accent-ink`
+
+## Related
+
+- Ahead of the class: [`ClassTicket`](/components/platform/shared/class-ticket).
+- The class page after it: [`ClassReviewSection`](/components/platform/sections/classes/class-detail/class-review-section).
+- [Student features › Classes](/platform/student).

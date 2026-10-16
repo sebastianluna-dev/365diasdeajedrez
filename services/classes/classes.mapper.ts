@@ -11,6 +11,7 @@ import {
 } from "@/constants/platform/class-codes.const";
 import { GAME_ANALYSIS_MODE } from "@/constants/platform/study-codes.const";
 import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
+import { endPathOf, nodeAtPath, parsePgnTree } from "@/lib/chess/pgn-tree";
 import { formatClassDay } from "@/lib/format-class-when";
 import { MONTHS_ES } from "@/lib/format-spanish-date";
 import type { Prisma } from "@/lib/platform-db/generated/client";
@@ -30,14 +31,16 @@ import type {
   ClassBlockView,
   ClassCardData,
   ClassDetailView,
+  PastClassBoard,
   PastMonth,
   StudentBalanceView,
-  UnscheduledClassData,
 } from "./classes.types";
 
 // The student's reading of a class. Pure: the service feeds it from Prisma
 // and the tests by hand. It never sees an amount — a payment reaches it as a
-// day and a count of classes — nor a classmate's email.
+// day and a count of classes — nor a classmate's email. And it never says
+// which payment a class belongs to: the student reads their classes by date
+// and their balance as counts, never as «Clase 2 de 4 de tu pago del …».
 
 /** What a reader needs of a class row to name it (`classDisplayTitle`). */
 export interface ClassTitleRow {
@@ -267,6 +270,93 @@ export function mapClassBlocks(rows: ClassDetailRow["blocks"], reader: BlockRead
     .filter((block) => reader.audience !== "student" || isBlockVisibleToStudent(block.visibility, reader.phase));
 }
 
+/**
+ * What the list reads of each block of a class: its visibility, to count
+ * what the student may see, and the chess material it carries, for the
+ * board of a past class's card. The PGNs travel only for that board.
+ */
+export const studentBlockSelect = {
+  caption: true,
+  pgn: true,
+  movePath: true,
+  kind: { select: { code: true } },
+  visibility: { select: { code: true } },
+  position: { select: { fen: true, title: true, orientation: { select: { code: true } } } },
+  game: { select: { white: true, black: true, pgn: true, orientation: { select: { code: true } } } },
+  lesson: { select: { name: true, ...lessonPgnSelect, orientation: { select: { code: true } } } },
+} satisfies Prisma.ClassBlockSelect;
+
+export type StudentBlockRow = Prisma.ClassBlockGetPayload<{ select: typeof studentBlockSelect }>;
+
+/**
+ * The position a block draws, or null when it carries no chess: a
+ * position's FEN as it is; a game's or a lesson's at the move the block
+ * points at, or at the end of its main line. The PGN transcribed in a game
+ * block rules over the referenced game, as in `mapBlock`.
+ */
+export function blockBoardOf(block: StudentBlockRow): PastClassBoard | null {
+  switch (block.kind.code) {
+    case CLASS_BLOCK_KIND.POSITION_REF:
+      return block.position
+        ? {
+            fen: block.position.fen,
+            orientation: orientationOf(block.position.orientation.code),
+            label: block.position.title ?? block.caption ?? "Posición de la clase",
+          }
+        : null;
+    case CLASS_BLOCK_KIND.GAME_REF: {
+      if (block.pgn && block.pgn.trim().length > 0) {
+        return boardOfPgn(block.pgn, block.movePath, "white", block.caption ?? "Partida de la clase");
+      }
+      return block.game
+        ? boardOfPgn(
+            block.game.pgn,
+            block.movePath,
+            orientationOf(block.game.orientation?.code),
+            block.caption ?? `${block.game.white} – ${block.game.black}`,
+          )
+        : null;
+    }
+    case CLASS_BLOCK_KIND.LESSON_REF:
+      return block.lesson
+        ? boardOfPgn(
+            lessonPgnOf(block.lesson),
+            block.movePath,
+            orientationOf(block.lesson.orientation.code),
+            block.caption ?? block.lesson.name,
+          )
+        : null;
+    default:
+      return null;
+  }
+}
+
+const STARTING_PLACEMENT = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+
+function boardOfPgn(
+  pgn: string,
+  movePath: string | null,
+  orientation: "white" | "black",
+  label: string,
+): PastClassBoard | null {
+  const tree = pgn.trim().length > 0 ? parsePgnTree(pgn) : null;
+  // Without a move or a position of its own, a PGN is the starting position: nothing of the class's to show.
+  if (!tree || (tree.children.length === 0 && tree.initialFen.split(" ")[0] === STARTING_PLACEMENT)) return null;
+  const pointed = movePath ? nodeAtPath(tree, movePath) : undefined;
+  const node = pointed ?? nodeAtPath(tree, endPathOf(tree, ""));
+  return { fen: node?.fen ?? tree.initialFen, orientation, label };
+}
+
+/** The board of a past class's card: the first block with chess the student may see now. */
+export function pastBoardOf(blocks: readonly StudentBlockRow[], phase: ClassPhaseCode): PastClassBoard | null {
+  for (const block of blocks) {
+    if (!isBlockVisibleToStudent(block.visibility.code as ClassBlockVisibilityCode, phase)) continue;
+    const board = blockBoardOf(block);
+    if (board) return board;
+  }
+  return null;
+}
+
 /** A payment as the student reads it: its day and how many classes it bought. Never its amount. */
 export interface StudentPaymentSource {
   id: string;
@@ -307,8 +397,8 @@ export interface StudentClassSource {
   cancelNote: string | null;
   /** The other students seated (not moved), by name. */
   classmates: string[];
-  /** Every block's visibility, to count what the student may see. */
-  blocks: { visibility: string }[];
+  /** Every block, in order: its visibility, to count what the student may see, and its chess, for the board. */
+  blocks: StudentBlockRow[];
   seat: StudentSeatSource;
 }
 
@@ -316,14 +406,6 @@ export interface StudentContext {
   now: Date;
   timeZone: string;
   whatsappHref: string;
-  /** «Clase n de m»: the ordinal of a class within its payment (`paymentSeats`), if it counts. */
-  ordinalOf: (paymentId: string, classId: string) => number | undefined;
-}
-
-/** «1 de octubre», the day of a payment, with the year when it is not this one. A @db.Date is read in UTC. */
-export function paymentDayOf(paidOn: Date, now: Date): string {
-  const label = `${paidOn.getUTCDate()} de ${MONTHS_ES[paidOn.getUTCMonth()]}`;
-  return paidOn.getUTCFullYear() === now.getUTCFullYear() ? label : `${label} de ${paidOn.getUTCFullYear()}`;
 }
 
 export function studentPhaseOf(row: StudentClassSource, now: Date): ClassPhaseCode {
@@ -385,17 +467,9 @@ function isPaidSeat(seat: StudentSeatSource): seat is StudentSeatSource & { paym
   return seat.payment !== null && !seat.isFree;
 }
 
-/** «Clase 2 de 4 de tu pago del 1 de octubre · Individual», «Esta clase es gratis.», or null without a payment. */
-export function coverageLineOf(row: StudentClassSource, context: StudentContext): string | null {
-  const { seat } = row;
-  if (seat.isFree) return "Esta clase es gratis.";
-  if (!isPaidSeat(seat)) return null;
-  const day = paymentDayOf(seat.payment.paidOn, context.now);
-  const ordinal = seat.seatMovedAt === null ? context.ordinalOf(seat.payment.id, row.id) : undefined;
-  const format = row.formatCode === CLASS_FORMAT.GROUP ? "Grupal" : "Individual";
-  return ordinal !== undefined
-    ? `Clase ${ordinal} de ${seat.payment.classCount} de tu pago del ${day} · ${format}`
-    : `De tu pago del ${day} · ${format}`;
+/** «Esta clase es gratis.», or nothing: which payment a paid class belongs to is never said. */
+export function coverageLineOf(seat: StudentSeatSource): string | null {
+  return seat.isFree ? "Esta clase es gratis." : null;
 }
 
 /** The old class of a moved seat: «No asististe · tu clase pasó al vie 16 oct», or where it went back to. */
@@ -408,7 +482,7 @@ export function movedLineOf(seat: StudentSeatSource, context: StudentContext): C
     };
   }
   return {
-    label: isPaidSeat(seat) ? "No asististe · tu clase volvió a tu pago" : "No asististe · se te dará otra fecha",
+    label: isPaidSeat(seat) ? "No asististe · tu clase queda por programar" : "No asististe · se te dará otra fecha",
     href: null,
   };
 }
@@ -434,14 +508,27 @@ export function mapClassCard(row: StudentClassSource, context: StudentContext): 
     timeZone: context.timeZone,
     nowIso: context.now.toISOString(),
     people: peopleLineOf(row),
+    teacherName: row.teacherName,
+    isGroup: row.formatCode === CLASS_FORMAT.GROUP,
+    classmates: row.classmates,
     visibleBlocks: row.blocks.filter((block) =>
-      isBlockVisibleToStudent(block.visibility as ClassBlockVisibilityCode, phase),
+      isBlockVisibleToStudent(block.visibility.code as ClassBlockVisibilityCode, phase),
     ).length,
     join: cancelled ? null : studentJoinData(row, phase, context),
-    past: over && !cancelled ? { attended: row.seat.attended, hasRecording: row.recordingUrl !== null } : null,
+    // The class's content shows only once it is over: a ticket never carries it.
+    past:
+      over && !cancelled
+        ? {
+            attended: row.seat.attended,
+            hasRecording: row.recordingUrl !== null,
+            summary: row.summary,
+            board: pastBoardOf(row.blocks, phase),
+          }
+        : null,
     moved: movedLineOf(row.seat, context),
     makeUpLabel: makeUpLabelOf(row.seat, context),
     cancelled,
+    isFree: row.seat.isFree,
   };
 }
 
@@ -471,7 +558,7 @@ export function mapStudentClassDetail(source: StudentDetailSource, context: Stud
     people: peopleLineOf(source),
     classmates: source.classmates,
     join: studentJoinData(source, phase, context),
-    coverage: coverageLineOf(source, context),
+    coverage: coverageLineOf(seat),
     attended: seat.attended,
     moved: movedLineOf(seat, context),
     makeUp: seat.replaces ? { label: makeUpLabelOf(seat, context) ?? "", note: seat.replaces.note } : null,
@@ -514,27 +601,28 @@ export interface StudentPaymentCount extends StudentPaymentSource {
 
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
-/** «Te quedan 3 clases de tu pago del 1 de octubre: 2 programadas y 1 por programar.» */
-export function balanceLineOf(payments: readonly StudentPaymentCount[], now: Date): string | null {
+/** The payments still open, or the last one when every one is spent: what the balance counts. */
+function countedPayments(payments: readonly StudentPaymentCount[]): readonly StudentPaymentCount[] {
   const open = payments.filter((payment) => payment.scheduled + payment.toSchedule > 0);
+  return open.length > 0 ? open : payments.slice(-1);
+}
+
+/**
+ * «Te quedan 3 clases: 2 programadas y 1 por programar.», or «Ya tomaste
+ * tus clases pagadas.» Counts only: never which payment they come from.
+ */
+export function balanceLineOf(payments: readonly StudentPaymentCount[]): string | null {
   if (payments.length === 0) return null;
-  if (open.length === 0) {
-    const last = payments[payments.length - 1]!;
-    return `Ya tomaste las ${plural(last.classCount, "clase", "clases").replace(/^1 clase$/, "clase")} de tu pago del ${paymentDayOf(last.paidOn, now)}.`;
-  }
-  const left = open.reduce((sum, payment) => sum + payment.scheduled + payment.toSchedule, 0);
-  const scheduled = open.reduce((sum, payment) => sum + payment.scheduled, 0);
-  const toSchedule = open.reduce((sum, payment) => sum + payment.toSchedule, 0);
-  const days = open.map((payment) => paymentDayOf(payment.paidOn, now));
-  const of =
-    open.length === 1
-      ? `de tu pago del ${days[0]}`
-      : `de tus pagos del ${days.slice(0, -1).join(", del ")} y del ${days[days.length - 1]}`;
+  const counted = countedPayments(payments);
+  const scheduled = counted.reduce((sum, payment) => sum + payment.scheduled, 0);
+  const toSchedule = counted.reduce((sum, payment) => sum + payment.toSchedule, 0);
+  const left = scheduled + toSchedule;
+  if (left === 0) return "Ya tomaste tus clases pagadas.";
   const parts = [
     ...(scheduled > 0 ? [plural(scheduled, "programada", "programadas")] : []),
     ...(toSchedule > 0 ? [`${toSchedule} por programar`] : []),
   ];
-  return `Te ${left === 1 ? "queda" : "quedan"} ${plural(left, "clase", "clases")} ${of}: ${parts.join(" y ")}.`;
+  return `Te ${left === 1 ? "queda" : "quedan"} ${plural(left, "clase", "clases")}: ${parts.join(" y ")}.`;
 }
 
 /**
@@ -546,10 +634,9 @@ export function mapStudentBalance(
   payments: readonly StudentPaymentCount[],
   context: Pick<StudentContext, "now" | "whatsappHref">,
 ): StudentBalanceView | null {
-  const line = balanceLineOf(payments, context.now);
+  const line = balanceLineOf(payments);
   if (line === null) return null;
-  const open = payments.filter((payment) => payment.scheduled + payment.toSchedule > 0);
-  const counted = open.length > 0 ? open : payments.slice(-1);
+  const counted = countedPayments(payments);
   const sum = (pick: (payment: StudentPaymentCount) => number) =>
     counted.reduce((total, payment) => total + pick(payment), 0);
   return {
@@ -562,32 +649,6 @@ export function mapStudentBalance(
   };
 }
 
-/** One row per class bought and not dated yet, oldest payment first. */
-export function mapUnscheduled(payments: readonly StudentPaymentCount[], now: Date): UnscheduledClassData[] {
-  return payments.flatMap((payment) =>
-    Array.from({ length: payment.toSchedule }, () => ({
-      paymentId: payment.id,
-      label: `de tu pago del ${paymentDayOf(payment.paidOn, now)}`,
-    })),
-  );
-}
-
-const NUMBER_WORDS = [
-  "",
-  "una",
-  "dos",
-  "tres",
-  "cuatro",
-  "cinco",
-  "seis",
-  "siete",
-  "ocho",
-  "nueve",
-  "diez",
-  "once",
-  "doce",
-];
-
 /** The month heading of a past class: «Octubre 2026». */
 export function pastMonthLabel(key: string): string {
   const [year = "", month = "01"] = key.split("-");
@@ -595,41 +656,12 @@ export function pastMonthLabel(key: string): string {
   return `${name.charAt(0).toUpperCase()}${name.slice(1)} ${year}`;
 }
 
-/** A past class with the payment that paid it, for folding a month. */
-export interface PastEntry {
-  card: ClassCardData;
-  payment: StudentPaymentCount | null;
-}
-
-/**
- * The past classes by month, newest first. A month whose classes are all of
- * one payment, every one taken and the payment spent, folds into one line:
- * «Las cuatro clases de tu pago del 3 de septiembre.»
- */
-export function groupPastByMonth(
-  entries: readonly PastEntry[],
-  context: Pick<StudentContext, "now" | "timeZone">,
-): PastMonth[] {
-  const months = new Map<string, PastEntry[]>();
-  for (const entry of entries) {
-    const key = dayKeyIn(new Date(entry.card.startIso), context.timeZone).slice(0, 7);
-    months.set(key, [...(months.get(key) ?? []), entry]);
+/** The past classes by month, newest first: months, never payments. */
+export function groupPastByMonth(cards: readonly ClassCardData[], timeZone: string): PastMonth[] {
+  const months = new Map<string, ClassCardData[]>();
+  for (const card of cards) {
+    const key = dayKeyIn(new Date(card.startIso), timeZone).slice(0, 7);
+    months.set(key, [...(months.get(key) ?? []), card]);
   }
-  return [...months.entries()].map(([key, own]) => {
-    const payment = own[0]?.payment ?? null;
-    const folds =
-      payment !== null &&
-      own.length >= 2 &&
-      own.every((entry) => entry.payment?.id === payment.id && entry.card.past?.attended === true) &&
-      payment.taken === payment.classCount &&
-      own.length === payment.classCount;
-    const count = NUMBER_WORDS[payment?.classCount ?? 0] ?? String(payment?.classCount ?? 0);
-    return {
-      key,
-      label: pastMonthLabel(key),
-      cards: own.map((entry) => entry.card),
-      foldedLabel:
-        folds && payment ? `Las ${count} clases de tu pago del ${paymentDayOf(payment.paidOn, context.now)}.` : null,
-    };
-  });
+  return [...months.entries()].map(([key, own]) => ({ key, label: pastMonthLabel(key), cards: own }));
 }

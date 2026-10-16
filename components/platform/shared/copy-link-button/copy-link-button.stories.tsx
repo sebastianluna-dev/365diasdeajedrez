@@ -9,9 +9,10 @@ const meta = {
     docs: {
       description: {
         component: `
-A quiet square button that copies a link to the clipboard and says so for two
+A square button that copies a link to the clipboard and says so for two
 seconds: the tick in place of the copy icon, and «Enlace copiado» in a live
-region.
+region. Small and quiet beside a line of text; large and boxed (\`size="lg"\`)
+beside a large «Entrar a la clase», as on a class's ticket.
 
 Source: \`components/platform/shared/copy-link-button/copy-link-button.comp.tsx\`.
 Reference page: [Components › CopyLinkButton](/components/platform/shared/copy-link-button) in the docs site.
@@ -20,7 +21,11 @@ Reference page: [Components › CopyLinkButton](/components/platform/shared/copy
     },
   },
   args: { url: "https://zoom.us/j/11111111111", label: "Copiar el enlace de la reunión" },
-  argTypes: { url: { control: "text" }, label: { control: "text" } },
+  argTypes: {
+    url: { control: "text" },
+    label: { control: "text" },
+    size: { control: "inline-radio", options: ["sm", "lg"] },
+  },
   decorators: [
     (Story) => (
       <div className="platform-theme" style={{ padding: 16 }}>
@@ -35,6 +40,9 @@ type Story = StoryObj<typeof meta>;
 
 /** At rest: the copy icon. */
 export const Default: Story = {};
+
+/** Large: the secondary box at 48px, as on a class's ticket beside «Entrar a la clase». */
+export const Large: Story = { args: { size: "lg" } };
 
 /** Pressed: the tick, and «Enlace copiado» announced. The headless browser has no clipboard, so the story lends one. */
 export const Copied: Story = {

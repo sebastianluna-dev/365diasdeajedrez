@@ -8,6 +8,7 @@ import {
 } from "@/constants/platform/class-codes.const";
 import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
 import { GAME_ANALYSIS_MODE } from "@/constants/platform/study-codes.const";
+import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { CLASSES_NOW, CLASSES_TIME_ZONE, cdmx } from "@/lib/testing/fixtures/classes";
 import {
   balanceLineOf,
@@ -17,10 +18,10 @@ import {
   mapClassCard,
   mapStudentBalance,
   mapStudentClassDetail,
-  mapUnscheduled,
-  paymentDayOf,
+  pastBoardOf,
   peopleLineOf,
   type ClassDetailRow,
+  type StudentBlockRow,
   type StudentClassSource,
   type StudentContext,
   type StudentPaymentCount,
@@ -38,8 +39,26 @@ const context: StudentContext = {
   now: CLASSES_NOW,
   timeZone: CLASSES_TIME_ZONE,
   whatsappHref: WHATSAPP,
-  ordinalOf: (paymentId, classId) => (paymentId === PAYMENT.id && classId === "c2" ? 2 : undefined),
 };
+
+/** A block as the list reads it: its visibility and, when it is a chess one, its material. */
+function listBlock(visibility: string, extra: Partial<StudentBlockRow> = {}): StudentBlockRow {
+  return {
+    caption: null,
+    pgn: null,
+    movePath: null,
+    kind: { code: CLASS_BLOCK_KIND.TEXT },
+    visibility: { code: visibility },
+    position: null,
+    game: null,
+    lesson: null,
+    ...extra,
+  };
+}
+
+const OPENING_PGN = "1. e4 e5 2. Nf3 Nc6 *";
+const AFTER_NC6 = "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3";
+const LUCENA = "1K1k4/1P6/8/8/8/8/r7/2R5 w - - 0 1";
 
 function seat(extra: Partial<StudentSeatSource> = {}): StudentSeatSource {
   return {
@@ -74,7 +93,7 @@ function source(extra: Partial<StudentClassSource> = {}): StudentClassSource {
     rescheduleNote: null,
     cancelNote: null,
     classmates: [],
-    blocks: [{ visibility: "BEFORE" }, { visibility: "BEFORE" }, { visibility: "AFTER" }, { visibility: "TEACHER" }],
+    blocks: [listBlock("BEFORE"), listBlock("BEFORE"), listBlock("AFTER"), listBlock("TEACHER")],
     seat: seat(),
     ...extra,
   };
@@ -152,8 +171,71 @@ describe("mapClassCard", () => {
       context,
     );
     expect(card.phase).toBe(CLASS_PHASE.DONE);
-    expect(card.past).toEqual({ attended: true, hasRecording: true });
+    expect(card.past).toEqual({ attended: true, hasRecording: true, summary: null, board: null });
     expect(card.visibleBlocks).toBe(3);
+  });
+
+  it("a past class with chess carries the board of its first visible chess block, and its summary", () => {
+    const over = {
+      scheduledAt: cdmx("2026-10-07", "12:00"),
+      endsAt: cdmx("2026-10-07", "13:00"),
+      statusCode: CLASS_STATUS.COMPLETED,
+      summary: "Vimos los tres errores típicos.",
+    };
+    const card = mapClassCard(
+      source({
+        ...over,
+        blocks: [
+          listBlock("TEACHER", {
+            kind: { code: CLASS_BLOCK_KIND.POSITION_REF },
+            position: { fen: LUCENA, title: "El guion", orientation: { code: BOARD_ORIENTATION.WHITE } },
+          }),
+          listBlock("AFTER"),
+          listBlock("AFTER", {
+            kind: { code: CLASS_BLOCK_KIND.POSITION_REF },
+            position: { fen: LUCENA, title: "La posición de Lucena", orientation: { code: BOARD_ORIENTATION.BLACK } },
+          }),
+        ],
+      }),
+      context,
+    );
+    expect(card.past?.summary).toBe("Vimos los tres errores típicos.");
+    expect(card.past?.board).toEqual({ fen: LUCENA, orientation: "black", label: "La posición de Lucena" });
+    // Ahead of time a ticket carries no content at all, whatever the blocks.
+    expect(mapClassCard(source({ summary: "Algo" }), context).past).toBeNull();
+  });
+
+  it("a game or a lesson is drawn at the move the block points at, or at the end of its main line", () => {
+    const game = (extra: Partial<StudentBlockRow>) =>
+      listBlock("AFTER", { kind: { code: CLASS_BLOCK_KIND.GAME_REF }, ...extra });
+    const firstMove = parsePgnTree(OPENING_PGN)!.children[0]!;
+    expect(pastBoardOf([game({ pgn: OPENING_PGN })], CLASS_PHASE.DONE)).toEqual({
+      fen: AFTER_NC6,
+      orientation: "white",
+      label: "Partida de la clase",
+    });
+    expect(pastBoardOf([game({ pgn: OPENING_PGN, movePath: firstMove.path })], CLASS_PHASE.DONE)?.fen).toBe(
+      firstMove.fen,
+    );
+    expect(
+      pastBoardOf(
+        [
+          game({
+            game: { white: "Morphy", black: "Duque", pgn: OPENING_PGN, orientation: { code: BOARD_ORIENTATION.BLACK } },
+          }),
+        ],
+        CLASS_PHASE.DONE,
+      ),
+    ).toEqual({ fen: AFTER_NC6, orientation: "black", label: "Morphy – Duque" });
+    const lesson = listBlock("AFTER", {
+      kind: { code: CLASS_BLOCK_KIND.LESSON_REF },
+      lesson: { name: "La Siciliana", pgn: OPENING_PGN, game: null, orientation: { code: BOARD_ORIENTATION.WHITE } },
+    });
+    expect(pastBoardOf([lesson], CLASS_PHASE.DONE)).toMatchObject({ fen: AFTER_NC6, label: "La Siciliana" });
+    // A text, a video, an empty or broken PGN: no board, and the card draws none.
+    expect(
+      pastBoardOf([listBlock("AFTER"), game({ pgn: "  " }), game({ pgn: "not a game" })], CLASS_PHASE.DONE),
+    ).toBeNull();
   });
 
   it("the link is offered half an hour past the end, and the class stays ahead until then", () => {
@@ -163,7 +245,7 @@ describe("mapClassCard", () => {
     expect(tail.past).toBeNull();
     expect(tail.join?.meetingUrl).toBe("https://zoom.us/j/11111111111");
     const over = mapClassCard(row, { ...context, now: cdmx("2026-10-14", "12:00") });
-    expect(over.past).toEqual({ attended: null, hasRecording: false });
+    expect(over.past).toEqual({ attended: null, hasRecording: false, summary: null, board: null });
     expect(over.join?.meetingUrl).toBeNull();
   });
 
@@ -183,7 +265,7 @@ describe("mapClassCard", () => {
       context,
     );
     expect(old.moved).toEqual({ label: "No asististe · tu clase pasó al vie 9 oct", href: "/clases/c12" });
-    expect(old.past).toEqual({ attended: false, hasRecording: false });
+    expect(old.past).toEqual({ attended: false, hasRecording: false, summary: null, board: null });
 
     const makeUp = mapClassCard(
       source({
@@ -195,10 +277,10 @@ describe("mapClassCard", () => {
     expect(makeUp.makeUpLabel).toBe("Es la reposición de tu clase del vie 2 oct.");
   });
 
-  it("a seat returned to its payment says so only when it was paid", () => {
+  it("a paid seat sent back says the class is to schedule, without naming the payment", () => {
     const moved = { attended: false, seatMovedAt: cdmx("2026-10-03", "09:00") };
     expect(mapClassCard(source({ seat: seat(moved) }), context).moved).toEqual({
-      label: "No asististe · tu clase volvió a tu pago",
+      label: "No asististe · tu clase queda por programar",
       href: null,
     });
     expect(mapClassCard(source({ seat: seat({ ...moved, payment: null }) }), context).moved?.label).toBe(
@@ -219,17 +301,11 @@ describe("mapClassCard", () => {
 });
 
 describe("coverageLineOf", () => {
-  it("«Clase n de m de tu pago del …», «Esta clase es gratis.», or nothing without a payment", () => {
-    expect(coverageLineOf(source(), context)).toBe("Clase 2 de 4 de tu pago del 1 de octubre · Individual");
-    expect(coverageLineOf(source({ formatCode: CLASS_FORMAT.GROUP, id: "c5" }), context)).toBe(
-      "De tu pago del 1 de octubre · Grupal",
-    );
-    expect(coverageLineOf(source({ seat: seat({ isFree: true }) }), context)).toBe("Esta clase es gratis.");
-    expect(coverageLineOf(source({ seat: seat({ payment: null }) }), context)).toBeNull();
-  });
-
-  it("a payment's day carries its year only when it is another one", () => {
-    expect(paymentDayOf(new Date("2025-12-20T00:00:00.000Z"), CLASSES_NOW)).toBe("20 de diciembre de 2025");
+  it("says a free class is free, and never which payment a paid one belongs to", () => {
+    expect(coverageLineOf(seat({ isFree: true }))).toBe("Esta clase es gratis.");
+    expect(coverageLineOf(seat())).toBeNull();
+    expect(coverageLineOf(seat({ payment: null }))).toBeNull();
+    expect(mapClassCard(source({ seat: seat({ isFree: true }) }), context).isFree).toBe(true);
   });
 });
 
@@ -239,7 +315,7 @@ describe("mapStudentClassDetail", () => {
     expect(view.title).toBe("Clase con GM Profesor Demo");
     expect(view.view).toBe("ahead");
     expect(view.classmates).toEqual(["Valentina Cruz"]);
-    expect(view.coverage).toBe("Clase 2 de 4 de tu pago del 1 de octubre · Individual");
+    expect(view.coverage).toBeNull();
     expect(view.join.meetingUrl).toBe("https://zoom.us/j/11111111111");
     expect(JSON.stringify(view)).not.toMatch(/email|\$/i);
 
@@ -451,29 +527,20 @@ describe("the balance", () => {
     ...extra,
   });
 
-  it("says what is left of one payment, and of several", () => {
-    expect(balanceLineOf([payment()], CLASSES_NOW)).toBe(
-      "Te quedan 3 clases de tu pago del 1 de octubre: 2 programadas y 1 por programar.",
-    );
-    expect(balanceLineOf([payment({ scheduled: 0, toSchedule: 1 })], CLASSES_NOW)).toBe(
-      "Te queda 1 clase de tu pago del 1 de octubre: 1 por programar.",
-    );
+  it("says what is left in counts, across payments, and never which payment", () => {
+    expect(balanceLineOf([payment()])).toBe("Te quedan 3 clases: 2 programadas y 1 por programar.");
+    expect(balanceLineOf([payment({ scheduled: 0, toSchedule: 1 })])).toBe("Te queda 1 clase: 1 por programar.");
     expect(
-      balanceLineOf(
-        [
-          payment({ id: "p1", paidOn: new Date("2026-09-03T00:00:00.000Z"), scheduled: 1, toSchedule: 0 }),
-          payment({ id: "p2", scheduled: 1, toSchedule: 1 }),
-        ],
-        CLASSES_NOW,
-      ),
-    ).toBe("Te quedan 3 clases de tus pagos del 3 de septiembre y del 1 de octubre: 2 programadas y 1 por programar.");
+      balanceLineOf([
+        payment({ id: "p1", paidOn: new Date("2026-09-03T00:00:00.000Z"), scheduled: 1, toSchedule: 0 }),
+        payment({ id: "p2", scheduled: 1, toSchedule: 1 }),
+      ]),
+    ).toBe("Te quedan 3 clases: 2 programadas y 1 por programar.");
   });
 
-  it("with nothing left it says the payment was taken; without a payment it says nothing", () => {
-    expect(balanceLineOf([payment({ taken: 4, scheduled: 0, toSchedule: 0 })], CLASSES_NOW)).toBe(
-      "Ya tomaste las 4 clases de tu pago del 1 de octubre.",
-    );
-    expect(balanceLineOf([], CLASSES_NOW)).toBeNull();
+  it("with nothing left it says the classes were taken; without a payment it says nothing", () => {
+    expect(balanceLineOf([payment({ taken: 4, scheduled: 0, toSchedule: 0 })])).toBe("Ya tomaste tus clases pagadas.");
+    expect(balanceLineOf([])).toBeNull();
     expect(mapStudentBalance([], context)).toBeNull();
   });
 
@@ -484,15 +551,8 @@ describe("the balance", () => {
       context,
     );
     expect(view).toMatchObject({ left: 5, taken: 1, scheduled: 2, toSchedule: 3, whatsappHref: WHATSAPP });
-    expect(JSON.stringify(view)).not.toMatch(/\$|amount|MXN/);
+    expect(JSON.stringify(view)).not.toMatch(/\$|amount|MXN|pago/);
     expect(mapStudentBalance([spent], context)).toMatchObject({ left: 0, taken: 4 });
-  });
-
-  it("gives one row per class bought without a date", () => {
-    expect(mapUnscheduled([payment({ toSchedule: 2 })], CLASSES_NOW)).toEqual([
-      { paymentId: PAYMENT.id, label: "de tu pago del 1 de octubre" },
-      { paymentId: PAYMENT.id, label: "de tu pago del 1 de octubre" },
-    ]);
   });
 });
 
@@ -508,55 +568,22 @@ describe("groupPastByMonth", () => {
       }),
       context,
     );
-  const spent: StudentPaymentCount = {
-    id: "pay-sep-3",
-    paidOn: new Date("2026-09-03T00:00:00.000Z"),
-    classCount: 4,
-    taken: 4,
-    scheduled: 0,
-    toSchedule: 0,
-  };
 
-  it("splits by month, newest first, and folds a month that is one spent payment", () => {
+  it("splits by month, newest first: months, never payments", () => {
     const months = groupPastByMonth(
       [
-        { card: past("o1", "2026-10-07"), payment: { ...PAYMENT, taken: 1, scheduled: 2, toSchedule: 1 } },
-        { card: past("s4", "2026-09-28"), payment: spent },
-        { card: past("s3", "2026-09-21"), payment: spent },
-        { card: past("s2", "2026-09-14"), payment: spent },
-        { card: past("s1", "2026-09-07"), payment: spent },
+        past("o1", "2026-10-07"),
+        past("s4", "2026-09-28"),
+        past("s3", "2026-09-21"),
+        past("s2", "2026-09-14"),
+        past("s1", "2026-09-07"),
       ],
-      context,
+      CLASSES_TIME_ZONE,
     );
-    expect(months.map((month) => [month.key, month.label, month.cards.length, month.foldedLabel])).toEqual([
-      ["2026-10", "Octubre 2026", 1, null],
-      ["2026-09", "Septiembre 2026", 4, "Las cuatro clases de tu pago del 3 de septiembre."],
+    expect(months.map((month) => [month.key, month.label, month.cards.length])).toEqual([
+      ["2026-10", "Octubre 2026", 1],
+      ["2026-09", "Septiembre 2026", 4],
     ]);
-  });
-
-  it("does not fold a month with a no-show, a free class or a payment still open", () => {
-    const open = { ...spent, taken: 3, scheduled: 1 };
-    expect(
-      groupPastByMonth([{ card: past("a", "2026-09-07", false), payment: spent }], context)[0]?.foldedLabel,
-    ).toBeNull();
-    expect(
-      groupPastByMonth(
-        [
-          { card: past("a", "2026-09-07"), payment: spent },
-          { card: past("b", "2026-09-14"), payment: null },
-        ],
-        context,
-      )[0]?.foldedLabel,
-    ).toBeNull();
-    expect(
-      groupPastByMonth(
-        [
-          { card: past("a", "2026-09-07"), payment: open },
-          { card: past("b", "2026-09-14"), payment: open },
-          { card: past("c", "2026-09-21"), payment: open },
-        ],
-        context,
-      )[0]?.foldedLabel,
-    ).toBeNull();
+    expect(JSON.stringify(months)).not.toMatch(/pago/);
   });
 });

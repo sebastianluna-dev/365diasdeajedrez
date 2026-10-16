@@ -1,0 +1,394 @@
+/* An upcoming class as a boarding pass: the stub on the left with the
+   hours, a dotted perforation with a notch at each end, and the class on
+   the right. Today's stub is tinted with the accent's wash; a later day's
+   sits on the neutral fill. Under 640px the ticket folds: the stub on top
+   and the perforation across. */
+.class-ticket {
+  position: relative;
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--platform-surface);
+  box-shadow: var(--platform-shadow-card);
+  color: var(--platform-text);
+
+  & .class-ticket__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  & .class-ticket__stub {
+    display: flex;
+    flex-direction: column;
+    padding: var(--platform-space-6);
+    background: var(--platform-surface-neutral);
+  }
+
+  & .class-ticket__day {
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-ticket__hours {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    margin: var(--platform-space-2) 0 0;
+    font-family: var(--platform-font-display);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+
+  & .class-ticket__start {
+    font-size: var(--platform-type-4xl);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--platform-text);
+  }
+
+  & .class-ticket__end {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    font-size: var(--platform-type-3xl);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-ticket__end-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  & .class-ticket__length {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    margin: auto 0 0;
+    padding-top: var(--platform-space-4);
+    font-size: var(--platform-type-sm);
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .class-ticket__length-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--platform-text-muted);
+  }
+
+  /* The perforation runs down the stub's edge, inset from both ends; the
+     notches are the page's own background biting into the ticket. */
+  & .class-ticket__perforation {
+    position: absolute;
+    top: var(--platform-space-5);
+    bottom: var(--platform-space-5);
+    left: 200px;
+    margin-left: -1px;
+    border-left: 2px dotted var(--platform-border-strong);
+  }
+
+  & .class-ticket__notch {
+    position: absolute;
+    left: calc(200px - 12px);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--platform-bg);
+    box-shadow: inset 0 0 0 1px var(--platform-border);
+  }
+
+  & .class-ticket__notch_side_start {
+    top: -12px;
+  }
+
+  & .class-ticket__notch_side_end {
+    bottom: -12px;
+  }
+
+  & .class-ticket__main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: var(--platform-space-6) var(--platform-space-6) var(--platform-space-6) var(--platform-space-8);
+  }
+
+  & .class-ticket__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-2) var(--platform-space-3);
+  }
+
+  & .class-ticket__lead {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    font-size: var(--platform-type-sm);
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .class-ticket__lead-icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    color: var(--platform-accent-ink);
+  }
+
+  & .class-ticket__lead_tone_calm .class-ticket__lead-icon {
+    color: var(--platform-text-muted);
+  }
+
+  & .class-ticket__title {
+    margin: var(--platform-space-3) 0 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-2xl);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  & .class-ticket__link {
+    color: var(--platform-text);
+    text-decoration: none;
+  }
+
+  & .class-ticket__link:hover {
+    color: var(--platform-accent-ink);
+  }
+
+  & .class-ticket__note {
+    margin: var(--platform-space-2) 0 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .class-ticket__fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-3) var(--platform-space-8);
+    margin: var(--platform-space-4) 0 0;
+  }
+
+  & .class-ticket__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+    min-width: 0;
+  }
+
+  & .class-ticket__label {
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-ticket__value {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .class-ticket__value_kind_crew {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    min-height: 30px;
+  }
+
+  & .class-ticket__faces {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  & .class-ticket__face {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    margin-left: calc(-1 * var(--platform-space-1));
+    border-radius: 50%;
+    background: var(--platform-surface-neutral);
+    box-shadow: 0 0 0 2px var(--platform-surface);
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--platform-text);
+  }
+
+  & .class-ticket__face:first-child {
+    margin-left: 0;
+  }
+
+  & .class-ticket__more-faces {
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-muted);
+  }
+
+  & .class-ticket__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-3);
+    margin-top: var(--platform-space-5);
+  }
+
+  & .class-ticket__prepare {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    margin-left: auto;
+    font-size: var(--platform-type-sm);
+    font-weight: 600;
+    color: var(--platform-accent-ink);
+    white-space: nowrap;
+  }
+
+  & .class-ticket__prepare-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* With the bar to join on the page, the bar is the one way in under
+     1024px: «Ver la clase» takes the button's place. */
+  &.class-ticket_join_bar .class-ticket__view {
+    display: none;
+  }
+
+  &.class-ticket_day_today .class-ticket__stub {
+    background: var(--platform-accent-wash);
+  }
+
+  &.class-ticket_day_today .class-ticket__day,
+  &.class-ticket_day_today .class-ticket__length-icon {
+    color: var(--platform-accent-ink);
+  }
+
+  /* A cancelled class steps back: its hours struck through, no way in. */
+  &.class-ticket_state_cancelled .class-ticket__start,
+  &.class-ticket_state_cancelled .class-ticket__end {
+    color: var(--platform-text-muted);
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+  }
+
+  @media (width < 1024px) {
+    &.class-ticket_join_bar .class-ticket__enter {
+      display: none;
+    }
+
+    &.class-ticket_join_bar .class-ticket__view {
+      display: inline-flex;
+    }
+  }
+
+  @media (width < 640px) {
+    grid-template-columns: minmax(0, 1fr);
+
+    & .class-ticket__stub {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      grid-template-rows: auto auto;
+      align-items: center;
+      column-gap: var(--platform-space-2);
+      height: 88px;
+      box-sizing: border-box;
+      padding: var(--platform-space-4);
+    }
+
+    & .class-ticket__day {
+      grid-column: 1 / -1;
+    }
+
+    & .class-ticket__hours {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--platform-space-2);
+      margin: 0;
+    }
+
+    & .class-ticket__start {
+      font-size: var(--platform-type-3xl);
+    }
+
+    & .class-ticket__end {
+      font-size: var(--platform-type-2xl);
+    }
+
+    & .class-ticket__end-icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    & .class-ticket__length {
+      grid-column: 3;
+      margin: 0;
+      padding: 0;
+      white-space: nowrap;
+    }
+
+    & .class-ticket__perforation {
+      top: 88px;
+      bottom: auto;
+      left: var(--platform-space-5);
+      right: var(--platform-space-5);
+      margin: -1px 0 0;
+      border-top: 2px dotted var(--platform-border-strong);
+      border-left: 0;
+    }
+
+    & .class-ticket__notch {
+      top: 76px;
+    }
+
+    & .class-ticket__notch_side_start {
+      left: -12px;
+    }
+
+    & .class-ticket__notch_side_end {
+      right: -12px;
+      bottom: auto;
+      left: auto;
+    }
+
+    & .class-ticket__main {
+      padding: var(--platform-space-4);
+    }
+
+    & .class-ticket__title {
+      font-size: var(--platform-type-xl);
+    }
+
+    & .class-ticket__fields {
+      gap: var(--platform-space-2) var(--platform-space-5);
+    }
+
+    & .class-ticket__value {
+      font-size: var(--platform-type-sm);
+    }
+
+    & .class-ticket__actions {
+      margin-top: var(--platform-space-4);
+    }
+
+    & .class-ticket__prepare {
+      flex-basis: 100%;
+      margin-left: 0;
+      min-height: 44px;
+    }
+  }
+}

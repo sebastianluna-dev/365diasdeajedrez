@@ -68,7 +68,7 @@ const review = studentDetail({
     visibleFromIso: cdmx("2026-10-07", "11:30").toISOString(),
     untilIso: cdmx("2026-10-07", "13:30").toISOString(),
   }),
-  coverage: "Clase 1 de 4 de tu pago del 1 de octubre · Individual",
+  coverage: null,
   attended: true,
   summary:
     "Vimos los tres errores típicos que dejan al rey en el centro y la técnica de Morphy para explotarlos: desarrollo con amenaza, apertura de columnas y sacrificio de calidad en d7.",
@@ -130,7 +130,7 @@ export const Moved: Story = {
       ...review,
       attended: false,
       moved: { label: "No asististe · tu clase pasó al vie 16 oct", href: "/clases/c12" },
-      coverage: "De tu pago del 1 de octubre · Individual",
+      coverage: null,
     },
   },
 };
@@ -142,8 +142,8 @@ export const MovedBack: Story = {
     classDetail: {
       ...review,
       attended: false,
-      moved: { label: "No asististe · tu clase volvió a tu pago", href: null },
-      coverage: "De tu pago del 1 de octubre · Individual",
+      moved: { label: "No asististe · tu clase queda por programar", href: null },
+      coverage: null,
     },
   },
 };

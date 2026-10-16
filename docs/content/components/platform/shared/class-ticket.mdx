@@ -1,0 +1,46 @@
+---
+description: "An upcoming class as a boarding pass: the stub with the day, the hours and the length, the perforation, and the class with its phase, countdown, teacher, room, type and classmates, how to get in and how many things to prepare. Never its content, never its payment."
+---
+
+# `ClassTicket`
+
+|            |                                                                                                                                                                                                                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/shared/class-ticket/class-ticket.comp.tsx`                                                                                                                                                                                                                |
+| Kind       | Server Component                                                                                                                                                                                                                                                               |
+| Stylesheet | `class-ticket.comp.css` → block `.class-ticket`                                                                                                                                                                                                                                |
+| Story      | `class-ticket.stories.tsx` (`platform/shared/ClassTicket`): open, later group, in progress, waiting today, no link with a make-up, cancelled, phone                                                                                                                            |
+| Used by    | [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section) («Próximas»), [`NextClassSection`](/components/platform/sections/dashboard/next-class/next-class-section)                                                                      |
+| Composes   | [`ClassStatusTag`](/components/platform/shared/class-status-tag), [`MeetingCountdown`](/components/platform/shared/meeting-countdown), [`CopyLinkButton`](/components/platform/shared/copy-link-button) (`size="lg"`)                                                          |
+| Uses       | `ClassCardData` from `services/classes/classes.types`; `meetingJoinState` from [`MeetingJoinCard`](/components/platform/shared/meeting-join-card); `formatClassDay`, `formatClassHours`, `formatClassLength` from `lib/format-class-when`; `initialsOf` from `lib/avatar-tone` |
+
+## Purpose
+
+The owner's design for the student's upcoming classes (2026-10-15, «8 · Boletos y tarjetas, sin pagos»): every class ahead is a ticket, and it stays one until the class is over and counts as finished, when [`PastClassCard`](/components/platform/shared/past-class-card) takes over. The stub keeps the day («Hoy · jue 15 oct», «Mañana · vie 16 oct», «Dom 18 oct»), the start in the display face, «→ 13:00» and how long it lasts («1 h», «1 h 30», `formatClassLength`); a dotted perforation with a notch at each end separates it from the class. The class: its phase (`ClassStatusTag`), how long until it starts — `MeetingCountdown` for today's class (it ticks and asks for the page again when the link opens), «El enlace se abre a las 09:30» for a later day, «Administración agregará el enlace» without a link —, the topic as the link to the class, a make-up's line, and the fields «Profesor», «Sala» (the provider, «En línea» or «Por confirmar») and «Tipo» («Individual» or «Grupal»), with «Compañeros» as initials for a group class (their names are the faces' accessible name). The foot is how to get in: while the link is open, «Entrar a la clase» (the one accent button; «Volver a entrar» in the half hour after the end) and the link to copy; before, «Ver la clase»; and «N para preparar», a link to the class page's «Para preparar».
+
+What a ticket never shows: the class's content (no board, no summary, no material — that waits for the class to end), and which payment the class belongs to (no «Clase 2 de 4», no «de tu pago del …»). Today's stub is the only tinted one (`--platform-accent-wash`); a later day's sits on the neutral fill. A cancelled class strikes its hours through and offers no way in.
+
+## Props
+
+| Prop          | Type            | Required | Meaning                                                                                                                                                                    |
+| ------------- | --------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `card`        | `ClassCardData` | yes      | What the mapper gives (`mapClassCard`): the phase, when, the teacher, whether it is a group class and who else is in it, the visible blocks, the join data.                |
+| `withJoinBar` | `boolean`       | no       | The page also draws [`ClassJoinBar`](/components/platform/shared/class-join-bar) under 1024px: there «Ver la clase» takes the place of «Entrar a la clase», so one way in. |
+
+## Markup & styling
+
+Block `.class-ticket` (394 lines), an `<article>` named by its title.
+
+**Elements:** `.class-ticket__sr`, `.class-ticket__stub`, `.class-ticket__day`, `.class-ticket__hours`, `.class-ticket__start`, `.class-ticket__end`, `.class-ticket__end-icon`, `.class-ticket__length`, `.class-ticket__length-icon`, `.class-ticket__perforation`, `.class-ticket__notch`, `.class-ticket__main`, `.class-ticket__meta`, `.class-ticket__lead`, `.class-ticket__lead-icon`, `.class-ticket__title`, `.class-ticket__link`, `.class-ticket__note`, `.class-ticket__fields`, `.class-ticket__field`, `.class-ticket__label`, `.class-ticket__value`, `.class-ticket__faces`, `.class-ticket__face`, `.class-ticket__more-faces`, `.class-ticket__actions`, `.class-ticket__enter`, `.class-ticket__view`, `.class-ticket__prepare`, `.class-ticket__prepare-icon`
+
+**Modifiers and states:** `.class-ticket_day_today` (the tinted stub), `.class-ticket_state_cancelled`, `.class-ticket_join_bar`, `.class-ticket__notch_side_{start,end}`, `.class-ticket__lead_tone_calm`, `.class-ticket__value_kind_crew`
+
+**Breakpoints:** `(width < 1024px)` — with the join bar, «Ver la clase» in place of «Entrar a la clase»; `(width < 640px)` — folded: the stub on top (88px), the perforation across, the notches on the sides.
+
+**Tokens:** `--platform-surface`, `--platform-surface-neutral`, `--platform-bg`, `--platform-border`, `--platform-border-strong`, `--platform-shadow-card`, `--platform-accent-wash`, `--platform-accent-ink`, `--platform-text`, `--platform-text-muted`, `--platform-font-display`
+
+## Related
+
+- Once the class is over: [`PastClassCard`](/components/platform/shared/past-class-card).
+- The staff's and the teacher's row of a class: [`ClassRow`](/components/platform/shared/class-row).
+- [Student features › Classes](/platform/student).

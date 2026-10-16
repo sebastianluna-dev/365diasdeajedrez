@@ -9,9 +9,10 @@ const meta = {
     docs: {
       description: {
         component: `
-«Tus clases pagadas»: how many classes the student still has, of which
-payment, how they stand (taken, scheduled, to schedule) and the way to ask
-for more. Never an amount.
+«Tus clases pagadas» as counts: how many classes the student still has, one
+plain square per class (taken, scheduled, to schedule), the counts in words
+and the way to ask for more. Never an amount, never which payment a class
+belongs to.
 
 Source: \`components/platform/shared/paid-classes-card/paid-classes-card.comp.tsx\`.
 Reference page: [Components › PaidClassesCard](/components/platform/shared/paid-classes-card) in the docs site.
@@ -32,10 +33,10 @@ Reference page: [Components › PaidClassesCard](/components/platform/shared/pai
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** One payment: «3 clases por tomar», the sentence, the bar «● 1 tomada ● 2 programadas ○ 1 por programar». */
+/** Four classes: «3 clases por tomar», one taken, two scheduled and one to schedule as squares, the counts in words. */
 export const OnePayment: Story = { name: "One payment" };
 
-/** Two payments, the oldest spent first. */
+/** Two payments still open: the classes counted together, eight squares on two rows, no payment named. */
 export const SeveralPayments: Story = {
   name: "Several payments",
   args: {
@@ -44,13 +45,28 @@ export const SeveralPayments: Story = {
       taken: 3,
       scheduled: 2,
       toSchedule: 3,
-      line: "Te quedan 5 clases de tus pagos del 3 de septiembre y del 1 de octubre: 2 programadas y 3 por programar.",
+      line: "Te quedan 5 clases: 2 programadas y 3 por programar.",
       whatsappHref: STUDENT_WHATSAPP,
     },
   },
 };
 
-/** Everything taken: «Sin clases por tomar». */
+/** Twenty classes: too many to draw one by one, so the card says the counts alone. */
+export const ManyClasses: Story = {
+  name: "Many classes",
+  args: {
+    balance: {
+      left: 14,
+      taken: 6,
+      scheduled: 4,
+      toSchedule: 10,
+      line: "Te quedan 14 clases: 4 programadas y 10 por programar.",
+      whatsappHref: STUDENT_WHATSAPP,
+    },
+  },
+};
+
+/** Everything taken: «Sin clases por tomar», four ticked squares. */
 export const Zero: Story = {
   args: {
     balance: {
@@ -58,7 +74,7 @@ export const Zero: Story = {
       taken: 4,
       scheduled: 0,
       toSchedule: 0,
-      line: "Ya tomaste las 4 clases de tu pago del 1 de octubre.",
+      line: "Ya tomaste tus clases pagadas.",
       whatsappHref: STUDENT_WHATSAPP,
     },
   },
