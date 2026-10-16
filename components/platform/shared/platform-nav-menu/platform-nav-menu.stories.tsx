@@ -6,7 +6,7 @@ import { PlatformNavMenu } from "./platform-nav-menu.comp";
 /** «Herramientas» as the student's menu builds it with everything switched on. */
 const TOOLS = buildPlatformNavGroups(
   { isTeacher: false, isStaff: false },
-  { play: true, analysisBoard: true, trainer: true, exercises: true },
+  { play: true, analysisBoard: true, trainer: true, exercises: "all" },
 )[0]!.items.find(isNavDropdown) as PlatformNavDropdown;
 
 const meta = {

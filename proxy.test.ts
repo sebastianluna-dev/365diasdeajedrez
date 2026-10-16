@@ -61,6 +61,13 @@ describe("proxy", () => {
     expect(target.searchParams.get(RETURN_TO_PARAM)).toBe("/clases/abc?tab=2");
   });
 
+  it("corta «Ejercicios» sin cookie, también el ejercicio de una serie, y vuelve a él tras entrar", () => {
+    const target = redirectTarget(proxy(requestTo("/ejercicios/series/abc/3")));
+    expect(target.pathname).toBe(LOGIN_PATH);
+    expect(target.searchParams.get(RETURN_TO_PARAM)).toBe("/ejercicios/series/abc/3");
+    expect(config.matcher).toContain("/ejercicios/:path*");
+  });
+
   it("deja pasar la zona privada con cookie sin comprobarla (eso lo hace el DAL)", () => {
     expect(proxy(requestTo("/inicio", { withCookie: true })).headers.get("location")).toBeNull();
   });

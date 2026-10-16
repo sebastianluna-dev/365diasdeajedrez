@@ -13,7 +13,7 @@ description: "The platform's chassis: top bar with the wordmark, the role's navi
 | Composes   | [`PlatformNav`](/components/platform/sections/shell/platform-nav)<br />[`ClearResultParams`](/components/platform/sections/shell/clear-result-params)<br />`LogoWordmarkIcon` · `components/icons/logo-wordmark-icon.comp.tsx` |
 | Reads      | `getSessionUser()` · `lib/platform-auth/current-user.ts`<br />`getSessionRoles()` · `lib/platform-auth/roles.ts`                                                                                                               |
 | Writes     | `logoutAction()` · `services/auth/auth.actions.ts`                                                                                                                                                                             |
-| Uses       | `buildPlatformNavGroups` from `constants/platform/nav-items.const`<br />`homeRouteFor` from `lib/platform-routes`                                                                                                              |
+| Uses       | `buildPlatformNavGroups`, `needsStudentExerciseAccess` from `constants/platform/nav-items.const`<br />`getStudentExerciseAccess` from `services/exercises/exercises.service`<br />`homeRouteFor` from `lib/platform-routes`    |
 
 ## Purpose
 
@@ -29,7 +29,7 @@ It reads the session **only to show** who is logged in and which menu they get. 
 
 ## Behaviour
 
-- `getSessionUser()` and `getSessionRoles()` run in parallel. `buildPlatformNavGroups(roles)` returns exactly one group: staff, teacher or student; the menu is exclusive by role.
+- `getSessionUser()` and `getSessionRoles()` run in parallel. `buildPlatformNavGroups(roles)` returns exactly one group: staff, teacher or student; the menu is exclusive by role. For a student, while «Ejercicios» is drawn only for one with a teacher or a series (`needsStudentExerciseAccess`), the shell first asks `getStudentExerciseAccess()` (`services/exercises/exercises.service.ts`, one query per request, memoised) and passes it as `hasExerciseSource`.
 - The wordmark is the same inline SVG the public site draws ([`LogoWordmarkIcon`](/components/site/shared/logo#logowordmarkicon)), `aria-hidden` inside a link whose accessible name is `LOGO_LABEL`. It links to `homeRouteFor(roles)`, the role's home rather than the student dashboard, because with the exclusive menu that page is no longer in a teacher's or staff's menu.
 - At the right end of the bar sit the two things that are not the menu: [`PlatformSearch`](/components/platform/sections/shell/platform-search), the field that does not search yet, and [`PlatformUserMenu`](/components/platform/sections/shell/platform-user-menu), the avatar that opens everything that is the person's — where the name, the link to the public site and «Cerrar sesión» now live. The avatar shows the initials of the first two words of the name (`initialsOf`), which the shell computes and hands down.
 - **The bar spans the whole width**, with `--platform-space-12` (48px) of side padding, while `<main>` is capped at **1040px** and centred — 944px of room at that padding —, **1200px** from 1536px, where the type and the spaces take their step up and the side padding grows to 56px (1088px of room: without it the text would have less room on a large screen than on a laptop): the wordmark sits at the left edge of the screen, the menu next to it and the user block at the right (`margin-left: auto`). The bar is the frame of the window, not one more column of the page.

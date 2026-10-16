@@ -1,0 +1,38 @@
+---
+description: "The student's «Ejercicios»: for now one card, «De tu profesor», with the series their teacher gave them, what they solved of each and the way on."
+---
+
+# `ExercisesHomeSection`
+
+|            |                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/exercises/exercises-home.section.tsx`                                                                  |
+| Kind       | Server Component                                                                                                                     |
+| Stylesheet | `exercises-home.section.css` → block `.exercises-home`                                                                               |
+| Used by    | `/ejercicios` (behind `EXERCISES_ENABLED`)                                                                                           |
+| Composes   | [`EmptyState`](/components/platform/shared/empty-state)                                                                              |
+| Reads      | `StudentExercisesHome` from `getStudentExercisesHome()` · `services/exercises/exercises.service.ts`, mapped by `exercises.mapper.ts` |
+
+## Props
+
+| Prop   | Type                   | Required | Meaning                                                                                                                                        |
+| ------ | ---------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `home` | `StudentExercisesHome` | yes      | Whether the student has an active teacher, the series given to them (newest first, each with `solved`, `total` and `nextHref`) and the way on. |
+
+## Behaviour
+
+The home of «Ejercicios» (D17, PLAN.md §5.1). Until the library (phase 4) only a teacher's series reach a student, so it holds one card, «De tu profesor»: each series given to the student that they may open now — a teacher's only while that teacher is assigned to them (D07) — with its teacher and «4 de 10», and its row's word, «Empezar» or «Continuar» (`.platform-row-action`), to the first exercise not solved yet. Only the exercises they may solve are counted (`seriesItemAvailability`, the visibility rule's own condition).
+
+The screen's one accent is the card's last line, «Continuar con «…»»: the newest series with an exercise left. With nothing given, the empty state says «Tu profesor aún no te ha dado ejercicios.», or, for a student with no teacher who reached the page by its address, «Todavía no tienes ejercicios. Cuando un profesor te dé una serie, aparecerá aquí.» The menu shows «Ejercicios» only to a student with a teacher or a series (`getStudentExerciseAccess`, the `"withTeacher"` rule).
+
+## Markup & styling
+
+Block `.exercises-home` (76 lines), on a `.platform-card`: the card's title, the rows separated by a line, and the accent under them, stretched under 640px.
+
+**Elements:** `.exercises-home__list`, `.exercises-home__row`, `.exercises-home__body`, `.exercises-home__title`, `.exercises-home__meta`, `.exercises-home__count`, `.exercises-home__go`
+
+**Other classes it renders:** `.platform-card`, `.platform-card__title`, `.platform-row-action`, `.platform-button_variant_accent`.
+
+**Tokens:** `--platform-border`, `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(width < 640px)`.

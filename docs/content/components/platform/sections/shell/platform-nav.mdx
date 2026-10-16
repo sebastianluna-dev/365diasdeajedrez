@@ -4,15 +4,15 @@ description: "The top-bar navigation links, grouped by role, with the active ite
 
 # `PlatformNav`
 
-|            |                                                                                                                                                                                                                                                                                |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/shell/platform-nav.comp.tsx`                                                                                                                                                                                                                     |
-| Kind       | Client Component                                                                                                                                                                                                                                                               |
-| Stylesheet | `platform-nav.comp.css` → block `.platform-nav`                                                                                                                                                                                                                                |
-| Story      | `platform-nav.stories.tsx` (`platform/sections/shell/PlatformNav`): a student's, a teacher's and a staff member's menu, each lit by the address Storybook's router reports, a page that is in no menu, and the student's with «Jugar» and «Herramientas» on the analysis board |
-| Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)                                                                                                                                                                                                  |
-| Composes   | [`PlatformNavMenu`](/components/platform/shared/platform-nav-menu), for a dropdown entry                                                                                                                                                                                       |
-| Uses       | `activeNavHref`, `isNavDropdown`, `PlatformNavGroup` from `constants/platform/nav-items.const`<br />`usePathname` from `next/navigation`                                                                                                                                       |
+|            |                                                                                                                                                                                                                                                                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/shell/platform-nav.comp.tsx`                                                                                                                                                                                                                                                                                        |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                  |
+| Stylesheet | `platform-nav.comp.css` → block `.platform-nav`                                                                                                                                                                                                                                                                                                   |
+| Story      | `platform-nav.stories.tsx` (`platform/sections/shell/PlatformNav`): a student's, a teacher's and a staff member's menu, each lit by the address Storybook's router reports, a page that is in no menu, the student's with «Ejercicios» on one of their series' exercises, and the student's with «Jugar» and «Herramientas» on the analysis board |
+| Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)                                                                                                                                                                                                                                                                     |
+| Composes   | [`PlatformNavMenu`](/components/platform/shared/platform-nav-menu), for a dropdown entry                                                                                                                                                                                                                                                          |
+| Uses       | `activeNavHref`, `isNavDropdown`, `PlatformNavGroup` from `constants/platform/nav-items.const`<br />`usePathname` from `next/navigation`                                                                                                                                                                                                          |
 
 ## Purpose
 
@@ -28,6 +28,7 @@ Renders the navigation groups the shell composed on the server and marks the cur
 
 - `activeNavHref(groups, pathname)` returns the item whose `href` is the **longest prefix** of the current path, so `/profesor` and `/profesor/alumnos` do not both appear active on the students page. The active link gets the `_active` modifier and `aria-current="page"`.
 - **«Jugar» and «Herramientas»** (2026-10-08, planning decision §H): `buildPlatformNavGroups(roles, features)` puts «Jugar» before the explorer while `PLAY_ENABLED` is on, and gathers the analysis board, the explorer and (with `MOVE_TRAINER_ENABLED`) the trainer into the «Herramientas» dropdown once `ANALYSIS_BOARD_ENABLED` is on; until then the explorer stays a link of its own. The teacher's «Mi perfil» is «Mi ficha», because «Mi perfil» is everyone's profile now. `activeNavHref` looks inside a dropdown too, and its trigger lights up with its tool.
+- **«Ejercicios»** (`EXERCISES_ENABLED`; `features.exercises` is `"all"`, `"withTeacher"` or `false`): the teacher's bank after «Clases que imparto» whenever it is on, and the student's section after «Mis cursos» — for every student with `"all"` (from phase 4, the library), or, with `"withTeacher"` (phases 1–3), only for one who has something there, an active teacher or a series given to them (`roles.hasExerciseSource`, which the shell asks `getStudentExerciseAccess()` for only when `needsStudentExerciseAccess(roles)` says the menu depends on it).
 - The group label (`group.label`) is not rendered in the top bar: there is no row to put it on and it would repeat what the first item says ("Administración", "Panel del profesor"). Since the menu is exclusive by role there are never two groups to tell apart.
 - `<nav aria-label="Navegación principal">`.
 
@@ -52,7 +53,8 @@ From `components/platform/sections/shell/platform-shell.section.tsx`:
 ```tsx
 import { PlatformNav } from "./platform-nav.comp";
 
-const navGroups = buildPlatformNavGroups(roles);
+const hasExerciseSource = user && needsStudentExerciseAccess(roles) ? await getStudentExerciseAccess() : false;
+const navGroups = buildPlatformNavGroups({ ...roles, hasExerciseSource });
 // …
 <PlatformNav groups={navGroups} />;
 ```

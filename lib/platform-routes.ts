@@ -92,6 +92,15 @@ export const platformRoutes = {
     `/jugar/aventura/${slug}${query?.victoria ? `?victoria=${query.victoria}` : ""}`,
   /** A played game, live or finished: ONE address for both, read-only for whoever holds no seat. */
   playedGame: (gameId: string) => `/jugar/partidas/${gameId}`,
+  /**
+   * «Ejercicios» (D17, D35): what the student's teacher gave them; from phase 4
+   * the library's practice and series too.
+   */
+  exercises: "/ejercicios",
+  /** A series given to the student: its exercises and their marks. */
+  exerciseSeries: (seriesId: string) => `/ejercicios/series/${seriesId}`,
+  /** The n-th exercise of a series (1-based), counted among the ones the student may solve. */
+  exerciseSeriesItem: (seriesId: string, n: number) => `/ejercicios/series/${seriesId}/${n}`,
   /** The own profile: it redirects to `/perfil/<slug>`, so a menu needs no user name. */
   profile: "/perfil",
   /** A person's profile, by their user name. */

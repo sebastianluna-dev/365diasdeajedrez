@@ -158,6 +158,17 @@
     background: var(--platform-bg);
   }
 
+  /* «Probar»: the solve screen, as the students will see it. */
+  & .exercise-authoring__try {
+    min-width: 0;
+  }
+
+  & .exercise-authoring__try-empty {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+  }
+
   & .exercise-authoring__save-note {
     margin: 0;
     font-size: var(--platform-type-md);

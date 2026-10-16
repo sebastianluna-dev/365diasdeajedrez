@@ -1,0 +1,40 @@
+---
+description: "A series given to the student: who gave it and what they solved, the page's accent to the first exercise left, and its exercises in order with the student's mark in that series."
+---
+
+# `ExerciseSeriesSection`
+
+|            |                                                                                                                                                       |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/exercises/exercise-series.section.tsx`                                                                                  |
+| Kind       | Server Component                                                                                                                                      |
+| Stylesheet | `exercise-series.section.css` → block `.exercise-series`                                                                                              |
+| Used by    | `/ejercicios/series/[seriesId]` (behind `EXERCISES_ENABLED`)                                                                                          |
+| Composes   | [`StaticDiagram`](/components/chess/static-diagram), [`EmptyState`](/components/platform/shared/empty-state)                                          |
+| Reads      | `StudentSeriesView` from `getStudentSeries(id)` · `services/exercises/exercises.service.ts`, mapped by `mapStudentSeriesView` (`exercises.mapper.ts`) |
+
+## Props
+
+| Prop     | Type                | Required | Meaning                                                                                              |
+| -------- | ------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| `series` | `StudentSeriesView` | yes      | The series, its teacher, the exercises the student may solve in it with their marks, and the way on. |
+
+## Behaviour
+
+A series (D18, D31; PLAN.md §5.2). The section draws the page's head: the way back to «Ejercicios», the title, «De Profesor Demo · 2 de 5 resueltos» and, when an exercise is left, the page's accent, «Empezar» (nothing tried yet) or «Continuar», to the first one not solved. Under it the description and the exercises in order, each a row that opens it: the start drawn small (from the side that plays), «3. Título», «Mate en 2 · 1400 · Intermedio», and the student's mark **in this series** — «Resuelto» with `CircleCheckIcon` in the success ink (a pass there), «Fallado» with `CircleXmarkIcon` in the danger colour (attempts, none passed), or nothing. The word is always written beside the icon.
+
+Only the exercises the student may solve through this series are listed, numbered and counted: the series owner's usable ones and the library's (`seriesItemAvailability`); a draft or an archived one is not there. A series the student may not open — another student's, or a former teacher's — never reaches here: the page answers 404.
+
+## Markup & styling
+
+Block `.exercise-series` (104 lines): the description and a list of cards, each a grid of the diagram (72px; 56px under 640px, with the mark under the title), the body and the mark.
+
+**Elements:** `.exercise-series__description`, `.exercise-series__list`, `.exercise-series__item`, `.exercise-series__link`, `.exercise-series__diagram`, `.exercise-series__body`, `.exercise-series__title`, `.exercise-series__facts`, `.exercise-series__mark`, `.exercise-series__mark-icon`
+
+**Modifiers:** `.exercise-series__mark_state_solved`, `.exercise-series__mark_state_failed`.
+
+**Other classes it renders:** `.platform-page__head` and its parts, `.platform-button_variant_accent`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-danger`, `--platform-shadow-card`, `--platform-success-ink`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(width < 640px)`.

@@ -45,8 +45,9 @@ description: "Index of components/platform: the shared primitives and every sect
 | [`StaffTabs`](/components/platform/shared/staff-tabs)                        | client | Tabs that are pages: a course's, a chapter's and a student's record.                                                        |
 | [`PlatformTabs`](/components/platform/shared/platform-tabs)                  | client | Tabs that are state, on Radix's Tabs: the steps of one screen, each with an error mark when it has one.                     |
 | [`MovePathPicker`](/components/platform/shared/move-path-picker)             | client | Picks a position of a game or a lesson in the viewer: a class block's opening move, an exercise's start.                    |
-| [`ExerciseAuthoring`](/components/platform/shared/exercise-authoring)        | client | The exercise editor: «Posición», «Solución» and «Datos» as tabs over one draft, and the save bar.                           |
+| [`ExerciseAuthoring`](/components/platform/shared/exercise-authoring)        | client | The exercise editor: «Posición», «Solución», «Datos» and «Probar» as tabs over one draft, and the save bar.                 |
 | [`ExerciseCard`](/components/platform/shared/exercise-card)                  | client | An exercise of a bank: its start small, its status, kind, difficulty and topics, and the row's words.                       |
+| [`ExerciseSolver`](/components/platform/shared/exercise-solver)              | client | The solve screen: the student plays, the platform answers, hints, the solution, the result.                                 |
 | [`StudentSharePanel`](/components/platform/shared/student-share-panel)       | server | Who a teacher's collection or series reaches: «Quitar» per student and «Compartir» for the rest.                            |
 | [`PlatformNotice`](/components/platform/shared/platform-notice)              | server | The result of an action, from the page's `?error=` message map.                                                             |
 | [`EmptyState`](/components/platform/shared/empty-state)                      | server | Dashed box with title, description and an optional link.                                                                    |
@@ -145,6 +146,14 @@ description: "Index of components/platform: the shared primitives and every sect
 | [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section) | server | «Mis clases»: today, the next ones, the classes without a date, the past by month.          |
 | [`ClassAheadSection`](/components/platform/sections/classes/class-detail/class-ahead-section)   | server | The class page ahead of time: how to join, what the staff said, what to prepare.            |
 | [`ClassReviewSection`](/components/platform/sections/classes/class-detail/class-review-section) | server | The class page once over: the mark, the recording, the summary, the material and its index. |
+
+## `sections/exercises/` — `/ejercicios`
+
+| Page                                                                                       | Kind   | What it is                                                                      |
+| ------------------------------------------------------------------------------------------ | ------ | ------------------------------------------------------------------------------- |
+| [`ExercisesHomeSection`](/components/platform/sections/exercises/exercises-home-section)   | server | «Ejercicios»: the series the student's teacher gave them, and the way on.       |
+| [`ExerciseSeriesSection`](/components/platform/sections/exercises/exercise-series-section) | server | A series: its exercises in order with the student's mark in it.                 |
+| [`ExerciseSolveSection`](/components/platform/sections/exercises/exercise-solve-section)   | server | The n-th exercise of a series, on the solve screen, its attempt's action bound. |
 
 ## `sections/explorer/` — `/explorador`
 

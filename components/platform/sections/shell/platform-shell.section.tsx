@@ -1,11 +1,12 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { LOGO_LABEL, LogoWordmarkIcon } from "@/components/icons/logo-wordmark-icon.comp";
-import { buildPlatformNavGroups } from "@/constants/platform/nav-items.const";
+import { buildPlatformNavGroups, needsStudentExerciseAccess } from "@/constants/platform/nav-items.const";
 import { getSessionUser } from "@/lib/platform-auth/current-user";
 import { getSessionRoles } from "@/lib/platform-auth/roles";
 import { PLAY_ENABLED } from "@/constants/platform/features.const";
 import { homeRouteFor, platformRoutes, teacherRoutes } from "@/lib/platform-routes";
+import { getStudentExerciseAccess } from "@/services/exercises/exercises.service";
 import { ClearResultParams } from "./clear-result-params.comp";
 import { PlatformNav } from "./platform-nav.comp";
 import { PlatformSearch } from "./platform-search.comp";
@@ -41,7 +42,10 @@ function initialsOf(displayName: string): string {
  */
 export async function PlatformShell({ children }: PlatformShellProps) {
   const [user, roles] = await Promise.all([getSessionUser(), getSessionRoles()]);
-  const navGroups = buildPlatformNavGroups(roles);
+  // «Ejercicios» is a student's only once they have something there (an
+  // active teacher, a series given): the database is asked only then.
+  const hasExerciseSource = user && needsStudentExerciseAccess(roles) ? await getStudentExerciseAccess() : false;
+  const navGroups = buildPlatformNavGroups({ ...roles, hasExerciseSource });
   // The logo leads to the role's home, not to the student dashboard: with
   // the exclusive menu that page is no longer in a teacher's or staff's menu.
   const homeHref = homeRouteFor(roles);

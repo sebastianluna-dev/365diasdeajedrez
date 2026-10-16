@@ -3,12 +3,13 @@ import {
   activeNavHref,
   buildPlatformNavGroups,
   isNavDropdown,
+  needsStudentExerciseAccess,
   type PlatformNavFeatures,
   type PlatformNavGroup,
   STAFF_NAV_ITEMS,
 } from "./nav-items.const";
 
-const ALL_ON: PlatformNavFeatures = { play: true, analysisBoard: true, trainer: true, exercises: true };
+const ALL_ON: PlatformNavFeatures = { play: true, analysisBoard: true, trainer: true, exercises: "all" };
 const ALL_OFF: PlatformNavFeatures = { play: false, analysisBoard: false, trainer: false, exercises: false };
 const STUDENT = { isTeacher: false, isStaff: false };
 const TEACHER = { isTeacher: true, isStaff: false };
@@ -67,7 +68,15 @@ describe("buildPlatformNavGroups", () => {
 
   it("con todo encendido, reúne las herramientas en un desplegable después de «Jugar»", () => {
     const groups = buildPlatformNavGroups(STUDENT, ALL_ON);
-    expect(labelsOf(groups)).toEqual(["Inicio", "Mis clases", "Mis estudios", "Mis cursos", "Jugar", "Herramientas"]);
+    expect(labelsOf(groups)).toEqual([
+      "Inicio",
+      "Mis clases",
+      "Mis estudios",
+      "Mis cursos",
+      "Ejercicios",
+      "Jugar",
+      "Herramientas",
+    ]);
     const tools = groups[0]?.items.find(isNavDropdown);
     expect(tools?.items.map((item) => item.label)).toEqual(["Tablero de análisis", "Explorador", "Entrenador"]);
     expect(tools?.items.every((item) => item.description.length > 0)).toBe(true);
@@ -79,7 +88,7 @@ describe("buildPlatformNavGroups", () => {
     expect(hrefsOf(noPlay)).not.toContain("/jugar");
     const noTrainer = buildPlatformNavGroups(STUDENT, { ...ALL_ON, trainer: false });
     expect(hrefsOf(noTrainer)).not.toContain("/entrenador");
-    const noBoard = buildPlatformNavGroups(STUDENT, { ...ALL_ON, analysisBoard: false });
+    const noBoard = buildPlatformNavGroups(STUDENT, { ...ALL_ON, analysisBoard: false, exercises: false });
     expect(labelsOf(noBoard)).toEqual(["Inicio", "Mis clases", "Mis estudios", "Mis cursos", "Jugar", "Explorador"]);
   });
 
@@ -94,8 +103,42 @@ describe("buildPlatformNavGroups", () => {
     expect(hrefsOf(buildPlatformNavGroups(TEACHER, { ...ALL_ON, exercises: false }))).not.toContain(
       "/profesor/ejercicios",
     );
+    expect(hrefsOf(buildPlatformNavGroups(TEACHER, { ...ALL_ON, exercises: "withTeacher" }))).toContain(
+      "/profesor/ejercicios",
+    );
     // The staff's menu is the panel's: their exercises arrive with the library (phase 4).
     expect(hrefsOf(buildPlatformNavGroups(STAFF, ALL_ON))).not.toContain("/profesor/ejercicios");
+    // A teacher's menu never carries the student's section, whatever they have.
+    expect(hrefsOf(buildPlatformNavGroups({ ...TEACHER, hasExerciseSource: true }, ALL_ON))).not.toContain(
+      "/ejercicios",
+    );
+  });
+
+  it("da «Ejercicios» al alumno después de sus cursos: a todos, a quien tiene algo ahí, o a nadie", () => {
+    const labels = (features: PlatformNavFeatures, hasExerciseSource?: boolean) =>
+      labelsOf(buildPlatformNavGroups({ ...STUDENT, hasExerciseSource }, { ...ALL_OFF, ...features }));
+    const withItem = ["Inicio", "Mis clases", "Mis estudios", "Mis cursos", "Ejercicios", "Explorador"];
+    const withoutItem = ["Inicio", "Mis clases", "Mis estudios", "Mis cursos", "Explorador"];
+
+    // "all": every student, with or without a teacher (phase 4, the library).
+    expect(labels({ ...ALL_OFF, exercises: "all" })).toEqual(withItem);
+    expect(labels({ ...ALL_OFF, exercises: "all" }, false)).toEqual(withItem);
+    // "withTeacher": only one with an active teacher or a series given (phases 1–3).
+    expect(labels({ ...ALL_OFF, exercises: "withTeacher" }, true)).toEqual(withItem);
+    expect(labels({ ...ALL_OFF, exercises: "withTeacher" }, false)).toEqual(withoutItem);
+    expect(labels({ ...ALL_OFF, exercises: "withTeacher" })).toEqual(withoutItem);
+    // Off: nobody, whatever they have.
+    expect(labels({ ...ALL_OFF, exercises: false }, true)).toEqual(withoutItem);
+    expect(hrefsOf(buildPlatformNavGroups({ ...STUDENT, hasExerciseSource: true }, ALL_ON))).toContain("/ejercicios");
+  });
+
+  it("pregunta a la base por lo del alumno sólo cuando el ítem depende de ello", () => {
+    const withTeacher: PlatformNavFeatures = { ...ALL_OFF, exercises: "withTeacher" };
+    expect(needsStudentExerciseAccess(STUDENT, withTeacher)).toBe(true);
+    expect(needsStudentExerciseAccess(TEACHER, withTeacher)).toBe(false);
+    expect(needsStudentExerciseAccess(STAFF, withTeacher)).toBe(false);
+    expect(needsStudentExerciseAccess(STUDENT, ALL_ON)).toBe(false);
+    expect(needsStudentExerciseAccess(STUDENT, ALL_OFF)).toBe(false);
   });
 });
 
@@ -122,6 +165,7 @@ describe("activeNavHref", () => {
     expect(activeNavHref(profesor, "/profesor/alumnos/abc")).toBe("/profesor/alumnos");
     expect(activeNavHref(profesor, "/profesor")).toBe("/profesor");
     expect(activeNavHref(profesor, "/profesor/ejercicios/abc")).toBe("/profesor/ejercicios");
+    expect(activeNavHref(alumno, "/ejercicios/series/abc/2")).toBe("/ejercicios");
     expect(activeNavHref(staff, "/administracion/cursos/abc/capitulos/def")).toBe("/administracion/cursos");
   });
 

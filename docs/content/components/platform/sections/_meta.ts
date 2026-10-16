@@ -7,6 +7,7 @@ const meta: MetaRecord = {
   courses: "courses/",
   studies: "studies/",
   classes: "classes/",
+  exercises: "exercises/",
   explorer: "explorer/",
   play: "play/",
   profile: "profile/",

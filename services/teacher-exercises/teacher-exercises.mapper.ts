@@ -25,6 +25,7 @@ import type {
   TeacherExerciseRow,
   TeacherSeriesCard,
 } from "./teacher-exercises.types";
+import { exerciseKindLabel, playerOfStart } from "@/lib/chess/exercise-labels";
 
 // From the rows of a teacher's exercises to what the bank and the editor
 // draw. Pure: what a status allows is read from the shared transitions
@@ -33,16 +34,6 @@ import type {
 
 /** A new exercise's difficulty until the author says otherwise: the middle of the scale most students are in. */
 export const NEW_EXERCISE_DIFFICULTY = 1200;
-
-/** «Secuencia», «Mate en 2». */
-export function exerciseKindLabel(kind: ExerciseKindCode, mateIn: number | null): string {
-  return kind === EXERCISE_KIND.MATE_IN ? `Mate en ${mateIn ?? "N"}` : "Secuencia";
-}
-
-/** The side to move of a FEN, which the board puts at the bottom. */
-export function sideToMove(fen: string): "white" | "black" {
-  return fen.split(" ")[1] === "b" ? "black" : "white";
-}
 
 /**
  * The row actions a teacher's exercise offers: «Duplicar» always; «Archivar»
@@ -113,7 +104,7 @@ export function mapExerciseCard(row: TeacherExerciseRow, levels: readonly Diffic
     href: teacherRoutes.exerciseDetail(row.id),
     title: row.title,
     startFen: row.startFen,
-    orientation: sideToMove(row.startFen),
+    orientation: playerOfStart(row.startFen),
     statusCode: status,
     statusLabel: row.status.label,
     kindLabel: exerciseKindLabel(row.kind.code as ExerciseKindCode, row.mateIn),

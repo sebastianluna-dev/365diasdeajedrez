@@ -80,6 +80,17 @@ export const NothingActive: Story = {
   parameters: at(platformRoutes.settings),
 };
 
+/** The student's menu with «Ejercicios» on and a teacher who gave them a series, on one of its exercises: the item after «Mis cursos» is lit. */
+export const StudentWithExercises: Story = {
+  args: {
+    groups: buildPlatformNavGroups(
+      { isTeacher: false, isStaff: false, hasExerciseSource: true },
+      { play: false, analysisBoard: false, trainer: false, exercises: "withTeacher" },
+    ),
+  },
+  parameters: at(platformRoutes.exerciseSeriesItem("serie-1", 2)),
+};
+
 /** The student's menu with «Jugar» and «Herramientas» switched on, on the analysis board: the dropdown's trigger is lit. */
 export const WithTools: Story = {
   args: {

@@ -1,0 +1,63 @@
+---
+description: "The solve screen, the same wherever an exercise is solved: the student plays, the platform answers, the first wrong move fails the attempt and is sent at once, «Pista» and «Ver la solución», and the result once it is over."
+---
+
+# `ExerciseSolver`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Files      | `components/platform/shared/exercise-solver/`: `exercise-solver.comp.tsx` (`ExerciseSolver` and `ExerciseSolverView`), its behaviour `use-exercise-solver.hook.ts`, the pure session `exercise-solver-session.ts` (tested in `exercise-solver-session.test.ts`) and the data it receives, `exercise-solver.types.ts`                                                                             |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                 |
+| Stylesheet | `exercise-solver.comp.css` → block `.exercise-solver`                                                                                                                                                                                                                                                                                                                                            |
+| Story      | `exercise-solver.stories.tsx` (`platform/shared/ExerciseSolver`): playing (live, its `play` takes the two hints), the correct move waiting for the reply, a wrong move, a text hint, a piece hint, solved clean, solved with a hint, failed, the solution shown, a mate in 2, Black to move, an unscored retry, the preview, a submit that did not get through, and «Mate en 2» failed at 390 px |
+| Used by    | [`ExerciseSolveSection`](/components/platform/sections/exercises/exercise-solve-section) (a series' exercise); [`ExerciseAuthoring`](/components/platform/shared/exercise-authoring)'s «Probar» in `preview`. A lesson, a class block, practice, review and the contrarreloj mount it in later phases                                                                                            |
+| Composes   | [`ChessBoard`](/components/chess/chess-board) (controlled, with `hintSquare` and `lastMoveTone`), [`GameViewer`](/components/chess/game-viewer/game-viewer) (read-only, «Ver la solución completa»), [`PlatformNotice`](/components/platform/shared/platform-notice)                                                                                                                             |
+| Uses       | `lib/chess/exercise-solver.ts` (`readSolution`, `playMove`, `takeHint`, `showSolution`, `outcomeOf`), `lib/chess/exercise-labels.ts` (the default prompt), the board's sounds (`move-sound.ts`, muted with the viewer's preference)                                                                                                                                                              |
+
+## Purpose
+
+How an exercise is solved (D01, D19–D21, D33, D37, D39; PLAN.md §5.3). It receives the exercise as data — `{ id, title, prompt, kind, mateIn, solutionPgn, hints, explanation, difficulty }` —, where it is solved, what comes after it, how it counts and the action that records it, so its story stubs the action and it imports no `.actions.ts`.
+
+## Props
+
+| Prop       | Type                                 | Required | Meaning                                                                                                                                                                                     |
+| ---------- | ------------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `exercise` | `ExerciseSolverExercise`             | yes      | The solution PGN and what the student is told.                                                                                                                                              |
+| `mode`     | `"solve" \| "unscored" \| "preview"` | yes      | `solve` submits; `unscored` is a retry the same study day (the head says «Ya lo intentaste hoy: este intento no cuenta.»); `preview` is the editor's «Probar». Neither of the last submits. |
+| `context`  | `ExerciseSolverContext`              | no       | `{ attempt, position }`: the path the attempt claims (`{ kind: "SERIES", seriesId }`…) and «3 / 10». Without it nothing is submitted.                                                       |
+| `next`     | `{ href, label }`                    | no       | «Siguiente ejercicio», the result's accent.                                                                                                                                                 |
+| `back`     | `{ href, label }`                    | no       | «Volver a la serie»; the accent when there is no `next`.                                                                                                                                    |
+| `submit`   | `SubmitExerciseAttempt`              | no       | The server action (`submitExerciseAttempt`), absent in preview; a stub in Storybook.                                                                                                        |
+
+`ExerciseSolverView` takes the same data plus a `SolverSession`, the clock, the save state and the handlers: it is what `ExerciseSolver` draws from its hook, and what the stories draw from a session reached through `reduceSession`, because chessground ignores synthetic pointer events.
+
+## Behaviour
+
+- **Playing** (D01, D02). The student moves (drag or tap; the board's promotion chooser). A move of the solution — the main line or any variant — says «¡Bien!», and after 450 ms the opponent's main reply is played with its sound. The exercise is over when a line ends.
+- **The first wrong move fails** (D19). It stays on the board for 600 ms in the danger colour (`lastMoveTone="error"`, and a red ring that comes and goes), then it is taken back; «No es la jugada. Sigue intentándolo o mira la solución.»; the head gains «Fallado». The attempt is **submitted at that moment**, so leaving the page cannot hide a failure. The student may go on to learn: later moves are not scored.
+- **«Pista»** (D20, D37): the author's texts first, numbered under the board; after them, or with none, the piece to move is circled (`hintSquare`). Each press counts; a pass with a hint is «Resuelto con pista» (D33).
+- **«Ver la solución»** (D20): submits a failure with `solutionShown` if nothing was submitted yet, then walks through the main line with its comments — ‹ ›, and an autoplay at 900 ms a step that is off under reduced motion.
+- **The result** replaces the actions: «¡Resuelto!», «Resuelto con pista», «Fallado» with «Jugaste Cxe5; la jugada era Dxh7+.», or «Viste la solución»; the explanation; «Ver la solución completa» (a read-only `GameViewer` over the solution, variants and comments, under the screen); «Siguiente ejercicio» (accent) or «Volver a la serie», and «Reintentar», which starts again **unscored**: nothing is submitted, and the result says only how it went this time («Esta vez, sin errores»), never «¡Resuelto!».
+- **The submit** is `submitExerciseAttempt` (`services/exercises/exercises.actions.ts`): the moves up to the decision, the hints and whether the solution was shown; the server replays them. «No se guardó el intento.» when it failed; «Ya lo intentaste hoy: este intento no cuenta.» when the server stored nothing because another tab took the day first.
+- The clock counts up `mm:ss` from the first paint (D21) and stops at the end.
+
+## Markup & styling
+
+Block `.exercise-solver` (349 lines): a grid. From 1024px the board (up to 560px, sticky) on the left and, on the right, the head, the feedback line (`aria-live="polite"`), the panel (hints, the solution's walk, the actions or the result) and the moves played; the full solution under both. Below 1024px one column — the head, the board at `max(min(100vw − 32px, 100svh − 240px), 280px)` so a short screen keeps a board to play on, the feedback, the actions at `_size_lg` for the thumb — and `(width < 1024px) and (orientation: landscape)` puts the board beside the rest again, so a phone on its side (844 × 390) keeps a board to solve on. The head is two lines on a phone: the prompt, then the side's disc, the clock, «3 / 10» and «Fallado».
+
+**Elements:** `.exercise-solver__head`, `.exercise-solver__prompt`, `.exercise-solver__meta`, `.exercise-solver__side`, `.exercise-solver__clock`, `.exercise-solver__position`, `.exercise-solver__failed`, `.exercise-solver__note`, `.exercise-solver__board`, `.exercise-solver__feedback`, `.exercise-solver__panel`, `.exercise-solver__hints`, `.exercise-solver__hint`, `.exercise-solver__hint-icon`, `.exercise-solver__hint-number`, `.exercise-solver__actions`, `.exercise-solver__walk`, `.exercise-solver__walk-count`, `.exercise-solver__result`, `.exercise-solver__result-title`, `.exercise-solver__result-icon`, `.exercise-solver__result-line`, `.exercise-solver__explanation`, `.exercise-solver__result-actions`, `.exercise-solver__moves`, `.exercise-solver__moves-label`, `.exercise-solver__full`
+
+**Modifiers:** `.exercise-solver_mode_solve`, `_mode_unscored`, `_mode_preview`; `.exercise-solver__side_color_white`, `_color_black`; `.exercise-solver__board_state_wrong`; `.exercise-solver__feedback_tone_ok`, `_tone_error`, `_tone_info`; `.exercise-solver__result-title_tone_ok`, `_tone_error`.
+
+**Other classes it renders:** `.platform-button` (`_variant_soft`, `_variant_accent`, `_size_lg`, `_shape_square`), `.platform-row-action`, `.platform-tag`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-accent-wash`, `--platform-border-strong`, `--platform-danger`, `--platform-danger-soft`, `--platform-ink`, `--platform-shadow-card`, `--platform-success-ink`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(width < 1024px)`, `(width < 1024px) and (orientation: landscape)`, `(width < 640px)`.
+
+**Motion:** the wrong move's ring (600 ms: in over 160 ms, out over 120 ms) and the result's entrance (160 ms, `ease-out`), both off under `prefers-reduced-motion: reduce` (the ring is then drawn still while the move is shown); the solution's autoplay does not start.
+
+## Related
+
+- The rules it plays by: [Chess library](/chess/library), «Exercises: the format and the solver».
+- [`ExerciseAuthoring`](/components/platform/shared/exercise-authoring), whose «Probar» is this screen in preview.

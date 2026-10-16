@@ -110,6 +110,7 @@ import { PlatformTabPanel, PlatformTabs } from "@/components/platform/shared/pla
 import { MovePathPicker } from "@/components/platform/shared/move-path-picker/move-path-picker.comp";
 import { ExerciseAuthoring } from "@/components/platform/shared/exercise-authoring/exercise-authoring.comp";
 import { ExerciseCard } from "@/components/platform/shared/exercise-card/exercise-card.comp";
+import { ExerciseSolver } from "@/components/platform/shared/exercise-solver/exercise-solver.comp";
 import { StudentSharePanel } from "@/components/platform/shared/student-share-panel/student-share-panel.comp";
 import { AddSeriesExercisesButton } from "@/components/platform/sections/teacher/exercises/add-series-exercises-popup/add-series-exercises-popup.comp";
 import { NewSeriesButton } from "@/components/platform/sections/teacher/exercises/series-data-popup/series-data-popup.comp";
@@ -819,7 +820,7 @@ function PopupTrigger() {
 /** «Herramientas», as the student's menu builds it with everything on. */
 const TOOLS_MENU = buildPlatformNavGroups(
   { isTeacher: false, isStaff: false },
-  { play: true, analysisBoard: true, trainer: true, exercises: true },
+  { play: true, analysisBoard: true, trainer: true, exercises: "all" },
 )[0]!.items.find(isNavDropdown) as PlatformNavDropdown;
 
 /** The instant the profile's examples are read from, so «hace 5 horas» stays the same. */
@@ -2372,6 +2373,23 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   restore: async () => undefined,
                   delete: async () => undefined,
                 }}
+              />
+            </Tile>
+            <Tile name="ExerciseSolver" docs="platform-shared-exercisesolver" width={960} height={600}>
+              <ExerciseSolver
+                exercise={{
+                  id: "dmEjer02",
+                  title: "El mate de Philidor",
+                  prompt: null,
+                  kind: "MATE_IN",
+                  mateIn: 2,
+                  solutionPgn: `[SetUp "1"]\n[FEN "r6k/6pp/7N/8/2Q5/8/6PP/6K1 w - - 0 1"]\n\n1. Qg8+ Rxg8 2. Nf7# *`,
+                  hints: [],
+                  explanation: null,
+                  difficulty: 1400,
+                }}
+                mode="solve"
+                context={{ attempt: { kind: "SERIES", seriesId: "dmSerie1" }, position: "2 / 5" }}
               />
             </Tile>
             <Tile name="StudentSharePanel" docs="platform-shared-studentsharepanel" width={560} height={344}>

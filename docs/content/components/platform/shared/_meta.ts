@@ -22,6 +22,7 @@ const meta: MetaRecord = {
   "empty-state": "EmptyState",
   "exercise-authoring": "ExerciseAuthoring",
   "exercise-card": "ExerciseCard",
+  "exercise-solver": "ExerciseSolver",
   "filter-pills": "FilterPills",
   "finalize-class-popup": "FinalizeClassPopup",
   "game-fields": "GameFields",

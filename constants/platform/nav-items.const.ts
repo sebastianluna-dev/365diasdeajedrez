@@ -57,15 +57,34 @@ export interface PlatformNavFeatures {
   play: boolean;
   analysisBoard: boolean;
   trainer: boolean;
-  /** The teacher's «Ejercicios», after «Clases que imparto» (`EXERCISES_ENABLED`). */
-  exercises: boolean;
+  /**
+   * «Ejercicios» (`EXERCISES_ENABLED`). Off: nobody's. On, the teacher's bank
+   * after «Clases que imparto», and the student's section after «Mis cursos»:
+   * for every student (`"all"`, from phase 4, when the library gives anyone
+   * something to solve) or only for one who has something there
+   * (`"withTeacher"`, phases 1–3: an active teacher or a series given to them,
+   * resolved per request by `getStudentExerciseAccess`).
+   */
+  exercises: "all" | "withTeacher" | false;
+}
+
+/** Who is asking, as the menu hears it. */
+export interface PlatformNavRoles {
+  isTeacher: boolean;
+  isStaff: boolean;
+  /**
+   * The student has something in «Ejercicios» — an active teacher or a series
+   * given to them (`getStudentExerciseAccess`): what `"withTeacher"` asks.
+   */
+  hasExerciseSource?: boolean;
 }
 
 const FEATURES: PlatformNavFeatures = {
   play: PLAY_ENABLED,
   analysisBoard: ANALYSIS_BOARD_ENABLED,
   trainer: MOVE_TRAINER_ENABLED,
-  exercises: EXERCISES_ENABLED,
+  // Until the library (phase 4) only a teacher's series reach a student.
+  exercises: EXERCISES_ENABLED ? "withTeacher" : false,
 };
 
 /**
@@ -107,6 +126,22 @@ const PLAY_ITEM: PlatformNavItem = { label: "Jugar", href: platformRoutes.play }
 /** The teacher's exercise bank, right after the classes they give. */
 const TEACHER_EXERCISES_ITEM: PlatformNavItem = { label: "Ejercicios", href: teacherRoutes.exercises };
 
+/** The student's «Ejercicios», right after their courses. */
+const STUDENT_EXERCISES_ITEM: PlatformNavItem = { label: "Ejercicios", href: platformRoutes.exercises };
+
+/**
+ * Whether the menu needs to know if the student has something in
+ * «Ejercicios» before it is drawn: only a student's, and only while the item
+ * is drawn for some students and not others (`"withTeacher"`). The shell asks
+ * the database only then.
+ */
+export function needsStudentExerciseAccess(
+  roles: Pick<PlatformNavRoles, "isTeacher" | "isStaff">,
+  features: PlatformNavFeatures = FEATURES,
+): boolean {
+  return !roles.isStaff && !roles.isTeacher && features.exercises === "withTeacher";
+}
+
 /**
  * «Herramientas» (planning decision §H, M3): the analysis board, the explorer
  * and — while it is on — the trainer, each with the line that says what it is
@@ -146,11 +181,19 @@ function toolsDropdown(features: PlatformNavFeatures): PlatformNavDropdown {
  * The student's or the teacher's items with what is switched on: «Jugar»
  * before the explorer, the explorer gathered into «Herramientas» once the
  * analysis board is on (until then it stays a link of its own, so it never
- * disappears), and the teacher's «Ejercicios» after their classes.
+ * disappears), the teacher's «Ejercicios» after their classes and the
+ * student's after their courses.
  */
-function withFeatures(items: PlatformNavItem[], features: PlatformNavFeatures): PlatformNavEntry[] {
+function withFeatures(
+  items: PlatformNavItem[],
+  features: PlatformNavFeatures,
+  studentExercises: boolean,
+): PlatformNavEntry[] {
   return items.flatMap((item): PlatformNavEntry[] => {
-    if (item.href === teacherRoutes.classes) return [item, ...(features.exercises ? [TEACHER_EXERCISES_ITEM] : [])];
+    if (item.href === teacherRoutes.classes) {
+      return [item, ...(features.exercises !== false ? [TEACHER_EXERCISES_ITEM] : [])];
+    }
+    if (item.href === platformRoutes.courses) return [item, ...(studentExercises ? [STUDENT_EXERCISES_ITEM] : [])];
     if (item.href !== platformRoutes.explorer) return [item];
     return [...(features.play ? [PLAY_ITEM] : []), features.analysisBoard ? toolsDropdown(features) : item];
   });
@@ -166,12 +209,14 @@ function withFeatures(items: PlatformNavItem[], features: PlatformNavFeatures): 
  * component to change shape if one day there is more than one again.
  */
 export function buildPlatformNavGroups(
-  roles: { isTeacher: boolean; isStaff: boolean },
+  roles: PlatformNavRoles,
   features: PlatformNavFeatures = FEATURES,
 ): PlatformNavGroup[] {
   if (roles.isStaff) return [{ label: "Administración", items: STAFF_NAV_ITEMS }];
-  if (roles.isTeacher) return [{ label: "Profesor", items: withFeatures(TEACHER_NAV_ITEMS, features) }];
-  return [{ items: withFeatures(STUDENT_NAV_ITEMS, features) }];
+  if (roles.isTeacher) return [{ label: "Profesor", items: withFeatures(TEACHER_NAV_ITEMS, features, false) }];
+  const studentExercises =
+    features.exercises === "all" || (features.exercises === "withTeacher" && roles.hasExerciseSource === true);
+  return [{ items: withFeatures(STUDENT_NAV_ITEMS, features, studentExercises) }];
 }
 
 /**

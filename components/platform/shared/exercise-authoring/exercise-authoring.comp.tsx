@@ -29,6 +29,8 @@ import {
 } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
+import { ExerciseSolver } from "@/components/platform/shared/exercise-solver/exercise-solver.comp";
+import type { ExerciseSolverExercise } from "@/components/platform/shared/exercise-solver/exercise-solver.types";
 import { PlatformTabPanel, PlatformTabs } from "@/components/platform/shared/platform-tabs/platform-tabs.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
@@ -107,8 +109,16 @@ export interface ExerciseAuthoringProps {
 
 type Way = "place" | "paste" | "game";
 
-const TAB_LABELS: Record<ExerciseFormTab, string> = { position: "Posición", solution: "Solución", data: "Datos" };
-const TABS: ExerciseFormTab[] = ["position", "solution", "data"];
+/** The editor's steps: the three the form's errors belong to, and «Probar», which holds no field. */
+type AuthoringTab = ExerciseFormTab | "try";
+
+const TAB_LABELS: Record<AuthoringTab, string> = {
+  position: "Posición",
+  solution: "Solución",
+  data: "Datos",
+  try: "Probar",
+};
+const TABS: AuthoringTab[] = ["position", "solution", "data", "try"];
 
 const LOCK_REASONS: Record<ExerciseLockReason, string> = {
   inReview: "Está en revisión: retira la propuesta para editarlo.",
@@ -195,7 +205,7 @@ export function ExerciseAuthoring({
 }: ExerciseAuthoringProps) {
   const { draft, update, changePosition, pendingPosition, confirmPosition, cancelPosition, boardKey } =
     useExerciseDraft(exercise);
-  const [tab, setTab] = useState<ExerciseFormTab>(exercise.id ? "solution" : "position");
+  const [tab, setTab] = useState<AuthoringTab>(exercise.id ? "solution" : "position");
   const [state, formAction] = useActionState(save, POPUP_FORM_IDLE);
   const [isPending, startSave] = useTransition();
   const [pendingIntent, setPendingIntent] = useState<ExerciseSaveIntent | null>(null);
@@ -294,7 +304,7 @@ export function ExerciseAuthoring({
         label="Pasos del ejercicio"
         tabs={tabs}
         value={tab}
-        onValueChange={(value) => setTab(value as ExerciseFormTab)}
+        onValueChange={(value) => setTab(value as AuthoringTab)}
       >
         <PlatformTabPanel value="position">
           <PositionStep
@@ -330,6 +340,10 @@ export function ExerciseAuthoring({
             issueOf={issueOf}
             onChange={update}
           />
+        </PlatformTabPanel>
+
+        <PlatformTabPanel value="try">
+          <TryStep draft={draft} exerciseId={exercise.id} />
         </PlatformTabPanel>
       </PlatformTabs>
 
@@ -896,6 +910,47 @@ function DataStep({ draft, startFen, catalogs, locked, issueOf, onChange }: Data
           </OptionalFields>
         </div>
       </PlatformForm>
+    </div>
+  );
+}
+
+/** The draft as the solve screen reads it: what «Probar» solves, unsaved. */
+function solverExerciseOf(draft: ExerciseDraft, exerciseId: string | null): ExerciseSolverExercise {
+  return {
+    id: exerciseId ?? "nuevo",
+    title: draft.title.trim() || "Ejercicio sin título",
+    prompt: draft.prompt.trim() || null,
+    kind: draft.kind,
+    mateIn: draft.kind === EXERCISE_KIND.MATE_IN ? Number.parseInt(draft.mateIn, 10) || null : null,
+    solutionPgn: draft.solutionPgn,
+    hints: draft.hints.map((hint) => hint.trim()).filter((hint) => hint.length > 0),
+    explanation: draft.explanation.trim() || null,
+    difficulty: Number.parseInt(draft.difficulty, 10) || 0,
+  };
+}
+
+/**
+ * «Probar» (PLAN.md §4.2): the solve screen in preview over the draft as it
+ * stands — the prompt, the hints, the replies, the variants accepted and the
+ * explanation —, before anything is saved. Nothing is recorded. It starts
+ * again whenever the draft changes.
+ */
+function TryStep({ draft, exerciseId }: { draft: ExerciseDraft; exerciseId: string | null }) {
+  const exercise = solverExerciseOf(draft, exerciseId);
+  if (!solutionHasMoves(draft.solutionPgn)) {
+    return (
+      <p className="exercise-authoring__try-empty">
+        Juega la solución en «Solución» para probarla aquí como la verán tus alumnos.
+      </p>
+    );
+  }
+  return (
+    <div className="exercise-authoring__try">
+      <ExerciseSolver
+        key={[exercise.solutionPgn, exercise.kind, exercise.mateIn, ...exercise.hints].join("\u0000")}
+        exercise={exercise}
+        mode="preview"
+      />
     </div>
   );
 }

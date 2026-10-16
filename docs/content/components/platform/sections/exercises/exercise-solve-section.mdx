@@ -1,0 +1,26 @@
+---
+description: "The n-th exercise of a series, to solve: the server side of the solve screen, with the attempt's action bound."
+---
+
+# `ExerciseSolveSection`
+
+|          |                                                                                                            |
+| -------- | ---------------------------------------------------------------------------------------------------------- |
+| File     | `components/platform/sections/exercises/exercise-solve.section.tsx`                                        |
+| Kind     | Server Component                                                                                           |
+| Used by  | `/ejercicios/series/[seriesId]/[n]` (behind `EXERCISES_ENABLED`)                                           |
+| Composes | [`ExerciseSolver`](/components/platform/shared/exercise-solver)                                            |
+| Reads    | `StudentSeriesExercise` from `getStudentSeriesExercise(id, n)` · `services/exercises/exercises.service.ts` |
+| Writes   | `submitExerciseAttempt` · `services/exercises/exercises.actions.ts`, handed to the solver as a prop        |
+
+## Props
+
+| Prop   | Type                    | Required | Meaning                                                                                                                                   |
+| ------ | ----------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `item` | `StudentSeriesExercise` | yes      | The series, the exercise for the solver, its mode, the attempt's context with «3 / 10», the next exercise and the way back to the series. |
+
+## Behaviour
+
+`n` is 1-based among the exercises the student may solve in the series, so the URL of an exercise is the number the series page shows. The service reads the exercise again through the rule for the path the attempt will claim (`solvableInContextWhere`, the same `where` the submit checks), and opens it **unscored** when it was attempted this study day (`attemptedToday`, over its family's states): one scored attempt per exercise per study day (§2.7). The solver is mounted under the series and the exercise as its `key`, so «Siguiente ejercicio» never carries the last board's state.
+
+The page draws its head itself: the way back to the series by its title, and the exercise's title.

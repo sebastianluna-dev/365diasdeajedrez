@@ -1,0 +1,349 @@
+/* The solve screen. From 1024px the board is on the left and a panel on the
+   right holds the head, the feedback, the actions and the moves played; below
+   it everything stacks — the head, the board at the width of the screen (or
+   of what is left of its height, so a short screen keeps a board to play on),
+   the feedback and the actions within the thumb's reach — and a phone on its
+   side puts the actions beside the board again. */
+.exercise-solver {
+  display: grid;
+  /* Its width is the page's, never its content's: the board's width is a
+     share of it, and a container that shrank to the board would shrink the
+     board in turn. */
+  width: 100%;
+  grid-template-columns: minmax(0, 560px) minmax(260px, 1fr);
+  grid-template-areas:
+    "board head"
+    "board feedback"
+    "board panel"
+    "board moves"
+    "full full";
+  grid-template-rows: auto auto auto 1fr auto;
+  column-gap: var(--platform-space-8);
+  row-gap: var(--platform-space-4);
+  align-items: start;
+
+  & .exercise-solver__head {
+    grid-area: head;
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    min-width: 0;
+  }
+
+  & .exercise-solver__prompt {
+    margin: 0;
+    font-size: var(--platform-type-xl);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--platform-text);
+    text-wrap: balance;
+  }
+
+  & .exercise-solver__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-3);
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  /* Who plays: a disc in the pieces' colour, ringed so the white one shows on white. */
+  & .exercise-solver__side {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px var(--platform-border-strong);
+  }
+
+  & .exercise-solver__side_color_white {
+    background: var(--platform-surface);
+  }
+
+  & .exercise-solver__side_color_black {
+    background: var(--platform-ink);
+  }
+
+  & .exercise-solver__clock,
+  & .exercise-solver__position {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+
+  & .exercise-solver__failed {
+    background: var(--platform-danger-soft);
+    color: var(--platform-danger);
+    font-weight: 700;
+  }
+
+  & .exercise-solver__note {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .exercise-solver__board {
+    grid-area: board;
+    position: sticky;
+    top: var(--platform-space-4);
+    width: 100%;
+    border-radius: 8px;
+  }
+
+  /* The wrong move, for the moment it is on the board: a red ring that comes and goes. */
+  & .exercise-solver__board_state_wrong {
+    animation: exercise-solver-wrong 600ms ease-out both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .exercise-solver__board_state_wrong {
+      animation: none;
+      box-shadow: 0 0 0 3px var(--platform-danger);
+    }
+  }
+
+  & .exercise-solver__feedback {
+    grid-area: feedback;
+    min-height: 1.5em;
+    margin: 0;
+    font-size: var(--platform-type-md);
+    font-weight: 600;
+    color: var(--platform-text-muted);
+  }
+
+  & .exercise-solver__feedback_tone_ok {
+    color: var(--platform-success-ink);
+  }
+
+  & .exercise-solver__feedback_tone_error {
+    color: var(--platform-danger);
+  }
+
+  & .exercise-solver__feedback_tone_info {
+    font-weight: 400;
+    color: var(--platform-text);
+  }
+
+  & .exercise-solver__panel {
+    grid-area: panel;
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+    min-width: 0;
+  }
+
+  & .exercise-solver__hints {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .exercise-solver__hint {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-3);
+    border-radius: 8px;
+    background: var(--platform-accent-wash);
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text);
+  }
+
+  & .exercise-solver__hint-icon {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    margin-top: var(--platform-space-0-5);
+    color: var(--platform-accent-ink);
+  }
+
+  & .exercise-solver__hint-number {
+    font-weight: 700;
+  }
+
+  & .exercise-solver__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-3);
+  }
+
+  & .exercise-solver__walk {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+  }
+
+  & .exercise-solver__walk-count {
+    margin-left: var(--platform-space-2);
+    font-size: var(--platform-type-sm);
+    font-variant-numeric: tabular-nums;
+    color: var(--platform-text-muted);
+  }
+
+  & .exercise-solver__result {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-5);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+    animation: exercise-solver-result-in 160ms ease-out both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .exercise-solver__result {
+      animation: none;
+    }
+  }
+
+  & .exercise-solver__result-title {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    margin: 0;
+    font-size: var(--platform-type-2xl);
+    font-weight: 700;
+  }
+
+  & .exercise-solver__result-title_tone_ok {
+    color: var(--platform-success-ink);
+  }
+
+  & .exercise-solver__result-title_tone_error {
+    color: var(--platform-danger);
+  }
+
+  & .exercise-solver__result-icon {
+    flex: none;
+    width: 22px;
+    height: 22px;
+  }
+
+  & .exercise-solver__result-line,
+  & .exercise-solver__explanation {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    line-height: 1.5;
+    color: var(--platform-text);
+  }
+
+  & .exercise-solver__explanation {
+    white-space: pre-line;
+  }
+
+  & .exercise-solver__result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-3);
+    margin-top: var(--platform-space-2);
+  }
+
+  & .exercise-solver__moves {
+    grid-area: moves;
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    line-height: 1.6;
+    color: var(--platform-text);
+    overflow-wrap: anywhere;
+  }
+
+  & .exercise-solver__moves-label {
+    color: var(--platform-text-muted);
+  }
+
+  & .exercise-solver__full {
+    grid-area: full;
+    min-width: 0;
+  }
+
+  /* Tablets and phones: one column, the board as wide as the screen allows
+     while leaving the head and the actions in sight. */
+  @media (width < 1024px) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "head"
+      "board"
+      "feedback"
+      "panel"
+      "moves"
+      "full";
+    grid-template-rows: auto;
+    row-gap: var(--platform-space-3);
+
+    & .exercise-solver__board {
+      position: static;
+      justify-self: center;
+      width: max(min(100vw - 32px, 100svh - 240px), 280px);
+      max-width: 100%;
+    }
+
+    & .exercise-solver__actions > .platform-button {
+      flex: 1 1 0;
+    }
+  }
+
+  /* A phone on its side: the board on the left, the rest beside it. An
+     orientation is not a width, so it is no breakpoint of its own. */
+  @media (width < 1024px) and (orientation: landscape) {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "board head"
+      "board feedback"
+      "board panel"
+      "board moves"
+      "full full";
+    grid-template-rows: auto auto auto 1fr auto;
+    column-gap: var(--platform-space-5);
+
+    & .exercise-solver__board {
+      width: max(min(100svh - 96px, 55vw), 240px);
+    }
+  }
+
+  @media (width < 640px) {
+    & .exercise-solver__prompt {
+      font-size: var(--platform-type-lg);
+    }
+
+    & .exercise-solver__result {
+      padding: var(--platform-space-4);
+    }
+  }
+}
+
+/* @keyframes cannot be nested: the wrong move's ring and the result's entrance. */
+@keyframes exercise-solver-wrong {
+  0% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+
+  27% {
+    box-shadow: 0 0 0 3px var(--platform-danger);
+  }
+
+  80% {
+    box-shadow: 0 0 0 3px var(--platform-danger);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@keyframes exercise-solver-result-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -8,6 +8,7 @@ import {
   solutionProblemText,
 } from "@/constants/platform/exercise-messages.const";
 import { MATE_IN_MAX, emptySolutionPgn, readSolutionStart } from "@/lib/chess/exercise-format";
+import { defaultExercisePrompt } from "@/lib/chess/exercise-labels";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { normalizeSetup, setupOfFen, validateSetup, type SetupInput } from "@/lib/chess/position-setup";
 import type { ExerciseFormTab } from "@/services/shared/exercise-form";
@@ -146,9 +147,7 @@ export function solutionFromPasted(pgn: string, useMoves: boolean): string | nul
 
 /** What the prompt says when the author leaves it empty: the side to move, and the mate's length. */
 export function defaultPrompt(turn: SetupInput["turn"], kind: ExerciseKindCode, mateIn: string): string {
-  const side = turn === "white" ? "Juegan blancas" : "Juegan negras";
-  if (kind !== EXERCISE_KIND.MATE_IN || !mateIn) return side;
-  return `${side} y dan mate en ${mateIn}`;
+  return defaultExercisePrompt(turn, kind, mateIn ? Number.parseInt(mateIn, 10) || null : null);
 }
 
 /** The save's fields, by name, from the draft: what the hidden inputs carry (`EXERCISE_FORM_SCHEMA`). */

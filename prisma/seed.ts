@@ -40,6 +40,7 @@ import {
 import { nextClassAfter, planSeededOrders, resolveCollectionIds, seedReferenceDate } from "./seed-rules";
 import { proposeUserSlug } from "../services/shared/user-slug.service";
 import { seedPlay } from "./seed-play";
+import { seedExercises } from "./seed-exercises";
 import { buildClassSchedule, CLASS_BLOCKS, CLASSMATE_ASSIGNMENTS, DEMO_CLASSMATES, seedClasses } from "./seed-classes";
 import { createDefaultStudy } from "../services/studies/default-study";
 import { AUTHOR_ROLE } from "../constants/platform/course-codes.const";
@@ -181,7 +182,7 @@ async function main() {
   const attemptResult = await seedCatalog(db.attemptResult, CATALOG_VALUES.attemptResult);
   const attemptContext = await seedCatalog(db.attemptContext, CATALOG_VALUES.attemptContext);
   await seedCatalog(db.exerciseKind, CATALOG_VALUES.exerciseKind);
-  await seedCatalog(db.exerciseStatus, CATALOG_VALUES.exerciseStatus);
+  const exerciseStatus = await seedCatalog(db.exerciseStatus, CATALOG_VALUES.exerciseStatus);
   const ownerType = await seedCatalog(db.ownerType, CATALOG_VALUES.ownerType);
   await seedCatalog(db.contentRole, CATALOG_VALUES.contentRole);
   const databaseKind = await seedCatalog(db.databaseKind, CATALOG_VALUES.databaseKind);
@@ -683,6 +684,11 @@ async function main() {
       create: { id: activity.id, ...data },
     });
   }
+
+  // «Ejercicios»: the teacher's five exercises, his series given to the demo
+  // student, three attempts of the student and the two first passes among
+  // them. Before the stats, which the passes feed.
+  await seedExercises(db, now, { exerciseStatus, attemptResult, attemptContext, activityType, subjectType });
 
   // «Jugar»: its catalogs, the bots and the demo student's games. Playing
   // writes no activity, so it goes apart from what the stats are rebuilt from.

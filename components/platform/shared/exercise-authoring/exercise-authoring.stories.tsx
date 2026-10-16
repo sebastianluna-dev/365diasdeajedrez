@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, fn, userEvent, within } from "storybook/test";
+import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import type { FetchPgn } from "@/components/platform/shared/move-path-picker/move-path-picker.comp";
 import { POPUP_FORM_IDLE, type PopupFormState } from "@/services/shared/form-state";
 import { ExerciseAuthoring } from "./exercise-authoring.comp";
@@ -159,6 +159,19 @@ export const DataOfAMateInTwo: Story = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("tab", { name: "Datos" }));
     await expect(canvas.getByText("Nivel: Intermedio (1200–1599)")).toBeVisible();
+  },
+};
+
+/** «Probar» on that mate: the solve screen in preview over the unsaved draft — «Juegan blancas y dan mate en 2», «Pista», «Ver la solución» — and nothing recorded. Its `play` shows the solution. */
+export const TryingAMateInTwo: Story = {
+  args: EditingAMateInTwo.args,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("tab", { name: "Probar" }));
+    await expect(canvas.getByText("Vista previa: el intento no se guarda.")).toBeVisible();
+    await userEvent.click(canvas.getByRole("button", { name: "Ver la solución" }));
+    // The result fades in (160 ms): it is visible once its entrance is over.
+    await waitFor(() => expect(canvas.getByText("Esta vez viste la solución")).toBeVisible());
   },
 };
 

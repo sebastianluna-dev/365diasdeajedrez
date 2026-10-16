@@ -3,7 +3,6 @@ import { EXERCISE_STATUS } from "@/constants/platform/exercise-codes.const";
 import { readSolutionStart } from "@/lib/chess/exercise-format";
 import {
   exerciseFacts,
-  exerciseKindLabel,
   mapAuthoringExercise,
   mapExerciseCard,
   mapSeriesCard,
@@ -11,7 +10,6 @@ import {
   mapSeriesPickOption,
   mapSeriesShare,
   newExercisePrefill,
-  sideToMove,
   teacherExerciseAllowed,
   teacherExercisePermissions,
   teacherSaveButtons,
@@ -57,11 +55,6 @@ describe("the bank's cards", () => {
     expect(card.orientation).toBe("black");
     expect(card.topicLabels).toEqual(["Táctica", "Mate del pasillo"]);
     expect(card.href).toBe("/profesor/ejercicios/ex000001");
-  });
-
-  it("nombran una secuencia como tal", () => {
-    expect(exerciseKindLabel("SEQUENCE", null)).toBe("Secuencia");
-    expect(sideToMove("8/8/8/8/8/8/8/8 w - - 0 1")).toBe("white");
   });
 
   it("ofrecen archivar lo propio, restaurar lo archivado y eliminar sólo lo que nadie intentó", () => {

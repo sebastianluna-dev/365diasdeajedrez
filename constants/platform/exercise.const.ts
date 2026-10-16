@@ -38,3 +38,13 @@ export const SERIES_LIMITS = {
   /** The exercises one series holds: a session's work, not a bank. */
   items: 100,
 } as const;
+
+/** What a submitted attempt may claim (PLAN.md §5.4); above these the figures are not credible. */
+export const EXERCISE_ATTEMPT_LIMITS = {
+  /** The player's moves up to the decision. */
+  moves: 200,
+  /** Hints taken: a press counts once each. */
+  hints: 20,
+  /** Two hours. */
+  durationMs: 2 * 60 * 60 * 1000,
+} as const;
