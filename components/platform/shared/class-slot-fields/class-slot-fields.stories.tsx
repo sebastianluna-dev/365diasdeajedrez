@@ -33,13 +33,19 @@ Reference page: [Components › ClassSlotFields](/components/platform/shared/cla
     warnings: { control: "object" },
   },
   decorators: [
-    (Story) => (
-      <div className="platform-theme" style={{ maxWidth: 560 }}>
-        <PlatformForm onSubmit={(event) => event.preventDefault()}>
-          <Story />
-        </PlatformForm>
-      </div>
-    ),
+    // A story's own decorators ADD to these, so a story that brings its own
+    // form (the popup) asks for a bare canvas with `parameters.bareCanvas`:
+    // a form inside a form is invalid HTML and a hydration error.
+    (Story, context) =>
+      context.parameters.bareCanvas ? (
+        <Story />
+      ) : (
+        <div className="platform-theme" style={{ maxWidth: 560 }}>
+          <PlatformForm onSubmit={(event) => event.preventDefault()}>
+            <Story />
+          </PlatformForm>
+        </div>
+      ),
   ],
 } satisfies Meta<typeof ClassSlotFields>;
 
@@ -70,7 +76,7 @@ export const OddDuration: Story = {
 /** Inside a popup, where the date picker and the selects stay within the dialog. */
 export const InPopup: Story = {
   name: "In popup",
-  decorators: [(Story) => <Story />],
+  parameters: { bareCanvas: true },
   render: (args) => <InsidePopup {...args} />,
   play: async ({ canvasElement }) => {
     await userEvent.click(within(canvasElement).getByRole("button", { name: "Programar" }));
