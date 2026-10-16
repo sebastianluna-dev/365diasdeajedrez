@@ -176,6 +176,7 @@ describe("los intentos que un profesor puede ver", () => {
   const attempt = (context: string, ex: Row, seriesRow: Row | null = null) => ({
     userId: ALICE,
     exerciseId: ex.id,
+    seriesId: seriesRow ? seriesRow.id : null,
     context: { code: context },
     exercise: ex,
     series: seriesRow,
@@ -197,6 +198,14 @@ describe("los intentos que un profesor puede ver", () => {
     // An academy exercise that left the library keeps its first publication.
     expect(visible(attempt("REVIEW", exercise("e", null, "ARCHIVED", [], new Date("2026-09-01"))))).toBe(true);
     expect(visible(attempt("REVIEW", exercise("e", T2, "READY")))).toBe(false);
+  });
+
+  it("los de una serie eliminada en su propio ejercicio, también archivado (D45); en el de otro, no", () => {
+    // «Eliminar la serie» leaves the attempt with no series and its SERIES context.
+    expect(visible(attempt("SERIES", exercise("e", T1, "READY")))).toBe(true);
+    expect(visible(attempt("SERIES", exercise("e", T1, "ARCHIVED")))).toBe(true);
+    expect(visible(attempt("SERIES", exercise("e", T2, "READY")))).toBe(false);
+    expect(visible(attempt("SERIES", exercise("e", null, "PUBLISHED", [], new Date("2026-09-01"))))).toBe(false);
   });
 
   it("sólo del alumno pedido, y sólo intentos de ejercicios", () => {

@@ -3,9 +3,10 @@ import type { Prisma } from "@/lib/platform-db/generated/client";
 
 // The reads of phase 1b whose answer is a refusal when the row is not the
 // teacher's: «Crear ejercicio desde aquí» seeds nothing from a game of
-// someone else's study. The rule travels in the `where`, so the fake database
-// here evaluates exactly that `where` over a handful of rows; the session and
-// the rest of Prisma are replaced.
+// someone else's study, and a student's exercises are not shown to a teacher
+// they are not assigned to now. The rule travels in each `where`, so the fake
+// database here evaluates exactly that `where` over a handful of rows; the
+// session and the rest of Prisma are replaced.
 
 const TEACHER = { id: "t-1", displayName: "Profesor Demo", isActive: true };
 const USER = { id: "u-teacher", email: "profesor.demo@example.com", displayName: "Profesor Demo" };
@@ -40,6 +41,27 @@ const GAMES = [
   },
 ];
 
+/** The assignments on the fake database: only `u-alice` is the teacher's now. */
+const ASSIGNMENTS = [
+  { teacherId: TEACHER.id, studentId: "u-alice", endedAt: null },
+  { teacherId: TEACHER.id, studentId: "u-former", endedAt: new Date("2026-09-01T00:00:00.000Z") },
+  { teacherId: "t-2", studentId: "u-bob", endedAt: null },
+];
+
+const assignmentFindFirst = vi.fn(async ({ where }: { where: Prisma.TeacherStudentWhereInput }) => {
+  return (
+    ASSIGNMENTS.find(
+      (row) => row.teacherId === where.teacherId && row.studentId === where.studentId && row.endedAt === where.endedAt,
+    ) ?? null
+  );
+});
+const attemptFindMany = vi.fn(async () => []);
+const attemptCount = vi.fn(async () => 0);
+const userFindUnique = vi.fn(async ({ where }: { where: { id: string } }) => ({
+  id: where.id,
+  displayName: "Alumno",
+}));
+
 const gameFindFirst = vi.fn(async ({ where }: { where: Prisma.GameWhereInput }) => {
   const owner = (where.database as { userId?: string } | undefined)?.userId;
   return (
@@ -51,10 +73,13 @@ const gameFindFirst = vi.fn(async ({ where }: { where: Prisma.GameWhereInput }) 
 vi.mock("@/lib/platform-db/get-platform-db", () => ({
   getPlatformDb: () => ({
     game: { findFirst: gameFindFirst },
+    teacherStudent: { findFirst: assignmentFindFirst },
+    trainingAttempt: { findMany: attemptFindMany, count: attemptCount },
+    user: { findUnique: userFindUnique },
   }),
 }));
 
-const { getExercisePrefillFromGame } = await import("./teacher-exercises.service");
+const { getExercisePrefillFromGame, getStudentExerciseAttempts } = await import("./teacher-exercises.service");
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -98,5 +123,25 @@ describe("getExercisePrefillFromGame («Crear ejercicio desde aquí», D11)", ()
     expect(
       await getExercisePrefillFromGame({ userId: USER.id }, { studyId: "study-other", gameId: "game-own", path: "" }),
     ).toBeNull();
+  });
+});
+
+describe("getStudentExerciseAttempts (D24)", () => {
+  it("sólo de un alumno asignado ahora: el de otro profesor, o uno que ya no lo es, es null (la página responde 404)", async () => {
+    expect(await getStudentExerciseAttempts("u-bob")).toBeNull();
+    expect(await getStudentExerciseAttempts("u-former")).toBeNull();
+    expect(attemptFindMany).not.toHaveBeenCalled();
+  });
+
+  it("del alumno asignado lee sus intentos bajo la regla del profesor, los últimos primero, de 25 en 25", async () => {
+    const view = await getStudentExerciseAttempts("u-alice", 2);
+    expect(view).toMatchObject({ student: { id: "u-alice" }, page: 2, pageSize: 25, total: 0 });
+    expect(attemptFindMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ userId: "u-alice", exerciseId: { not: null } }),
+        orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+        take: 50,
+      }),
+    );
   });
 });

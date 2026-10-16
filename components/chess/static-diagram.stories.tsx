@@ -39,6 +39,11 @@ Reference page: [Components › StaticDiagram](/components/chess/static-diagram)
       options: ["platform", "article"],
       description: "The platform, with its tokens, or a blog article, with the site's caption.",
     },
+    arrows: {
+      control: "object",
+      description:
+        "Moves drawn over the position, each with its tone: `danger` for the one played, `success` for the one expected.",
+    },
   },
 } satisfies Meta<typeof StaticDiagram>;
 
@@ -70,6 +75,22 @@ export const InAnArticle: Story = {
       </div>
     ),
   ],
+};
+
+/**
+ * A student's mistake, as the teacher reads it (D24): the move played in the danger red and the one the solution
+ * expected in the success green, drawn over the position where it happened — here 1. Td7? instead of the mate 1. Td8#.
+ */
+export const WithArrows: Story = {
+  name: "With arrows",
+  args: {
+    fen: "6k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1",
+    caption: "Jugó Td7 en vez de Td8#",
+    arrows: [
+      { from: "d1", to: "d7", tone: "danger" },
+      { from: "d1", to: "d8", tone: "success" },
+    ],
+  },
 };
 
 /** In a phone's column, 343px: the grid is fluid and shrinks with it. */

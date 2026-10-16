@@ -4,7 +4,7 @@ import { chessgroundMove } from "chessops/compat";
 import { makeFen, parseFen } from "chessops/fen";
 import { parsePgn, startingPosition } from "chessops/pgn";
 import { makeSanAndPlay, parseSan } from "chessops/san";
-import { makeUci, parseUci, squareRank } from "chessops/util";
+import { makeSquare, makeUci, parseUci, squareRank } from "chessops/util";
 
 export interface ReplayPosition {
   /** SAN of the move that produced this position ("" for the starting position). */
@@ -127,6 +127,23 @@ export function applySan(fen: string, san: string): string | undefined {
   if (!move) return undefined;
   pos.play(move);
   return makeFen(pos.toSetup());
+}
+
+/**
+ * The squares a SAN move travels between on a FEN, as the board draws them
+ * — castling as the king's own two steps, not chessops' king-takes-rook —, or
+ * `undefined` if the FEN or the move is invalid. For an arrow over a
+ * diagram: the move a student played and the one the solution expected.
+ */
+export function moveSquaresOfSan(fen: string, san: string): { from: Key; to: Key } | undefined {
+  const pos = positionFromFen(fen);
+  if (!pos) return undefined;
+  const move = parseSan(pos, san);
+  if (!move || !("from" in move)) return undefined;
+  const piece = pos.board.get(move.from);
+  const castles = piece?.role === "king" && pos.board.get(move.to)?.color === piece.color;
+  const to = castles ? move.to + (move.to > move.from ? -1 : 2) : move.to;
+  return { from: makeSquare(move.from), to: makeSquare(to) };
 }
 
 /** Pieces a pawn can promote to. */

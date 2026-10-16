@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ChevronLeftIcon } from "@/components/icons/chevron-left-icon.comp";
+import { FilterPills } from "@/components/platform/shared/filter-pills/filter-pills.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
+import { SeriesProgressTable } from "@/components/platform/shared/series-progress-table/series-progress-table.comp";
 import { StudentSharePanel } from "@/components/platform/shared/student-share-panel/student-share-panel.comp";
 import { teacherRoutes } from "@/lib/platform-routes";
 import {
@@ -12,7 +14,7 @@ import {
   unshareSeriesWithStudent,
   updateExerciseSeries,
 } from "@/services/teacher-exercises/teacher-exercises.actions";
-import type { TeacherSeriesEditor } from "@/services/teacher-exercises/teacher-exercises.types";
+import type { SeriesProgressView, TeacherSeriesEditor } from "@/services/teacher-exercises/teacher-exercises.types";
 import { AddSeriesExercisesButton } from "./add-series-exercises-popup/add-series-exercises-popup.comp";
 import { DeleteSeries } from "./delete-series/delete-series.comp";
 import { EditSeriesButton } from "./series-data-popup/series-data-popup.comp";
@@ -21,6 +23,8 @@ import "./teacher-series-editor.section.css";
 
 interface TeacherSeriesEditorSectionProps {
   editor: TeacherSeriesEditor;
+  /** On «Progreso»: who solved what. Null on «Ejercicios». */
+  progress?: SeriesProgressView | null;
   notice?: string;
   errorMessage?: string;
 }
@@ -43,10 +47,18 @@ function factsOf(editor: TeacherSeriesEditor): string {
  * sortable, each with «Quitar» and the warning when the students no longer
  * see it —, «Agregar ejercicios» as the page's accent, who has it
  * (`StudentSharePanel`, the same panel as a collection's), and «Eliminar la
- * serie». Every action is bound here, on the server, and handed down.
+ * serie». Two views as pills: «Ejercicios», all that, and «Progreso», who
+ * solved what (`SeriesProgressTable`, D24). Every action is bound here, on
+ * the server, and handed down.
  */
-export function TeacherSeriesEditorSection({ editor, notice, errorMessage }: TeacherSeriesEditorSectionProps) {
+export function TeacherSeriesEditorSection({
+  editor,
+  progress,
+  notice,
+  errorMessage,
+}: TeacherSeriesEditorSectionProps) {
   const { series } = editor;
+  const onProgress = progress !== null && progress !== undefined;
   return (
     <div className="teacher-series">
       <header className="platform-page__head">
@@ -76,36 +88,53 @@ export function TeacherSeriesEditorSection({ editor, notice, errorMessage }: Tea
       {notice && <PlatformNotice message={notice} variant="success" />}
       {errorMessage && <PlatformNotice message={errorMessage} />}
 
-      <div className="teacher-series__layout">
-        <section className="teacher-series__items" aria-labelledby="teacher-series-items">
-          <h2 id="teacher-series-items" className="teacher-series__heading">
-            Ejercicios, en orden
-          </h2>
-          <SeriesItems
-            seriesId={series.id}
-            items={editor.items}
-            actions={{ reorder: reorderExerciseSeries, remove: removeExerciseFromSeries }}
-          />
-        </section>
+      <FilterPills
+        label="Vista"
+        pills={[
+          {
+            label: "Ejercicios",
+            href: teacherRoutes.exerciseSeries(series.id),
+            count: editor.items.length,
+            active: !onProgress,
+          },
+          { label: "Progreso", href: teacherRoutes.exerciseSeriesProgress(series.id), active: onProgress },
+        ]}
+      />
 
-        <aside className="teacher-series__aside" aria-label="Alumnos y ajustes de la serie">
-          <StudentSharePanel
-            subject="series"
-            layout="compact"
-            shares={editor.shares}
-            students={editor.students}
-            share={shareSeriesWithStudent.bind(null, series.id)}
-            unshare={unshareSeriesWithStudent.bind(null, series.id)}
-          />
-          <div className="teacher-series__danger">
-            <DeleteSeries
-              title={series.title}
-              studentCount={editor.shares.length}
-              action={deleteExerciseSeries.bind(null, series.id)}
+      {onProgress ? (
+        <SeriesProgressTable progress={progress} />
+      ) : (
+        <div className="teacher-series__layout">
+          <section className="teacher-series__items" aria-labelledby="teacher-series-items">
+            <h2 id="teacher-series-items" className="teacher-series__heading">
+              Ejercicios, en orden
+            </h2>
+            <SeriesItems
+              seriesId={series.id}
+              items={editor.items}
+              actions={{ reorder: reorderExerciseSeries, remove: removeExerciseFromSeries }}
             />
-          </div>
-        </aside>
-      </div>
+          </section>
+
+          <aside className="teacher-series__aside" aria-label="Alumnos y ajustes de la serie">
+            <StudentSharePanel
+              subject="series"
+              layout="compact"
+              shares={editor.shares}
+              students={editor.students}
+              share={shareSeriesWithStudent.bind(null, series.id)}
+              unshare={unshareSeriesWithStudent.bind(null, series.id)}
+            />
+            <div className="teacher-series__danger">
+              <DeleteSeries
+                title={series.title}
+                studentCount={editor.shares.length}
+                action={deleteExerciseSeries.bind(null, series.id)}
+              />
+            </div>
+          </aside>
+        </div>
+      )}
     </div>
   );
 }

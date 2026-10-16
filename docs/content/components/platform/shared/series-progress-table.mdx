@@ -1,0 +1,46 @@
+---
+description: "Who solved what in a series: a matrix of the students the series reaches by its exercises in order, a check, a cross with the attempt count or nothing per cell, each with its words for the reader, and «Resolvieron N de M»."
+---
+
+# `SeriesProgressTable`
+
+|            |                                                                                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/series-progress-table/series-progress-table.comp.tsx`; its data, `series-progress-table.types.ts`                                                               |
+| Kind       | Server Component                                                                                                                                                                            |
+| Stylesheet | `series-progress-table.comp.css` → block `.series-progress-table`                                                                                                                           |
+| Story      | `series-progress-table.stories.tsx` (`platform/shared/SeriesProgressTable`): two students over five exercises with solved, failed and untried cells, and a series nobody has yet            |
+| Used by    | [`TeacherSeriesEditorSection`](/components/platform/sections/teacher/exercises/teacher-series-editor-section) on «Progreso»                                                                 |
+| Composes   | [`PlatformTable`](/components/platform/shared/platform-table), [`EmptyState`](/components/platform/shared/empty-state); icons `CircleCheckIcon`, `CircleXmarkIcon` from `components/icons/` |
+| Reads      | `SeriesProgressData`, mapped by `mapSeriesProgress` (`services/teacher-exercises/teacher-exercises.mapper.ts`)                                                                              |
+
+## Props
+
+| Prop       | Type                 | Required | Meaning                                                                                                                                                               |
+| ---------- | -------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `progress` | `SeriesProgressData` | yes      | The items in order (`n`, `title`), one row per student (`cells`, one per item, each `state` and `attempts`; `solved`; `href` to their exercises tab) and `completed`. |
+
+## Behaviour
+
+- Above the table, «Resolvieron N de M»: the students who solved every exercise of the series, of those it reaches now. Per row, «3 de 5».
+- A cell carries an icon and a text, never a bare glyph: `CircleCheckIcon` in the success ink with «Resuelto» for the reader; `CircleXmarkIcon` in the danger red with the count beside it and «Fallado, 2 intentos» for the reader; nothing drawn and «Sin intentar» for the reader. The reader's words are an element clipped out of view (`.series-progress-table__reader`).
+- The columns are the exercises' numbers; the legend under the table says which exercise each number is.
+- A cell is solved with a pass in that series, failed with attempts and no pass, untried with none: the student's own marks, so the two screens agree. An attempt elsewhere marks nothing.
+- With no student, the empty state in place of the table.
+
+## Markup & styling
+
+Block `.series-progress-table` (98 lines): a column of the summary, the table and the legend.
+
+**Elements:** `.series-progress-table__summary`, `.series-progress-table__figure`, `.series-progress-table__summary-note`, `.series-progress-table__mark`, `.series-progress-table__icon`, `.series-progress-table__count`, `.series-progress-table__reader`, `.series-progress-table__legend`, `.series-progress-table__legend-item`, `.series-progress-table__legend-n`
+
+**Modifiers and states:** `.series-progress-table__mark_state_solved`, `.series-progress-table__mark_state_failed`
+
+**Tokens:** `--platform-text`, `--platform-text-muted` (the note and the legend sit on the page's grey, where the subtle grey does not read), `--platform-success-ink`, `--platform-danger`, `--platform-surface-neutral`
+
+No media queries: the table scrolls sideways below its `minWidth`, as every `PlatformTable` does.
+
+## Related
+
+- [Exercises → The teacher's view of attempts](/platform/exercises#the-teachers-view-of-attempts).
+- [`ExerciseAttemptRow`](/components/platform/shared/exercise-attempt-row), one student's attempts with their mistakes.

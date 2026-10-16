@@ -152,8 +152,9 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/profesor`
 - `/profesor/alumnos`, `/profesor/alumnos/[studentId]`
 - `/profesor/alumnos/[studentId]/estudios/[studyId]`, `…/partidas/[gameId]` (**read-only** access to the studies of their assigned students)
+- `/profesor/alumnos/[studentId]/ejercicios` (the student's exercise attempts with their mistakes) — **switched off** while `EXERCISES_ENABLED` is `false`
 - `/profesor/clases` («Clases que imparto»), `/profesor/clases/[classId]` (the material, the meeting, the attendance; the staff creates and schedules the classes)
-- `/profesor/ejercicios` (the exercise bank: in use, archived, series), `/profesor/ejercicios/nuevo` (also with `?estudio=&partida=&jugada=`, «Crear ejercicio desde aquí» from a move of the teacher's own game), `/profesor/ejercicios/[exerciseId]` (the editor) and `/profesor/ejercicios/series/[seriesId]` (a series and who has it) — **switched off** while `EXERCISES_ENABLED` is `false`
+- `/profesor/ejercicios` (the exercise bank: in use, archived, series), `/profesor/ejercicios/nuevo` (also with `?estudio=&partida=&jugada=`, «Crear ejercicio desde aquí» from a move of the teacher's own game), `/profesor/ejercicios/[exerciseId]` (the editor) and `/profesor/ejercicios/series/[seriesId]` (a series and who has it; `?vista=progreso`, who solved what) — **switched off** while `EXERCISES_ENABLED` is `false`
 - `/profesor/perfil` («Mi ficha» in the teacher's menu: the public card the student sees)
 
 **Platform — administration** (requires a `Staff` row; `/admin` belongs to Payload)

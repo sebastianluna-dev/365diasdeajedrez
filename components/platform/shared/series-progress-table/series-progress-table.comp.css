@@ -1,0 +1,98 @@
+/* The progress of a series: the summary, the matrix of students by
+   exercises (a check, a cross with its count, or nothing) and the legend
+   that says which exercise each number is. */
+.series-progress-table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-4);
+
+  & .series-progress-table__summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--platform-space-2);
+    margin: 0;
+  }
+
+  & .series-progress-table__figure {
+    font-size: var(--platform-type-xl);
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  /* On the page's grey, not a white surface: the muted grey, which reads there. */
+  & .series-progress-table__summary-note {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .series-progress-table__mark {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+  }
+
+  & .series-progress-table__icon {
+    width: 20px;
+    height: 20px;
+    flex: none;
+  }
+
+  & .series-progress-table__mark_state_solved {
+    color: var(--platform-success-ink);
+  }
+
+  & .series-progress-table__mark_state_failed {
+    color: var(--platform-danger);
+  }
+
+  & .series-progress-table__count {
+    font-size: var(--platform-type-sm);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* The words of a cell, for the reader only: the icon says it to the eye. */
+  & .series-progress-table__reader {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  & .series-progress-table__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-2) var(--platform-space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .series-progress-table__legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+  }
+
+  & .series-progress-table__legend-n {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 var(--platform-space-1);
+    border-radius: 4px;
+    background: var(--platform-surface-neutral);
+    font-size: var(--platform-type-xs);
+    font-weight: 700;
+    color: var(--platform-text-muted);
+  }
+}

@@ -1,0 +1,117 @@
+/* One attempt of a student, for their teacher: the exercise and its facts,
+   the outcome as a tag, and «Ver el error», which opens the position with the
+   two moves under the row. */
+.exercise-attempt-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-4);
+  padding: var(--platform-space-4) var(--platform-space-5);
+  border-radius: 8px;
+  background: var(--platform-surface);
+  box-shadow: var(--platform-shadow-card);
+
+  & .exercise-attempt-row__main {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-4);
+  }
+
+  & .exercise-attempt-row__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    min-width: 0;
+  }
+
+  & .exercise-attempt-row__title {
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .exercise-attempt-row__link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  & .exercise-attempt-row__link:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  & .exercise-attempt-row__link:focus-visible {
+    outline: 2px solid var(--platform-accent-ink);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  & .exercise-attempt-row__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-2);
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-subtle);
+  }
+
+  & .exercise-attempt-row__chevron {
+    transform: none;
+  }
+
+  &.exercise-attempt-row_state_open .exercise-attempt-row__chevron {
+    transform: rotate(180deg);
+  }
+
+  /* The mistake: the diagram beside its sentence; one under the other on a phone. */
+  & .exercise-attempt-row__detail {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    align-items: start;
+    gap: var(--platform-space-5);
+    padding-top: var(--platform-space-4);
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .exercise-attempt-row__detail[hidden] {
+    display: none;
+  }
+
+  & .exercise-attempt-row__diagram {
+    min-width: 0;
+  }
+
+  & .exercise-attempt-row__mistake {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    line-height: 1.5;
+    color: var(--platform-text);
+  }
+
+  & .exercise-attempt-row__move {
+    font-weight: 700;
+  }
+
+  & .exercise-attempt-row__move_tone_danger {
+    color: var(--platform-danger);
+  }
+
+  & .exercise-attempt-row__move_tone_success {
+    color: var(--platform-success-ink);
+  }
+
+  @media (width < 640px) {
+    & .exercise-attempt-row__main {
+      flex-wrap: wrap;
+    }
+
+    & .exercise-attempt-row__body {
+      flex-basis: 100%;
+    }
+
+    & .exercise-attempt-row__detail {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}

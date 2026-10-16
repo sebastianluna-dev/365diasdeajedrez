@@ -9,12 +9,19 @@ import { requireTeacher } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import type { DifficultyLevel } from "@/services/shared/exercise-level";
 import type { Prisma } from "@/lib/platform-db/generated/client";
-import { buildOwnExercisesWhere, buildPickableExercisesWhere } from "@/services/shared/exercise-visibility-rules";
+import {
+  buildOwnExercisesWhere,
+  buildPickableExercisesWhere,
+  teacherVisibleAttemptsWhere,
+} from "@/services/shared/exercise-visibility-rules";
+import { ATTEMPT_RESULT } from "@/constants/platform/training-codes.const";
 import { exerciseSeedFromGame } from "@/lib/chess/exercise-format";
 import {
   exercisePrefillFromGame,
   mapAuthoringExercise,
+  mapExerciseAttemptRow,
   mapExerciseCard,
+  mapSeriesProgress,
   mapSeriesCard,
   mapSeriesItem,
   mapSeriesPickOption,
@@ -25,6 +32,8 @@ import {
 } from "./teacher-exercises.mapper";
 import type {
   ExerciseGameSeed,
+  SeriesProgressView,
+  StudentExerciseAttemptsView,
   TeacherExerciseEditor,
   TeacherExercisesTab,
   TeacherExercisesView,
@@ -327,3 +336,105 @@ export const getTeacherSeriesEditor = cache(async (seriesId: string): Promise<Te
     students,
   };
 });
+
+// --- The teacher's view of attempts (D24, D45; PLAN.md §6.1) ---------------
+
+/** Attempts a page holds; «Ver más» adds another. */
+export const ATTEMPTS_PAGE_SIZE = 25;
+
+const ATTEMPT_SELECT = {
+  id: true,
+  exerciseId: true,
+  seriesId: true,
+  createdAt: true,
+  durationMs: true,
+  hintsUsed: true,
+  solutionShown: true,
+  result: { select: { code: true } },
+  context: { select: { code: true, label: true } },
+  exercise: { select: { id: true, title: true, teacherId: true, startFen: true } },
+  series: { select: { title: true } },
+  mistakeDetails: { select: { fen: true, expectedSan: true, playedSan: true }, take: 1 },
+} as const;
+
+/**
+ * `/profesor/alumnos/[studentId]/ejercicios`: every attempt of the student
+ * the teacher may see (`teacherVisibleAttemptsWhere`: their own series —
+ * deleted since or not, D45 —, and the neutral contexts at their own or the
+ * library's exercises; never by current status, so «Archivar» hides
+ * nothing), the latest first, the first `page` pages. Null when the student
+ * is not assigned to the teacher now (the page answers 404): the same
+ * criterion as their studies.
+ */
+export async function getStudentExerciseAttempts(
+  studentId: string,
+  page = 1,
+): Promise<StudentExerciseAttemptsView | null> {
+  const { teacher } = await requireTeacher();
+  const db = getPlatformDb();
+  const assignment = await db.teacherStudent.findFirst({
+    where: { teacherId: teacher.id, studentId, endedAt: null },
+    select: { id: true },
+  });
+  if (!assignment) return null;
+
+  const visible = teacherVisibleAttemptsWhere(teacher.id, studentId);
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const [student, rows, total, lastWeek, passed] = await Promise.all([
+    db.user.findUnique({ where: { id: studentId }, select: { id: true, displayName: true } }),
+    db.trainingAttempt.findMany({
+      where: visible,
+      select: ATTEMPT_SELECT,
+      orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+      take: Math.max(1, page) * ATTEMPTS_PAGE_SIZE,
+    }),
+    db.trainingAttempt.count({ where: visible }),
+    db.trainingAttempt.count({ where: { AND: [visible, { createdAt: { gte: weekAgo } }] } }),
+    db.trainingAttempt.findMany({
+      where: { AND: [visible, { result: { code: ATTEMPT_RESULT.PASSED } }] },
+      select: { exerciseId: true },
+      distinct: ["exerciseId"],
+    }),
+  ]);
+  if (!student) return null;
+  return {
+    student,
+    attempts: rows.map((row) => mapExerciseAttemptRow(row, teacher.id)),
+    total,
+    page: Math.max(1, page),
+    pageSize: ATTEMPTS_PAGE_SIZE,
+    stats: { solved: passed.length, attempts: total, lastWeek },
+  };
+}
+
+/**
+ * «Progreso» of one of the teacher's series (D24): who solved what, over the
+ * students the series reaches now (`activeSeriesSharesWhere`) and its items
+ * in order, from the attempts made in it. Null when the series is not theirs.
+ */
+export async function getSeriesProgress(seriesId: string): Promise<SeriesProgressView | null> {
+  const { teacher } = await requireTeacher();
+  const db = getPlatformDb();
+  const series = await db.exerciseSeries.findFirst({
+    where: { id: seriesId, teacherId: teacher.id },
+    select: {
+      items: { select: { exercise: { select: { id: true, title: true } } }, orderBy: { order: "asc" } },
+      shares: {
+        where: activeSeriesSharesWhere(teacher.id),
+        select: { user: { select: { id: true, displayName: true } } },
+        orderBy: { user: { displayName: "asc" } },
+      },
+    },
+  });
+  if (!series) return null;
+  const students = series.shares.map((share) => share.user);
+  const attempts = await db.trainingAttempt.findMany({
+    where: { seriesId, userId: { in: students.map((student) => student.id) }, exerciseId: { not: null } },
+    select: { userId: true, exerciseId: true, result: { select: { code: true } } },
+  });
+  return mapSeriesProgress(
+    series.items.map((item) => ({ exerciseId: item.exercise.id, title: item.exercise.title })),
+    students,
+    attempts,
+  );
+}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AssignedStudentDetailSection } from "@/components/platform/sections/teacher/students/assigned-student-detail.section";
+import { StudentPageTabs } from "@/components/platform/sections/teacher/students/student-page-tabs.comp";
 import { PLAY_ENABLED } from "@/constants/platform/features.const";
 import { recentPlayedGamesOf } from "@/services/play/play.service";
 import { getAssignedStudentDetail } from "@/services/teacher-students/teacher-students.service";
@@ -32,6 +33,7 @@ export default async function TeacherStudentPage({ params }: TeacherStudentPageP
         <p className="platform-page__subtitle">{student.email}</p>
       </header>
 
+      <StudentPageTabs studentId={student.id} current="resumen" />
       <AssignedStudentDetailSection student={student} playedGames={playedGames} />
     </div>
   );

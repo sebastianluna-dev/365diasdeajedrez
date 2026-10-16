@@ -5,7 +5,9 @@ import type {
   ExerciseAuthoringPermissions,
   ExerciseSaveButton,
 } from "@/components/platform/shared/exercise-authoring/exercise-authoring.types";
+import type { ExerciseAttemptRowData } from "@/components/platform/shared/exercise-attempt-row/exercise-attempt-row.types";
 import type { ExerciseCardData } from "@/components/platform/shared/exercise-card/exercise-card.types";
+import type { SeriesProgressData } from "@/components/platform/shared/series-progress-table/series-progress-table.types";
 import type {
   StudentShareOption,
   StudentShareRow,
@@ -150,3 +152,43 @@ export interface TeacherExerciseRow {
   updatedAt: Date;
   _count: { attempts: number };
 }
+
+// --- The teacher's view of attempts (D24, D45) ---------------------------
+
+/** An attempt as the student's tab reads it, with what the row needs of its exercise, series, context and mistake. */
+export interface TeacherAttemptRow {
+  id: string;
+  exerciseId: string | null;
+  seriesId: string | null;
+  createdAt: Date;
+  durationMs: number | null;
+  hintsUsed: number;
+  solutionShown: boolean;
+  result: { code: string };
+  context: { code: string; label: string };
+  exercise: { id: string; title: string; teacherId: string | null; startFen: string } | null;
+  series: { title: string } | null;
+  mistakeDetails: { fen: string; expectedSan: string; playedSan: string }[];
+}
+
+/** `/profesor/alumnos/[studentId]/ejercicios`: the student's attempts the teacher may see, the latest first. */
+export interface StudentExerciseAttemptsView {
+  student: { id: string; displayName: string };
+  attempts: ExerciseAttemptRowData[];
+  /** How many the teacher may see in all; `attempts` holds the first `page × pageSize`. */
+  total: number;
+  page: number;
+  pageSize: number;
+  /** Over every visible attempt: distinct exercises passed, attempts, and attempts in the last seven days. */
+  stats: { solved: number; attempts: number; lastWeek: number };
+}
+
+/** An attempt as the series' progress reads it. */
+export interface SeriesProgressAttemptRow {
+  userId: string;
+  exerciseId: string | null;
+  result: { code: string };
+}
+
+/** The series page on «Progreso». */
+export type SeriesProgressView = SeriesProgressData;

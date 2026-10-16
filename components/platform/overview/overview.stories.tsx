@@ -110,7 +110,9 @@ import { PlatformTabPanel, PlatformTabs } from "@/components/platform/shared/pla
 import { MovePathPicker } from "@/components/platform/shared/move-path-picker/move-path-picker.comp";
 import { ExerciseAuthoring } from "@/components/platform/shared/exercise-authoring/exercise-authoring.comp";
 import { DeleteExercise } from "@/components/platform/shared/delete-exercise/delete-exercise.comp";
+import { ExerciseAttemptRow } from "@/components/platform/shared/exercise-attempt-row/exercise-attempt-row.comp";
 import { ExerciseCard } from "@/components/platform/shared/exercise-card/exercise-card.comp";
+import { SeriesProgressTable } from "@/components/platform/shared/series-progress-table/series-progress-table.comp";
 import { ExerciseSolver } from "@/components/platform/shared/exercise-solver/exercise-solver.comp";
 import { StudentSharePanel } from "@/components/platform/shared/student-share-panel/student-share-panel.comp";
 import { AddSeriesExercisesButton } from "@/components/platform/sections/teacher/exercises/add-series-exercises-popup/add-series-exercises-popup.comp";
@@ -2395,6 +2397,69 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 }}
                 mode="solve"
                 context={{ attempt: { kind: "SERIES", seriesId: "dmSerie1" }, position: "2 / 5" }}
+              />
+            </Tile>
+            <Tile name="ExerciseAttemptRow" docs="platform-shared-exerciseattemptrow" width={640} height={120}>
+              <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
+                <ExerciseAttemptRow
+                  attempt={{
+                    id: "a-1",
+                    title: "Mate del pasillo",
+                    href: "#",
+                    atIso: "2026-10-15T20:12:00.000Z",
+                    atLabel: "15 de octubre de 2026",
+                    outcome: "failed",
+                    outcomeLabel: "Fallado",
+                    whereLabel: "Serie: Táctica de la semana",
+                    durationLabel: "42 s",
+                    mistake: {
+                      fen: "6k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1",
+                      orientation: "white",
+                      playedLabel: "Td7",
+                      expectedLabel: "Td8#",
+                      arrows: [
+                        { from: "d1", to: "d7", tone: "danger" },
+                        { from: "d1", to: "d8", tone: "success" },
+                      ],
+                    },
+                  }}
+                />
+              </ul>
+            </Tile>
+            <Tile name="SeriesProgressTable" docs="platform-shared-seriesprogresstable" width={640} height={300}>
+              <SeriesProgressTable
+                progress={{
+                  items: [
+                    { exerciseId: "ex1", n: 1, title: "Mate del pasillo" },
+                    { exerciseId: "ex2", n: 2, title: "El mate de Philidor" },
+                    { exerciseId: "ex3", n: 3, title: "El tenedor de caballo" },
+                  ],
+                  students: [
+                    {
+                      userId: "u-d",
+                      displayName: "Alumno Demo",
+                      href: "#",
+                      cells: [
+                        { state: "solved", attempts: 1 },
+                        { state: "failed", attempts: 2 },
+                        { state: "untried", attempts: 0 },
+                      ],
+                      solved: 1,
+                    },
+                    {
+                      userId: "u-v",
+                      displayName: "Valentina Cruz",
+                      href: "#",
+                      cells: [
+                        { state: "solved", attempts: 1 },
+                        { state: "solved", attempts: 1 },
+                        { state: "solved", attempts: 3 },
+                      ],
+                      solved: 3,
+                    },
+                  ],
+                  completed: 1,
+                }}
               />
             </Tile>
             <Tile name="StudentSharePanel" docs="platform-shared-studentsharepanel" width={560} height={344}>

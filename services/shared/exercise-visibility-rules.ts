@@ -130,6 +130,10 @@ export function buildOwnExercisesWhere(teacherId: string): Prisma.ExerciseWhereI
  * neutral context at an exercise that is theirs (any status), was ever in the
  * library (`publishedAt` is kept when it leaves) or is a lesson's (phase 2).
  * Never by current status: archiving an exercise hides none of its history.
+ * A deleted series leaves its attempts with no series (`SetNull`): those at
+ * the teacher's own exercise stay theirs to see, noted «de una serie
+ * eliminada» (D45); at anyone else's, whose series it was can no longer be
+ * told, so they stay out.
  */
 export function teacherVisibleAttemptsWhere(teacherId: string, studentId: string): Prisma.TrainingAttemptWhereInput {
   return {
@@ -137,6 +141,7 @@ export function teacherVisibleAttemptsWhere(teacherId: string, studentId: string
     exerciseId: { not: null },
     OR: [
       { series: { teacherId } },
+      { seriesId: null, context: { code: ATTEMPT_CONTEXT.SERIES }, exercise: { teacherId } },
       {
         context: { code: { in: [...NEUTRAL_ATTEMPT_CONTEXTS] } },
         exercise: { OR: [{ teacherId }, { publishedAt: { not: null } }] },

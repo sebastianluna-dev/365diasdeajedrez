@@ -1,0 +1,47 @@
+---
+description: "One attempt of a student at an exercise, for their teacher: the exercise, where and when, how it went as a tag and, for a failure, «Ver el error», a disclosure with the position and the two moves drawn and said."
+---
+
+# `ExerciseAttemptRow`
+
+|            |                                                                                                                                                                                                                                                             |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/exercise-attempt-row/exercise-attempt-row.comp.tsx`; its data, `exercise-attempt-row.types.ts`                                                                                                                                  |
+| Kind       | Client Component (the disclosure's state)                                                                                                                                                                                                                   |
+| Stylesheet | `exercise-attempt-row.comp.css` → block `.exercise-attempt-row`                                                                                                                                                                                             |
+| Story      | `exercise-attempt-row.stories.tsx` (`platform/shared/ExerciseAttemptRow`): a failed attempt folded, the same expanded by its `play`, a clean pass in free practice at a library exercise, one solved with a hint, and «Vio la solución» in a deleted series |
+| Used by    | [`StudentExerciseAttemptsSection`](/components/platform/sections/teacher/students/student-exercise-attempts-section)                                                                                                                                        |
+| Composes   | [`StaticDiagram`](/components/chess/static-diagram) (with `arrows`), [`LocalDateTime`](/components/platform/shared/local-datetime)                                                                                                                          |
+| Reads      | `ExerciseAttemptRowData`, mapped by `mapExerciseAttemptRow` (`services/teacher-exercises/teacher-exercises.mapper.ts`)                                                                                                                                      |
+
+## Props
+
+| Prop      | Type                     | Required | Meaning                                                                                                                                                                                                                  |
+| --------- | ------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `attempt` | `ExerciseAttemptRowData` | yes      | The row's data: the exercise (`href` only when it is the teacher's own), `atIso`/`atLabel`, the `outcome` with its words, `whereLabel`, `durationLabel` and, for a failure at a wrong move, the `mistake` ready to draw. |
+
+## Behaviour
+
+- A list item (`<li>`): the section lists them in an `<ol>`, the latest first. The title links to the editor when the exercise is the teacher's; a library exercise is named and not linked.
+- The outcome is a `platform-tag`: «Resuelto» in the success tone, «Resuelto con pista» in the warning tone, «Fallado» and «Vio la solución» plain — the same four words the student saw (D20, D33).
+- `whereLabel` says where it was solved: «Serie: Táctica 1», «Práctica libre», or «De una serie eliminada» when the series is gone (D45).
+- **«Ver el error»**, only with a `mistake`: a `platform-button` with `aria-expanded` and `aria-controls` that shows the panel under the row — the position at the mistake (`StaticDiagram`, with the move played as a danger arrow and the one expected as a success arrow) beside «Jugó Td7 en vez de Td8#», the two moves in the same tones. The panel is `hidden` while closed; «Ocultar el error» closes it. «Ver la solución» has no wrong move, so no button.
+
+## Markup & styling
+
+Block `.exercise-attempt-row` (117 lines): a card of the surface with the card's shadow; the main row, and the detail as a grid of a 240px diagram and the sentence, one column under 640px.
+
+**Elements:** `.exercise-attempt-row__main`, `.exercise-attempt-row__body`, `.exercise-attempt-row__title`, `.exercise-attempt-row__link`, `.exercise-attempt-row__meta`, `.exercise-attempt-row__separator`, `.exercise-attempt-row__chevron`, `.exercise-attempt-row__detail`, `.exercise-attempt-row__diagram`, `.exercise-attempt-row__mistake`, `.exercise-attempt-row__move`
+
+**Modifiers and states:** `.exercise-attempt-row_state_open` (turns the chevron), `.exercise-attempt-row__move_tone_danger`, `.exercise-attempt-row__move_tone_success`
+
+**Other classes it renders:** `.platform-tag` and its `_variant_success`/`_variant_warning`, `.platform-button`, `.platform-button_size_sm`, `.platform-button__icon`.
+
+**Tokens:** `--platform-shadow-card`, `--platform-surface`, `--platform-border`, `--platform-text`, `--platform-text-subtle`, `--platform-accent-ink`, `--platform-danger`, `--platform-success-ink`
+
+**Breakpoints:** `(width < 640px)`.
+
+## Related
+
+- [Exercises → The teacher's view of attempts](/platform/exercises#the-teachers-view-of-attempts).
+- [`SeriesProgressTable`](/components/platform/shared/series-progress-table), the same attempts seen by series.

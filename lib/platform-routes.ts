@@ -144,6 +144,9 @@ export const teacherRoutes = {
   studentStudy: (studentId: string, studyId: string) => `/profesor/alumnos/${studentId}/estudios/${studyId}`,
   studentGame: (studentId: string, studyId: string, gameId: string) =>
     `/profesor/alumnos/${studentId}/estudios/${studyId}/partidas/${gameId}`,
+  /** The student's exercise attempts, the latest first, a page at a time («Ver más»): D24, behind `EXERCISES_ENABLED`. */
+  studentExercises: (studentId: string, query?: { pagina?: number }) =>
+    `/profesor/alumnos/${studentId}/ejercicios${query?.pagina && query.pagina > 1 ? `?pagina=${query.pagina}` : ""}`,
   /** The teacher's classes: `?vista=proximas|por-finalizar|pasadas|canceladas&q=&pagina=`. */
   classes: "/profesor/clases",
   classesFiltered: (filters: { vista?: string; q?: string; pagina?: number }) => {
@@ -177,6 +180,8 @@ export const teacherRoutes = {
   exerciseDetail: (exerciseId: string) => `/profesor/ejercicios/${exerciseId}`,
   /** A series of the teacher's: its exercises in order, who has it, its title. */
   exerciseSeries: (seriesId: string) => `/profesor/ejercicios/series/${seriesId}`,
+  /** The same series on «Progreso»: who solved what (D24). */
+  exerciseSeriesProgress: (seriesId: string) => `/profesor/ejercicios/series/${seriesId}?vista=progreso`,
   profile: "/profesor/perfil",
 } as const;
 

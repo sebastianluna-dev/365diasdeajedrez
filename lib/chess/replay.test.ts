@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { finalFenOf, uciLineSteps, uciLineToSan } from "./replay";
+import { finalFenOf, moveSquaresOfSan, uciLineSteps, uciLineToSan } from "./replay";
 
 describe("uciLineToSan", () => {
   const START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -61,5 +61,25 @@ describe("finalFenOf", () => {
     expect(finalFenOf('[SetUp "1"]\n[FEN "8/8/4k3/8/4P3/4K3/8/8 w - - 0 1"]\n\n*')).toBe(
       "8/8/4k3/8/4P3/4K3/8/8 w - - 0 1",
     );
+  });
+});
+
+describe("moveSquaresOfSan", () => {
+  const START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+  const CASTLING = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1";
+
+  it("da las dos casillas de la jugada, como las dibuja el tablero", () => {
+    expect(moveSquaresOfSan(START, "Nf3")).toEqual({ from: "g1", to: "f3" });
+    expect(moveSquaresOfSan(START, "e4")).toEqual({ from: "e2", to: "e4" });
+  });
+
+  it("el enroque es el rey dando sus dos pasos, no el rey tomando la torre", () => {
+    expect(moveSquaresOfSan(CASTLING, "O-O")).toEqual({ from: "e1", to: "g1" });
+    expect(moveSquaresOfSan(CASTLING, "O-O-O")).toEqual({ from: "e1", to: "c1" });
+  });
+
+  it("nada para una jugada ilegal o un FEN que no se lee", () => {
+    expect(moveSquaresOfSan(START, "Nf6")).toBeUndefined();
+    expect(moveSquaresOfSan("not a fen", "e4")).toBeUndefined();
   });
 });

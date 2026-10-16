@@ -1,0 +1,65 @@
+/* A student's attempts for their teacher: the three figures in a row, the
+   attempts as a list, and «Ver más» at the foot. */
+.student-exercise-attempts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-5);
+
+  & .student-exercise-attempts__stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--platform-space-4);
+    margin: 0;
+  }
+
+  & .student-exercise-attempts__stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-4) var(--platform-space-5);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .student-exercise-attempts__stat-label {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-subtle);
+  }
+
+  & .student-exercise-attempts__stat-value {
+    margin: 0;
+    font-size: var(--platform-type-2xl);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--platform-text);
+  }
+
+  & .student-exercise-attempts__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .student-exercise-attempts__more {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-4);
+    margin: 0;
+  }
+
+  /* Beside «Ver más», on the page's grey: the muted grey, which reads there. */
+  & .student-exercise-attempts__count {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  @media (width < 640px) {
+    & .student-exercise-attempts__stats {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}

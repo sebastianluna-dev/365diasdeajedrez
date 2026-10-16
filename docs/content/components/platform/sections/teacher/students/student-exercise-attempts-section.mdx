@@ -1,0 +1,38 @@
+---
+description: "The «Ejercicios» tab of a student's page for their teacher: three figures over every attempt the teacher may see, the attempts as rows with their mistakes, and «Ver más»."
+---
+
+# `StudentExerciseAttemptsSection`
+
+|            |                                                                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/platform/sections/teacher/students/student-exercise-attempts.section.tsx`; the page's pills, `student-page-tabs.comp.tsx`                                                                   |
+| Kind       | Server Component                                                                                                                                                                                        |
+| Stylesheet | `student-exercise-attempts.section.css` → block `.student-exercise-attempts`                                                                                                                            |
+| Used by    | `/profesor/alumnos/[studentId]/ejercicios` (behind `EXERCISES_ENABLED`)                                                                                                                                 |
+| Composes   | [`ExerciseAttemptRow`](/components/platform/shared/exercise-attempt-row), [`EmptyState`](/components/platform/shared/empty-state); the pills, [`FilterPills`](/components/platform/shared/filter-pills) |
+| Reads      | `StudentExerciseAttemptsView` from `getStudentExerciseAttempts(studentId, page)` · `services/teacher-exercises/teacher-exercises.service.ts`                                                            |
+
+## Props
+
+| Prop   | Type                          | Required | Meaning                                                                                                                             |
+| ------ | ----------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `view` | `StudentExerciseAttemptsView` | yes      | The student, the attempts of the first `page` pages (25 each), `total`, and the three figures over every visible attempt (`stats`). |
+
+## Behaviour
+
+D24, phase 1b. The service answers only for a student assigned to the teacher now; by direct URL, someone else's student is a 404, as with their studies. What is listed is `teacherVisibleAttemptsWhere` ([Exercises → Who sees what](/platform/exercises#who-sees-what)): the teacher's own series — deleted since or not (D45) —, and the neutral contexts at their own or the library's exercises; never by the exercise's current status, so «Archivar» hides nothing.
+
+- The three figures: «Ejercicios superados» (distinct exercises with a pass among the visible attempts), «Intentos» and «Últimos 7 días».
+- The attempts, the latest first, each an [`ExerciseAttemptRow`](/components/platform/shared/exercise-attempt-row); «Ver más» (`?pagina=`) adds a page, with «25 de 41» beside it, the way the teacher's classes list grows.
+- `StudentPageTabs` draws «Resumen» and «Ejercicios» as pills on both pages of the student, and nothing while the exercises are off.
+
+## Markup & styling
+
+Block `.student-exercise-attempts` (65 lines): a column of the three figures (a grid of three, one column under 640px), the list and the foot.
+
+**Elements:** `.student-exercise-attempts__stats`, `.student-exercise-attempts__stat`, `.student-exercise-attempts__stat-label`, `.student-exercise-attempts__stat-value`, `.student-exercise-attempts__list`, `.student-exercise-attempts__more`, `.student-exercise-attempts__count`
+
+**Tokens:** `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-subtle` (the figures' labels, on their white cards), `--platform-text-muted` (the count beside «Ver más», on the page's grey)
+
+**Breakpoints:** `(width < 640px)`.

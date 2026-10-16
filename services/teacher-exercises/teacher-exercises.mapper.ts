@@ -24,9 +24,22 @@ import type {
   SeriesItemData,
   SeriesItemRow,
   SeriesPickOption,
+  SeriesProgressAttemptRow,
+  TeacherAttemptRow,
   TeacherExerciseRow,
   TeacherSeriesCard,
 } from "./teacher-exercises.types";
+import type {
+  ExerciseAttemptOutcome,
+  ExerciseAttemptRowData,
+} from "@/components/platform/shared/exercise-attempt-row/exercise-attempt-row.types";
+import type {
+  SeriesProgressCell,
+  SeriesProgressData,
+} from "@/components/platform/shared/series-progress-table/series-progress-table.types";
+import { ATTEMPT_CONTEXT, ATTEMPT_RESULT } from "@/constants/platform/training-codes.const";
+import { sanToSpanish } from "@/lib/chess/notation";
+import { moveSquaresOfSan } from "@/lib/chess/replay";
 import { exerciseKindLabel, playerOfStart } from "@/lib/chess/exercise-labels";
 
 // From the rows of a teacher's exercises to what the bank and the editor
@@ -289,5 +302,124 @@ export function mapSeriesShare(share: {
     displayName: share.user.displayName,
     email: share.user.email,
     sharedAtLabel: formatSpanishDate(share.createdAt),
+  };
+}
+
+// --- The teacher's view of attempts (D24, D45) ---------------------------
+
+/** The four words the student saw, now the teacher's: «Ver la solución» is failed whatever the moves were (D20). */
+export function attemptOutcomeOf(
+  attempt: Pick<TeacherAttemptRow, "result" | "hintsUsed" | "solutionShown">,
+): ExerciseAttemptOutcome {
+  if (attempt.solutionShown) return "solutionShown";
+  if (attempt.result.code !== ATTEMPT_RESULT.PASSED) return "failed";
+  return attempt.hintsUsed > 0 ? "hinted" : "solved";
+}
+
+const OUTCOME_LABELS: Record<ExerciseAttemptOutcome, string> = {
+  solved: "Resuelto",
+  hinted: "Resuelto con pista",
+  failed: "Fallado",
+  solutionShown: "Vio la solución",
+};
+
+/** «42 s», «1 min 5 s»; null when the time was not kept. */
+export function formatAttemptDuration(durationMs: number | null): string | null {
+  if (durationMs === null || durationMs < 0) return null;
+  const seconds = Math.round(durationMs / 1000);
+  if (seconds < 60) return `${seconds} s`;
+  const minutes = Math.floor(seconds / 60);
+  const rest = seconds % 60;
+  return rest === 0 ? `${minutes} min` : `${minutes} min ${rest} s`;
+}
+
+/**
+ * Where an attempt was made: its series by title, «De una serie eliminada»
+ * for one whose series is gone (D45: the row keeps its SERIES context with no
+ * series), or the context's own label («Práctica libre», «Repaso»…).
+ */
+export function attemptWhereLabel(attempt: Pick<TeacherAttemptRow, "context" | "series">): string {
+  if (attempt.context.code !== ATTEMPT_CONTEXT.SERIES) return attempt.context.label;
+  return attempt.series ? `Serie: ${attempt.series.title}` : "De una serie eliminada";
+}
+
+/**
+ * An attempt as the student's tab draws it (D24). The exercise opens in the
+ * editor only when it is the teacher's own; the mistake — the first wrong
+ * move, the one the attempt holds — comes with its two moves in Spanish and
+ * their arrows, the played one in the danger tone and the expected one in
+ * the success tone, over the position it was played in.
+ */
+export function mapExerciseAttemptRow(attempt: TeacherAttemptRow, teacherId: string): ExerciseAttemptRowData {
+  const mistake = attempt.mistakeDetails[0];
+  const played = mistake ? moveSquaresOfSan(mistake.fen, mistake.playedSan) : undefined;
+  const expected = mistake ? moveSquaresOfSan(mistake.fen, mistake.expectedSan) : undefined;
+  const outcome = attemptOutcomeOf(attempt);
+  return {
+    id: attempt.id,
+    title: attempt.exercise?.title ?? "Ejercicio",
+    href:
+      attempt.exercise && attempt.exercise.teacherId === teacherId
+        ? teacherRoutes.exerciseDetail(attempt.exercise.id)
+        : null,
+    atIso: attempt.createdAt.toISOString(),
+    atLabel: formatSpanishDate(attempt.createdAt),
+    outcome,
+    outcomeLabel: OUTCOME_LABELS[outcome],
+    whereLabel: attemptWhereLabel(attempt),
+    durationLabel: formatAttemptDuration(attempt.durationMs),
+    mistake:
+      mistake && outcome === "failed"
+        ? {
+            fen: mistake.fen,
+            orientation: playerOfStart(attempt.exercise?.startFen ?? mistake.fen),
+            playedLabel: sanToSpanish(mistake.playedSan),
+            expectedLabel: sanToSpanish(mistake.expectedSan),
+            arrows: [
+              ...(played ? [{ ...played, tone: "danger" as const }] : []),
+              ...(expected ? [{ ...expected, tone: "success" as const }] : []),
+            ],
+          }
+        : null,
+  };
+}
+
+/**
+ * Who solved what in a series (D24), from the attempts made IN it: a cell is
+ * solved with a pass there, failed with attempts and no pass, untried with
+ * none — the student's own marks (`seriesMarks`), counted per student. An
+ * attempt elsewhere marks nothing, as it marks nothing for the student.
+ */
+export function mapSeriesProgress(
+  items: readonly { exerciseId: string; title: string }[],
+  students: readonly { id: string; displayName: string }[],
+  attempts: readonly SeriesProgressAttemptRow[],
+): SeriesProgressData {
+  const cells = new Map<string, SeriesProgressCell>();
+  for (const attempt of attempts) {
+    if (attempt.exerciseId === null) continue;
+    const key = `${attempt.userId}:${attempt.exerciseId}`;
+    const cell = cells.get(key) ?? { state: "untried", attempts: 0 };
+    cell.attempts += 1;
+    if (attempt.result.code === ATTEMPT_RESULT.PASSED) cell.state = "solved";
+    else if (cell.state !== "solved") cell.state = "failed";
+    cells.set(key, cell);
+  }
+  const rows = students.map((student) => {
+    const own = items.map(
+      (item) => cells.get(`${student.id}:${item.exerciseId}`) ?? { state: "untried" as const, attempts: 0 },
+    );
+    return {
+      userId: student.id,
+      displayName: student.displayName,
+      href: teacherRoutes.studentExercises(student.id),
+      cells: own,
+      solved: own.filter((cell) => cell.state === "solved").length,
+    };
+  });
+  return {
+    items: items.map((item, index) => ({ exerciseId: item.exerciseId, n: index + 1, title: item.title })),
+    students: rows,
+    completed: items.length === 0 ? 0 : rows.filter((row) => row.solved === items.length).length,
   };
 }

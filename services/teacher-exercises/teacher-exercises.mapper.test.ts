@@ -2,9 +2,14 @@ import { describe, expect, it } from "vitest";
 import { EXERCISE_STATUS } from "@/constants/platform/exercise-codes.const";
 import { readSolutionStart } from "@/lib/chess/exercise-format";
 import {
+  attemptOutcomeOf,
+  attemptWhereLabel,
   exerciseFacts,
   exercisePrefillFromGame,
+  formatAttemptDuration,
   mapAuthoringExercise,
+  mapExerciseAttemptRow,
+  mapSeriesProgress,
   mapExerciseCard,
   mapSeriesCard,
   mapSeriesItem,
@@ -15,7 +20,7 @@ import {
   teacherExercisePermissions,
   teacherSaveButtons,
 } from "./teacher-exercises.mapper";
-import type { TeacherExerciseRow } from "./teacher-exercises.types";
+import type { TeacherAttemptRow, TeacherExerciseRow } from "./teacher-exercises.types";
 
 const LEVELS = [
   { slug: "principiante", name: "Principiante", order: 1, eloMin: 800, eloMax: 1199, isActive: true },
@@ -231,5 +236,137 @@ describe("exercisePrefillFromGame («Crear ejercicio desde aquí», D11)", () =>
     expect(prefill.title).toHaveLength(120);
     expect(prefill.sourceWhite).toHaveLength(120);
     expect(prefill.sourceEvent).toHaveLength(160);
+  });
+});
+
+describe("the teacher's view of an attempt (D24, D45)", () => {
+  const BACK_RANK = "6k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1";
+  const ATTEMPT: TeacherAttemptRow = {
+    id: "a-1",
+    exerciseId: "ex000001",
+    seriesId: "s-1",
+    createdAt: new Date("2026-10-15T20:12:00.000Z"),
+    durationMs: 42_000,
+    hintsUsed: 0,
+    solutionShown: false,
+    result: { code: "FAILED" },
+    context: { code: "SERIES", label: "Serie" },
+    exercise: { id: "ex000001", title: "Mate del pasillo", teacherId: "t-1", startFen: BACK_RANK },
+    series: { title: "Táctica de la semana" },
+    mistakeDetails: [{ fen: BACK_RANK, expectedSan: "Rd8#", playedSan: "Rd7" }],
+  };
+
+  it("dice cómo fue con las cuatro palabras del alumno; «Ver la solución» es fallado aunque las jugadas fueran bien", () => {
+    expect(attemptOutcomeOf({ result: { code: "PASSED" }, hintsUsed: 0, solutionShown: false })).toBe("solved");
+    expect(attemptOutcomeOf({ result: { code: "PASSED" }, hintsUsed: 1, solutionShown: false })).toBe("hinted");
+    expect(attemptOutcomeOf({ result: { code: "FAILED" }, hintsUsed: 0, solutionShown: false })).toBe("failed");
+    expect(attemptOutcomeOf({ result: { code: "FAILED" }, hintsUsed: 2, solutionShown: true })).toBe("solutionShown");
+  });
+
+  it("dice dónde: la serie por su título, «De una serie eliminada» sin ella (D45), o el contexto", () => {
+    expect(attemptWhereLabel(ATTEMPT)).toBe("Serie: Táctica de la semana");
+    expect(attemptWhereLabel({ ...ATTEMPT, series: null })).toBe("De una serie eliminada");
+    expect(
+      attemptWhereLabel({ ...ATTEMPT, context: { code: "PRACTICE", label: "Práctica libre" }, series: null }),
+    ).toBe("Práctica libre");
+  });
+
+  it("escribe el tiempo en segundos o en minutos, y nada sin tiempo", () => {
+    expect(formatAttemptDuration(42_000)).toBe("42 s");
+    expect(formatAttemptDuration(65_000)).toBe("1 min 5 s");
+    expect(formatAttemptDuration(120_000)).toBe("2 min");
+    expect(formatAttemptDuration(null)).toBeNull();
+  });
+
+  it("un fallo trae su error en español, con la flecha de lo jugado en rojo y la de lo esperado en verde", () => {
+    const row = mapExerciseAttemptRow(ATTEMPT, "t-1");
+    expect(row).toMatchObject({
+      id: "a-1",
+      title: "Mate del pasillo",
+      href: "/profesor/ejercicios/ex000001",
+      atIso: "2026-10-15T20:12:00.000Z",
+      outcome: "failed",
+      outcomeLabel: "Fallado",
+      whereLabel: "Serie: Táctica de la semana",
+      durationLabel: "42 s",
+    });
+    expect(row.mistake).toEqual({
+      fen: BACK_RANK,
+      orientation: "white",
+      playedLabel: "Td7",
+      expectedLabel: "Td8#",
+      arrows: [
+        { from: "d1", to: "d7", tone: "danger" },
+        { from: "d1", to: "d8", tone: "success" },
+      ],
+    });
+  });
+
+  it("el ejercicio de otro no se abre; un acierto, o «Ver la solución», no tiene error que enseñar", () => {
+    const library = mapExerciseAttemptRow(
+      {
+        ...ATTEMPT,
+        result: { code: "PASSED" },
+        mistakeDetails: [],
+        exercise: { ...ATTEMPT.exercise!, teacherId: null },
+      },
+      "t-1",
+    );
+    expect(library.href).toBeNull();
+    expect(library.outcome).toBe("solved");
+    expect(library.mistake).toBeNull();
+    const shown = mapExerciseAttemptRow({ ...ATTEMPT, solutionShown: true }, "t-1");
+    expect(shown.outcome).toBe("solutionShown");
+    expect(shown.mistake).toBeNull();
+  });
+});
+
+describe("mapSeriesProgress (D24)", () => {
+  const ITEMS = [
+    { exerciseId: "e1", title: "Uno" },
+    { exerciseId: "e2", title: "Dos" },
+  ];
+  const STUDENTS = [
+    { id: "u-a", displayName: "Ana" },
+    { id: "u-b", displayName: "Bruno" },
+  ];
+  const attempt = (userId: string, exerciseId: string | null, code: "PASSED" | "FAILED") => ({
+    userId,
+    exerciseId,
+    result: { code },
+  });
+
+  it("una celda por alumno y ejercicio: resuelto con un acierto, fallado con intentos sin acierto, sin intentar sin nada", () => {
+    const progress = mapSeriesProgress(ITEMS, STUDENTS, [
+      attempt("u-a", "e1", "FAILED"),
+      attempt("u-a", "e1", "PASSED"),
+      attempt("u-a", "e2", "FAILED"),
+      attempt("u-a", "e2", "FAILED"),
+      attempt("u-b", "e1", "PASSED"),
+      attempt("u-b", "e2", "PASSED"),
+      attempt("u-b", null, "PASSED"),
+    ]);
+    expect(progress.items).toEqual([
+      { exerciseId: "e1", n: 1, title: "Uno" },
+      { exerciseId: "e2", n: 2, title: "Dos" },
+    ]);
+    expect(progress.students[0]).toMatchObject({
+      userId: "u-a",
+      href: "/profesor/alumnos/u-a/ejercicios",
+      cells: [
+        { state: "solved", attempts: 2 },
+        { state: "failed", attempts: 2 },
+      ],
+      solved: 1,
+    });
+    expect(progress.students[1]).toMatchObject({ solved: 2 });
+    expect(progress.completed).toBe(1);
+  });
+
+  it("sin intentos, todo sin intentar y nadie la resolvió; sin ejercicios, nadie la resolvió tampoco", () => {
+    const progress = mapSeriesProgress(ITEMS, STUDENTS, []);
+    expect(progress.students.every((student) => student.cells.every((cell) => cell.state === "untried"))).toBe(true);
+    expect(progress.completed).toBe(0);
+    expect(mapSeriesProgress([], STUDENTS, []).completed).toBe(0);
   });
 });
