@@ -143,6 +143,29 @@ type Story = StoryObj<typeof meta>;
 /** A new exercise, on «Posición»: the standard start on the placement board, its palette, the turn, castling and the tools; «Guardar borrador» and the accent «Guardar y marcar como listo» under the tabs. */
 export const New: Story = {};
 
+/**
+ * A new exercise seeded by «Crear ejercicio desde aquí» (D11) on 5… Bxd1 of Légal's game: `initialTab` opens it on
+ * «Solución» with the position after that move as the start, what followed as the solution, the players and the
+ * year as the source, and the title «Legal de Kermeur – Saint Brie, 1750», still a draft until saved.
+ */
+export const FromAGame: Story = {
+  name: "From a game",
+  args: {
+    exercise: {
+      ...NEW,
+      solutionPgn:
+        '[SetUp "1"]\n[FEN "rn1qkbnr/ppp2p1p/3p2p1/4N3/2B1P3/2N5/PPPP1PPP/R1BbK2R w KQkq - 0 6"]\n\n6. Bxf7+ Ke7 7. Nd5# *',
+      title: "Legal de Kermeur – Saint Brie, 1750",
+      sourceWhite: "Legal de Kermeur",
+      sourceBlack: "Saint Brie",
+      sourceEvent: "París",
+      sourceYear: 1750,
+      sourceGameId: "g1x2y3z4",
+    },
+    initialTab: "solution",
+  },
+};
+
 /** A ready «Mate en 2» opened on «Solución»: the board, its moves and comment, «La solución cumple las reglas.», and only «Guardar». */
 export const EditingAMateInTwo: Story = {
   args: {

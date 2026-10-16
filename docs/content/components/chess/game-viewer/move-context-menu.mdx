@@ -1,25 +1,25 @@
 ---
-description: "The right-click menu on a move: promote, make main line, comment, annotate, copy the variation's PGN and delete from here, positioned to stay inside the window."
+description: "The right-click menu on a move: promote, make main line, comment, annotate, copy the variation's PGN, create an exercise from here and delete from here, positioned to stay inside the window."
 ---
 
 # `MoveContextMenu`
 
 Also exports the `MoveContextMenuTarget` type.
 
-|            |                                                                                                                                                                                |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/chess/game-viewer/move-context-menu.comp.tsx`                                                                                                                      |
-| Kind       | Client Component                                                                                                                                                               |
-| Stylesheet | `move-context-menu.comp.css` → block `.move-context-menu`                                                                                                                      |
-| Story      | `move-context-menu.stories.tsx` (`chess/game-viewer/MoveContextMenu`): on a variation, on the main line, without the two items that write, and the variation's PGN just copied |
-| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer)                                                                                                                      |
-| Uses       | icons `ArrowUpIcon`, `CheckIcon`, `ClipboardIcon`, `CommentIcon`, `TrashCanIcon` from `components/icons/`                                                                      |
+|            |                                                                                                                                                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/move-context-menu.comp.tsx`                                                                                                                                                         |
+| Kind       | Client Component                                                                                                                                                                                                  |
+| Stylesheet | `move-context-menu.comp.css` → block `.move-context-menu`                                                                                                                                                         |
+| Story      | `move-context-menu.stories.tsx` (`chess/game-viewer/MoveContextMenu`): on a variation, on the main line, without the two items that write, with «Crear ejercicio desde aquí», and the variation's PGN just copied |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer)                                                                                                                                                         |
+| Uses       | icons `ArrowUpIcon`, `CheckIcon`, `ClipboardIcon`, `CommentIcon`, `PuzzlePieceIcon`, `TrashCanIcon` from `components/icons/`                                                                                      |
 
 ## Purpose
 
 What opens when a move is right-clicked in an editable list. It is kept apart from [`MoveTree`](/components/chess/game-viewer/move-tree) and [`MoveTable`](/components/chess/game-viewer/move-table) so the student's read-only viewer carries none of this: the lists only report that a right click happened, and the component that mounts them decides whether a menu exists and what it can do.
 
-The menu is a list of actions with callbacks. Three of them (comment, annotate, copy) are optional: a host with nowhere to write simply does not pass them and those items are not rendered. This is how the viewer hides "Comentar" and "Anotar" in fullscreen and when it was given no `tools` to lead to.
+The menu is a list of actions with callbacks. Three of them (comment, annotate, copy) are optional: a host with nowhere to write simply does not pass them and those items are not rendered. This is how the viewer hides "Comentar" and "Anotar" in fullscreen and when it was given no `tools` to lead to. One item is a link and not an action: «Crear ejercicio desde aquí» (D11, `createExerciseHref`), drawn as an item but an `<a role="menuitem">`, because nothing is saved until the author saves in the editor it leads to; a host whose viewer authors no exercises leaves it out.
 
 ## Props
 
@@ -32,6 +32,7 @@ The menu is a list of actions with callbacks. Three of them (comment, annotate, 
 | `onComment`           | `() => void`                  | no                   | "Comentar este movimiento". Not rendered when absent.                                                                                                                                                                                                                                                                                                       |
 | `onAnnotate`          | `() => void`                  | no                   | "Anotar con iconos". Not rendered when absent.                                                                                                                                                                                                                                                                                                              |
 | `onCopyVariation`     | `() => void \| Promise<void>` | no                   | "Copiar PGN de la variante". Not rendered when absent.                                                                                                                                                                                                                                                                                                      |
+| `createExerciseHref`  | `string`                      | no                   | "Crear ejercicio desde aquí": a link to a new exercise seeded from this move. Not rendered when absent.                                                                                                                                                                                                                                                     |
 | `closing`             | `boolean`                     | no · default `false` | The host has closed it and keeps it mounted while the exit plays.                                                                                                                                                                                                                                                                                           |
 | `onClose`             | `() => void`                  | yes                  | Called on outside click, Escape, and 900 ms after a copy.                                                                                                                                                                                                                                                                                                   |
 
@@ -40,13 +41,13 @@ The menu is a list of actions with callbacks. Three of them (comment, annotate, 
 - **Positioning.** The menu first renders at the pointer, then a `useLayoutEffect` measures itself and clamps `x`/`y` so it stays at least 8 px inside the window: a right click near the edge would otherwise open a menu that can be neither read nor clicked. The click's coordinates and the window's size are divided by `currentCSSZoom` first: under a zoom on an ancestor they are reported in the page's px, with the zoom in them, while the `left`/`top` written here are read in the menu's own px and multiplied by it again — under the zoom the platform had until 2026-10-02, the menu opened a tenth of the screen away from the pointer.
 - **Closing.** A window `pointerdown` outside the menu or an Escape key calls `onClose`, which is what anyone expects from a context menu. The host keeps it mounted for 120 ms with `closing` set ([`useLingering`](/components/chess/game-viewer/use-lingering-hook)) so the exit animation plays; while closing nothing in it can be pressed.
 - **Motion.** It scales in from its top-left corner (160 ms) and folds back into it (120 ms); the position is measured with `offsetWidth`/`offsetHeight`, not the bounding rect, because the entry starts scaled down and the rect would measure that first frame. `prefers-reduced-motion` removes both.
-- **Focus.** On mount the first enabled item receives focus, so keyboard users land inside the menu.
+- **Focus.** On mount the first enabled item receives focus, so keyboard users land inside the menu (a button or the link).
 - **Copy feedback.** `handleCopy` awaits `onCopyVariation`, flips the label to "PGN copiado" and closes the menu after 900 ms.
-- The items are `role="menuitem"` buttons inside a `role="menu"` container labelled "Opciones de …" followed by the move's label. Disabled promote items stay visible so the user learns why nothing happens.
+- The items are `role="menuitem"` buttons (the exercise one, a link) inside a `role="menu"` container labelled "Opciones de …" followed by the move's label. Disabled promote items stay visible so the user learns why nothing happens.
 
 ## Markup & styling
 
-Block `.move-context-menu` (129 lines), positioned `fixed` with inline `top`/`left`.
+Block `.move-context-menu` (131 lines), positioned `fixed` with inline `top`/`left`.
 
 **Elements:** `.move-context-menu__title`, `.move-context-menu__item`, `.move-context-menu__icon`, `.move-context-menu__icon-svg`, `.move-context-menu__glyph` (the "!?" text icon of the annotate item)
 
@@ -80,6 +81,7 @@ import { MoveContextMenu, type MoveContextMenuTarget } from "./move-context-menu
       onComment={offersEdit ? () => requestEdit("comment") : undefined}
       onAnnotate={offersEdit ? () => requestEdit("annotate") : undefined}
       onCopyVariation={() => editing.copyVariation(menu.path)}
+      createExerciseHref={exerciseHrefFor(menu.path)}
       onDelete={() => {
         editing.deleteAt(menu.path);
         setMenu(null);

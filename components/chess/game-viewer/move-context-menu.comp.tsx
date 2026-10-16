@@ -5,6 +5,7 @@ import { ArrowUpIcon } from "@/components/icons/arrow-up-icon.comp";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
 import { ClipboardIcon } from "@/components/icons/clipboard-icon.comp";
 import { CommentIcon } from "@/components/icons/comment-icon.comp";
+import { PuzzlePieceIcon } from "@/components/icons/puzzle-piece-icon.comp";
 import { TrashCanIcon } from "@/components/icons/trash-can-icon.comp";
 import "./move-context-menu.comp.css";
 
@@ -32,6 +33,13 @@ interface MoveContextMenuProps {
   onComment?: () => void;
   onAnnotate?: () => void;
   onCopyVariation?: () => void | Promise<void>;
+  /**
+   * «Crear ejercicio desde aquí» (D11): the address of a new exercise that
+   * starts at this move, with what follows as its solution. A link, not an
+   * action: nothing is saved until the author saves. Left out for whoever
+   * authors no exercises.
+   */
+  createExerciseHref?: string;
   onClose: () => void;
   /** The host has closed it and keeps it mounted while the exit plays. */
   closing?: boolean;
@@ -83,6 +91,7 @@ export function MoveContextMenu({
   onComment,
   onAnnotate,
   onCopyVariation,
+  createExerciseHref,
   onClose,
   closing = false,
 }: MoveContextMenuProps) {
@@ -130,7 +139,7 @@ export function MoveContextMenu({
   }, [onClose]);
 
   useEffect(() => {
-    rootRef.current?.querySelector<HTMLButtonElement>("button:not(:disabled)")?.focus();
+    rootRef.current?.querySelector<HTMLElement>("button:not(:disabled), a")?.focus();
   }, []);
 
   const handleCopy = async () => {
@@ -182,6 +191,14 @@ export function MoveContextMenu({
           label={copied ? "PGN copiado" : "Copiar PGN de la variante"}
           onClick={() => void handleCopy()}
         />
+      )}
+      {createExerciseHref && (
+        <a role="menuitem" href={createExerciseHref} className="move-context-menu__item" onClick={onClose}>
+          <span className="move-context-menu__icon" aria-hidden="true">
+            <PuzzlePieceIcon className="move-context-menu__icon-svg" />
+          </span>
+          Crear ejercicio desde aquí
+        </a>
       )}
 
       <Item

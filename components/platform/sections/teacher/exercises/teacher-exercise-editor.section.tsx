@@ -35,6 +35,7 @@ export function TeacherExerciseEditorSection({ editor, notice, errorMessage }: T
         save={saveTeacherExercise.bind(null, id)}
         fetchGamePgn={fetchTeacherGamePgn}
         duplicate={id ? duplicateTeacherExercise.bind(null, id) : undefined}
+        initialTab={editor.initialTab}
       />
     </>
   );

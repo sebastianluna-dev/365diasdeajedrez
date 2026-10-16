@@ -67,6 +67,11 @@ Reference page: [Components › MoveContextMenu](/components/chess/game-viewer/m
       description: "`MoveContextMenuTarget`: the move, where the click was, what can be promoted.",
     },
     closing: { control: "boolean", description: "The host has closed it and keeps it mounted while the exit plays." },
+    createExerciseHref: {
+      control: "text",
+      description:
+        "«Crear ejercicio desde aquí»: a link to a new exercise from this move; left out for whoever authors none.",
+    },
   },
   decorators: [
     (Story) => (
@@ -94,6 +99,15 @@ export const MainLine: Story = { name: "Main line", args: { target: MAIN_LINE } 
 export const WithoutWriting: Story = {
   name: "Without writing",
   args: { onComment: undefined, onAnnotate: undefined },
+};
+
+/**
+ * In a teacher's own study: «Crear ejercicio desde aquí» before the danger item, a link to the editor with this
+ * move's position as the start and what follows as the solution (D11).
+ */
+export const CreateExercise: Story = {
+  name: "Create exercise",
+  args: { createExerciseHref: "/profesor/ejercicios/nuevo?estudio=s1&partida=g1&jugada=0.0.0.0.0.0.0.0.0.0.0.0.0.0.1" },
 };
 
 /** «Copiar PGN de la variante» pressed, by its `play` function: the item says «PGN copiado» before the menu closes. */

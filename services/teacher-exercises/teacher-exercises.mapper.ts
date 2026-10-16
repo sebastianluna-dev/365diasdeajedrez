@@ -12,6 +12,7 @@ import {
   type ExerciseStatusCode,
 } from "@/constants/platform/exercise-codes.const";
 import { emptySolutionPgn } from "@/lib/chess/exercise-format";
+import { EXERCISE_LIMITS } from "@/constants/platform/exercise.const";
 import { teacherRoutes } from "@/lib/platform-routes";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import type { StudentShareRow } from "@/components/platform/shared/student-share-panel/student-share-panel.types";
@@ -19,6 +20,7 @@ import { levelOfDifficulty, type DifficultyLevel } from "@/services/shared/exerc
 import { isExerciseContentLocked } from "@/services/shared/exercise-status-transitions";
 import { seriesItemAvailability } from "@/services/shared/exercise-visibility-rules";
 import type {
+  ExerciseSeedGameRow,
   SeriesItemData,
   SeriesItemRow,
   SeriesPickOption,
@@ -157,6 +159,43 @@ export function newExercisePrefill(): ExerciseAuthoringExercise {
     sourceEvent: null,
     sourceYear: null,
     sourceGameId: null,
+  };
+}
+
+/** A PGN header's value as a source field: «?» and «-» mean nothing, and the column's length is kept. */
+function sourceName(value: string | null, max: number): string | null {
+  const trimmed = (value ?? "").trim();
+  if (trimmed === "" || trimmed === "?" || trimmed === "-") return null;
+  return trimmed.slice(0, max);
+}
+
+/**
+ * «Crear ejercicio desde aquí» (D11): a new exercise seeded from a move of
+ * one of the teacher's study games. The seed (`exerciseSeedFromGame`) gives
+ * the position and the solution; the game gives the title — its own, or
+ * «Blancas – Negras, 1999» —, the source fields and `sourceGameId`. The rest
+ * is a new exercise's.
+ */
+export function exercisePrefillFromGame(
+  game: ExerciseSeedGameRow,
+  seed: { solutionPgn: string },
+): ExerciseAuthoringExercise {
+  const white = sourceName(game.white, EXERCISE_LIMITS.sourcePlayer);
+  const black = sourceName(game.black, EXERCISE_LIMITS.sourcePlayer);
+  const year = game.playedAt?.getUTCFullYear() ?? null;
+  const inRange = year !== null && year >= EXERCISE_LIMITS.sourceYearMin && year <= EXERCISE_LIMITS.sourceYearMax;
+  const sourceYear = inRange ? year : null;
+  const pairing = [white ?? "Blancas", black ?? "Negras"].join(" – ");
+  const title = game.title?.trim() || (sourceYear ? `${pairing}, ${sourceYear}` : pairing);
+  return {
+    ...newExercisePrefill(),
+    solutionPgn: seed.solutionPgn,
+    title: title.slice(0, EXERCISE_LIMITS.title),
+    sourceWhite: white,
+    sourceBlack: black,
+    sourceEvent: sourceName(game.event, EXERCISE_LIMITS.sourceEvent),
+    sourceYear,
+    sourceGameId: game.id,
   };
 }
 

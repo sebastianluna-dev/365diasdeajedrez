@@ -1,6 +1,7 @@
 import { cache } from "react";
 import type {
   ExerciseAuthoringCatalogs,
+  ExerciseAuthoringExercise,
   ExerciseAuthoringGame,
 } from "@/components/platform/shared/exercise-authoring/exercise-authoring.types";
 import { EXERCISE_STATUS, type ExerciseKindCode } from "@/constants/platform/exercise-codes.const";
@@ -9,7 +10,9 @@ import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import type { DifficultyLevel } from "@/services/shared/exercise-level";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { buildOwnExercisesWhere, buildPickableExercisesWhere } from "@/services/shared/exercise-visibility-rules";
+import { exerciseSeedFromGame } from "@/lib/chess/exercise-format";
 import {
+  exercisePrefillFromGame,
   mapAuthoringExercise,
   mapExerciseCard,
   mapSeriesCard,
@@ -21,6 +24,7 @@ import {
   teacherSaveButtons,
 } from "./teacher-exercises.mapper";
 import type {
+  ExerciseGameSeed,
   TeacherExerciseEditor,
   TeacherExercisesTab,
   TeacherExercisesView,
@@ -197,18 +201,44 @@ export async function getTeacherExerciseEditor(exerciseId: string): Promise<Teac
   };
 }
 
-/** The editor of a new exercise. */
-export async function getNewTeacherExerciseEditor(): Promise<TeacherExerciseEditor> {
-  await requireTeacher();
-  const [catalogs, games] = await Promise.all([getExerciseCatalogs(), listTeacherExerciseGames()]);
+/**
+ * «Crear ejercicio desde aquí» (D11): the prefill of a new exercise from a
+ * move of one of the teacher's OWN study games — the position after the move
+ * as the start, what follows as the solution, the game's players and date as
+ * the source. The ownership travels in the `where` (`database.userId`): a
+ * game of someone else's study, a broken path or a game that does not read
+ * all answer null, and the editor opens as a plain new exercise.
+ */
+export async function getExercisePrefillFromGame(
+  teacher: { userId: string },
+  from: ExerciseGameSeed,
+): Promise<ExerciseAuthoringExercise | null> {
+  const game = await getPlatformDb().game.findFirst({
+    where: { id: from.gameId, databaseId: from.studyId, database: { userId: teacher.userId } },
+    select: { id: true, title: true, white: true, black: true, event: true, playedAt: true, pgn: true },
+  });
+  if (!game) return null;
+  const seed = exerciseSeedFromGame(game.pgn, from.path);
+  return seed ? exercisePrefillFromGame(game, seed) : null;
+}
+
+/** The editor of a new exercise; with `from`, seeded from a move of one of the teacher's games, open on «Solución». */
+export async function getNewTeacherExerciseEditor(from?: ExerciseGameSeed): Promise<TeacherExerciseEditor> {
+  const { user } = await requireTeacher();
+  const [catalogs, games, prefill] = await Promise.all([
+    getExerciseCatalogs(),
+    listTeacherExerciseGames(),
+    from ? getExercisePrefillFromGame({ userId: user.id }, from) : null,
+  ]);
   return {
-    exercise: newExercisePrefill(),
+    exercise: prefill ?? newExercisePrefill(),
     version: "new",
     statusLabel: null,
     catalogs,
     games,
     permissions: teacherExercisePermissions(null),
     buttons: teacherSaveButtons(null),
+    initialTab: prefill ? "solution" : undefined,
   };
 }
 

@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
-import { mapStudyDetail, mapStudySummary, type StudyDetailRow, type StudySummaryRow } from "./studies.mapper";
+import {
+  mapGameView,
+  mapStudyDetail,
+  mapStudySummary,
+  type GameViewRow,
+  type StudyDetailRow,
+  type StudySummaryRow,
+} from "./studies.mapper";
 import { STUDY_GAMES_PAGE_SIZE } from "./study-rules";
 
 // Minimal fixture with the shape `studyDetailInclude` returns. It is built by
@@ -229,5 +236,50 @@ describe("a game's settings in its study's list", () => {
     expect(item?.orientationCode).toBe("BLACK");
     expect(item?.analysisModeCode).toBe("CONCEAL");
     expect(item?.pinnedComment).toBe("Juegan las negras.");
+  });
+});
+
+describe("mapGameView: «Crear ejercicio desde aquí» (D11)", () => {
+  /** A game of a study, with the shape `gameViewInclude` returns, owned by `owner`. */
+  function row(kindCode: string = DATABASE_KIND.STUDY): GameViewRow {
+    return {
+      id: "game-1",
+      title: null,
+      white: "Blancas",
+      black: "Negras",
+      whiteElo: null,
+      blackElo: null,
+      whiteTitle: null,
+      blackTitle: null,
+      whiteCountry: null,
+      blackCountry: null,
+      round: null,
+      eco: null,
+      event: null,
+      site: null,
+      playedAt: null,
+      initialFen: null,
+      pinnedComment: null,
+      pgn: "1. e4 *",
+      result: { label: "*", code: "UNFINISHED" },
+      orientation: null,
+      analysisMode: null,
+      source: { label: "Manual" },
+      database: { id: "study-1", name: "Mi estudio", userId: "owner", kind: { code: kindCode } },
+      _count: { positions: 2 },
+    } as unknown as GameViewRow;
+  }
+
+  it("lo ofrece sólo en la partida propia, y sólo cuando el servicio dice que quien mira crea ejercicios", () => {
+    expect(mapGameView(row(), "owner", true).canCreateExercise).toBe(true);
+    expect(mapGameView(row(), "owner", false).canCreateExercise).toBe(false);
+    expect(mapGameView(row(), "owner").canCreateExercise).toBe(false);
+  });
+
+  it("nunca en la partida de otro, aunque quien mira sea profesor", () => {
+    const seen = mapGameView(row(), "teacher", true);
+    expect(seen.canEdit).toBe(false);
+    expect(seen.canCreateExercise).toBe(false);
+    expect(mapGameView(row(), null, true).canCreateExercise).toBe(false);
   });
 });

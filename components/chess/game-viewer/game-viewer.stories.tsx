@@ -194,6 +194,27 @@ export const MoveMenu: Story = {
   },
 };
 
+/**
+ * A teacher's own study (`exerciseFromHereHref`): the move menu, opened by its `play` function on 8. Dxb7, carries
+ * «Crear ejercicio desde aquí», a link to the editor with that move appended as `jugada`; the tools' «Compartir»
+ * offers the same for the current move.
+ */
+export const TeachersStudy: Story = {
+  name: "Teacher's study",
+  args: { ...STUDY_ARGS, exerciseFromHereHref: "/profesor/ejercicios/nuevo?estudio=s1&partida=g1" },
+  render: (args) => <EditableGameViewer key={args.pgn} {...args} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const move = canvas.getByRole("button", { name: "8.Dxb7" });
+    move.scrollIntoView({ block: "center" });
+    const { right, bottom } = move.getBoundingClientRect();
+    fireEvent.contextMenu(move, { clientX: right, clientY: bottom });
+    const item = await canvas.findByRole("menuitem", { name: "Crear ejercicio desde aquí" });
+    await waitFor(() => expect(item).toBeVisible());
+    await expect(item).toHaveAttribute("href", expect.stringContaining("&jugada=0.0.0.0.0.0.0.0.0.0.0.0.0.0.1"));
+  },
+};
+
 /** The options menu under the board, opened by its `play` function: the sound and full screen. */
 export const OptionsMenu: Story = {
   name: "Options menu",

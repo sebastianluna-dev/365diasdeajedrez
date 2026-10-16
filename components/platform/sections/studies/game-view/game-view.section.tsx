@@ -12,7 +12,7 @@ import {
 import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
 import { STUDY_ERROR_MESSAGES } from "@/constants/platform/student-messages.const";
 import { GAME_ANALYSIS_MODE, GAME_ANALYSIS_MODE_LABELS } from "@/constants/platform/study-codes.const";
-import { platformRoutes } from "@/lib/platform-routes";
+import { platformRoutes, teacherRoutes } from "@/lib/platform-routes";
 import type { GameView } from "@/services/studies/studies.types";
 import { useGameAutosave } from "@/components/platform/shared/use-game-autosave.hook";
 import { usePgnHistory } from "@/components/platform/shared/use-pgn-history.hook";
@@ -101,6 +101,11 @@ export function GameViewSection({ game, asReader = false, errorCode, importRepor
         }}
         result={game.resultLabel}
         tools={{ saveLabel }}
+        // A teacher's own game offers «Crear ejercicio desde aquí» (D11), also
+        // seen as a reader: it only links to the editor, it changes nothing here.
+        exerciseFromHereHref={
+          game.canCreateExercise ? teacherRoutes.newExerciseFromGame(game.studyId, game.id) : undefined
+        }
         path={path}
         onPathChange={onPathChange}
       />

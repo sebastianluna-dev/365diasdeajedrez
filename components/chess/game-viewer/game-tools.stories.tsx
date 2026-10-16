@@ -152,6 +152,16 @@ export const Review: Story = { args: { tab: "review", pgn: EVALUATED_GAME, curre
 /** «Compartir»: the position's FEN, the whole PGN and the bare main line to copy, and the PNG and GIF exports. */
 export const Share: Story = { args: { tab: "share" } };
 
+/**
+ * «Compartir» in a teacher's own study: between the copies and the exports, «Ejercicio desde esta jugada» with
+ * «Crear ejercicio», a link to the editor seeded from the current move (D11) — the way in on a phone, where the move
+ * menu's right click does not exist.
+ */
+export const ShareInATeachersStudy: Story = {
+  name: "Share in a teacher's study",
+  args: { tab: "share", exerciseFromHereHref: "/profesor/ejercicios/nuevo?estudio=s1&partida=g1&jugada=0.0.0.0.0.0" },
+};
+
 /** A read-only game, such as a course database's: only «Evaluación» and «Compartir», and no autosave. */
 export const ReadOnly: Story = {
   name: "Read only",

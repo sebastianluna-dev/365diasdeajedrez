@@ -53,6 +53,8 @@
     font-size: var(--platform-type-lg);
     color: var(--platform-text);
     text-align: left;
+    /* «Crear ejercicio desde aquí» is a link drawn as an item: no underline. */
+    text-decoration: none;
     cursor: pointer;
   }
 

@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
 import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
 import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
 import { finalFenOf } from "@/lib/chess/replay";
@@ -237,13 +238,15 @@ export async function getShareableStudents(): Promise<StudentOption[]> {
 
 export async function getGameById(studyId: string, gameId: string): Promise<GameView | null> {
   const db = getPlatformDb();
-  const [where, user] = await Promise.all([getVisibleStudiesWhere(), getCurrentUser()]);
+  const [where, user, teacher] = await Promise.all([getVisibleStudiesWhere(), getCurrentUser(), getTeacherContext()]);
   const row = await db.game.findFirst({
     where: { id: gameId, databaseId: studyId, database: where },
     include: gameViewInclude,
     relationLoadStrategy: "join",
   });
-  return row ? mapGameView(row, user.id) : null;
+  // «Crear ejercicio desde aquí» (D11) is a teacher's, with the exercises on;
+  // the mapper adds that the game is their own.
+  return row ? mapGameView(row, user.id, EXERCISES_ENABLED && teacher !== null) : null;
 }
 
 // --- Games seen in class ---------------------------------------------------

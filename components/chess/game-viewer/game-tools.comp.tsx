@@ -94,6 +94,13 @@ interface GameToolsProps {
   /** Take the board to a move, which is what the chart does when clicked. */
   onSelectPath: (path: string) => void;
   onPgnChange: (pgn: string) => void;
+  /**
+   * «Crear ejercicio desde aquí» (D11) on «Compartir»: the address of a new
+   * exercise starting at the CURRENT move, already with the move in it — the
+   * viewer builds it, as it builds the move menu's. The tab offers it because
+   * the menu opens on a right click, which a long press on iOS Safari does not fire.
+   */
+  exerciseFromHereHref?: string;
 }
 
 export function GameTools({
@@ -108,6 +115,7 @@ export function GameTools({
   black,
   onSelectPath,
   onPgnChange,
+  exerciseFromHereHref,
 }: GameToolsProps) {
   const [copied, setCopied] = useState<"fen" | "pgn" | "plain" | null>(null);
   // What is being generated, so it cannot be pressed twice meanwhile: a
@@ -365,6 +373,23 @@ export function GameTools({
               {copied === "plain" ? "Copiado" : "Copiar"}
             </button>
           </div>
+
+          {exerciseFromHereHref && (
+            <div className="game-tools__share">
+              <div className="game-tools__share-text">
+                <span className="game-tools__share-label">Ejercicio desde esta jugada</span>
+                <span className="game-tools__share-value">
+                  La posición tras {moveName} como inicio y lo que sigue como solución
+                </span>
+              </div>
+              <a
+                href={exerciseFromHereHref}
+                className="platform-button platform-button_size_sm game-tools__share-button"
+              >
+                Crear ejercicio
+              </a>
+            </div>
+          )}
 
           <div className="game-tools__export">
             <button

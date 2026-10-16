@@ -3,6 +3,7 @@ import { EXERCISE_STATUS } from "@/constants/platform/exercise-codes.const";
 import { readSolutionStart } from "@/lib/chess/exercise-format";
 import {
   exerciseFacts,
+  exercisePrefillFromGame,
   mapAuthoringExercise,
   mapExerciseCard,
   mapSeriesCard,
@@ -174,5 +175,61 @@ describe("the series", () => {
         user: { id: "u1", displayName: "Alumno Demo", email: "alumno.demo@365diasdeajedrez.com" },
       }),
     ).toMatchObject({ userId: "u1", displayName: "Alumno Demo", sharedAtLabel: expect.stringContaining("octubre") });
+  });
+});
+
+describe("exercisePrefillFromGame («Crear ejercicio desde aquí», D11)", () => {
+  const GAME = {
+    id: "game-1",
+    title: null,
+    white: "Morphy, Paul",
+    black: "Duke Karl / Count Isouard",
+    event: "Paris",
+    playedAt: new Date("1858-11-02T00:00:00.000Z"),
+    pgn: "1. e4 e5 *",
+  };
+  const SEED = { solutionPgn: '[SetUp "1"]\n[FEN "6k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1"]\n\n1. Rd8# *' };
+
+  it("es un ejercicio nuevo con la solución de la semilla, el título «Blancas – Negras, año» y la fuente de la partida", () => {
+    const prefill = exercisePrefillFromGame(GAME, SEED);
+    expect(prefill).toMatchObject({
+      id: null,
+      statusCode: null,
+      solutionPgn: SEED.solutionPgn,
+      title: "Morphy, Paul – Duke Karl / Count Isouard, 1858",
+      sourceWhite: "Morphy, Paul",
+      sourceBlack: "Duke Karl / Count Isouard",
+      sourceEvent: "Paris",
+      sourceYear: 1858,
+      sourceGameId: "game-1",
+      kind: "SEQUENCE",
+      mateIn: null,
+      topicCodes: [],
+    });
+  });
+
+  it("prefiere el título de la partida, y sin fecha no inventa un año", () => {
+    const prefill = exercisePrefillFromGame({ ...GAME, title: "La partida de la ópera", playedAt: null }, SEED);
+    expect(prefill.title).toBe("La partida de la ópera");
+    expect(prefill.sourceYear).toBeNull();
+    expect(exercisePrefillFromGame({ ...GAME, playedAt: null }, SEED).title).toBe(
+      "Morphy, Paul – Duke Karl / Count Isouard",
+    );
+  });
+
+  it("un «?» en los jugadores no es un nombre, y el título los llama por su color", () => {
+    const prefill = exercisePrefillFromGame({ ...GAME, white: "?", black: " ", event: "-", playedAt: null }, SEED);
+    expect(prefill.title).toBe("Blancas – Negras");
+    expect(prefill.sourceWhite).toBeNull();
+    expect(prefill.sourceBlack).toBeNull();
+    expect(prefill.sourceEvent).toBeNull();
+  });
+
+  it("recorta lo que no cabe en sus columnas", () => {
+    const long = "x".repeat(200);
+    const prefill = exercisePrefillFromGame({ ...GAME, white: long, black: long, event: long, playedAt: null }, SEED);
+    expect(prefill.title).toHaveLength(120);
+    expect(prefill.sourceWhite).toHaveLength(120);
+    expect(prefill.sourceEvent).toHaveLength(160);
   });
 });

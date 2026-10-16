@@ -153,6 +153,14 @@ interface GameViewerProps {
    */
   tools?: { saveLabel?: string };
   /**
+   * «Crear ejercicio desde aquí» (D11): the address of a new exercise from
+   * this game, to which the viewer appends `&jugada=<path>` for the move the
+   * menu opened on and for the current one in the tools' «Compartir». Given
+   * only to a teacher on their own game, with the exercises on
+   * (`GameView.canCreateExercise`); a link, so nothing is saved by it.
+   */
+  exerciseFromHereHref?: string;
+  /**
    * Offers the analysis engine. Off by default: it is 7 MB of WebAssembly that
    * are only downloaded when someone switches it on, and not even that until then.
    */
@@ -238,6 +246,7 @@ export function GameViewer({
   moveList = "table",
   controls = "board",
   tools,
+  exerciseFromHereHref,
   engine = false,
   engineClient,
   onPathChange,
@@ -586,6 +595,9 @@ export function GameViewer({
   // In full screen the tools are not rendered: there the game is read, and
   // commenting and annotating are done on the normal screen.
   const offersEdit = Boolean(tools) && !isFullscreen;
+  /** «Crear ejercicio desde aquí» for a move: the game's address with that move appended. */
+  const exerciseHrefFor = (movePath: string) =>
+    exerciseFromHereHref === undefined ? undefined : `${exerciseFromHereHref}&jugada=${encodeURIComponent(movePath)}`;
 
   const nav = (
     <div className="game-viewer__nav">
@@ -850,6 +862,7 @@ export function GameViewer({
               black={players?.black.name ?? "Negras"}
               onSelectPath={setCurrentPath}
               onPgnChange={publishPgn}
+              exerciseFromHereHref={exerciseHrefFor(currentPath)}
             />
           </div>
         )}
@@ -950,6 +963,7 @@ export function GameViewer({
           onComment={offersEdit ? () => requestEdit("comment") : undefined}
           onAnnotate={offersEdit ? () => requestEdit("annotate") : undefined}
           onCopyVariation={() => (menu ? editing.copyVariation(menu.path) : undefined)}
+          createExerciseHref={exerciseHrefFor(lingeringMenu.value.path)}
           onDelete={() => {
             if (menu) editing.deleteAt(menu.path);
             setMenu(null);

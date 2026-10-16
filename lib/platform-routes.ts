@@ -131,6 +131,12 @@ export const platformRoutes = {
  * these routes coexist with those of `platformRoutes` even though the menu no
  * longer renders them together (see constants/platform/nav-items.const.ts).
  */
+/** `/profesor/ejercicios/nuevo?estudio=…&partida=…`: a new exercise from a game, the move still to be appended. */
+function newExerciseFromGame(studyId: string, gameId: string): string {
+  const params = new URLSearchParams({ estudio: studyId, partida: gameId });
+  return `/profesor/ejercicios/nuevo?${params.toString()}`;
+}
+
 export const teacherRoutes = {
   home: "/profesor",
   students: "/profesor/alumnos",
@@ -155,13 +161,19 @@ export const teacherRoutes = {
   exerciseSeriesList: "/profesor/ejercicios?vista=series",
   /**
    * A new exercise; `from` opens it on a move of one of the teacher's study
-   * games («Crear ejercicio desde aquí», phase 1b).
+   * games («Crear ejercicio desde aquí», D11): the game's address plus
+   * `&jugada=<path>`.
    */
   newExercise: (from?: { studyId: string; gameId: string; path: string }) => {
     if (!from) return "/profesor/ejercicios/nuevo";
-    const params = new URLSearchParams({ estudio: from.studyId, partida: from.gameId, jugada: from.path });
-    return `/profesor/ejercicios/nuevo?${params.toString()}`;
+    return `${newExerciseFromGame(from.studyId, from.gameId)}&jugada=${encodeURIComponent(from.path)}`;
   },
+  /**
+   * The game a new exercise starts from, without the move: what the game
+   * viewer is given, so it can append `&jugada=<path>` for whichever move the
+   * menu or the «Compartir» tab is on.
+   */
+  newExerciseFromGame,
   exerciseDetail: (exerciseId: string) => `/profesor/ejercicios/${exerciseId}`,
   /** A series of the teacher's: its exercises in order, who has it, its title. */
   exerciseSeries: (seriesId: string) => `/profesor/ejercicios/series/${seriesId}`,

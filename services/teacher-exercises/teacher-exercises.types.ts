@@ -10,6 +10,7 @@ import type {
   StudentShareOption,
   StudentShareRow,
 } from "@/components/platform/shared/student-share-panel/student-share-panel.types";
+import type { ExerciseFormTab } from "@/services/shared/exercise-form";
 import type { SeriesItemAvailability } from "@/services/shared/exercise-visibility-rules";
 
 /** The bank's three views: what is in use, what was archived, and the series. */
@@ -103,6 +104,27 @@ export interface TeacherExerciseEditor {
   games: ExerciseAuthoringGame[];
   permissions: ExerciseAuthoringPermissions;
   buttons: ExerciseSaveButton[];
+  /** The tab the editor opens on: «Solución» for a new exercise seeded from a game («Crear ejercicio desde aquí»). */
+  initialTab?: ExerciseFormTab;
+}
+
+/** A move of one of the teacher's study games: where «Crear ejercicio desde aquí» (D11) starts a new exercise. */
+export interface ExerciseGameSeed {
+  studyId: string;
+  gameId: string;
+  /** The dotted path of the move; «» is the game's start. */
+  path: string;
+}
+
+/** A study game as the prefill of «Crear ejercicio desde aquí» reads it. */
+export interface ExerciseSeedGameRow {
+  id: string;
+  title: string | null;
+  white: string;
+  black: string;
+  event: string | null;
+  playedAt: Date | null;
+  pgn: string;
 }
 
 /** An exercise as the bank and the editor read it from the database. */

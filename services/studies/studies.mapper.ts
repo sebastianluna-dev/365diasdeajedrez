@@ -275,15 +275,20 @@ export function mapStudyDetail(row: StudyDetailRow, viewerId: string | null, tot
  * @param viewerId id of whoever is looking, or `null` when the view is read-only
  *   by its own nature (the teacher reviewing a student).
  */
-export function mapGameView(row: GameViewRow, viewerId: string | null): GameView {
+export function mapGameView(row: GameViewRow, viewerId: string | null, viewerAuthorsExercises = false): GameView {
+  // A teacher SEES their students' games so they can cite them in class, but
+  // annotating them is the owner's business; and the same for a student with a
+  // collection someone shared with them. It comes from the same table as the rest
+  // of the section so there are no two versions of the rule.
+  const canEdit =
+    viewerId !== null &&
+    studyPermissionsOf({ kindCode: row.database.kind.code, isOwner: row.database.userId === viewerId }).canEditGames;
   return {
-    // A teacher SEES their students' games so they can cite them in class, but
-    // annotating them is the owner's business; and the same for a student with a
-    // collection someone shared with them. It comes from the same table as the rest
-    // of the section so there are no two versions of the rule.
-    canEdit:
-      viewerId !== null &&
-      studyPermissionsOf({ kindCode: row.database.kind.code, isOwner: row.database.userId === viewerId }).canEditGames,
+    canEdit,
+    // An exercise is made from one's OWN game (D11): the viewer's right to edit
+    // it, and the service's word that they author exercises (an active teacher,
+    // the flag on). A student's game seen by their teacher offers nothing.
+    canCreateExercise: canEdit && viewerAuthorsExercises,
     id: row.id,
     title: row.title ?? undefined,
     orientationCode: orientationCodeOf(row.orientation),

@@ -105,6 +105,12 @@ export interface ExerciseAuthoringProps {
   fetchGamePgn: FetchPgn;
   /** «Duplicar», bound to this exercise: offered with a locked content. */
   duplicate?: (formData: FormData) => Promise<void>;
+  /**
+   * The tab it opens on. Without it, a saved exercise opens on «Solución» and
+   * a new one on «Posición»; a new one seeded from a game («Crear ejercicio
+   * desde aquí», D11) opens on «Solución», where what followed the move is.
+   */
+  initialTab?: ExerciseFormTab;
 }
 
 type Way = "place" | "paste" | "game";
@@ -202,10 +208,11 @@ export function ExerciseAuthoring({
   save,
   fetchGamePgn,
   duplicate,
+  initialTab,
 }: ExerciseAuthoringProps) {
   const { draft, update, changePosition, pendingPosition, confirmPosition, cancelPosition, boardKey } =
     useExerciseDraft(exercise);
-  const [tab, setTab] = useState<AuthoringTab>(exercise.id ? "solution" : "position");
+  const [tab, setTab] = useState<AuthoringTab>(initialTab ?? (exercise.id ? "solution" : "position"));
   const [state, formAction] = useActionState(save, POPUP_FORM_IDLE);
   const [isPending, startSave] = useTransition();
   const [pendingIntent, setPendingIntent] = useState<ExerciseSaveIntent | null>(null);

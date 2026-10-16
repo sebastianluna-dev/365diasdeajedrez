@@ -783,6 +783,7 @@ function MoveMenuTile() {
           onComment={close}
           onAnnotate={close}
           onCopyVariation={async () => {}}
+          createExerciseHref="#"
           onDelete={close}
           onClose={close}
         />
@@ -2608,6 +2609,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   black="Duke Karl / Count Isouard"
                   onSelectPath={() => undefined}
                   onPgnChange={() => undefined}
+                  exerciseFromHereHref="#"
                 />
               </div>
             </Tile>

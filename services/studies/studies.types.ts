@@ -170,6 +170,11 @@ export interface GameView extends GameSettingsValues {
   id: string;
   /** Whoever is looking owns the database: they can edit and annotate the game. */
   canEdit: boolean;
+  /**
+   * «Crear ejercicio desde aquí» is offered on its moves (D11): the game is
+   * the viewer's own and they are an active teacher, with the exercises on.
+   */
+  canCreateExercise: boolean;
   /** How it is told apart within the study. Absent = it is identified by the pairing. */
   title?: string;
   /** Raw codes, so the data form can be filled in. */
