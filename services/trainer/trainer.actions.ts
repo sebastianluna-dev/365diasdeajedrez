@@ -59,7 +59,8 @@ export async function recordTrainingAttempt(input: RecordAttemptInput): Promise<
   await db.trainingAttempt.create({
     data: {
       user: { connect: { id: user.id } },
-      exercise: { connect: { id: exercise.id } },
+      // The line drill (TrainingExercise), not an Exercise of the bank.
+      trainingExercise: { connect: { id: exercise.id } },
       result: { connect: { code: input.resultCode } },
       // The numbers come from the client: they are clamped above and below.
       mistakes: clamp(input.mistakes, 0, MAX_MISTAKES),

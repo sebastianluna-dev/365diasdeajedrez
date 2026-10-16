@@ -32,12 +32,36 @@ export type OwnerTypeCode = (typeof OWNER_TYPE)[keyof typeof OWNER_TYPE];
 /** GameDatabase only admits USER or COURSE; TEACHER is valid only in Position. */
 export const GAME_DATABASE_OWNER_TYPES = [OWNER_TYPE.USER, OWNER_TYPE.COURSE] as const;
 
+/**
+ * The topics of a lesson and of an exercise. The first five are the roots
+ * (the dashboard's breakdown); the tactical motifs hang from TACTICS
+ * (`Topic.parentId`), added for the exercises (D15).
+ */
 export const TOPIC = {
   TACTICS: "TACTICS",
   OPENING_LINE: "OPENING_LINE",
   PAWN_STRUCTURE: "PAWN_STRUCTURE",
   ENDGAME: "ENDGAME",
   STRATEGY: "STRATEGY",
+  FORK: "FORK",
+  PIN: "PIN",
+  SKEWER: "SKEWER",
+  DISCOVERED_ATTACK: "DISCOVERED_ATTACK",
+  DOUBLE_CHECK: "DOUBLE_CHECK",
+  DEFLECTION: "DEFLECTION",
+  DECOY: "DECOY",
+  REMOVING_THE_DEFENDER: "REMOVING_THE_DEFENDER",
+  OVERLOADING: "OVERLOADING",
+  INTERFERENCE: "INTERFERENCE",
+  X_RAY: "X_RAY",
+  ZWISCHENZUG: "ZWISCHENZUG",
+  CLEARANCE: "CLEARANCE",
+  TRAPPED_PIECE: "TRAPPED_PIECE",
+  SACRIFICE: "SACRIFICE",
+  PROMOTION: "PROMOTION",
+  MATING_ATTACK: "MATING_ATTACK",
+  BACK_RANK_MATE: "BACK_RANK_MATE",
+  ZUGZWANG: "ZUGZWANG",
 } as const;
 
 export type TopicCode = (typeof TOPIC)[keyof typeof TOPIC];

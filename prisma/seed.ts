@@ -180,6 +180,8 @@ async function main() {
   const progressStatus = await seedCatalog(db.progressStatus, CATALOG_VALUES.progressStatus);
   const attemptResult = await seedCatalog(db.attemptResult, CATALOG_VALUES.attemptResult);
   const attemptContext = await seedCatalog(db.attemptContext, CATALOG_VALUES.attemptContext);
+  await seedCatalog(db.exerciseKind, CATALOG_VALUES.exerciseKind);
+  await seedCatalog(db.exerciseStatus, CATALOG_VALUES.exerciseStatus);
   const ownerType = await seedCatalog(db.ownerType, CATALOG_VALUES.ownerType);
   await seedCatalog(db.contentRole, CATALOG_VALUES.contentRole);
   const databaseKind = await seedCatalog(db.databaseKind, CATALOG_VALUES.databaseKind);
@@ -197,12 +199,15 @@ async function main() {
   const subjectType = await seedCatalog(db.subjectType, CATALOG_VALUES.subjectType);
   await seedCatalog(db.statMetric, CATALOG_VALUES.statMetric);
 
+  // The roots come first in TOPIC_VALUES, so a motif's parent is always
+  // seeded before it.
   const topic = new Map<string, number>();
-  for (const [index, [code, label]] of TOPIC_VALUES.entries()) {
+  for (const [code, label, order, parent] of TOPIC_VALUES) {
+    const parentId = parent === null ? null : idOf(topic, parent);
     const row = await db.topic.upsert({
       where: { code },
-      update: { label, order: index },
-      create: { code, label, order: index },
+      update: { label, order, parentId },
+      create: { code, label, order, parentId },
     });
     topic.set(code, row.id);
   }
@@ -648,7 +653,7 @@ async function main() {
   for (const attempt of buildAttempts(now)) {
     const data = {
       userId: attempt.userId,
-      exerciseId: attempt.exerciseId,
+      trainingExerciseId: attempt.trainingExerciseId,
       resultId: idOf(attemptResult, attempt.result),
       mistakes: attempt.mistakes,
       durationMs: attempt.durationMs,

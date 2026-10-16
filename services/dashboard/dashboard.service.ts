@@ -73,7 +73,8 @@ export const getUserDashboard = cache(async (): Promise<DashboardData> => {
   // that appears in it, all of them together.
   const idsFor = (code: string) => recent.filter((row) => row.subjectType.code === code).map((row) => row.subjectId);
 
-  const [lessons, coursesRows, classes, games, exercises] = await Promise.all([
+  const exerciseIds = idsFor(SUBJECT_TYPE.EXERCISE);
+  const [lessons, coursesRows, classes, games, exercises, lineDrills] = await Promise.all([
     readByIds(idsFor(SUBJECT_TYPE.LESSON), (ids) =>
       db.lesson.findMany({ where: { id: { in: ids } }, select: { id: true, name: true } }),
     ),
@@ -94,9 +95,15 @@ export const getUserDashboard = cache(async (): Promise<DashboardData> => {
     readByIds(idsFor(SUBJECT_TYPE.GAME), (ids) =>
       db.game.findMany({ where: { id: { in: ids } }, select: { id: true, white: true, black: true } }),
     ),
-    // An exercise is named after its lesson, read in the same query (Prisma's
-    // join strategy, the default here: `relationJoins` in schema.prisma).
-    readByIds(idsFor(SUBJECT_TYPE.EXERCISE), (ids) =>
+    // An EXERCISE subject is an Exercise of the bank, named by its title; the
+    // ids it does not hold are the dormant line trainer's old activity, a
+    // TrainingExercise named after its lesson (read in the same query: Prisma's
+    // join strategy, the default here, `relationJoins` in schema.prisma). Both
+    // are asked at once; the Exercise's title wins below.
+    readByIds(exerciseIds, (ids) =>
+      db.exercise.findMany({ where: { id: { in: ids } }, select: { id: true, title: true } }),
+    ),
+    readByIds(exerciseIds, (ids) =>
       db.trainingExercise.findMany({
         where: { id: { in: ids } },
         select: { id: true, lesson: { select: { name: true } } },
@@ -109,7 +116,8 @@ export const getUserDashboard = cache(async (): Promise<DashboardData> => {
   for (const row of coursesRows) subjectNames.set(row.id, row.name);
   for (const row of classes) subjectNames.set(row.id, classTitleOf(row, "student"));
   for (const row of games) subjectNames.set(row.id, `${row.white} – ${row.black}`);
-  for (const row of exercises) subjectNames.set(row.id, row.lesson.name);
+  for (const row of lineDrills) subjectNames.set(row.id, row.lesson.name);
+  for (const row of exercises) subjectNames.set(row.id, row.title);
 
   // "Continuar estudiando": the course in progress, with its return point.
   const continueStudying: ContinueStudyingCard | undefined = inProgress

@@ -26,6 +26,12 @@
 //   is positive and buys 1–50 classes; a class lasts more than nothing, a group
 //   seats 2–12 and its end is its start plus its duration; a free seat has no
 //   payment, and a seat is moved only after a no-show.
+// - Exercises (migration 20261016120000_exercises): exercise_difficulty_range
+//   (400–3000), exercise_mate_in_range (null or 1–5), exercise_hints_max (at
+//   most three hints), exercise_source_year (null or 1400–2100),
+//   exercise_series_library_published (a teacher's series is never published
+//   to the library) and training_attempt_one_exercise (an attempt is at
+//   exactly one of a TrainingExercise or an Exercise).
 // Rules validated in the services layer (impossible in a CHECK without
 // crossing tables): ownerType↔populated column coherence, ClassBlock.kind↔field
 // used; and for the classes (see services/shared/, each rule names its writer):
@@ -182,6 +188,32 @@ model ExerciseMode {
   exercises TrainingExercise[]
 }
 
+/// What an exercise asks for (EXERCISE_KIND). SEQUENCE: play the solution, the
+/// platform answers the opponent's moves (D01). MATE_IN: solved exactly like
+/// SEQUENCE (only the author's lines are accepted, D02); what differs is the
+/// title «Mate en N» and that every line of the solution must end in
+/// checkmate within N moves (D03).
+model ExerciseKind {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  exercises Exercise[]
+}
+
+/// Where an exercise is in its life (EXERCISE_STATUS, D16): DRAFT → READY (its
+/// teacher's students may get it) → IN_REVIEW → PUBLISHED (the library), and
+/// ARCHIVED (kept for history, offered nowhere).
+model ExerciseStatus {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  exercises Exercise[]
+}
+
 /// Shared by CourseProgress, ChapterProgress and LessonProgress.
 model ProgressStatus {
   id    Int    @id @default(autoincrement())
@@ -200,7 +232,8 @@ model AttemptResult {
   label String
   order Int    @default(0)
 
-  attempts TrainingAttempt[]
+  attempts       TrainingAttempt[]
+  exerciseStates UserExerciseState[]
 }
 
 model AttemptContext {
@@ -376,9 +409,10 @@ model Topic {
   parent   Topic?  @relation("TopicHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
   children Topic[] @relation("TopicHierarchy")
 
-  lessonTopics LessonTopic[]
-  activities   UserActivity[]
-  dailyStats   UserStatDaily[]
+  lessonTopics   LessonTopic[]
+  exerciseTopics ExerciseTopic[]
+  activities     UserActivity[]
+  dailyStats     UserStatDaily[]
 }
 
 // ---------------------------------------------------------------------------
@@ -735,6 +769,14 @@ model User {
   seatsMoved         ClassParticipant[]      @relation("ClassSeatMovedBy")
   attendanceChanges  ClassAttendanceChange[] @relation("ClassAttendanceChangedBy")
 
+  /// Exercises: what this user wrote or reviewed, the series they built, the
+  /// series given to them and their standing with each exercise they tried.
+  exercisesAuthored    Exercise[]            @relation("ExerciseAuthor")
+  exercisesReviewed    Exercise[]            @relation("ExerciseReviewer")
+  seriesCreated        ExerciseSeries[]      @relation("ExerciseSeriesCreator")
+  exerciseSeriesShares ExerciseSeriesShare[]
+  exerciseStates       UserExerciseState[]
+
   /// Games played on the platform, in each seat (never study games).
   playedGamesAsWhite PlayedGame[] @relation("PlayedGameWhiteUser")
   playedGamesAsBlack PlayedGame[] @relation("PlayedGameBlackUser")
@@ -831,39 +873,58 @@ model LessonProgress {
   @@id([userId, lessonId])
 }
 
-/// Append-only history; it is never updated.
+/// Append-only history; it is never updated. One table for the attempts at
+/// both kinds of exercise: the dormant line trainer's (trainingExerciseId) and
+/// an Exercise's (exerciseId).
 model TrainingAttempt {
-  id            String   @id @default(uuid())
-  userId        String
-  exerciseId    String
-  resultId      Int
-  mistakes      Int      @default(0)
-  durationMs    Int?
-  contextId     Int
+  id                 String   @id @default(uuid())
+  userId             String
+  /// The derived line exercise (the dormant trainer). Exactly one of
+  /// trainingExerciseId / exerciseId is set: CHECK training_attempt_one_exercise.
+  trainingExerciseId String?
+  /// An Exercise. Only writer of these rows: recordExerciseAttempt
+  /// (services/shared/exercise-attempt.service.ts).
+  exerciseId         String?
+  /// Where it was solved: the series (D24 per series); later the class block
+  /// and the contrarreloj run.
+  seriesId           String?
+  resultId           Int
+  mistakes           Int      @default(0)
+  durationMs         Int?
+  contextId          Int
   /// Moves of the student the line asked for.
-  requiredMoves Int      @default(0)
+  requiredMoves      Int      @default(0)
   /// Got right first time. `mistakes` counts the failures, which can repeat on the
   /// same move, so correctMoves is NOT requiredMoves - mistakes.
-  correctMoves  Int      @default(0)
+  correctMoves       Int      @default(0)
   /// How far in plies they got. It is the DENOMINATOR for knowing how many times a
   /// position was passed through: without this, the stored mistakes cannot be
   /// turned into a percentage of successes.
-  reachedPly    Int      @default(0)
-  hintsUsed     Int      @default(0)
+  reachedPly         Int      @default(0)
+  hintsUsed          Int      @default(0)
+  /// «Ver la solución» was pressed (D20): the attempt is FAILED whatever the
+  /// moves were.
+  solutionShown      Boolean  @default(false)
   /// The whole sequence first time and without hints. It is stored apart from the
   /// accuracy: one can get 92 % right and not have a perfect review.
-  isPerfect     Boolean  @default(false)
-  createdAt     DateTime @default(now())
+  isPerfect          Boolean  @default(false)
+  createdAt          DateTime @default(now())
 
-  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  exercise TrainingExercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
-  result   AttemptResult    @relation(fields: [resultId], references: [id])
-  context  AttemptContext   @relation(fields: [contextId], references: [id])
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trainingExercise TrainingExercise? @relation(fields: [trainingExerciseId], references: [id], onDelete: Cascade)
+  /// Restrict: an exercise someone tried is archived, never deleted (its
+  /// history and the teacher's view of the mistakes depend on it).
+  exercise         Exercise?         @relation(fields: [exerciseId], references: [id], onDelete: Restrict)
+  series           ExerciseSeries?   @relation(fields: [seriesId], references: [id], onDelete: SetNull)
+  result           AttemptResult     @relation(fields: [resultId], references: [id])
+  context          AttemptContext    @relation(fields: [contextId], references: [id])
 
   mistakeDetails TrainingMistake[]
 
   @@index([userId, createdAt])
-  @@index([exerciseId])
+  @@index([trainingExerciseId])
+  @@index([exerciseId, userId])
+  @@index([seriesId, userId])
 }
 
 /// One row PER FAILED MOVE, not per move. A student who gets everything right
@@ -872,6 +933,11 @@ model TrainingAttempt {
 /// The position is identified by the hash of its FEN (lib/chess/position-hash.ts)
 /// and not by the move number: that way the data survives the PGN being edited,
 /// and it groups the same position reached by transposition from another lesson.
+///
+/// Only writer: recordExerciseAttempt (services/shared/exercise-attempt.service.ts).
+/// For an Exercise attempt there is at most one row, the first wrong move: it
+/// decides the attempt (D19), and what the student plays afterwards to learn
+/// is not stored.
 model TrainingMistake {
   id           String   @id @default(uuid())
   attemptId    String
@@ -947,6 +1013,235 @@ model UserTrainerChapter {
   chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
   @@id([userId, chapterId])
+}
+
+// ---------------------------------------------------------------------------
+// Exercises: the bank, its series and the student's standing with each one
+// ---------------------------------------------------------------------------
+//
+// One table, Exercise, holds every authored exercise: a teacher's and the
+// academy's library (and, from the lesson exercises' migration, a lesson's).
+// An exercise is a starting position and a solution played on the board, with
+// variants and comments, kept as a PGN (solutionPgn): the student plays their
+// moves and the platform answers until the line ends (D01, D02). The attempts
+// reuse TrainingAttempt and TrainingMistake. See docs/ → Platform → Data model.
+
+model Exercise {
+  /// Short, it goes in the URL. Prisma generates it (nanoid(8), like
+  /// GameDatabase).
+  id                String    @id @default(nanoid(8))
+  /// Owner (D07). Set: the teacher's. Null: the academy's — what the staff
+  /// writes and what the library holds. Restrict: a teacher is never deleted
+  /// (see Teacher).
+  teacherId         String?
+  /// Who wrote it, for «Creado por» and the audit. Not the owner.
+  authorUserId      String?
+  /// An input of the solution's validity (MATE_IN lines must mate within
+  /// mateIn), so it has the solution's writers: createExerciseRecord /
+  /// syncExerciseSolution, through exerciseSolutionColumns.
+  kindId            Int
+  /// Only writer: services/shared/exercise-status.service.ts. An insert starts
+  /// DRAFT through a spread of initialExerciseStatusData() (exported by that
+  /// file); any other status is reached with transitionOwnExercise or
+  /// reviewLibraryExercise in the same transaction.
+  statusId          Int
+  title             String    @db.VarChar(120)
+  /// «Juegan blancas y ganan». Null: the screen says «Juegan blancas» or
+  /// «Juegan negras» (and «y dan mate en N»).
+  prompt            String?   @db.VarChar(200)
+  /// The author's Elo-like difficulty (D14, D38). CHECK
+  /// exercise_difficulty_range (400–3000). The Level is derived from it on
+  /// reading (levelOfDifficulty), never stored.
+  difficulty        Int
+  /// The author's text hints, in order, at most three (CHECK
+  /// exercise_hints_max). Empty: the hint highlights the piece to move (D37).
+  hints             String[]  @default([])
+  /// Shown after solving (D13).
+  explanation       String?   @db.Text
+  /// N of «Mate en N»; null for SEQUENCE (CHECK exercise_mate_in_range, 1–5).
+  /// The kind↔mateIn rule (MATE_IN needs it, SEQUENCE has none) is enforced by
+  /// exerciseSolutionColumns; same writers as kindId: createExerciseRecord /
+  /// syncExerciseSolution.
+  mateIn            Int?
+  /// THE SOURCE (D02, D10): [SetUp]/[FEN] + the solution with variants and
+  /// comments, no other header. Written only by createExerciseRecord /
+  /// syncExerciseSolution (services/shared/exercise-record.service.ts), always
+  /// together with kindId, mateIn and the four frozen columns below.
+  solutionPgn       String    @db.Text
+  /// Frozen from solutionPgn by exerciseSolutionColumns (writers:
+  /// createExerciseRecord / syncExerciseSolution): lists draw it without
+  /// parsing. A draft has them too, so they are NOT NULL for every status.
+  startFen          String
+  /// createPositionHash(startFen), by exerciseSolutionColumns (writers:
+  /// createExerciseRecord / syncExerciseSolution): the import's «Ya está en
+  /// tus ejercicios».
+  startPositionHash String
+  /// Plies of the main line, by exerciseSolutionColumns (writers:
+  /// createExerciseRecord / syncExerciseSolution).
+  solutionPlies     Int
+  /// The student's moves in the main line («3 jugadas»), by
+  /// exerciseSolutionColumns (writers: createExerciseRecord /
+  /// syncExerciseSolution).
+  playerMoves       Int
+  /// Source (D13). CHECK exercise_source_year (1400–2100).
+  sourceWhite       String?   @db.VarChar(120)
+  sourceBlack       String?   @db.VarChar(120)
+  sourceEvent       String?   @db.VarChar(160)
+  sourceYear        Int?
+  /// The study game it came from («Crear ejercicio desde aquí», D11). SetNull:
+  /// the exercise is self-sufficient.
+  sourceGameId      String?
+  /// The exercise it was copied from («Duplicar»; a library exercise copied to
+  /// a lesson, D28).
+  copiedFromId      String?
+  /// The review (D16). Only writer: services/shared/exercise-status.service.ts
+  /// (transitionOwnExercise / reviewLibraryExercise). publishedAt is the FIRST
+  /// publication and is kept when the exercise leaves the library: «was ever in
+  /// the library» is what lets a teacher keep seeing the attempts at it. Never
+  /// copied by «Duplicar» or a lesson copy.
+  submittedAt       DateTime?
+  /// Only writer: exercise-status.service.ts (reviewLibraryExercise).
+  reviewedAt        DateTime?
+  /// Only writer: exercise-status.service.ts (reviewLibraryExercise).
+  reviewedById      String?
+  /// Only writer: exercise-status.service.ts (reviewLibraryExercise).
+  reviewNote        String?   @db.VarChar(500)
+  /// Only writer: exercise-status.service.ts (reviewLibraryExercise).
+  publishedAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  teacher    Teacher?       @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  authorUser User?          @relation("ExerciseAuthor", fields: [authorUserId], references: [id], onDelete: SetNull)
+  reviewedBy User?          @relation("ExerciseReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  kind       ExerciseKind   @relation(fields: [kindId], references: [id])
+  status     ExerciseStatus @relation(fields: [statusId], references: [id])
+  sourceGame Game?          @relation(fields: [sourceGameId], references: [id], onDelete: SetNull)
+  copiedFrom Exercise?      @relation("ExerciseCopies", fields: [copiedFromId], references: [id], onDelete: SetNull)
+  copies     Exercise[]     @relation("ExerciseCopies")
+
+  topics      ExerciseTopic[]
+  seriesItems ExerciseSeriesItem[]
+  attempts    TrainingAttempt[]
+  states      UserExerciseState[]
+
+  @@index([teacherId, statusId])
+  @@index([statusId, difficulty])
+  @@index([startPositionHash])
+  @@index([sourceGameId])
+}
+
+/// The topics of an exercise (D15: the courses' Topic catalog). Written only
+/// with syncCatalogJoin, inside the exercise's write.
+model ExerciseTopic {
+  exerciseId String
+  topicId    Int
+
+  exercise Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  topic    Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([exerciseId, topicId])
+  @@index([topicId])
+}
+
+/// An ordered set of exercises built by an author (D18). A teacher's
+/// (teacherId) reaches students only through ExerciseSeriesShare (D31); the
+/// academy's (teacherId null) is the library's, listed once publishedAt is
+/// set (CHECK exercise_series_library_published: teacherId IS NULL OR
+/// publishedAt IS NULL).
+model ExerciseSeries {
+  id          String    @id @default(nanoid(8))
+  teacherId   String?
+  title       String    @db.VarChar(120)
+  description String?   @db.VarChar(1000)
+  publishedAt DateTime?
+  createdById String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  teacher   Teacher? @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  createdBy User?    @relation("ExerciseSeriesCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  items    ExerciseSeriesItem[]
+  shares   ExerciseSeriesShare[]
+  attempts TrainingAttempt[]
+
+  @@index([teacherId])
+}
+
+/// The order goes through services/shared/reorder.ts: the order is unique per
+/// series, so a direct swap throws P2002.
+model ExerciseSeriesItem {
+  seriesId   String
+  exerciseId String
+  order      Int
+
+  series   ExerciseSeries @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  exercise Exercise       @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  @@id([seriesId, exerciseId])
+  @@unique([seriesId, order])
+  @@index([exerciseId])
+}
+
+/// A teacher's series given to one student (D31), the twin of StudyShare: one
+/// row per (series, student); removing the share deletes the row, and the
+/// material stays the teacher's.
+model ExerciseSeriesShare {
+  id        String   @id @default(uuid())
+  seriesId  String
+  userId    String
+  teacherId String?
+  createdAt DateTime @default(now())
+
+  series  ExerciseSeries @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teacher Teacher?       @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+
+  @@unique([seriesId, userId])
+  @@index([userId])
+}
+
+/// The student's standing with one exercise: whether they ever solved it (D22)
+/// and when it comes back (D23). Derived from TrainingAttempt; its only writer
+/// is recordExerciseAttempt (and rebuildUserExerciseState, which folds the
+/// same rule over the history), both in
+/// services/shared/exercise-attempt.service.ts. A row created only to hold
+/// the family's lock (lockExerciseFamily) has attemptCount 0 and no dates.
+model UserExerciseState {
+  userId         String
+  exerciseId     String
+  /// Only writer: recordExerciseAttempt (and rebuildUserExerciseState).
+  attemptCount   Int       @default(0)
+  /// Only writer: recordExerciseAttempt (and rebuildUserExerciseState).
+  firstAttemptAt DateTime?
+  /// The first PASSED attempt: what makes the streak and «Ejercicios
+  /// superados» count an exercise once. Only writer: recordExerciseAttempt
+  /// (and rebuildUserExerciseState).
+  firstSolvedAt  DateTime?
+  /// Only writer: recordExerciseAttempt (and rebuildUserExerciseState).
+  lastAttemptAt  DateTime?
+  /// Only writer: recordExerciseAttempt (and rebuildUserExerciseState).
+  lastResultId   Int?
+  /// Rung of EXERCISE_REVIEW_INTERVALS_DAYS; null = not in review (never
+  /// failed, or graduated). Only writer: recordExerciseAttempt (and
+  /// rebuildUserExerciseState), through applyExerciseReview.
+  reviewStep     Int?
+  /// Only writer: recordExerciseAttempt (and rebuildUserExerciseState),
+  /// through applyExerciseReview.
+  nextReviewAt   DateTime?
+  /// Only writer: recordExerciseAttempt (and rebuildUserExerciseState).
+  lastReviewedAt DateTime?
+  updatedAt      DateTime  @updatedAt
+
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise   Exercise       @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  lastResult AttemptResult? @relation(fields: [lastResultId], references: [id])
+
+  @@id([userId, exerciseId])
+  @@index([userId, nextReviewAt])
+  @@index([userId, firstSolvedAt])
+  @@index([exerciseId])
 }
 
 // ---------------------------------------------------------------------------
@@ -1118,6 +1413,8 @@ model Game {
   /// Lessons that take their content from this game.
   lessons     Lesson[]
   visits      StudyVisit[]
+  /// Exercises created from a move of this game («Crear ejercicio desde aquí»).
+  exercises   Exercise[]
 
   @@index([databaseId, order])
 }
@@ -1182,6 +1479,11 @@ model Teacher {
   students TeacherStudent[]
   /// Collection shares they made.
   shares   StudyShare[]
+
+  /// Their exercises and series, and the series they gave to their students.
+  exercises            Exercise[]
+  exerciseSeries       ExerciseSeries[]
+  exerciseSeriesShares ExerciseSeriesShare[]
 }
 
 /// Teacher↔student assignment, independent of the classes: without it a student

@@ -14,10 +14,21 @@ export const ATTEMPT_RESULT = {
 
 export type AttemptResultCode = (typeof ATTEMPT_RESULT)[keyof typeof ATTEMPT_RESULT];
 
+/**
+ * Where an attempt was made (`TrainingAttempt.contextId`). LESSON,
+ * CHAPTER_QUIZ and TRAINER are the line trainer's; the rest are an exercise's:
+ * in a series, in free practice, in its spaced review, in a class block and in
+ * the «Contrarreloj».
+ */
 export const ATTEMPT_CONTEXT = {
   LESSON: "LESSON",
   CHAPTER_QUIZ: "CHAPTER_QUIZ",
   TRAINER: "TRAINER",
+  SERIES: "SERIES",
+  PRACTICE: "PRACTICE",
+  REVIEW: "REVIEW",
+  CLASS: "CLASS",
+  STORM: "STORM",
 } as const;
 
 export type AttemptContextCode = (typeof ATTEMPT_CONTEXT)[keyof typeof ATTEMPT_CONTEXT];

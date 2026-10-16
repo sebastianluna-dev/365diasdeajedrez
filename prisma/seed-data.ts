@@ -14,7 +14,14 @@ import {
   TRANSCRIPT_STATUS,
 } from "../constants/platform/class-codes.const";
 import { AUTHOR_ROLE, CONTENT_TYPE, COURSE_STATUS, DEFAULT_LEVEL } from "../constants/platform/course-codes.const";
-import { BOARD_ORIENTATION, OWNER_TYPE, PROGRESS_STATUS, TOPIC } from "../constants/platform/shared-codes.const";
+import { EXERCISE_KIND, EXERCISE_STATUS } from "../constants/platform/exercise-codes.const";
+import {
+  BOARD_ORIENTATION,
+  OWNER_TYPE,
+  PROGRESS_STATUS,
+  TOPIC,
+  type TopicCode,
+} from "../constants/platform/shared-codes.const";
 import { SOURCE_TYPE } from "../constants/platform/source-codes.const";
 import { DATABASE_KIND, GAME_ANALYSIS_MODE, GAME_RESULT, GAME_SOURCE } from "../constants/platform/study-codes.const";
 import { ATTEMPT_CONTEXT, ATTEMPT_RESULT, EXERCISE_MODE } from "../constants/platform/training-codes.const";
@@ -205,6 +212,25 @@ export const CATALOG_VALUES = {
     [ATTEMPT_CONTEXT.LESSON, "Lección"],
     [ATTEMPT_CONTEXT.CHAPTER_QUIZ, "Quiz de capítulo"],
     [ATTEMPT_CONTEXT.TRAINER, "Entrenador"],
+    [ATTEMPT_CONTEXT.SERIES, "Serie"],
+    [ATTEMPT_CONTEXT.PRACTICE, "Práctica libre"],
+    [ATTEMPT_CONTEXT.REVIEW, "Repaso"],
+    [ATTEMPT_CONTEXT.CLASS, "Clase"],
+    [ATTEMPT_CONTEXT.STORM, "Contrarreloj"],
+  ],
+  // The exercises (migration 20261016120000_exercises, which inserts the same
+  // rows: production never runs the seed). «Ejercicio» is masculine, and so
+  // are the status labels.
+  exerciseKind: [
+    [EXERCISE_KIND.SEQUENCE, "Secuencia"],
+    [EXERCISE_KIND.MATE_IN, "Mate en N"],
+  ],
+  exerciseStatus: [
+    [EXERCISE_STATUS.DRAFT, "Borrador"],
+    [EXERCISE_STATUS.READY, "Listo"],
+    [EXERCISE_STATUS.IN_REVIEW, "En revisión"],
+    [EXERCISE_STATUS.PUBLISHED, "En la biblioteca"],
+    [EXERCISE_STATUS.ARCHIVED, "Archivado"],
   ],
   ownerType: [
     [OWNER_TYPE.USER, "Usuario"],
@@ -298,12 +324,39 @@ export const CATALOG_VALUES = {
   ],
 } satisfies Record<string, [code: string, label: string][]>;
 
-export const TOPIC_VALUES: [code: string, label: string][] = [
-  [TOPIC.TACTICS, "Táctica"],
-  [TOPIC.OPENING_LINE, "Aperturas"],
-  [TOPIC.PAWN_STRUCTURE, "Estructuras de peones"],
-  [TOPIC.ENDGAME, "Finales"],
-  [TOPIC.STRATEGY, "Estrategia"],
+/**
+ * The topic catalog: [code, label, order, parent]. The five roots keep orders
+ * 0–4 (the dashboard's breakdown); the tactical motifs the exercises brought
+ * (D15) hang from TACTICS with orders from 10, so no root sorts among them.
+ * The migration 20261016120000_exercises inserts the motifs too, because
+ * production never runs the seed (prisma/exercise-migration.test.ts checks
+ * that both agree).
+ */
+export const TOPIC_VALUES: [code: TopicCode, label: string, order: number, parent: TopicCode | null][] = [
+  [TOPIC.TACTICS, "Táctica", 0, null],
+  [TOPIC.OPENING_LINE, "Aperturas", 1, null],
+  [TOPIC.PAWN_STRUCTURE, "Estructuras de peones", 2, null],
+  [TOPIC.ENDGAME, "Finales", 3, null],
+  [TOPIC.STRATEGY, "Estrategia", 4, null],
+  [TOPIC.FORK, "Ataque doble", 10, TOPIC.TACTICS],
+  [TOPIC.PIN, "Clavada", 11, TOPIC.TACTICS],
+  [TOPIC.SKEWER, "Enfilada", 12, TOPIC.TACTICS],
+  [TOPIC.DISCOVERED_ATTACK, "Ataque a la descubierta", 13, TOPIC.TACTICS],
+  [TOPIC.DOUBLE_CHECK, "Jaque doble", 14, TOPIC.TACTICS],
+  [TOPIC.DEFLECTION, "Desviación", 15, TOPIC.TACTICS],
+  [TOPIC.DECOY, "Atracción", 16, TOPIC.TACTICS],
+  [TOPIC.REMOVING_THE_DEFENDER, "Eliminación del defensor", 17, TOPIC.TACTICS],
+  [TOPIC.OVERLOADING, "Sobrecarga", 18, TOPIC.TACTICS],
+  [TOPIC.INTERFERENCE, "Interferencia", 19, TOPIC.TACTICS],
+  [TOPIC.X_RAY, "Rayos X", 20, TOPIC.TACTICS],
+  [TOPIC.ZWISCHENZUG, "Jugada intermedia", 21, TOPIC.TACTICS],
+  [TOPIC.CLEARANCE, "Despeje", 22, TOPIC.TACTICS],
+  [TOPIC.TRAPPED_PIECE, "Pieza atrapada", 23, TOPIC.TACTICS],
+  [TOPIC.SACRIFICE, "Sacrificio", 24, TOPIC.TACTICS],
+  [TOPIC.PROMOTION, "Coronación", 25, TOPIC.TACTICS],
+  [TOPIC.MATING_ATTACK, "Ataque al rey", 26, TOPIC.TACTICS],
+  [TOPIC.BACK_RANK_MATE, "Mate del pasillo", 27, TOPIC.TACTICS],
+  [TOPIC.ZUGZWANG, "Zugzwang", 28, TOPIC.TACTICS],
 ];
 
 // ---------------------------------------------------------------------------
@@ -1071,7 +1124,7 @@ export function buildAttempts(now: Date) {
     {
       id: IDS.attempt1,
       userId: IDS.demoUser,
-      exerciseId: IDS.exNajdorfLine,
+      trainingExerciseId: IDS.exNajdorfLine,
       result: ATTEMPT_RESULT.FAILED,
       mistakes: 2,
       durationMs: 95000,
@@ -1081,7 +1134,7 @@ export function buildAttempts(now: Date) {
     {
       id: IDS.attempt2,
       userId: IDS.demoUser,
-      exerciseId: IDS.exNajdorfLine,
+      trainingExerciseId: IDS.exNajdorfLine,
       result: ATTEMPT_RESULT.PASSED,
       mistakes: 0,
       durationMs: 61000,
@@ -1091,7 +1144,7 @@ export function buildAttempts(now: Date) {
     {
       id: IDS.attempt3,
       userId: IDS.demoUser,
-      exerciseId: IDS.exPoisonedPawn,
+      trainingExerciseId: IDS.exPoisonedPawn,
       result: ATTEMPT_RESULT.PASSED,
       mistakes: 1,
       durationMs: 30000,
