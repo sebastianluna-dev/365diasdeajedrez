@@ -5,6 +5,7 @@ const meta: MetaRecord = {
   "data-model": "Data model",
   student: "Student features",
   classes: "Classes",
+  exercises: "Exercises",
   play: "Play",
   adventure: "Adventure mode",
   "teacher-and-staff": "Teacher & staff panels",

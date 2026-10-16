@@ -1,0 +1,350 @@
+---
+description: "Exercises («Ejercicios»): the rules that do not bend, what phase 1 delivers, the routes, the life of an exercise, how one is solved and how an attempt is recorded, who sees what, the five writers and their guards, the flag and the seed."
+---
+
+# Exercises («Ejercicios»)
+
+A teacher records a chess exercise once: a starting position and a solution **played on the board**, with variants and comments. The student solves it on any screen: they play their moves and the platform answers the opponent's until the line ends. The exercise can go into a series the teacher gives their students, and every attempt is kept with its first wrong move. The owner made 44 decisions on 2026-10-16 (D01–D44, `planning/ejercicios/DECISIONES.md`, local), and the module is being built in phases from them (`planning/ejercicios/PLAN.md`, local). This page describes what is built. Each phase adds itself here when it lands.
+
+Everything sits behind `EXERCISES_ENABLED` (`constants/platform/features.const.ts`), which is **off**. The owner switches it on locally to check a phase ([The flag](#the-flag)).
+
+## The rules that do not bend
+
+- **One table holds every authored exercise.** `Exercise` holds the teacher's exercises, the academy's library and, from phase 2, a lesson's (owned by the lesson). `TrainingExercise` stays only for the dormant line trainer's derived line (D36). In the code, «exercise» always means `Exercise`.
+- **The solution is a PGN, and it is the source of truth.** It holds `[SetUp]`/`[FEN]` and the moves, with variants, comments and NAGs. Nobody types moves (D10). The kind, the N of «Mate en N» and the four frozen columns are derived from it and written only together with it.
+- **Only the author's lines are accepted** (D02). That includes «Mate en N»: a legal move outside the tree is wrong, even one that gives checkmate. An author who knows a second mate adds it as a variant. The opponent always answers with the main line.
+- **The first wrong move decides** (D19). The attempt fails at that moment and is sent at once, so leaving the page cannot hide a failure. The student may keep trying, but nothing after the decision belongs to the attempt. «Ver la solución» is a failure too (D20).
+- **One scored attempt per exercise per study day.** For the rest of that day the exercise runs unscored («Ya lo intentaste hoy: este intento no cuenta.») and stores nothing. A failure therefore never becomes a pass seconds later, in «Ejercicios superados», the streak, the review ladder or the teacher's view.
+- **The streak and «Ejercicios superados» count each exercise once**, on its first pass. A pass the same day as a failure is unscored, so it never counts.
+- **A teacher's series reaches a student only while that teacher is assigned to them** (D07). The share row survives a reassignment but shows nothing; the series comes back if the student is assigned to that teacher again.
+- **No engine anywhere in the exercise path** (D03). «Mate en N» is checked by the rules of chess: every line ends in the player's mate within N moves, and for N ≤ 2 a search of every defence proves the key move forces it.
+- **A student writes attempts, never exercises.** `services/exercises/exercise-roles.test.ts` keeps the student's side from reaching the exercise writers or the teacher's and staff's services.
+
+## What phase 1 delivers
+
+Phase 1 is D40's first delivery: the teacher creates, the student solves. Commits 1–5, 7, 8 and 10 on `feat/ejercicios` (2026-10-16), not pushed; 6 and 9 are phase 1b.
+
+- **The teacher's bank** (`/profesor/ejercicios`) has three views: «En uso», «Archivados» and «Series».
+- **The editor** has four tabs:
+  - «Posición»: place the pieces, paste a FEN or PGN, or start from a move of one of the teacher's study games;
+  - «Solución»: the solution is played on the board, and its problems and warnings are shown in words;
+  - «Datos»: title, prompt, kind, N, difficulty, topics, hints, explanation and source;
+  - «Probar»: the solve screen over the unsaved draft.
+- **Series** can be ordered, filled from the teacher's ready exercises, and given to their assigned students.
+- **The student's «Ejercicios»** has the home, «De tu profesor», each series with the student's marks, and the solve screen.
+- **Attempts** are recorded with their first mistake and the review ladder (D23). The ladder is computed from phase 1, but no screen shows it until phase 6. «Ejercicios superados» and the streak count each first pass, and the dashboard's recent activity names the exercise by its title.
+- **The catalogs** `ExerciseKind` and `ExerciseStatus`, the five new attempt contexts, and the 19 tactical topics under «Táctica» (D15). The staff lesson editor's «Temas» shows them grouped by parent too.
+
+Later phases:
+
+- **1b:** «Crear ejercicio desde aquí» in a teacher's study (D11), and the teacher's view of every attempt with its mistake (D24, `/profesor/alumnos/[studentId]/ejercicios`).
+- **2:** lesson exercises in `Exercise`. The hand-made `TrainingExercise` rows move there, keeping their ids.
+- **3:** the class block «Ejercicio».
+- **4:** the library, its review, and «Práctica libre». From this phase the student's menu item is drawn for every student.
+- **5:** PGN import.
+- **6:** «Para repasar hoy».
+- **7:** «Contrarreloj».
+
+## Routes
+
+| URL                                      | Who                         | Page                                                                                                                                                                                                                                                                                          |
+| ---------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/ejercicios`                            | a student (the DAL)         | «Ejercicios»: the card «De tu profesor», with each series given to the student that they may open now, «4 de 10», and «Empezar»/«Continuar». The page's single accent button is «Continuar con «…»». [`ExercisesHomeSection`](/components/platform/sections/exercises/exercises-home-section) |
+| `/ejercicios/series/[seriesId]`          | the student it was given to | A series: its teacher, «2 de 5 resueltos», its exercises in order with the student's mark **in that series** («Resuelto», «Fallado» or nothing), and «Empezar»/«Continuar». [`ExerciseSeriesSection`](/components/platform/sections/exercises/exercise-series-section)                        |
+| `/ejercicios/series/[seriesId]/[n]`      | the same                    | Its n-th exercise, numbered from 1 among the ones the student may solve, on the solve screen. [`ExerciseSolveSection`](/components/platform/sections/exercises/exercise-solve-section)                                                                                                        |
+| `/profesor/ejercicios`                   | `requireTeacher()`          | The bank: «En uso», `?vista=archivados` and `?vista=series`, with «Nuevo ejercicio» (accent) and «Nueva serie». [`TeacherExercisesSection`](/components/platform/sections/teacher/exercises/teacher-exercises-section)                                                                        |
+| `/profesor/ejercicios/nuevo`             | `requireTeacher()`          | A new exercise, starting from the standard position. Phase 1b adds `?estudio=&partida=&jugada=` (`teacherRoutes.newExercise(from)` already builds it). [`TeacherExerciseEditorSection`](/components/platform/sections/teacher/exercises/teacher-exercise-editor-section)                      |
+| `/profesor/ejercicios/[exerciseId]`      | `requireTeacher()` + owner  | The editor of a saved exercise. Another teacher's exercise answers 404.                                                                                                                                                                                                                       |
+| `/profesor/ejercicios/series/[seriesId]` | `requireTeacher()` + owner  | A series: its title (with the pen), its exercises (sortable, with «Quitar»), «Agregar ejercicios» (accent), who has it, and «Eliminar la serie». [`TeacherSeriesEditorSection`](/components/platform/sections/teacher/exercises/teacher-series-editor-section)                                |
+
+- **Builders:** `platformRoutes.exercises`, `exerciseSeries(id)` and `exerciseSeriesItem(id, n)`; `teacherRoutes.exercises`, `archivedExercises`, `exerciseSeriesList`, `newExercise(from?)`, `exerciseDetail(id)` and `exerciseSeries(id)` (`lib/platform-routes.ts`).
+- **Protection:** `/ejercicios` is in `PROTECTED_PATH_PREFIXES` and in the proxy's matcher; `proxy.test.ts` holds both.
+- **Loading:** the two loading boundaries of the student's pages draw `BoardLoading`, a server piece.
+- **Every page** checks the flag first and answers 404 when it is off. A series or an exercise the viewer may not reach answers 404 too, without saying whether it exists.
+
+**The menu.**
+
+- The teacher gets «Ejercicios» after «Clases que imparto».
+- The student gets it after «Mis cursos», but in phases 1–3 only when they have an active teacher or a series they may open. This is the `"withTeacher"` value of `PlatformNavFeatures.exercises`, resolved by `getStudentExerciseAccess()`. The shell asks for it only when `needsStudentExerciseAccess(roles)` says the menu depends on it.
+- `constants/platform/nav-items.test.ts` covers the values `"all"`, `"withTeacher"` and `false`.
+
+## Who may do what
+
+| Who         | In phase 1                                                                                                                                                                                                                                                             |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The teacher | Creates, edits, duplicates, archives, restores and deletes their own exercises. Builds series from their ready exercises and gives them to their assigned students. Sees their own exercises and series only (`buildOwnExercisesWhere`, `teacherId` in every `where`). |
+| The student | Solves what reaches them: a series given by the teacher they are assigned to now, holding that teacher's usable exercises (or, from phase 4, the library's). Writes attempts only.                                                                                     |
+| The staff   | Nothing new in the panel until phase 4 (the library and its review), apart from the grouped «Temas» of the lesson editor. The staff's status moves are already in the transitions table and the writer (`reviewLibraryExercise`).                                      |
+
+## The life of an exercise
+
+Every insert is a `DRAFT` (`createExerciseRecord`). A button that asks for another status calls the status writer in the same transaction. The moves are a pure table, `EXERCISE_TRANSITIONS` (`services/shared/exercise-status-transitions.ts`, tested). The editor and the bank draw their buttons from it, so no button offers what the save would refuse.
+
+| Status (`ExerciseStatus`)      | What it means                                                          | The teacher's moves (phase 1)                                                      |
+| ------------------------------ | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `DRAFT` «Borrador»             | Saved, offered to nobody. It only needs a readable start.              | «Guardar y marcar como listo» → `READY`; «Archivar» → `ARCHIVED`                   |
+| `READY` «Listo»                | Complete. The teacher's students may get it in a series.               | «Guardar» keeps it `READY` and refuses an incomplete save; «Archivar» → `ARCHIVED` |
+| `IN_REVIEW` «En revisión»      | Proposed to the library (phase 4). Its content is locked.              | phase 4                                                                            |
+| `PUBLISHED` «En la biblioteca» | In the library (phase 4). Its content is the staff's.                  | phase 4                                                                            |
+| `ARCHIVED` «Archivado»         | Kept for its history, offered nowhere. It leaves its series' students. | «Restaurar» → `READY` (so it must be complete)                                     |
+
+- **Readiness.** `exerciseReadiness` needs a solution that passes `analyzeSolution`, a title and at least one topic. The difficulty is always present: it is required, from 400 to 3000 in steps of 50. Proposing to the library also needs an explanation.
+- **What a draft must pass.** `exerciseSolutionProblem` blocks even a draft: a PGN that does not read (`unreadable`), a start chess cannot have (`badPosition`), another variant (`unsupportedVariant`), or a kind and N that do not go together (`mateInMissing`, `mateInOnSequence`).
+- **Locked content.** An exercise in review or in the library is locked (`isExerciseContentLocked`). The editor shows it read-only with its reason and offers «Duplicar».
+- **«Duplicar».** It copies the content whitelist (`exerciseCopyInput`) with `copiedFromId`, and the copy starts as a `DRAFT`. It never copies the review's stamps or `sourceGameId`, and the frozen columns are derived again from the PGN.
+- **«Eliminar».** It sits behind a `PlatformConfirmPopup` and only deletes an exercise nobody has tried, in `DRAFT`, `READY` or `ARCHIVED`. The condition travels in the `deleteMany`'s `where`, so a refusal is `deleteBlocked`, never a lost history. Deleting also removes the exercise's place in a series, which leaves a gap; the next addition goes after the highest position.
+- **The level** is never stored. «Nivel: Intermedio (1400–1799)» comes from `levelOfDifficulty`: the easiest active `Level` whose Elo range holds the difficulty.
+
+**The editor's save** (`saveTeacherExercise`) is one of the documented `useActionState` exceptions ([Teacher & staff panels → Forms](/platform/teacher-and-staff#forms)):
+
+- The board and the fields live in the browser, so a refused save comes back with its values and each error's tab, and a successful one redirects to the exercise with `?aviso=`.
+- The save is one transaction: `createExerciseRecord` or `syncExerciseSolution`, the other columns, the topics through `syncCatalogJoin`, and the status move when the button asked for one.
+- The status check is part of the update itself, so a change made in between is refused.
+- The component is [`ExerciseAuthoring`](/components/platform/shared/exercise-authoring).
+
+## Solving
+
+The rules are those of `lib/chess/exercise-solver.ts`, written out in [Chess → Library → Exercises: the format and the solver](/chess/library#exercises-the-format-and-the-solver):
+
+- **Matching:** a move matches any child of its node, the main line or a variant, compared as moves, not as text.
+- **The reply** is always the main child.
+- **Completion:** the exercise ends when a matched move, or its reply, has no children.
+- **The first unmatched move** fails the attempt and is recorded as its mistake.
+- **«Pista»** shows the author's texts in order, then circles the piece to move.
+- **«Ver la solución»** plays the main line from where the board stands, and counts as a failure.
+- **The outcome:**
+  - PASSED: completed and never failed;
+  - perfect: passed with no hint;
+  - for the review: clean, hinted or failed.
+
+**The solve screen** is one client component, [`ExerciseSolver`](/components/platform/shared/exercise-solver), over the pure reducer `exercise-solver-session.ts`. It runs in three modes:
+
+- `solve`: submits the attempt;
+- `unscored`: a second try the same study day, «Reintentar», or a reload. It submits nothing.
+- `preview`: the editor's «Probar». It submits nothing.
+
+It behaves like this:
+
+- a correct move gets «¡Bien!» and, 450 ms later, the reply with its sound;
+- a wrong move shows in the danger colour for 600 ms and is taken back;
+- the result panel says «¡Resuelto!», «Resuelto con pista», «Fallado» («Jugaste Cf7+; la jugada era Dg8+.») or «Viste la solución», with the explanation and «Ver la solución completa»;
+- after a retry it says only how it went this time, never «¡Resuelto!»;
+- the layout is designed for the phone first (D39), including a phone on its side.
+
+**The solution reaches the browser.** The solver runs on the client, so a curious student can read the answer in the page's data, as on Lichess. The server replays every attempt, so forging a result takes the right moves anyway, and there is no ranking at stake. The risk is accepted in `WARNINGS.md` (local), which also says how to undo it: a check per move on the server.
+
+## Recording an attempt
+
+`submitExerciseAttempt` (`services/exercises/exercises.actions.ts`) is a plain server action, called by the solver the moment the attempt is decided. It returns `{ ok: true, scored, firstSolve }`, or `{ ok: false, reason }`, which the solver shows as «No se guardó el intento.». It runs these steps:
+
+1. Takes the user from the DAL, checks `EXERCISES_ENABLED`, and limits submits to 120 a minute (`${user.id}:exercise-attempt`).
+2. Validates the input with zod. It caps the moves at 200 and clamps the hints to 0–20 and the duration to 0–2 h (`EXERCISE_ATTEMPT_LIMITS`). In phase 1 the context is `SERIES` with its `seriesId`; `PRACTICE` and `REVIEW` are accepted by the schema for phases 4 and 6.
+3. Reads the exercise through `solvableInContextWhere(context, viewer)`, the same `where` the page read it with. An exercise outside that path is `notFound`.
+4. Replays the moves on the server (`replayAttempt`). The result, the mistake and its SANs are the server's. A sequence that decides nothing, or goes on after the decision, is refused and stores nothing.
+5. Calls `recordExerciseAttempt` in one transaction, then revalidates `/inicio`, `/ejercicios` and the series.
+
+`recordExerciseAttempt` (`services/shared/exercise-attempt.service.ts`) does the rest:
+
+- **The lock comes first.** `lockExerciseFamily` runs `INSERT INTO "UserExerciseState" … ON CONFLICT DO NOTHING` for the solve key, then `SELECT … FROM "UserExerciseState" WHERE "userId" = $1 AND "exerciseId" = $solveKey FOR UPDATE`. That row lock serialises every submit of the family:
+  - a wrong-move submit and a «Ver la solución» before its answer;
+  - two tabs;
+  - a retry.
+
+  A row created only to hold the lock has `attemptCount` 0 and no dates, which no reader takes for an attempt.
+
+- **The family.** The solve key is the exercise's own id. From phase 2 it is the original's id for a lesson copy, so an original and its lesson copy count as one exercise (D22, D28). A teacher's «Duplicar» makes a new exercise, with its own key.
+- **The day gate.** It reads the family's `lastAttemptAt` under the lock. If any row of the family was attempted in the current study day (`isSameStudyDay`, `America/Mexico_City`, the streak's day), it writes nothing and answers `scored: false`. The exception is a «Contrarreloj» attempt (phase 7), which still stores its row for the run's score and nothing else.
+- **What it writes otherwise:**
+  - the `TrainingAttempt` row (`exerciseId`, `seriesId`, the result and the context, the counters frozen at the decision, `hintsUsed`, `solutionShown`, `isPerfect`);
+  - at most one `TrainingMistake`: the position's hash and FEN, the expected and the played move in canonical SAN, its ply within the solution, and whether a hint came before;
+  - the student's `UserExerciseState`, through `foldExerciseAttempt`, the rule the rebuild shares;
+  - on a pass, the first-solve `updateMany` (`firstSolvedAt: null` → now). When it wins and no other row of the family is solved, it writes the `EXERCISE_PASSED` activity. The subject is the solve key, and the topic is `exerciseActivityTopic`: the lowest-order root among the exercise's topics, ties broken by id, so the dashboard keeps its top-level breakdown.
+
+**The review ladder** (`applyExerciseReview`, `lib/training/review-schedule.ts`) has intervals of 1, 3, 7, 21 and 60 days, each dated at the start of a study day. «Contrarreloj» never moves it.
+
+| Before           | clean           | hinted          | failed         |
+| ---------------- | --------------- | --------------- | -------------- |
+| not in review    | stays out       | step 1 (3 days) | step 0 (1 day) |
+| step k < 4       | step k + 1      | stays k         | step 0         |
+| step 4 (60 days) | graduates (out) | stays 4         | step 0         |
+
+`rebuildUserExerciseState(db, userId)` folds a student's attempts again with exactly the writer's rules: the day gate, the ladder and the activity's once. The seed calls it, and it is the drift fixer.
+
+**Concurrency is tested twice.** The unit tests run on a fake client with row locks and an ordered statement log (`lib/testing/fake-exercise-db.ts`): two submits of the same exercise racing on the same day store one attempt, and the lock is taken before any read of the state. A fake lock is not PostgreSQL's, so the real one is checked in the app: «Ver la solución» pressed in two tabs of the same session at the same moment stores one attempt ([Verification in the app](#verification-in-the-app)).
+
+## Who sees what
+
+One where-builder, `services/shared/exercise-visibility-rules.ts` (pure, tested), answers every question of visibility. `exercise-visibility.ts` binds it to the current user and their active teacher, once per request.
+
+- **`buildSolvableExercisesWhere`: what a student may solve.** It is the `OR` of two branches:
+  - **the library:** `PUBLISHED`, from phase 4;
+  - **a series given to them:** a series reaches them while its teacher is assigned to them (`studentVisibleSeriesWhere`). It holds either the series owner's **usable** exercise (`READY`, `IN_REVIEW` or `PUBLISHED`) or one in the library now. Prisma cannot compare two columns, so the owner is a value: the viewer's active teacher, of whom there is at most one (`teacher_student_one_active`).
+
+  Phases 2 and 3 add a published lesson and a class block. `DRAFT` and `ARCHIVED` are never solvable.
+
+- **`solvableInContextWhere`** narrows the rule to the path an attempt claims:
+  - one series;
+  - practice: the library;
+  - review: any path.
+- **`buildPickableExercisesWhere`: what an author may put in a series** (D08). A teacher may pick their own usable exercises and the library's, never another teacher's. The staff may pick only the library's.
+- **`buildOwnExercisesWhere`:** what the teacher lists in their bank: their own, in every status.
+- **`teacherVisibleAttemptsWhere`** (the teacher's view comes in phase 1b): the attempts made in the teacher's own series, and those in a neutral context at their own exercise, at one that was ever in the library, or at a lesson's. Never by current status, so archiving hides no history.
+- **`seriesItemAvailability`** is the series branch's own condition on one item. The series editor uses it to warn «Archivado: tus alumnos ya no lo ven.» or «Ya no está disponible: …», and the student's pages use it to count and number only what the student may solve.
+
+## Series and sharing
+
+A series (D18) is an ordered list of exercises (`ExerciseSeries`, `ExerciseSeriesItem`).
+
+- **Creating and editing.** «Nueva serie» and «Editar la serie» are popups with `useActionState`. «Nueva serie» goes to the new series.
+- **Adding exercises.** «Agregar ejercicios» offers `buildPickableExercisesWhere` minus what the series holds, and the server checks it again. The new items go after the highest position. A collision on `ExerciseSeriesItem_pkey` or `…_seriesId_order_key`, recognised with `isUniqueConstraintError`, answers «La serie cambió mientras tanto: vuelve a intentarlo.».
+- **Order.** Reordering sends the full list through `planFullReorder`, and «Quitar» closes the gap (`planDenseRenumber`). A series holds at most 100 exercises (`SERIES_LIMITS`).
+- **Deleting.** «Eliminar la serie» keeps the exercises and the students' attempts; their `seriesId` becomes null.
+- **Giving it to students.** «Dar a mis alumnos» is [`StudentSharePanel`](/components/platform/shared/student-share-panel), the same panel a collection uses. `shareSeriesWithStudent` and `unshareSeriesWithStudent` require three things, the same three a collection's share checks:
+  - an active teacher;
+  - a series of theirs;
+  - a student currently assigned to them.
+
+  The list shows only the shares to students still assigned, because a share reaches no one else.
+
+- **Rate limits,** per teacher: series edits 120 a minute (`series-edit`), shares 60 (`share-series`).
+
+## The writers
+
+AGENTS.md's rule, «a derived column has one writer», applied to the exercises. Each writer lives in `services/shared/`, takes the Prisma client (or a transaction) first, and the schema comment of each column names it.
+
+| What                                                                                                             | Its one writer                                                                                                                                                                 |
+| ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `solutionPgn`, `kindId`, `mateIn` and the frozen `startFen`, `startPositionHash`, `solutionPlies`, `playerMoves` | `createExerciseRecord` and `syncExerciseSolution` (`exercise-record.service.ts`), both spreading `exerciseSolutionColumns`, which returns the seven together                   |
+| `statusId` and the review's stamps (`submittedAt`, `reviewedAt`, `reviewedById`, `reviewNote`, `publishedAt`)    | `transitionOwnExercise` (the owner teacher) and `reviewLibraryExercise` (the staff) (`exercise-status.service.ts`); an insert's `DRAFT` comes from `initialExerciseStatusData` |
+| `TrainingAttempt` rows with `exerciseId`, `TrainingMistake`, `UserExerciseState`                                 | `recordExerciseAttempt`, after `lockExerciseFamily`; `rebuildUserExerciseState` folds the same rule                                                                            |
+| `UserActivity`/`UserStatDaily` for exercises                                                                     | `recordUserActivity`, called only from `recordExerciseAttempt`, once per student and solve key                                                                                 |
+| `ExerciseTopic`                                                                                                  | `syncCatalogJoin`, inside the exercise's write                                                                                                                                 |
+| A series' progress «4 de 10», an exercise's level                                                                | none: both are derived on reading                                                                                                                                              |
+
+**Every insert of an exercise goes through `createExerciseRecord`**, which creates it as a draft: the editor's save, «Duplicar», and from later phases the lesson copy and the import.
+
+**The seed is the documented exception.** It writes rows by fixed id, spreads `exerciseSolutionColumns`, and writes its status as seeded data. `prisma/` is outside the guard's scan, as it is for the classes.
+
+The guards:
+
+- `services/shared/exercise-writers.test.ts` parses every source of `app`, `components`, `lib`, `services` and `scripts` and fails on any of these outside its writer:
+  - a column or row written by the wrong file;
+  - a `data` the guard cannot read;
+  - a solution column written without the spread;
+  - an insert that lacks either spread;
+  - raw SQL that changes these tables;
+  - `EXERCISE_PASSED` written anywhere but the attempt writer and the dormant trainer;
+  - a copy that skips `createExerciseRecord` or `exerciseCopyInput`.
+
+  The source scanner is `lib/testing/write-scan.ts`, which `class-writers.test.ts` shares.
+
+- `services/exercises/exercise-roles.test.ts` keeps the student's side from reaching the record or status writers, `services/teacher-exercises/` or `services/staff-exercises/`.
+- `exercise-visibility-rules.test.ts` builds each `where` with explicit ids:
+  - a draft in a shared series is out;
+  - a share to another student does not reach this one;
+  - a former teacher's series is out;
+  - another teacher's exercise is out of the picker;
+  - the teacher keeps the history of an archived exercise.
+- `prisma/exercise-migration.test.ts` checks that the migration and the seed agree on the catalogs and the topics. It also checks the six CHECKs, the rename of `TrainingAttempt.exerciseId`, and that each derived column's comment names its writer.
+
+## The model
+
+Migration `20261016120000_exercises` adds:
+
+- the tables `Exercise`, `ExerciseTopic`, `ExerciseSeries`, `ExerciseSeriesItem`, `ExerciseSeriesShare` and `UserExerciseState`, and the catalogs `ExerciseKind` (`SEQUENCE` «Secuencia», `MATE_IN` «Mate en N») and `ExerciseStatus`;
+- five contexts in `AttemptContext`: `SERIES`, `PRACTICE`, `REVIEW`, `CLASS` and `STORM`;
+- the 19 tactical topics under `TACTICS`;
+- six CHECKs.
+
+It also renames `TrainingAttempt.exerciseId` to `trainingExerciseId`, the dormant trainer's line, and makes it nullable. A new `exerciseId` points at `Exercise`, and the CHECK `training_attempt_one_exercise` says exactly one of the two is set. Labels are masculine («Listo», «Archivado»), because «ejercicio» is. The columns, the indexes and the CHECKs are in [Data model → Exercises](/platform/data-model#exercises).
+
+## The flag
+
+`EXERCISES_ENABLED = false`. Off, every route above answers 404 (by its URL too), no menu shows «Ejercicios», and every action answers `disabled`. Its comment lists what it will also hide in later phases:
+
+- `/administracion/ejercicios*`;
+- «Crear ejercicio desde aquí»;
+- a lesson's exercises card and its practice pages;
+- «Agregar desde la biblioteca»;
+- the class block «Ejercicio» and its routes.
+
+It does **not** hide the staff lesson panel «Ejercicios» of phase 2, which replaces a panel that is live today over data that phase's migration moves.
+
+## Services
+
+- `services/teacher-exercises/{service,mapper,types,actions}.ts`:
+  - reads: `getTeacherExercises(tab)`, `getTeacherExerciseEditor(id)`, `getNewTeacherExerciseEditor()`, `getExerciseCatalogs()`, `listTeacherExerciseGames()`, `getTeacherSeriesEditor(id)` (memoised per request) and `activeSeriesSharesWhere`;
+  - actions: `saveTeacherExercise`, `duplicateTeacherExercise`, `archiveTeacherExercise`, `restoreTeacherExercise`, `deleteTeacherExercise`, `fetchTeacherGamePgn`, and the series' `createExerciseSeries`, `updateExerciseSeries`, `addExercisesToSeries`, `removeExerciseFromSeries`, `reorderExerciseSeries`, `deleteExerciseSeries`, `shareSeriesWithStudent` and `unshareSeriesWithStudent`;
+  - rate limits, per user: saves 60 a minute (`exercise-save`), deletes 30 (`exercise-delete`).
+- `services/exercises/{service,mapper,types,actions}.ts`, the student's side:
+  - `getStudentExerciseAccess()`, the menu's rule;
+  - `getStudentExercisesHome()`, `getStudentSeries(id)` and `getStudentSeriesExercise(id, n)`, which opens an exercise unscored when its family was attempted this study day (`attemptedToday`);
+  - `submitExerciseAttempt`.
+- Shared, beside the writers:
+  - `exercise-form.ts`: `EXERCISE_FORM_SCHEMA` and `readExerciseForm`, the one schema every author's form is validated with, and `exerciseErrorTab`;
+  - `exercise-level.ts`;
+  - `exercise-activity-topic.ts`;
+  - `topic-groups.ts`: the topics under their parent, for the editors' «Temas».
+- The field limits are in `constants/platform/exercise.const.ts`, the codes in `exercise-codes.const.ts`, and the position editor's messages in `exercise-messages.const.ts`.
+- The pure chess modules are `lib/chess/exercise-format.ts`, `exercise-solver.ts`, `position-setup.ts` and `exercise-labels.ts`, all in [Chess → Library](/chess/library).
+
+The components:
+
+- the editor's: [`PiecePlacementBoard`](/components/chess/piece-placement-board), [`PlatformTabs`](/components/platform/shared/platform-tabs) and [`MovePathPicker`](/components/platform/shared/move-path-picker);
+- the bank's: [`ExerciseCard`](/components/platform/shared/exercise-card);
+- the series': the section pages under `components/platform/sections/teacher/exercises/` and [`StudentSharePanel`](/components/platform/shared/student-share-panel);
+- the student's: [`ExerciseSolver`](/components/platform/shared/exercise-solver).
+
+## Seed
+
+`prisma/seed-exercises.ts`, called by `prisma/seed.ts` before the daily stats are rebuilt, writes this demo:
+
+- **five `READY` exercises of `profesor.demo`:**
+  - «El pasillo abierto» (mate in 1);
+  - «El mate de Philidor» (smothered mate in 2);
+  - «Mate de las negras» (black mates in 1);
+  - «Horquilla de caballo» (a sequence with a defence variant);
+  - «La enfilada en la columna» (two text hints and an explanation);
+- **his series «Táctica de la semana»** with the five, given to `alumno.demo`;
+- **three attempts of the student in that series:**
+  - clean at the first;
+  - failed at the first move of the Philidor («Cf7+» for «Dg8+»), with its mistake;
+  - one with a hint at the fork.
+
+  Two exercises are left untried.
+
+`rebuildUserExerciseState` then folds the student's state, and the two first passes' `EXERCISE_PASSED` activities are written by fixed id. `prisma/seed-exercises.test.ts` runs `analyzeSolution` and the readiness check on every exercise, and replays every attempt as the server would. More in [Scripts & seed](/operations/scripts-and-seed).
+
+## Open points
+
+- **A deleted series hides its attempts from the teacher.** After «Eliminar la serie» its attempts keep their history, but their `seriesId` is null. `SERIES` is not a neutral context, so `teacherVisibleAttemptsWhere` shows them in none of the teacher's views. To decide before phase 1b; noted in `IMPROVEMENTS.md`.
+- **A share left with a reassigned student is invisible to the teacher.** The share panel lists only the students currently assigned, so the teacher cannot see or remove that share, which reaches no one anyway.
+- **«Mate en N» for N ≥ 3 trusts the author's lines.** The exhaustive search runs only for N ≤ 2 (`FORCED_MATE_SEARCH_MAX`).
+- **The placement board's squares cannot be used from the keyboard**, because they are chessground's. From the keyboard, a position is set up with «Pegar FEN o PGN».
+
+## Verification in the app
+
+Not run yet. Phase 1 is checked by the owner with the flag on locally, before phase 1b starts, with the plan's list (`planning/ejercicios/PLAN.md` §9, Phase 1). As `profesor.demo`:
+
+- build exercise A with the piece editor and exercise B from a pasted FEN;
+- check «Probar»;
+- check that «Guardar y marcar como listo» is refused without a topic;
+- build the series «Prueba» of four and give it to `alumno.demo`.
+
+As `alumno.demo` at 390 px, the four items in turn:
+
+- solved clean;
+- failed at the first move;
+- solved with a hint;
+- «Ver la solución».
+
+Then:
+
+- «Ejercicios superados» is two more on `/inicio`, and the streak shows today done;
+- reopening item 1 and «Reintentar» change nothing;
+- «Ver la solución» pressed in two tabs at once stores one attempt;
+- the solve screen at 844 × 390 and at 768 px;
+- `valentina.demo`, once the staff ends her assignment: no menu item, and the no-teacher empty state;
+- with the flag off, every route answers 404.
+
+What the run leaves in the local seed goes here.
