@@ -1,0 +1,202 @@
+/* The exercise editor: the steps as tabs, and the save bar under them on
+   every tab. Designed for a big screen (D39): from 1024px each step puts its
+   board on the left, sticky, and its controls on the right; below, they
+   stack, the board first and as wide as the screen allows. */
+.exercise-authoring {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-6);
+  min-width: 0;
+
+  /* Why the content cannot be changed, over the tabs. */
+  & .exercise-authoring__lock {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    margin: 0;
+    padding: var(--platform-space-3) var(--platform-space-4);
+    border-radius: 8px;
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text-muted);
+    font-size: var(--platform-type-lg);
+  }
+
+  & .exercise-authoring__lock-icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+  }
+
+  & .exercise-authoring__position,
+  & .exercise-authoring__from-game,
+  & .exercise-authoring__solution {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-5);
+    min-width: 0;
+  }
+
+  & .exercise-authoring__step {
+    display: grid;
+    grid-template-columns: minmax(280px, 520px) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--platform-space-8);
+  }
+
+  /* «Datos»: the position is only there to be looked at. */
+  & .exercise-authoring__step.exercise-authoring__step_board_small {
+    grid-template-columns: minmax(200px, 320px) minmax(0, 1fr);
+  }
+
+  & .exercise-authoring__board {
+    position: sticky;
+    top: var(--platform-space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    min-width: 0;
+  }
+
+  & .exercise-authoring__fields {
+    min-width: 0;
+  }
+
+  & .exercise-authoring__castling {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--platform-space-2) var(--platform-space-4);
+  }
+
+  & .exercise-authoring__tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-2);
+  }
+
+  & .exercise-authoring__lead {
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+  }
+
+  /* What the solution's rules say, under the board. */
+  & .exercise-authoring__report {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--platform-space-3);
+  }
+
+  & .exercise-authoring__report:focus-visible {
+    outline-offset: 4px;
+  }
+
+  & .exercise-authoring__checks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .exercise-authoring__check {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--platform-space-2);
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    line-height: 1.4;
+    color: var(--platform-text-muted);
+  }
+
+  & .exercise-authoring__check_tone_danger {
+    color: var(--platform-danger);
+  }
+
+  & .exercise-authoring__check_tone_success {
+    color: var(--platform-success-ink);
+  }
+
+  & .exercise-authoring__check-icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin-top: var(--platform-space-0-5);
+  }
+
+  & .exercise-authoring__source {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+  }
+
+  /* Written like a field's label: the four fields under it are one datum. */
+  & .exercise-authoring__source-title {
+    font-size: var(--platform-type-lg);
+    color: var(--platform-text-muted);
+  }
+
+  & .exercise-authoring__source-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--platform-space-4);
+  }
+
+  /* The save bar: under the tabs, on every tab, and stuck to the bottom of
+     the window while the step above it is longer than the screen. */
+  & .exercise-authoring__save {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-4) 0;
+    border-top: 1px solid var(--platform-border);
+    background: var(--platform-bg);
+  }
+
+  & .exercise-authoring__save-note {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-danger);
+  }
+
+  & .exercise-authoring__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--platform-space-3);
+  }
+
+  @media (width < 1024px) {
+    & .exercise-authoring__step,
+    & .exercise-authoring__step.exercise-authoring__step_board_small {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--platform-space-6);
+    }
+
+    & .exercise-authoring__board {
+      position: static;
+      max-width: 560px;
+    }
+
+    & .exercise-authoring__step_board_small .exercise-authoring__board {
+      max-width: 280px;
+    }
+  }
+
+  @media (width < 640px) {
+    & .exercise-authoring__castling,
+    & .exercise-authoring__source-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* For the thumb: each button as wide as its share of the bar. */
+    & .exercise-authoring__buttons > * {
+      flex: 1 1 auto;
+    }
+  }
+}

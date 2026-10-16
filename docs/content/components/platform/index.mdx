@@ -43,6 +43,10 @@ description: "Index of components/platform: the shared primitives and every sect
 | [`RegisterPaymentPopup`](/components/platform/shared/register-payment-popup) | client | «Registrar pago» and «Editar pago»: the payment and the classes it dates on a weekly rhythm.                                |
 | [`ScheduleSeatPopup`](/components/platform/shared/schedule-seat-popup)       | client | «Programar una clase de …»: a paid class gets its date, in a new class or a group one.                                      |
 | [`StaffTabs`](/components/platform/shared/staff-tabs)                        | client | Tabs that are pages: a course's, a chapter's and a student's record.                                                        |
+| [`PlatformTabs`](/components/platform/shared/platform-tabs)                  | client | Tabs that are state, on Radix's Tabs: the steps of one screen, each with an error mark when it has one.                     |
+| [`MovePathPicker`](/components/platform/shared/move-path-picker)             | client | Picks a position of a game or a lesson in the viewer: a class block's opening move, an exercise's start.                    |
+| [`ExerciseAuthoring`](/components/platform/shared/exercise-authoring)        | client | The exercise editor: «Posición», «Solución» and «Datos» as tabs over one draft, and the save bar.                           |
+| [`ExerciseCard`](/components/platform/shared/exercise-card)                  | client | An exercise of a bank: its start small, its status, kind, difficulty and topics, and the row's words.                       |
 | [`PlatformNotice`](/components/platform/shared/platform-notice)              | server | The result of an action, from the page's `?error=` message map.                                                             |
 | [`EmptyState`](/components/platform/shared/empty-state)                      | server | Dashed box with title, description and an optional link.                                                                    |
 | [`ProgressIndicator`](/components/platform/shared/progress-indicator)        | server | Progress bar, inline, stacked or as a large figure, in blue or the green of what is finished.                               |
@@ -178,9 +182,10 @@ description: "Index of components/platform: the shared primitives and every sect
 | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form)                        | client | The fields of one block by kind.                           |
 | [`GameSelector`](/components/platform/sections/teacher/classes/class-block-editor/game-selector)                  | client | Referenceable games grouped by owner.                      |
 | [`LessonReferenceField`](/components/platform/sections/teacher/classes/class-block-editor/lesson-reference-field) | client | A lesson by id, previewed as validation.                   |
-| [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker)             | client | Picks a block's opening position in the viewer.            |
 | [`TopicPopup`](/components/platform/sections/teacher/classes/topic-popup)                                         | client | «Editar el tema».                                          |
 | [`AfterNotesPopup`](/components/platform/sections/teacher/classes/after-notes-popup)                              | client | The summary and the recording, after the class.            |
+| [`TeacherExercisesSection`](/components/platform/sections/teacher/exercises/teacher-exercises-section)            | server | «Ejercicios»: the teacher's bank, in use or archived.      |
+| [`TeacherExerciseEditorSection`](/components/platform/sections/teacher/exercises/teacher-exercise-editor-section) | server | The editor of a teacher's exercise, its actions bound.     |
 
 ## `sections/staff/` — `/administracion`
 

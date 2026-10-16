@@ -177,3 +177,48 @@ export function validateSetup(input: SetupInput): { ok: true; fen: string } | { 
 
   return { ok: true, fen: makeFen(pos.toSetup()) };
 }
+
+/**
+ * The setup a FEN stands for, for the editor's «Colocar piezas» to open on a
+ * position that came in another way (a pasted FEN or PGN, a game's move, a
+ * saved exercise). Null for a FEN chessops cannot read; the counters are not
+ * the setup's (an exercise always starts at «0 1»).
+ */
+export function setupOfFen(fen: string): SetupInput | null {
+  const parsed = parseFen(fen.trim());
+  if (parsed.isErr) return null;
+  const [placement = "", turn = "w", castling = "-", ep = "-"] = fen.trim().split(/\s+/);
+  return {
+    placement,
+    turn: turn === "b" ? "black" : "white",
+    castling: {
+      K: castling.includes("K"),
+      Q: castling.includes("Q"),
+      k: castling.includes("k"),
+      q: castling.includes("q"),
+    },
+    epSquare: ep === "-" ? null : ep,
+  };
+}
+
+/**
+ * The setup with what the placement no longer allows taken away: a castling
+ * right whose king or rook left its square, an en passant square no push
+ * could have left. The editor runs it after every change on the board, so
+ * the two refusals it would otherwise say («castling», «enPassant») never
+ * reach a position the author made piece by piece.
+ */
+export function normalizeSetup(input: SetupInput): SetupInput {
+  const available = availableCastling(input.placement);
+  const castling = {
+    K: input.castling.K && available.K,
+    Q: input.castling.Q && available.Q,
+    k: input.castling.k && available.k,
+    q: input.castling.q && available.q,
+  };
+  const epSquare =
+    input.epSquare !== null && enPassantOptions(input.placement, input.turn).includes(input.epSquare)
+      ? input.epSquare
+      : null;
+  return { ...input, castling, epSquare };
+}

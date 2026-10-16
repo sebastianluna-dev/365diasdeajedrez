@@ -171,6 +171,19 @@
     background: radial-gradient(transparent 0%, transparent 79%, rgba(22, 17, 13, 0.3) 80%);
   }
 
+  /* A wrong move of an exercise, shown for a moment before it is taken
+     back: the same squares, in the danger colour (`lastMoveTone="error"`). */
+  &.chess-board_last-move_error cg-board square.last-move {
+    background-color: color-mix(in srgb, var(--platform-danger, #e5484d) 55%, transparent);
+  }
+
+  /* An exercise's «Pista» without a text: the piece to move, circled
+     (`hintSquare`, chessground's custom highlight). */
+  & cg-board square.hint {
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 4px var(--platform-accent, #ff9143);
+  }
+
   & cg-board square.check {
     background: radial-gradient(
       ellipse at center,

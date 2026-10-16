@@ -1,0 +1,46 @@
+---
+description: "An exercise of a bank: its start position small, the title that opens it, its status and kind as tags, its difficulty with the level, the student's moves, its topics and the row's words."
+---
+
+# `ExerciseCard`
+
+|            |                                                                                                                                                                                                |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/exercise-card/exercise-card.comp.tsx`; its data, `exercise-card.types.ts`                                                                                          |
+| Kind       | Client Component (it hosts «Eliminar»'s confirmation)                                                                                                                                          |
+| Stylesheet | `exercise-card.comp.css` → block `.exercise-card`                                                                                                                                              |
+| Story      | `exercise-card.stories.tsx` (`platform/shared/ExerciseCard`): a ready mate in 2 nobody has tried, a draft with Black to move and no level, an archived one with attempts, and the confirmation |
+| Used by    | [`TeacherExercisesSection`](/components/platform/sections/teacher/exercises/teacher-exercises-section)                                                                                         |
+| Composes   | [`StaticDiagram`](/components/chess/static-diagram), [`SubmitButton`](/components/platform/shared/submit-button), [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup) |
+| Reads      | `ExerciseCardData`, mapped by `mapExerciseCard` (`services/teacher-exercises/teacher-exercises.mapper.ts`)                                                                                     |
+
+## Props
+
+| Prop       | Type                  | Required | Meaning                                                                                                                                                                                                |
+| ---------- | --------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `exercise` | `ExerciseCardData`    | yes      | The card's data, `allowed` included: which row actions this exercise offers by its status and its history (`teacherExerciseAllowed`).                                                                  |
+| `actions`  | `ExerciseCardActions` | no       | `duplicate`, `archive`, `restore`, `delete`, each `(exerciseId, formData) => Promise<void>`: the server actions, from the section; stubs in Storybook. Without it the card only leads to the exercise. |
+
+## Behaviour
+
+- The diagram is the start with the side to move at the bottom; the status is a `platform-tag` (a draft plain, a ready one the success's, one in review the warning's, one in the library the accent's) and the kind another («Secuencia», «Mate en 2»).
+- The row's words are `.platform-row-action`: «Duplicar», «Archivar» (a draft or a ready one), «Restaurar» (an archived one), each a `<form>` bound to the id; «Eliminar», in the danger's ink, opens a `PlatformConfirmPopup` (a sibling of the card's body) that names the exercise. It is offered only for one nobody has tried and that is not in review or in the library: with attempts its history stays and it is archived instead.
+- An archived card's diagram steps back (`opacity: 0.6`).
+
+## Markup & styling
+
+Block `.exercise-card` (76 lines): a grid of the diagram (112px, 88px under 640px) and the body, on the surface with the card's shadow.
+
+**Elements:** `.exercise-card__diagram`, `.exercise-card__body`, `.exercise-card__tags`, `.exercise-card__title`, `.exercise-card__link`, `.exercise-card__meta`, `.exercise-card__topics`, `.exercise-card__actions`
+
+**Modifiers:** `.exercise-card_state_archived`.
+
+**Other classes it renders:** `.platform-tag` and its variants, `.platform-row-action`, `.platform-row-action_variant_danger`.
+
+**Tokens:** `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(width < 640px)`.
+
+## Related
+
+- [`ExerciseAuthoring`](/components/platform/shared/exercise-authoring), what the title opens.

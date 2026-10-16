@@ -30,7 +30,7 @@ import type { PopupFormState } from "@/services/shared/form-state";
 import type { TeacherClassBlock } from "@/services/teacher-classes/teacher-classes.types";
 import type { BlockFormOptions } from "../class-block-editor/block-form.comp";
 import { BlockPopup, KIND_LABELS, type BlockPopupHandle } from "../class-block-editor/block-popup.comp";
-import type { FetchReferencePgn } from "../class-block-editor/move-path-picker.comp";
+import type { FetchReferencePgn } from "@/services/teacher-classes/teacher-classes.types";
 import "./class-block-list.comp.css";
 
 export interface ClassBlockListProps {

@@ -1,0 +1,67 @@
+/* The steps of one screen. Drawn like `.staff-tabs`, the record's pages, so
+   a tab reads the same whether it is a page or a state: a rule under the
+   row and the accent's underline on the open one. */
+.platform-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-5);
+  min-width: 0;
+
+  /* On a phone the row scrolls sideways rather than breaking a tab in two. */
+  & .platform-tabs__list {
+    display: flex;
+    gap: var(--platform-space-1);
+    overflow-x: auto;
+    scrollbar-width: none;
+    box-shadow: inset 0 -1px 0 var(--platform-border);
+  }
+
+  & .platform-tabs__tab {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-3) var(--platform-space-4);
+    border: 0;
+    border-radius: 8px 8px 0 0;
+    background: transparent;
+    /* The underline is drawn with the same device as the rule below, so it
+       overlaps it without moving anything. */
+    box-shadow: inset 0 -2px 0 transparent;
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: var(--platform-type-lg);
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: 150ms;
+    transition-property: color, box-shadow;
+  }
+
+  & .platform-tabs__tab:hover {
+    color: var(--platform-text);
+  }
+
+  & .platform-tabs__tab[data-state="active"] {
+    box-shadow: inset 0 -2px 0 var(--platform-accent);
+    color: var(--platform-accent-ink);
+  }
+
+  /* The mark of a tab with an error, in the danger colour whether it is
+     open or not: it is what says where the problem is. */
+  & .platform-tabs__mark {
+    width: 16px;
+    height: 16px;
+    color: var(--platform-danger);
+  }
+
+  & .platform-tabs__panel {
+    min-width: 0;
+  }
+
+  /* Radix makes the panel a stop of Tab after the list: its ring stands a
+     little off what it holds. */
+  & .platform-tabs__panel:focus-visible {
+    outline-offset: 4px;
+  }
+}

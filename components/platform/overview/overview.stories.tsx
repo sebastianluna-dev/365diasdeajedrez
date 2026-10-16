@@ -1,4 +1,4 @@
-import { type CSSProperties, Fragment, useRef, useState, type ReactNode } from "react";
+import { type ComponentProps, type CSSProperties, Fragment, useRef, useState, type ReactNode } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import Link from "next/link";
 import { AdventureCover } from "@/components/adventure/cover/adventure-cover/adventure-cover.comp";
@@ -106,6 +106,10 @@ import { NewCourseForm } from "@/components/platform/sections/staff/courses/new-
 import { StaffEditorHead } from "@/components/platform/sections/staff/courses/staff-editor.comp";
 import { StaffPanel } from "@/components/platform/sections/staff/courses/staff-panel.comp";
 import { StaffTabs } from "@/components/platform/shared/staff-tabs/staff-tabs.comp";
+import { PlatformTabPanel, PlatformTabs } from "@/components/platform/shared/platform-tabs/platform-tabs.comp";
+import { MovePathPicker } from "@/components/platform/shared/move-path-picker/move-path-picker.comp";
+import { ExerciseAuthoring } from "@/components/platform/shared/exercise-authoring/exercise-authoring.comp";
+import { ExerciseCard } from "@/components/platform/shared/exercise-card/exercise-card.comp";
 import { courseTabs } from "@/components/platform/shared/staff-tabs/staff-tabs.const";
 import { ClassAgenda } from "@/components/platform/shared/class-agenda/class-agenda.comp";
 import { ClassDateTile } from "@/components/platform/shared/class-date-tile/class-date-tile.comp";
@@ -234,6 +238,38 @@ import "./overview.css";
  * piece that in the app lives inside a white panel or bar, and writes its
  * quieter text in the grey made for white, is given that `surface`.
  */
+/** The exercise editor's tile: a new exercise on the standard start. */
+const OVERVIEW_NEW_EXERCISE: ComponentProps<typeof ExerciseAuthoring>["exercise"] = {
+  id: null,
+  statusCode: null,
+  solutionPgn: '[SetUp "1"]\n[FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"]\n\n*',
+  kind: "SEQUENCE",
+  mateIn: null,
+  title: "",
+  prompt: null,
+  difficulty: 1200,
+  topicCodes: [],
+  hints: [],
+  explanation: null,
+  sourceWhite: null,
+  sourceBlack: null,
+  sourceEvent: null,
+  sourceYear: null,
+  sourceGameId: null,
+};
+
+const OVERVIEW_EXERCISE_CATALOGS: ComponentProps<typeof ExerciseAuthoring>["catalogs"] = {
+  kinds: [
+    { code: "SEQUENCE", label: "Secuencia" },
+    { code: "MATE_IN", label: "Mate en N" },
+  ],
+  topics: [
+    { code: "TACTICS", label: "Táctica", parentCode: null },
+    { code: "FORK", label: "Ataque doble", parentCode: "TACTICS" },
+  ],
+  levels: [{ slug: "intermedio", name: "Intermedio", order: 2, eloMin: 1200, eloMax: 1599, isActive: true }],
+};
+
 function Tile({
   name,
   docs,
@@ -780,7 +816,7 @@ function PopupTrigger() {
 /** «Herramientas», as the student's menu builds it with everything on. */
 const TOOLS_MENU = buildPlatformNavGroups(
   { isTeacher: false, isStaff: false },
-  { play: true, analysisBoard: true, trainer: true },
+  { play: true, analysisBoard: true, trainer: true, exercises: true },
 )[0]!.items.find(isNavDropdown) as PlatformNavDropdown;
 
 /** The instant the profile's examples are read from, so «hace 5 horas» stays the same. */
@@ -1148,12 +1184,24 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             </Tile>
             <Tile name="PlatformCheckCards" docs="platform-shared-platformcheckcards" width={400} height={280}>
               <PlatformCheckCards
-                name="levels"
-                aria-label="Niveles"
-                defaultValue={["INITIAL"]}
+                name="topics"
+                aria-label="Temas"
+                layout="line"
+                defaultValue={["TACTICS", "FORK"]}
                 options={[
-                  { value: "INITIAL", label: "Inicial", description: "Quien aprende a mover las piezas." },
-                  { value: "INTERMEDIATE", label: "Intermedio", description: "Quien ya juega torneos." },
+                  { value: "TACTICS", label: "Táctica" },
+                  { value: "ENDGAME", label: "Finales" },
+                ]}
+                groups={[
+                  {
+                    label: "Táctica",
+                    options: [
+                      { value: "FORK", label: "Ataque doble" },
+                      { value: "PIN", label: "Clavada" },
+                      { value: "SKEWER", label: "Enfilada" },
+                      { value: "SACRIFICE", label: "Sacrificio" },
+                    ],
+                  },
                 ]}
               />
             </Tile>
@@ -1517,6 +1565,22 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
           <Section title="Navigation">
             <Tile name="StaffTabs" docs="platform-shared-stafftabs" surface width={480} height={160}>
               <StaffTabs tabs={courseTabs({ courseId: "4812", chapterCount: 6, gameCount: 148 })} />
+            </Tile>
+            <Tile name="PlatformTabs" docs="platform-shared-platformtabs" surface width={480} height={160}>
+              <PlatformTabs
+                label="Pasos del ejercicio"
+                value="position"
+                onValueChange={() => undefined}
+                tabs={[
+                  { value: "position", label: "Posición" },
+                  { value: "solution", label: "Solución" },
+                  { value: "data", label: "Datos", invalid: true },
+                ]}
+              >
+                <PlatformTabPanel value="position">
+                  <p style={{ margin: 0 }}>Coloca las piezas o pega un FEN.</p>
+                </PlatformTabPanel>
+              </PlatformTabs>
             </Tile>
             <Tile name="OutlineList" docs="platform-sections-courses-lesson-view-outlinelist" width={400} height={304}>
               {/* `position: static`: from 1280px the column's sheet pins .lesson-outline to the window. */}
@@ -2251,6 +2315,69 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 filtered={false}
                 hrefOf={() => "/perfil/ana-torres/partidas"}
                 now={PROFILE_NOW}
+              />
+            </Tile>
+          </Section>
+
+          <Section title="Exercises">
+            <Tile name="ExerciseAuthoring" docs="platform-shared-exerciseauthoring" width={960} height={760}>
+              <ExerciseAuthoring
+                exercise={OVERVIEW_NEW_EXERCISE}
+                catalogs={OVERVIEW_EXERCISE_CATALOGS}
+                games={[]}
+                permissions={{ contentLocked: null, canDuplicate: false }}
+                buttons={[
+                  {
+                    intent: "draft",
+                    label: "Guardar borrador",
+                    pendingLabel: "Guardando…",
+                    accent: false,
+                    needsReadiness: false,
+                  },
+                  {
+                    intent: "ready",
+                    label: "Guardar y marcar como listo",
+                    pendingLabel: "Guardando…",
+                    accent: true,
+                    needsReadiness: true,
+                  },
+                ]}
+                save={async (state) => state}
+                fetchGamePgn={async () => null}
+              />
+            </Tile>
+            <Tile name="ExerciseCard" docs="platform-shared-exercisecard" width={560} height={200}>
+              <ExerciseCard
+                exercise={{
+                  id: "ex000002",
+                  href: "#",
+                  title: "La dama que se entrega",
+                  startFen: "r1b2k1r/ppp1bppp/8/1B1Q4/5q2/2P5/PPP2PPP/R3R1K1 w - - 1 1",
+                  orientation: "white",
+                  statusCode: "READY",
+                  statusLabel: "Listo",
+                  kindLabel: "Mate en 2",
+                  difficulty: 1400,
+                  levelName: "Intermedio",
+                  playerMoves: 2,
+                  topicLabels: ["Táctica", "Desviación", "Sacrificio"],
+                  allowed: { duplicate: true, archive: true, restore: false, delete: true },
+                }}
+                actions={{
+                  duplicate: async () => undefined,
+                  archive: async () => undefined,
+                  restore: async () => undefined,
+                  delete: async () => undefined,
+                }}
+              />
+            </Tile>
+            <Tile name="MovePathPicker" docs="platform-shared-movepathpicker" width={960} height={640}>
+              <MovePathPicker
+                referenceId="g1x2y3z4"
+                hint="Ve a la jugada desde la que empieza el ejercicio y pulsa «Usar esta posición»."
+                value=""
+                onChange={() => undefined}
+                fetchPgn={async () => "1. e4 e5 2. Bc4 d6 3. Nf3 Bg4 4. Nc3 g6 5. Nxe5 Bxd1 6. Bxf7+ Ke7 7. Nd5# 1-0"}
               />
             </Tile>
           </Section>

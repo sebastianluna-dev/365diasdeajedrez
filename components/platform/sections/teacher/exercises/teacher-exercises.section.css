@@ -1,0 +1,22 @@
+/* The teacher's bank: the view's pills and the cards, two to a row on a wide
+   screen and one under 1024px. */
+.teacher-exercises {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-5);
+
+  & .teacher-exercises__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--platform-space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (width < 1024px) {
+    & .teacher-exercises__list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}

@@ -140,6 +140,19 @@ export const teacherRoutes = {
     return query ? `/profesor/clases?${query}` : "/profesor/clases";
   },
   classDetail: (classId: string) => `/profesor/clases/${classId}`,
+  /** The teacher's bank: `?vista=archivados` lists the archived ones. */
+  exercises: "/profesor/ejercicios",
+  archivedExercises: "/profesor/ejercicios?vista=archivados",
+  /**
+   * A new exercise; `from` opens it on a move of one of the teacher's study
+   * games («Crear ejercicio desde aquí», phase 1b).
+   */
+  newExercise: (from?: { studyId: string; gameId: string; path: string }) => {
+    if (!from) return "/profesor/ejercicios/nuevo";
+    const params = new URLSearchParams({ estudio: from.studyId, partida: from.gameId, jugada: from.path });
+    return `/profesor/ejercicios/nuevo?${params.toString()}`;
+  },
+  exerciseDetail: (exerciseId: string) => `/profesor/ejercicios/${exerciseId}`,
   profile: "/profesor/perfil",
 } as const;
 

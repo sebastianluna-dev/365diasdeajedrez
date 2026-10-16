@@ -1,0 +1,73 @@
+---
+description: "Tabs that are state, on Radix's Tabs: the steps of one screen, the open one decided by the host, and a mark on a tab with an error."
+---
+
+# `PlatformTabs`
+
+|            |                                                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/shared/platform-tabs/platform-tabs.comp.tsx`                                                                                |
+| Kind       | Client Component                                                                                                                                 |
+| Stylesheet | `platform-tabs.comp.css` → block `.platform-tabs`                                                                                                |
+| Story      | `platform-tabs.stories.tsx` (`platform/shared/PlatformTabs`): the editor's three steps, an error on a tab nobody is looking at, and the keyboard |
+| Used by    | [`ExerciseAuthoring`](/components/platform/shared/exercise-authoring)                                                                            |
+| Uses       | `Tabs` from `radix-ui`; `CircleExclamationIcon` from `components/icons/`                                                                         |
+
+## Purpose
+
+The steps of one screen, when they are not pages. [`StaffTabs`](/components/platform/shared/staff-tabs) are links — each tab its own URL and its own data —; these are state: the exercise editor's «Posición», «Solución» and «Datos» edit one exercise that is saved once, so moving between them must lose nothing and load nothing.
+
+Two exports: `PlatformTabs` (the list and the root) and `PlatformTabPanel` (one tab's content). Both are containers that place what they are given (`children`).
+
+## Props
+
+`PlatformTabs`:
+
+| Prop            | Type                      | Required | Meaning                                                                                                             |
+| --------------- | ------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| `label`         | `string`                  | yes      | The list's accessible name: «Pasos del ejercicio».                                                                  |
+| `tabs`          | `PlatformTab[]`           | yes      | `{ value, label, invalid? }` per tab. `invalid` draws the danger's mark and adds «, con errores» to the tab's name. |
+| `value`         | `string`                  | yes      | The open tab. Controlled: the host moves to the tab of an error.                                                    |
+| `onValueChange` | `(value: string) => void` | yes      |                                                                                                                     |
+| `children`      | `ReactNode`               | yes      | One `PlatformTabPanel` per tab.                                                                                     |
+
+`PlatformTabPanel`: `value` (the tab it belongs to) and `children`.
+
+## Behaviour
+
+- Radix's `Tabs`: the arrows move between tabs and open them (automatic activation), Home and End go to the ends, and the panel is the next stop of Tab.
+- **Only the open panel is mounted.** Whoever mounts the tabs keeps every value outside the panels — the exercise editor's draft is lifted (`useExerciseDraft`) — and a panel that opens again is drawn from that state.
+- An error on a tab nobody is looking at is still seen: `invalid` puts `CircleExclamationIcon` (Classic Solid, in `--platform-danger`) after the label and the tab's accessible name becomes «Datos, con errores» (`aria-label`; the icon is a picture and says nothing).
+
+## Markup & styling
+
+Block `.platform-tabs` (67 lines): a column; the list is a row with the container's rule under it (`inset 0 -1px 0`) that scrolls sideways on a phone rather than breaking a tab; the open tab (`[data-state="active"]`) carries the accent's underline and the accent's ink, as `StaffTabs`' current page does.
+
+**Elements:** `.platform-tabs__list`, `.platform-tabs__tab`, `.platform-tabs__mark`, `.platform-tabs__panel`
+
+**Modifiers and states:** `.platform-tabs__tab_state_invalid`; `[data-state="active"]` from the primitive.
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-border`, `--platform-danger`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/shared/exercise-authoring/exercise-authoring.comp.tsx`:
+
+```tsx
+<PlatformTabs
+  label="Pasos del ejercicio"
+  tabs={tabs}
+  value={tab}
+  onValueChange={(value) => setTab(value as ExerciseFormTab)}
+>
+  <PlatformTabPanel value="position">…</PlatformTabPanel>
+  <PlatformTabPanel value="solution">…</PlatformTabPanel>
+  <PlatformTabPanel value="data">…</PlatformTabPanel>
+</PlatformTabs>
+```
+
+## Related
+
+- [`StaffTabs`](/components/platform/shared/staff-tabs), tabs that are pages.

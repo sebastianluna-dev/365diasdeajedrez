@@ -8,8 +8,8 @@ import {
   STAFF_NAV_ITEMS,
 } from "./nav-items.const";
 
-const ALL_ON: PlatformNavFeatures = { play: true, analysisBoard: true, trainer: true };
-const ALL_OFF: PlatformNavFeatures = { play: false, analysisBoard: false, trainer: false };
+const ALL_ON: PlatformNavFeatures = { play: true, analysisBoard: true, trainer: true, exercises: true };
+const ALL_OFF: PlatformNavFeatures = { play: false, analysisBoard: false, trainer: false, exercises: false };
 const STUDENT = { isTeacher: false, isStaff: false };
 const TEACHER = { isTeacher: true, isStaff: false };
 const STAFF = { isTeacher: false, isStaff: true };
@@ -82,6 +82,21 @@ describe("buildPlatformNavGroups", () => {
     const noBoard = buildPlatformNavGroups(STUDENT, { ...ALL_ON, analysisBoard: false });
     expect(labelsOf(noBoard)).toEqual(["Inicio", "Mis clases", "Mis estudios", "Mis cursos", "Jugar", "Explorador"]);
   });
+
+  it("da «Ejercicios» al profesor después de sus clases, sólo con su interruptor", () => {
+    expect(labelsOf(buildPlatformNavGroups(TEACHER, ALL_ON)).slice(0, 4)).toEqual([
+      "Panel del profesor",
+      "Mis alumnos",
+      "Clases que imparto",
+      "Ejercicios",
+    ]);
+    expect(hrefsOf(buildPlatformNavGroups(TEACHER, ALL_ON))).toContain("/profesor/ejercicios");
+    expect(hrefsOf(buildPlatformNavGroups(TEACHER, { ...ALL_ON, exercises: false }))).not.toContain(
+      "/profesor/ejercicios",
+    );
+    // The staff's menu is the panel's: their exercises arrive with the library (phase 4).
+    expect(hrefsOf(buildPlatformNavGroups(STAFF, ALL_ON))).not.toContain("/profesor/ejercicios");
+  });
 });
 
 describe("activeNavHref", () => {
@@ -106,6 +121,7 @@ describe("activeNavHref", () => {
     expect(activeNavHref(profesor, "/profesor/alumnos")).toBe("/profesor/alumnos");
     expect(activeNavHref(profesor, "/profesor/alumnos/abc")).toBe("/profesor/alumnos");
     expect(activeNavHref(profesor, "/profesor")).toBe("/profesor");
+    expect(activeNavHref(profesor, "/profesor/ejercicios/abc")).toBe("/profesor/ejercicios");
     expect(activeNavHref(staff, "/administracion/cursos/abc/capitulos/def")).toBe("/administracion/cursos");
   });
 

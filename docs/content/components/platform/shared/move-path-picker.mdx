@@ -1,0 +1,73 @@
+---
+description: "Picks a position of a game or a lesson: fetches the referenced PGN, mounts the ordinary GameViewer and captures the current path through onPathChange. A class block keeps it; the exercise editor starts from it."
+---
+
+# `MovePathPicker`
+
+|            |                                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/shared/move-path-picker/move-path-picker.comp.tsx` (moved from `sections/teacher/classes/class-block-editor/` on 2026-10-16, when the exercise editor's «Desde una partida» started using it) |
+| Kind       | Client Component                                                                                                                                                                                                   |
+| Stylesheet | `move-path-picker.comp.css` → block `.move-path-picker`                                                                                                                                                            |
+| Story      | `move-path-picker.stories.tsx` (`platform/shared/MovePathPicker`): playing through a game as «Desde una partida» shows it, a path chosen and kept as a class block shows it, and a reference that cannot be read   |
+| Used by    | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form), [`ExerciseAuthoring`](/components/platform/shared/exercise-authoring) («Desde una partida»)                            |
+| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer)                                                                                                                                                          |
+| Uses       | `fetchPgn` as a prop (`FetchPgn`, exported here): the read behind an action, handed down so the pieces with a story import no action                                                                               |
+
+## Purpose
+
+A game or lesson block opens at a chosen move (`movePath`), and an exercise can start at a move of one of the author's games (D11). To choose it, this component mounts the usual viewer on the referenced PGN and reads where the author navigated. There is no second viewer and no PGN editor: it is the same component the student will see, which is also why the viewer's `onPathChange` prop exists.
+
+## Props
+
+| Prop          | Type                                      | Required | Meaning                                                                                                                                                                                                       |
+| ------------- | ----------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `referenceId` | `string`                                  | yes      | Game or lesson id. Empty renders nothing.                                                                                                                                                                     |
+| `hint`        | `string`                                  | yes      | The line above the viewer: what to look for.                                                                                                                                                                  |
+| `value`       | `string`                                  | yes      | The dotted path already chosen, if any; the viewer opens on it.                                                                                                                                               |
+| `onChange`    | `(path: string, pgn: string) => void`     | yes      | «Usar esta posición»: the current path, with the PGN it was read from (the exercise editor seeds the exercise from both with `exerciseSeedFromGame`).                                                         |
+| `onClear`     | `() => void`                              | no       | «Quitar posición» and the line «Posición guardada: jugada n» / «Sin posición marcada»: for a choice that is kept (a class block). Without it neither is drawn.                                                |
+| `fetchPgn`    | `(id: string) => Promise<string \| null>` | yes      | Reads the PGN. The class block binds `fetchReferencePgn` to its kind (`useCallback`, so the PGN is read again only when the reference or the kind changes); the exercise editor passes `fetchTeacherGamePgn`. |
+
+## Behaviour
+
+- An effect fetches the PGN with `fetchPgn(referenceId)` whenever either changes; the result is stored **together with the id it belongs to** and a `cancelled` flag drops late responses, so a slow answer is never painted over a reference the author already changed.
+- Status texts: "Cargando el contenido…" while pending, «No se pudo cargar ese contenido.» when the read gave `null`.
+- The viewer is keyed by `referenceId` so changing the game resets it rather than dragging along the previous path; `initialPath` reopens at the saved value.
+- With `onClear`, the footer shows "Posición guardada: jugada n" (n from the path's segment count) or "Sin posición marcada".
+
+## Markup & styling
+
+Block `.move-path-picker` (32 lines).
+
+**Elements:** `.move-path-picker__hint`, `.move-path-picker__status`, `.move-path-picker__actions`, `.move-path-picker__value`
+
+No modifiers.
+
+**Other classes it renders:** `.platform-button`.
+
+**Tokens:** `--platform-border`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/teacher/classes/class-block-editor/block-form.comp.tsx`:
+
+```tsx
+import { MovePathPicker } from "@/components/platform/shared/move-path-picker/move-path-picker.comp";
+
+<MovePathPicker
+  referenceId={referenceId}
+  hint="Navega hasta la posición con la que quieras abrir el bloque y púlsala. Si no eliges ninguna, el bloque empieza desde el principio."
+  value={movePath}
+  onChange={(path) => setMovePath(path)}
+  onClear={() => setMovePath("")}
+  fetchPgn={fetchPgn}
+/>;
+```
+
+## Related
+
+- [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker), the staff's equivalent that marks two positions.
+- Dotted paths in [Chess library](/chess/library).

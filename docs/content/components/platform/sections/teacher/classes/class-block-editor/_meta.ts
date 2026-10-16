@@ -6,7 +6,6 @@ const meta: MetaRecord = {
   "block-game-field": "BlockGameField",
   "game-selector": "GameSelector",
   "lesson-reference-field": "LessonReferenceField",
-  "move-path-picker": "MovePathPicker",
 };
 
 export default meta;

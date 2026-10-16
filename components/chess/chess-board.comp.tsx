@@ -78,6 +78,18 @@ export interface ChessBoardProps {
    */
   editableShapes?: boolean;
   onShapesChange?: (shapes: DrawShape[]) => void;
+  /**
+   * A square to circle: the piece the exercise's «Pista» points at when its
+   * author wrote no text for it (D37). Data, like the position: whoever
+   * solves decides when it shows.
+   */
+  hintSquare?: string;
+  /**
+   * How the last move is marked. `error`: in the danger colour, for the wrong
+   * move an exercise shows for a moment before taking it back. Without it,
+   * the usual yellow.
+   */
+  lastMoveTone?: "error";
 }
 
 export function ChessBoard({
@@ -90,6 +102,8 @@ export function ChessBoard({
   movableColor,
   editableShapes = false,
   onShapesChange,
+  hintSquare,
+  lastMoveTone,
 }: ChessBoardProps) {
   const positions = useMemo(() => replayGame(pgn ?? ""), [pgn]);
   const total = positions.length - 1;
@@ -205,6 +219,8 @@ export function ChessBoard({
       orientation,
       turnColor: color,
       check: check ? color : false,
+      // An empty map takes an earlier hint away.
+      highlight: { custom: new Map(hintSquare ? [[hintSquare as Key, "hint"]] : []) },
     };
     if (interactive) {
       const mover = movableColor ?? color;
@@ -233,7 +249,7 @@ export function ChessBoard({
     if (editableShapes) config.drawable = { shapes: position?.shapes ?? [] };
     api.set(config);
     if (!editableShapes) api.setAutoShapes(position?.shapes ?? []);
-  }, [ply, positions, position, orientation, interactive, movableColor, editableShapes]);
+  }, [ply, positions, position, orientation, interactive, movableColor, editableShapes, hintSquare]);
 
   // Keep chessground sized to its container.
   useEffect(() => {
@@ -377,9 +393,11 @@ export function ChessBoard({
     );
   };
 
+  const tone = lastMoveTone === "error" ? " chess-board_last-move_error" : "";
+
   if (position) {
     return (
-      <div className="chess-board chess-board_mode_controlled" ref={rootRef}>
+      <div className={`chess-board chess-board_mode_controlled${tone}`} ref={rootRef}>
         <div className="chess-board__frame" ref={frameRef}>
           <div className="chess-board__surface" ref={boardRef} />
           {promotionOverlay}
@@ -390,7 +408,7 @@ export function ChessBoard({
 
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- not a control: the click is only noted, so the board's keys answer once it has been used
-    <div className="chess-board" ref={rootRef} onClick={() => (hasBeenClickedRef.current = true)}>
+    <div className={`chess-board${tone}`} ref={rootRef} onClick={() => (hasBeenClickedRef.current = true)}>
       <div className="chess-board__columns">
         <div className="chess-board__frame" ref={frameRef}>
           <div className="chess-board__surface" ref={boardRef} />

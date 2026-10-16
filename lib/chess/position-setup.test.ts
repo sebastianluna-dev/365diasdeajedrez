@@ -4,8 +4,10 @@ import { describe, expect, it } from "vitest";
 import {
   availableCastling,
   enPassantOptions,
+  normalizeSetup,
   positionPlausibility,
   setupFen,
+  setupOfFen,
   validateSetup,
   type SetupInput,
 } from "./position-setup";
@@ -133,5 +135,45 @@ describe("positionPlausibility", () => {
   it("no tiene nada que decir de la posición inicial", () => {
     expect(positionPlausibility(Chess.default())).toBeNull();
     expect(positionPlausibility(positionOf("4k3/8/8/8/8/3n1n2/8/4K3 w - - 0 1"))).toBe("impossibleCheck");
+  });
+});
+
+describe("setupOfFen", () => {
+  it("lee la colocación, el turno, los enroques y el al paso de un FEN", () => {
+    expect(setupOfFen(INITIAL_FEN)).toEqual(input(INITIAL_BOARD_FEN, { castling: ALL }));
+    expect(setupOfFen(`${AFTER_E4} b Kq e3 0 1`)).toEqual(
+      input(AFTER_E4, { turn: "black", castling: { K: true, Q: false, k: false, q: true }, epSquare: "e3" }),
+    );
+  });
+
+  it("devuelve null con un FEN que no se lee", () => {
+    expect(setupOfFen("no es un fen")).toBeNull();
+  });
+
+  it("da la vuelta completa con setupFen en la posición inicial", () => {
+    const setup = setupOfFen(INITIAL_FEN);
+    expect(setup && setupFen(setup)).toBe("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+  });
+});
+
+describe("normalizeSetup", () => {
+  it("quita el enroque cuyo rey o torre dejó su casilla", () => {
+    const placement = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1";
+    expect(normalizeSetup(input(placement, { castling: ALL })).castling).toEqual({
+      K: false,
+      Q: true,
+      k: true,
+      q: true,
+    });
+  });
+
+  it("quita una casilla al paso que ningún avance pudo dejar y conserva la posible", () => {
+    expect(normalizeSetup(input(AFTER_E4, { turn: "black", epSquare: "d3" })).epSquare).toBeNull();
+    expect(normalizeSetup(input(AFTER_D5, { epSquare: "d6" })).epSquare).toBe("d6");
+  });
+
+  it("deja igual un setup que ya es válido", () => {
+    const setup = input(INITIAL_BOARD_FEN, { castling: ALL });
+    expect(normalizeSetup(setup)).toEqual(setup);
   });
 });

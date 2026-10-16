@@ -1,4 +1,9 @@
-import { ANALYSIS_BOARD_ENABLED, MOVE_TRAINER_ENABLED, PLAY_ENABLED } from "@/constants/platform/features.const";
+import {
+  ANALYSIS_BOARD_ENABLED,
+  EXERCISES_ENABLED,
+  MOVE_TRAINER_ENABLED,
+  PLAY_ENABLED,
+} from "@/constants/platform/features.const";
 import { platformRoutes, staffRoutes, teacherRoutes } from "@/lib/platform-routes";
 
 // Platform navigation. The menu is EXCLUSIVE by role: each person sees only
@@ -47,17 +52,20 @@ export interface PlatformNavGroup {
   items: PlatformNavEntry[];
 }
 
-/** What is switched on, which decides «Jugar» and whether the tools are gathered. */
+/** What is switched on, which decides «Jugar», «Ejercicios» and whether the tools are gathered. */
 export interface PlatformNavFeatures {
   play: boolean;
   analysisBoard: boolean;
   trainer: boolean;
+  /** The teacher's «Ejercicios», after «Clases que imparto» (`EXERCISES_ENABLED`). */
+  exercises: boolean;
 }
 
 const FEATURES: PlatformNavFeatures = {
   play: PLAY_ENABLED,
   analysisBoard: ANALYSIS_BOARD_ENABLED,
   trainer: MOVE_TRAINER_ENABLED,
+  exercises: EXERCISES_ENABLED,
 };
 
 /**
@@ -96,6 +104,9 @@ export const STAFF_NAV_ITEMS: PlatformNavItem[] = [
 /** «Jugar», for the student after their courses and for the teacher before the explorer. */
 const PLAY_ITEM: PlatformNavItem = { label: "Jugar", href: platformRoutes.play };
 
+/** The teacher's exercise bank, right after the classes they give. */
+const TEACHER_EXERCISES_ITEM: PlatformNavItem = { label: "Ejercicios", href: teacherRoutes.exercises };
+
 /**
  * «Herramientas» (planning decision §H, M3): the analysis board, the explorer
  * and — while it is on — the trainer, each with the line that says what it is
@@ -133,12 +144,13 @@ function toolsDropdown(features: PlatformNavFeatures): PlatformNavDropdown {
 
 /**
  * The student's or the teacher's items with what is switched on: «Jugar»
- * before the explorer, and the explorer gathered into «Herramientas» once the
+ * before the explorer, the explorer gathered into «Herramientas» once the
  * analysis board is on (until then it stays a link of its own, so it never
- * disappears).
+ * disappears), and the teacher's «Ejercicios» after their classes.
  */
 function withFeatures(items: PlatformNavItem[], features: PlatformNavFeatures): PlatformNavEntry[] {
   return items.flatMap((item): PlatformNavEntry[] => {
+    if (item.href === teacherRoutes.classes) return [item, ...(features.exercises ? [TEACHER_EXERCISES_ITEM] : [])];
     if (item.href !== platformRoutes.explorer) return [item];
     return [...(features.play ? [PLAY_ITEM] : []), features.analysisBoard ? toolsDropdown(features) : item];
   });

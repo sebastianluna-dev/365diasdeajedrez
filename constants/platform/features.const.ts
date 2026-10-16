@@ -47,3 +47,17 @@ export const ADVENTURE_ENABLED = false as boolean;
  * before `PLAY_ENABLED`.
  */
 export const ANALYSIS_BOARD_ENABLED = false as boolean;
+
+/**
+ * «Ejercicios»: the exercise bank, its editor and the series a teacher gives
+ * to their students (planning/ejercicios, D40). It hides `/ejercicios*`,
+ * `/profesor/ejercicios*` and `/administracion/ejercicios*`, the menu items,
+ * «Crear ejercicio desde aquí», a lesson's exercises card and practice pages,
+ * «Agregar desde la biblioteca», the class block «Ejercicio» and its routes:
+ * the pages answer 404 and the actions answer `disabled`.
+ *
+ * It does NOT hide the staff lesson panel «Ejercicios» nor its routes (from
+ * phase 2): they replace a panel that is live today, over data that phase's
+ * migration moves, so they show whatever this says.
+ */
+export const EXERCISES_ENABLED = false as boolean;

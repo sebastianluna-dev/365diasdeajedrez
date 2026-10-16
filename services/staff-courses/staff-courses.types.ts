@@ -265,6 +265,8 @@ export interface TopicOption {
   id: number;
   code: string;
   label: string;
+  /** The parent topic's code (a tactical motif's is TACTICS); null on the first level. */
+  parentCode: string | null;
 }
 
 /**

@@ -162,3 +162,26 @@ export const Interactive: Story = {
   },
   decorators: [boardColumn],
 };
+
+/** An exercise's «Pista» without a text (`hintSquare`): the white queen on h5, the piece to move, circled. */
+export const Hint: Story = {
+  args: {
+    position: { fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4" },
+    hintSquare: "h5",
+    interactive: true,
+  },
+  decorators: [boardColumn],
+};
+
+/** An exercise's wrong move (`lastMoveTone="error"`): Qxe5+ played instead of the mate, its two squares in the danger colour for the moment before it is taken back. */
+export const WrongMove: Story = {
+  args: {
+    position: {
+      fen: "r1bqkb1r/pppp1ppp/2n2n2/4Q3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4",
+      lastMove: ["h5", "e5"],
+      check: true,
+    },
+    lastMoveTone: "error",
+  },
+  decorators: [boardColumn],
+};

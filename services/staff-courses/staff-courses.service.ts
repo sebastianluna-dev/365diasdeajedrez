@@ -624,7 +624,11 @@ export async function listCourseStatuses(): Promise<CatalogOption[]> {
 
 export async function listTopics(): Promise<TopicOption[]> {
   await requireStaff();
-  return getPlatformDb().topic.findMany({ select: { id: true, code: true, label: true }, orderBy: { order: "asc" } });
+  const rows = await getPlatformDb().topic.findMany({
+    select: { id: true, code: true, label: true, parent: { select: { code: true } } },
+    orderBy: { order: "asc" },
+  });
+  return rows.map((row) => ({ id: row.id, code: row.code, label: row.label, parentCode: row.parent?.code ?? null }));
 }
 
 export async function listExerciseModes(): Promise<CatalogOption[]> {

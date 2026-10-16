@@ -22,6 +22,7 @@ import { SubmitButton } from "@/components/platform/shared/submit-button/submit-
 import { PlatformCheckbox } from "@/components/platform/shared/platform-checkbox/platform-checkbox.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
+import { topicCardGroups } from "@/services/shared/topic-groups";
 
 interface LessonEditorSectionProps {
   lesson: LessonAdminDetail;
@@ -222,13 +223,13 @@ export function LessonEditorSection({
               </PlatformFormField>
             </div>
 
-            {/* The group's label names the cards. */}
+            {/* The group's label names the cards; a parent's topics go under its heading. */}
             <PlatformFormGroup label="Temas" optional>
               <PlatformCheckCards
                 name="topicCodes"
                 defaultValue={lesson.topicCodes}
                 layout="line"
-                options={topics.map((topic) => ({ value: topic.code, label: topic.label }))}
+                {...topicCardGroups(topics)}
               />
             </PlatformFormGroup>
 

@@ -21,7 +21,7 @@ import { POPUP_FORM_IDLE, type PopupFormState } from "@/services/shared/form-sta
 import { withNoticeParam } from "@/services/shared/safe-return-to";
 import type { TeacherClassBlock } from "@/services/teacher-classes/teacher-classes.types";
 import { BlockForm, type BlockFormOptions } from "./block-form.comp";
-import type { FetchReferencePgn } from "./move-path-picker.comp";
+import type { FetchReferencePgn } from "@/services/teacher-classes/teacher-classes.types";
 import "./block-popup.comp.css";
 
 /** What the host opens the popup with: a new block of a kind in a section, or a block to edit. */

@@ -1,14 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Checkbox } from "radix-ui";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
 import type { PlatformChoiceCardOption } from "../platform-choice-cards/platform-choice-cards.comp";
 import { savedValueKey } from "../saved-value-key";
 import "./platform-check-cards.comp.css";
 
-interface PlatformCheckCardsProps {
+/** Cards under a heading: the topics of one parent, «Táctica» over its motifs. */
+export interface PlatformCheckCardGroup {
+  label: string;
   options: PlatformChoiceCardOption[];
+}
+
+interface PlatformCheckCardsProps {
+  /** The cards, in order. With `groups`, the ones that belong to no heading, first. */
+  options: PlatformChoiceCardOption[];
+  /**
+   * Cards under headings, after `options`: each heading names its own group
+   * (`role="group"`), and every card still answers to the one `name`, so a
+   * long set — nineteen tactical motifs — stays readable on a phone.
+   */
+  groups?: PlatformCheckCardGroup[];
   /** The name of the hidden native checkboxes that carry the values in the form, one per chosen card. */
   name?: string;
   /** Controlled set of chosen values. */
@@ -54,6 +67,7 @@ export function PlatformCheckCards(props: PlatformCheckCardsProps) {
 
 function CheckCards({
   options,
+  groups,
   name,
   value,
   defaultValue,
@@ -65,6 +79,7 @@ function CheckCards({
 }: PlatformCheckCardsProps) {
   const [own, setOwn] = useState<string[]>(defaultValue ?? []);
   const chosen = value ?? own;
+  const headingId = useId();
 
   const toggle = (optionValue: string, checked: boolean) => {
     const rest = chosen.filter((item) => item !== optionValue);
@@ -73,37 +88,59 @@ function CheckCards({
     onValueChange?.(next);
   };
 
+  const cards = (list: PlatformChoiceCardOption[]) =>
+    list.map((option) => (
+      <Checkbox.Root
+        key={option.value}
+        name={name}
+        value={option.value}
+        checked={chosen.includes(option.value)}
+        onCheckedChange={(checked) => toggle(option.value, checked === true)}
+        // A card of its own can be ruled out while the group's rule says so
+        // (see `reachableLevels`), with the group still working.
+        disabled={disabled || option.disabled}
+        hidden={hiddenValues?.includes(option.value)}
+        className="platform-check-cards__card"
+      >
+        <Checkbox.Indicator className="platform-check-cards__mark" forceMount>
+          <CheckIcon variant="classic-solid" className="platform-check-cards__mark-icon" />
+        </Checkbox.Indicator>
+        {option.icon && (
+          <span className="platform-check-cards__icon" aria-hidden="true">
+            {option.icon}
+          </span>
+        )}
+        <span className="platform-check-cards__label">{option.label}</span>
+        {option.meta && <span className="platform-check-cards__meta">{option.meta}</span>}
+        {option.description && <span className="platform-check-cards__description">{option.description}</span>}
+      </Checkbox.Root>
+    ));
+
+  const className = `platform-check-cards${layout === "line" ? " platform-check-cards_layout_line" : ""}`;
+
+  if (!groups || groups.length === 0) {
+    return (
+      <div role="group" className={className} {...labelling}>
+        {cards(options)}
+      </div>
+    );
+  }
+
   return (
-    <div
-      role="group"
-      className={layout === "line" ? "platform-check-cards platform-check-cards_layout_line" : "platform-check-cards"}
-      {...labelling}
-    >
-      {options.map((option) => (
-        <Checkbox.Root
-          key={option.value}
-          name={name}
-          value={option.value}
-          checked={chosen.includes(option.value)}
-          onCheckedChange={(checked) => toggle(option.value, checked === true)}
-          // A card of its own can be ruled out while the group's rule says so
-          // (see `reachableLevels`), with the group still working.
-          disabled={disabled || option.disabled}
-          hidden={hiddenValues?.includes(option.value)}
-          className="platform-check-cards__card"
+    <div role="group" className={`${className} platform-check-cards_grouped`} {...labelling}>
+      {options.length > 0 && <div className="platform-check-cards__grid">{cards(options)}</div>}
+      {groups.map((group, index) => (
+        <div
+          key={group.label}
+          role="group"
+          aria-labelledby={`${headingId}-${index}`}
+          className="platform-check-cards__group"
         >
-          <Checkbox.Indicator className="platform-check-cards__mark" forceMount>
-            <CheckIcon variant="classic-solid" className="platform-check-cards__mark-icon" />
-          </Checkbox.Indicator>
-          {option.icon && (
-            <span className="platform-check-cards__icon" aria-hidden="true">
-              {option.icon}
-            </span>
-          )}
-          <span className="platform-check-cards__label">{option.label}</span>
-          {option.meta && <span className="platform-check-cards__meta">{option.meta}</span>}
-          {option.description && <span className="platform-check-cards__description">{option.description}</span>}
-        </Checkbox.Root>
+          <span id={`${headingId}-${index}`} className="platform-check-cards__heading">
+            {group.label}
+          </span>
+          <div className="platform-check-cards__grid">{cards(group.options)}</div>
+        </div>
       ))}
     </div>
   );

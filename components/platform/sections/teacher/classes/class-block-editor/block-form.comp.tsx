@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { PlatformChoiceCards } from "@/components/platform/shared/platform-choice-cards/platform-choice-cards.comp";
 import { PlatformFormField, PlatformFormGroup } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { CLASS_BLOCK_KIND, type ClassBlockKindCode } from "@/constants/platform/class-codes.const";
@@ -10,7 +10,8 @@ import type { ReferenceableGameGroup, TeacherClassBlock } from "@/services/teach
 import { BlockGameField } from "./block-game-field.comp";
 import { GameSelector } from "./game-selector.comp";
 import { LessonReferenceField } from "./lesson-reference-field.comp";
-import { MovePathPicker, type FetchReferencePgn } from "./move-path-picker.comp";
+import { MovePathPicker } from "@/components/platform/shared/move-path-picker/move-path-picker.comp";
+import type { FetchReferencePgn } from "@/services/teacher-classes/teacher-classes.types";
 import "./block-form.comp.css";
 
 export interface BlockFormOptions {
@@ -71,6 +72,12 @@ export function BlockForm({
   const [movePath, setMovePath] = useState(text("movePath", block?.movePath ?? ""));
 
   const referenceId = kind === CLASS_BLOCK_KIND.GAME_REF ? (source === "game" ? gameId : "") : lessonId;
+  const referenceKind = kind === CLASS_BLOCK_KIND.GAME_REF ? CLASS_BLOCK_KIND.GAME_REF : CLASS_BLOCK_KIND.LESSON_REF;
+  // One function per kind: the picker reads the PGN again only when the reference or the kind changes.
+  const fetchPgn = useCallback(
+    (id: string) => fetchReferencePgn(referenceKind, id),
+    [fetchReferencePgn, referenceKind],
+  );
   // Only for the lesson and for a cited game: the transcribed one is
   // traversed on its own board, so it needs no second viewer.
   const supportsMovePath =
@@ -159,11 +166,12 @@ export function BlockForm({
             </p>
           )}
           <MovePathPicker
-            kind={kind === CLASS_BLOCK_KIND.GAME_REF ? CLASS_BLOCK_KIND.GAME_REF : CLASS_BLOCK_KIND.LESSON_REF}
             referenceId={referenceId}
+            hint="Navega hasta la posición con la que quieras abrir el bloque y púlsala. Si no eliges ninguna, el bloque empieza desde el principio."
             value={movePath}
-            onChange={setMovePath}
-            fetchReferencePgn={fetchReferencePgn}
+            onChange={(path) => setMovePath(path)}
+            onClear={() => setMovePath("")}
+            fetchPgn={fetchPgn}
           />
         </>
       )}

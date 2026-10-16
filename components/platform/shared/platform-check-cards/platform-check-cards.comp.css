@@ -185,8 +185,41 @@
     flex: none;
   }
 
+  /* With headings the block is a column of runs, each a grid of its own
+     with the same columns the plain block has. */
+  &.platform-check-cards_grouped {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-5);
+  }
+
+  & .platform-check-cards__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: var(--platform-space-3);
+  }
+
+  &.platform-check-cards_layout_line .platform-check-cards__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  & .platform-check-cards__group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+  }
+
+  /* A heading inside the field: smaller than the field's label and in the
+     muted grey, so it reads as a part of the set and not as another field. */
+  & .platform-check-cards__heading {
+    font-size: var(--platform-type-md);
+    font-weight: 600;
+    color: var(--platform-text-muted);
+  }
+
   @media (width < 640px) {
-    &.platform-check-cards_layout_line {
+    &.platform-check-cards_layout_line,
+    &.platform-check-cards_layout_line .platform-check-cards__grid {
       grid-template-columns: minmax(0, 1fr);
     }
   }

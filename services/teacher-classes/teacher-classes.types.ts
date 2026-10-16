@@ -145,3 +145,12 @@ export interface UpcomingClassWith {
   whenLabel: string;
   href: string;
 }
+
+/**
+ * `fetchReferencePgn` of the teacher's actions, handed down as a prop: the PGN
+ * of a game or lesson block's reference, for its position picker.
+ */
+export type FetchReferencePgn = (
+  kind: Extract<ClassBlockKindCode, "GAME_REF" | "LESSON_REF">,
+  id: string,
+) => Promise<string | null>;

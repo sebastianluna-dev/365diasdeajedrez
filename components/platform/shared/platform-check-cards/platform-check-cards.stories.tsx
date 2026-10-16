@@ -102,3 +102,32 @@ export const Filtered: Story = {
     "aria-label": "Alumnos",
   },
 };
+
+/** Under headings (`groups`): the five general topics first, then «Táctica» over its motifs, each heading a group of its own and every card one `name`. */
+export const Grouped: Story = {
+  args: {
+    layout: "line",
+    options: [
+      { value: "TACTICS", label: "Táctica" },
+      { value: "OPENING_LINE", label: "Aperturas" },
+      { value: "PAWN_STRUCTURE", label: "Estructuras de peones" },
+      { value: "ENDGAME", label: "Finales" },
+      { value: "STRATEGY", label: "Estrategia" },
+    ],
+    groups: [
+      {
+        label: "Táctica",
+        options: [
+          { value: "FORK", label: "Ataque doble" },
+          { value: "PIN", label: "Clavada" },
+          { value: "SKEWER", label: "Enfilada" },
+          { value: "DEFLECTION", label: "Desviación" },
+          { value: "SACRIFICE", label: "Sacrificio" },
+          { value: "BACK_RANK_MATE", label: "Mate del pasillo" },
+        ],
+      },
+    ],
+    defaultValue: ["TACTICS", "FORK"],
+    "aria-label": "Temas",
+  },
+};

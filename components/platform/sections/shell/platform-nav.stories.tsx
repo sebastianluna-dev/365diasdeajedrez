@@ -85,7 +85,7 @@ export const WithTools: Story = {
   args: {
     groups: buildPlatformNavGroups(
       { isTeacher: false, isStaff: false },
-      { play: true, analysisBoard: true, trainer: false },
+      { play: true, analysisBoard: true, trainer: false, exercises: false },
     ),
   },
   parameters: at(platformRoutes.analysisBoard()),
