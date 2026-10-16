@@ -324,27 +324,13 @@ The components:
 
 ## Verification in the app
 
-Not run yet. Phase 1 is checked by the owner with the flag on locally, before phase 1b starts, with the plan's list (`planning/ejercicios/PLAN.md` §9, Phase 1). As `profesor.demo`:
+Run on 2026-10-16 against the local dev server with the flag on, headless Chrome driven by Playwright, at 1440, 768, 844 × 390 (landscape) and 390 px, light and dark; no console errors on any exercises page. Every check of the plan's Phase 1 list (`planning/ejercicios/PLAN.md` §9) passed, except the flag-off 404, which the tests cover:
 
-- build exercise A with the piece editor and exercise B from a pasted FEN;
-- check «Probar»;
-- check that «Guardar y marcar como listo» is refused without a topic;
-- build the series «Prueba» of four and give it to `alumno.demo`.
+- **`profesor.demo`**: exercise A built with the piece editor (a «Mate en N» 2 with a defence variant; the placement refusals, «Probar», draft, «Guardar y marcar como listo» refused without a topic, then ready), B from a pasted FEN («Cargar posición», solution on the board, «Nivel: Principiante (800–1199)» derived from difficulty 900), C with a hint and an explanation, D; the series «Prueba» of A, B, C, D given to `alumno.demo` («Listo: la verá en «Ejercicios».»). The bank, the editor's four tabs and the series page at 1440 in both themes.
+- **`alumno.demo` at 390 px**: «Ejercicios» after «Mis cursos»; «Prueba · 0 de 4»; item 1 clean («¡Bien!», the reply played, «¡Resuelto!» with the explanation); item 2 failed at the first move (the danger flash, the move taken back, «Fallado» in the head, then «Jugaste Td7; la jugada era Td8#.»); item 3 with a hint («Resuelto con pista»); item 4 «Ver la solución», pressed in two tabs of the same session at once: one tab «Viste la solución», the other «Ya lo intentaste hoy: este intento no cuenta.» — one attempt stored. The series then reads «2 de 4 resueltos»; `/inicio` has «Ejercicios superados» two higher and the streak at one day; reopening item 1 and «Reintentar» on item 2 run unscored («Esta vez, sin errores», «Esta vez, con un error») and change nothing.
+- **Layouts**: landscape keeps the board (292 px) with the actions beside it; 768 px stacks the full-width board over the actions; no horizontal overflow at any width.
+- **`valentina.demo`**: after the staff ends her assignment (`/administracion/alumnos/<id>` → «Terminar la asignación actual»), no «Ejercicios» in her menu and the no-teacher empty state on `/ejercicios`.
 
-As `alumno.demo` at 390 px, the four items in turn:
+One finding, fixed the same day: «Agregar ejercicios» sent the cards' order (newest first) instead of the order the teacher ticked, so «A, B, C, D» came out backwards; the form now submits the ticked order.
 
-- solved clean;
-- failed at the first move;
-- solved with a hint;
-- «Ver la solución».
-
-Then:
-
-- «Ejercicios superados» is two more on `/inicio`, and the streak shows today done;
-- reopening item 1 and «Reintentar» change nothing;
-- «Ver la solución» pressed in two tabs at once stores one attempt;
-- the solve screen at 844 × 390 and at 768 px;
-- `valentina.demo`, once the staff ends her assignment: no menu item, and the no-teacher empty state;
-- with the flag off, every route answers 404.
-
-What the run leaves in the local seed goes here.
+**What the run left in the local seed**: four READY exercises of `profesor.demo` (A, B, C, D, topic Táctica), the series «Prueba» shared with `alumno.demo`, his four scored attempts of that day (A clean, B failed with its mistake, C with a hint, D with the solution shown), two `EXERCISE_PASSED` activities and the day's stat, and `valentina.demo`'s assignment to `profesor.demo` **ended** — she has no active teacher until someone reassigns her from the staff panel, which also affects the classes demo.

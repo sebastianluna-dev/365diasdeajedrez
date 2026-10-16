@@ -43,7 +43,8 @@ const SEARCH_FROM = 6;
  * that are not in the series yet, as cards to tick, with a search over their
  * titles and topics once there are a few. A draft or an archived exercise is
  * never offered. What is chosen goes to the end of the series, in the order
- * of the list.
+ * the teacher ticked it (the cards keep that order; the form is rewritten
+ * with it, because the browser would send the list's order instead).
  */
 export function AddSeriesExercisesPopup({ ref, ...props }: AddSeriesExercisesPopupProps) {
   const popup = useRef<PlatformPopupHandle>(null);
@@ -140,12 +141,15 @@ function AddSeriesExercisesForm({
       onSubmit={(event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+        // The cards' DOM order is the list's; the series takes the tick order.
+        data.delete("exercises");
+        for (const id of chosen) data.append("exercises", id);
         startSubmit(() => formAction(data));
       }}
     >
       <p className="add-series-exercises__summary">
         {chosen.length === 0
-          ? "Van al final de la serie, en el orden de la lista."
+          ? "Van al final de la serie, en el orden en que los elijas."
           : `${chosen.length} ${chosen.length === 1 ? "elegido" : "elegidos"} · van al final de la serie.`}
         {chosen.length > room && ` Caben ${room} más.`}
       </p>
