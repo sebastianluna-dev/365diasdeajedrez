@@ -39,6 +39,9 @@ export const EXERCISE_ERROR_MESSAGES: Record<string, string> = {
   /** «Proponer a la biblioteca» without an explanation: a library exercise is solved by students with no teacher to ask. */
   explanationRequired:
     "Para proponerlo a la biblioteca necesita una explicación, la que leen los alumnos al terminar: escríbela en «Datos» y vuelve a intentarlo.",
+  /** The staff's «Guardar y publicar», or a save that keeps an exercise in the library, without an explanation. */
+  libraryExplanation:
+    "Un ejercicio de la biblioteca necesita una explicación: es lo que leen los alumnos al terminar, y no tienen profesor a quien preguntar.",
   /** The staff's «Devolver» and «Quitar de la biblioteca» need the note the author reads. */
   noteRequired: "Escribe una nota para el autor: es lo que lee para saber qué cambiar.",
   notAllowed: "Ese cambio no se puede hacer en este momento.",
@@ -98,9 +101,11 @@ export const EXERCISE_NOTICES = {
   exercisePublished: "Ejercicio guardado y publicado: los alumnos lo verán en la lección.",
   exerciseCopied: "Ejercicio agregado a la lección desde la biblioteca.",
   seriesCreated: "Serie creada: agrégale ejercicios y dásela a tus alumnos.",
+  academySeriesCreated: "Serie creada: agrégale ejercicios de la biblioteca y publícala cuando esté lista.",
   seriesSaved: "Serie guardada.",
   seriesExercisesAdded: "Ejercicios agregados a la serie.",
   seriesExerciseRemoved: "Ejercicio quitado de la serie: sigue en tu banco.",
+  academySeriesExerciseRemoved: "Ejercicio quitado de la serie: sigue en la biblioteca.",
   seriesDeleted: "Serie eliminada. Sus ejercicios siguen en tu banco.",
   academySeriesDeleted: "Serie eliminada. Sus ejercicios siguen en la biblioteca.",
   seriesShared: "Listo: la verá en «Ejercicios».",

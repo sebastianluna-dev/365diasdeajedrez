@@ -209,9 +209,16 @@ describe("reviewLibraryExercise", () => {
     expect(database.rows("exercise")[0]).toMatchObject({ publishedAt: EARLIER, reviewedAt: NOW });
   });
 
-  it("el de la academia se publica sin revisión, si está preparado", async () => {
+  it("el de la academia se publica sin revisión, si está preparado y con explicación", async () => {
     const database = fakeExerciseDb({ exercise: [exercise("DRAFT", { teacherId: null })], exerciseTopic: TOPIC });
     const tx = database.begin();
+    // Its students have no teacher to ask (D32): the library asks for the explanation of the academy's too.
+    await expect(approve(tx, "PUBLISHED")).resolves.toMatchObject({
+      ok: false,
+      code: "notReady",
+      readiness: { missing: ["explanation"] },
+    });
+    await tx.exercise.updateMany({ where: { id: "e-1" }, data: { explanation: "Ab8 no existe." } });
     await expect(approve(tx, "PUBLISHED")).resolves.toMatchObject({ ok: true, from: "DRAFT" });
     await expect(approve(tx, "READY", "x")).resolves.toEqual({ ok: false, code: "notAllowed" });
   });

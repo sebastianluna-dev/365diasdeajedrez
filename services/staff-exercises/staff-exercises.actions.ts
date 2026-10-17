@@ -31,8 +31,12 @@ import {
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
 import { nextOrder, planDenseRenumber, planFullReorder } from "@/services/shared/reorder";
 import { withErrorParam, withNoticeParam } from "@/services/shared/safe-return-to";
-import { staffExercisePermissions } from "./staff-exercises.mapper";
-import { getStaffGamePgn, isStaffGame, staffReadableExerciseWhere } from "./staff-exercises.service";
+import {
+  academySeriesPublication,
+  staffExercisePermissions,
+  staffReadableExerciseWhere,
+} from "./staff-exercises.mapper";
+import { getStaffGamePgn, isStaffGame } from "./staff-exercises.service";
 
 // The staff's writes of the exercise bank (PLAN.md §8; D07, D16, D32): the
 // decisions about the library — approving or returning a teacher's proposal,
@@ -44,8 +48,12 @@ import { getStaffGamePgn, isStaffGame, staffReadableExerciseWhere } from "./staf
 //   its solution changed only by `syncExerciseSolution`, its status only by
 //   `reviewLibraryExercise`, the staff's rows of the transitions table,
 //   inside one transaction: who decided, when and the note are its stamps. A
-//   lesson's exercise is never reached from here (`staffReadableExerciseWhere`).
+//   lesson's exercise, or a teacher's never proposed, is never reached from
+//   here: the save and every decision check `staffReadableExerciseWhere`
+//   inside their transaction, not only the page.
 // - «Devolver» and «Quitar de la biblioteca» need the note the author reads.
+// - What enters or stays in the library has an explanation, as a proposal
+//   does: its students have no teacher to ask (D32).
 // - An academy series holds only the library's exercises
 //   (`buildPickableExercisesWhere` with no teacher, D32), checked again here
 //   against the database; its order goes through services/shared/reorder.ts.
@@ -76,11 +84,23 @@ function errorCodeOf(moved: Exclude<ExerciseTransitionResult, { ok: true }>): st
   return moved.code;
 }
 
-/** A decision of the staff, written through the status writer. */
-async function decide(exerciseId: string, to: ExerciseStatusCode, note: string | null, reviewerUserId: string) {
-  return getPlatformDb().$transaction((tx) =>
-    reviewLibraryExercise(tx, { exerciseId, reviewerUserId, to, note, now: new Date() }),
-  );
+/**
+ * A decision of the staff, written through the status writer — after the
+ * bank's guard: an id that is not a bank's (a lesson's draft, a lesson's
+ * archived one, a teacher's never proposed) answers `notFound`, as its page
+ * does, instead of being published or restored from here.
+ */
+async function decide(
+  exerciseId: string,
+  to: ExerciseStatusCode,
+  note: string | null,
+  reviewerUserId: string,
+): Promise<ExerciseTransitionResult> {
+  return getPlatformDb().$transaction(async (tx) => {
+    const inBank = await tx.exercise.count({ where: staffReadableExerciseWhere(exerciseId) });
+    if (inBank === 0) return { ok: false, code: "notFound" };
+    return reviewLibraryExercise(tx, { exerciseId, reviewerUserId, to, note, now: new Date() });
+  });
 }
 
 /** A status move that failed inside the transaction: thrown so nothing of the write stays. */
@@ -102,6 +122,7 @@ function refusalState(
     errors.solutionPgn = { code: problem.code, ...("path" in problem ? { args: { path: problem.path } } : {}) };
   if (result.readiness.missing.includes("title")) errors.title = { code: "title" };
   if (result.readiness.missing.includes("topic")) errors.topics = { code: "topics" };
+  if (result.readiness.missing.includes("explanation")) errors.explanation = { code: "libraryExplanation" };
   return popupFormError(errors, values);
 }
 
@@ -112,8 +133,9 @@ function refusalState(
  * its status is not moved). The button says what it asks for (`intent`), and
  * the owner and the status say whether it may: an academy draft is kept or
  * published (the staff is the reviewer, no review), one in the library is
- * kept published (and must stay complete), an archived academy one is kept
- * as it is. A teacher's proposal or returned exercise is locked.
+ * kept published (and must stay complete, its explanation included), an
+ * archived academy one is kept as it is. A teacher's proposal or returned
+ * exercise is locked.
  */
 export async function saveStaffExercise(
   exerciseId: string | null,
@@ -164,16 +186,20 @@ export async function saveStaffExercise(
   if (!allowed) return popupFormError({}, values, { code: "notAllowed" });
   const publish = intent === "publish";
 
-  // What the gate will ask inside the transaction, said first with the fields it concerns.
+  // What the gate will ask inside the transaction, said first with the fields it concerns: the library's
+  // readiness, explanation included — a save that keeps an exercise in the library cannot blank it.
   if (publish || (intent === "save" && status === EXERCISE_STATUS.PUBLISHED)) {
-    const readiness = exerciseReadiness({
-      title: content.title,
-      solutionPgn: solution.solutionPgn,
-      kind: solution.kind,
-      mateIn: solution.mateIn,
-      topicCount: content.topicCodes.length,
-      explanation: content.explanation,
-    });
+    const readiness = exerciseReadiness(
+      {
+        title: content.title,
+        solutionPgn: solution.solutionPgn,
+        kind: solution.kind,
+        mateIn: solution.mateIn,
+        topicCount: content.topicCodes.length,
+        explanation: content.explanation,
+      },
+      { explanation: true },
+    );
     if (!readiness.ok) return refusalState({ ok: false, code: "notReady", readiness }, values);
   }
 
@@ -397,7 +423,7 @@ export async function createAcademySeries(prev: PopupFormState, formData: FormDa
     select: { id: true },
   });
   revalidateSeries(created.id);
-  redirect(withNoticeParam(staffRoutes.exerciseSeries(created.id), "seriesCreated"));
+  redirect(withNoticeParam(staffRoutes.exerciseSeries(created.id), "academySeriesCreated"));
 }
 
 /** «Editar la serie», from its popup: the title and the description the students read. */
@@ -524,7 +550,7 @@ export async function removeExerciseFromAcademySeries(
   }
   if (changed) redirect(withErrorParam(back, "seriesChanged"));
   revalidateSeries(seriesId);
-  redirect(withNoticeParam(back, "seriesExerciseRemoved"));
+  redirect(withNoticeParam(back, "academySeriesExerciseRemoved"));
 }
 
 /** The series' order after a drop or a step: the FULL list of its exercises. A refused order is not written. */
@@ -560,18 +586,34 @@ export async function reorderAcademySeries(seriesId: string, orderedIds: string[
 
 /**
  * «Publicada», the switch on the series' page: on, every student sees the
- * series on «Series de la academia» (`publishedAt`, kept at its first
- * publication); off, it leaves their home and their series page, and the
- * attempts made in it stay in their history.
+ * series on «Series de la academia» (`publishedAt`, kept while it stays on);
+ * off, it leaves their home and their series page, and the attempts made in
+ * it stay in their history. An empty series is refused on the server too
+ * (`seriesNotPublishable`, said on the page): the switch is disabled for it,
+ * but the action is reachable by itself. What is written is
+ * `academySeriesPublication`'s, read and written in one transaction.
  */
 export async function setAcademySeriesPublished(seriesId: string, published: boolean): Promise<void> {
   if (!EXERCISES_ENABLED) return;
   const { throttled } = await openReview("series-edit", 120);
   if (throttled) return;
-  await getPlatformDb().exerciseSeries.updateMany({
-    where: { id: seriesId, teacherId: null },
-    data: { publishedAt: published ? new Date() : null },
+  const back = staffRoutes.exerciseSeries(seriesId);
+  const refused = await getPlatformDb().$transaction(async (tx) => {
+    const series = await tx.exerciseSeries.findFirst({
+      where: { id: seriesId, teacherId: null },
+      select: { publishedAt: true, _count: { select: { items: true } } },
+    });
+    if (!series) return "seriesNotFound";
+    const publication = academySeriesPublication(
+      { publishedAt: series.publishedAt, itemCount: series._count.items },
+      published,
+      new Date(),
+    );
+    if (!publication.ok) return publication.code;
+    await tx.exerciseSeries.updateMany({ where: { id: seriesId, teacherId: null }, data: publication.data });
+    return null;
   });
+  if (refused) redirect(withErrorParam(back, refused));
   revalidateSeries(seriesId);
 }
 

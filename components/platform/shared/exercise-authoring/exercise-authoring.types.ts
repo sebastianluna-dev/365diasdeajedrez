@@ -75,6 +75,8 @@ export interface ExerciseSaveButton {
   accent: boolean;
   /** The readiness gate must pass: the solution's rules, a title and a topic. */
   needsReadiness: boolean;
+  /** The gate asks for an explanation too: the exercise enters or stays in the library, where students have no teacher to ask. */
+  needsExplanation?: boolean;
 }
 
 /** The editor's save, bound to its exercise on the server: `useActionState`'s action. */

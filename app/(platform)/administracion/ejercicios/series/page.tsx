@@ -34,7 +34,7 @@ export default async function StaffSeriesPage({ searchParams }: StaffSeriesPageP
           «Ejercicios» al publicarlas.
         </p>
         <div className="platform-page__actions">
-          <NewSeriesButton save={createAcademySeries} />
+          <NewSeriesButton save={createAcademySeries} audience="academy" />
         </div>
       </header>
       <StaffExercisesSection

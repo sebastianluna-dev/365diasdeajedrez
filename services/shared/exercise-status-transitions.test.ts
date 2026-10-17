@@ -28,7 +28,7 @@ const TABLE: [
   [IN_REVIEW, READY, "staff", "teacher", false, false, true],
   [IN_REVIEW, PUBLISHED, "staff", "teacher", true, true, false],
   [PUBLISHED, READY, "staff", "teacher", false, false, true],
-  [DRAFT, PUBLISHED, "staff", "academy", true, false, false],
+  [DRAFT, PUBLISHED, "staff", "academy", true, true, false],
   [DRAFT, PUBLISHED, "staff", "lesson", true, false, false],
   [PUBLISHED, DRAFT, "staff", "lesson", false, false, false],
   [PUBLISHED, ARCHIVED, "staff", "academy", false, false, false],

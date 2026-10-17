@@ -3,6 +3,7 @@ import type {
   ExerciseSaveButton,
 } from "@/components/platform/shared/exercise-authoring/exercise-authoring.types";
 import type { ExerciseCardData } from "@/components/platform/shared/exercise-card/exercise-card.types";
+import type { Prisma } from "@/lib/platform-db/generated/client";
 import {
   EXERCISE_STATUS,
   type ExerciseKindCode,
@@ -27,6 +28,32 @@ import type { StaffExerciseReview, StaffExerciseRow, StaffReviewItem, StaffSerie
 /** Who owns a bank's row: a teacher, or the academy. A lesson's never reaches these screens. */
 export function staffExerciseOwner(row: Pick<StaffExerciseRow, "teacherId">): ExerciseOwnerKind {
   return row.teacherId === null ? "academy" : "teacher";
+}
+
+/** A bank's exercise: not a lesson's, whose panel is the course's. */
+export const ofABank = { lessonId: null } satisfies Prisma.ExerciseWhereInput;
+
+/**
+ * The exercises of a bank the staff may open and decide on: the academy's,
+ * and a teacher's once proposed or ever reviewed. The page reads with it
+ * (404 otherwise) and every decision checks it again inside its
+ * transaction: a lesson's draft is not approved from here, nor a lesson's
+ * archived one restored.
+ */
+export function staffReadableExerciseWhere(exerciseId: string): Prisma.ExerciseWhereInput {
+  return {
+    AND: [
+      { id: exerciseId },
+      ofABank,
+      {
+        OR: [
+          { teacherId: null },
+          { status: { code: { in: [EXERCISE_STATUS.IN_REVIEW, EXERCISE_STATUS.PUBLISHED] } } },
+          { reviewedAt: { not: null } },
+        ],
+      },
+    ],
+  };
 }
 
 /** The topics of a row in the catalog's order. */
@@ -81,11 +108,49 @@ export function mapStaffReviewItem(row: StaffExerciseRow, levels: readonly Diffi
   return { card: mapStaffExerciseCard(row, levels), submittedLabel: submittedLabelOf(row) };
 }
 
-const DECISIONS: Partial<Record<ExerciseStatusCode, string>> = {
-  [EXERCISE_STATUS.PUBLISHED]: "Aprobado",
-  [EXERCISE_STATUS.READY]: "Devuelto",
-  [EXERCISE_STATUS.ARCHIVED]: "Archivado",
+/** The staff's moves, as the stamp names them. */
+export type StaffDecision = "approved" | "returned" | "removed" | "published" | "archived" | "restored";
+
+const DECISION_WORDS: Record<StaffDecision, string> = {
+  approved: "Aprobado",
+  returned: "Devuelto",
+  removed: "Quitado de la biblioteca",
+  published: "Publicado",
+  archived: "Archivado",
+  restored: "Restaurado",
 };
+
+/**
+ * The move the last staff stamp (`reviewedAt`, `reviewedById`, `reviewNote`)
+ * belongs to — not the current status, which the teacher may have moved
+ * since: an archived exercise that was returned says «Devuelto», and one
+ * taken out of the library «Quitado de la biblioteca», not «Devuelto». The
+ * academy's only move through the staff, so its status is the move. A
+ * teacher's in the library was approved; out of it, the stamp is a return
+ * or a removal, told apart by the dates: a removal follows a publication
+ * that followed the proposal (`submittedAt` < `publishedAt` < `reviewedAt`),
+ * a return does not. Only an exercise approved twice and then taken out
+ * again reads «Devuelto» instead (`publishedAt` keeps the FIRST
+ * publication); storing the move would settle it (IMPROVEMENTS).
+ */
+export function lastStaffDecision(
+  row: Pick<StaffExerciseRow, "teacherId" | "status" | "submittedAt" | "reviewedAt" | "publishedAt">,
+): StaffDecision | null {
+  if (row.reviewedAt === null) return null;
+  const status = row.status.code as ExerciseStatusCode;
+  if (staffExerciseOwner(row) === "academy") {
+    if (status === EXERCISE_STATUS.PUBLISHED) return "published";
+    if (status === EXERCISE_STATUS.ARCHIVED) return "archived";
+    if (status === EXERCISE_STATUS.DRAFT) return "restored";
+    return null;
+  }
+  if (status === EXERCISE_STATUS.PUBLISHED) return "approved";
+  const removed =
+    row.publishedAt !== null &&
+    row.reviewedAt > row.publishedAt &&
+    (row.submittedAt === null || row.submittedAt < row.publishedAt);
+  return removed ? "removed" : "returned";
+}
 
 /**
  * The review bar of a bank's exercise: what the staff may decide now, from
@@ -98,7 +163,7 @@ export function staffExerciseReview(row: StaffExerciseRow): StaffExerciseReview 
   const owner = staffExerciseOwner(row);
   const may = (to: ExerciseStatusCode) => exerciseTransition(status, to, "staff", owner) !== null;
   const removal = owner === "teacher" ? EXERCISE_STATUS.READY : EXERCISE_STATUS.ARCHIVED;
-  const decision = DECISIONS[status];
+  const decision = lastStaffDecision(row);
   return {
     statusCode: status,
     statusLabel: row.status.label,
@@ -107,7 +172,7 @@ export function staffExerciseReview(row: StaffExerciseRow): StaffExerciseReview 
     submittedLabel: row.submittedAt ? `Propuesto el ${formatSpanishDate(row.submittedAt)}` : null,
     reviewedLabel:
       row.reviewedAt && decision
-        ? `${decision} el ${formatSpanishDate(row.reviewedAt)}${row.reviewedBy ? ` por ${row.reviewedBy.displayName}` : ""}`
+        ? `${DECISION_WORDS[decision]} el ${formatSpanishDate(row.reviewedAt)}${row.reviewedBy ? ` por ${row.reviewedBy.displayName}` : ""}`
         : null,
     reviewNote: row.reviewNote,
     canApprove: status === EXERCISE_STATUS.IN_REVIEW && may(EXERCISE_STATUS.PUBLISHED),
@@ -139,22 +204,41 @@ const SAVING = "Guardando…";
  * as a draft or published (the accent: the staff is the reviewer, no review);
  * one in the library — the academy's or a teacher's (D48) — is only saved,
  * and stays complete; an archived academy exercise is saved as it is. A
- * teacher's proposal or returned exercise has none.
+ * teacher's proposal or returned exercise has none. What enters or stays in
+ * the library needs its explanation (`needsExplanation`), as a proposal does.
  */
 export function staffSaveButtons(owner: ExerciseOwnerKind, status: ExerciseStatusCode | null): ExerciseSaveButton[] {
+  const library = { needsReadiness: true, needsExplanation: true };
   if (owner === "academy" && (status === null || status === EXERCISE_STATUS.DRAFT)) {
     return [
       { intent: "draft", label: "Guardar borrador", pendingLabel: SAVING, accent: false, needsReadiness: false },
-      { intent: "publish", label: "Guardar y publicar", pendingLabel: SAVING, accent: true, needsReadiness: true },
+      { intent: "publish", label: "Guardar y publicar", pendingLabel: SAVING, accent: true, ...library },
     ];
   }
   if (status === EXERCISE_STATUS.PUBLISHED) {
-    return [{ intent: "save", label: "Guardar", pendingLabel: SAVING, accent: true, needsReadiness: true }];
+    return [{ intent: "save", label: "Guardar", pendingLabel: SAVING, accent: true, ...library }];
   }
   if (owner === "academy" && status === EXERCISE_STATUS.ARCHIVED) {
     return [{ intent: "save", label: "Guardar", pendingLabel: SAVING, accent: true, needsReadiness: false }];
   }
   return [];
+}
+
+/**
+ * What «Publicada» writes (PLAN.md §8, D32): on, `publishedAt` — kept when
+ * the series is already published, so a repeated press never moves the date
+ * the students see it under —; off, cleared. An empty series is refused:
+ * there would be nothing to see, and the switch is disabled for it on the
+ * page, but the action is reachable by itself.
+ */
+export function academySeriesPublication(
+  series: { publishedAt: Date | null; itemCount: number },
+  published: boolean,
+  now: Date,
+): { ok: true; data: { publishedAt: Date | null } } | { ok: false; code: "seriesNotPublishable" } {
+  if (!published) return { ok: true, data: { publishedAt: null } };
+  if (series.itemCount === 0) return { ok: false, code: "seriesNotPublishable" };
+  return { ok: true, data: { publishedAt: series.publishedAt ?? now } };
 }
 
 /** An academy series on the bank's «Series» view. */

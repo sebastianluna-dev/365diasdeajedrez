@@ -31,8 +31,16 @@ export interface SeriesDataPopupProps {
    * which answers with its notice.
    */
   save: (prev: PopupFormState, formData: FormData) => Promise<PopupFormState>;
+  /** Whose series: a teacher's («tus alumnos», the default) or the academy's («los alumnos»), for the description's hint. */
+  audience?: "teacher" | "academy";
   ref?: Ref<SeriesDataPopupHandle>;
 }
+
+/** What the description is for, by whose series it is. */
+const DESCRIPTION_HINTS: Record<"teacher" | "academy", string> = {
+  teacher: "La leen tus alumnos antes de empezar.",
+  academy: "La leen los alumnos antes de empezar.",
+};
 
 /**
  * The title and the description of a series, the two things its students
@@ -69,7 +77,7 @@ export function SeriesDataPopup({ ref, ...props }: SeriesDataPopupProps) {
 }
 
 /** «Nueva serie», the bank's secondary button, with the popup behind it. */
-export function NewSeriesButton({ save }: Pick<SeriesDataPopupProps, "save">) {
+export function NewSeriesButton({ save, audience }: Pick<SeriesDataPopupProps, "save" | "audience">) {
   const popup = useRef<SeriesDataPopupHandle>(null);
   return (
     <>
@@ -77,7 +85,7 @@ export function NewSeriesButton({ save }: Pick<SeriesDataPopupProps, "save">) {
         <PlusIcon variant="classic-solid" className="platform-button__icon" />
         Nueva serie
       </button>
-      <SeriesDataPopup ref={popup} series={null} save={save} />
+      <SeriesDataPopup ref={popup} series={null} save={save} audience={audience} />
     </>
   );
 }
@@ -103,6 +111,7 @@ export function EditSeriesButton(props: Omit<SeriesDataPopupProps, "ref">) {
 function SeriesDataForm({
   series,
   save,
+  audience = "teacher",
   onDone,
 }: Omit<SeriesDataPopupProps, "ref"> & { onDone: (notice: NonNullable<PopupFormState["notice"]>) => void }) {
   const [state, formAction] = useActionState(save, POPUP_FORM_IDLE);
@@ -133,7 +142,7 @@ function SeriesDataForm({
       <PlatformFormField
         name="description"
         label="Descripción"
-        hint="La leen tus alumnos antes de empezar."
+        hint={DESCRIPTION_HINTS[audience]}
         serverError={message("description")}
       >
         <textarea

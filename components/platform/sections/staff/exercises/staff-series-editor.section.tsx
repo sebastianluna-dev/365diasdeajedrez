@@ -47,6 +47,7 @@ export function StaffSeriesEditorSection({ editor, notice, errorMessage }: Staff
           <EditSeriesButton
             series={{ title: series.title, description: series.description }}
             save={updateAcademySeries.bind(null, series.id)}
+            audience="academy"
           />
         </div>
         <p className="platform-page__subtitle">

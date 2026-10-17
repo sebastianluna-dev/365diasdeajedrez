@@ -190,10 +190,11 @@ const isInteger = (value: string) => /^-?\d+$/.test(value.trim());
 /**
  * What the server would refuse, checked on the draft before sending, in the
  * order of the tabs: the position, then «Datos»' fields, then — when the
- * button asks for the exercise complete — the solution's rules and a topic.
- * Empty when the save may go.
+ * button asks for the exercise complete — the solution's rules and a topic,
+ * and the explanation when it asks for the library's. Empty when the save
+ * may go.
  */
-export function draftIssues(draft: ExerciseDraft, needsReadiness: boolean): DraftIssue[] {
+export function draftIssues(draft: ExerciseDraft, needsReadiness: boolean, needsExplanation = false): DraftIssue[] {
   const issues: DraftIssue[] = [];
   const setup = validateSetup(draft.setup);
   if (!setup.ok) {
@@ -227,14 +228,17 @@ export function draftIssues(draft: ExerciseDraft, needsReadiness: boolean): Draf
   const positionBroken = issues.some((issue) => issue.tab === "position");
   if (needsReadiness && !positionBroken) {
     const mateIn = draft.kind === EXERCISE_KIND.MATE_IN ? Number(draft.mateIn) : null;
-    const readiness = exerciseReadiness({
-      title: draft.title,
-      solutionPgn: draft.solutionPgn,
-      kind: draft.kind,
-      mateIn,
-      topicCount: draft.topics.length,
-      explanation: draft.explanation || null,
-    });
+    const readiness = exerciseReadiness(
+      {
+        title: draft.title,
+        solutionPgn: draft.solutionPgn,
+        kind: draft.kind,
+        mateIn,
+        topicCount: draft.topics.length,
+        explanation: draft.explanation || null,
+      },
+      { explanation: needsExplanation },
+    );
     const [problem] = readiness.solution;
     if (problem) {
       issues.push({
@@ -244,6 +248,9 @@ export function draftIssues(draft: ExerciseDraft, needsReadiness: boolean): Draf
       });
     }
     if (readiness.missing.includes("topic")) data("topics");
+    if (readiness.missing.includes("explanation")) {
+      issues.push({ tab: "data", field: "explanation", message: EXERCISE_ERROR_MESSAGES.libraryExplanation ?? "" });
+    }
   }
   // In the order of the tabs, so the first is where the editor goes.
   const order: ExerciseFormTab[] = ["position", "solution", "data"];

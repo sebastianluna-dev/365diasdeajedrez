@@ -236,7 +236,7 @@ export function ExerciseAuthoring({
   const [isPending, startSave] = useTransition();
   const [pendingIntent, setPendingIntent] = useState<ExerciseSaveIntent | null>(null);
   /** The last button pressed: from then on its rules are checked live, so a mark goes when it is fixed. */
-  const [attempt, setAttempt] = useState<{ needsReadiness: boolean } | null>(null);
+  const [attempt, setAttempt] = useState<{ needsReadiness: boolean; needsExplanation: boolean } | null>(null);
   /** The draft the server's answer is about: its errors are shown while nothing changed since. */
   const [answered, setAnswered] = useState<ExerciseDraft | null>(null);
   const [focusRequest, setFocusRequest] = useState<{ field: string; count: number } | null>(null);
@@ -248,7 +248,7 @@ export function ExerciseAuthoring({
   const startFen = startFenOf(draft.solutionPgn);
   const setupCheck = validateSetup(draft.setup);
   const issues = [
-    ...(attempt ? draftIssues(draft, attempt.needsReadiness) : []),
+    ...(attempt ? draftIssues(draft, attempt.needsReadiness, attempt.needsExplanation) : []),
     ...(answered === draft ? serverIssues(state, draft) : []),
   ];
   const issueOf = (field: string) => issues.find((issue) => issue.field === field)?.message;
@@ -297,8 +297,9 @@ export function ExerciseAuthoring({
     const submitter = (event.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null;
     const button = buttons.find((candidate) => candidate.intent === submitter?.value) ?? buttons[0];
     if (!button) return;
-    setAttempt({ needsReadiness: button.needsReadiness });
-    const found = draftIssues(draft, button.needsReadiness);
+    const needsExplanation = button.needsExplanation ?? false;
+    setAttempt({ needsReadiness: button.needsReadiness, needsExplanation });
+    const found = draftIssues(draft, button.needsReadiness, needsExplanation);
     const [first] = found;
     if (first) {
       setTab(first.tab);

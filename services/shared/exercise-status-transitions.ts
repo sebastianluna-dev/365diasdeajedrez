@@ -16,9 +16,11 @@ import { analyzeSolution, type SolutionProblem } from "@/lib/chess/exercise-form
 // propuesta», or the staff's «Devolver»), IN_REVIEW → PUBLISHED (the staff
 // approves), PUBLISHED → READY (the staff's «Quitar de la biblioteca»), and
 // DRAFT/READY ⇄ ARCHIVED. The academy's (no teacher): DRAFT → PUBLISHED with
-// no review — the staff is the reviewer — and PUBLISHED → ARCHIVED →
-// DRAFT. A lesson's (phase 2): DRAFT ⇄ PUBLISHED, ARCHIVED from either, and
-// back to DRAFT («Restaurar», at the end of the lesson).
+// no review — the staff is the reviewer — but with the explanation a library
+// exercise needs, like a proposal, and PUBLISHED → ARCHIVED → DRAFT. A
+// lesson's (phase 2): DRAFT ⇄ PUBLISHED, ARCHIVED from either, and back to
+// DRAFT («Restaurar», at the end of the lesson); a lesson explains itself,
+// so its exercise needs no explanation.
 
 /** Who owns the exercise: a teacher, the academy (`teacherId` null), or a lesson (phase 2). */
 export type ExerciseOwnerKind = "teacher" | "academy" | "lesson";
@@ -66,7 +68,8 @@ export const EXERCISE_TRANSITIONS: readonly ExerciseTransitionRule[] = [
   rule(IN_REVIEW, READY, "staff", ["teacher"], { note: true }),
   rule(IN_REVIEW, PUBLISHED, "staff", ["teacher"], { readiness: true, explanation: true }),
   rule(PUBLISHED, READY, "staff", ["teacher"], { note: true }),
-  rule(DRAFT, PUBLISHED, "staff", ["academy", "lesson"], { readiness: true }),
+  rule(DRAFT, PUBLISHED, "staff", ["academy"], { readiness: true, explanation: true }),
+  rule(DRAFT, PUBLISHED, "staff", ["lesson"], { readiness: true }),
   rule(PUBLISHED, DRAFT, "staff", ["lesson"]),
   rule(PUBLISHED, ARCHIVED, "staff", ["academy", "lesson"]),
   rule(DRAFT, ARCHIVED, "staff", ["lesson"]),

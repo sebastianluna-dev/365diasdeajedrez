@@ -23,9 +23,11 @@ import {
   mapStaffReviewItem,
   mapStaffSeriesCard,
   mapStaffSeriesItem,
+  ofABank,
   staffExerciseOwner,
   staffExercisePermissions,
   staffExerciseReview,
+  staffReadableExerciseWhere,
   staffSaveButtons,
 } from "./staff-exercises.mapper";
 import type {
@@ -81,10 +83,7 @@ async function levels(): Promise<DifficultyLevel[]> {
   return getPlatformDb().level.findMany({ select: LEVEL_SELECT, orderBy: { order: "asc" } });
 }
 
-/** A bank's exercise: never a lesson's. */
-const ofABank = { lessonId: null } satisfies Prisma.ExerciseWhereInput;
-
-/** The teachers' proposals, waiting. */
+/** The teachers' proposals, waiting. A bank's exercise is never a lesson's (`ofABank`, the mapper's). */
 export function reviewQueueWhere(): Prisma.ExerciseWhereInput {
   return { ...ofABank, status: { code: EXERCISE_STATUS.IN_REVIEW } };
 }
@@ -214,23 +213,6 @@ export async function getNewStaffExerciseEditor(from?: ExerciseGameSeed): Promis
     buttons: staffSaveButtons("academy", null),
     review: null,
     initialTab: prefill ? "solution" : "position",
-  };
-}
-
-/** The exercises of a bank the staff may open: the academy's, and a teacher's once proposed or ever reviewed. */
-export function staffReadableExerciseWhere(exerciseId: string): Prisma.ExerciseWhereInput {
-  return {
-    AND: [
-      { id: exerciseId },
-      ofABank,
-      {
-        OR: [
-          { teacherId: null },
-          { status: { code: { in: [EXERCISE_STATUS.IN_REVIEW, EXERCISE_STATUS.PUBLISHED] } } },
-          { reviewedAt: { not: null } },
-        ],
-      },
-    ],
   };
 }
 

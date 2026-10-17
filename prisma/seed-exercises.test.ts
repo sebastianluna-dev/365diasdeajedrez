@@ -69,7 +69,10 @@ describe("ACADEMY_EXERCISES", () => {
     for (const exercise of ACADEMY_EXERCISES) {
       const analysis = analyzeSolution(exercise);
       expect(analysis.ok ? [] : analysis.problems, exercise.id).toEqual([]);
-      expect(exerciseReadiness({ ...exercise, topicCount: exercise.topics.length }).ok, exercise.id).toBe(true);
+      expect(
+        exerciseReadiness({ ...exercise, topicCount: exercise.topics.length }, { explanation: true }).ok,
+        exercise.id,
+      ).toBe(true);
       expect(exercise.difficulty % EXERCISE_LIMITS.difficultyStep, exercise.id).toBe(0);
     }
   });
