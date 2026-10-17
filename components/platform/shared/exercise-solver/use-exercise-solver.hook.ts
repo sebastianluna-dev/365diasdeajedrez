@@ -38,7 +38,13 @@ export const WALKTHROUGH_STEP_MS = 900;
  * How the submit went: nothing sent; on its way; stored; stored nothing
  * because the exercise was attempted today; or not stored at all.
  */
-export type SolverSaveState = "idle" | "saving" | "saved" | "notScored" | "failed";
+/** `stored`: kept for its class block's mark, scored for nothing else (D49). */
+export type SolverSaveState = "idle" | "saving" | "saved" | "stored" | "notScored" | "failed";
+
+/** Whether a session in this mode sends its attempt once it is decided. */
+export function submitsAttempt(mode: ExerciseSolverMode): boolean {
+  return mode === "solve" || mode === "block";
+}
 
 export interface UseExerciseSolverOptions {
   exercise: ExerciseSolverExercise;
@@ -141,7 +147,7 @@ export function useExerciseSolver({
     if (next === session) return;
     setSession(next);
     const decided = sessionSubmission(next);
-    if (!decided || sessionSubmission(session) || next.mode !== "solve" || !submit || !context) return;
+    if (!decided || sessionSubmission(session) || !submitsAttempt(next.mode) || !submit || !context) return;
     setSave("saving");
     submit({
       exerciseId: exercise.id,
@@ -151,7 +157,7 @@ export function useExerciseSolver({
       solutionShown: decided.solutionShown,
       durationMs: startedAtRef.current === null ? 0 : Date.now() - startedAtRef.current,
     })
-      .then((reply) => setSave(reply.ok ? (reply.scored ? "saved" : "notScored") : "failed"))
+      .then((reply) => setSave(reply.ok ? (reply.scored ? "saved" : reply.stored ? "stored" : "notScored") : "failed"))
       .catch(() => setSave("failed"));
   };
 

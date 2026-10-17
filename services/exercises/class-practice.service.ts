@@ -18,13 +18,16 @@ import type { ClassPracticeExercise } from "./class-practice.types";
 // cancelled, the block visible in the class's phase), and the exercise again
 // through the visibility rule for the path the attempt will claim
 // (`solvableInContextWhere`, CLASS), the same `where` the submit checks at its
-// own `now`. Behind `EXERCISES_ENABLED`: off, the page answers 404.
+// own `now`. A block's exercise whose family was attempted this study day
+// opens in the `block` mode (D49): the attempt is stored for the block's mark
+// and the teacher's count, and nothing else counts. Behind
+// `EXERCISES_ENABLED`: off, the page answers 404.
 
 /**
  * The n-th exercise of an EXERCISE block (1-based, among the ones the student
  * may solve there), or null: a block they may not see now — an AFTER block
  * before the class ends, a class they hold no seat in — is not found. It opens
- * unscored when the exercise's family was attempted this study day.
+ * in the `block` mode when the exercise's family was attempted this study day.
  */
 export async function getClassBlockExercise(
   classId: string,
@@ -87,7 +90,7 @@ export async function getClassBlockExercise(
   return {
     classBlock: { classId: block.class.id, blockId: block.id, classTitle: classTitleOf(block.class, "student"), href },
     exercise: mapSolverExercise(exercise),
-    mode: attemptedToday(states, now) ? "unscored" : "solve",
+    mode: attemptedToday(states, now) ? "block" : "solve",
     context: { attempt, position: classBlockPosition(n, items.length) },
     next: nextInClassBlock(block.class.id, block.id, n, items.length),
     back: { href, label: "Volver a la clase" },

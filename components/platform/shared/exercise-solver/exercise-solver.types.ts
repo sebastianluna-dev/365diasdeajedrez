@@ -23,10 +23,13 @@ export interface ExerciseSolverExercise {
 }
 
 /**
- * How the attempt counts: `solve` submits it; `unscored` is a retry the same
- * study day (§2.7), and `preview` the editor's «Probar» — neither submits.
+ * How the attempt counts: `solve` submits it; `block` submits it too, from a
+ * class block on a day the exercise was already scored (D49): it is stored
+ * for the block's mark and the teacher's count, and nothing else counts;
+ * `unscored` is a retry the same study day (§2.7), and `preview` the editor's
+ * «Probar» — neither submits.
  */
-export type ExerciseSolverMode = "solve" | "unscored" | "preview";
+export type ExerciseSolverMode = "solve" | "block" | "unscored" | "preview";
 
 /** Where it is solved: the path the attempt claims, and where it stands in it («3 / 10»). */
 export interface ExerciseSolverContext {
@@ -54,8 +57,12 @@ export interface ExerciseAttemptSubmission {
 export type ExerciseAttemptRefusal = "disabled" | "throttled" | "invalid" | "notFound" | "refused";
 
 export type ExerciseAttemptReply =
-  /** `scored: false`: the exercise was already attempted this study day, so nothing moved. */
-  { ok: true; scored: boolean; firstSolve: boolean } | { ok: false; reason: ExerciseAttemptRefusal };
+  /**
+   * `scored: false`: the exercise was already attempted this study day, so
+   * nothing moved; `stored` then says whether the row was kept all the same
+   * — a class block's, for its mark (D49).
+   */
+  { ok: true; scored: boolean; firstSolve: boolean; stored: boolean } | { ok: false; reason: ExerciseAttemptRefusal };
 
 /** The server action that records an attempt; a stub in Storybook. */
 export type SubmitExerciseAttempt = (input: ExerciseAttemptSubmission) => Promise<ExerciseAttemptReply>;

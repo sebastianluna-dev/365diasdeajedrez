@@ -20,6 +20,12 @@ describe("exerciseMarksBy", () => {
     expect(marks.get("s2")?.get("e1")).toBe("failed");
   });
 
+  it("lee cualquier fila guardada con el contenedor, también la de un bloque de clase sin puntuar (D49)", () => {
+    // The writer stores a class attempt after a scored one that day with `scored: false`; the fold does not know, and must not.
+    const marks = exerciseMarksBy([{ containerId: "b1", exerciseId: "e1", result: passed }]);
+    expect(marks.get("b1")?.get("e1")).toBe("solved");
+  });
+
   it("un fallo después del acierto no lo quita", () => {
     const marks = exerciseMarksBy([
       { containerId: "b1", exerciseId: "e1", result: passed },

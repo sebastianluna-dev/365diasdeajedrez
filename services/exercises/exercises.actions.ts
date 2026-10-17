@@ -36,9 +36,9 @@ import type { ExerciseKindCode } from "@/constants/platform/exercise-codes.const
 
 /**
  * Records a decided attempt at an exercise. `scored: false` when the exercise
- * was already attempted this study day (nothing moved); `ok: false` with the
- * reason when nothing was stored, which the solver says as «No se guardó el
- * intento.».
+ * was already attempted this study day (nothing moved, though a class block's
+ * row is kept for its mark, D49: `stored`); `ok: false` with the reason when
+ * nothing was stored, which the solver says as «No se guardó el intento.».
  */
 export async function submitExerciseAttempt(input: ExerciseAttemptSubmission): Promise<ExerciseAttemptReply> {
   const user = await getCurrentUser();
@@ -107,6 +107,6 @@ export async function submitExerciseAttempt(input: ExerciseAttemptSubmission): P
     revalidatePath(platformRoutes.lessonPracticePattern, "page");
   }
   return recorded.scored
-    ? { ok: true, scored: true, firstSolve: recorded.firstSolve }
-    : { ok: true, scored: false, firstSolve: false };
+    ? { ok: true, scored: true, firstSolve: recorded.firstSolve, stored: true }
+    : { ok: true, scored: false, firstSolve: false, stored: recorded.attemptId !== null };
 }

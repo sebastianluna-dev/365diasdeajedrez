@@ -26,9 +26,15 @@ import { recordUserActivity, type ActivityWriter } from "./user-activity.service
 //   server's replay (`replayAttempt`), and stores at most one mistake.
 // - Scored once per study day (D19, D20, D23): an exercise attempted today —
 //   any row of its family, the solve key's — stores nothing and answers
-//   `scored: false`, so a failure never turns into a pass the same day. A
-//   «Contrarreloj» attempt still stores its row for the run's score, and
-//   nothing else.
+//   `scored: false`, so a failure never turns into a pass the same day. Two
+//   contexts still store their row, with its mistake, and nothing else: a
+//   «Contrarreloj» attempt, for the run's score, and a class block's (D49),
+//   so the block's mark and the teacher's «2 de 3 lo resolvieron» count a
+//   solve made from the class after a scored attempt elsewhere that day.
+//   Neither moves the state, the ladder, the streak or «Ejercicios
+//   superados»; the rebuild folds them as the gate did (skipped), and a
+//   stored row is scored exactly when it is the family's first of its study
+//   day. No column says it: the order does.
 // - Counted once (D22): EXERCISE_PASSED is written only on the student's
 //   first pass of the family, keyed on the solve key.
 // - The review ladder (D23, D33) moves with every scored attempt but a
@@ -263,7 +269,7 @@ export interface RecordExerciseAttemptInput {
 export type RecordExerciseAttemptResult =
   /** Stored and scored; `firstSolve` when it was the family's first pass, which wrote the activity. */
   | { scored: true; attemptId: string; firstSolve: boolean }
-  /** Attempted earlier this study day: nothing stored, but a «Contrarreloj» attempt's row for the run. */
+  /** Attempted earlier this study day: nothing stored, but a «Contrarreloj» attempt's row for the run, or a class block's for its mark (D49). */
   | { scored: false; attemptId: string | null };
 
 /**
@@ -290,9 +296,10 @@ export async function recordExerciseAttempt(
   ]);
   const resultId = idOf(resultIds, outcome.result, "AttemptResult");
   const contextId = idOf(contextIds, input.contextCode, "AttemptContext");
-  const isStorm = input.contextCode === ATTEMPT_CONTEXT.STORM;
+  // The run's tally (STORM) and the class block's mark (CLASS, D49) read the row even on a day already scored.
+  const keepsRow = input.contextCode === ATTEMPT_CONTEXT.STORM || input.contextCode === ATTEMPT_CONTEXT.CLASS;
   const takenToday = family.some((row) => row.lastAttemptAt !== null && isSameStudyDay(row.lastAttemptAt, now));
-  if (takenToday && !isStorm) return { scored: false, attemptId: null };
+  if (takenToday && !keepsRow) return { scored: false, attemptId: null };
 
   const attempt = await db.trainingAttempt.create({
     data: {
@@ -314,9 +321,6 @@ export async function recordExerciseAttempt(
     },
     select: { id: true },
   });
-  // A run's tally counts the attempt; the day was already scored, so nothing else moves.
-  if (takenToday) return { scored: false, attemptId: attempt.id };
-
   if (outcome.mistake) {
     await db.trainingMistake.create({
       data: {
@@ -331,6 +335,8 @@ export async function recordExerciseAttempt(
       },
     });
   }
+  // The row and its mistake are what the run's tally or the block's mark read; the day was already scored, so nothing else moves.
+  if (takenToday) return { scored: false, attemptId: attempt.id };
 
   const current = family.find((row) => row.exerciseId === exercise.id) ?? { ...EMPTY_EXERCISE_STATE };
   const next = foldExerciseAttempt(current, {

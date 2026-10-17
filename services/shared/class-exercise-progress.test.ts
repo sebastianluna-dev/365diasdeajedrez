@@ -32,6 +32,13 @@ describe("classExerciseSolvedCounts", () => {
   });
 });
 
+describe("classExerciseSolvedCounts con una fila sin puntuar (D49)", () => {
+  it("cuenta el acierto guardado desde el bloque aunque el día ya estuviera puntuado: la fila no dice si puntuó, y no hace falta", () => {
+    const counts = classExerciseSolvedCounts([attempt("a", "b1", "e1")], ["a"]);
+    expect(counts.get("b1")?.get("e1")).toBe(1);
+  });
+});
+
 describe("solvedCountLabel y classSolvedLabels", () => {
   it("escribe «2 de 3 lo resolvieron», en singular con uno, y «Sin alumnos» sin plazas", () => {
     expect(solvedCountLabel(2, 3)).toBe("2 de 3 lo resolvieron");

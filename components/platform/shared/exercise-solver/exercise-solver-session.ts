@@ -78,7 +78,7 @@ export type SolverAction =
   | { type: "showSolution" }
   /** «Ver la solución»'s ‹ ›: the number of steps the board shows. */
   | { type: "step"; to: number }
-  /** «Reintentar»: the board from the start, scored no more today (§2.7). */
+  /** «Reintentar»: the board from the start, scored no more today (§2.7); a class block's retry marks nothing more either. */
   | { type: "retry" };
 
 function positionOf(fen: string): Chess {

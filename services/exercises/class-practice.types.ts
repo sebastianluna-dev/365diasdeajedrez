@@ -14,8 +14,8 @@ import type {
 export interface ClassPracticeExercise {
   classBlock: { classId: string; blockId: string; classTitle: string; href: string };
   exercise: ExerciseSolverExercise;
-  /** `unscored` when the exercise's family was attempted this study day (§2.7). */
-  mode: Extract<ExerciseSolverMode, "solve" | "unscored">;
+  /** `block` when the exercise's family was attempted this study day (D49): stored for the block's mark, scored for nothing else. */
+  mode: Extract<ExerciseSolverMode, "solve" | "block">;
   context: ExerciseSolverContext;
   /** The next exercise of the block, or null at the last. */
   next: ExerciseSolverLink | null;

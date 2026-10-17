@@ -118,7 +118,7 @@ const meta = {
     context: CONTEXT,
     next: NEXT,
     back: BACK,
-    submit: fn(async () => ({ ok: true as const, scored: true, firstSolve: true })).mockName("submit"),
+    submit: fn(async () => ({ ok: true as const, scored: true, firstSolve: true, stored: true })).mockName("submit"),
   },
   parameters: {
     layout: "padded",
@@ -248,6 +248,25 @@ export const UnscoredRetry: Story = {
   render: () => (
     <SolverState exercise={BLACK_MATE} mode="unscored" actions={[{ type: "move", san: "Rd1#" }]} elapsedMs={4_000} />
   ),
+};
+
+/** A class block's exercise already scored today (D49): the head says it counts for the class, not the streak, and a solve is still «¡Resuelto!» — the block's mark. */
+export const BlockOnly: Story = {
+  render: () => (
+    <SolverState
+      exercise={BLACK_MATE}
+      mode="block"
+      actions={[{ type: "move", san: "Rd1#" }]}
+      elapsedMs={4_000}
+      save="stored"
+    />
+  ),
+  play: async ({ canvas }) => {
+    await waitFor(() => expect(canvas.getByText("¡Resuelto!")).toBeVisible());
+    await expect(
+      canvas.getByText("Ya lo intentaste hoy: este intento cuenta para la clase, no para tu racha."),
+    ).toBeVisible();
+  },
 };
 
 /** The editor's «Probar»: nothing is recorded, and there is no way on or back. */

@@ -31,12 +31,12 @@ import type {
   ExerciseSolverMode,
   SubmitExerciseAttempt,
 } from "./exercise-solver.types";
-import { useExerciseSolver, type SolverSaveState } from "./use-exercise-solver.hook";
+import { submitsAttempt, useExerciseSolver, type SolverSaveState } from "./use-exercise-solver.hook";
 import "./exercise-solver.comp.css";
 
 export interface ExerciseSolverProps {
   exercise: ExerciseSolverExercise;
-  /** How it counts: `solve` submits; `unscored` (a retry the same day) and `preview` («Probar») do not. */
+  /** How it counts: `solve` and `block` (a class block, scored no more today, D49) submit; `unscored` (a retry the same day) and `preview` («Probar») do not. */
   mode: ExerciseSolverMode;
   /** Where it is solved, for the attempt and the «3 / 10». Without it nothing is submitted. */
   context?: ExerciseSolverContext;
@@ -106,10 +106,37 @@ function clockOf(ms: number): string {
   return `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
 }
 
+/** What a class block's solve says on a day the exercise was already scored (D49): it marks the block, nothing else. */
+const BLOCK_NOTE = "Ya lo intentaste hoy: este intento cuenta para la clase, no para tu racha.";
+
 const SAVE_NOTES: Partial<Record<SolverSaveState, { message: string; variant: "error" | "info" }>> = {
   failed: { message: "No se guardó el intento.", variant: "error" },
   notScored: { message: "Ya lo intentaste hoy: este intento no cuenta.", variant: "info" },
+  stored: { message: BLOCK_NOTE, variant: "info" },
 };
+
+/**
+ * The note under the result about the save: only in a mode that submits, and
+ * not what the head already says (a `block` page knows its attempt is stored
+ * for the block alone).
+ */
+function saveNoteOf(mode: ExerciseSolverMode, save: SolverSaveState) {
+  if (!submitsAttempt(mode)) return undefined;
+  if (mode === "block" && save === "stored") return undefined;
+  return SAVE_NOTES[save];
+}
+
+/**
+ * The mode the result is told in: the server's answer wins over the page's
+ * (a stale page, a second tab): an attempt that did not count never says
+ * «¡Resuelto!» (§2.7), and one kept for its class block says so (D49).
+ */
+function resultModeOf(mode: ExerciseSolverMode, save: SolverSaveState): ExerciseSolverMode {
+  if (mode !== "solve") return mode;
+  if (save === "notScored") return "unscored";
+  if (save === "stored") return "block";
+  return mode;
+}
 
 /** The solve screen as data: what `ExerciseSolver` draws from its hook, and what a story draws from a session. */
 export function ExerciseSolverView({
@@ -139,7 +166,7 @@ export function ExerciseSolverView({
   const comment = walkthroughComment(session);
   // Once it is over the result says how it went; the walk through the solution still says its comments.
   const feedback = comment ? { tone: "info" as const, text: comment } : over ? null : session.feedback;
-  const saveNote = mode === "solve" ? SAVE_NOTES[save] : undefined;
+  const saveNote = saveNoteOf(mode, save);
 
   return (
     <section className={`exercise-solver exercise-solver_mode_${mode}`} aria-labelledby={titleId}>
@@ -156,6 +183,7 @@ export function ExerciseSolverView({
           {solve.failed && <span className="platform-tag exercise-solver__failed">Fallado</span>}
         </p>
         {mode === "unscored" && <p className="exercise-solver__note">Ya lo intentaste hoy: este intento no cuenta.</p>}
+        {mode === "block" && <p className="exercise-solver__note">{BLOCK_NOTE}</p>}
         {mode === "preview" && <p className="exercise-solver__note">Vista previa: el intento no se guarda.</p>}
       </header>
 
@@ -233,9 +261,7 @@ export function ExerciseSolverView({
         {over && result ? (
           <ResultPanel
             result={result}
-            // The server's answer wins over the page's mode: an attempt that did not count
-            // (a stale page, a second tab) never says «¡Resuelto!» (§2.7).
-            mode={mode === "solve" && save === "notScored" ? "unscored" : mode}
+            mode={resultModeOf(mode, save)}
             explanation={exercise.explanation}
             next={next}
             back={back}
@@ -291,7 +317,8 @@ const RESULT_TITLES: Record<"solve" | "again", Record<SolverResult["kind"], stri
     failed: "Fallado",
     shown: "Viste la solución",
   },
-  // A retry or a preview says how it went this time, never «¡Resuelto!» (§2.7).
+  // A retry or a preview says how it went this time, never «¡Resuelto!» (§2.7). A class
+  // block's solve on a day already scored (`block`, D49) is «¡Resuelto!»: it marks the block.
   again: {
     clean: "Esta vez, sin errores",
     hinted: "Esta vez, con pista",
@@ -324,7 +351,7 @@ function ResultPanel({
 }: ResultPanelProps) {
   const passed = result.kind === "clean" || result.kind === "hinted";
   const Icon = passed ? CircleCheckIcon : CircleXmarkIcon;
-  const title = RESULT_TITLES[mode === "solve" ? "solve" : "again"][result.kind];
+  const title = RESULT_TITLES[submitsAttempt(mode) ? "solve" : "again"][result.kind];
   // One accent: the way on, or the way back when there is nothing after it.
   const accentBack = !next;
 

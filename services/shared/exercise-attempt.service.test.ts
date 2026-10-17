@@ -245,6 +245,36 @@ describe("recordExerciseAttempt", () => {
     expect(state(db)).toMatchObject({ attemptCount: 1, firstSolvedAt: null, lastAttemptAt: DAY1 });
   });
 
+  it("desde un bloque de clase, un ejercicio ya puntuado hoy guarda su fila con el bloque y su error, y nada más (D49)", async () => {
+    const db = database();
+    await submit(db, CLEAN, DAY1, "PRACTICE");
+    const { result } = await submit(db, FAILED, DAY1_LATER, "CLASS");
+    expect(result).toEqual({ scored: false, attemptId: expect.any(String) });
+    // The block's mark and «2 de 3 lo resolvieron» read this row; the mistake is the teacher's to see.
+    expect(db.rows("trainingAttempt")[1]).toMatchObject({
+      classBlockId: "b-1",
+      seriesId: null,
+      contextId: FAKE_EXERCISE_IDS.context.CLASS,
+      resultId: FAKE_EXERCISE_IDS.result.FAILED,
+      mistakes: 1,
+    });
+    expect(db.rows("trainingMistake")).toEqual([expect.objectContaining({ attemptId: result.attemptId })]);
+    // Nothing else moved: the state, the first pass and the activity are the morning's.
+    expect(state(db)).toMatchObject({ attemptCount: 1, firstSolvedAt: DAY1, lastAttemptAt: DAY1, reviewStep: null });
+    expect(db.rows("userActivity")).toHaveLength(1);
+  });
+
+  it("un bloque de clase después de un fallo el mismo día: la fila se guarda, el estado y la actividad no cambian", async () => {
+    const db = database();
+    await submit(db, FAILED, DAY1);
+    await expect(submit(db, CLEAN, DAY1_LATER, "CLASS")).resolves.toMatchObject({
+      result: { scored: false, attemptId: expect.any(String) },
+    });
+    expect(db.rows("trainingAttempt")).toHaveLength(2);
+    expect(db.rows("userActivity")).toEqual([]);
+    expect(state(db)).toMatchObject({ attemptCount: 1, firstSolvedAt: null, lastAttemptAt: DAY1, reviewStep: 0 });
+  });
+
   it("dos envíos a la vez el mismo día guardan uno: el segundo espera el candado y lee el primero", async () => {
     const db = database();
     const first = db.begin();
