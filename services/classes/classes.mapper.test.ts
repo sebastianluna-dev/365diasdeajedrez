@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   CLASS_BLOCK_KIND,
   CLASS_FORMAT,
@@ -27,6 +27,19 @@ import {
   type StudentPaymentCount,
   type StudentSeatSource,
 } from "./classes.mapper";
+
+// The flag, mocked so the test does not read the owner's local switch (the
+// committed value is off): a student sees an exercise block only while it is
+// on, and the «off» case is checked below with the same mock.
+const flags = vi.hoisted(() => ({ exercises: true }));
+vi.mock("@/constants/platform/features.const", () => ({
+  get EXERCISES_ENABLED() {
+    return flags.exercises;
+  },
+}));
+afterEach(() => {
+  flags.exercises = true;
+});
 
 // Hand-built sources with the shape the service feeds; the block rows are
 // asserted as Prisma's because what is tested is the mapping, not Prisma.
@@ -480,6 +493,16 @@ describe("mapStudentClassDetail", () => {
       blocks: [block({ id: "x2", kind: { code: CLASS_BLOCK_KIND.EXERCISE }, exercises: exercises.slice(1, 2) })],
     });
     expect(mapClassBlocks(gone.blocks, { audience: "student", phase: CLASS_PHASE.OPEN })).toEqual([]);
+  });
+
+  it("with the flag off the student does not see an exercise block, and the teacher still does", () => {
+    flags.exercises = false;
+    const exercises = [blockExercise("e1", "El pasillo abierto", "t-1", "READY")];
+    const row = detailRow({ blocks: [block({ id: "x1", kind: { code: CLASS_BLOCK_KIND.EXERCISE }, exercises })] });
+    expect(mapClassBlocks(row.blocks, { audience: "student", phase: CLASS_PHASE.OPEN })).toEqual([]);
+    expect(
+      mapClassBlocks(row.blocks, { audience: "teacher", phase: CLASS_PHASE.OPEN }).map((item) => item.kind),
+    ).toEqual(["EXERCISE"]);
   });
 
   it("the teacher and the staff see every exercise of the block, the lost ones marked, with the counts and no way to solve", () => {
