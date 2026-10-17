@@ -255,6 +255,77 @@ describe("recordExerciseAttempt", () => {
   });
 });
 
+describe("la familia de un ejercicio (D22, D28)", () => {
+  /** The library original, its copy in a lesson, and a teacher's «Duplicar» of the original. */
+  function familyDb() {
+    return fakeExerciseDb({
+      exercise: [
+        { id: "orig", copiedFromId: null, lessonId: null, solutionPgn: BACK_RANK },
+        { id: "copy", copiedFromId: "orig", lessonId: "l-1", solutionPgn: BACK_RANK },
+        { id: "dup", copiedFromId: "orig", lessonId: null, solutionPgn: BACK_RANK },
+      ],
+      exerciseTopic: [{ exerciseId: "orig", topicId: T.FORK }],
+    });
+  }
+
+  async function submitAt(db: ReturnType<typeof familyDb>, id: string, outcome: AttemptOutcome, now: Date) {
+    const row = db.rows("exercise").find((candidate) => candidate.id === id)!;
+    const tx = db.begin();
+    const result = await recordExerciseAttempt(writer(tx), {
+      userId: USER,
+      exercise: { id, copiedFromId: row.copiedFromId as string | null, lessonId: row.lessonId as string | null },
+      contextCode: id === "copy" ? "LESSON" : "SERIES",
+      seriesId: id === "copy" ? null : "s-1",
+      outcome,
+      durationMs: 9_000,
+      now,
+    });
+    tx.commit();
+    return result;
+  }
+
+  it("la copia de una lección es su original: resolverla después de él no escribe otra actividad", async () => {
+    const db = familyDb();
+    await expect(submitAt(db, "orig", CLEAN, DAY1)).resolves.toMatchObject({ scored: true, firstSolve: true });
+    await expect(submitAt(db, "copy", CLEAN, DAY2)).resolves.toMatchObject({ scored: true, firstSolve: false });
+    const activities = db.rows("userActivity");
+    expect(activities).toHaveLength(1);
+    expect(activities[0]).toMatchObject({ subjectId: "orig" });
+    // Both rows hold their own standing; the copy's first solve is its own date.
+    expect(db.rows("userExerciseState").find((row) => row.exerciseId === "copy")).toMatchObject({
+      firstSolvedAt: DAY2,
+    });
+  });
+
+  it("y al revés: la copia primero cuenta con la clave del original, y el original ya no cuenta", async () => {
+    const db = familyDb();
+    await expect(submitAt(db, "copy", CLEAN, DAY1)).resolves.toMatchObject({ scored: true, firstSolve: true });
+    expect(db.rows("userActivity")[0]).toMatchObject({ subjectId: "orig" });
+    await expect(submitAt(db, "orig", CLEAN, DAY2)).resolves.toMatchObject({ scored: true, firstSolve: false });
+    expect(db.rows("userActivity")).toHaveLength(1);
+  });
+
+  it("un fallo en el original y un acierto en la copia el mismo día: la copia no guarda nada", async () => {
+    const db = familyDb();
+    await submitAt(db, "orig", FAILED, DAY1);
+    await expect(submitAt(db, "copy", CLEAN, DAY1_LATER)).resolves.toEqual({ scored: false, attemptId: null });
+    expect(db.rows("trainingAttempt")).toHaveLength(1);
+    expect(db.rows("userActivity")).toHaveLength(0);
+  });
+
+  it("un «Duplicar» del profesor es otro ejercicio: su familia no es la del original", async () => {
+    const db = familyDb();
+    await submitAt(db, "orig", CLEAN, DAY1);
+    await expect(submitAt(db, "dup", CLEAN, DAY1_LATER)).resolves.toMatchObject({ scored: true, firstSolve: true });
+    expect(
+      db
+        .rows("userActivity")
+        .map((row) => row.subjectId)
+        .sort(),
+    ).toEqual(["dup", "orig"]);
+  });
+});
+
 describe("exerciseSolveKey", () => {
   it("la copia de una lección es su original; un «Duplicar» es un ejercicio nuevo", () => {
     expect(exerciseSolveKey({ id: "copy", copiedFromId: "orig", lessonId: "l-1" })).toBe("orig");

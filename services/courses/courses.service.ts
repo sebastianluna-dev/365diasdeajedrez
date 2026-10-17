@@ -3,6 +3,7 @@ import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { MOVE_TRAINER_ENABLED } from "@/constants/platform/features.const";
 import { PROGRESS_STATUS, type ProgressStatusCode } from "@/constants/platform/shared-codes.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
+import { getLessonPractice } from "@/services/exercises/lesson-practice.service";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { gameMoves, type GameMoves } from "@/lib/chess/game-moves";
 import { dueReviewExerciseWhere, reviewExerciseWhere } from "@/services/shared/course-review.service";
@@ -399,10 +400,14 @@ export async function getLessonView(lessonId: string): Promise<LessonView | null
 
   const courseId = lesson.chapter.courseId;
   // The settings already come inside the state; before they were queried separately here.
-  const [course, progress] = await Promise.all([getPublishedCourse(courseId), getCourseProgressState(courseId)]);
+  const [course, progress, practice] = await Promise.all([
+    getPublishedCourse(courseId),
+    getCourseProgressState(courseId),
+    getLessonPractice(lessonId),
+  ]);
   if (!course) return null;
 
-  const view = mapLessonView(course, lesson, progress);
+  const view = mapLessonView(course, lesson, progress, practice);
   // With the trainer off the lesson has nowhere to be trained.
   return view && !MOVE_TRAINER_ENABLED ? { ...view, trainerHref: undefined } : view;
 }

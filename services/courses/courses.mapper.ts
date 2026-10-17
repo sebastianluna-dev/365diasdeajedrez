@@ -1,10 +1,11 @@
 import { BOARD_ORIENTATION, PROGRESS_STATUS, type ProgressStatusCode } from "@/constants/platform/shared-codes.const";
+import type { LessonPractice } from "@/services/exercises/lesson-practice.types";
 import type { GameMoves } from "@/lib/chess/game-moves";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { withCoverCrop } from "@/lib/cloudinary-url";
 import { platformRoutes } from "@/lib/platform-routes";
 import { sortByRole } from "@/services/shared/content-order";
-import { lessonPgnOf } from "@/services/shared/lesson-pgn";
+import { lessonHasContent, lessonPgnOf } from "@/services/shared/lesson-pgn";
 import { formatEloRange } from "./level-rules";
 import type {
   ChapterLessonItem,
@@ -559,6 +560,7 @@ export function mapLessonView(
   course: CourseWithContent,
   lesson: LessonRowForView,
   state: UserCourseState,
+  practice: LessonPractice | null = null,
 ): LessonView | null {
   const chapter = course.chapters.find((candidate) => candidate.id === lesson.chapterId);
   if (!chapter) return null;
@@ -599,7 +601,9 @@ export function mapLessonView(
     pgn: lessonPgnOf(lesson),
     orientation: effective === BOARD_ORIENTATION.BLACK ? "black" : "white",
     statusCode: asStatus(state.lessonStatus.get(lesson.id)),
-    exerciseCount: lesson.trainingExercises.length,
+    practice,
+    // Derived, never stored (D25): a lesson with nothing to read and something to solve.
+    isPracticeOnly: !lessonHasContent(lesson) && practice !== null,
     prevLessonHref: prev ? platformRoutes.lessonDetail(course.id, prev.chapterOrder, prev.id) : undefined,
     nextLessonHref: next ? platformRoutes.lessonDetail(course.id, next.chapterOrder, next.id) : undefined,
     href: platformRoutes.lessonDetail(course.id, chapter.order, lesson.id),

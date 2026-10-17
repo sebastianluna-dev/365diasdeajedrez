@@ -146,6 +146,28 @@ interface StateRow extends ExerciseStateColumns {
   exerciseId: string;
 }
 
+/** The minimum of Prisma that reads a key's lesson copies. */
+export interface ExerciseFamilyReader {
+  exercise: { findMany(args: unknown): Promise<{ id: string }[]> };
+}
+
+/**
+ * The ids whose states make up an exercise's family (D22, D28): its solve
+ * key, itself, and every lesson copy of the key — so solving a library
+ * exercise and then its copy in a lesson is one exercise for the day gate and
+ * for «Ejercicios superados», whichever of the two was solved first. The
+ * writer reads it under the family's lock; the pages read it to say whether
+ * the exercise was attempted today and whether it counts as solved.
+ */
+export async function exerciseFamilyIds(db: ExerciseFamilyReader, exercise: SolveKeyExercise): Promise<string[]> {
+  const solveKey = exerciseSolveKey(exercise);
+  const copies = await db.exercise.findMany({
+    where: { copiedFromId: solveKey, lessonId: { not: null } },
+    select: { id: true },
+  });
+  return [...new Set([solveKey, exercise.id, ...copies.map((copy) => copy.id)])];
+}
+
 /** The minimum of Prisma the lock needs. */
 export interface ExerciseFamilyLocker {
   $executeRaw(query: TemplateStringsArray, ...values: unknown[]): Promise<unknown>;
@@ -175,7 +197,7 @@ async function ensureExerciseState(db: ExerciseFamilyLocker, userId: string, exe
   await db.$executeRaw`INSERT INTO "UserExerciseState" ("userId", "exerciseId", "updatedAt") VALUES (${userId}, ${exerciseId}, ${now}) ON CONFLICT DO NOTHING`;
 }
 
-export interface ExerciseAttemptWriter extends ActivityWriter, ExerciseFamilyLocker {
+export interface ExerciseAttemptWriter extends ActivityWriter, ExerciseFamilyLocker, ExerciseFamilyReader {
   attemptResult: { findMany(args: unknown): Promise<{ id: number; code: string }[]> };
   attemptContext: { findMany(args: unknown): Promise<{ id: number; code: string }[]> };
   trainingAttempt: { create(args: unknown): Promise<{ id: string }> };
@@ -230,9 +252,9 @@ export async function recordExerciseAttempt(
   await lockExerciseFamily(db, userId, solveKey, now);
   if (exercise.id !== solveKey) await ensureExerciseState(db, userId, exercise.id, now);
 
-  // The family as it stands under the lock. Phase 2 adds the lesson copies of the key.
+  // The family as it stands under the lock: the key, this exercise and the key's lesson copies.
   const family = await db.userExerciseState.findMany({
-    where: { userId, exerciseId: { in: [...new Set([solveKey, exercise.id])] } },
+    where: { userId, exerciseId: { in: await exerciseFamilyIds(db, exercise) } },
   });
   const [resultIds, contextIds] = await Promise.all([
     catalogIds(db.attemptResult.findMany({ select: { id: true, code: true } })),

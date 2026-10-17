@@ -7,6 +7,7 @@ const meta: MetaRecord = {
   "course-study": "course-study",
   "course-card": "CourseCard",
   "lesson-view": "lesson-view",
+  "lesson-practice": "lesson-practice",
 };
 
 export default meta;

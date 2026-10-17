@@ -1,0 +1,26 @@
+---
+description: "The n-th exercise of a lesson, to solve: the server side of the solve screen, with the attempt's action bound and the context LESSON."
+---
+
+# `LessonPracticeSection`
+
+|          |                                                                                                                                        |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| File     | `components/platform/sections/courses/lesson-practice/lesson-practice.section.tsx`                                                     |
+| Kind     | Server Component                                                                                                                       |
+| Used by  | `/cursos/[courseRef]/[chapterOrder]/[lessonId]/practica/[n]` (behind `EXERCISES_ENABLED`)                                              |
+| Composes | [`ExerciseSolver`](/components/platform/shared/exercise-solver)                                                                        |
+| Reads    | `LessonPracticeExercise` from `getLessonPracticeExercise(lessonId, n)` · `services/exercises/lesson-practice.service.ts`               |
+| Writes   | `submitExerciseAttempt` · `services/exercises/exercises.actions.ts`, handed to the solver as a prop; the attempt's context is `LESSON` |
+
+## Props
+
+| Prop   | Type                     | Required | Meaning                                                                                                                                  |
+| ------ | ------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `item` | `LessonPracticeExercise` | yes      | The lesson, the exercise for the solver, its mode, the attempt's context with «2 / 3», the next exercise and the way back to the lesson. |
+
+## Behaviour
+
+The twin of [`ExerciseSolveSection`](/components/platform/sections/exercises/exercise-solve-section), for a lesson (D25): `n` is 1-based among the lesson's exercises in play, so the URL of an exercise is its place in the lesson. The service reads the exercise again through the rule for the path the attempt will claim (`solvableInContextWhere` with `LESSON`: a PUBLISHED exercise of a lesson of a published course), and opens it **unscored** when its family — itself and, for a copy, its library original — was attempted this study day (§2.7). The solver is mounted under the lesson and the exercise as its `key`, so «Siguiente ejercicio» never carries the last board's state; at the last exercise, the way back is «Volver a la lección».
+
+The page lives in its own route group (`(practice)`), outside the lesson's frame: the solve screen is designed for a phone and the column of lessons would crowd it. It draws its head itself — the way back to the lesson by its name, and the exercise's title — and sends a practice page reached under the wrong course or chapter to the lesson's own address.

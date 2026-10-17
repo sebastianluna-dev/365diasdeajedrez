@@ -88,6 +88,8 @@ import { PaidClassesCard } from "@/components/platform/shared/paid-classes-card/
 import { PastClassCard } from "@/components/platform/shared/past-class-card/past-class-card.comp";
 import { CourseCard } from "@/components/platform/sections/courses/course-card.comp";
 import { LevelScale } from "@/components/platform/sections/courses/course-info/level-scale.comp";
+import { LessonPracticeCard } from "@/components/platform/sections/courses/lesson-view/lesson-practice-card.comp";
+import { LessonPracticeList } from "@/components/platform/sections/courses/lesson-view/lesson-practice-list.comp";
 import { LessonSkeleton } from "@/components/platform/sections/courses/lesson-view/lesson-skeleton.comp";
 import { OutlineList } from "@/components/platform/sections/courses/lesson-view/outline-list.comp";
 import { MyCourseCard } from "@/components/platform/sections/courses/my-courses/my-course-card.comp";
@@ -1341,6 +1343,64 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               >
                 <LessonSkeleton />
               </div>
+            </Tile>
+            <Tile
+              name="LessonPracticeCard"
+              docs="platform-sections-courses-lesson-view-lessonpracticecard"
+              width={720}
+              height={120}
+            >
+              <LessonPracticeCard
+                practice={{
+                  total: 3,
+                  solved: 1,
+                  items: [],
+                  start: { href: "#", label: "Continuar" },
+                }}
+              />
+            </Tile>
+            <Tile
+              name="LessonPracticeList"
+              docs="platform-sections-courses-lesson-view-lessonpracticelist"
+              width={960}
+              height={520}
+            >
+              <LessonPracticeList
+                title="Finales de torre: práctica"
+                badge="Prioridad"
+                description="Tres posiciones para fijar lo que viste en el capítulo."
+                practice={{
+                  total: 2,
+                  solved: 1,
+                  items: [
+                    {
+                      n: 1,
+                      href: "#",
+                      title: "El puente de Lucena",
+                      facts: "Secuencia · 1200 · Intermedio",
+                      startFen: "1K6/1P1k4/8/8/8/8/r7/2R5 w - - 0 1",
+                      orientation: "white",
+                      solved: true,
+                    },
+                    {
+                      n: 2,
+                      href: "#",
+                      title: "La defensa Philidor",
+                      facts: "Secuencia · 1100 · Principiante",
+                      startFen: "4k3/8/8/4PK2/8/8/r7/4R3 b - - 0 1",
+                      orientation: "black",
+                      solved: false,
+                    },
+                  ],
+                  start: { href: "#", label: "Continuar" },
+                }}
+                onwards={{
+                  skipHref: "#",
+                  skipLabel: "Saltar",
+                  finishLabel: "Continuar",
+                  finish: async () => undefined,
+                }}
+              />
             </Tile>
           </Section>
 

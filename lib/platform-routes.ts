@@ -67,6 +67,14 @@ export const platformRoutes = {
    */
   lessonPattern: "/cursos/[courseRef]/[chapterOrder]/[lessonId]",
   /**
+   * The n-th exercise of a lesson (1-based, among the ones in play), solved
+   * from the lesson («Ahora practica», D25): behind `EXERCISES_ENABLED`.
+   */
+  lessonPractice: (courseId: string, chapterOrder: number, lessonId: string, n: number) =>
+    `/cursos/${courseId}/${chapterOrder}/${lessonId}/practica/${n}`,
+  /** The practice route as the App Router spells it, for revalidating every practice page at once. */
+  lessonPracticePattern: "/cursos/[courseRef]/[chapterOrder]/[lessonId]/practica/[n]",
+  /**
    * The account: what is the person's own and the one thing they set. It hangs
    * from the root and not from a role's panel, because it is everyone's.
    */

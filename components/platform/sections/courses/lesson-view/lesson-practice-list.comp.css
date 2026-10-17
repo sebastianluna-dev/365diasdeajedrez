@@ -1,0 +1,139 @@
+/* A practice-only lesson: its head and its exercises as rows that open them,
+   where the board would be, and the lesson's way through under them. */
+.lesson-practice-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-6);
+  max-width: 720px;
+
+  & .lesson-practice-list__head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--platform-space-2);
+  }
+
+  & .lesson-practice-list__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-3);
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-2xl);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--platform-text);
+    text-wrap: balance;
+  }
+
+  & .lesson-practice-list__badge {
+    font-family: inherit;
+  }
+
+  & .lesson-practice-list__standing {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .lesson-practice-list__description {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    line-height: 1.5;
+    color: var(--platform-text);
+    text-wrap: pretty;
+  }
+
+  & .lesson-practice-list__start {
+    margin-top: var(--platform-space-2);
+  }
+
+  & .lesson-practice-list__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .lesson-practice-list__link {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-3);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  & .lesson-practice-list__link:hover .lesson-practice-list__item-title {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  & .lesson-practice-list__link:focus-visible {
+    outline: 2px solid var(--platform-accent-ink);
+    outline-offset: 2px;
+  }
+
+  & .lesson-practice-list__diagram {
+    display: block;
+  }
+
+  & .lesson-practice-list__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    min-width: 0;
+  }
+
+  & .lesson-practice-list__item-title {
+    font-size: var(--platform-type-md);
+    font-weight: 600;
+    color: var(--platform-text);
+    overflow-wrap: anywhere;
+  }
+
+  & .lesson-practice-list__facts {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .lesson-practice-list__mark {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+    font-size: var(--platform-type-sm);
+    font-weight: 700;
+    color: var(--platform-success-ink);
+    white-space: nowrap;
+  }
+
+  & .lesson-practice-list__mark-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  & .lesson-practice-list__onwards {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--platform-space-3);
+  }
+
+  @media (width < 640px) {
+    & .lesson-practice-list__link {
+      grid-template-columns: 56px minmax(0, 1fr);
+      gap: var(--platform-space-3);
+    }
+
+    & .lesson-practice-list__mark {
+      grid-column: 2;
+    }
+  }
+}

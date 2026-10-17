@@ -24,6 +24,7 @@ const SUBMISSION_SCHEMA = z.object({
     z.object({ kind: z.literal(ATTEMPT_CONTEXT.SERIES), seriesId: z.string().min(1).max(64) }),
     z.object({ kind: z.literal(ATTEMPT_CONTEXT.PRACTICE) }),
     z.object({ kind: z.literal(ATTEMPT_CONTEXT.REVIEW) }),
+    z.object({ kind: z.literal(ATTEMPT_CONTEXT.LESSON) }),
   ]),
   moves: z.array(z.object({ san: z.string().min(1).max(12), hintsBefore: HINTS })).max(EXERCISE_ATTEMPT_LIMITS.moves),
   hintsUsed: HINTS,

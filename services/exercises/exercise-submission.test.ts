@@ -27,6 +27,15 @@ function submission(moves: { san: string; hintsBefore: number }[], hintsUsed: nu
 }
 
 describe("parseExerciseSubmission", () => {
+  it("acepta el camino de una lección, sin más dato que el tipo (fase 2)", () => {
+    const parsed = parseExerciseSubmission({
+      ...submission([{ san: "Qg8+", hintsBefore: 0 }], 0),
+      context: { kind: "LESSON" },
+    });
+    expect(parsed?.context).toEqual({ kind: "LESSON" });
+    expect(parseExerciseSubmission({ ...submission([], 0), context: { kind: "CLASS" } })).toBeNull();
+  });
+
   it("acota las pistas de cada jugada en vez de rechazar el intento", () => {
     const parsed = parseExerciseSubmission(
       submission(
@@ -81,7 +90,10 @@ describe("parseExerciseSubmission", () => {
 
   it("rechaza lo que el solver nunca envía", () => {
     expect(parseExerciseSubmission(submission([{ san: "", hintsBefore: 0 }], 0))).toBeNull();
-    expect(parseExerciseSubmission({ ...submission([], 0), context: { kind: "LESSON" } })).toBeNull();
+    // A class block's attempt comes with phase 3; until then its path is not one the solver sends.
+    expect(
+      parseExerciseSubmission({ ...submission([], 0), context: { kind: "CLASS", classBlockId: "b-1" } }),
+    ).toBeNull();
     expect(
       parseExerciseSubmission(
         submission(

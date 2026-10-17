@@ -1,0 +1,50 @@
+---
+description: "«Ahora practica» under a lesson's game: how many exercises, how many solved by solve key, and the way in — «Empezar», «Continuar», or «Repasar» once none is left."
+---
+
+# `LessonPracticeCard`
+
+|            |                                                                                                                                                       |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/lesson-view/lesson-practice-card.comp.tsx`                                                                      |
+| Kind       | Server Component                                                                                                                                      |
+| Stylesheet | `lesson-practice-card.comp.css` → block `.lesson-practice-card`                                                                                       |
+| Story      | `lesson-practice-card.stories.tsx` (`platform/sections/courses/lesson-view/LessonPracticeCard`): one of three solved, nothing tried, every one solved |
+| Used by    | [`LessonBoardSection`](/components/platform/sections/courses/lesson-view/lesson-board-section)                                                        |
+| Composes   | [`PuzzlePieceIcon`](/components/icons)                                                                                                                |
+| Reads      | `LessonPractice` from `services/exercises/lesson-practice.types`, mapped by `lessonPracticeOf` (`services/exercises/lesson-practice.mapper.ts`)       |
+
+## Purpose
+
+A lesson's exercises are optional (D26) and come after its game (D25): one row under the board says how many there are, how many the student solved and offers the way in. «Resuelto» is counted **by solve key** (§2.7 of the plan): a lesson's copy of a library exercise counts as solved when any row of its family — itself or its original — has `firstSolvedAt`, so the same exercise is never solved twice for the streak. Behind `EXERCISES_ENABLED`: off, `getLessonView` hands no `practice` and the card is not drawn.
+
+## Props
+
+| Prop       | Type             | Required | Meaning                                                                                                                  |
+| ---------- | ---------------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `practice` | `LessonPractice` | yes      | `total`, `solved`, `items` and `start` (the first exercise not solved yet and not tried today, with its label), or null. |
+
+## Behaviour
+
+- «Ahora practica: 3 ejercicios» and «1 de 3 resueltos» («Todos resueltos» once they are).
+- The accent is `start`: «Empezar» with nothing tried, «Continuar» once something was; it skips an exercise tried this study day, which would open unscored (§2.7). With no `start` left, a plain «Repasar» to the first exercise.
+- The lesson is completed by the board's own button, never here.
+
+## Markup & styling
+
+Block `.lesson-practice-card` (51 lines): one row of the icon, the text column and the button, `min-height: 72px` — the height [`LessonFrame`](/components/platform/sections/courses/lesson-view/lesson-frame) takes off the board (`--lesson-practice-card`) so the row is seen whole without scrolling.
+
+**Elements:** `.lesson-practice-card__icon`, `.lesson-practice-card__text`, `.lesson-practice-card__title`, `.lesson-practice-card__standing`
+
+No modifiers.
+
+**Other classes it renders:** `.platform-button`, `.platform-button_variant_accent`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(width < 640px)` wraps the button onto its own row.
+
+## Related
+
+- The practice-only lesson: [`LessonPracticeList`](/components/platform/sections/courses/lesson-view/lesson-practice-list).
+- Where the way in leads: [`LessonPracticeSection`](/components/platform/sections/courses/lesson-practice/lesson-practice-section).

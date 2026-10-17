@@ -92,6 +92,11 @@ export async function submitExerciseAttempt(input: ExerciseAttemptSubmission): P
   revalidatePath(platformRoutes.dashboard);
   revalidatePath(platformRoutes.exercises);
   if (context.kind === ATTEMPT_CONTEXT.SERIES) revalidatePath(platformRoutes.exerciseSeries(context.seriesId));
+  // A lesson's attempt moves its «K de N resueltos» and the practice pages' way on.
+  if (context.kind === ATTEMPT_CONTEXT.LESSON) {
+    revalidatePath(platformRoutes.lessonPattern, "page");
+    revalidatePath(platformRoutes.lessonPracticePattern, "page");
+  }
   return recorded.scored
     ? { ok: true, scored: true, firstSolve: recorded.firstSolve }
     : { ok: true, scored: false, firstSolve: false };

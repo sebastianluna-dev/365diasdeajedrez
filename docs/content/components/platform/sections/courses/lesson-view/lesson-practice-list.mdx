@@ -1,0 +1,54 @@
+---
+description: "A practice-only lesson: no game, so its exercises stand where the board would be — the lesson's head, the way in, the exercises with «Resuelto», and the lesson's way through."
+---
+
+# `LessonPracticeList`
+
+|            |                                                                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/lesson-view/lesson-practice-list.comp.tsx`                                                                                           |
+| Kind       | Server Component                                                                                                                                                           |
+| Stylesheet | `lesson-practice-list.comp.css` → block `.lesson-practice-list`                                                                                                            |
+| Story      | `lesson-practice-list.stories.tsx` (`platform/sections/courses/lesson-view/LessonPracticeList`): one of three solved, every one solved, the course's last lesson           |
+| Used by    | [`LessonBoardSection`](/components/platform/sections/courses/lesson-view/lesson-board-section)                                                                             |
+| Composes   | [`StaticDiagram`](/components/chess/static-diagram), [`CircleCheckIcon`](/components/icons)                                                                                |
+| Reads      | `LessonPractice` from `services/exercises/lesson-practice.types`; `onwards` as a prop: the viewer's own shape, `completeLesson` bound by the section (a stub in Storybook) |
+
+## Purpose
+
+A lesson may have no game at all (D25): the staff writes only exercises into it, and `isPracticeOnly` is derived on reading (`mapLessonView`: no content by `lessonHasContent`, and exercises in play) — no column stores it. Its page then has no board, so this stands in its place: the lesson's name and badge as the viewer's head would carry them, its description, the way in as the page's one accent, and the exercises in order, each the start position small, its title and facts («Secuencia · 1200 · Intermedio»), and «Resuelto» — by solve key — on the ones solved.
+
+## Props
+
+| Prop          | Type                                                                             | Required | Meaning                                                                                                                                          |
+| ------------- | -------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `title`       | `string`                                                                         | yes      | The lesson's name.                                                                                                                               |
+| `badge`       | `string`                                                                         | no       | «Prioridad».                                                                                                                                     |
+| `description` | `string`                                                                         | no       | The lesson's description: with no moves to annotate, it is what explains the lesson.                                                             |
+| `practice`    | `LessonPractice`                                                                 | yes      | The exercises with the student's standing and `start`.                                                                                           |
+| `onwards`     | `{ skipHref?, skipLabel, skipTitle?, finishLabel, finish: () => Promise<void> }` | yes      | The lesson's way through, as [`GameViewer`](/components/chess/game-viewer/game-viewer)'s `onwards`: «Saltar» to the next lesson and «Continuar». |
+
+## Behaviour
+
+- The head: «3 ejercicios · 1 de 3 resueltos».
+- `start` is the page's accent while an exercise can still count today; once none is left, the accent moves to the lesson's «Continuar».
+- Under the list, the lesson's way through: «Saltar» (a link, when there is a next lesson) and «Continuar», a `<form>` over `completeLesson` — always there, because the exercises are optional (D26).
+
+## Markup & styling
+
+Block `.lesson-practice-list` (139 lines): a column of at most 720px; the rows are the series page's (`.exercise-series`) shape — a grid of the diagram, the text and the mark.
+
+**Elements:** `.lesson-practice-list__head`, `.lesson-practice-list__title`, `.lesson-practice-list__badge`, `.lesson-practice-list__standing`, `.lesson-practice-list__description`, `.lesson-practice-list__start`, `.lesson-practice-list__list`, `.lesson-practice-list__item`, `.lesson-practice-list__link`, `.lesson-practice-list__diagram`, `.lesson-practice-list__body`, `.lesson-practice-list__item-title`, `.lesson-practice-list__facts`, `.lesson-practice-list__mark`, `.lesson-practice-list__mark-icon`, `.lesson-practice-list__onwards`
+
+No modifiers.
+
+**Other classes it renders:** `.platform-tag`, `.platform-tag_variant_accent`, `.platform-button`, `.platform-button_variant_accent`, `.platform-button_size_lg`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-font-display`, `--platform-shadow-card`, `--platform-success-ink`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(width < 640px)` narrows the diagram and puts the mark under the text.
+
+## Related
+
+- Under a lesson with a game: [`LessonPracticeCard`](/components/platform/sections/courses/lesson-view/lesson-practice-card).
+- How the staff makes one: [`LessonExercises`](/components/platform/sections/staff/courses/lesson-exercises).

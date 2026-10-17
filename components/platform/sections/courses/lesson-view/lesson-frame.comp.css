@@ -26,6 +26,11 @@
      card's gap above them. */
   --lesson-board-footer: calc(48px + var(--platform-space-4));
 
+  /* The «Ahora practica» row under the game (D25): its height and the gap
+     above it, taken off the board when the lesson has exercises, so the row
+     is seen whole without the page scrolling. */
+  --lesson-practice-card: calc(72px + var(--platform-space-6));
+
   /* The board is measured by the HEIGHT that is left, not by the width: on a
      full window it is what one looks at, and a board that runs past the
      bottom edge is a board nobody sees whole. It takes ALL of its column's
@@ -57,6 +62,17 @@
     container-type: size;
   }
 
+  & .lesson-frame__main_with_practice {
+    --viewer-board-max: max(320px, calc(100cqh - var(--lesson-board-footer) - var(--lesson-practice-card)));
+  }
+
+  /* A practice-only lesson has no board to measure: the list is as tall as
+     what it holds, and the column scrolls. */
+  & .lesson-frame__main_kind_practice {
+    container-type: normal;
+    overflow-y: auto;
+  }
+
   /* Below the width the design was drawn at there is no room for three
      columns: the outline drops under the lesson, which is where something one
      reaches for on the way out belongs. */
@@ -64,6 +80,11 @@
     grid-template-columns: minmax(0, 1fr);
     --viewer-board-max: 600px;
     --outline-width: auto;
+
+    /* The page scrolls here: the practice row takes nothing off the board. */
+    & .lesson-frame__main_with_practice {
+      --viewer-board-max: 600px;
+    }
 
     /* The lesson first, the outline under it: it is what one reaches for on
        the way out. */

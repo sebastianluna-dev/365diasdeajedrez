@@ -98,6 +98,25 @@ describe("lo que un alumno puede resolver", () => {
     expect(solvable(exercise("e", T1, "READY", [T1_SERIES_FOR_BOB]))).toBe(false);
   });
 
+  it("el ejercicio publicado de una lección de un curso publicado, con o sin profesor; nunca el de un borrador (fase 2)", () => {
+    const published = { chapter: { course: { status: { code: "PUBLISHED" } } } };
+    const draft = { chapter: { course: { status: { code: "DRAFT" } } } };
+    const inLesson = (status: string, lesson: Row) => ({ ...exercise("e", null, status), lessonId: "l-1", lesson });
+    expect(solvable(inLesson("PUBLISHED", published))).toBe(true);
+    expect(solvable(inLesson("PUBLISHED", published), ALICE_ALONE)).toBe(true);
+    expect(solvable(inLesson("PUBLISHED", draft))).toBe(false);
+    expect(solvable(inLesson("DRAFT", published))).toBe(false);
+    expect(solvable(inLesson("ARCHIVED", published))).toBe(false);
+    // By the lesson's own path, the same; by the library's or a series', never.
+    const lessonPath = solvableInContextWhere({ kind: "LESSON" }, ALICE_ALONE) as Row;
+    expect(holds(inLesson("PUBLISHED", published), lessonPath)).toBe(true);
+    expect(holds(inLesson("PUBLISHED", draft), lessonPath)).toBe(false);
+    expect(holds(exercise("e", null, "PUBLISHED"), lessonPath)).toBe(false);
+    expect(
+      holds(inLesson("PUBLISHED", published), solvableInContextWhere({ kind: "PRACTICE" }, ALICE_ALONE) as Row),
+    ).toBe(false);
+  });
+
   it("el ejercicio listo de un profesor no está en la biblioteca", () => {
     expect(solvable(exercise("e", T2, "READY"))).toBe(false);
     expect(solvable(exercise("e", T1, "READY"))).toBe(false);
@@ -185,6 +204,20 @@ describe("lo que un autor puede elegir para una serie (D08)", () => {
 
 describe("los intentos que un profesor puede ver", () => {
   const visible = (attempt: Row) => holds(attempt, teacherVisibleAttemptsWhere(T1, ALICE) as Row);
+
+  it("un intento en una lección, a un ejercicio de la lección: los cursos son de todos (fase 2)", () => {
+    const attempt = (exercise: Row) => ({
+      userId: ALICE,
+      exerciseId: "e",
+      seriesId: null,
+      context: { code: "LESSON" },
+      series: null,
+      exercise,
+    });
+    expect(visible(attempt({ teacherId: null, publishedAt: null, lessonId: "l-1" }))).toBe(true);
+    // A library exercise never published and nobody's lesson's stays out, as before.
+    expect(visible(attempt({ teacherId: T2, publishedAt: null, lessonId: null }))).toBe(false);
+  });
   const attempt = (context: string, ex: Row, seriesRow: Row | null = null) => ({
     userId: ALICE,
     exerciseId: ex.id,

@@ -1,3 +1,4 @@
+import type { LessonPractice } from "@/services/exercises/lesson-practice.types";
 import type { ProgressStatusCode } from "@/constants/platform/shared-codes.const";
 
 export interface CourseProgressSummary {
@@ -295,7 +296,10 @@ export interface LessonView {
   /** Effective orientation: the lesson's, unless the user forces one in their settings. */
   orientation: "white" | "black";
   statusCode: ProgressStatusCode;
-  exerciseCount: number;
+  /** The lesson's exercises in play and the student's standing with them (D25); null with none, or with the flag off. */
+  practice: LessonPractice | null;
+  /** No game to read and exercises to solve (D25): the list stands where the board would be. */
+  isPracticeOnly: boolean;
   prevLessonHref?: string;
   nextLessonHref?: string;
   /** Its own page, for a form that has to come back to it. */

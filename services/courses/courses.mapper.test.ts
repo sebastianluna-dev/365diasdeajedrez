@@ -459,6 +459,35 @@ describe("los capítulos del curso", () => {
   });
 });
 
+describe("los ejercicios de una lección (D25)", () => {
+  const practice = {
+    total: 2,
+    solved: 1,
+    items: [],
+    start: { href: "/cursos/10000009/1/l3/practica/2", label: "Continuar" },
+  };
+
+  it("viajan en la vista, y sin ellos la lección no es de práctica", () => {
+    expect(mapLessonView(COURSE, lessonRow("l3", "cap-1", 3), state())).toMatchObject({
+      practice: null,
+      isPracticeOnly: false,
+    });
+    expect(mapLessonView(COURSE, lessonRow("l3", "cap-1", 3), state(), practice)).toMatchObject({
+      practice,
+      isPracticeOnly: false,
+    });
+  });
+
+  it("una lección sin partida ni PGN y con ejercicios es sólo de práctica; sin ejercicios, no", () => {
+    const empty = { ...lessonRow("l3", "cap-1", 3), pgn: "   " };
+    expect(mapLessonView(COURSE, empty, state(), practice)?.isPracticeOnly).toBe(true);
+    expect(mapLessonView(COURSE, empty, state(), null)?.isPracticeOnly).toBe(false);
+    // The linked game rules: with one, it is a lesson to read.
+    const linked = { ...empty, game: { pgn: "1. d4 *" } };
+    expect(mapLessonView(COURSE, linked, state(), practice)?.isPracticeOnly).toBe(false);
+  });
+});
+
 describe("anterior y siguiente desde una lección escondida", () => {
   // It is still served by URL — a link from a class cannot break over a display
   // preference — so it has to have neighbours.
