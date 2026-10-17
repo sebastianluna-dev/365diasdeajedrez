@@ -252,6 +252,8 @@ export interface RecordExerciseAttemptInput {
   contextCode: ExerciseAttemptContextCode;
   /** With SERIES: the series it was solved in (D24 per series). */
   seriesId?: string | null;
+  /** With CLASS: the class block it was solved from (D29). */
+  classBlockId?: string | null;
   /** The server's replay of the submitted moves (`replayAttempt`), never the client's word. */
   outcome: AttemptOutcome;
   durationMs: number | null;
@@ -297,6 +299,7 @@ export async function recordExerciseAttempt(
       userId,
       exerciseId: exercise.id,
       seriesId: input.contextCode === ATTEMPT_CONTEXT.SERIES ? (input.seriesId ?? null) : null,
+      classBlockId: input.contextCode === ATTEMPT_CONTEXT.CLASS ? (input.classBlockId ?? null) : null,
       resultId,
       contextId,
       mistakes: outcome.mistake ? 1 : 0,

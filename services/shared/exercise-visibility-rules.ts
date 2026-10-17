@@ -1,6 +1,8 @@
+import { CLASS_BLOCK_KIND } from "@/constants/platform/class-codes.const";
 import { ATTEMPT_CONTEXT } from "@/constants/platform/training-codes.const";
 import { EXERCISE_STATUS, type ExerciseStatusCode } from "@/constants/platform/exercise-codes.const";
 import type { Prisma } from "@/lib/platform-db/generated/client";
+import { studentVisibleClassBlockWhere } from "./class-block-visibility";
 import { publishedLessonWhere } from "./published-content";
 
 // Who may solve, pick, list or watch which exercises: the ONE where-builder of
@@ -20,12 +22,19 @@ import { publishedLessonWhere } from "./published-content";
 //    columns, so the owner is a value: the viewer's active teacher, resolved
 //    per request (at most one, `teacher_student_one_active`). Another
 //    teacher's exercise taken out of the library leaves the series at once;
-// 3. a class block (phase 3) joins here;
+// 3. a class block (phase 3, D29): an EXERCISE block of a class the student
+//    holds a seat in — not moved, the class not cancelled — that their phase
+//    lets them see (`studentVisibleClassBlockWhere`: «para preparar» always,
+//    «después de la clase» once it ended) AND, as with a series, the exercise
+//    is still the class teacher's to give: their own usable one, or one in the
+//    library now. The owner is a value again: the teachers of the classes the
+//    student sits in, resolved per request (a handful), one arm each;
 // 4. a lesson (phase 2, D04, D05): a PUBLISHED exercise owned by a lesson of
 //    a published course. Every student of the platform may study a published
 //    course, so there is no viewer to compare with.
 //
-// ARCHIVED and DRAFT are never solvable by a student.
+// ARCHIVED and DRAFT are never solvable by a student. The class branch reads
+// the clock (`now`), so every builder that holds it receives it.
 
 /** The statuses in which an exercise is its owner's to give: their students see it. */
 export const USABLE_STATUS_CODES = [
@@ -42,19 +51,23 @@ export const NEUTRAL_ATTEMPT_CONTEXTS = [
   ATTEMPT_CONTEXT.STORM,
 ] as const;
 
-/** Who is solving: their id, and the teacher they are assigned to now, if any. */
+/** Who is solving: their id, the teacher they are assigned to now, if any, and the teachers of the classes they sit in. */
 export interface ExerciseViewer {
   userId: string;
   activeTeacherId: string | null;
+  /** The teachers of the classes the student holds a seat in (not moved, not cancelled): the owners a class block's exercise is compared with. */
+  classTeacherIds: readonly string[];
 }
 
-/** The path an attempt claims (PLAN.md §5.4). Phases 3 and 7 add the class block and the run. */
+/** The path an attempt claims (PLAN.md §5.4). Phase 7 adds the run. */
 export type AttemptContextInput =
   | { kind: typeof ATTEMPT_CONTEXT.SERIES; seriesId: string }
   | { kind: typeof ATTEMPT_CONTEXT.PRACTICE }
   | { kind: typeof ATTEMPT_CONTEXT.REVIEW }
   /** A lesson's exercise, solved from the lesson («Ahora practica», D25); the lesson is the exercise's own. */
-  | { kind: typeof ATTEMPT_CONTEXT.LESSON };
+  | { kind: typeof ATTEMPT_CONTEXT.LESSON }
+  /** An EXERCISE block of a class, solved from the class (D29): the block and, for the way back, its class. */
+  | { kind: typeof ATTEMPT_CONTEXT.CLASS; classId: string; classBlockId: string };
 
 const usable = { code: { in: [...USABLE_STATUS_CODES] } } satisfies Prisma.ExerciseStatusWhereInput;
 const published = { code: EXERCISE_STATUS.PUBLISHED } satisfies Prisma.ExerciseStatusWhereInput;
@@ -100,15 +113,53 @@ function seriesBranch(viewer: ExerciseViewer, series: Prisma.ExerciseSeriesWhere
   return branches;
 }
 
-/** What a student may solve, by any path: the library, the series given to them and the published lessons (phase 3 adds classes). */
-export function buildSolvableExercisesWhere(viewer: ExerciseViewer): Prisma.ExerciseWhereInput {
-  return { OR: [inLibrary, ...seriesBranch(viewer, {}), inPublishedLesson] };
+/**
+ * The EXERCISE blocks a student may solve from (D29): the blocks their phase
+ * lets them see, of a class they hold a seat in that was not moved to another
+ * date. `studentVisibleClassBlockWhere` is the rule of what a student sees of
+ * a class; a moved seat still reads the old class, but what it asks to solve
+ * belongs to the new one.
+ */
+export function studentSolvableClassBlockWhere(userId: string, now: Date): Prisma.ClassBlockWhereInput {
+  return {
+    AND: [
+      studentVisibleClassBlockWhere(userId, now),
+      { kind: { code: CLASS_BLOCK_KIND.EXERCISE }, class: { participants: { some: { userId, seatMovedAt: null } } } },
+    ],
+  };
 }
 
-/** The same, narrowed to the path the attempt claims: one series, free practice (the library), a lesson, or the review (any path). */
+/** The class branch (3), for one block or for any: the class teacher's usable exercise, or the library's. */
+function classBranch(
+  viewer: ExerciseViewer,
+  block: Prisma.ClassBlockWhereInput,
+  now: Date,
+): Prisma.ExerciseWhereInput[] {
+  const visible = studentSolvableClassBlockWhere(viewer.userId, now);
+  return [
+    ...viewer.classTeacherIds.map((teacherId): Prisma.ExerciseWhereInput => ({
+      teacherId,
+      status: usable,
+      classBlockItems: { some: { block: { AND: [visible, block, { class: { teacherId } }] } } },
+    })),
+    { ...inLibrary, classBlockItems: { some: { block: { AND: [visible, block] } } } },
+  ];
+}
+
+/** What a student may solve, by any path: the library, the series given to them, the class blocks they see and the published lessons. */
+export function buildSolvableExercisesWhere(viewer: ExerciseViewer, now: Date): Prisma.ExerciseWhereInput {
+  return { OR: [inLibrary, ...seriesBranch(viewer, {}), ...classBranch(viewer, {}, now), inPublishedLesson] };
+}
+
+/**
+ * The same, narrowed to the path the attempt claims: one series, free
+ * practice (the library), a lesson, one class block (of the class it says),
+ * or the review (any path).
+ */
 export function solvableInContextWhere(
   context: AttemptContextInput,
   viewer: ExerciseViewer,
+  now: Date,
 ): Prisma.ExerciseWhereInput {
   switch (context.kind) {
     case ATTEMPT_CONTEXT.SERIES:
@@ -117,8 +168,10 @@ export function solvableInContextWhere(
       return inLibrary;
     case ATTEMPT_CONTEXT.LESSON:
       return inPublishedLesson;
+    case ATTEMPT_CONTEXT.CLASS:
+      return { OR: classBranch(viewer, { id: context.classBlockId, classId: context.classId }, now) };
     case ATTEMPT_CONTEXT.REVIEW:
-      return buildSolvableExercisesWhere(viewer);
+      return buildSolvableExercisesWhere(viewer, now);
   }
 }
 

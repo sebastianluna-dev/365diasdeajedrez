@@ -611,6 +611,8 @@ export interface StudentDetailSource extends StudentClassSource {
   row: ClassDetailRow;
   viewerId: string;
   balanceLine: string | null;
+  /** The student's marks in the class's EXERCISE blocks (`exerciseMarksBy` over their attempts there), when the flag is on. */
+  exerciseMarks?: ReadonlyMap<string, ReadonlyMap<string, ExerciseMark>>;
 }
 
 export function mapStudentClassDetail(source: StudentDetailSource, context: StudentContext): ClassDetailView {
@@ -652,6 +654,11 @@ export function mapStudentClassDetail(source: StudentDetailSource, context: Stud
       now: context.now,
       scheduledAt: source.scheduledAt,
       viewerId: source.viewerId,
+      // «Resolver» only from a seat that was not moved: what a moved seat asks to solve belongs to the new class.
+      solve:
+        source.exerciseMarks && seat.seatMovedAt === null
+          ? { classId: source.id, marks: source.exerciseMarks }
+          : undefined,
     }),
     transcript: source.row.transcript
       ? {

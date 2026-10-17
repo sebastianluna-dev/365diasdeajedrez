@@ -45,6 +45,8 @@ describe("the student's side of the exercises", () => {
     expect(found.length).toBeGreaterThan(15);
     expect(found).toContain("services/exercises/exercises.actions.ts");
     expect(found).toContain("app/(platform)/ejercicios/series/[seriesId]/[n]/page.tsx");
+    expect(found).toContain("app/(platform)/clases/[classId]/ejercicios/[blockId]/[n]/page.tsx");
+    expect(found).toContain("services/exercises/class-practice.service.ts");
   });
 
   it("reaches no writer of an exercise's content or status, nor the authors' exercise services", () => {

@@ -74,7 +74,9 @@ async function submit(
     userId: USER,
     exercise: { id: "e-1", copiedFromId: null },
     contextCode,
-    seriesId: contextCode === "SERIES" ? "s-1" : null,
+    // The containers travel always; the writer keeps only the one of the path claimed.
+    seriesId: "s-1",
+    classBlockId: "b-1",
     outcome,
     durationMs: 12_000,
     now,
@@ -97,6 +99,7 @@ describe("recordExerciseAttempt", () => {
         exerciseId: "e-1",
         trainingExerciseId: null,
         seriesId: "s-1",
+        classBlockId: null,
         resultId: FAKE_EXERCISE_IDS.result.PASSED,
         contextId: FAKE_EXERCISE_IDS.context.SERIES,
         mistakes: 0,
@@ -127,6 +130,16 @@ describe("recordExerciseAttempt", () => {
         topicId: T.TACTICS,
         occurredAt: DAY1,
       }),
+    ]);
+  });
+
+  it("un intento desde un bloque de clase guarda el bloque y ninguna serie; uno libre, ninguno de los dos (D29)", async () => {
+    const db = database();
+    await submit(db, CLEAN, DAY1, "CLASS");
+    await submit(db, FAILED, DAY2, "PRACTICE");
+    expect(db.rows("trainingAttempt").map((row) => [row.seriesId, row.classBlockId, row.contextId])).toEqual([
+      [null, "b-1", FAKE_EXERCISE_IDS.context.CLASS],
+      [null, null, FAKE_EXERCISE_IDS.context.PRACTICE],
     ]);
   });
 

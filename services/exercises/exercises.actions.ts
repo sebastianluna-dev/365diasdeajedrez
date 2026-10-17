@@ -10,7 +10,7 @@ import { ATTEMPT_CONTEXT } from "@/constants/platform/training-codes.const";
 import { readSolution, replayAttempt } from "@/lib/chess/exercise-solver";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
-import { platformRoutes } from "@/lib/platform-routes";
+import { platformRoutes, staffRoutes, teacherRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { parseExerciseSubmission } from "@/services/exercises/exercise-submission";
 import { recordExerciseAttempt } from "@/services/shared/exercise-attempt.service";
@@ -23,7 +23,9 @@ import type { ExerciseKindCode } from "@/constants/platform/exercise-codes.const
 // nothing the browser says is taken on its word:
 // - the student is the DAL's, the flag is checked and the submits are limited;
 // - the exercise must be solvable by them through the path the attempt claims
-//   (`solvableInContextWhere`, the same `where` the page read it with);
+//   (`solvableInContextWhere`, the same `where` the page read it with — for a
+//   class block, read again at the submit's `now`: an AFTER block opens with
+//   the class's end, and a seat moved meanwhile closes it);
 // - the moves are replayed on the server (`replayAttempt`): the result, the
 //   mistake and its SANs are the server's, and a sequence that decides
 //   nothing, or goes on after the decision, stores nothing;
@@ -49,8 +51,9 @@ export async function submitExerciseAttempt(input: ExerciseAttemptSubmission): P
 
   const db = getPlatformDb();
   const viewer = await getExerciseViewer();
+  const now = new Date();
   const exercise = await db.exercise.findFirst({
-    where: { AND: [{ id: submission.exerciseId }, solvableInContextWhere(context, viewer)] },
+    where: { AND: [{ id: submission.exerciseId }, solvableInContextWhere(context, viewer, now)] },
     select: {
       id: true,
       copiedFromId: true,
@@ -76,13 +79,13 @@ export async function submitExerciseAttempt(input: ExerciseAttemptSubmission): P
   });
   if (!replay.ok) return { ok: false, reason: "refused" };
 
-  const now = new Date();
   const recorded = await db.$transaction((tx) =>
     recordExerciseAttempt(tx, {
       userId: user.id,
       exercise: { id: exercise.id, copiedFromId: exercise.copiedFromId },
       contextCode: context.kind,
       seriesId: context.kind === ATTEMPT_CONTEXT.SERIES ? context.seriesId : null,
+      classBlockId: context.kind === ATTEMPT_CONTEXT.CLASS ? context.classBlockId : null,
       outcome: replay.outcome,
       durationMs: submission.durationMs,
       now,
@@ -92,6 +95,12 @@ export async function submitExerciseAttempt(input: ExerciseAttemptSubmission): P
   revalidatePath(platformRoutes.dashboard);
   revalidatePath(platformRoutes.exercises);
   if (context.kind === ATTEMPT_CONTEXT.SERIES) revalidatePath(platformRoutes.exerciseSeries(context.seriesId));
+  // A class's attempt moves the block's marks on the class page and «2 de 3 lo resolvieron» on the teacher's and the staff's.
+  if (context.kind === ATTEMPT_CONTEXT.CLASS) {
+    revalidatePath(platformRoutes.classDetail(context.classId));
+    revalidatePath(teacherRoutes.classDetail(context.classId));
+    revalidatePath(staffRoutes.staffClassDetail(context.classId));
+  }
   // A lesson's attempt moves its «K de N resueltos» and the practice pages' way on.
   if (context.kind === ATTEMPT_CONTEXT.LESSON) {
     revalidatePath(platformRoutes.lessonPattern, "page");

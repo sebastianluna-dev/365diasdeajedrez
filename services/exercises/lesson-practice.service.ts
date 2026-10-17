@@ -96,8 +96,9 @@ export async function getLessonPracticeExercise(lessonId: string, n: number): Pr
 
   const attempt = { kind: ATTEMPT_CONTEXT.LESSON } as const;
   const db = getPlatformDb();
+  const now = new Date();
   const exercise = await db.exercise.findFirst({
-    where: { AND: [{ id: item.id }, solvableInContextWhere(attempt, viewer)] },
+    where: { AND: [{ id: item.id }, solvableInContextWhere(attempt, viewer, now)] },
     select: {
       id: true,
       title: true,
@@ -123,7 +124,7 @@ export async function getLessonPracticeExercise(lessonId: string, n: number): Pr
   return {
     lesson: { id: lesson.id, name: lesson.name, href },
     exercise: mapSolverExercise(exercise),
-    mode: attemptedToday(states, new Date()) ? "unscored" : "solve",
+    mode: attemptedToday(states, now) ? "unscored" : "solve",
     context: { attempt, position: lessonPosition(n, lesson.lessonExercises.length) },
     next: nextInLesson(place, n, lesson.lessonExercises.length),
     back: { href, label: "Volver a la lección" },

@@ -156,8 +156,9 @@ export async function getStudentSeriesExercise(seriesId: string, n: number): Pro
   if (!item) return null;
 
   const attempt = { kind: ATTEMPT_CONTEXT.SERIES, seriesId: series.id } as const;
+  const now = new Date();
   const exercise = await db.exercise.findFirst({
-    where: { AND: [{ id: item.id }, solvableInContextWhere(attempt, viewer)] },
+    where: { AND: [{ id: item.id }, solvableInContextWhere(attempt, viewer, now)] },
     select: {
       id: true,
       title: true,
@@ -183,7 +184,7 @@ export async function getStudentSeriesExercise(seriesId: string, n: number): Pro
   return {
     series: { id: series.id, title: series.title, href },
     exercise: mapSolverExercise(exercise),
-    mode: attemptedToday(states, new Date()) ? "unscored" : "solve",
+    mode: attemptedToday(states, now) ? "unscored" : "solve",
     context: { attempt, position: seriesPosition(n, items.length) },
     next: nextInSeries(series.id, n, items.length),
     back: { href, label: "Volver a la serie" },

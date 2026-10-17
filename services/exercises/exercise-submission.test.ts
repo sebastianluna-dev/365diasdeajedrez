@@ -33,7 +33,16 @@ describe("parseExerciseSubmission", () => {
       context: { kind: "LESSON" },
     });
     expect(parsed?.context).toEqual({ kind: "LESSON" });
+  });
+
+  it("acepta el camino de un bloque de clase con su clase y su bloque, y nada menos (fase 3)", () => {
+    const context = { kind: "CLASS", classId: "c-1", classBlockId: "b-1" };
+    expect(parseExerciseSubmission({ ...submission([], 0), context })?.context).toEqual(context);
     expect(parseExerciseSubmission({ ...submission([], 0), context: { kind: "CLASS" } })).toBeNull();
+    expect(
+      parseExerciseSubmission({ ...submission([], 0), context: { kind: "CLASS", classBlockId: "b-1" } }),
+    ).toBeNull();
+    expect(parseExerciseSubmission({ ...submission([], 0), context: { kind: "STORM" } })).toBeNull();
   });
 
   it("acota las pistas de cada jugada en vez de rechazar el intento", () => {

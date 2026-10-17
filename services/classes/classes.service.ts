@@ -1,13 +1,20 @@
 import { cache } from "react";
 import { meetingJoinState } from "@/components/platform/shared/meeting-join-card/meeting-join-card.comp";
 import { academyWhatsappHref } from "@/constants/platform/academy-contact.const";
-import { CLASS_PHASE, type ClassFormatCode, type ClassStatusCode } from "@/constants/platform/class-codes.const";
+import {
+  CLASS_BLOCK_KIND,
+  CLASS_PHASE,
+  type ClassFormatCode,
+  type ClassStatusCode,
+} from "@/constants/platform/class-codes.const";
+import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
 import { STUDY_DAY_TIMEZONE } from "@/constants/platform/timezones.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { dayKeyIn } from "@/lib/timezone";
 import { studentClassView } from "@/services/shared/class-phase";
+import { exerciseMarksBy } from "@/services/shared/exercise-marks";
 import { paymentSeats, type SeatRow } from "@/services/shared/payment-seats";
 import {
   balanceLineOf,
@@ -226,15 +233,40 @@ export const getStudentSeatBalance = cache(async (): Promise<StudentBalanceView 
   return mapStudentBalance(seats.payments, seats.context);
 });
 
-/** The class page: the student's own seat in it, with its blocks and transcript. Null if they have no seat. */
+/**
+ * The class page: the student's own seat in it, with its blocks and
+ * transcript, and their marks in its EXERCISE blocks — from their attempts
+ * made THERE (`classBlockId`), the one fold the series use too. Null if they
+ * have no seat.
+ */
 export const getClassById = cache(async (classId: string): Promise<ClassDetailView | null> => {
   const seats = await readStudentSeats();
   const source = seats.sources.find((candidate) => candidate.id === classId);
   if (!source) return null;
-  const row = await getPlatformDb().class.findUnique({ where: { id: classId }, include: classDetailInclude });
+  const db = getPlatformDb();
+  const row = await db.class.findUnique({ where: { id: classId }, include: classDetailInclude });
   if (!row) return null;
+  const exerciseBlockIds = row.blocks
+    .filter((block) => block.kind.code === CLASS_BLOCK_KIND.EXERCISE)
+    .map((block) => block.id);
+  const attempts =
+    EXERCISES_ENABLED && exerciseBlockIds.length > 0
+      ? await db.trainingAttempt.findMany({
+          where: { userId: seats.userId, classBlockId: { in: exerciseBlockIds }, exerciseId: { not: null } },
+          select: { classBlockId: true, exerciseId: true, result: { select: { code: true } } },
+        })
+      : [];
+  const exerciseMarks = EXERCISES_ENABLED
+    ? exerciseMarksBy(
+        attempts.map((attempt) => ({
+          containerId: attempt.classBlockId,
+          exerciseId: attempt.exerciseId,
+          result: attempt.result,
+        })),
+      )
+    : undefined;
   return mapStudentClassDetail(
-    { ...source, row, viewerId: seats.userId, balanceLine: balanceLineOf(seats.payments) },
+    { ...source, row, viewerId: seats.userId, balanceLine: balanceLineOf(seats.payments), exerciseMarks },
     seats.context,
   );
 });
