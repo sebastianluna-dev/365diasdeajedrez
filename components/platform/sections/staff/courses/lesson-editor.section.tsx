@@ -265,6 +265,7 @@ export function LessonEditorSection({
             chapterId={lesson.chapterId}
             lessonId={lesson.id}
             exercises={lesson.exercises}
+            libraryExercises={lesson.libraryExercises}
           />
         </StaffPanel>
       </StaffEditorLayout>

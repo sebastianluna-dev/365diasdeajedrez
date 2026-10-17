@@ -15,6 +15,7 @@ const IN_REVIEW: StaffExerciseReview = {
   canApprove: true,
   canReturn: true,
   canRemove: false,
+  canRestore: false,
 };
 
 const actions = () => ({
@@ -23,6 +24,7 @@ const actions = () => ({
     popupFormError({ note: { code: "noteRequired" } }, { note: String(formData.get("note") ?? "") }),
   ).mockName("returnWithNote"),
   remove: fn(async () => undefined).mockName("remove"),
+  restore: fn(async () => undefined).mockName("restore"),
 });
 
 const meta = {
@@ -107,6 +109,25 @@ export const Returned: Story = {
       reviewNote: "La explicación no dice por qué el rey no puede capturar en g8.",
       canApprove: false,
       canReturn: false,
+    },
+  },
+};
+
+/** An archived academy exercise: «Archivado el …», and «Restaurar» alone, back to a draft. */
+export const ArchivedAcademy: Story = {
+  args: {
+    review: {
+      ...IN_REVIEW,
+      statusCode: "ARCHIVED",
+      statusLabel: "Archivado",
+      owner: "academy",
+      authorLabel: "Academia",
+      submittedLabel: null,
+      reviewedLabel: "Archivado el 15 de octubre, 2026 por Staff Demo",
+      reviewNote: "Tenía una variante dudosa.",
+      canApprove: false,
+      canReturn: false,
+      canRestore: true,
     },
   },
 };

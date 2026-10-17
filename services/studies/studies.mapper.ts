@@ -3,7 +3,7 @@ import { foldForSearch } from "@/lib/fold-for-search";
 import { formatRelativeSpanish } from "@/lib/format-relative-spanish";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import type { Prisma } from "@/lib/platform-db/generated/client";
-import { platformRoutes } from "@/lib/platform-routes";
+import { platformRoutes, staffRoutes, teacherRoutes } from "@/lib/platform-routes";
 import { studyPermissionsOf } from "./study-rules";
 import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
 import type {
@@ -275,7 +275,13 @@ export function mapStudyDetail(row: StudyDetailRow, viewerId: string | null, tot
  * @param viewerId id of whoever is looking, or `null` when the view is read-only
  *   by its own nature (the teacher reviewing a student).
  */
-export function mapGameView(row: GameViewRow, viewerId: string | null, viewerAuthorsExercises = false): GameView {
+export function mapGameView(
+  row: GameViewRow,
+  viewerId: string | null,
+  viewerAuthorsExercises = false,
+  /** Whose bank a new exercise goes to: the teacher's (the default) or, for the staff, the academy's. */
+  exerciseBank: "teacher" | "staff" = "teacher",
+): GameView {
   // A teacher SEES their students' games so they can cite them in class, but
   // annotating them is the owner's business; and the same for a student with a
   // collection someone shared with them. It comes from the same table as the rest
@@ -289,6 +295,14 @@ export function mapGameView(row: GameViewRow, viewerId: string | null, viewerAut
     // it, and the service's word that they author exercises (an active teacher,
     // the flag on). A student's game seen by their teacher offers nothing.
     canCreateExercise: canEdit && viewerAuthorsExercises,
+    ...(canEdit && viewerAuthorsExercises
+      ? {
+          createExerciseHref:
+            exerciseBank === "staff"
+              ? staffRoutes.newExerciseFromGame(row.database.id, row.id)
+              : teacherRoutes.newExerciseFromGame(row.database.id, row.id),
+        }
+      : {}),
     id: row.id,
     title: row.title ?? undefined,
     orientationCode: orientationCodeOf(row.orientation),

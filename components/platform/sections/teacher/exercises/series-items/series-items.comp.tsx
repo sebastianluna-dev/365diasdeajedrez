@@ -24,12 +24,20 @@ export interface SeriesItemsProps {
     reorder: (seriesId: string, orderedIds: string[]) => Promise<void>;
     remove: (seriesId: string, exerciseId: string, formData: FormData) => Promise<void>;
   };
+  /** Whose series: a teacher's («tus alumnos», the default) or the academy's («los alumnos»), for the warnings. */
+  audience?: "teacher" | "academy";
 }
 
-/** What an item its students no longer see says under its facts (PLAN.md §6.2). */
-const WARNINGS: Record<Exclude<SeriesItemAvailability, "available">, string> = {
-  archived: "Archivado: tus alumnos ya no lo ven.",
-  unavailable: "Ya no está disponible: tus alumnos ya no lo ven.",
+/** What an item its students no longer see says under its facts (PLAN.md §6.2), by whose series it is. */
+const WARNINGS: Record<"teacher" | "academy", Record<Exclude<SeriesItemAvailability, "available">, string>> = {
+  teacher: {
+    archived: "Archivado: tus alumnos ya no lo ven.",
+    unavailable: "Ya no está disponible: tus alumnos ya no lo ven.",
+  },
+  academy: {
+    archived: "Archivado: los alumnos ya no lo ven.",
+    unavailable: "Ya no está en la biblioteca: los alumnos ya no lo ven.",
+  },
 };
 
 type Row = SeriesItemData & { id: string };
@@ -42,7 +50,7 @@ type Row = SeriesItemData & { id: string };
  * and leaves it in the bank. The order is applied at once and saved whole
  * (`useSortableRows`); a refused order comes back with the page.
  */
-export function SeriesItems({ seriesId, items, actions }: SeriesItemsProps) {
+export function SeriesItems({ seriesId, items, actions, audience = "teacher" }: SeriesItemsProps) {
   // One array per `items`, so the sortable state is only reset when the server sends a new list.
   const withIds = useMemo<Row[]>(() => items.map((item) => ({ ...item, id: item.exerciseId })), [items]);
   const { rows, moveById, numbers } = useSortableRows({
@@ -71,6 +79,7 @@ export function SeriesItems({ seriesId, items, actions }: SeriesItemsProps) {
               row={row}
               number={numbers.get(row.id) ?? 0}
               remove={actions.remove.bind(null, seriesId, row.exerciseId)}
+              audience={audience}
             />
           ))}
         </ol>
@@ -83,16 +92,17 @@ interface SeriesItemRowProps {
   row: Row;
   number: number;
   remove: (formData: FormData) => Promise<void>;
+  audience: "teacher" | "academy";
 }
 
 /** One exercise of the series: the grip, its place, what it is, and its two ways out of its place. */
-function SeriesItemRow({ row, number, remove }: SeriesItemRowProps) {
+function SeriesItemRow({ row, number, remove, audience }: SeriesItemRowProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: row.id,
     data: { name: row.title },
   });
   const steps = useSortableStep(row.id);
-  const warning = row.availability === "available" ? null : WARNINGS[row.availability];
+  const warning = row.availability === "available" ? null : WARNINGS[audience][row.availability];
 
   return (
     <li

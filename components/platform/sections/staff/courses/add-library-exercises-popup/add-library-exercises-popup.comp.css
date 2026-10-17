@@ -1,0 +1,36 @@
+/* The content of «Agregar desde la biblioteca»: what happens to what is
+   chosen, the cards and the foot. A sheet on a phone. */
+.add-library-exercises__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-5);
+  padding: var(--platform-space-6);
+
+  & .add-library-exercises__summary,
+  & .add-library-exercises__empty {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+  }
+
+  & .add-library-exercises__foot {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: var(--platform-space-4);
+    box-shadow: inset 0 1px 0 var(--platform-track);
+  }
+
+  @media (width < 640px) {
+    & .add-library-exercises__foot {
+      position: sticky;
+      bottom: 0;
+      padding-bottom: var(--platform-space-4);
+      background: var(--platform-surface);
+    }
+
+    & .add-library-exercises__foot .platform-button {
+      flex: 1;
+    }
+  }
+}

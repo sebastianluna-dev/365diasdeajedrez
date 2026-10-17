@@ -41,7 +41,8 @@ export const getTeacherContext = cache(async (): Promise<TeacherContext | null> 
   return { user: { id, email, displayName, createdAt, slug, country }, teacher: session.teacher };
 });
 
-const getStaffContext = cache(async (): Promise<StaffContext | null> => {
+/** The staff context of the request, or null: what a page that behaves differently for the staff reads before deciding. */
+export const getStaffContext = cache(async (): Promise<StaffContext | null> => {
   const session = await getSessionContext();
   if (!session?.staff) return null;
 

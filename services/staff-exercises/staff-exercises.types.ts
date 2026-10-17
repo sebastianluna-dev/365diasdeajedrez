@@ -6,6 +6,8 @@ import type {
   ExerciseSaveButton,
 } from "@/components/platform/shared/exercise-authoring/exercise-authoring.types";
 import type { ExerciseCardData } from "@/components/platform/shared/exercise-card/exercise-card.types";
+import type { ExercisePickOption } from "@/components/platform/shared/exercise-picker/exercise-picker.types";
+import type { SeriesItemData } from "@/services/teacher-exercises/teacher-exercises.types";
 import type { ExerciseStatusCode } from "@/constants/platform/exercise-codes.const";
 import type { ExerciseOwnerKind } from "@/services/shared/exercise-status-transitions";
 
@@ -24,14 +26,46 @@ export interface StaffReviewItem {
   submittedLabel: string;
 }
 
-/** `/administracion/ejercicios` and `/administracion/ejercicios/revision`. */
+/** An academy series on the bank's «Series» view. */
+export interface StaffSeriesCard {
+  id: string;
+  href: string;
+  title: string;
+  description: string | null;
+  itemCount: number;
+  /** Published: every student sees it on «Series de la academia». */
+  isPublished: boolean;
+  /** Items the students no longer see: taken out of the library. */
+  unavailableCount: number;
+}
+
+/** `/administracion/ejercicios`, `/administracion/ejercicios/revision` and `/administracion/ejercicios/series`. */
 export interface StaffExercisesView {
   tab: StaffExercisesTab;
-  /** On «Biblioteca»: every exercise in the library, the last published first. */
+  /** On «Biblioteca»: every exercise in the library, the last published first; the academy's drafts and archived ones after. */
   library: ExerciseCardData[];
   /** On «En revisión»: the proposals, the oldest first. */
   review: StaffReviewItem[];
+  /** On «Series»: the academy's series, the last changed first. */
+  series: StaffSeriesCard[];
   counts: { library: number; review: number; series: number };
+}
+
+/** What the editor of an academy series opens with: the teacher's series editor without the share panel, plus publishing. */
+export interface StaffSeriesEditor {
+  series: {
+    id: string;
+    title: string;
+    description: string | null;
+    /** When it was last changed (ISO): its data popup opens again on what was stored. */
+    version: string;
+    isPublished: boolean;
+    /** «Publicada el 14 de octubre, 2026»; null while unpublished. */
+    publishedLabel: string | null;
+  };
+  items: SeriesItemData[];
+  /** What «Agregar ejercicios» offers: the library's exercises not in the series yet (D32). */
+  pickable: ExercisePickOption[];
 }
 
 /** The review bar of an exercise, as the staff sees it: what it is, who wrote it, and what the staff may decide. */
@@ -53,9 +87,11 @@ export interface StaffExerciseReview {
   canReturn: boolean;
   /** «Quitar de la biblioteca», with a note: a teacher's PUBLISHED → READY; the academy's → ARCHIVED. */
   canRemove: boolean;
+  /** «Restaurar» an archived academy exercise: ARCHIVED → DRAFT. */
+  canRestore: boolean;
 }
 
-/** What the staff editor of a bank's exercise opens with. */
+/** What the staff editor of a bank's exercise opens with; `review` is null for a new one. */
 export interface StaffExerciseEditor {
   exercise: ExerciseAuthoringExercise;
   /** When it was last saved (ISO): a save that stays on the page mounts the editor again on what was stored. */
@@ -64,7 +100,9 @@ export interface StaffExerciseEditor {
   games: ExerciseAuthoringGame[];
   permissions: ExerciseAuthoringPermissions;
   buttons: ExerciseSaveButton[];
-  review: StaffExerciseReview;
+  review: StaffExerciseReview | null;
+  /** The tab the editor opens on: «Probar» for a teacher's proposal, «Posición» for a new one, «Solución» otherwise. */
+  initialTab: "position" | "solution" | "try";
 }
 
 /** An exercise of a bank as the staff reads it from the database. */

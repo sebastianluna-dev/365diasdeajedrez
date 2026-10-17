@@ -1,0 +1,7 @@
+/* The switch of an academy series, on its own card at the side. */
+.series-publish-switch {
+  padding: var(--platform-space-4) var(--platform-space-5);
+  border-radius: 8px;
+  background: var(--platform-surface);
+  box-shadow: var(--platform-shadow-card);
+}

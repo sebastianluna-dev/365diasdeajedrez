@@ -1,6 +1,6 @@
-/* The student's «Ejercicios»: a card per source, for now «De tu profesor»,
-   its series as rows — the title that opens it, the teacher and the count,
-   and the row's word — and the way on under them. */
+/* The student's «Ejercicios»: a card per source — «De tu profesor», «Series
+   de la academia» —, its series as rows — the title that opens it, the
+   teacher and the count, and the row's word — and the way on under them. */
 .exercises-home {
   display: flex;
   flex-direction: column;

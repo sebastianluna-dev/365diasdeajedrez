@@ -4,15 +4,15 @@ description: "The lesson's exercises in the staff panel: each one the bank's car
 
 # `LessonExercises`
 
-|            |                                                                                                                                                                                                                          |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/staff/courses/lesson-exercises.comp.tsx`                                                                                                                                                   |
-| Kind       | Server Component                                                                                                                                                                                                         |
-| Stylesheet | `lesson-exercises.comp.css` → block `.lesson-exercises`                                                                                                                                                                  |
-| Used by    | [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section)                                                                                                                               |
-| Composes   | [`ExerciseCard`](/components/platform/shared/exercise-card) (with its [`DeleteExercise`](/components/platform/shared/delete-exercise))                                                                                   |
-| Writes     | `moveLessonExercise()`, `archiveLessonExercise()`, `restoreLessonExercise()`, `deleteLessonExercise()` · `services/staff-courses/lesson-exercises.actions.ts` — imported here and handed to the cards, which import none |
-| Uses       | `LessonExerciseAdminRow` from `services/staff-courses/staff-courses.types` (mapped by `mapLessonExerciseRow`, `services/staff-courses/lesson-exercises.mapper.ts`); `staffRoutes.lessonExerciseNew`                      |
+|            |                                                                                                                                                                                                                                                                |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/lesson-exercises.comp.tsx`                                                                                                                                                                                         |
+| Kind       | Server Component                                                                                                                                                                                                                                               |
+| Stylesheet | `lesson-exercises.comp.css` → block `.lesson-exercises`                                                                                                                                                                                                        |
+| Used by    | [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section)                                                                                                                                                                     |
+| Composes   | [`ExerciseCard`](/components/platform/shared/exercise-card) (with its [`DeleteExercise`](/components/platform/shared/delete-exercise)), [`AddLibraryExercisesPopup`](/components/platform/sections/staff/courses/add-library-exercises-popup) with the flag on |
+| Writes     | `moveLessonExercise()`, `archiveLessonExercise()`, `restoreLessonExercise()`, `deleteLessonExercise()`, `addLibraryExercisesToLesson()` · `services/staff-courses/lesson-exercises.actions.ts` — imported here and handed to the cards, which import none      |
+| Uses       | `LessonExerciseAdminRow` from `services/staff-courses/staff-courses.types` (mapped by `mapLessonExerciseRow`, `services/staff-courses/lesson-exercises.mapper.ts`); `staffRoutes.lessonExerciseNew`                                                            |
 
 ## Purpose
 
@@ -20,10 +20,11 @@ A lesson's exercises are `Exercise` rows owned by the lesson (D04, D05; [Exercis
 
 ## Props
 
-| Prop                                | Type                       | Required | Meaning                                                                                            |
-| ----------------------------------- | -------------------------- | -------- | -------------------------------------------------------------------------------------------------- |
-| `courseId`, `chapterId`, `lessonId` | `string`                   | yes      | Bound into every action and into «Agregar ejercicio»'s route.                                      |
-| `exercises`                         | `LessonExerciseAdminRow[]` | yes      | In their order, the archived ones (no `lessonOrder`) last; each with `allowed` and `attemptCount`. |
+| Prop                                | Type                       | Required | Meaning                                                                                                                                                   |
+| ----------------------------------- | -------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `courseId`, `chapterId`, `lessonId` | `string`                   | yes      | Bound into every action and into «Agregar ejercicio»'s route.                                                                                             |
+| `exercises`                         | `LessonExerciseAdminRow[]` | yes      | In their order, the archived ones (no `lessonOrder`) last; each with `allowed` and `attemptCount`.                                                        |
+| `libraryExercises`                  | `ExercisePickOption[]`     | yes      | «Agregar desde la biblioteca» (D28, phase 4): the library's exercises the lesson holds no copy of yet; the button is drawn only with `EXERCISES_ENABLED`. |
 
 ## Behaviour
 
@@ -36,7 +37,7 @@ A lesson's exercises are `Exercise` rows owned by the lesson (D04, D05; [Exercis
 
 ## Markup & styling
 
-Block `.lesson-exercises` (80 lines): a column; each item a grid of the keys' column and the card, the archived items one column.
+Block `.lesson-exercises` (82 lines): a column; each item a grid of the keys' column and the card, the archived items one column.
 
 **Elements:** `.lesson-exercises__list`, `.lesson-exercises__item`, `.lesson-exercises__order`, `.lesson-exercises__card`, `.lesson-exercises__empty`, `.lesson-exercises__add`, `.lesson-exercises__archived`, `.lesson-exercises__archived-title`, `.lesson-exercises__archived-note`
 

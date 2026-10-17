@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PlusIcon } from "@/components/icons/plus-icon.comp";
 import { StaffExercisesSection } from "@/components/platform/sections/staff/exercises/staff-exercises.section";
 import { EXERCISE_ERROR_MESSAGES, readExerciseNotice } from "@/constants/platform/exercise-messages.const";
 import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
 import { requireStaff } from "@/lib/platform-auth/roles";
+import { staffRoutes } from "@/lib/platform-routes";
 import { getStaffExercises } from "@/services/staff-exercises/staff-exercises.service";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -29,8 +32,14 @@ export default async function StaffExercisesPage({ searchParams }: StaffExercise
         <h1 className="platform-page__title">Ejercicios</h1>
         <p className="platform-page__subtitle">
           La biblioteca de la academia: lo que los alumnos practican por su cuenta y lo que cualquier profesor puede dar
-          en una serie o en una clase. Entra en ella lo que apruebes de los profesores.
+          en una serie o en una clase. Entra en ella lo que apruebes de los profesores y lo que publique la academia.
         </p>
+        <div className="platform-page__actions">
+          <Link href={staffRoutes.newExercise} className="platform-button platform-button_variant_accent">
+            <PlusIcon variant="classic-solid" className="platform-button__icon" />
+            Nuevo ejercicio
+          </Link>
+        </div>
       </header>
       <StaffExercisesSection
         view={view}

@@ -22,8 +22,9 @@ import {
 } from "./exercises.mapper";
 import type { StudentExercisesHome, StudentSeriesExercise, StudentSeriesView } from "./exercises.types";
 
-// The student's «Ejercicios» (D17, D31, PLAN.md §5): the series their teacher
-// gave them, a series and its n-th exercise. Every reader resolves the student
+// The student's «Ejercicios» (D17, D31, D32, PLAN.md §5): the series their
+// teacher gave them, the academy's published series, a series and its n-th
+// exercise. Every reader resolves the student
 // in the DAL (`getExerciseViewer` → `getCurrentUser`) and reads only through
 // the visibility rule (services/shared/exercise-visibility-rules.ts): a series
 // they may not open is not found, and an exercise they may not solve is
@@ -62,6 +63,9 @@ function givenSeriesWhere(userId: string) {
   return { AND: [studentVisibleSeriesWhere(userId), { shares: { some: { userId } } }] };
 }
 
+/** The academy's published series (phase 4, D32), which every student sees. */
+const academySeriesWhere = { teacherId: null, publishedAt: { not: null } } as const;
+
 /** The student's attempts in these series, for the marks. */
 async function attemptsIn(userId: string, seriesIds: string[]) {
   if (seriesIds.length === 0) return [];
@@ -95,34 +99,54 @@ export const getStudentExerciseAccess = cache(async (): Promise<boolean> => {
   return series > 0;
 });
 
-/** The home: the series given to the student, newest first, with what they solved of each. */
+/**
+ * The home: the series given to the student, newest first, and the
+ * academy's published series, the last published first, with what they
+ * solved of each.
+ */
 export async function getStudentExercisesHome(): Promise<StudentExercisesHome> {
   const viewer = await getExerciseViewer();
-  const rows = await getPlatformDb().exerciseSeries.findMany({
-    where: givenSeriesWhere(viewer.userId),
-    select: { ...SERIES_SELECT, shares: { where: { userId: viewer.userId }, select: { createdAt: true } } },
-  });
+  const db = getPlatformDb();
+  const [rows, academyRows] = await Promise.all([
+    db.exerciseSeries.findMany({
+      where: givenSeriesWhere(viewer.userId),
+      select: { ...SERIES_SELECT, shares: { where: { userId: viewer.userId }, select: { createdAt: true } } },
+    }),
+    db.exerciseSeries.findMany({
+      where: academySeriesWhere,
+      select: SERIES_SELECT,
+      orderBy: [{ publishedAt: "desc" }, { id: "asc" }],
+    }),
+  ]);
   const given = (row: (typeof rows)[number]) => row.shares[0]?.createdAt.getTime() ?? 0;
   const ordered = [...rows].sort((left, right) => given(right) - given(left) || left.id.localeCompare(right.id));
+  const all = [...ordered, ...academyRows] as StudentSeriesRow[];
   const [attempts, triedToday] = await Promise.all([
     attemptsIn(
       viewer.userId,
-      ordered.map((row) => row.id),
+      all.map((row) => row.id),
     ),
-    triedTodayIn(viewer.userId, ordered as StudentSeriesRow[]),
+    triedTodayIn(viewer.userId, all),
   ]);
   const marks = seriesMarks(attempts);
-  const series = ordered.map((row) => mapSeriesSummary(row as StudentSeriesRow, marks.get(row.id), triedToday));
-  return { hasTeacher: viewer.activeTeacherId !== null, series, continueWith: continueWithOf(series) };
+  const summary = (row: StudentSeriesRow) => mapSeriesSummary(row, marks.get(row.id), triedToday);
+  const series = ordered.map((row) => summary(row as StudentSeriesRow));
+  const academySeries = academyRows.map((row) => summary(row as StudentSeriesRow));
+  return {
+    hasTeacher: viewer.activeTeacherId !== null,
+    series,
+    academySeries,
+    continueWith: continueWithOf([...series, ...academySeries]),
+  };
 }
 
-/** A series the student may open, or null: a series they may not see is not found. */
+/** A series the student may open — given to them, or the academy's published — or null: one they may not see is not found. */
 export async function getStudentSeries(seriesId: string): Promise<StudentSeriesView | null> {
   const viewer = await getExerciseViewer();
   const db = getPlatformDb();
   const [row, levels] = await Promise.all([
     db.exerciseSeries.findFirst({
-      where: { AND: [{ id: seriesId }, givenSeriesWhere(viewer.userId)] },
+      where: { AND: [{ id: seriesId }, studentVisibleSeriesWhere(viewer.userId)] },
       select: SERIES_SELECT,
     }),
     db.level.findMany({ select: LEVEL_SELECT, orderBy: { order: "asc" } }),
@@ -147,7 +171,7 @@ export async function getStudentSeriesExercise(seriesId: string, n: number): Pro
   const viewer = await getExerciseViewer();
   const db = getPlatformDb();
   const series = await db.exerciseSeries.findFirst({
-    where: { AND: [{ id: seriesId }, givenSeriesWhere(viewer.userId)] },
+    where: { AND: [{ id: seriesId }, studentVisibleSeriesWhere(viewer.userId)] },
     select: SERIES_SELECT,
   });
   if (!series) return null;

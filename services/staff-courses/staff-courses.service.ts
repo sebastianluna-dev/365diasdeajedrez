@@ -12,6 +12,9 @@ import { courseSourceAdminSelect, mapCourseSourceAdmin } from "@/services/staff-
 import { lessonHasContent, lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
 import { courseHasContent } from "@/services/staff-courses/course-content.service";
 import { mapLessonExerciseRow } from "./lesson-exercises.mapper";
+import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
+import { buildLibraryExercisesWhere } from "@/services/shared/exercise-visibility-rules";
+import { mapSeriesPickOption } from "@/services/teacher-exercises/teacher-exercises.mapper";
 import type {
   AuthorAdminRow,
   CatalogOption,
@@ -516,6 +519,7 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
           startFen: true,
           playerMoves: true,
           lessonOrder: true,
+          copiedFromId: true,
           kind: { select: { code: true } },
           status: { select: { code: true } },
           topics: { select: { topic: { select: { label: true, order: true } } } },
@@ -527,10 +531,28 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
   });
 
   if (!lesson) return null;
-  const levels = await getPlatformDb().level.findMany({
-    select: { slug: true, name: true, order: true, eloMin: true, eloMax: true, isActive: true },
-    orderBy: { order: "asc" },
-  });
+  // «Agregar desde la biblioteca» (D28): the library's exercises this lesson holds no copy of yet.
+  const copied = lesson.lessonExercises.map((exercise) => exercise.copiedFromId).filter((id) => id !== null);
+  const [levels, library] = await Promise.all([
+    getPlatformDb().level.findMany({
+      select: { slug: true, name: true, order: true, eloMin: true, eloMax: true, isActive: true },
+      orderBy: { order: "asc" },
+    }),
+    EXERCISES_ENABLED
+      ? getPlatformDb().exercise.findMany({
+          where: { AND: [buildLibraryExercisesWhere(), { id: { notIn: copied } }] },
+          select: {
+            id: true,
+            title: true,
+            difficulty: true,
+            mateIn: true,
+            kind: { select: { code: true } },
+            topics: { select: { topic: { select: { code: true, label: true, order: true } } } },
+          },
+          orderBy: [{ publishedAt: "desc" }, { id: "asc" }],
+        })
+      : [],
+  ]);
   const hasExerciseAttempts = lesson.lessonExercises.some((exercise) => exercise._count.attempts > 0);
 
   return {
@@ -575,6 +597,7 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
         levels,
       ),
     ),
+    libraryExercises: library.map(mapSeriesPickOption),
   };
 }
 

@@ -30,8 +30,22 @@ export interface AddSeriesExercisesPopupProps {
   /** How many the series holds now: with the limit, how many more fit. */
   itemCount: number;
   addExercisesToSeries: (seriesId: string, prev: PopupFormState, formData: FormData) => Promise<PopupFormState>;
+  /** Where the offer comes from: the teacher's bank and the library (`own`, the default), or the library alone (`library`, an academy series). */
+  source?: "own" | "library";
   ref?: Ref<AddSeriesExercisesPopupHandle>;
 }
+
+/** What the popup says with nothing to offer, by where the exercises come from. */
+const NOTHING_TO_ADD: Record<"own" | "library", { some: string; none: string }> = {
+  own: {
+    some: "Todos tus ejercicios listos ya están en esta serie.",
+    none: "Todavía no tienes ejercicios listos: márcalos como listos en el editor para agregarlos aquí.",
+  },
+  library: {
+    some: "Todos los ejercicios de la biblioteca ya están en esta serie.",
+    none: "La biblioteca todavía está vacía: publica un ejercicio de la academia o aprueba uno de un profesor.",
+  },
+};
 
 /**
  * «Agregar ejercicios» (PLAN.md §6.2): the exercises the teacher may give
@@ -92,6 +106,7 @@ function AddSeriesExercisesForm({
   exercises,
   itemCount,
   addExercisesToSeries,
+  source = "own",
   onDone,
 }: AddSeriesExercisesFormProps) {
   const [state, formAction] = useActionState(addExercisesToSeries.bind(null, seriesId), POPUP_FORM_IDLE);
@@ -113,9 +128,7 @@ function AddSeriesExercisesForm({
     return (
       <div className="add-series-exercises__form">
         <p className="add-series-exercises__empty">
-          {itemCount > 0
-            ? "Todos tus ejercicios listos ya están en esta serie."
-            : "Todavía no tienes ejercicios listos: márcalos como listos en el editor para agregarlos aquí."}
+          {itemCount > 0 ? NOTHING_TO_ADD[source].some : NOTHING_TO_ADD[source].none}
         </p>
       </div>
     );

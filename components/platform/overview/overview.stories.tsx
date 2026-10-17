@@ -153,6 +153,8 @@ import {
 import { ClassBlockList } from "@/components/platform/sections/teacher/classes/class-block-list/class-block-list.comp";
 import { ClassExerciseProgress } from "@/components/platform/sections/teacher/classes/class-exercise-progress/class-exercise-progress.comp";
 import { ExerciseReviewBar } from "@/components/platform/sections/staff/exercises/exercise-review-bar/exercise-review-bar.comp";
+import { SeriesPublishSwitch } from "@/components/platform/sections/staff/exercises/series-publish-switch/series-publish-switch.comp";
+import { AddLibraryExercisesButton } from "@/components/platform/sections/staff/courses/add-library-exercises-popup/add-library-exercises-popup.comp";
 import { TopicButton } from "@/components/platform/sections/teacher/classes/topic-popup/topic-popup.comp";
 import { FinalizeClassButton } from "@/components/platform/shared/finalize-class-popup/finalize-class-popup.comp";
 import { MeetingCountdown } from "@/components/platform/shared/meeting-countdown/meeting-countdown.comp";
@@ -2644,12 +2646,39 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   canApprove: true,
                   canReturn: true,
                   canRemove: false,
+                  canRestore: false,
                 }}
                 actions={{
                   approve: async () => undefined,
                   returnWithNote: async () => popupFormDone("exerciseReturned"),
                   remove: async () => undefined,
+                  restore: async () => undefined,
                 }}
+              />
+            </Tile>
+            <Tile
+              name="SeriesPublishSwitch"
+              docs="platform-sections-staff-exercises-seriespublishswitch"
+              width={360}
+              height={96}
+            >
+              <SeriesPublishSwitch
+                seriesId="se000009"
+                published
+                publishedLabel="Publicada el 14 de octubre, 2026"
+                itemCount={4}
+                action={async () => undefined}
+              />
+            </Tile>
+            <Tile
+              name="AddLibraryExercisesPopup"
+              docs="platform-sections-staff-courses-addlibraryexercisespopup"
+              width={400}
+              height={72}
+            >
+              <AddLibraryExercisesButton
+                exercises={OVERVIEW_PICKABLE}
+                addToLesson={async () => popupFormDone("lessonExercisesCopied")}
               />
             </Tile>
             <Tile name="MovePathPicker" docs="platform-shared-movepathpicker" width={960} height={640}>

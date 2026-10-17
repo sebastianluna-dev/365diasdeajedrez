@@ -19,6 +19,7 @@ const meta: MetaRecord = {
   "courses-admin-section": "CoursesAdminSection",
   "lesson-editor-section": "LessonEditorSection",
   "lesson-exercises": "LessonExercises",
+  "add-library-exercises-popup": "AddLibraryExercisesPopup",
   "lesson-exercise-editor-section": "LessonExerciseEditorSection",
   "lesson-game-picker": "LessonGamePicker",
   "new-course": "NewCourse",

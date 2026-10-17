@@ -250,6 +250,15 @@ export const staffRoutes = {
   exercisesReview: "/administracion/ejercicios/revision",
   /** A new exercise of the academy's, in the editor. */
   newExercise: "/administracion/ejercicios/nuevo",
+  /**
+   * The game a new academy exercise starts from («Crear ejercicio desde aquí»
+   * on a move of one of the staff member's own study games, D11), without
+   * the move: the viewer appends `&jugada=<path>`.
+   */
+  newExerciseFromGame: (studyId: string, gameId: string) => {
+    const params = new URLSearchParams({ estudio: studyId, partida: gameId });
+    return `/administracion/ejercicios/nuevo?${params.toString()}`;
+  },
   /** An exercise of a bank — the academy's, or a teacher's proposed or in the library — in the staff editor with its review bar. */
   exerciseDetail: (exerciseId: string) => `/administracion/ejercicios/${exerciseId}`,
   /** The academy's series, which every student sees once published. */

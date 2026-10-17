@@ -32,7 +32,9 @@ export interface StudentExercisesHome {
   hasTeacher: boolean;
   /** Newest given first. */
   series: StudentSeriesSummary[];
-  /** The screen's one accent: the newest series with an exercise left that can count today. */
+  /** «Series de la academia» (phase 4, D32): the published ones, the last published first; drawn only with some. */
+  academySeries: StudentSeriesSummary[];
+  /** The screen's one accent: the newest series with an exercise left that can count today — the teacher's first, then the academy's. */
   continueWith: { title: string; href: string } | null;
 }
 

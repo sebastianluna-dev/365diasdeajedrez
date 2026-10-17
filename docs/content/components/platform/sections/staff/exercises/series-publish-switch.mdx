@@ -1,0 +1,34 @@
+---
+description: "«Publicada», the switch of an academy series: on, every student sees it on «Series de la academia»; off, only the staff. It takes effect at once; an empty series cannot be switched on."
+---
+
+# `SeriesPublishSwitch`
+
+|            |                                                                                                                                                            |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/exercises/series-publish-switch/series-publish-switch.comp.tsx`                                                        |
+| Kind       | Client Component (`"use client"`): the switch's optimistic state and the transition that runs the action                                                   |
+| Stylesheet | `series-publish-switch.comp.css` → block `.series-publish-switch`                                                                                          |
+| Story      | `series-publish-switch.stories.tsx` (`platform/sections/staff/exercises/SeriesPublishSwitch`): published, unpublished with exercises, and empty (disabled) |
+| Used by    | [`StaffSeriesEditorSection`](/components/platform/sections/staff/exercises/staff-series-editor-section)                                                    |
+| Composes   | [`PlatformSwitch`](/components/platform/shared/platform-switch)                                                                                            |
+
+## Props
+
+| Prop             | Type                                                      | Required | Meaning                                                                                      |
+| ---------------- | --------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------- |
+| `seriesId`       | `string`                                                  | yes      | Passed to the action.                                                                        |
+| `published`      | `boolean`                                                 | yes      | As stored: `publishedAt` set.                                                                |
+| `publishedLabel` | `string \| null`                                          | yes      | «Publicada el 14 de octubre, 2026», the hint while on; null while off.                       |
+| `itemCount`      | `number`                                                  | yes      | How many exercises it holds: with none, the switch is disabled and the hint says to add one. |
+| `action`         | `(seriesId: string, published: boolean) => Promise<void>` | yes      | `setAcademySeriesPublished`, as a function; a stub in Storybook.                             |
+
+## Behaviour
+
+A switch, not a form's field: it takes effect on the press (`useOptimistic` shows the new state at once, `useTransition` runs the action, and the page's revalidation confirms it). On: «Todos los alumnos la ven en «Series de la academia».» Off: «Apagada: sólo la ve el equipo.» The action keeps `publishedAt` at the first publication's date while it stays on and clears it when switched off; the students' home and series page revalidate with it.
+
+## Markup & styling
+
+Block `.series-publish-switch` (7 lines): a card on the surface around the switch's row.
+
+**Tokens:** `--platform-shadow-card`, `--platform-surface`

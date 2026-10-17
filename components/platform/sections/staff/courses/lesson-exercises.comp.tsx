@@ -2,14 +2,18 @@ import Link from "next/link";
 import { ArrowDownIcon } from "@/components/icons/arrow-down-icon.comp";
 import { ArrowUpIcon } from "@/components/icons/arrow-up-icon.comp";
 import { ExerciseCard } from "@/components/platform/shared/exercise-card/exercise-card.comp";
+import type { ExercisePickOption } from "@/components/platform/shared/exercise-picker/exercise-picker.types";
+import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
 import { staffRoutes } from "@/lib/platform-routes";
 import {
+  addLibraryExercisesToLesson,
   archiveLessonExercise,
   deleteLessonExercise,
   moveLessonExercise,
   restoreLessonExercise,
 } from "@/services/staff-courses/lesson-exercises.actions";
 import type { LessonExerciseAdminRow } from "@/services/staff-courses/staff-courses.types";
+import { AddLibraryExercisesButton } from "./add-library-exercises-popup/add-library-exercises-popup.comp";
 import "./lesson-exercises.comp.css";
 
 interface LessonExercisesProps {
@@ -18,6 +22,8 @@ interface LessonExercisesProps {
   lessonId: string;
   /** In their order, the archived ones last. */
   exercises: LessonExerciseAdminRow[];
+  /** «Agregar desde la biblioteca» (D28): what the lesson may still copy; drawn only with the flag on. */
+  libraryExercises: ExercisePickOption[];
 }
 
 /** What «Eliminar»'s confirmation says of a lesson's exercise: it is nobody's but the lesson's. */
@@ -28,10 +34,11 @@ const DELETE_DESCRIPTION = "Se elimina el ejercicio con su solución. Los alumno
  * opens the staff editor, with «Subir»/«Bajar» beside it and the row's words
  * — «Eliminar» for one nobody has tried, «Archivar» for one with attempts —;
  * the archived ones apart, each with «Restaurar», which brings it back to the
- * lesson as a draft at the end. The actions are imported here and handed to
- * the cards, which import none.
+ * lesson as a draft at the end; and, with the library (phase 4, D28), «Agregar
+ * desde la biblioteca», a copy of what it chooses. The actions are imported
+ * here and handed to the cards and the popup, which import none.
  */
-export function LessonExercises({ courseId, chapterId, lessonId, exercises }: LessonExercisesProps) {
+export function LessonExercises({ courseId, chapterId, lessonId, exercises, libraryExercises }: LessonExercisesProps) {
   const active = exercises.filter((exercise) => exercise.lessonOrder !== null);
   const archived = exercises.filter((exercise) => exercise.lessonOrder === null);
   const move = moveLessonExercise.bind(null, courseId, chapterId, lessonId);
@@ -91,6 +98,12 @@ export function LessonExercises({ courseId, chapterId, lessonId, exercises }: Le
         <Link href={staffRoutes.lessonExerciseNew(courseId, chapterId, lessonId)} className="platform-button">
           Agregar ejercicio
         </Link>
+        {EXERCISES_ENABLED && (
+          <AddLibraryExercisesButton
+            exercises={libraryExercises}
+            addToLesson={addLibraryExercisesToLesson.bind(null, courseId, chapterId, lessonId)}
+          />
+        )}
       </div>
 
       {archived.length > 0 && (

@@ -4,6 +4,7 @@ import { useActionState, useRef, useState } from "react";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
 import { CircleMinusIcon } from "@/components/icons/circle-minus-icon.comp";
 import { ReplyIcon } from "@/components/icons/reply-icon.comp";
+import { RotateLeftIcon } from "@/components/icons/rotate-left-icon.comp";
 import {
   PlatformConfirmPopup,
   type PlatformConfirmPopupHandle,
@@ -28,6 +29,8 @@ export interface ExerciseReviewBarActions {
   returnWithNote: (prev: PopupFormState, formData: FormData) => Promise<PopupFormState>;
   /** «Quitar de la biblioteca», bound to the exercise, from its confirmation with the note. */
   remove: (formData: FormData) => Promise<void>;
+  /** «Restaurar» an archived academy exercise, bound to it: back to a draft. */
+  restore: (formData: FormData) => Promise<void>;
 }
 
 export interface ExerciseReviewBarProps {
@@ -42,15 +45,16 @@ export interface ExerciseReviewBarProps {
  * decision with its note, and the buttons the status allows — «Aprobar» (the
  * accent) and «Devolver» (a popup with the note the teacher reads) on a
  * proposal; «Quitar de la biblioteca» (a confirmation with the verb «Quitar»
- * and the note) on one in the library. What is allowed comes decided
- * (`staffExerciseReview`, from the transitions table): the bar draws it.
+ * and the note) on one in the library; «Restaurar» on an archived academy
+ * exercise. What is allowed comes decided (`staffExerciseReview`, from the
+ * transitions table): the bar draws it.
  */
 export function ExerciseReviewBar({ title, review, actions }: ExerciseReviewBarProps) {
   const returnPopup = useRef<PlatformPopupHandle>(null);
   const removeConfirm = useRef<PlatformConfirmPopupHandle>(null);
   const [use, setUse] = useState(0);
   const facts = [review.authorLabel, review.submittedLabel, review.reviewedLabel].filter(Boolean).join(" · ");
-  const decides = review.canApprove || review.canReturn || review.canRemove;
+  const decides = review.canApprove || review.canReturn || review.canRemove || review.canRestore;
   const removal =
     review.owner === "teacher"
       ? "Vuelve a estar listo para su profesor, que lo sigue dando a sus alumnos; deja de verse en la práctica libre y en las series de la academia."
@@ -95,6 +99,14 @@ export function ExerciseReviewBar({ title, review, actions }: ExerciseReviewBarP
               <CircleMinusIcon variant="classic-solid" className="platform-button__icon" />
               Quitar de la biblioteca
             </button>
+          )}
+          {review.canRestore && (
+            <form action={actions.restore}>
+              <SubmitButton className="platform-button" pendingLabel="Restaurando…">
+                <RotateLeftIcon variant="classic-solid" className="platform-button__icon" />
+                Restaurar
+              </SubmitButton>
+            </form>
           )}
         </div>
       )}

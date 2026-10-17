@@ -146,7 +146,7 @@ const LOCK_REASONS: Record<ExerciseLockReason, string> = {
   inReview: "Está en revisión: retira la propuesta para editarlo.",
   inLibrary: "Está en la biblioteca: duplícalo para hacer tu versión.",
   staffReview:
-    "Propuesta de un profesor: pruébala en «Probar» y decide con los botones de abajo. El contenido lo edita su autor.",
+    "Es de un profesor: pruébalo en «Probar» y decide con los botones de abajo. Su contenido lo edita el autor.",
 };
 
 const CASTLING_RIGHTS = [

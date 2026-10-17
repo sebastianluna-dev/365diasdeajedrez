@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { mapStaffExerciseCard, staffExerciseReview, submittedLabelOf } from "./staff-exercises.mapper";
+import {
+  mapStaffExerciseCard,
+  mapStaffSeriesCard,
+  mapStaffSeriesItem,
+  staffExercisePermissions,
+  staffExerciseReview,
+  staffSaveButtons,
+  submittedLabelOf,
+} from "./staff-exercises.mapper";
 import type { StaffExerciseRow } from "./staff-exercises.types";
 
 const ROW: StaffExerciseRow = {
@@ -90,5 +98,84 @@ describe("mapStaffExerciseCard y submittedLabelOf", () => {
     expect(submittedLabelOf({ ...ROW, submittedAt: null, teacherId: null, teacher: null })).toBe(
       "Propuesto por Academia",
     );
+  });
+});
+
+describe("staffExercisePermissions y staffSaveButtons", () => {
+  it("la academia escribe lo suyo: borrador o publicar; publicado y archivado sólo se guardan", () => {
+    expect(staffExercisePermissions("academy", null).contentLocked).toBeNull();
+    expect(staffSaveButtons("academy", null).map((button) => button.intent)).toEqual(["draft", "publish"]);
+    expect(staffSaveButtons("academy", "DRAFT").map((button) => button.intent)).toEqual(["draft", "publish"]);
+    expect(staffSaveButtons("academy", "PUBLISHED").map((button) => button.intent)).toEqual(["save"]);
+    expect(staffSaveButtons("academy", "ARCHIVED")).toMatchObject([{ intent: "save", needsReadiness: false }]);
+  });
+
+  it("del profesor, el staff edita sólo lo que está en la biblioteca (D48); una propuesta o una devuelta se lee", () => {
+    expect(staffExercisePermissions("teacher", "PUBLISHED").contentLocked).toBeNull();
+    expect(staffSaveButtons("teacher", "PUBLISHED").map((button) => button.intent)).toEqual(["save"]);
+    expect(staffExercisePermissions("teacher", "IN_REVIEW").contentLocked).toBe("staffReview");
+    expect(staffExercisePermissions("teacher", "READY").contentLocked).toBe("staffReview");
+    expect(staffSaveButtons("teacher", "IN_REVIEW")).toEqual([]);
+    expect(staffSaveButtons("teacher", "READY")).toEqual([]);
+    // Never «Duplicar»: a copy is the teacher's way.
+    expect(staffExercisePermissions("academy", "PUBLISHED").canDuplicate).toBe(false);
+  });
+
+  it("un ejercicio archivado de la academia se restaura; uno del profesor, nunca desde aquí", () => {
+    const archived = { ...ROW, teacherId: null, teacher: null, status: { code: "ARCHIVED", label: "Archivado" } };
+    expect(staffExerciseReview(archived)).toMatchObject({ canRestore: true, canRemove: false });
+    expect(staffExerciseReview({ ...ROW, status: { code: "ARCHIVED", label: "Archivado" } }).canRestore).toBe(false);
+  });
+});
+
+describe("the academy's series", () => {
+  const LEVELS_ALL = [
+    { slug: "principiante", name: "Principiante", order: 1, eloMin: 800, eloMax: 1199, isActive: true },
+    ...LEVELS,
+  ];
+  const item = (id: string, teacherId: string | null, status: string) => ({
+    order: 1,
+    exercise: {
+      id,
+      title: `Ejercicio ${id}`,
+      teacherId,
+      difficulty: 1000,
+      mateIn: null,
+      kind: { code: "SEQUENCE" },
+      status: { code: status },
+    },
+  });
+
+  it("sólo lo que está en la biblioteca sigue disponible: lo demás ya no lo ven los alumnos (D32)", () => {
+    expect(mapStaffSeriesItem(item("a", null, "PUBLISHED"), LEVELS_ALL)).toMatchObject({
+      href: "/administracion/ejercicios/a",
+      availability: "available",
+      facts: "Secuencia · 1000 · Principiante",
+    });
+    expect(mapStaffSeriesItem(item("b", "t-1", "PUBLISHED"), LEVELS_ALL).availability).toBe("available");
+    expect(mapStaffSeriesItem(item("c", "t-1", "READY"), LEVELS_ALL).availability).toBe("unavailable");
+    expect(mapStaffSeriesItem(item("d", null, "ARCHIVED"), LEVELS_ALL).availability).toBe("unavailable");
+  });
+
+  it("la tarjeta dice si está publicada y cuántos ejercicios ya no ven los alumnos", () => {
+    const card = mapStaffSeriesCard({
+      id: "s-9",
+      title: "Mates",
+      description: null,
+      publishedAt: new Date("2026-10-12T15:00:00.000Z"),
+      items: [item("a", null, "PUBLISHED"), item("c", "t-1", "READY")],
+    });
+    expect(card).toMatchObject({
+      href: "/administracion/ejercicios/series/s-9",
+      itemCount: 2,
+      isPublished: true,
+      unavailableCount: 1,
+    });
+    expect(
+      mapStaffSeriesCard({ id: "s-8", title: "Vacía", description: null, publishedAt: null, items: [] }),
+    ).toMatchObject({
+      isPublished: false,
+      unavailableCount: 0,
+    });
   });
 });

@@ -1,0 +1,62 @@
+/* An academy series: the head (the title with its pen, the facts, the
+   description and «Agregar ejercicios»), then the exercises beside the
+   publishing switch; one column under 1024px. */
+.staff-series {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-6);
+
+  & .staff-series__title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    min-width: 0;
+  }
+
+  & .staff-series__description {
+    margin: 0;
+    max-width: 70ch;
+    font-size: var(--platform-type-md);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+    white-space: pre-line;
+  }
+
+  & .staff-series__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    align-items: start;
+    gap: var(--platform-space-6);
+  }
+
+  & .staff-series__items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    min-width: 0;
+  }
+
+  & .staff-series__heading {
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .staff-series__aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+  }
+
+  & .staff-series__danger {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  @media (width < 1024px) {
+    & .staff-series__layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}

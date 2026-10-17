@@ -274,6 +274,14 @@ describe("mapGameView: «Crear ejercicio desde aquí» (D11)", () => {
     expect(mapGameView(row(), "owner", true).canCreateExercise).toBe(true);
     expect(mapGameView(row(), "owner", false).canCreateExercise).toBe(false);
     expect(mapGameView(row(), "owner").canCreateExercise).toBe(false);
+    expect(mapGameView(row(), "owner", false).createExerciseHref).toBeUndefined();
+  });
+
+  it("lleva al banco del profesor, o al de la academia cuando mira el staff (fase 4)", () => {
+    expect(mapGameView(row(), "owner", true).createExerciseHref).toMatch(/^\/profesor\/ejercicios\/nuevo\?estudio=/);
+    expect(mapGameView(row(), "owner", true, "staff").createExerciseHref).toMatch(
+      /^\/administracion\/ejercicios\/nuevo\?estudio=/,
+    );
   });
 
   it("nunca en la partida de otro, aunque quien mira sea profesor", () => {

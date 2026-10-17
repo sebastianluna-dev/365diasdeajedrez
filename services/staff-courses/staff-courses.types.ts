@@ -6,6 +6,7 @@ import type {
   ExerciseSaveButton,
 } from "@/components/platform/shared/exercise-authoring/exercise-authoring.types";
 import type { ExerciseCardData } from "@/components/platform/shared/exercise-card/exercise-card.types";
+import type { ExercisePickOption } from "@/components/platform/shared/exercise-picker/exercise-picker.types";
 import type { AuthorRoleCode, CourseStatusCode } from "@/constants/platform/course-codes.const";
 import type { CourseSourceAdmin } from "@/services/staff-sources/staff-sources.types";
 import type { BoardOrientationCode } from "@/constants/platform/shared-codes.const";
@@ -197,6 +198,12 @@ export interface LessonAdminDetail {
   topicCodes: string[];
   /** In their order, the archived ones last. */
   exercises: LessonExerciseAdminRow[];
+  /**
+   * «Agregar desde la biblioteca» (D28, phase 4): the library's exercises not
+   * copied into this lesson yet, as the picker offers them. Empty with the
+   * flag off.
+   */
+  libraryExercises: ExercisePickOption[];
 }
 
 /** A game of a chapter's collection, to link it to a lesson. */

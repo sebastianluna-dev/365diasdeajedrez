@@ -1,29 +1,29 @@
 ---
-description: "A bank's exercise as the staff reads it: ExerciseAuthoring, read-only for a teacher's and open on «Probar», with the review bar under it."
+description: "A bank's exercise in the staff editor: ExerciseAuthoring — the academy's to write, a teacher's proposal read-only and open on «Probar» — with the review bar under it."
 ---
 
 # `StaffExerciseEditorSection`
 
-|            |                                                                                                                                                                                                                                  |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/exercises/staff-exercise-editor.section.tsx`                                                                                                                                                 |
-| Kind       | Server Component                                                                                                                                                                                                                 |
-| Stylesheet | `staff-exercise-editor.section.css` → block `.staff-exercise-editor`                                                                                                                                                             |
-| Used by    | `/administracion/ejercicios/[exerciseId]` (behind `EXERCISES_ENABLED`)                                                                                                                                                           |
-| Composes   | [`ExerciseAuthoring`](/components/platform/shared/exercise-authoring), [`ExerciseReviewBar`](/components/platform/sections/staff/exercises/exercise-review-bar), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Reads      | `StaffExerciseEditor` from `getStaffExerciseEditor(id)` · `services/staff-exercises/staff-exercises.service.ts`                                                                                                                  |
-| Writes     | `approveLibraryExercise(id)`, `returnLibraryExercise(id)` (through `useActionState`), `removeExerciseFromLibrary(id)`, `saveStaffExercise(id)`, `fetchStaffGamePgn()` — bound here and handed down as props                      |
+|            |                                                                                                                                                                                                                                                                      |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/exercises/staff-exercise-editor.section.tsx`                                                                                                                                                                                     |
+| Kind       | Server Component                                                                                                                                                                                                                                                     |
+| Stylesheet | `staff-exercise-editor.section.css` → block `.staff-exercise-editor`                                                                                                                                                                                                 |
+| Used by    | `/administracion/ejercicios/[exerciseId]`, `/administracion/ejercicios/nuevo` (behind `EXERCISES_ENABLED`)                                                                                                                                                           |
+| Composes   | [`ExerciseAuthoring`](/components/platform/shared/exercise-authoring), [`ExerciseReviewBar`](/components/platform/sections/staff/exercises/exercise-review-bar), [`PlatformNotice`](/components/platform/shared/platform-notice)                                     |
+| Reads      | `StaffExerciseEditor` from `getStaffExerciseEditor(id)` · `services/staff-exercises/staff-exercises.service.ts`                                                                                                                                                      |
+| Writes     | `saveStaffExercise(id)` (through `useActionState`), `fetchStaffGamePgn()`, `approveLibraryExercise(id)`, `returnLibraryExercise(id)` (through `useActionState`), `removeExerciseFromLibrary(id)`, `restoreAcademyExercise(id)` — bound here and handed down as props |
 
 ## Props
 
-| Prop                     | Type                  | Required | Meaning                                                                                  |
-| ------------------------ | --------------------- | -------- | ---------------------------------------------------------------------------------------- |
-| `editor`                 | `StaffExerciseEditor` | yes      | The exercise, its catalogs, the permissions (locked for a teacher's) and the review bar. |
-| `notice`, `errorMessage` | `string`              | no       |                                                                                          |
+| Prop                     | Type                  | Required | Meaning                                                                                                                                                                      |
+| ------------------------ | --------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `editor`                 | `StaffExerciseEditor` | yes      | The exercise (or a new one's prefill), its catalogs, the staff member's own games, the permissions and buttons, the tab to open on, and the review bar (null for a new one). |
+| `notice`, `errorMessage` | `string`              | no       |                                                                                                                                                                              |
 
 ## Behaviour
 
-The editor opens on «Probar» (`initialTab="try"`): a proposal is solved before it is decided. A teacher's exercise is locked (`contentLocked: "staffReview"`, no save bar): its content is the author's (D07), and once in the library the teacher duplicates it to change it (D48). The decisions are the bar's.
+What the staff may do is `staffExercisePermissions`/`staffSaveButtons` (`services/staff-exercises/staff-exercises.mapper.ts`): the academy's exercise is theirs to write — a new one or a draft is kept or published («Guardar y publicar», no review: the staff is the reviewer), a published one is saved and stays complete, an archived one is saved as it is; a teacher's exercise in the library is edited by the staff too (D48: its teacher duplicates it to change it); a teacher's proposal, or a returned one, is locked (`contentLocked: "staffReview"`, no save bar) and opens on «Probar», so it is solved before it is decided. The decisions are the bar's. «Desde una partida» offers the staff member's own studies, and «Crear ejercicio desde aquí» on one of their games (D11) opens `/administracion/ejercicios/nuevo?estudio=&partida=&jugada=` seeded on «Solución».
 
 ## Markup & styling
 

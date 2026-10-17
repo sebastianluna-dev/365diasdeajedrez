@@ -15,11 +15,12 @@ description: "The exercises of a series in the order its students solve them: so
 
 ## Props
 
-| Prop       | Type                                                                                                      | Required | Meaning                                                                   |
-| ---------- | --------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------- |
-| `seriesId` | `string`                                                                                                  | yes      | Bound into both actions.                                                  |
-| `items`    | `SeriesItemData[]`                                                                                        | yes      | In the series' order: `{ exerciseId, title, href, facts, availability }`. |
-| `actions`  | `{ reorder(seriesId, orderedIds): Promise<void>; remove(seriesId, exerciseId, formData): Promise<void> }` | yes      | The server actions, from the section.                                     |
+| Prop       | Type                                                                                                      | Required | Meaning                                                                                                                                          |
+| ---------- | --------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `seriesId` | `string`                                                                                                  | yes      | Bound into both actions.                                                                                                                         |
+| `items`    | `SeriesItemData[]`                                                                                        | yes      | In the series' order: `{ exerciseId, title, href, facts, availability }`.                                                                        |
+| `audience` | `"teacher" \| "academy"`                                                                                  | no       | Whose series, for the warnings' wording: «tus alumnos» (the default) or, for an academy series, «los alumnos» and «Ya no está en la biblioteca». |
+| `actions`  | `{ reorder(seriesId, orderedIds): Promise<void>; remove(seriesId, exerciseId, formData): Promise<void> }` | yes      | The server actions, from the section.                                                                                                            |
 
 ## Behaviour
 

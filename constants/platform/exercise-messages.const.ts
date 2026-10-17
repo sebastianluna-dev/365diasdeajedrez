@@ -64,6 +64,7 @@ export const EXERCISE_ERROR_MESSAGES: Record<string, string> = {
   seriesTitle: "Escribe un título para la serie.",
   seriesDescription: "La descripción es demasiado larga.",
   seriesNotFound: "Esa serie ya no existe o no es tuya.",
+  seriesNotPublishable: "Para publicarla, la serie necesita al menos un ejercicio.",
   seriesChanged: "La serie cambió mientras tanto: vuelve a intentarlo.",
   seriesExercises: "Elige al menos un ejercicio.",
   seriesNotPickable: "Alguno de esos ejercicios ya no se puede agregar: cierra la ventana y vuelve a abrirla.",
@@ -71,6 +72,9 @@ export const EXERCISE_ERROR_MESSAGES: Record<string, string> = {
   notAssigned: "Ese alumno ya no está asignado contigo.",
   orderTaken: "Otro ejercicio acaba de tomar ese lugar en la lección. Vuelve a guardar.",
   lessonMissing: "Esa lección ya no existe.",
+  exerciseNotAllowed: "Ese cambio no se puede hacer en este momento.",
+  exerciseAlreadyInLesson:
+    "La lección ya tiene una copia de alguno de esos ejercicios: cierra la ventana y vuelve a abrirla.",
 };
 
 /** What the address's `?aviso=` says on the exercise pages. */
@@ -88,6 +92,9 @@ export const EXERCISE_NOTICES = {
   exerciseApproved: "Aprobado: ya está en la biblioteca.",
   exerciseReturned: "Devuelto al profesor con tu nota.",
   exerciseRemovedFromLibrary: "Quitado de la biblioteca.",
+  exercisePublishedToLibrary: "Ejercicio guardado y publicado: ya está en la biblioteca.",
+  exerciseRestoredToDraft: "Ejercicio restaurado como borrador: publícalo cuando esté listo.",
+  lessonExercisesCopied: "Ejercicios agregados a la lección desde la biblioteca, publicados.",
   exercisePublished: "Ejercicio guardado y publicado: los alumnos lo verán en la lección.",
   exerciseCopied: "Ejercicio agregado a la lección desde la biblioteca.",
   seriesCreated: "Serie creada: agrégale ejercicios y dásela a tus alumnos.",
@@ -95,6 +102,7 @@ export const EXERCISE_NOTICES = {
   seriesExercisesAdded: "Ejercicios agregados a la serie.",
   seriesExerciseRemoved: "Ejercicio quitado de la serie: sigue en tu banco.",
   seriesDeleted: "Serie eliminada. Sus ejercicios siguen en tu banco.",
+  academySeriesDeleted: "Serie eliminada. Sus ejercicios siguen en la biblioteca.",
   seriesShared: "Listo: la verá en «Ejercicios».",
   seriesUnshared: "Ese alumno ya no tiene la serie.",
 } as const satisfies Record<string, string>;

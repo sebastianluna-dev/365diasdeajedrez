@@ -14,11 +14,13 @@ description: "«Eliminar la serie», at the foot of its page's aside, behind its
 
 ## Props
 
-| Prop           | Type                                    | Required | Meaning                            |
-| -------------- | --------------------------------------- | -------- | ---------------------------------- |
-| `title`        | `string`                                | yes      | What the confirmation names.       |
-| `studentCount` | `number`                                | yes      | Who has it now, said in what goes. |
-| `action`       | `(formData: FormData) => Promise<void>` | yes      | The bound server action.           |
+| Prop           | Type                                    | Required | Meaning                                                                                                                                                                                         |
+| -------------- | --------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`        | `string`                                | yes      | What the confirmation names.                                                                                                                                                                    |
+| `studentCount` | `number`                                | yes      | Who has it now, said in what goes.                                                                                                                                                              |
+| `action`       | `(formData: FormData) => Promise<void>` | yes      | The bound server action.                                                                                                                                                                        |
+| `audience`     | `"teacher" \| "academy"`                | no       | Whose series: a teacher's (the default: what goes is said by `studentCount`) or the academy's, whose exercises «siguen en la biblioteca» and which every student stops seeing when `published`. |
+| `published`    | `boolean`                               | no       | An academy series: whether every student sees it now.                                                                                                                                           |
 
 ## Behaviour
 

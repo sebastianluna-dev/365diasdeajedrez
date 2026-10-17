@@ -4,6 +4,7 @@ import {
   approveLibraryExercise,
   fetchStaffGamePgn,
   removeExerciseFromLibrary,
+  restoreAcademyExercise,
   returnLibraryExercise,
   saveStaffExercise,
 } from "@/services/staff-exercises/staff-exercises.actions";
@@ -18,10 +19,12 @@ interface StaffExerciseEditorSectionProps {
 }
 
 /**
- * A bank's exercise as the staff reads it (PLAN.md §8): `ExerciseAuthoring`
- * — read-only for a teacher's, with «Probar» to solve it — and, under it, the
- * review bar with the decisions bound here, on the server, so neither
- * component imports an action.
+ * A bank's exercise in the staff editor (PLAN.md §8): `ExerciseAuthoring` —
+ * the academy's to write and publish, a teacher's in the library to edit
+ * (D48), a teacher's proposal read-only with «Probar» to solve it — and,
+ * under a saved one, the review bar with the decisions bound here, on the
+ * server, so neither component imports an action. «Desde una partida» offers
+ * the staff member's own studies.
  */
 export function StaffExerciseEditorSection({ editor, notice, errorMessage }: StaffExerciseEditorSectionProps) {
   const id = editor.exercise.id;
@@ -38,9 +41,9 @@ export function StaffExerciseEditorSection({ editor, notice, errorMessage }: Sta
         buttons={editor.buttons}
         save={saveStaffExercise.bind(null, id)}
         fetchGamePgn={fetchStaffGamePgn}
-        initialTab="try"
+        initialTab={editor.initialTab}
       />
-      {id && (
+      {id && editor.review && (
         <ExerciseReviewBar
           title={editor.exercise.title}
           review={editor.review}
@@ -48,6 +51,7 @@ export function StaffExerciseEditorSection({ editor, notice, errorMessage }: Sta
             approve: approveLibraryExercise.bind(null, id),
             returnWithNote: returnLibraryExercise.bind(null, id),
             remove: removeExerciseFromLibrary.bind(null, id),
+            restore: restoreAcademyExercise.bind(null, id),
           }}
         />
       )}

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "Ejercicios",
 };
 
-/** «Ejercicios» (D17): what the student's teacher gave them. Switched off, it does not exist, by its URL either. */
+/** «Ejercicios» (D17): what the student's teacher gave them and the academy's series. Switched off, it does not exist, by its URL either. */
 export default async function ExercisesPage() {
   if (!EXERCISES_ENABLED) notFound();
   // Border of the private area: the service resolves the student in the DAL.

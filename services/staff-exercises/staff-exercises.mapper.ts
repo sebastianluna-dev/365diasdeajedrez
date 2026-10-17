@@ -12,9 +12,12 @@ import { exerciseKindLabel, playerOfStart } from "@/lib/chess/exercise-labels";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { staffRoutes } from "@/lib/platform-routes";
 import { levelOfDifficulty, type DifficultyLevel } from "@/services/shared/exercise-level";
+import { exerciseFacts } from "@/services/shared/exercise-facts";
 import { exerciseTransition, type ExerciseOwnerKind } from "@/services/shared/exercise-status-transitions";
+import { seriesItemAvailability } from "@/services/shared/exercise-visibility-rules";
 import { exerciseAuthorLabel } from "@/services/teacher-exercises/teacher-exercises.mapper";
-import type { StaffExerciseReview, StaffExerciseRow, StaffReviewItem } from "./staff-exercises.types";
+import type { SeriesItemData, SeriesItemRow } from "@/services/teacher-exercises/teacher-exercises.types";
+import type { StaffExerciseReview, StaffExerciseRow, StaffReviewItem, StaffSeriesCard } from "./staff-exercises.types";
 
 // From the rows of the staff's exercise bank to what its screens draw. Pure:
 // what the staff may decide is read from the shared transitions table
@@ -110,22 +113,89 @@ export function staffExerciseReview(row: StaffExerciseRow): StaffExerciseReview 
     canApprove: status === EXERCISE_STATUS.IN_REVIEW && may(EXERCISE_STATUS.PUBLISHED),
     canReturn: status === EXERCISE_STATUS.IN_REVIEW && may(EXERCISE_STATUS.READY),
     canRemove: status === EXERCISE_STATUS.PUBLISHED && may(removal),
+    canRestore: owner === "academy" && status === EXERCISE_STATUS.ARCHIVED && may(EXERCISE_STATUS.DRAFT),
   };
 }
 
 /**
- * What the staff may do in the editor with a teacher's exercise: read it.
- * A proposal is decided from the review bar, and one in the library is the
- * teacher's (D07); its content is theirs to duplicate (D48). The academy's
- * own exercises get their save with the academy's bank.
+ * What the staff may do in the editor, by owner and status: the academy's
+ * exercises are theirs to write; a teacher's in the library is edited by the
+ * staff too (D48: its teacher duplicates it to change it); a teacher's
+ * proposal, or one returned, is read-only — decided from the review bar, its
+ * content the author's (D07). Never «Duplicar»: a copy is the teacher's way.
  */
-export function staffExercisePermissions(owner: ExerciseOwnerKind): ExerciseAuthoringPermissions {
-  void owner;
-  return { contentLocked: "staffReview", canDuplicate: false };
+export function staffExercisePermissions(
+  owner: ExerciseOwnerKind,
+  status: ExerciseStatusCode | null,
+): ExerciseAuthoringPermissions {
+  const editable = owner === "academy" || status === EXERCISE_STATUS.PUBLISHED;
+  return { contentLocked: editable ? null : "staffReview", canDuplicate: false };
 }
 
-/** The save bar of a teacher's exercise read by the staff: none, the content is the author's. */
-export function staffSaveButtons(owner: ExerciseOwnerKind): ExerciseSaveButton[] {
-  void owner;
+const SAVING = "Guardando…";
+
+/**
+ * The save bar of the staff editor: an academy exercise new or draft is kept
+ * as a draft or published (the accent: the staff is the reviewer, no review);
+ * one in the library — the academy's or a teacher's (D48) — is only saved,
+ * and stays complete; an archived academy exercise is saved as it is. A
+ * teacher's proposal or returned exercise has none.
+ */
+export function staffSaveButtons(owner: ExerciseOwnerKind, status: ExerciseStatusCode | null): ExerciseSaveButton[] {
+  if (owner === "academy" && (status === null || status === EXERCISE_STATUS.DRAFT)) {
+    return [
+      { intent: "draft", label: "Guardar borrador", pendingLabel: SAVING, accent: false, needsReadiness: false },
+      { intent: "publish", label: "Guardar y publicar", pendingLabel: SAVING, accent: true, needsReadiness: true },
+    ];
+  }
+  if (status === EXERCISE_STATUS.PUBLISHED) {
+    return [{ intent: "save", label: "Guardar", pendingLabel: SAVING, accent: true, needsReadiness: true }];
+  }
+  if (owner === "academy" && status === EXERCISE_STATUS.ARCHIVED) {
+    return [{ intent: "save", label: "Guardar", pendingLabel: SAVING, accent: true, needsReadiness: false }];
+  }
   return [];
+}
+
+/** An academy series on the bank's «Series» view. */
+export function mapStaffSeriesCard(row: {
+  id: string;
+  title: string;
+  description: string | null;
+  publishedAt: Date | null;
+  items: { exercise: { teacherId: string | null; status: { code: string } } }[];
+}): StaffSeriesCard {
+  return {
+    id: row.id,
+    href: staffRoutes.exerciseSeries(row.id),
+    title: row.title,
+    description: row.description,
+    itemCount: row.items.length,
+    isPublished: row.publishedAt !== null,
+    unavailableCount: row.items.filter(
+      ({ exercise }) =>
+        seriesItemAvailability(
+          { teacherId: exercise.teacherId, statusCode: exercise.status.code as ExerciseStatusCode },
+          null,
+        ) !== "available",
+    ).length,
+  };
+}
+
+/**
+ * An item of an academy series: a library exercise, its page the staff's;
+ * one taken out of the library since says so (`seriesItemAvailability` with
+ * no owner: only the library's are available).
+ */
+export function mapStaffSeriesItem(row: SeriesItemRow, levels: readonly DifficultyLevel[]): SeriesItemData {
+  return {
+    exerciseId: row.exercise.id,
+    title: row.exercise.title,
+    href: staffRoutes.exerciseDetail(row.exercise.id),
+    facts: exerciseFacts(row.exercise, levels),
+    availability: seriesItemAvailability(
+      { teacherId: row.exercise.teacherId, statusCode: row.exercise.status.code as ExerciseStatusCode },
+      null,
+    ),
+  };
 }

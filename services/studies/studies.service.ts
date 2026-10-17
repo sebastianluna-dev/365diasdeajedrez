@@ -4,7 +4,7 @@ import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
 import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
 import { finalFenOf } from "@/lib/chess/replay";
 import { foldForSearch } from "@/lib/fold-for-search";
-import { getTeacherContext } from "@/lib/platform-auth/roles";
+import { getTeacherContext, getStaffContext } from "@/lib/platform-auth/roles";
 import { formatRelativeSpanish } from "@/lib/format-relative-spanish";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
@@ -238,15 +238,22 @@ export async function getShareableStudents(): Promise<StudentOption[]> {
 
 export async function getGameById(studyId: string, gameId: string): Promise<GameView | null> {
   const db = getPlatformDb();
-  const [where, user, teacher] = await Promise.all([getVisibleStudiesWhere(), getCurrentUser(), getTeacherContext()]);
+  const [where, user, teacher, staff] = await Promise.all([
+    getVisibleStudiesWhere(),
+    getCurrentUser(),
+    getTeacherContext(),
+    getStaffContext(),
+  ]);
   const row = await db.game.findFirst({
     where: { id: gameId, databaseId: studyId, database: where },
     include: gameViewInclude,
     relationLoadStrategy: "join",
   });
-  // «Crear ejercicio desde aquí» (D11) is a teacher's, with the exercises on;
-  // the mapper adds that the game is their own.
-  return row ? mapGameView(row, user.id, EXERCISES_ENABLED && teacher !== null) : null;
+  // «Crear ejercicio desde aquí» (D11) is a teacher's — to their bank — or,
+  // from phase 4, the staff's, to the academy's; with the exercises on. The
+  // mapper adds that the game is their own.
+  const authors = EXERCISES_ENABLED && (teacher !== null || staff !== null);
+  return row ? mapGameView(row, user.id, authors, teacher !== null ? "teacher" : "staff") : null;
 }
 
 // --- Games seen in class ---------------------------------------------------

@@ -22,16 +22,16 @@ export async function generateMetadata({ params }: StaffExercisePageProps): Prom
 }
 
 /**
- * A bank's exercise for the staff (PLAN.md §8): the editor, read-only for a
- * teacher's, open on «Probar», and the review bar under it. A lesson's
- * exercise, or a teacher's that was never proposed, is a 404 (the service
- * decides). Behind `EXERCISES_ENABLED`.
+ * A bank's exercise for the staff (PLAN.md §8): the editor — the academy's
+ * to write, a teacher's proposal read-only and open on «Probar» — and the
+ * review bar under it. A lesson's exercise, or a teacher's that was never
+ * proposed, is a 404 (the service decides). Behind `EXERCISES_ENABLED`.
  */
 export default async function StaffExercisePage({ params, searchParams }: StaffExercisePageProps) {
   if (!EXERCISES_ENABLED) notFound();
   const [{ exerciseId }, { aviso, error }] = await Promise.all([params, searchParams]);
   const editor = await getStaffExerciseEditor(exerciseId);
-  if (!editor) notFound();
+  if (!editor || !editor.review) notFound();
   const fromQueue = editor.review.statusCode === EXERCISE_STATUS.IN_REVIEW;
 
   return (

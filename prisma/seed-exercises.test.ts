@@ -7,8 +7,11 @@ import { startFenOf } from "@/lib/chess/mainline";
 import { exerciseReadiness } from "@/services/shared/exercise-status-transitions";
 import { buildAttempts, COURSES, IDS } from "./seed-data";
 import {
+  ACADEMY_EXERCISES,
+  ACADEMY_SERIES,
   DEMO_EXERCISE_ATTEMPTS,
   DEMO_EXERCISES,
+  DEMO_REVIEW,
   DEMO_SERIES,
   EXERCISE_IDS,
   demoAttemptOutcome,
@@ -42,10 +45,50 @@ describe("DEMO_EXERCISES", () => {
     expect(skewer.explanation).toBeTruthy();
   });
 
-  it("go by distinct ids of an exercise's length", () => {
-    const ids = DEMO_EXERCISES.map((exercise) => exercise.id);
+  it("go by distinct ids of an exercise's length, apart from the academy's", () => {
+    const ids = [...DEMO_EXERCISES, ...ACADEMY_EXERCISES].map((exercise) => exercise.id);
     expect(new Set(ids).size).toBe(ids.length);
     for (const id of ids) expect(id).toHaveLength(8);
+  });
+});
+
+describe("the library's review on the teacher's exercises (phase 4, D16)", () => {
+  it("proposes one that is complete with its explanation, and returns one with a note, both among the five", () => {
+    const byId = new Map(DEMO_EXERCISES.map((exercise) => [exercise.id, exercise]));
+    const proposed = byId.get(DEMO_REVIEW.inReview.exerciseId)!;
+    expect(exerciseReadiness({ ...proposed, topicCount: proposed.topics.length }, { explanation: true }).ok).toBe(true);
+    expect(byId.has(DEMO_REVIEW.returned.exerciseId)).toBe(true);
+    expect(DEMO_REVIEW.returned.note.length).toBeLessThanOrEqual(EXERCISE_LIMITS.reviewNote);
+    expect(DEMO_REVIEW.returned.reviewedDaysAgo).toBeLessThan(DEMO_REVIEW.returned.submittedDaysAgo);
+  });
+});
+
+describe("ACADEMY_EXERCISES", () => {
+  it("are four, each with a solution `analyzeSolution` accepts and everything PUBLISHED asks for", () => {
+    expect(ACADEMY_EXERCISES).toHaveLength(4);
+    for (const exercise of ACADEMY_EXERCISES) {
+      const analysis = analyzeSolution(exercise);
+      expect(analysis.ok ? [] : analysis.problems, exercise.id).toEqual([]);
+      expect(exerciseReadiness({ ...exercise, topicCount: exercise.topics.length }).ok, exercise.id).toBe(true);
+      expect(exercise.difficulty % EXERCISE_LIMITS.difficultyStep, exercise.id).toBe(0);
+    }
+  });
+
+  it("cover a mate in 1, a mate in 2 for Black with a sacrifice, a fork with variants and a skewer", () => {
+    const byId = new Map(ACADEMY_EXERCISES.map((exercise) => [exercise.id, exercise]));
+    expect(byId.get(EXERCISE_IDS.academyBackRank)).toMatchObject({ kind: "MATE_IN", mateIn: 1 });
+    expect(byId.get(EXERCISE_IDS.academySmothered)).toMatchObject({ kind: "MATE_IN", mateIn: 2 });
+    expect(byId.get(EXERCISE_IDS.academySmothered)!.solutionPgn).toContain(" b - - 0 1");
+    expect(byId.get(EXERCISE_IDS.academyFork)!.solutionPgn).toContain("(");
+    expect(byId.get(EXERCISE_IDS.academySkewer)).toMatchObject({ kind: "SEQUENCE" });
+  });
+});
+
+describe("ACADEMY_SERIES", () => {
+  it("holds the four academy exercises, each once, and is published", () => {
+    expect([...ACADEMY_SERIES.items].sort()).toEqual(ACADEMY_EXERCISES.map((exercise) => exercise.id).sort());
+    expect(new Set(ACADEMY_SERIES.items).size).toBe(ACADEMY_SERIES.items.length);
+    expect(ACADEMY_SERIES.publishedDaysAgo).toBeGreaterThan(0);
   });
 });
 

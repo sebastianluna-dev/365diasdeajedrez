@@ -11,12 +11,15 @@ import { exerciseActivityTopic } from "../services/shared/exercise-activity-topi
 import { exerciseKindIds, exerciseSolutionColumns } from "../services/shared/exercise-record.service";
 import { IDS } from "./seed-data";
 
-// The exercises demo (planning/ejercicios, phase 1): five exercises of
-// `profesor.demo`, all READY; his series «Táctica de la semana» with the five,
-// given to `alumno.demo`; and three attempts of the student — one clean, one
-// failed at the first move with its mistake, one with a hint — so the
-// student's «Ejercicios», the series' marks, «Ejercicios superados» and, from
-// phase 1b, the teacher's view of attempts have something to show.
+// The exercises demo (planning/ejercicios, phases 1 and 4): five exercises of
+// `profesor.demo` — three READY, one IN_REVIEW (proposed to the library) and
+// one returned by the staff with a note (READY again, D16); his series
+// «Táctica de la semana» with the five, given to `alumno.demo`; three attempts
+// of the student — one clean, one failed at the first move with its mistake,
+// one with a hint — so the student's «Ejercicios», the series' marks,
+// «Ejercicios superados» and the teacher's view of attempts have something to
+// show; and, from phase 4, four academy exercises PUBLISHED (the library, D32)
+// and the academy's published series «Mates y golpes tácticos» with the four.
 //
 // The seed is the documented exception to the single writers (docs →
 // Platform → Data model, «Exercises»): the rows go by fixed id, the solution
@@ -35,7 +38,12 @@ export const EXERCISE_IDS = {
   blackBackRank: "dmEjer03",
   knightFork: "dmEjer04",
   skewer: "dmEjer05",
+  academyBackRank: "dmEjer06",
+  academySmothered: "dmEjer07",
+  academyFork: "dmEjer08",
+  academySkewer: "dmEjer09",
   series: "dmSerie1",
+  academySeries: "dmSerie2",
   seriesShare: "e2000000-0000-4000-8000-000000000001",
   attemptClean: "e3000000-0000-4000-8000-000000000001",
   attemptFailed: "e3000000-0000-4000-8000-000000000002",
@@ -131,6 +139,93 @@ export const DEMO_EXERCISES: DemoExercise[] = [
     solutionPgn: setUp("4q3/8/8/4k3/8/8/8/R6K w - - 0 1", "1. Re1+ Kd6 2. Rxe8"),
   },
 ];
+
+/**
+ * What the library's review left on the teacher's exercises (phase 4, D16):
+ * one proposed and waiting, one returned with the staff's note.
+ */
+export const DEMO_REVIEW = {
+  /** «Horquilla de caballo», IN_REVIEW: proposed two days ago. */
+  inReview: { exerciseId: EXERCISE_IDS.knightFork, submittedDaysAgo: 2 },
+  /** «La enfilada en la columna», READY again: proposed three days ago, returned yesterday with a note. */
+  returned: {
+    exerciseId: EXERCISE_IDS.skewer,
+    submittedDaysAgo: 3,
+    reviewedDaysAgo: 1,
+    note: "Explica por qué el rey no puede quedarse en la columna e: así el alumno entiende la enfilada, no sólo la jugada.",
+  },
+} as const;
+
+/** The academy's four, PUBLISHED (the library, D32): what free practice and the academy's series serve. */
+export const ACADEMY_EXERCISES: DemoExercise[] = [
+  {
+    id: EXERCISE_IDS.academyBackRank,
+    title: "La dama en la octava",
+    prompt: null,
+    kind: EXERCISE_KIND.MATE_IN,
+    mateIn: 1,
+    difficulty: 700,
+    topics: [TOPIC.BACK_RANK_MATE],
+    hints: ["La última fila está abierta."],
+    explanation: "Los peones de f7, g7 y h7 encierran a su propio rey: la dama entra en la octava y no hay escape.",
+    solutionPgn: setUp("6k1/5ppp/8/8/8/8/5PPP/2Q3K1 w - - 0 1", "1. Qc8#"),
+  },
+  {
+    id: EXERCISE_IDS.academySmothered,
+    title: "El mate ahogado de las negras",
+    prompt: null,
+    kind: EXERCISE_KIND.MATE_IN,
+    mateIn: 2,
+    difficulty: 1500,
+    topics: [TOPIC.MATING_ATTACK, TOPIC.SACRIFICE],
+    hints: [],
+    explanation:
+      "La dama se entrega en g1 para que la torre tape la única casilla del rey; el caballo da mate ahogado en f2.",
+    solutionPgn: setUp("6k1/6pp/8/2q5/8/7n/6PP/R6K b - - 0 1", "1... Qg1+ 2. Rxg1 Nf2#"),
+  },
+  {
+    id: EXERCISE_IDS.academyFork,
+    title: "El caballo salta a e6",
+    prompt: "Juegan blancas y ganan la torre",
+    kind: EXERCISE_KIND.SEQUENCE,
+    mateIn: null,
+    difficulty: 1200,
+    topics: [TOPIC.FORK],
+    hints: ["Busca un jaque que ataque dos piezas a la vez."],
+    explanation:
+      "Ce6+ da jaque y ataca la torre de d8: el alfil de b3 protege al caballo, así que el rey no puede capturarlo.",
+    solutionPgn: setUp(
+      "3r1k2/8/8/8/5N2/1B6/8/4K3 w - - 0 1",
+      "1. Ne6+ Kf7 (1... Ke8 2. Nxd8) (1... Kg8 2. Nxd8) (1... Ke7 2. Nxd8) 2. Nxd8+",
+    ),
+  },
+  {
+    id: EXERCISE_IDS.academySkewer,
+    title: "La enfilada en la octava",
+    prompt: "Juegan blancas y ganan la torre",
+    kind: EXERCISE_KIND.SEQUENCE,
+    mateIn: null,
+    difficulty: 1000,
+    topics: [TOPIC.SKEWER],
+    hints: [],
+    explanation: "Dd8+ pone al rey y a la torre en la misma fila: el rey tiene que apartarse y la torre de h8 cae.",
+    solutionPgn: setUp("k6r/8/8/8/8/8/8/K2Q4 w - - 0 1", "1. Qd8+ Ka7 (1... Kb7 2. Qxh8) 2. Qxh8"),
+  },
+];
+
+/** «Mates y golpes tácticos», the academy's series with its four, published for every student (D32). */
+export const ACADEMY_SERIES = {
+  id: EXERCISE_IDS.academySeries,
+  title: "Mates y golpes tácticos",
+  description: "Cuatro posiciones de la biblioteca para empezar: dos mates, una horquilla y una enfilada.",
+  items: [
+    EXERCISE_IDS.academyBackRank,
+    EXERCISE_IDS.academySkewer,
+    EXERCISE_IDS.academyFork,
+    EXERCISE_IDS.academySmothered,
+  ],
+  publishedDaysAgo: 4,
+} as const;
 
 /** «Táctica de la semana», the teacher's series with the five, given to the demo student. */
 export const DEMO_SERIES = {
@@ -235,27 +330,60 @@ export async function seedExercises(
   },
 ): Promise<void> {
   const kindIds = await exerciseKindIds(db);
-  const readyId = idOf(catalogs.exerciseStatus, EXERCISE_STATUS.READY, "ExerciseStatus");
+  const statusId = (code: string) => idOf(catalogs.exerciseStatus, code, "ExerciseStatus");
   const ago = (days: number) => new Date(now.getTime() - days * DAY_MS);
+
+  /** The review's columns of a teacher's exercise (phase 4, D16): proposed and waiting, returned with a note, or neither. */
+  const reviewOf = (exerciseId: string) => {
+    if (exerciseId === DEMO_REVIEW.inReview.exerciseId) {
+      return {
+        statusId: statusId(EXERCISE_STATUS.IN_REVIEW),
+        submittedAt: ago(DEMO_REVIEW.inReview.submittedDaysAgo),
+        reviewedAt: null,
+        reviewedById: null,
+        reviewNote: null,
+      };
+    }
+    if (exerciseId === DEMO_REVIEW.returned.exerciseId) {
+      return {
+        statusId: statusId(EXERCISE_STATUS.READY),
+        submittedAt: ago(DEMO_REVIEW.returned.submittedDaysAgo),
+        reviewedAt: ago(DEMO_REVIEW.returned.reviewedDaysAgo),
+        reviewedById: IDS.staffUser,
+        reviewNote: DEMO_REVIEW.returned.note,
+      };
+    }
+    // The seeded fact: ready for his students, never proposed to the library.
+    return {
+      statusId: statusId(EXERCISE_STATUS.READY),
+      submittedAt: null,
+      reviewedAt: null,
+      reviewedById: null,
+      reviewNote: null,
+    };
+  };
+
+  const contentOf = (exercise: DemoExercise) => ({
+    ...exerciseSolutionColumns(
+      { solutionPgn: exercise.solutionPgn, kind: exercise.kind, mateIn: exercise.mateIn },
+      kindIds,
+    ),
+    title: exercise.title,
+    prompt: exercise.prompt,
+    difficulty: exercise.difficulty,
+    hints: exercise.hints,
+    explanation: exercise.explanation,
+    sourceWhite: exercise.sourceWhite ?? null,
+    sourceBlack: exercise.sourceBlack ?? null,
+    sourceYear: exercise.sourceYear ?? null,
+  });
 
   for (const exercise of DEMO_EXERCISES) {
     const data = {
-      ...exerciseSolutionColumns(
-        { solutionPgn: exercise.solutionPgn, kind: exercise.kind, mateIn: exercise.mateIn },
-        kindIds,
-      ),
+      ...contentOf(exercise),
       teacherId: IDS.teacher,
       authorUserId: IDS.teacherUser,
-      // The seeded fact: ready for his students, never proposed to the library.
-      statusId: readyId,
-      title: exercise.title,
-      prompt: exercise.prompt,
-      difficulty: exercise.difficulty,
-      hints: exercise.hints,
-      explanation: exercise.explanation,
-      sourceWhite: exercise.sourceWhite ?? null,
-      sourceBlack: exercise.sourceBlack ?? null,
-      sourceYear: exercise.sourceYear ?? null,
+      ...reviewOf(exercise.id),
     };
     await db.exercise.upsert({ where: { id: exercise.id }, update: data, create: { id: exercise.id, ...data } });
     await syncCatalogJoin(db.exerciseTopic, db.topic, {
@@ -264,6 +392,46 @@ export async function seedExercises(
       codes: exercise.topics,
     });
   }
+
+  // The academy's four, in the library (D32): PUBLISHED as seeded data, with the first publication's stamp.
+  for (const [index, exercise] of ACADEMY_EXERCISES.entries()) {
+    const data = {
+      ...contentOf(exercise),
+      teacherId: null,
+      authorUserId: IDS.staffUser,
+      statusId: statusId(EXERCISE_STATUS.PUBLISHED),
+      publishedAt: ago(ACADEMY_SERIES.publishedDaysAgo + index + 1),
+      reviewedAt: ago(ACADEMY_SERIES.publishedDaysAgo + index + 1),
+      reviewedById: IDS.staffUser,
+    };
+    await db.exercise.upsert({ where: { id: exercise.id }, update: data, create: { id: exercise.id, ...data } });
+    await syncCatalogJoin(db.exerciseTopic, db.topic, {
+      parent: { exerciseId: exercise.id },
+      catalogColumn: "topicId",
+      codes: exercise.topics,
+    });
+  }
+
+  const academySeriesData = {
+    teacherId: null,
+    title: ACADEMY_SERIES.title,
+    description: ACADEMY_SERIES.description,
+    createdById: IDS.staffUser,
+    publishedAt: ago(ACADEMY_SERIES.publishedDaysAgo),
+  };
+  await db.exerciseSeries.upsert({
+    where: { id: ACADEMY_SERIES.id },
+    update: academySeriesData,
+    create: { id: ACADEMY_SERIES.id, ...academySeriesData },
+  });
+  await db.exerciseSeriesItem.deleteMany({ where: { seriesId: ACADEMY_SERIES.id } });
+  await db.exerciseSeriesItem.createMany({
+    data: ACADEMY_SERIES.items.map((exerciseId, index) => ({
+      seriesId: ACADEMY_SERIES.id,
+      exerciseId,
+      order: index + 1,
+    })),
+  });
 
   const seriesData = {
     teacherId: IDS.teacher,

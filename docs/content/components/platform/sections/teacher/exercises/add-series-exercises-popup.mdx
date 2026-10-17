@@ -16,12 +16,13 @@ description: "«Agregar ejercicios», from a series' page: the exercises the tea
 
 ## Props
 
-| Prop                   | Type                                                    | Required | Meaning                                                                                                                               |
-| ---------------------- | ------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `seriesId`             | `string`                                                | yes      | Bound into the action.                                                                                                                |
-| `exercises`            | `SeriesPickOption[]`                                    | yes      | What may be added: `buildPickableExercisesWhere` minus what the series holds, the last changed first: `{ id, title, facts, topics }`. |
-| `itemCount`            | `number`                                                | yes      | How many the series holds: with `SERIES_LIMITS.items` (100), how many more fit.                                                       |
-| `addExercisesToSeries` | `(seriesId, prev, formData) => Promise<PopupFormState>` | yes      | Through `useActionState`.                                                                                                             |
+| Prop                   | Type                                                    | Required | Meaning                                                                                                                                                                 |
+| ---------------------- | ------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `seriesId`             | `string`                                                | yes      | Bound into the action.                                                                                                                                                  |
+| `exercises`            | `SeriesPickOption[]`                                    | yes      | What may be added: `buildPickableExercisesWhere` minus what the series holds, the last changed first: `{ id, title, facts, topics }`.                                   |
+| `itemCount`            | `number`                                                | yes      | How many the series holds: with `SERIES_LIMITS.items` (100), how many more fit.                                                                                         |
+| `source`               | `"own" \| "library"`                                    | no       | Where the offer comes from, for the empty state's wording: the teacher's bank and the library (`own`, the default) or the library alone (`library`, an academy series). |
+| `addExercisesToSeries` | `(seriesId, prev, formData) => Promise<PopupFormState>` | yes      | Through `useActionState`.                                                                                                                                               |
 
 ## Behaviour
 

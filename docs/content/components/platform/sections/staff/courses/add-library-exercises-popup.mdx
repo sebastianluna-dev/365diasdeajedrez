@@ -1,0 +1,35 @@
+---
+description: "«Agregar desde la biblioteca»: the library's exercises the lesson holds no copy of yet, as cards to tick; what is chosen is copied into the lesson, owned by it and published at once."
+---
+
+# `AddLibraryExercisesPopup`
+
+|            |                                                                                                                                                                                                                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/add-library-exercises-popup/add-library-exercises-popup.comp.tsx`                                                                                                                                                                                                             |
+| Kind       | Client Component (`"use client"`): the popup, the ticked set and the form's state                                                                                                                                                                                                                                         |
+| Stylesheet | `add-library-exercises-popup.comp.css` → block `.add-library-exercises__form`                                                                                                                                                                                                                                             |
+| Story      | `add-library-exercises-popup.stories.tsx` (`platform/sections/staff/courses/AddLibraryExercisesPopup`): the button, the popup open with three to tick, and nothing to add                                                                                                                                                 |
+| Used by    | [`LessonExercises`](/components/platform/sections/staff/courses/lesson-exercises) (with `EXERCISES_ENABLED`)                                                                                                                                                                                                              |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup), [`ExercisePicker`](/components/platform/shared/exercise-picker), [`PlatformForm`](/components/platform/shared/platform-form), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+
+## Props
+
+| Prop          | Type                                          | Required | Meaning                                                                                           |
+| ------------- | --------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------- |
+| `exercises`   | `ExercisePickOption[]`                        | yes      | The library's exercises the lesson holds no copy of yet (`LessonAdminDetail.libraryExercises`).   |
+| `addToLesson` | `(prev, formData) => Promise<PopupFormState>` | yes      | `addLibraryExercisesToLesson` bound to the lesson, through `useActionState`; a stub in Storybook. |
+
+## Behaviour
+
+`AddLibraryExercisesButton` is the lesson panel's secondary button, beside «Agregar ejercicio», with the popup behind it. The form is submitted by hand (the cards are controlled, AGENTS.md): the chosen ids travel in the order they were ticked and the action copies each — `createExerciseRecord` with the content whitelist, owned by the lesson at its next place, moved DRAFT → PUBLISHED at once (D28: what the library approved the lesson serves) — in one transaction; a refusal keeps the choice. Done, the popup closes and the page reloads with «Ejercicios agregados a la lección desde la biblioteca, publicados.». With nothing to add it says so.
+
+## Markup & styling
+
+Block `.add-library-exercises__form` (36 lines): a column with the foot over a hairline; on a phone the foot sticks to the bottom with its button full width.
+
+**Elements:** `.add-library-exercises__summary`, `.add-library-exercises__empty`, `.add-library-exercises__foot`
+
+**Tokens:** `--platform-surface`, `--platform-text-muted`, `--platform-track`
+
+**Breakpoints:** `(width < 640px)`.

@@ -175,6 +175,12 @@ export interface GameView extends GameSettingsValues {
    * the viewer's own and they are an active teacher, with the exercises on.
    */
   canCreateExercise: boolean;
+  /**
+   * Where «Crear ejercicio desde aquí» starts, without the move (the viewer
+   * appends it): the teacher's bank, or the academy's for the staff (phase 4).
+   * Set exactly when `canCreateExercise`.
+   */
+  createExerciseHref?: string;
   /** How it is told apart within the study. Absent = it is identified by the pairing. */
   title?: string;
   /** Raw codes, so the data form can be filled in. */

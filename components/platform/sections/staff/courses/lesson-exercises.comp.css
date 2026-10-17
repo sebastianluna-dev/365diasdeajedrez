@@ -48,6 +48,8 @@
 
   & .lesson-exercises__add {
     display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-2);
   }
 
   & .lesson-exercises__archived {

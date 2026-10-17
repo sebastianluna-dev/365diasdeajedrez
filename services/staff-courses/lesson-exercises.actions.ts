@@ -21,7 +21,15 @@ import {
 import { reviewLibraryExercise, type ExerciseTransitionResult } from "@/services/shared/exercise-status.service";
 import { exerciseReadiness } from "@/services/shared/exercise-status-transitions";
 import { readIds } from "@/services/shared/form-schema";
-import { popupFormError, readFormValues, type FieldError, type PopupFormState } from "@/services/shared/form-state";
+import {
+  popupFormDone,
+  popupFormError,
+  readFormValues,
+  type FieldError,
+  type PopupFormState,
+} from "@/services/shared/form-state";
+import type { Prisma } from "@/lib/platform-db/generated/client";
+import { buildLibraryExercisesWhere } from "@/services/shared/exercise-visibility-rules";
 import { closeLessonExerciseOrderGaps, nextLessonExerciseOrder } from "@/services/shared/lesson-exercise-order.service";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
 import { planSwap, type MoveDirection } from "@/services/shared/reorder";
@@ -48,8 +56,8 @@ import { getChapterGamePgn } from "./lesson-exercises.service";
 //   one comes back at the end. Reordering goes through
 //   services/shared/reorder.ts.
 // - Not behind `EXERCISES_ENABLED`: these replace a live, unflagged panel over
-//   data the phase 2 migration moved. The one exception is the copy from the
-//   library, which needs a library (phase 4) and checks the flag.
+//   data the phase 2 migration moved. The exceptions are the copies from the
+//   library, which need a library (phase 4) and check the flag.
 
 const WINDOW_MS = 60_000;
 
@@ -381,13 +389,76 @@ export async function deleteLessonExercise(
   redirect(withNoticeParam(lessonPath, "exerciseDeleted"));
 }
 
+/** What a library copy reads of its source. */
+const COPY_SOURCE_SELECT = {
+  id: true,
+  solutionPgn: true,
+  mateIn: true,
+  title: true,
+  prompt: true,
+  difficulty: true,
+  hints: true,
+  explanation: true,
+  sourceWhite: true,
+  sourceBlack: true,
+  sourceEvent: true,
+  sourceYear: true,
+  kind: { select: { code: true } },
+  topics: { select: { topic: { select: { code: true } } } },
+} as const;
+
+/** The library's exercises among `ids`, in the library now: what a lesson may copy (D28). */
+async function librarySources(ids: readonly string[]) {
+  return getPlatformDb().exercise.findMany({
+    where: { AND: [{ id: { in: [...ids] } }, buildLibraryExercisesWhere()] },
+    select: COPY_SOURCE_SELECT,
+  });
+}
+
+type CopySource = Awaited<ReturnType<typeof librarySources>>[number];
+
+/**
+ * One library copy, inside the caller's transaction: a copy owned by the
+ * lesson through `createExerciseRecord` with the content whitelist
+ * (`exerciseCopyInput`) — no review stamps, no study game — at the lesson's
+ * next place, moved DRAFT → PUBLISHED at once, since what the library
+ * approved the lesson serves. A refused move throws, so nothing stays.
+ */
+async function copyIntoLesson(
+  tx: Prisma.TransactionClient,
+  source: CopySource,
+  lessonId: string,
+  userId: string,
+  now: Date,
+): Promise<{ ok: true; id: string } | { ok: false; code: string }> {
+  const copy = exerciseCopyInput({
+    ...source,
+    kind: source.kind.code as ExerciseKindCode,
+    topicCodes: source.topics.map(({ topic }) => topic.code),
+  });
+  const created = await createExerciseRecord(tx, {
+    teacherId: null,
+    lesson: { lessonId, lessonOrder: await nextLessonExerciseOrder(tx, lessonId) },
+    authorUserId: userId,
+    ...copy,
+  });
+  if (!created.ok) return created;
+  const moved = await reviewLibraryExercise(tx, {
+    exerciseId: created.id,
+    reviewerUserId: userId,
+    to: EXERCISE_STATUS.PUBLISHED,
+    note: null,
+    now,
+  });
+  if (!moved.ok) throw new RefusedMove(moved);
+  return created;
+}
+
 /**
  * «Agregar desde la biblioteca» (D28; drawn from phase 4, when a library
- * exists): a copy of a PUBLISHED library exercise owned by the lesson, through
- * `createExerciseRecord` with the content whitelist (`exerciseCopyInput`) —
- * no review stamps, no study game — at the lesson's next place, and moved
- * DRAFT → PUBLISHED in the same transaction, since what the library approved
- * the lesson serves.
+ * exists): a copy of ONE library exercise owned by the lesson, from a plain
+ * form with `exerciseId`. The popup's several at once is
+ * `addLibraryExercisesToLesson`.
  */
 export async function copyLibraryExerciseToLesson(
   courseId: string,
@@ -401,55 +472,14 @@ export async function copyLibraryExerciseToLesson(
   if (throttled) redirect(withErrorParam(lessonPath, "throttled"));
 
   const { exerciseId } = readIds(formData, "exerciseId");
-  const db = getPlatformDb();
   if (!(await findLesson(courseId, chapterId, lessonId))) redirect(withErrorParam(lessonPath, "courseMissing"));
-  const source = await db.exercise.findFirst({
-    where: { id: exerciseId, lessonId: null, status: { code: EXERCISE_STATUS.PUBLISHED } },
-    select: {
-      id: true,
-      solutionPgn: true,
-      mateIn: true,
-      title: true,
-      prompt: true,
-      difficulty: true,
-      hints: true,
-      explanation: true,
-      sourceWhite: true,
-      sourceBlack: true,
-      sourceEvent: true,
-      sourceYear: true,
-      kind: { select: { code: true } },
-      topics: { select: { topic: { select: { code: true } } } },
-    },
-  });
+  const [source] = await librarySources([exerciseId]);
   if (!source) redirect(withErrorParam(lessonPath, "exerciseNotFound"));
 
-  const copy = exerciseCopyInput({
-    ...source,
-    kind: source.kind.code as ExerciseKindCode,
-    topicCodes: source.topics.map(({ topic }) => topic.code),
-  });
   const now = new Date();
   let copied: { ok: true; id: string } | { ok: false; code: string };
   try {
-    copied = await db.$transaction(async (tx) => {
-      const created = await createExerciseRecord(tx, {
-        teacherId: null,
-        lesson: { lessonId, lessonOrder: await nextLessonExerciseOrder(tx, lessonId) },
-        authorUserId: user.id,
-        ...copy,
-      });
-      if (!created.ok) return created;
-      const moved = await reviewLibraryExercise(tx, {
-        exerciseId: created.id,
-        reviewerUserId: user.id,
-        to: EXERCISE_STATUS.PUBLISHED,
-        note: null,
-        now,
-      });
-      if (!moved.ok) throw new RefusedMove(moved);
-      return created;
-    });
+    copied = await getPlatformDb().$transaction((tx) => copyIntoLesson(tx, source, lessonId, user.id, now));
   } catch (error) {
     if (error instanceof RefusedMove) redirect(withErrorParam(lessonPath, "exerciseNotAllowed"));
     if (isUniqueConstraintError(error, "Exercise_lessonId_lessonOrder_key", "lessonOrder")) {
@@ -461,6 +491,69 @@ export async function copyLibraryExerciseToLesson(
 
   revalidateLesson(courseId, chapterId, lessonId);
   redirect(withNoticeParam(lessonPath, "exerciseCopied"));
+}
+
+/**
+ * «Agregar desde la biblioteca», from its popup (D28, phase 4): copies of
+ * the chosen library exercises, in the order they were ticked, each owned by
+ * the lesson at its next place and published at once (`copyIntoLesson`), in
+ * one transaction. One not in the library now, or one the lesson already
+ * holds a copy of, refuses the whole add — the popup's list is what the
+ * lesson may copy, read again here.
+ */
+export async function addLibraryExercisesToLesson(
+  courseId: string,
+  chapterId: string,
+  lessonId: string,
+  prev: PopupFormState,
+  formData: FormData,
+): Promise<PopupFormState> {
+  void prev;
+  const values = readFormValues(formData, ["exercises"]);
+  if (!EXERCISES_ENABLED) return popupFormError({}, values, { code: "disabled" });
+  const { user, throttled } = await openPanel("lesson-exercise-save", 60);
+  if (throttled) return popupFormError({}, values, { code: "throttled" });
+
+  const chosen = [
+    ...new Set(
+      formData
+        .getAll("exercises")
+        .filter((value): value is string => typeof value === "string")
+        .map((value) => value.trim()),
+    ),
+  ];
+  if (chosen.length === 0 || chosen.some((id) => id.length === 0 || id.length > 64)) {
+    return popupFormError({ exercises: { code: "seriesExercises" } }, values);
+  }
+  if (!(await findLesson(courseId, chapterId, lessonId))) return popupFormError({}, values, { code: "lessonMissing" });
+
+  const sources = await librarySources(chosen);
+  const byId = new Map(sources.map((source) => [source.id, source]));
+  const ordered = chosen.map((id) => byId.get(id)).filter((source) => source !== undefined);
+  if (ordered.length !== chosen.length) return popupFormError({}, values, { code: "seriesNotPickable" });
+
+  const db = getPlatformDb();
+  const held = await db.exercise.count({ where: { lessonId, copiedFromId: { in: chosen } } });
+  if (held > 0) return popupFormError({}, values, { code: "exerciseAlreadyInLesson" });
+
+  const now = new Date();
+  try {
+    await db.$transaction(async (tx) => {
+      for (const source of ordered) {
+        const copied = await copyIntoLesson(tx, source, lessonId, user.id, now);
+        if (!copied.ok) throw new RefusedMove({ ok: false, code: "notAllowed" });
+      }
+    });
+  } catch (error) {
+    if (error instanceof RefusedMove) return popupFormError({}, values, { code: "exerciseNotAllowed" });
+    if (isUniqueConstraintError(error, "Exercise_lessonId_lessonOrder_key", "lessonOrder")) {
+      return popupFormError({}, values, { code: "orderTaken" });
+    }
+    throw error;
+  }
+
+  revalidateLesson(courseId, chapterId, lessonId);
+  return popupFormDone("lessonExercisesCopied");
 }
 
 /** «Desde una partida»: the PGN of a game of the chapter's collection, for the editor's position picker. */
