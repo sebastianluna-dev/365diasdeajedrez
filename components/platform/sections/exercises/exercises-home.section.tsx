@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AngleRightIcon } from "@/components/icons/angle-right-icon.comp";
 import { ClockRotateLeftIcon } from "@/components/icons/clock-rotate-left-icon.comp";
+import { StopwatchIcon } from "@/components/icons/stopwatch-icon.comp";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { platformRoutes } from "@/lib/platform-routes";
 import type { StudentExercisesHome, StudentSeriesSummary } from "@/services/exercises/exercises.types";
@@ -105,6 +106,19 @@ export function ExercisesHomeSection({ home, practice }: ExercisesHomeSectionPro
           <SeriesRows series={home.academySeries} />
         </section>
       )}
+
+      <section className="platform-card exercises-home" aria-labelledby="exercises-home-storm">
+        <h2 className="platform-card__title" id="exercises-home-storm">
+          Contrarreloj
+        </h2>
+        <p className="exercises-home__lead">
+          Tres minutos, ejercicios cada vez más difíciles: un acierto suma un punto y al tercer error se acaba.
+        </p>
+        <Link href={platformRoutes.exerciseStorm} className="platform-button exercises-home__go">
+          <StopwatchIcon variant="classic-solid" className="platform-button__icon" />
+          Jugar contrarreloj
+        </Link>
+      </section>
 
       <section className="platform-card exercises-home" aria-labelledby="exercises-home-history">
         <h2 className="platform-card__title" id="exercises-home-history">

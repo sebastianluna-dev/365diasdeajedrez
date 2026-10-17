@@ -114,6 +114,8 @@ export const platformRoutes = {
   exerciseSeriesItem: (seriesId: string, n: number) => `/ejercicios/series/${seriesId}/${n}`,
   /** «Historial» (D51, phase 6): the student's scored attempts with filters. */
   exerciseHistory: "/ejercicios/historial",
+  /** «Contrarreloj» (D21, D34, phase 7): three minutes, over at the third mistake. */
+  exerciseStorm: "/ejercicios/contrarreloj",
   /**
    * «Práctica libre» (D18, D32, phase 4): a random library exercise of a topic
    * (`tema`, a Topic code) at a level (`nivel`, a Level slug); `tras` is the
