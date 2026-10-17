@@ -40,7 +40,8 @@ export function ExerciseSolveAside({ aside, exercise }: ExerciseSolveAsideProps)
         <div className="exercise-solve-aside__fact">
           <BullseyeIcon className="exercise-solve-aside__fact-icon" />
           <div className="exercise-solve-aside__fact-text">
-            <p className="exercise-solve-aside__title">{exercise.title}</p>
+            {/* The page's heading: the solve page has no head of its own. */}
+            <h1 className="exercise-solve-aside__title">{exercise.title}</h1>
             <p className="exercise-solve-aside__muted">
               {exerciseKindLabel(exercise.kind, exercise.mateIn)} · {exercise.difficulty}
             </p>
@@ -99,7 +100,9 @@ export function ExerciseSolveAside({ aside, exercise }: ExerciseSolveAsideProps)
             </text>
           </svg>
           <div className="exercise-solve-aside__fact-text">
-            <p className="exercise-solve-aside__title">{aside.series.title}</p>
+            <Link href={aside.series.href} className="exercise-solve-aside__title exercise-solve-aside__title_link">
+              {aside.series.title}
+            </Link>
             <p className="exercise-solve-aside__muted">Serie de ejercicios</p>
           </div>
         </section>

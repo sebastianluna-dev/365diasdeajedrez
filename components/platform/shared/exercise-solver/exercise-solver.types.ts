@@ -79,7 +79,7 @@ export interface ExerciseSolverAside {
   /** This exercise's own page, for its pill in the history; null when it has none. */
   href: string | null;
   /** The series it is solved in, for the ring: its 1-based place and the count. */
-  series?: { title: string; position: number; total: number };
+  series?: { title: string; href: string; position: number; total: number };
   /** The topic chosen in «Ejercicios por tema», and the way to another. */
   topic?: { code: string; label: string; changeHref: string };
 }

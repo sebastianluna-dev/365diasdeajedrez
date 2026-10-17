@@ -26,7 +26,12 @@ export function ExerciseSolveSection({ item }: ExerciseSolveSectionProps) {
       aside={{
         scope: `series:${item.series.id}`,
         href: platformRoutes.exerciseSeriesItem(item.series.id, item.series.position),
-        series: { title: item.series.title, position: item.series.position, total: item.series.total },
+        series: {
+          title: item.series.title,
+          href: item.series.href,
+          position: item.series.position,
+          total: item.series.total,
+        },
       }}
     />
   );

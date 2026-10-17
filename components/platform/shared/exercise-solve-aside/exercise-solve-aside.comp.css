@@ -55,6 +55,16 @@
     overflow-wrap: anywhere;
   }
 
+  & .exercise-solve-aside__title_link {
+    text-decoration: none;
+
+    &:hover {
+      color: var(--platform-accent-ink);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+
   & .exercise-solve-aside__muted {
     margin: 0;
     font-size: var(--platform-type-sm);

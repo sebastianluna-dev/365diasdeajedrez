@@ -38,16 +38,17 @@ export default async function PracticePage({ searchParams }: PracticePageProps) 
 
   return (
     <div className="platform-page platform-page_width_wide">
-      <header className="platform-page__head platform-page__head_kind_solve">
-        <Link href={platformRoutes.exercises} className="platform-page__back">
-          <ChevronLeftIcon variant="classic-solid" className="platform-page__back-icon" />
-          Ejercicios
-        </Link>
-        <h1 className="platform-page__title">
-          {serving.kind === "exercise" ? serving.exercise.title : "Práctica libre"}
-        </h1>
-        <p className="platform-page__subtitle">{subtitle}</p>
-      </header>
+      {/* Serving an exercise, the solve page's left column names it (its h1): no page head. */}
+      {serving.kind !== "exercise" && (
+        <header className="platform-page__head platform-page__head_kind_solve">
+          <Link href={platformRoutes.exercises} className="platform-page__back">
+            <ChevronLeftIcon variant="classic-solid" className="platform-page__back-icon" />
+            Ejercicios
+          </Link>
+          <h1 className="platform-page__title">Práctica libre</h1>
+          <p className="platform-page__subtitle">{subtitle}</p>
+        </header>
+      )}
       <ExercisePracticeSection filters={filters} choice={choice} serving={serving} />
     </div>
   );

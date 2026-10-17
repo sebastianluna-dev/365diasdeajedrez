@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeftIcon } from "@/components/icons/chevron-left-icon.comp";
 import { ExerciseSolveSection } from "@/components/platform/sections/exercises/exercise-solve.section";
 import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
 import { getStudentSeriesExercise } from "@/services/exercises/exercises.service";
@@ -22,7 +20,10 @@ export async function generateMetadata({ params }: ExerciseSeriesItemPageProps):
   return item ? { title: `${item.exercise.title} · ${item.series.title}` } : {};
 }
 
-/** The n-th exercise of a series given to the student, to solve (§5.3). Out of range, or not theirs, it is a 404. */
+/**
+ * The n-th exercise of a series given to the student, to solve (§5.3). Out of range, or not theirs, it is a 404.
+ * No page head: the solve page's left column names the exercise (its h1) and links back to the series.
+ */
 export default async function ExerciseSeriesItemPage({ params }: ExerciseSeriesItemPageProps) {
   if (!EXERCISES_ENABLED) notFound();
   const { seriesId, n } = await params;
@@ -31,13 +32,6 @@ export default async function ExerciseSeriesItemPage({ params }: ExerciseSeriesI
 
   return (
     <div className="platform-page platform-page_width_wide">
-      <header className="platform-page__head platform-page__head_kind_solve">
-        <Link href={item.series.href} className="platform-page__back">
-          <ChevronLeftIcon variant="classic-solid" className="platform-page__back-icon" />
-          {item.series.title}
-        </Link>
-        <h1 className="platform-page__title">{item.exercise.title}</h1>
-      </header>
       <ExerciseSolveSection item={item} />
     </div>
   );
