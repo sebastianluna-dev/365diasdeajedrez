@@ -400,6 +400,49 @@
     grid-template-rows: auto auto auto;
   }
 
+  /* Where the page is the window (`platform-page_height_screen`: from 1280px
+     wide and over 620px tall), nothing scrolls the page: the board takes all
+     the height that is left — the window less the bar (70px), the shell's
+     padding above and below and the room kept for the history — or all the
+     width the two columns and the shell's sides leave, whichever is less, as
+     the study's board does. The columns at its sides are as tall as it and
+     scroll inside; the history takes what is left under it. */
+  @media (width >= 1280px) and (height > 620px) {
+    &.exercise-solver_layout_page {
+      --solve-history: 112px;
+      --solve-board: max(
+        320px,
+        min(
+          calc(100vh - 70px - 2 * var(--platform-space-6) - var(--solve-history) - var(--platform-space-4)),
+          calc(100vw - 2 * var(--platform-space-12) - 280px - 340px - 2 * var(--platform-space-6))
+        )
+      );
+      height: 100%;
+      grid-template-columns: 280px var(--solve-board) 340px;
+      grid-template-rows: var(--solve-board) minmax(0, 1fr);
+      grid-template-areas:
+        "aside board panel"
+        "aside history nav";
+    }
+
+    &.exercise-solver_layout_page .exercise-solve-aside {
+      align-self: stretch;
+      contain: size;
+      overflow-y: auto;
+    }
+
+    &.exercise-solver_layout_page .exercise-session-history {
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* One row of pills, scrolling sideways, so a long visit never grows it. */
+    &.exercise-solver_layout_page .exercise-session-history__pills {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+    }
+  }
+
   & .exercise-session-history {
     grid-area: history;
   }

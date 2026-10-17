@@ -1,6 +1,5 @@
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { ExerciseSolver } from "@/components/platform/shared/exercise-solver/exercise-solver.comp";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { platformRoutes } from "@/lib/platform-routes";
 import { submitExerciseAttempt } from "@/services/exercises/exercises.actions";
 import type {
@@ -19,12 +18,40 @@ interface ExercisePracticeSectionProps {
 
 /**
  * «Práctica libre» (D18, D32; PLAN.md §5.6): the two filters on top, and
- * under them what the choice serves — a random library exercise on the solve
- * screen with the context PRACTICE and «Siguiente» to the next, the note
- * that every one was solved already when so, or why nothing is served.
+ * under them why nothing is served yet; once an exercise is served, the solve
+ * screen alone (context PRACTICE, «Siguiente» to the next), the note that
+ * every one was solved already in its topic card.
  */
 export function ExercisePracticeSection({ filters, choice, serving }: ExercisePracticeSectionProps) {
   const topic = filters.topics.find((candidate) => candidate.code === choice.topicCode);
+  // Serving one, the page is the solve screen alone, the window's height: the
+  // filters come back through the topic card's «Cambiar de tema».
+  if (serving.kind === "exercise") {
+    return (
+      // A new exercise is a new board: «Siguiente» never carries the last one's state.
+      <ExerciseSolver
+        key={serving.exercise.id}
+        exercise={serving.exercise}
+        mode={serving.mode}
+        context={serving.context}
+        next={serving.next}
+        back={serving.back}
+        submit={submitExerciseAttempt}
+        aside={{
+          scope: "practice",
+          href: null,
+          ...(topic && {
+            topic: {
+              code: topic.code,
+              label: topic.label,
+              changeHref: platformRoutes.exercisePractice(choice.levelSlug ? { nivel: choice.levelSlug } : {}),
+              note: serving.exhausted ? "Ya resolviste todos los de este tema y nivel: ahora se repiten." : null,
+            },
+          }),
+        }}
+      />
+    );
+  }
   return (
     <div className="exercise-practice">
       <PracticeFilters filters={filters} choice={choice} variant="page" />
@@ -39,37 +66,6 @@ export function ExercisePracticeSection({ filters, choice, serving }: ExercisePr
           title="No hay ejercicios de ese tema en ese nivel todavía."
           description="Prueba con otro nivel o con el tema general, que incluye los de sus subtemas."
         />
-      )}
-      {serving.kind === "exercise" && (
-        <>
-          {serving.exhausted && (
-            <PlatformNotice
-              message="Ya resolviste todos los ejercicios de este tema y nivel: los que salgan ahora se repiten."
-              variant="info"
-            />
-          )}
-          {/* A new exercise is a new board: «Siguiente» never carries the last one's state. */}
-          <ExerciseSolver
-            key={serving.exercise.id}
-            exercise={serving.exercise}
-            mode={serving.mode}
-            context={serving.context}
-            next={serving.next}
-            back={serving.back}
-            submit={submitExerciseAttempt}
-            aside={{
-              scope: "practice",
-              href: null,
-              ...(topic && {
-                topic: {
-                  code: topic.code,
-                  label: topic.label,
-                  changeHref: platformRoutes.exercisePractice(choice.levelSlug ? { nivel: choice.levelSlug } : {}),
-                },
-              }),
-            }}
-          />
-        </>
       )}
     </div>
   );

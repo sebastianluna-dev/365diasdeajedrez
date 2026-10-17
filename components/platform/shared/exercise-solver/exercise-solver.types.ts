@@ -81,5 +81,11 @@ export interface ExerciseSolverAside {
   /** The series it is solved in, for the ring: its 1-based place and the count. */
   series?: { title: string; href: string; position: number; total: number };
   /** The topic chosen in «Ejercicios por tema», and the way to another. */
-  topic?: { code: string; label: string; changeHref: string };
+  topic?: {
+    code: string;
+    label: string;
+    changeHref: string;
+    /** A line under it: every exercise of the choice was solved already. */
+    note?: string | null;
+  };
 }

@@ -31,7 +31,7 @@ export default async function ExerciseSeriesItemPage({ params }: ExerciseSeriesI
   if (!item) notFound();
 
   return (
-    <div className="platform-page platform-page_width_wide">
+    <div className="platform-page platform-page_width_full platform-page_height_screen">
       <ExerciseSolveSection item={item} />
     </div>
   );

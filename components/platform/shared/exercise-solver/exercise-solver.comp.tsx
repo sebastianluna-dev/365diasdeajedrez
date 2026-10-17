@@ -335,6 +335,8 @@ export function ExerciseSolverView({
               next={next}
               back={back}
               fullSolution={fullSolution}
+              // The full page fits the window: its notation already walks the line, and a viewer under it would scroll the page.
+              canShowFull={!aside}
               onToggleFullSolution={() => setFullSolution((current) => !current)}
               onRetry={() => {
                 setViewPath(null);
@@ -471,7 +473,7 @@ export function ExerciseSolverView({
         </button>
       </div>
 
-      {over && fullSolution && (
+      {over && fullSolution && !aside && (
         <div className="exercise-solver__full">
           <GameViewer pgn={exercise.solutionPgn} orientation={player} title="La solución completa" />
         </div>
@@ -522,6 +524,8 @@ interface ResultPanelProps {
   next?: ExerciseSolverLink;
   back?: ExerciseSolverLink;
   fullSolution: boolean;
+  /** Whether «Ver la solución completa» is offered. */
+  canShowFull: boolean;
   onToggleFullSolution: () => void;
   onRetry: () => void;
 }
@@ -537,6 +541,7 @@ function ResultPanel({
   next,
   back,
   fullSolution,
+  canShowFull,
   onToggleFullSolution,
   onRetry,
 }: ResultPanelProps) {
@@ -586,14 +591,16 @@ function ResultPanel({
           <RotateLeftIcon variant="classic-solid" className="platform-button__icon" />
           Reintentar
         </button>
-        <button
-          type="button"
-          className="platform-row-action"
-          aria-expanded={fullSolution}
-          onClick={onToggleFullSolution}
-        >
-          {fullSolution ? "Ocultar la solución completa" : "Ver la solución completa"}
-        </button>
+        {canShowFull && (
+          <button
+            type="button"
+            className="platform-row-action"
+            aria-expanded={fullSolution}
+            onClick={onToggleFullSolution}
+          >
+            {fullSolution ? "Ocultar la solución completa" : "Ver la solución completa"}
+          </button>
+        )}
       </div>
     </div>
   );

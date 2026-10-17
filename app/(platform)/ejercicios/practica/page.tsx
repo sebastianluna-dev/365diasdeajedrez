@@ -37,7 +37,13 @@ export default async function PracticePage({ searchParams }: PracticePageProps) 
       : serving.choiceLabel;
 
   return (
-    <div className="platform-page platform-page_width_wide">
+    <div
+      className={
+        serving.kind === "exercise"
+          ? "platform-page platform-page_width_full platform-page_height_screen"
+          : "platform-page platform-page_width_wide"
+      }
+    >
       {/* Serving an exercise, the solve page's left column names it (its h1): no page head. */}
       {serving.kind !== "exercise" && (
         <header className="platform-page__head platform-page__head_kind_solve">

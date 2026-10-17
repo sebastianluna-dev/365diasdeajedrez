@@ -120,6 +120,7 @@ export function ExerciseSolveAside({ aside, exercise }: ExerciseSolveAsideProps)
               <Link href={aside.topic.changeHref} className="exercise-solve-aside__link">
                 Cambiar de tema
               </Link>
+              {aside.topic.note && <p className="exercise-solve-aside__muted">{aside.topic.note}</p>}
             </div>
           </div>
           <div className="exercise-solve-aside__stats">
