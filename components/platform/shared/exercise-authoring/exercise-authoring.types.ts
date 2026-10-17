@@ -58,8 +58,8 @@ export interface ExerciseAuthoringPermissions {
   canDuplicate: boolean;
 }
 
-/** What a save button asks for. */
-export type ExerciseSaveIntent = "draft" | "ready" | "save";
+/** What a save button asks for: a draft kept, made ready (a teacher's), published (a lesson's), or saved as it is. */
+export type ExerciseSaveIntent = "draft" | "ready" | "publish" | "save";
 
 /** A button of the save bar: what it asks for, its words and whether it needs the exercise complete. */
 export interface ExerciseSaveButton {

@@ -9,6 +9,7 @@ import {
 import {
   courseContentCandidatesWhere,
   courseHasContent,
+  coursePracticeLessonsWhere,
   type CourseContentReader,
 } from "@/services/staff-courses/course-content.service";
 
@@ -40,9 +41,10 @@ interface CandidatesQuery {
   select: unknown;
 }
 
-/** A lesson as the fake database holds it: whose course it is, and its content. */
+/** A lesson as the fake database holds it: whose course it is, its content, and whether a published exercise is in play. */
 interface StoredLesson extends LessonPgnSource {
   courseId: string;
+  practice?: boolean;
 }
 
 /**
@@ -61,7 +63,7 @@ function oldRule(chapters: { lessons: LessonPgnSource[] }[]): boolean {
  * possible answer, and the tests go through all of them.
  */
 function reader(lessons: StoredLesson[]) {
-  const calls: ("findFirst" | "findMany")[] = [];
+  const calls: ("findFirst" | "findMany" | "findPractice")[] = [];
   let pgnsRead = 0;
 
   const candidates = ({ where, select }: CandidatesQuery): LessonPgnSource[] => {
@@ -73,8 +75,19 @@ function reader(lessons: StoredLesson[]) {
       .map(({ pgn, game }) => ({ pgn, game }));
   };
 
+  /** The practice-only query, told apart by its `where`: a lesson with a published exercise in play. */
+  const isPracticeQuery = (args: CandidatesQuery) => "lessonExercises" in args.where;
+
   const lesson = {
     async findFirst(args: CandidatesQuery) {
+      if (isPracticeQuery(args)) {
+        calls.push("findPractice");
+        expect(args.where).toEqual(coursePracticeLessonsWhere(args.where.chapter.courseId));
+        const found = lessons.find(
+          (candidate) => candidate.courseId === args.where.chapter.courseId && candidate.practice,
+        );
+        return found ? { id: "practice" } : null;
+      }
       calls.push("findFirst");
       const first = candidates(args)[0] ?? null;
       if (first) pgnsRead += 1;
@@ -133,11 +146,26 @@ describe("courseHasContent", () => {
     expect(pgnsRead()).toBe(1);
   });
 
-  it("sin ninguna lección con PGN, no lee ninguno", async () => {
+  it("sin ninguna lección con PGN, no lee ninguno, y pregunta por una de práctica antes de decir que no", async () => {
     const { db, calls, pgnsRead } = reader(inCourse(["justCreated", "emptyGame", "justCreated"]));
     expect(await courseHasContent(db, COURSE)).toBe(false);
-    expect(calls).toEqual(["findFirst"]);
+    expect(calls).toEqual(["findFirst", "findPractice"]);
     expect(pgnsRead()).toBe(0);
+  });
+
+  it("una lección sólo de práctica —sin partida, con un ejercicio publicado— es contenido (D25)", async () => {
+    const lessons: StoredLesson[] = [{ courseId: COURSE, ...KINDS.justCreated, practice: true }];
+    const { db, calls } = reader(lessons);
+    expect(await courseHasContent(db, COURSE)).toBe(true);
+    expect(calls).toEqual(["findFirst", "findPractice"]);
+    // In another course it counts for nothing.
+    expect(await courseHasContent(reader(lessons).db, OTHER_COURSE)).toBe(false);
+  });
+
+  it("con PGN en blanco y sin ejercicios publicados, no se publica", async () => {
+    const { db, calls } = reader(inCourse(["blank", "unicodeBlank"]));
+    expect(await courseHasContent(db, COURSE)).toBe(false);
+    expect(calls).toEqual(["findFirst", "findMany", "findPractice"]);
   });
 
   it("si la primera está en blanco, mira las demás antes de responder", async () => {

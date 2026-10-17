@@ -1,7 +1,14 @@
+import type {
+  ExerciseAuthoringCatalogs,
+  ExerciseAuthoringExercise,
+  ExerciseAuthoringGame,
+  ExerciseAuthoringPermissions,
+  ExerciseSaveButton,
+} from "@/components/platform/shared/exercise-authoring/exercise-authoring.types";
+import type { ExerciseCardData } from "@/components/platform/shared/exercise-card/exercise-card.types";
 import type { AuthorRoleCode, CourseStatusCode } from "@/constants/platform/course-codes.const";
 import type { CourseSourceAdmin } from "@/services/staff-sources/staff-sources.types";
 import type { BoardOrientationCode } from "@/constants/platform/shared-codes.const";
-import type { ExerciseModeCode } from "@/constants/platform/training-codes.const";
 
 export interface CourseAdminSummary {
   id: string;
@@ -125,17 +132,37 @@ export interface ChapterAdminDetail {
   lessons: LessonAdminRow[];
 }
 
-export interface ExerciseAdminRow {
-  id: string;
-  order: number;
-  modeCode: ExerciseModeCode;
-  modeLabel: string;
-  promptText?: string;
-  line: string;
-  startPly: number;
-  endPly: number;
-  /** The lesson's PGN changed after this exercise was frozen. */
-  isStale: boolean;
+/**
+ * One of the lesson's exercises in the staff panel (D04, D05): the bank's card
+ * data — the panel draws it with `ExerciseCard`, its `href` the staff editor's
+ * — plus its place in the lesson. `allowed` is `lessonExerciseAllowed`'s:
+ * «Eliminar» only for one nobody has tried, «Archivar» for the rest; never
+ * «Duplicar» nor «Restaurar».
+ */
+export interface LessonExerciseAdminRow extends ExerciseCardData {
+  /** Null for an archived one, which the panel lists apart and nobody reorders. */
+  lessonOrder: number | null;
+  attemptCount: number;
+}
+
+/** What the editor of a lesson's exercise opens with: the shape of the teacher's, under the lesson. */
+export interface LessonExerciseEditor {
+  courseId: string;
+  chapterId: string;
+  lessonId: string;
+  lessonName: string;
+  /** The lesson's page in the panel, where the editor goes back to. */
+  lessonHref: string;
+  exercise: ExerciseAuthoringExercise;
+  /** When it was last saved (ISO), so a save that stays on the page mounts the editor again on what was stored. */
+  version: string;
+  /** The status as the lesson's panel words it («Publicado», not the catalog's «En la biblioteca»); null for a new one. */
+  statusLabel: string | null;
+  catalogs: ExerciseAuthoringCatalogs;
+  /** The chapter's collection, for «Desde una partida». */
+  games: ExerciseAuthoringGame[];
+  permissions: ExerciseAuthoringPermissions;
+  buttons: ExerciseSaveButton[];
 }
 
 export interface LessonAdminDetail {
@@ -166,7 +193,8 @@ export interface LessonAdminDetail {
    */
   canDelete: boolean;
   topicCodes: string[];
-  exercises: ExerciseAdminRow[];
+  /** In their order, the archived ones last. */
+  exercises: LessonExerciseAdminRow[];
 }
 
 /** A game of a chapter's collection, to link it to a lesson. */

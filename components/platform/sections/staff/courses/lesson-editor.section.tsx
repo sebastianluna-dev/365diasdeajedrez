@@ -6,14 +6,10 @@ import {
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { BOARD_ORIENTATION, CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
+import { isPracticeOnlyLesson } from "@/services/staff-courses/lesson-exercises.mapper";
 import { deleteLesson, fileLessonPgnAsGame, updateLesson } from "@/services/staff-courses/staff-courses.actions";
-import type {
-  CatalogOption,
-  CourseGameRow,
-  LessonAdminDetail,
-  TopicOption,
-} from "@/services/staff-courses/staff-courses.types";
-import { ExerciseEditor } from "./exercise-editor.comp";
+import type { CourseGameRow, LessonAdminDetail, TopicOption } from "@/services/staff-courses/staff-courses.types";
+import { LessonExercises } from "./lesson-exercises.comp";
 import { LessonGamePicker } from "./lesson-game-picker.comp";
 import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 import { StaffPanel } from "./staff-panel.comp";
@@ -26,12 +22,13 @@ import { topicCardGroups } from "@/services/shared/topic-groups";
 
 interface LessonEditorSectionProps {
   lesson: LessonAdminDetail;
-  exerciseModes: CatalogOption[];
   topics: TopicOption[];
   /** Games of the chapter's collection that match the search. */
   courseGames: CourseGameRow[];
   /** What was searched in the collection; travels in the URL. */
   gameQuery?: string;
+  /** What `?aviso=` said: an exercise archived or deleted. */
+  notice?: string;
   errorCode?: string;
 }
 
@@ -52,14 +49,17 @@ const TRAINING_COLOR_ID = "lesson-training-color";
  */
 export function LessonEditorSection({
   lesson,
-  exerciseModes,
   topics,
   courseGames,
   gameQuery,
+  notice,
   errorCode,
 }: LessonEditorSectionProps) {
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
   const saveLesson = updateLesson.bind(null, lesson.courseId, lesson.chapterId, lesson.id);
+  const hasContent = lesson.pgn.trim().length > 0;
+  const inPlay = lesson.exercises.filter((exercise) => exercise.lessonOrder !== null).length;
+  const practiceOnly = isPracticeOnlyLesson(hasContent, lesson.exercises);
 
   return (
     <div className="lesson-editor">
@@ -68,12 +68,13 @@ export function LessonEditorSection({
         meta={
           <>
             <span>Lección {lesson.order}</span>
-            <span>{lesson.pgn ? "Con contenido" : "Sin contenido"}</span>
+            <span>{hasContent ? "Con partida" : practiceOnly ? "Sólo de práctica" : "Sin contenido"}</span>
             {lesson.isPriority && <span className="platform-tag platform-tag_variant_accent">Prioridad</span>}
           </>
         }
       />
 
+      {notice && <PlatformNotice message={notice} variant="success" />}
       {errorMessage && <PlatformNotice message={errorMessage} />}
 
       <StaffEditorLayout
@@ -133,7 +134,7 @@ export function LessonEditorSection({
                 </div>
                 <div className="lesson-editor__fact">
                   <dt>Ejercicios</dt>
-                  <dd>{lesson.exercises.length}</dd>
+                  <dd>{inPlay}</dd>
                 </div>
                 <div className="lesson-editor__fact">
                   <dt>Duración</dt>
@@ -141,9 +142,10 @@ export function LessonEditorSection({
                 </div>
               </dl>
 
-              {/* Only where the server would allow it: draft course and no progress
-                  from any student. As soon as someone has studied the lesson their
-                  history rules and the course is archived, not dismantled. */}
+              {/* Only where the server would allow it: draft course, no progress
+                  from any student and no exercise anyone tried. As soon as someone
+                  has studied the lesson their history rules and the course is
+                  archived, not dismantled. */}
               {lesson.canDelete && (
                 <form
                   className="lesson-editor__danger"
@@ -193,6 +195,17 @@ export function LessonEditorSection({
             candidates={courseGames}
             query={gameQuery}
           />
+
+          {/* A lesson may have no game at all (D25): with exercises it is practice,
+              and the student sees their list where the board would be. Said here,
+              under the picker, so nobody looks for a missing PGN. */}
+          {!hasContent && (
+            <p className="lesson-editor__practice-note">
+              {practiceOnly
+                ? "Sin partida: la lección será sólo de práctica, y los alumnos verán sus ejercicios en lugar del tablero."
+                : "Sin partida: la lección será sólo de práctica si le agregas ejercicios; sin ellos no tiene contenido."}
+            </p>
+          )}
         </StaffPanel>
 
         <StaffPanel title="Metadatos">
@@ -239,14 +252,16 @@ export function LessonEditorSection({
           </PlatformForm>
         </StaffPanel>
 
-        <StaffPanel title="Ejercicios" meta={`${lesson.exercises.length}`}>
-          <ExerciseEditor
+        <StaffPanel
+          title="Ejercicios"
+          meta={`${inPlay}`}
+          description="Los alumnos los practican después de la partida, en su orden. Un ejercicio se escribe en el editor y se publica; uno que alguien ya intentó se archiva en vez de eliminarse."
+        >
+          <LessonExercises
             courseId={lesson.courseId}
             chapterId={lesson.chapterId}
             lessonId={lesson.id}
             exercises={lesson.exercises}
-            modes={exerciseModes}
-            lessonPgn={lesson.pgn}
           />
         </StaffPanel>
       </StaffEditorLayout>

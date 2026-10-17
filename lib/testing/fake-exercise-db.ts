@@ -127,6 +127,8 @@ const DEFAULTS: Partial<Record<ExerciseTable, Row>> = {
     sourceYear: null,
     sourceGameId: null,
     copiedFromId: null,
+    lessonId: null,
+    lessonOrder: null,
     submittedAt: null,
     reviewedAt: null,
     reviewedById: null,

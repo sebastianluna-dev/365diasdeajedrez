@@ -31,10 +31,10 @@ export interface ExerciseCardData {
 /** A row action of the bank: a server action bound to nothing, given the id. */
 export type ExerciseCardAction = (exerciseId: string, formData: FormData) => Promise<void>;
 
-/** The bank's row actions, from the section; stubs in Storybook. */
+/** The bank's row actions, from the section; stubs in Storybook. A lesson's panel hands only the two it has. */
 export interface ExerciseCardActions {
-  duplicate: ExerciseCardAction;
-  archive: ExerciseCardAction;
-  restore: ExerciseCardAction;
-  delete: ExerciseCardAction;
+  duplicate?: ExerciseCardAction;
+  archive?: ExerciseCardAction;
+  restore?: ExerciseCardAction;
+  delete?: ExerciseCardAction;
 }

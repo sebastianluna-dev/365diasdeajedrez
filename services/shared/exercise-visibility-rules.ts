@@ -53,8 +53,8 @@ export type AttemptContextInput =
 const usable = { code: { in: [...USABLE_STATUS_CODES] } } satisfies Prisma.ExerciseStatusWhereInput;
 const published = { code: EXERCISE_STATUS.PUBLISHED } satisfies Prisma.ExerciseStatusWhereInput;
 
-/** In the library now. Phase 2 adds `lessonId: null`: a lesson's exercise is never the library's. */
-const inLibrary = { status: published } satisfies Prisma.ExerciseWhereInput;
+/** In the library now: PUBLISHED and nobody's lesson's — a lesson's exercise is never the library's (D04). */
+const inLibrary = { status: published, lessonId: null } satisfies Prisma.ExerciseWhereInput;
 
 /** The series a student may open: a teacher's they were given while assigned to that teacher, or the academy's published. */
 export function studentVisibleSeriesWhere(userId: string): Prisma.ExerciseSeriesWhereInput {

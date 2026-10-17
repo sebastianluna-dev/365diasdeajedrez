@@ -165,6 +165,18 @@ describe("lo que un autor puede elegir para una serie (D08)", () => {
     expect(holds(exercise("e", T1, "READY"), where)).toBe(false);
   });
 
+  it("el ejercicio publicado de una lección no es de la biblioteca: nadie lo elige para una serie (D04)", () => {
+    const inLesson = { ...exercise("e", null, "PUBLISHED"), lessonId: "l-1" };
+    expect(holds(inLesson, buildPickableExercisesWhere({ teacherId: null }) as Row)).toBe(false);
+    expect(holds(inLesson, buildPickableExercisesWhere({ teacherId: T1 }) as Row)).toBe(false);
+    // Nor does it reach a student by the library's path, even inside an academy series.
+    const inSeries = { ...exercise("e", null, "PUBLISHED", [ACADEMY_SERIES]), lessonId: "l-1" };
+    expect(holds(inSeries, solvableInContextWhere({ kind: "PRACTICE" }, ALICE_ALONE) as Row)).toBe(false);
+    expect(holds(inSeries, solvableInContextWhere({ kind: "SERIES", seriesId: "s-3" }, ALICE_ALONE) as Row)).toBe(
+      false,
+    );
+  });
+
   it("«Mis ejercicios» son los suyos, en cualquier estado", () => {
     expect(buildOwnExercisesWhere(T1)).toEqual({ teacherId: T1 });
     expect(USABLE_STATUS_CODES).toEqual(["READY", "IN_REVIEW", "PUBLISHED"]);

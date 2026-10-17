@@ -62,6 +62,8 @@ export const EXERCISE_ERROR_MESSAGES: Record<string, string> = {
   seriesNotPickable: "Alguno de esos ejercicios ya no se puede agregar: cierra la ventana y vuelve a abrirla.",
   seriesFull: `Una serie tiene como máximo ${SERIES_LIMITS.items} ejercicios.`,
   notAssigned: "Ese alumno ya no está asignado contigo.",
+  orderTaken: "Otro ejercicio acaba de tomar ese lugar en la lección. Vuelve a guardar.",
+  lessonMissing: "Esa lección ya no existe.",
 };
 
 /** What the address's `?aviso=` says on the exercise pages. */
@@ -72,6 +74,8 @@ export const EXERCISE_NOTICES = {
   exerciseArchived: "Ejercicio archivado.",
   exerciseRestored: "Ejercicio restaurado: vuelve a estar listo.",
   exerciseDeleted: "Ejercicio eliminado.",
+  exercisePublished: "Ejercicio guardado y publicado: los alumnos lo verán en la lección.",
+  exerciseCopied: "Ejercicio agregado a la lección desde la biblioteca.",
   seriesCreated: "Serie creada: agrégale ejercicios y dásela a tus alumnos.",
   seriesSaved: "Serie guardada.",
   seriesExercisesAdded: "Ejercicios agregados a la serie.",

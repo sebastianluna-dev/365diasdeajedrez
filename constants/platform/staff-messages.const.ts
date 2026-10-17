@@ -35,7 +35,12 @@ export const STAFF_ERROR_MESSAGES: Record<string, string> = {
   courseMissing: "Ese curso no existe.",
   lessonPgnMissing: "Esa lección ya lee una partida de la colección, o no tiene PGN propio que archivar.",
   publishRequirements: "Para publicar, el curso necesita al menos un capítulo con una lección con PGN.",
-  deleteBlocked: "No se puede eliminar: el curso no está en borrador o ya hay alumnos con progreso.",
+  deleteBlocked:
+    "No se puede eliminar: el curso no está en borrador, ya hay alumnos con progreso o algún ejercicio tiene intentos.",
+  exerciseDeleteBlocked: "Este ejercicio ya tiene intentos: archívalo en vez de eliminarlo.",
+  exerciseNotFound: "Ese ejercicio ya no está en esta lección.",
+  exerciseNotAllowed: "Ese cambio no se puede hacer en este momento.",
+  orderTaken: "Otro ejercicio acaba de tomar ese lugar en la lección. Recarga la página y vuelve a intentarlo.",
   pgn: "Ese PGN no se puede leer. Revísalo antes de guardar.",
   pgnTooLong: "El PGN es demasiado grande.",
   roleTaken: "Este curso ya tiene ese capítulo. Sólo puede haber una introducción y un cierre.",

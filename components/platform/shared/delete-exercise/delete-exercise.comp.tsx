@@ -6,9 +6,14 @@ import {
   type PlatformConfirmPopupHandle,
 } from "@/components/platform/shared/platform-confirm-popup/platform-confirm-popup.comp";
 
+/** What the bank's confirmation says goes: the exercise, and its place in any series. */
+const BANK_DESCRIPTION = "Se elimina el ejercicio con su solución. Si está en alguna serie, sale de ella.";
+
 interface DeleteExerciseProps {
   /** What the confirmation names. */
   title: string;
+  /** One sentence: what goes. The bank's by default; a lesson's panel says what its students lose. */
+  description?: string;
   /** `deleteExercise` bound to the exercise; a stub in Storybook. */
   action: (formData: FormData) => Promise<void>;
 }
@@ -18,7 +23,7 @@ interface DeleteExerciseProps {
  * confirmation. The card's one piece with state (the confirmation's ref), so
  * the card itself renders on the server.
  */
-export function DeleteExercise({ title, action }: DeleteExerciseProps) {
+export function DeleteExercise({ title, description = BANK_DESCRIPTION, action }: DeleteExerciseProps) {
   const confirm = useRef<PlatformConfirmPopupHandle>(null);
   return (
     <>
@@ -32,7 +37,7 @@ export function DeleteExercise({ title, action }: DeleteExerciseProps) {
       <PlatformConfirmPopup
         ref={confirm}
         subject={title}
-        description="Se elimina el ejercicio con su solución. Si está en alguna serie, sale de ella."
+        description={description}
         confirmLabel="Eliminar ejercicio"
         action={action}
       />

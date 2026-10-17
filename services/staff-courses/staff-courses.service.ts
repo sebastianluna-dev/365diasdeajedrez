@@ -1,7 +1,6 @@
 import { cache } from "react";
 import { COURSE_STATUS, type AuthorRoleCode, type CourseStatusCode } from "@/constants/platform/course-codes.const";
 import type { BoardOrientationCode } from "@/constants/platform/shared-codes.const";
-import type { ExerciseModeCode } from "@/constants/platform/training-codes.const";
 import { extractMainline } from "@/lib/chess/mainline";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { requireStaff } from "@/lib/platform-auth/roles";
@@ -12,7 +11,7 @@ import { sortByRole } from "@/services/shared/content-order";
 import { courseSourceAdminSelect, mapCourseSourceAdmin } from "@/services/staff-sources/staff-sources.mapper";
 import { lessonHasContent, lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
 import { courseHasContent } from "@/services/staff-courses/course-content.service";
-import { isExerciseStale } from "@/services/trainer/trainer.mapper";
+import { mapLessonExerciseRow } from "./lesson-exercises.mapper";
 import type {
   AuthorAdminRow,
   CatalogOption,
@@ -507,24 +506,32 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
       },
       _count: { select: { progresses: true } },
       lessonTopics: { select: { topic: { select: { code: true } } } },
-      trainingExercises: {
-        where: { isDerived: false },
+      // The lesson's exercises in their order, the archived ones (no order) last.
+      lessonExercises: {
         select: {
           id: true,
-          order: true,
-          promptText: true,
-          line: true,
-          startPly: true,
-          endPly: true,
-          frozenAt: true,
-          mode: { select: { code: true, label: true } },
+          title: true,
+          difficulty: true,
+          mateIn: true,
+          startFen: true,
+          playerMoves: true,
+          lessonOrder: true,
+          kind: { select: { code: true } },
+          status: { select: { code: true } },
+          topics: { select: { topic: { select: { label: true, order: true } } } },
+          _count: { select: { attempts: true } },
         },
-        orderBy: { order: "asc" },
+        orderBy: [{ lessonOrder: { sort: "asc", nulls: "last" } }, { createdAt: "asc" }],
       },
     },
   });
 
   if (!lesson) return null;
+  const levels = await getPlatformDb().level.findMany({
+    select: { slug: true, name: true, order: true, eloMin: true, eloMax: true, isActive: true },
+    orderBy: { order: "asc" },
+  });
+  const hasExerciseAttempts = lesson.lessonExercises.some((exercise) => exercise._count.attempts > 0);
 
   return {
     id: lesson.id,
@@ -540,7 +547,11 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
     trainingColorCode: lesson.trainingColor?.code,
     estimatedDuration: lesson.estimatedDuration ?? undefined,
     orientationCode: lesson.orientation.code as BoardOrientationCode,
-    canDelete: lesson.chapter.course.status.code === COURSE_STATUS.DRAFT && lesson._count.progresses === 0,
+    // The same condition `deleteLesson` applies: a draft course, no progress, and no exercise anyone tried.
+    canDelete:
+      lesson.chapter.course.status.code === COURSE_STATUS.DRAFT &&
+      lesson._count.progresses === 0 &&
+      !hasExerciseAttempts,
     pgn: lessonPgnOf(lesson),
     game: lesson.game
       ? {
@@ -556,18 +567,13 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
       : undefined,
     pgnUpdatedAtLabel: lesson.pgnUpdatedAt ? formatSpanishDate(lesson.pgnUpdatedAt) : undefined,
     topicCodes: lesson.lessonTopics.map((lessonTopic) => lessonTopic.topic.code),
-    exercises: lesson.trainingExercises.map((exercise) => ({
-      id: exercise.id,
-      order: exercise.order,
-      modeCode: exercise.mode.code as ExerciseModeCode,
-      modeLabel: exercise.mode.label,
-      promptText: exercise.promptText ?? undefined,
-      line: exercise.line,
-      startPly: exercise.startPly,
-      endPly: exercise.endPly,
-      // Same criterion as the student's trainer: a single definition of "stale".
-      isStale: isExerciseStale(exercise.frozenAt, lesson.pgnUpdatedAt),
-    })),
+    exercises: lesson.lessonExercises.map((exercise) =>
+      mapLessonExerciseRow(
+        exercise,
+        { courseId: lesson.chapter.courseId, chapterId: lesson.chapterId, lessonId },
+        levels,
+      ),
+    ),
   };
 }
 
@@ -631,11 +637,6 @@ export async function listTopics(): Promise<TopicOption[]> {
     orderBy: { order: "asc" },
   });
   return rows.map((row) => ({ id: row.id, code: row.code, label: row.label, parentCode: row.parent?.code ?? null }));
-}
-
-export async function listExerciseModes(): Promise<CatalogOption[]> {
-  await requireStaff();
-  return getPlatformDb().exerciseMode.findMany({ select: { code: true, label: true }, orderBy: { order: "asc" } });
 }
 
 export async function listAuthorRoles(): Promise<CatalogOption[]> {

@@ -1,0 +1,80 @@
+/* The lesson's exercises in the staff panel: each card with its two order
+   keys beside it, «Agregar ejercicio» under the list, and the archived ones
+   apart, stepped back. */
+.lesson-exercises {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-4);
+
+  & .lesson-exercises__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .lesson-exercises__item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--platform-space-3);
+    align-items: start;
+  }
+
+  /* An archived one has no keys: the card takes the whole row. */
+  & .lesson-exercises__item_state_archived {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  & .lesson-exercises__order {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+  }
+
+  & .lesson-exercises__card {
+    min-width: 0;
+  }
+
+  & .lesson-exercises__empty,
+  & .lesson-exercises__archived-note {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .lesson-exercises__add {
+    display: flex;
+  }
+
+  & .lesson-exercises__archived {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    margin-top: var(--platform-space-2);
+    padding-top: var(--platform-space-4);
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .lesson-exercises__archived-title {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    font-weight: 600;
+    color: var(--platform-text-muted);
+  }
+
+  @media (width < 640px) {
+    & .lesson-exercises__item {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* Under the card, side by side: the column of keys would push the card off the phone. */
+    & .lesson-exercises__order {
+      flex-direction: row;
+      order: 1;
+    }
+  }
+}

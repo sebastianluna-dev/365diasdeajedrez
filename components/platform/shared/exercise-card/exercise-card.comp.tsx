@@ -8,8 +8,10 @@ import "./exercise-card.comp.css";
 
 interface ExerciseCardProps {
   exercise: ExerciseCardData;
-  /** The row actions; without them the card only leads to the exercise. */
+  /** The row actions; without them the card only leads to the exercise. An action not given is not drawn. */
   actions?: ExerciseCardActions;
+  /** What «Eliminar»'s confirmation says goes; by default, the bank's sentence (the series it leaves). */
+  deleteDescription?: string;
 }
 
 /** The tag's tone by status: a draft is plain, a ready one the success's, an archived one muted. */
@@ -27,9 +29,9 @@ const TAG_VARIANTS: Record<ExerciseStatusCode, string | null> = {
  * the student's moves and its topics; and, with `actions`, the row's words —
  * «Duplicar», «Archivar» or «Restaurar», and «Eliminar» behind its
  * confirmation (`DeleteExercise`, the card's one client leaf), only for one
- * nobody has tried yet.
+ * nobody has tried yet. Each word needs its action given and allowed.
  */
-export function ExerciseCard({ exercise, actions }: ExerciseCardProps) {
+export function ExerciseCard({ exercise, actions, deleteDescription }: ExerciseCardProps) {
   const variant = TAG_VARIANTS[exercise.statusCode];
   const moves = `${exercise.playerMoves} ${exercise.playerMoves === 1 ? "jugada" : "jugadas"}`;
   const difficulty = exercise.levelName ? `${exercise.difficulty} · ${exercise.levelName}` : `${exercise.difficulty}`;
@@ -61,29 +63,33 @@ export function ExerciseCard({ exercise, actions }: ExerciseCardProps) {
 
         {actions && (
           <div className="exercise-card__actions">
-            {exercise.allowed.duplicate && (
+            {exercise.allowed.duplicate && actions.duplicate && (
               <form action={actions.duplicate.bind(null, exercise.id)}>
                 <SubmitButton className="platform-row-action" pendingLabel="Duplicando…">
                   Duplicar
                 </SubmitButton>
               </form>
             )}
-            {exercise.allowed.archive && (
+            {exercise.allowed.archive && actions.archive && (
               <form action={actions.archive.bind(null, exercise.id)}>
                 <SubmitButton className="platform-row-action" pendingLabel="Archivando…">
                   Archivar
                 </SubmitButton>
               </form>
             )}
-            {exercise.allowed.restore && (
+            {exercise.allowed.restore && actions.restore && (
               <form action={actions.restore.bind(null, exercise.id)}>
                 <SubmitButton className="platform-row-action" pendingLabel="Restaurando…">
                   Restaurar
                 </SubmitButton>
               </form>
             )}
-            {exercise.allowed.delete && (
-              <DeleteExercise title={exercise.title} action={actions.delete.bind(null, exercise.id)} />
+            {exercise.allowed.delete && actions.delete && (
+              <DeleteExercise
+                title={exercise.title}
+                description={deleteDescription}
+                action={actions.delete.bind(null, exercise.id)}
+              />
             )}
           </div>
         )}

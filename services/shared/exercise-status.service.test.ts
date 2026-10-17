@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { ExerciseStatusCode } from "@/constants/platform/exercise-codes.const";
 import { FAKE_EXERCISE_IDS, fakeExerciseDb, type FakeExerciseClient } from "@/lib/testing/fake-exercise-db";
 import {
   exerciseStatusIds,
@@ -157,7 +158,7 @@ describe("transitionOwnExercise", () => {
 });
 
 describe("reviewLibraryExercise", () => {
-  const approve = (tx: FakeExerciseClient, to: "PUBLISHED" | "READY", note: string | null = null) =>
+  const approve = (tx: FakeExerciseClient, to: ExerciseStatusCode, note: string | null = null) =>
     reviewLibraryExercise(writer(tx), { exerciseId: "e-1", reviewerUserId: "u-s", to, note, now: NOW });
 
   it("el staff aprueba: quién, cuándo y la primera publicación", async () => {
@@ -213,5 +214,60 @@ describe("reviewLibraryExercise", () => {
     const tx = database.begin();
     await expect(approve(tx, "PUBLISHED")).resolves.toMatchObject({ ok: true, from: "DRAFT" });
     await expect(approve(tx, "READY", "x")).resolves.toEqual({ ok: false, code: "notAllowed" });
+  });
+
+  describe("el de una lección (fase 2)", () => {
+    const inLesson = { teacherId: null, lessonId: "l-1", lessonOrder: 2 };
+
+    it("el staff lo publica si está preparado, y lo devuelve a borrador; nunca a listo ni a revisión", async () => {
+      const database = fakeExerciseDb({ exercise: [exercise("DRAFT", inLesson)], exerciseTopic: TOPIC });
+      const tx = database.begin();
+      await expect(approve(tx, "PUBLISHED")).resolves.toMatchObject({ ok: true, from: "DRAFT" });
+      tx.commit();
+      expect(database.rows("exercise")[0]).toMatchObject({ statusId: S.PUBLISHED, lessonOrder: 2, publishedAt: NOW });
+      const back = database.begin();
+      await expect(approve(back, "DRAFT")).resolves.toMatchObject({ ok: true, from: "PUBLISHED" });
+      await expect(approve(back, "READY")).resolves.toEqual({ ok: false, code: "notAllowed" });
+      await expect(approve(back, "IN_REVIEW")).resolves.toEqual({ ok: false, code: "notAllowed" });
+      back.commit();
+      // The first publication is kept, as for every exercise.
+      expect(database.rows("exercise")[0]).toMatchObject({ statusId: S.DRAFT, lessonOrder: 2, publishedAt: NOW });
+    });
+
+    it("archivarlo le quita su lugar en la lección y conserva la fila", async () => {
+      for (const from of ["DRAFT", "PUBLISHED"] as const) {
+        const database = fakeExerciseDb({ exercise: [exercise(from, inLesson)] });
+        const tx = database.begin();
+        await expect(approve(tx, "ARCHIVED")).resolves.toMatchObject({ ok: true, from });
+        tx.commit();
+        expect(database.rows("exercise")[0]).toMatchObject({
+          statusId: S.ARCHIVED,
+          lessonId: "l-1",
+          lessonOrder: null,
+        });
+      }
+    });
+
+    it("sin preparar, no se publica, y dice qué le falta", async () => {
+      const database = fakeExerciseDb({ exercise: [exercise("DRAFT", inLesson)] });
+      await expect(approve(database.begin(), "PUBLISHED")).resolves.toMatchObject({
+        ok: false,
+        code: "notReady",
+        readiness: { missing: ["topic"] },
+      });
+    });
+
+    it("para un profesor no existe: nunca es suyo", async () => {
+      const database = fakeExerciseDb({ exercise: [exercise("DRAFT", inLesson)], exerciseTopic: TOPIC });
+      await expect(
+        transitionOwnExercise(writer(database.begin()), {
+          exerciseId: "e-1",
+          teacherId: "t-1",
+          actorUserId: "u-t",
+          to: "READY",
+          now: NOW,
+        }),
+      ).resolves.toEqual({ ok: false, code: "notFound" });
+    });
   });
 });

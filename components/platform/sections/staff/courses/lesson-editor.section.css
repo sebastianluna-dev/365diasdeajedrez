@@ -70,6 +70,14 @@
     color: var(--platform-text-subtle);
   }
 
+  /* Under the game picker: a lesson without a game is practice, or nothing. */
+  & .lesson-editor__practice-note {
+    margin-top: var(--platform-space-4);
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
   & .lesson-editor__facts {
     margin: 0;
     display: flex;

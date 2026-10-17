@@ -220,6 +220,12 @@ export const staffRoutes = {
     `/administracion/cursos/${courseId}/capitulos/${chapterId}/partidas/${gameId}`,
   lessonDetail: (courseId: string, chapterId: string, lessonId: string) =>
     `/administracion/cursos/${courseId}/capitulos/${chapterId}/lecciones/${lessonId}`,
+  /** A new exercise of the lesson, in the exercise editor (phase 2 of «Ejercicios»; not behind the flag). */
+  lessonExerciseNew: (courseId: string, chapterId: string, lessonId: string) =>
+    `/administracion/cursos/${courseId}/capitulos/${chapterId}/lecciones/${lessonId}/ejercicios/nuevo`,
+  /** One of the lesson's exercises, in the editor. */
+  lessonExercise: (courseId: string, chapterId: string, lessonId: string, exerciseId: string) =>
+    `/administracion/cursos/${courseId}/capitulos/${chapterId}/lecciones/${lessonId}/ejercicios/${exerciseId}`,
   classes: "/administracion/clases",
   /** The agenda with its filters in the address: `?vista=proximas|pasadas|canceladas&profesor=&q=&hasta=&pagina=`. */
   classesFiltered: (filters: { vista?: string; profesor?: string; q?: string; hasta?: string; pagina?: number }) => {

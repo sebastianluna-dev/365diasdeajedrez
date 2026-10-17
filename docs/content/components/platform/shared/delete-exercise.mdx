@@ -16,11 +16,12 @@ description: "«Eliminar», the row word of an exercise of the bank, behind its 
 
 ## Props
 
-| Prop     | Type                                    | Required | Meaning                      |
-| -------- | --------------------------------------- | -------- | ---------------------------- |
-| `title`  | `string`                                | yes      | What the confirmation names. |
-| `action` | `(formData: FormData) => Promise<void>` | yes      | The bound server action.     |
+| Prop          | Type                                    | Required | Meaning                                                                                                            |
+| ------------- | --------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| `title`       | `string`                                | yes      | What the confirmation names.                                                                                       |
+| `description` | `string`                                | no       | One sentence: what goes. The bank's by default; a lesson's panel says «Los alumnos ya no lo verán en la lección.». |
+| `action`      | `(formData: FormData) => Promise<void>` | yes      | The bound server action.                                                                                           |
 
 ## Behaviour
 
-A `.platform-row-action` in the danger's ink, «Eliminar», and a `PlatformConfirmPopup` beside it: «Se elimina el ejercicio con su solución. Si está en alguna serie, sale de ella.», confirmed with «Eliminar ejercicio». It is a leaf of its own so that `ExerciseCard` stays a Server Component: the confirmation's `ref` is the card's only state.
+A `.platform-row-action` in the danger's ink, «Eliminar», and a `PlatformConfirmPopup` beside it: «Se elimina el ejercicio con su solución. Si está en alguna serie, sale de ella.» (or the `description` given), confirmed with «Eliminar ejercicio». It is a leaf of its own so that `ExerciseCard` stays a Server Component: the confirmation's `ref` is the card's only state.

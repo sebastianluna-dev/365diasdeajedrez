@@ -127,8 +127,15 @@ export interface ExerciseContent {
 export interface CreateExerciseRecordInput {
   /** Fixed by the seed; otherwise Prisma generates it. */
   id?: string;
-  /** The owner: the teacher's id, or null for the academy's (D07). */
+  /** The owner: the teacher's id, or null for the academy's (D07) or a lesson's. */
   teacherId: string | null;
+  /**
+   * The lesson that owns it (D04, D05), with its place in the lesson; never
+   * with a `teacherId` (CHECK exercise_single_owner). A taken order throws
+   * P2002 on `Exercise_lessonId_lessonOrder_key`, which the caller reads with
+   * `isUniqueConstraintError`.
+   */
+  lesson?: { lessonId: string; lessonOrder: number } | null;
   authorUserId: string | null;
   solution: SolutionInput;
   content: ExerciseContent;
@@ -173,6 +180,8 @@ export async function createExerciseRecord(
       sourceYear: content.sourceYear,
       sourceGameId: input.sourceGameId ?? null,
       copiedFromId: input.copiedFromId ?? null,
+      lessonId: input.lesson?.lessonId ?? null,
+      lessonOrder: input.lesson?.lessonOrder ?? null,
       ...exerciseSolutionColumns(input.solution, kindIds),
       ...initialExerciseStatusData(statusIds),
     },

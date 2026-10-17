@@ -89,6 +89,21 @@ export const Archived: Story = {
   },
 };
 
+/** A lesson's exercise someone tried: «Publicado» as the lesson's panel words it, and «Archivar» alone — the panel hands no «Duplicar» nor «Restaurar». */
+export const LessonExercise: Story = {
+  args: {
+    exercise: {
+      ...READY,
+      href: "/administracion/cursos/10000001/capitulos/ch-1/lecciones/20000004/ejercicios/ex000002",
+      statusCode: "PUBLISHED",
+      statusLabel: "Publicado",
+      allowed: { duplicate: false, archive: true, restore: false, delete: false },
+    },
+    actions: { archive: action(), delete: action() },
+    deleteDescription: "Se elimina el ejercicio con su solución. Los alumnos ya no lo verán en la lección.",
+  },
+};
+
 /** «Eliminar» opens its confirmation over the page, naming the exercise. */
 export const ConfirmDelete: Story = {
   play: async ({ canvasElement }) => {

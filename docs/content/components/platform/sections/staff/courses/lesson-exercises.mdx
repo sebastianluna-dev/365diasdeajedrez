@@ -1,0 +1,69 @@
+---
+description: "The lesson's exercises in the staff panel: each one the bank's card, with its order keys beside it and «Archivar» or «Eliminar» as its word; «Agregar ejercicio» under the list; the archived ones apart."
+---
+
+# `LessonExercises`
+
+|            |                                                                                                                                                                                                     |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/lesson-exercises.comp.tsx`                                                                                                                              |
+| Kind       | Server Component                                                                                                                                                                                    |
+| Stylesheet | `lesson-exercises.comp.css` → block `.lesson-exercises`                                                                                                                                             |
+| Used by    | [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section)                                                                                                          |
+| Composes   | [`ExerciseCard`](/components/platform/shared/exercise-card) (with its [`DeleteExercise`](/components/platform/shared/delete-exercise))                                                              |
+| Writes     | `moveLessonExercise()`, `archiveLessonExercise()`, `deleteLessonExercise()` · `services/staff-courses/lesson-exercises.actions.ts` — imported here and handed to the cards, which import none       |
+| Uses       | `LessonExerciseAdminRow` from `services/staff-courses/staff-courses.types` (mapped by `mapLessonExerciseRow`, `services/staff-courses/lesson-exercises.mapper.ts`); `staffRoutes.lessonExerciseNew` |
+
+## Purpose
+
+A lesson's exercises are `Exercise` rows owned by the lesson (D04, D05; [Exercises → Courses](/platform/exercises#courses-phase-2)), authored with the same editor as the bank's. This is their list in the lesson's page: it draws each one as the bank's card — the start position, the title that opens the staff editor, «Publicado»/«Borrador», the kind, the difficulty, the student's moves, the topics — and decides what can be done to it. Not behind `EXERCISES_ENABLED`: it replaced the panel that was live before phase 2, over data its migration moved.
+
+## Props
+
+| Prop                                | Type                       | Required | Meaning                                                                                            |
+| ----------------------------------- | -------------------------- | -------- | -------------------------------------------------------------------------------------------------- |
+| `courseId`, `chapterId`, `lessonId` | `string`                   | yes      | Bound into every action and into «Agregar ejercicio»'s route.                                      |
+| `exercises`                         | `LessonExerciseAdminRow[]` | yes      | In their order, the archived ones (no `lessonOrder`) last; each with `allowed` and `attemptCount`. |
+
+## Behaviour
+
+- The exercises in play, in `lessonOrder`: beside each card two square keys, «Subir» and «Bajar» (`moveLessonExercise`, a swap through `planSwap`), the first and the last disabled at their end.
+- The card's words come from `lessonExerciseAllowed`: **«Eliminar»** only for an exercise nobody has tried — behind the confirmation of `DeleteExercise`, which here says «Se elimina el ejercicio con su solución. Los alumnos ya no lo verán en la lección.» —, and **«Archivar»** instead for one with attempts (PUBLISHED or DRAFT → ARCHIVED through the status writer, which takes its order away and keeps the row). Never both, never «Duplicar» nor «Restaurar» (AGENTS.md: one action, one verb; «Quitar» would mean a deletion here).
+- With no exercise in play, one sentence says what an exercise is and where the student meets it.
+- «Agregar ejercicio» is a `.platform-button` link to the lesson's new-exercise route, where [`LessonExerciseEditorSection`](/components/platform/sections/staff/courses/lesson-exercise-editor-section) mounts the editor.
+- The archived ones, when any, under «Archivados» with a note (they are kept for the attempts made at them): the same cards without actions, stepped back by the card's own archived state.
+- «Agregar desde la biblioteca» (D28) is written (`copyLibraryExerciseToLesson`) and not drawn: it waits for the library of phase 4.
+
+## Markup & styling
+
+Block `.lesson-exercises` (80 lines): a column; each item a grid of the keys' column and the card, the archived items one column.
+
+**Elements:** `.lesson-exercises__list`, `.lesson-exercises__item`, `.lesson-exercises__order`, `.lesson-exercises__card`, `.lesson-exercises__empty`, `.lesson-exercises__add`, `.lesson-exercises__archived`, `.lesson-exercises__archived-title`, `.lesson-exercises__archived-note`
+
+**Modifiers:** `.lesson-exercises__item_state_archived`.
+
+**Other classes it renders:** `.platform-button`, `.platform-button_size_sm`, `.platform-button_shape_square`, `.platform-button__icon`.
+
+**Tokens:** `--platform-border`, `--platform-text-muted`
+
+**Breakpoints:** `(width < 640px)` puts the keys in a row under the card.
+
+## Usage
+
+From `components/platform/sections/staff/courses/lesson-editor.section.tsx`:
+
+```tsx
+import { LessonExercises } from "./lesson-exercises.comp";
+
+<LessonExercises
+  courseId={lesson.courseId}
+  chapterId={lesson.chapterId}
+  lessonId={lesson.id}
+  exercises={lesson.exercises}
+/>;
+```
+
+## Related
+
+- The editor it opens: [`LessonExerciseEditorSection`](/components/platform/sections/staff/courses/lesson-exercise-editor-section).
+- What the student sees of them: [Student → Courses](/platform/student).

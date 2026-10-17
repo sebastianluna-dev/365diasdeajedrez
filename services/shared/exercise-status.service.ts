@@ -32,6 +32,7 @@ export interface ExerciseStatusReader {
 interface TransitionRow {
   statusId: number;
   teacherId: string | null;
+  lessonId: string | null;
   kindId: number;
   mateIn: number | null;
   title: string;
@@ -91,8 +92,9 @@ export type ExerciseTransitionResult =
   | { ok: false; code: Exclude<ExerciseTransitionRefusal, "notReady"> }
   | { ok: false; code: "notReady"; readiness: ExerciseReadiness };
 
-/** Who owns a row. Phase 2 adds the lesson's (`lessonId`). */
-function ownerOf(row: Pick<TransitionRow, "teacherId">): ExerciseOwnerKind {
+/** Who owns a row: the lesson, the teacher, or the academy (neither). */
+function ownerOf(row: Pick<TransitionRow, "teacherId" | "lessonId">): ExerciseOwnerKind {
+  if (row.lessonId !== null) return "lesson";
   return row.teacherId === null ? "academy" : "teacher";
 }
 
@@ -107,6 +109,11 @@ function transitionStamps(
   const stamps: Record<string, Date | string | null> = {};
   // A fresh proposal: the note of an earlier return no longer applies.
   if (rule.to === EXERCISE_STATUS.IN_REVIEW) Object.assign(stamps, { submittedAt: now, reviewNote: null });
+  // An archived lesson exercise leaves the lesson's order (CHECK exercise_lesson_order_needs_lesson lets it stay
+  // without one): the panel lists it apart, and a new one takes the place.
+  if (rule.to === EXERCISE_STATUS.ARCHIVED && rule.owners.includes("lesson") && row.lessonId !== null) {
+    stamps.lessonOrder = null;
+  }
   // Every move of the staff is a decision of the review, with its note.
   if (rule.role === "staff") Object.assign(stamps, { reviewedAt: now, reviewedById: actorUserId, reviewNote: note });
   // The FIRST publication is kept: «was ever in the library» is what lets a teacher keep seeing its attempts.
@@ -136,6 +143,7 @@ async function move(
       select: {
         statusId: true,
         teacherId: true,
+        lessonId: true,
         kindId: true,
         mateIn: true,
         title: true,
@@ -215,8 +223,9 @@ export interface ReviewLibraryExerciseInput {
 
 /**
  * The staff's moves: approve or return a proposal, take an exercise out of
- * the library, and publish, archive or restore the academy's (and, from
- * phase 2, a lesson's). Each one stamps who decided, when, and the note.
+ * the library, publish, archive or restore the academy's, and publish, take
+ * back to draft or archive a lesson's (an archived one loses its
+ * `lessonOrder`). Each one stamps who decided, when, and the note.
  */
 export async function reviewLibraryExercise(
   db: ExerciseStatusWriter,

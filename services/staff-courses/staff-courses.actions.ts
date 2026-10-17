@@ -11,8 +11,6 @@ import {
 } from "@/constants/platform/course-codes.const";
 import { syncCatalogJoin } from "@/services/shared/catalog-join.service";
 import { CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
-import { EXERCISE_MODE } from "@/constants/platform/training-codes.const";
-import { deriveExerciseData } from "@/lib/chess/exercise-derivation";
 import { syncChapterDuration } from "@/services/shared/chapter-duration.service";
 import { syncLessonTrainingExercise } from "@/services/shared/lesson-training.service";
 import { isLevelStretch } from "@/services/courses/level-rules";
@@ -45,8 +43,9 @@ import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
 import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE } from "@/constants/platform/study-codes.const";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
-import { lessonPgnOf, lessonPgnSelect, lessonStartFenOf } from "@/services/shared/lesson-pgn";
+import { lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
 import { courseHasContent } from "@/services/staff-courses/course-content.service";
+import { lessonHasAttempts } from "@/services/staff-courses/lesson-exercises.service";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import {
   GAME_FIELDS_SCHEMA,
@@ -58,7 +57,7 @@ import {
 import { parseImportedGames, readImportedGames } from "@/services/shared/pgn-import";
 import { withImportReport } from "@/services/shared/pgn-import-report";
 import { withErrorParam } from "@/services/shared/safe-return-to";
-import { nextOrder, planDenseRenumber, planFullReorder, planSwap, type MoveDirection } from "@/services/shared/reorder";
+import { nextOrder, planDenseRenumber, planFullReorder } from "@/services/shared/reorder";
 
 // Course editor. Rules that are not negotiable:
 // - Every action opens with requireStaff() (they are reachable by direct POST).
@@ -68,11 +67,13 @@ import { nextOrder, planDenseRenumber, planFullReorder, planSwap, type MoveDirec
 //   course is archived, not dismantled.
 // - Reordering always goes through services/shared/reorder.ts (composite unique
 //   index: a direct swap throws P2002).
+// - A lesson's exercises are written in lesson-exercises.actions.ts; here only
+//   their attempts are asked about, since a lesson or a chapter whose exercise
+//   someone tried is never deleted (the attempt is RESTRICT).
 
 const NAME_MAX_LENGTH = 160;
 const SLUG_MAX_LENGTH = 160;
 const DESCRIPTION_MAX_LENGTH = 1000;
-const PROMPT_MAX_LENGTH = 500;
 const DURATION_MAX = 100_000;
 const SLUG_SHAPE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -82,16 +83,6 @@ function fail(path: string, code: string): never {
 
 function isCode(value: string, catalog: Record<string, string>): boolean {
   return (Object.values(catalog) as string[]).includes(value);
-}
-
-/** SAN moves separated by spaces, as in `prisma/seed-data.ts`. */
-function formSans() {
-  return z
-    .string()
-    .trim()
-    .max(20_000)
-    .optional()
-    .transform((value) => (value ?? "").split(/\s+/).filter(Boolean));
 }
 
 // A slug is how the student reaches the course's information page
@@ -151,15 +142,6 @@ const LESSON_UPDATE_SCHEMA = z.object({
   isPriority: formCheckbox(),
   estimatedDuration: formLenientInt(0, DURATION_MAX),
 });
-const EXERCISE_SCHEMA = z.object({
-  modeCode: formText(32).refine((value) => isCode(value, EXERCISE_MODE)),
-  lineSans: formSans().refine((sans) => sans.length > 0),
-  // Previous moves up to the starting point; empty = from the lesson's initial
-  // position. Same space-separated SAN format as the seed.
-  afterSans: formSans(),
-  promptText: formOptionalText(PROMPT_MAX_LENGTH),
-});
-
 // --- Courses --------------------------------------------------------------
 
 // A failure goes back to the catalog, where the "Nuevo curso" dialog lives:
@@ -904,9 +886,11 @@ export async function reorderChapterGames(courseId: string, chapterId: string, o
 }
 
 /**
- * Deletes a chapter ONLY if the course is a draft and nobody has progress over
- * it. In any other case the progress history rules: the course is archived, not
- * dismantled.
+ * Deletes a chapter ONLY if the course is a draft, nobody has progress over it
+ * and no exercise of its lessons was ever tried (an attempt is RESTRICT, so the
+ * cascade would otherwise end in a P2003; lesson exercises are optional, so
+ * attempts can exist without any progress). In any other case the history
+ * rules: the course is archived, not dismantled.
  */
 export async function deleteChapter(courseId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
@@ -921,13 +905,20 @@ export async function deleteChapter(courseId: string, formData: FormData): Promi
     select: {
       id: true,
       _count: { select: { progresses: true } },
-      lessons: { select: { _count: { select: { progresses: true } } } },
+      lessons: { select: { id: true, _count: { select: { progresses: true } } } },
     },
   });
   const hasProgress =
     chapter !== null &&
     (chapter._count.progresses > 0 || chapter.lessons.some((lesson) => lesson._count.progresses > 0));
   if (!chapter || hasProgress) fail(syllabusPath, "deleteBlocked");
+  if (
+    await lessonHasAttempts(
+      db,
+      chapter.lessons.map((lesson) => lesson.id),
+    )
+  )
+    fail(syllabusPath, "deleteBlocked");
 
   await db.$transaction(async (tx) => {
     await tx.chapter.delete({ where: { id: chapter.id } });
@@ -1138,7 +1129,7 @@ export async function setLessonGame(
   revalidatePath(platformRoutes.lessonPattern, "page");
 }
 
-/** Same rule as the chapter: only in a draft and without progress from anyone. */
+/** Same rule as the chapter: only in a draft, without progress from anyone, and with no exercise anyone tried. */
 export async function deleteLesson(courseId: string, chapterId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const lessonsPath = staffRoutes.chapterLessons(courseId, chapterId);
@@ -1156,6 +1147,7 @@ export async function deleteLesson(courseId: string, chapterId: string, formData
     select: { id: true, _count: { select: { progresses: true } } },
   });
   if (!lesson || lesson._count.progresses > 0) fail(lessonsPath, "deleteBlocked");
+  if (await lessonHasAttempts(db, [lesson.id])) fail(lessonsPath, "deleteBlocked");
 
   await db.$transaction(async (tx) => {
     await tx.lesson.delete({ where: { id: lesson.id } });
@@ -1170,163 +1162,6 @@ export async function deleteLesson(courseId: string, chapterId: string, formData
 
   revalidatePath(staffRoutes.chapterDetail(courseId, chapterId), "layout");
   revalidatePath(staffRoutes.courseSyllabus(courseId));
-}
-
-// --- Exercises ------------------------------------------------------------
-
-interface ExerciseInput {
-  modeCode: string;
-  promptText: string | null;
-  afterSans: string[];
-  lineSans: string[];
-}
-
-function readExerciseInput(formData: FormData, failPath: string): ExerciseInput {
-  const parsed = parseForm(EXERCISE_SCHEMA, formData);
-  if (!parsed.ok) fail(failPath, parsed.field === "lineSans" ? "sans" : "invalid");
-  return parsed.data;
-}
-
-/**
- * Derives the frozen copy with the SAME module the seed uses, over the position
- * the lesson's EFFECTIVE CONTENT starts from — its linked game's, if it has one.
- *
- * It used to come from `Lesson.initialFen`, which was a second copy of the same
- * data and got out of line when games were linked: it froze the moves against a
- * board the student never gets to see. Now it comes from the PGN, as in
- * `syncLessonTrainingExercise`.
- *
- * If any move is illegal it aborts without writing: it is better to reject here
- * than to leave an exercise the trainer cannot replay.
- */
-async function deriveForLesson(lessonId: string, input: ExerciseInput, failPath: string) {
-  const lesson = await getPlatformDb().lesson.findUnique({
-    where: { id: lessonId },
-    select: { id: true, ...lessonPgnSelect },
-  });
-  if (!lesson) fail(failPath, "courseMissing");
-
-  try {
-    return deriveExerciseData({
-      initialFen: lessonStartFenOf(lesson),
-      afterSans: input.afterSans,
-      lineSans: input.lineSans,
-    });
-  } catch {
-    fail(failPath, "sans");
-  }
-}
-
-export async function createExercise(
-  courseId: string,
-  chapterId: string,
-  lessonId: string,
-  formData: FormData,
-): Promise<void> {
-  const staff = await requireStaff();
-  const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
-  if (!(await allowAction(`${staff.user.id}:exercise-create`, 60, 60_000))) fail(lessonPath, "throttled");
-
-  const input = readExerciseInput(formData, lessonPath);
-  const derived = await deriveForLesson(lessonId, input, lessonPath);
-
-  const db = getPlatformDb();
-  const count = await db.trainingExercise.count({ where: { lessonId } });
-
-  await db.trainingExercise.create({
-    data: {
-      lesson: { connect: { id: lessonId } },
-      order: nextOrder(count),
-      mode: { connect: { code: input.modeCode } },
-      promptText: input.promptText,
-      ...derived,
-      // Frozen now: it is born up to date with the current PGN, not stale.
-      frozenAt: new Date(),
-    },
-  });
-
-  revalidatePath(lessonPath);
-}
-
-export async function updateExercise(
-  courseId: string,
-  chapterId: string,
-  lessonId: string,
-  exerciseId: string,
-  formData: FormData,
-): Promise<void> {
-  const staff = await requireStaff();
-  const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
-  if (!(await allowAction(`${staff.user.id}:exercise-update`, 60, 60_000))) fail(lessonPath, "throttled");
-
-  const input = readExerciseInput(formData, lessonPath);
-  const derived = await deriveForLesson(lessonId, input, lessonPath);
-
-  const db = getPlatformDb();
-  const exercise = await db.trainingExercise.findFirst({ where: { id: exerciseId, lessonId }, select: { id: true } });
-  if (!exercise) fail(lessonPath, "courseMissing");
-
-  await db.trainingExercise.update({
-    where: { id: exercise.id },
-    data: {
-      mode: { connect: { code: input.modeCode } },
-      promptText: input.promptText,
-      ...derived,
-      frozenAt: new Date(),
-    },
-  });
-
-  revalidatePath(lessonPath);
-}
-
-export async function deleteExercise(
-  courseId: string,
-  chapterId: string,
-  lessonId: string,
-  formData: FormData,
-): Promise<void> {
-  const staff = await requireStaff();
-  const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
-  if (!(await allowAction(`${staff.user.id}:exercise-delete`, 60, 60_000))) fail(lessonPath, "throttled");
-
-  const { exerciseId } = readIds(formData, "exerciseId");
-  const db = getPlatformDb();
-
-  await db.$transaction(async (tx) => {
-    const deleted = await tx.trainingExercise.deleteMany({ where: { id: exerciseId, lessonId } });
-    if (deleted.count === 0) return;
-
-    const remaining = await tx.trainingExercise.findMany({ where: { lessonId }, select: { id: true, order: true } });
-    for (const update of planDenseRenumber(remaining)) {
-      await tx.trainingExercise.update({ where: { id: update.id }, data: { order: update.order } });
-    }
-  });
-
-  revalidatePath(lessonPath);
-}
-
-export async function moveExercise(
-  courseId: string,
-  chapterId: string,
-  lessonId: string,
-  formData: FormData,
-): Promise<void> {
-  const staff = await requireStaff();
-  const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
-  if (!(await allowAction(`${staff.user.id}:exercise-move`, 120, 60_000))) fail(lessonPath, "throttled");
-
-  const { exerciseId, direction } = readIds(formData, "exerciseId", "direction");
-  if (direction !== "up" && direction !== "down") fail(lessonPath, "order");
-
-  const db = getPlatformDb();
-  await db.$transaction(async (tx) => {
-    const exercises = await tx.trainingExercise.findMany({ where: { lessonId }, select: { id: true, order: true } });
-    for (const update of planSwap(exercises, exerciseId, direction as MoveDirection)) {
-      await tx.trainingExercise.update({ where: { id: update.id }, data: { order: update.order } });
-    }
-  });
-
-  revalidatePath(lessonPath);
 }
 
 // --- Authors --------------------------------------------------------------

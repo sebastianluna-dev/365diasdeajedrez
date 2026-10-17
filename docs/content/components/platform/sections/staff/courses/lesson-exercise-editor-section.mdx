@@ -1,0 +1,49 @@
+---
+description: "The editor of a lesson's exercise, new or saved: ExerciseAuthoring with the staff's actions bound to the lesson and the exercise on the server."
+---
+
+# `LessonExerciseEditorSection`
+
+|          |                                                                                                                                                                                                                                              |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File     | `components/platform/sections/staff/courses/lesson-exercise-editor.section.tsx`                                                                                                                                                              |
+| Kind     | Server Component                                                                                                                                                                                                                             |
+| Used by  | `/administracion/cursos/[courseId]/capitulos/[chapterId]/lecciones/[lessonId]/ejercicios/nuevo`, `…/ejercicios/[exerciseId]` (not behind `EXERCISES_ENABLED`)                                                                                |
+| Composes | [`ExerciseAuthoring`](/components/platform/shared/exercise-authoring), [`PlatformNotice`](/components/platform/shared/platform-notice)                                                                                                       |
+| Reads    | `LessonExerciseEditor` from `getLessonExerciseEditor(courseId, chapterId, lessonId, exerciseId)` or `getNewLessonExerciseEditor(courseId, chapterId, lessonId)` · `services/staff-courses/lesson-exercises.service.ts`                       |
+| Writes   | `saveLessonExercise(courseId, chapterId, lessonId, exerciseId)` (through `useActionState`), `fetchChapterGamePgn(courseId, chapterId)` — bound here and handed to the editor as props · `services/staff-courses/lesson-exercises.actions.ts` |
+
+## Props
+
+| Prop                     | Type                   | Required | Meaning                                                                                       |
+| ------------------------ | ---------------------- | -------- | --------------------------------------------------------------------------------------------- |
+| `editor`                 | `LessonExerciseEditor` | yes      | The exercise, its lesson, the catalogs, the chapter's games, the permissions and the buttons. |
+| `notice`, `errorMessage` | `string`               | no       |                                                                                               |
+
+## Behaviour
+
+The same editor the teacher's bank uses ([`TeacherExerciseEditorSection`](/components/platform/sections/teacher/exercises/teacher-exercise-editor-section)), over an exercise owned by the lesson:
+
+- the buttons are `lessonSaveButtons`'s: «Guardar borrador» and «Guardar y publicar» (the accent, which needs the exercise complete) on a new one or a draft, «Guardar» alone on a published one (it stays published, so it must stay complete) or an archived one;
+- the content is never locked and «Duplicar» is not offered (`LESSON_EXERCISE_PERMISSIONS`);
+- «Desde una partida» offers the chapter's collection, where the lesson's content comes from, read with `fetchChapterGamePgn`;
+- the status in the page's head is worded by the lesson's panel («Publicado», «Borrador», «Archivado»), not by the catalog, whose «En la biblioteca» is never true of a lesson's exercise.
+
+The editor is keyed by `editor.version` (the exercise's `updatedAt`): a save redirects to the exercise's own page with `?aviso=` and the board and the fields open again on what was stored. An exercise of another lesson, or of a bank, never reaches here: the page answers 404 when the service finds nothing.
+
+## Usage
+
+From `app/(platform)/administracion/cursos/[courseId]/capitulos/[chapterId]/lecciones/[lessonId]/ejercicios/[exerciseId]/page.tsx`:
+
+```tsx
+<LessonExerciseEditorSection
+  editor={editor}
+  notice={readExerciseNotice(aviso) ?? undefined}
+  errorMessage={error ? (EXERCISE_ERROR_MESSAGES[error] ?? EXERCISE_ERROR_MESSAGES.invalid) : undefined}
+/>
+```
+
+## Related
+
+- The list it comes from: [`LessonExercises`](/components/platform/sections/staff/courses/lesson-exercises).
+- The rules of a lesson's exercise: [Exercises → Courses](/platform/exercises#courses-phase-2).
