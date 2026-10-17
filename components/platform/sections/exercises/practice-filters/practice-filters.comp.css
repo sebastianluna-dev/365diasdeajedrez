@@ -1,0 +1,23 @@
+/* The two selects of «Práctica libre» side by side, with «Empezar» on the
+   home's card; stacked on a phone. */
+.practice-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--platform-space-3);
+
+  & > * {
+    min-width: 0;
+  }
+
+  @media (width < 640px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.practice-filters__empty {
+  margin: 0;
+  font-size: var(--platform-type-md);
+  color: var(--platform-text-muted);
+}

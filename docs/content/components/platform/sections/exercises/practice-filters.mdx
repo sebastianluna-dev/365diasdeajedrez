@@ -1,0 +1,38 @@
+---
+description: "The two choices of «Práctica libre»: the topic, with each parent's children under its heading, and the level by the Level catalog's bands; a filter in the accent's tone, on the home's card with «Empezar» or on the practice page."
+---
+
+# `PracticeFilters`
+
+|            |                                                                                                                                                                                          |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/exercises/practice-filters/practice-filters.comp.tsx`                                                                                                      |
+| Kind       | Client Component (`"use client"`): the choice, and on the page the address it pushes                                                                                                     |
+| Stylesheet | `practice-filters.comp.css` → block `.practice-filters`                                                                                                                                  |
+| Story      | `practice-filters.stories.tsx` (`platform/sections/exercises/PracticeFilters`): the home's card with nothing chosen, with a choice made, the practice page's, and the library empty      |
+| Used by    | [`ExercisesHomeSection`](/components/platform/sections/exercises/exercises-home-section), [`ExercisePracticeSection`](/components/platform/sections/exercises/exercise-practice-section) |
+| Composes   | [`PlatformSelect`](/components/platform/shared/platform-select) (`tone="accent"`)                                                                                                        |
+| Reads      | `PracticeFilters` and `PracticeChoice` (`services/exercises/practice.types.ts`), from `getPracticeFilters()`                                                                             |
+
+## Props
+
+| Prop      | Type               | Required | Meaning                                                                                                                                                        |
+| --------- | ------------------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `filters` | `PracticeFilters`  | yes      | The topics with a library exercise (a parent with such a child too), the active levels with their Elo range, and whether the library is empty.                 |
+| `choice`  | `PracticeChoice`   | yes      | What the address says, `tema` and `nivel`, or nothing.                                                                                                         |
+| `variant` | `"home" \| "page"` | yes      | On the home's card the choice waits for «Empezar» (a link to `/ejercicios/practica?tema=&nivel=`); on the practice page a change replaces the address at once. |
+| `accent`  | `boolean`          | no       | On the home: whether «Empezar» is the screen's accent (when no series is left to continue).                                                                    |
+
+## Behaviour
+
+A filter, not a form (AGENTS.md): the two selects wear the accent's tone and never say an error. The topic select lists the first level as options and each parent's children under its heading (`groups`); the level select says «Intermedio · 1200–1599» (the Level catalog's bands, `formatEloRange`). «Empezar» is disabled until both are chosen. With `libraryEmpty` it draws one line instead: «Todavía no hay ejercicios en la biblioteca para practicar.»
+
+## Markup & styling
+
+Block `.practice-filters` (23 lines): the selects and the button in a row, stacked under 640px; `.practice-filters__empty` is the line for the empty library.
+
+**Modifiers:** `.practice-filters_variant_home`, `.practice-filters_variant_page`.
+
+**Tokens:** `--platform-text-muted`
+
+**Breakpoints:** `(width < 640px)`.

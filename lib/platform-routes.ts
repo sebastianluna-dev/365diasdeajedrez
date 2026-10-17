@@ -113,6 +113,19 @@ export const platformRoutes = {
   /** The n-th exercise of a series (1-based), counted among the ones the student may solve. */
   exerciseSeriesItem: (seriesId: string, n: number) => `/ejercicios/series/${seriesId}/${n}`,
   /**
+   * «Práctica libre» (D18, D32, phase 4): a random library exercise of a topic
+   * (`tema`, a Topic code) at a level (`nivel`, a Level slug); `tras` is the
+   * exercise just solved, which «Siguiente» skips.
+   */
+  exercisePractice: (query: { tema?: string; nivel?: string; tras?: string } = {}) => {
+    const params = new URLSearchParams();
+    if (query.tema) params.set("tema", query.tema);
+    if (query.nivel) params.set("nivel", query.nivel);
+    if (query.tras) params.set("tras", query.tras);
+    const text = params.toString();
+    return text ? `/ejercicios/practica?${text}` : "/ejercicios/practica";
+  },
+  /**
    * The n-th exercise of an EXERCISE block of a class (1-based, among the ones
    * the student may solve), solved from the class (D29): behind `EXERCISES_ENABLED`.
    */

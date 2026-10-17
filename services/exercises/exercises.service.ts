@@ -87,9 +87,11 @@ async function triedTodayIn(userId: string, rows: readonly Pick<StudentSeriesRow
 }
 
 /**
- * Whether the student has anything in «Ejercicios» (§5.1, phases 1–3): an
+ * Whether the student has anything of a teacher's in «Ejercicios» (§5.1): an
  * active teacher, or a series they may open. What the menu's `"withTeacher"`
- * rule asks; with the flag off, nothing.
+ * rule asks — the rule of phases 1–3; since phase 4 the menu draws
+ * «Ejercicios» for every student (`"all"`) and does not ask. With the flag
+ * off, nothing.
  */
 export const getStudentExerciseAccess = cache(async (): Promise<boolean> => {
   if (!EXERCISES_ENABLED) return false;

@@ -64,6 +64,12 @@
     font-variant-numeric: tabular-nums;
   }
 
+  & .exercises-home__lead {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+  }
+
   & .exercises-home__go {
     align-self: flex-start;
   }

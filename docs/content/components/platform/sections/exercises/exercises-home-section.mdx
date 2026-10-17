@@ -1,23 +1,24 @@
 ---
-description: "The student's «Ejercicios»: «De tu profesor», the series their teacher gave them, and «Series de la academia», the published ones; what they solved of each and the way on."
+description: "The student's «Ejercicios»: «De tu profesor», the series their teacher gave them; «Práctica libre», a topic and a level; and «Series de la academia», the published ones; what they solved of each and the way on."
 ---
 
 # `ExercisesHomeSection`
 
-|            |                                                                                                                                      |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/exercises/exercises-home.section.tsx`                                                                  |
-| Kind       | Server Component                                                                                                                     |
-| Stylesheet | `exercises-home.section.css` → block `.exercises-home`                                                                               |
-| Used by    | `/ejercicios` (behind `EXERCISES_ENABLED`)                                                                                           |
-| Composes   | [`EmptyState`](/components/platform/shared/empty-state)                                                                              |
-| Reads      | `StudentExercisesHome` from `getStudentExercisesHome()` · `services/exercises/exercises.service.ts`, mapped by `exercises.mapper.ts` |
+|            |                                                                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/exercises/exercises-home.section.tsx`                                                                    |
+| Kind       | Server Component                                                                                                                       |
+| Stylesheet | `exercises-home.section.css` → block `.exercises-home`                                                                                 |
+| Used by    | `/ejercicios` (behind `EXERCISES_ENABLED`)                                                                                             |
+| Composes   | [`EmptyState`](/components/platform/shared/empty-state), [`PracticeFilters`](/components/platform/sections/exercises/practice-filters) |
+| Reads      | `StudentExercisesHome` from `getStudentExercisesHome()` · `services/exercises/exercises.service.ts`, mapped by `exercises.mapper.ts`   |
 
 ## Props
 
-| Prop   | Type                   | Required | Meaning                                                                                                                                                                                                                    |
-| ------ | ---------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `home` | `StudentExercisesHome` | yes      | Whether the student has an active teacher, the series given to them (newest first, each with `solved`, `total` and `nextHref`), the academy's published series (`academySeries`, the last published first) and the way on. |
+| Prop       | Type                   | Required | Meaning                                                                                                                                                                                                                    |
+| ---------- | ---------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `home`     | `StudentExercisesHome` | yes      | Whether the student has an active teacher, the series given to them (newest first, each with `solved`, `total` and `nextHref`), the academy's published series (`academySeries`, the last published first) and the way on. |
+| `practice` | `PracticeFilters`      | yes      | «Práctica libre»'s topics and levels (`getPracticeFilters()`, `services/exercises/practice.service.ts`), or that the library is empty.                                                                                     |
 
 ## Behaviour
 
@@ -25,13 +26,13 @@ The home of «Ejercicios» (D17, PLAN.md §5.1). Its first card is «De tu profe
 
 The screen's one accent is the first card's last line, «Continuar con «…»»: the newest series with an exercise left that can count today (not solved, not tried this study day), the teacher's before the academy's. With nothing given, the empty state says «Tu profesor aún no te ha dado ejercicios.», or, for a student with no teacher, «Todavía no tienes ejercicios de un profesor. Cuando uno te dé una serie, aparecerá aquí.»
 
-The second card, «Series de la academia» (phase 4, D32), lists the academy's published series the same way (`academySeriesWhere`: `teacherId` null and `publishedAt` set), the last published first, and is drawn only when there is one. Both kinds open at `/ejercicios/series/[seriesId]` (`getStudentSeries`, through `studentVisibleSeriesWhere`).
+The second card, «Práctica libre» (phase 4, D18, D32), holds [`PracticeFilters`](/components/platform/sections/exercises/practice-filters) in its `home` variant: a topic, a level and «Empezar», which is the accent when no series is left to continue. The third, «Series de la academia» (D32), lists the academy's published series the same way (`academySeriesWhere`: `teacherId` null and `publishedAt` set), the last published first, and is drawn only when there is one. Both kinds open at `/ejercicios/series/[seriesId]` (`getStudentSeries`, through `studentVisibleSeriesWhere`).
 
 ## Markup & styling
 
-Block `.exercises-home` (76 lines), on each `.platform-card`: the card's title, the rows separated by a line, and the accent under them, stretched under 640px.
+Block `.exercises-home` (82 lines), on each `.platform-card`: the card's title, the rows separated by a line, and the accent under them, stretched under 640px.
 
-**Elements:** `.exercises-home__list`, `.exercises-home__row`, `.exercises-home__body`, `.exercises-home__title`, `.exercises-home__meta`, `.exercises-home__count`, `.exercises-home__go`
+**Elements:** `.exercises-home__list`, `.exercises-home__row`, `.exercises-home__body`, `.exercises-home__title`, `.exercises-home__meta`, `.exercises-home__count`, `.exercises-home__lead`, `.exercises-home__go`
 
 **Other classes it renders:** `.platform-card`, `.platform-card__title`, `.platform-row-action`, `.platform-button_variant_accent`.
 

@@ -2,10 +2,14 @@ import Link from "next/link";
 import { AngleRightIcon } from "@/components/icons/angle-right-icon.comp";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import type { StudentExercisesHome, StudentSeriesSummary } from "@/services/exercises/exercises.types";
+import type { PracticeFilters as PracticeFiltersData } from "@/services/exercises/practice.types";
+import { PracticeFilters } from "./practice-filters/practice-filters.comp";
 import "./exercises-home.section.css";
 
 interface ExercisesHomeSectionProps {
   home: StudentExercisesHome;
+  /** «Práctica libre» (D18, D32): the topics and levels to choose from. */
+  practice: PracticeFiltersData;
 }
 
 /** The rows of a card: each series, its teacher and count, and its row's word. */
@@ -39,12 +43,13 @@ function SeriesRows({ series }: { series: StudentSeriesSummary[] }) {
 /**
  * «Ejercicios», the student's home (PLAN.md §5.1): «De tu profesor», the
  * series their teacher gave them, newest first, each with what they solved
- * of it and its row's word; and, with the library (phase 4, D32), «Series de
- * la academia», the published ones, drawn only when there are some. The
- * screen's one accent is the way on: the newest series with an exercise
- * left, the teacher's before the academy's.
+ * of it and its row's word; with the library (phase 4), «Práctica libre»
+ * (D18, D32: a topic, a level and «Empezar») and «Series de la academia»,
+ * the published ones, drawn only when there are some. The screen's one
+ * accent is the way on: the newest series with an exercise left, the
+ * teacher's before the academy's, or else «Empezar».
  */
-export function ExercisesHomeSection({ home }: ExercisesHomeSectionProps) {
+export function ExercisesHomeSection({ home, practice }: ExercisesHomeSectionProps) {
   return (
     <>
       <section className="platform-card exercises-home" aria-labelledby="exercises-home-teacher">
@@ -73,6 +78,21 @@ export function ExercisesHomeSection({ home }: ExercisesHomeSectionProps) {
             <AngleRightIcon variant="classic-solid" className="platform-button__icon" />
           </Link>
         )}
+      </section>
+
+      <section className="platform-card exercises-home" aria-labelledby="exercises-home-practice">
+        <h2 className="platform-card__title" id="exercises-home-practice">
+          Práctica libre
+        </h2>
+        <p className="exercises-home__lead">
+          Un ejercicio de la biblioteca al azar, del tema y el nivel que elijas; al terminar, otro.
+        </p>
+        <PracticeFilters
+          filters={practice}
+          choice={{ topicCode: null, levelSlug: null }}
+          variant="home"
+          accent={home.continueWith === null}
+        />
       </section>
 
       {home.academySeries.length > 0 && (

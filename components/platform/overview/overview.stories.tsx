@@ -155,6 +155,7 @@ import { ClassExerciseProgress } from "@/components/platform/sections/teacher/cl
 import { ExerciseReviewBar } from "@/components/platform/sections/staff/exercises/exercise-review-bar/exercise-review-bar.comp";
 import { SeriesPublishSwitch } from "@/components/platform/sections/staff/exercises/series-publish-switch/series-publish-switch.comp";
 import { AddLibraryExercisesButton } from "@/components/platform/sections/staff/courses/add-library-exercises-popup/add-library-exercises-popup.comp";
+import { PracticeFilters } from "@/components/platform/sections/exercises/practice-filters/practice-filters.comp";
 import { TopicButton } from "@/components/platform/sections/teacher/classes/topic-popup/topic-popup.comp";
 import { FinalizeClassButton } from "@/components/platform/shared/finalize-class-popup/finalize-class-popup.comp";
 import { MeetingCountdown } from "@/components/platform/shared/meeting-countdown/meeting-countdown.comp";
@@ -2679,6 +2680,21 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               <AddLibraryExercisesButton
                 exercises={OVERVIEW_PICKABLE}
                 addToLesson={async () => popupFormDone("lessonExercisesCopied")}
+              />
+            </Tile>
+            <Tile name="PracticeFilters" docs="platform-sections-exercises-practicefilters" width={640} height={72}>
+              <PracticeFilters
+                filters={{
+                  topics: [
+                    { code: "TACTICS", label: "Táctica", parentCode: null },
+                    { code: "FORK", label: "Horquilla", parentCode: "TACTICS" },
+                  ],
+                  levels: [{ slug: "intermedio", name: "Intermedio", range: "1200–1599" }],
+                  libraryEmpty: false,
+                }}
+                choice={{ topicCode: "TACTICS", levelSlug: "intermedio" }}
+                variant="home"
+                accent
               />
             </Tile>
             <Tile name="MovePathPicker" docs="platform-shared-movepathpicker" width={960} height={640}>

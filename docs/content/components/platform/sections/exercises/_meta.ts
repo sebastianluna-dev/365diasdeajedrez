@@ -4,6 +4,8 @@ const meta: MetaRecord = {
   "exercises-home-section": "ExercisesHomeSection",
   "exercise-series-section": "ExerciseSeriesSection",
   "exercise-solve-section": "ExerciseSolveSection",
+  "exercise-practice-section": "ExercisePracticeSection",
+  "practice-filters": "PracticeFilters",
 };
 
 export default meta;

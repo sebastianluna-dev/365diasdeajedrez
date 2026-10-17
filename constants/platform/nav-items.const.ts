@@ -60,11 +60,11 @@ export interface PlatformNavFeatures {
   /**
    * «Ejercicios» (`EXERCISES_ENABLED`). Off: nobody's. On, the teacher's bank
    * after «Clases que imparto», the staff's after «Cursos», and the student's
-   * section after «Mis cursos»:
-   * for every student (`"all"`, from phase 4, when the library gives anyone
-   * something to solve) or only for one who has something there
-   * (`"withTeacher"`, phases 1–3: an active teacher or a series given to them,
-   * resolved per request by `getStudentExerciseAccess`).
+   * section after «Mis cursos»: for every student (`"all"`, since phase 4:
+   * the library's practice and the academy's series give anyone something to
+   * solve) or only for one who has something there (`"withTeacher"`, phases
+   * 1–3: an active teacher or a series given to them, resolved per request by
+   * `getStudentExerciseAccess`; kept as the rule's other value).
    */
   exercises: "all" | "withTeacher" | false;
 }
@@ -84,8 +84,8 @@ const FEATURES: PlatformNavFeatures = {
   play: PLAY_ENABLED,
   analysisBoard: ANALYSIS_BOARD_ENABLED,
   trainer: MOVE_TRAINER_ENABLED,
-  // Until the library (phase 4) only a teacher's series reach a student.
-  exercises: EXERCISES_ENABLED ? "withTeacher" : false,
+  // Since the library (phase 4) every student has «Práctica libre» and the academy's series to solve.
+  exercises: EXERCISES_ENABLED ? "all" : false,
 };
 
 /**
