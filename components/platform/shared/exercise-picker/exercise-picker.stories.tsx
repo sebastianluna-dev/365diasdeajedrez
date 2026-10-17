@@ -17,10 +17,12 @@ const EXERCISES: ExercisePickOption[] = [
 /** A host that keeps the chosen set, as the popups do, inside a form so the hidden inputs have somewhere to go. */
 function Host({
   exercises,
+  unavailable,
   initial = [],
   serverError,
 }: {
   exercises: ExercisePickOption[];
+  unavailable?: ExercisePickOption[];
   initial?: string[];
   serverError?: string;
 }) {
@@ -30,6 +32,7 @@ function Host({
       <ExercisePicker
         name="exercises"
         exercises={exercises}
+        unavailable={unavailable}
         value={chosen}
         onValueChange={setChosen}
         label="Ejercicios"
@@ -48,8 +51,9 @@ const meta = {
         component: `
 Exercises to tick, for a series or a class block: cards with each one's title,
 facts and topics, a search over title and topics once there are six, and the
-chosen ids sent as hidden inputs in the order they were ticked. Controlled: the
-host keeps the set and submits by hand.
+chosen ids sent as hidden inputs in the order they were ticked; what the
+container holds and can no longer be picked is set apart, ticked, to untick or
+to keep. Controlled: the host keeps the set and submits by hand.
 
 Source: \`components/platform/shared/exercise-picker/exercise-picker.comp.tsx\`.
 Reference page: [Components › ExercisePicker](/components/platform/shared/exercise-picker) in the docs site.
@@ -104,4 +108,24 @@ export const Searching: Story = {
 export const ServerError: Story = {
   name: "Server error",
   args: { exercises: EXERCISES.slice(0, 3), serverError: "Elige de 1 a 10 ejercicios." },
+};
+
+const UNAVAILABLE: ExercisePickOption[] = [
+  { id: "ex000007", title: "El molino", facts: "Secuencia · 1500", topics: "Táctica, Molino" },
+  { id: "ex000008", title: "Mate de la coz", facts: "Mate en 2 · 1100", topics: "Táctica, Mate de la coz" },
+];
+
+/**
+ * A block edited after two of its exercises were archived or left the library: they stay ticked under their
+ * warning, apart from what may be picked; unticking one takes it off the screen and out of what is sent.
+ */
+export const Unavailable: Story = {
+  args: { exercises: EXERCISES.slice(0, 3), unavailable: UNAVAILABLE, initial: ["ex000001", "ex000007", "ex000008"] },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("checkbox", { name: /Mate de la coz/ }));
+    await expect(canvas.queryByRole("checkbox", { name: /Mate de la coz/ })).toBeNull();
+    const sent = [...canvasElement.querySelectorAll<HTMLInputElement>('input[name="exercises"]')].map((i) => i.value);
+    await expect(sent).toEqual(["ex000001", "ex000007"]);
+  },
 };

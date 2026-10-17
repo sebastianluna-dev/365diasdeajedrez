@@ -119,6 +119,16 @@ export const Untried: Story = {
   },
 };
 
+/** The second exercise was archived since the block was made: «Ya no está disponible» under its facts, the count kept. */
+export const Unavailable: Story = {
+  args: {
+    progress: {
+      ...PROGRESS,
+      exercises: PROGRESS.exercises.map((item, index) => (index === 1 ? { ...item, unavailable: true } : item)),
+    },
+  },
+};
+
 /** A class with no seat yet: «Sin alumnos». */
 export const NoSeats: Story = {
   name: "No seats",

@@ -14,6 +14,7 @@ import {
   type ClassPhaseCode,
   type ClassStatusCode,
 } from "@/constants/platform/class-codes.const";
+import type { ExerciseStatusCode } from "@/constants/platform/exercise-codes.const";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { formatClassDay, formatClassHours, formatClassStamp, formatClassWhen } from "@/lib/format-class-when";
 import { teacherRoutes } from "@/lib/platform-routes";
@@ -26,8 +27,9 @@ import {
 } from "@/services/shared/class-rules";
 import { classExerciseSolvedCounts, solvedCountLabel } from "@/services/shared/class-exercise-progress";
 import { exerciseFacts } from "@/services/shared/exercise-facts";
+import { seriesItemAvailability } from "@/services/shared/exercise-visibility-rules";
 import { lessonPgnOf } from "@/services/shared/lesson-pgn";
-import { mapExerciseAttemptRow } from "@/services/teacher-exercises/teacher-exercises.mapper";
+import { mapExerciseAttemptRow, mapSeriesPickOption } from "@/services/teacher-exercises/teacher-exercises.mapper";
 import type { TeacherAttemptRow } from "@/services/teacher-exercises/teacher-exercises.types";
 import { meetingVisibleFrom, meetingVisibleUntil } from "@/services/shared/meeting-visible-from";
 import type { TeacherClassBlock, TeacherClassRow, TeacherSeatView } from "./teacher-classes.types";
@@ -296,8 +298,11 @@ export interface TeacherBlockSource {
   pgn: string | null;
   lessonId: string | null;
   positionId: string | null;
-  /** An EXERCISE block's rows, in order. */
-  exercises?: { exerciseId: string; exercise: { title: string } }[];
+  /** An EXERCISE block's rows, in order, each with what the picker's card and the availability rule read. */
+  exercises?: {
+    exerciseId: string;
+    exercise: Parameters<typeof mapSeriesPickOption>[0] & { teacherId: string | null; status: { code: string } };
+  }[];
   game: { id: string; white: string; black: string; pgn: string } | null;
   lesson: ({ id: string; name: string; chapter: { name: string } } & Parameters<typeof lessonPgnOf>[0]) | null;
   position: { id: string; title: string | null; fen: string } | null;
@@ -315,7 +320,12 @@ function isMovePathBroken(movePath: string | null, pgn: string | null): boolean 
   return tree === null || !tree.nodesByPath.has(movePath);
 }
 
-export function mapTeacherBlock(block: TeacherBlockSource): TeacherClassBlock {
+/**
+ * A block as the teacher edits it. `classTeacherId` is the class's teacher —
+ * the one editing —, for which of an EXERCISE block's exercises they could
+ * still pick: the others are the popup's «ya no están disponibles».
+ */
+export function mapTeacherBlock(block: TeacherBlockSource, classTeacherId: string): TeacherClassBlock {
   const kind = block.kind.code as ClassBlockKindCode;
   const referencedPgn =
     kind === CLASS_BLOCK_KIND.GAME_REF
@@ -352,6 +362,12 @@ export function mapTeacherBlock(block: TeacherBlockSource): TeacherClassBlock {
     lessonId: block.lessonId ?? undefined,
     positionId: block.positionId ?? undefined,
     exerciseIds: kind === CLASS_BLOCK_KIND.EXERCISE ? exercises.map((item) => item.exerciseId) : undefined,
+    unavailableExercises:
+      kind === CLASS_BLOCK_KIND.EXERCISE
+        ? exercises
+            .filter((item) => !isAvailableToStudents(item.exercise, classTeacherId))
+            .map((item) => mapSeriesPickOption(item.exercise))
+        : undefined,
     isMovePathBroken: isMovePathBroken(block.movePath, referencedPgn),
   };
 }
@@ -363,13 +379,33 @@ export interface ClassBlockAttemptRow extends TeacherAttemptRow {
   user: { displayName: string };
 }
 
-/** An EXERCISE block as the progress reads it: its exercises in order. */
+/** An EXERCISE block as the progress reads it: its exercises in order, with what the availability rule reads. */
 export interface ClassBlockExerciseSource {
   id: string;
   exercises: {
     exerciseId: string;
-    exercise: { title: string; kind: { code: string }; mateIn: number | null; difficulty: number };
+    exercise: {
+      title: string;
+      kind: { code: string };
+      mateIn: number | null;
+      difficulty: number;
+      teacherId: string | null;
+      status: { code: string };
+    };
   }[];
+}
+
+/** Whether the class's students still get the exercise: the series' own condition (`seriesItemAvailability`). */
+function isAvailableToStudents(
+  exercise: { teacherId: string | null; status: { code: string } },
+  classTeacherId: string,
+): boolean {
+  return (
+    seriesItemAvailability(
+      { teacherId: exercise.teacherId, statusCode: exercise.status.code as ExerciseStatusCode },
+      classTeacherId,
+    ) === "available"
+  );
 }
 
 /**
@@ -377,13 +413,17 @@ export interface ClassBlockExerciseSource {
  * attempts made from the block by the students seated now (the count is the
  * shared fold's, `classExerciseSolvedCounts`), with every one of those
  * attempts as a row whose title is the student — their tab when they are the
- * teacher's, a name alone when they are not — and who has not tried it.
+ * teacher's, a name alone when they are not — and who has not tried it. An
+ * exercise the students no longer get (archived, or taken out of the library)
+ * is marked `unavailable`, as the renderer marks it for the staff. `teacherId`
+ * is the class's teacher, the one reading; `now` dates the rows.
  */
 export function mapClassExerciseProgress(
   blocks: readonly ClassBlockExerciseSource[],
   attempts: readonly ClassBlockAttemptRow[],
   seats: readonly { userId: string; displayName: string; isAssigned: boolean }[],
   teacherId: string,
+  now: Date,
 ): ClassExerciseProgressData[] {
   const seatIds = seats.map((seat) => seat.userId);
   const seated = new Set(seatIds);
@@ -407,10 +447,11 @@ export function mapClassExerciseProgress(
         facts: exerciseFacts(item.exercise),
         solvedCount,
         label: solvedCountLabel(solvedCount, seatIds.length),
+        unavailable: isAvailableToStudents(item.exercise, teacherId) ? undefined : true,
         attempts: own.map((attempt) => {
           const seat = seats.find((candidate) => candidate.userId === attempt.userId);
           return {
-            ...mapExerciseAttemptRow(attempt, teacherId),
+            ...mapExerciseAttemptRow(attempt, teacherId, now),
             title: attempt.user.displayName,
             href: seat?.isAssigned ? teacherRoutes.studentExercises(attempt.userId) : null,
             whereLabel: "Desde la clase",

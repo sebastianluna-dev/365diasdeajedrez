@@ -241,6 +241,7 @@ describe("exercisePrefillFromGame («Crear ejercicio desde aquí», D11)", () =>
 
 describe("the teacher's view of an attempt (D24, D45)", () => {
   const BACK_RANK = "6k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1";
+  const NOW = new Date("2026-10-16T12:00:00.000Z");
   const ATTEMPT: TeacherAttemptRow = {
     id: "a-1",
     exerciseId: "ex000001",
@@ -265,23 +266,33 @@ describe("the teacher's view of an attempt (D24, D45)", () => {
   });
 
   it("dice dónde: la serie por su título, «De una serie eliminada» sin ella (D45), o el contexto", () => {
-    expect(attemptWhereLabel(ATTEMPT)).toBe("Serie: Táctica de la semana");
-    expect(attemptWhereLabel({ ...ATTEMPT, series: null })).toBe("De una serie eliminada");
+    expect(attemptWhereLabel(ATTEMPT, NOW)).toBe("Serie: Táctica de la semana");
+    expect(attemptWhereLabel({ ...ATTEMPT, series: null }, NOW)).toBe("De una serie eliminada");
     expect(
-      attemptWhereLabel({ ...ATTEMPT, context: { code: "PRACTICE", label: "Práctica libre" }, series: null }),
+      attemptWhereLabel({ ...ATTEMPT, context: { code: "PRACTICE", label: "Práctica libre" }, series: null }, NOW),
     ).toBe("Práctica libre");
   });
 
-  it("dice la clase: por su tema, por su día sin tema, o «De una clase eliminada» (fase 3)", () => {
+  it("dice la clase: por su tema, por su día sin tema, o «De un bloque de clase eliminado» (fase 3)", () => {
     const inClass = { ...ATTEMPT, context: { code: "CLASS", label: "Clase" }, series: null };
     const scheduledAt = new Date("2026-10-14T18:00:00.000Z");
     expect(
-      attemptWhereLabel({ ...inClass, classBlock: { class: { title: "Repaso de la Najdorf", scheduledAt } } }),
+      attemptWhereLabel({ ...inClass, classBlock: { class: { title: "Repaso de la Najdorf", scheduledAt } } }, NOW),
     ).toBe("Clase: Repaso de la Najdorf");
-    expect(attemptWhereLabel({ ...inClass, classBlock: { class: { title: null, scheduledAt } } })).toBe(
+    expect(attemptWhereLabel({ ...inClass, classBlock: { class: { title: null, scheduledAt } } }, NOW)).toBe(
       "Clase del mié 14 oct",
     );
-    expect(attemptWhereLabel({ ...inClass, classBlock: null })).toBe("De una clase eliminada");
+    // The block is what went (deleted, or turned into another kind); the class may still be there.
+    expect(attemptWhereLabel({ ...inClass, classBlock: null }, NOW)).toBe("De un bloque de clase eliminado");
+  });
+
+  it("una clase de otro año dice su año: la fila se lee mucho después", () => {
+    const inClass = { ...ATTEMPT, context: { code: "CLASS", label: "Clase" }, series: null };
+    const lastYear = { class: { title: null, scheduledAt: new Date("2025-10-14T18:00:00.000Z") } };
+    expect(attemptWhereLabel({ ...inClass, classBlock: lastYear }, NOW)).toBe("Clase del mar 14 oct 2025");
+    expect(attemptWhereLabel({ ...inClass, classBlock: lastYear }, new Date("2025-10-20T12:00:00.000Z"))).toBe(
+      "Clase del mar 14 oct",
+    );
   });
 
   it("escribe el tiempo en segundos o en minutos, y nada sin tiempo", () => {
@@ -293,7 +304,7 @@ describe("the teacher's view of an attempt (D24, D45)", () => {
   });
 
   it("un fallo trae su error en español, con la flecha de lo jugado en rojo y la de lo esperado en verde", () => {
-    const row = mapExerciseAttemptRow(ATTEMPT, "t-1");
+    const row = mapExerciseAttemptRow(ATTEMPT, "t-1", NOW);
     expect(row).toMatchObject({
       id: "a-1",
       title: "Mate del pasillo",
@@ -326,11 +337,12 @@ describe("the teacher's view of an attempt (D24, D45)", () => {
         exercise: { ...ATTEMPT.exercise!, teacherId: null },
       },
       "t-1",
+      NOW,
     );
     expect(library.href).toBeNull();
     expect(library.outcome).toBe("solved");
     expect(library.mistake).toBeNull();
-    const shown = mapExerciseAttemptRow({ ...ATTEMPT, solutionShown: true }, "t-1");
+    const shown = mapExerciseAttemptRow({ ...ATTEMPT, solutionShown: true }, "t-1", NOW);
     expect(shown.outcome).toBe("solutionShown");
     expect(shown.mistake).toBeNull();
   });

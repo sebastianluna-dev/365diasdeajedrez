@@ -16,6 +16,8 @@ export interface ClassExerciseProgressItem {
   solvedCount: number;
   /** «2 de 3 lo resolvieron». */
   label: string;
+  /** The students no longer get it (archived, or taken out of the library; `seriesItemAvailability`): «Ya no está disponible». */
+  unavailable?: boolean;
   /** The seated students' attempts from this block, the latest first; each row's title is the student. */
   attempts: ExerciseAttemptRowData[];
   /** The seated students with no attempt here, by name. */

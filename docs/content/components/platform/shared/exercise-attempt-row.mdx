@@ -24,7 +24,7 @@ description: "One attempt of a student at an exercise, for their teacher: the ex
 
 - A list item (`<li>`): the section lists them in an `<ol>`, the latest first. The title links to the editor when the exercise is the teacher's; a library exercise is named and not linked.
 - The outcome is a `platform-tag`: «Resuelto» in the success tone, «Resuelto con pista» in the warning tone, «Fallado» and «Vio la solución» plain — the same four words the student saw (D20, D33).
-- `whereLabel` says where it was solved: «Serie: Táctica 1», «Práctica libre», «De una serie eliminada» when the series is gone (D45), «Clase: Repaso de la Najdorf» or «Clase del mié 14 oct» for a class block (D29), «De una clase eliminada» when the block is gone.
+- `whereLabel` says where it was solved: «Serie: Táctica 1», «Práctica libre», «De una serie eliminada» when the series is gone (D45), «Clase: Repaso de la Najdorf» or «Clase del mié 14 oct» (with the year once it is not the reader's) for a class block (D29), «De un bloque de clase eliminado» when the block is gone — the attempt's `classBlockId` goes null when the block is deleted or changes kind, while the class may still be there.
 - **«Ver el error»**, only with a `mistake`: a `platform-button` with `aria-expanded` and `aria-controls` that shows the panel under the row — the position at the mistake (`StaticDiagram`, with the move played as a danger arrow and the one expected as a success arrow) beside «Jugó Td7 en vez de Td8#», the two moves in the same tones. The panel is `hidden` while closed; «Ocultar el error» closes it. «Ver la solución» has no wrong move, so no button.
 
 ## Markup & styling

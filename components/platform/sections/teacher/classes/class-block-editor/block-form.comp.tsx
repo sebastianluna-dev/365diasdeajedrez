@@ -82,6 +82,8 @@ export function BlockForm({
   const [exerciseIds, setExerciseIds] = useState<string[]>(
     Array.isArray(sentExercises) ? sentExercises : sentExercises ? [sentExercises] : (block?.exerciseIds ?? []),
   );
+  // What the block holds and the teacher could no longer pick: drawn apart by the picker, ticked, to untick or keep.
+  const unavailableExercises = block?.unavailableExercises ?? [];
 
   const referenceId = kind === CLASS_BLOCK_KIND.GAME_REF ? (source === "game" ? gameId : "") : lessonId;
   const referenceKind = kind === CLASS_BLOCK_KIND.GAME_REF ? CLASS_BLOCK_KIND.GAME_REF : CLASS_BLOCK_KIND.LESSON_REF;
@@ -169,7 +171,7 @@ export function BlockForm({
       )}
 
       {kind === CLASS_BLOCK_KIND.EXERCISE &&
-        (options.exercises.length === 0 ? (
+        (options.exercises.length === 0 && unavailableExercises.length === 0 ? (
           <p className="block-form__note">
             Todavía no tienes ejercicios listos: márcalos como listos en el editor para agregarlos aquí.
           </p>
@@ -183,6 +185,7 @@ export function BlockForm({
             <ExercisePicker
               name="exercises"
               exercises={options.exercises}
+              unavailable={unavailableExercises}
               value={exerciseIds}
               onValueChange={setExerciseIds}
               label="Ejercicios"

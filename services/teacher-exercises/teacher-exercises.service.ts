@@ -400,7 +400,7 @@ export async function getStudentExerciseAttempts(
   if (!student) return null;
   return {
     student,
-    attempts: rows.map((row) => mapExerciseAttemptRow(row, teacher.id)),
+    attempts: rows.map((row) => mapExerciseAttemptRow(row, teacher.id, new Date())),
     total,
     page: Math.max(1, page),
     pageSize: ATTEMPTS_PAGE_SIZE,

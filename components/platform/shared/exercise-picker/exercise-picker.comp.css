@@ -1,9 +1,27 @@
-/* Exercises to tick: the search, the cards under their label, and the line
-   that says nothing matched. */
+/* Exercises to tick: the search, the cards under their label, the ones the
+   container holds and can no longer be picked (set apart under their warning),
+   and the line that says nothing matched. */
 .exercise-picker {
   display: flex;
   flex-direction: column;
   gap: var(--platform-space-4);
+
+  & .exercise-picker__unavailable {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+  }
+
+  /* The warning tone, as the block form's own warnings: what it says is a state, not an error. */
+  & .exercise-picker__unavailable-note {
+    margin: 0;
+    padding: var(--platform-space-3);
+    border-radius: 8px;
+    background: var(--platform-warning-soft);
+    font-size: var(--platform-type-md);
+    line-height: 1.5;
+    color: var(--platform-warning-ink);
+  }
 
   & .exercise-picker__empty {
     margin: 0;

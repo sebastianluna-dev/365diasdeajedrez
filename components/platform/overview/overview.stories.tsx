@@ -464,13 +464,14 @@ const OVERVIEW_PICKABLE = [
   { id: "ex000002", title: "El mate de Philidor", facts: "Mate en 2 · 1400", topics: "Táctica" },
 ];
 
-/** A host for the exercise picker's tile: it keeps the ticked set. */
+/** A host for the exercise picker's tile: it keeps the ticked set, one of them no longer pickable. */
 function ExercisePickerHost() {
-  const [chosen, setChosen] = useState<string[]>(["ex000002"]);
+  const [chosen, setChosen] = useState<string[]>(["ex000002", "ex000009"]);
   return (
     <ExercisePicker
       name="exercises"
       exercises={OVERVIEW_PICKABLE}
+      unavailable={[{ id: "ex000009", title: "El molino", facts: "Secuencia · 1500", topics: "Táctica" }]}
       value={chosen}
       onValueChange={setChosen}
       label="Ejercicios"

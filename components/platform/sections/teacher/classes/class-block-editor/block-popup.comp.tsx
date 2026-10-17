@@ -46,7 +46,10 @@ export interface BlockPopupProps {
   groupSize: number;
   /** What ends the class: for «Lo verá cuando termine la clase, a las 13:00.» */
   endHour: string;
+  /** Who the student is, as it reads mid-sentence: «tus alumnos», «Alumno Demo»; capitalised when it opens one. */
   studentLabel: string;
+  /** «tus alumnos» takes «ven»; one student, «ve». */
+  studentPlural?: boolean;
   addClassBlock: (classId: string, prev: PopupFormState, formData: FormData) => Promise<PopupFormState>;
   updateClassBlock: (
     classId: string,
@@ -67,6 +70,11 @@ export const KIND_LABELS: Record<ClassBlockKindCode, string> = {
   [CLASS_BLOCK_KIND.FILE]: "Archivo",
   [CLASS_BLOCK_KIND.EXERCISE]: "Ejercicio",
 };
+
+/** «tus alumnos» → «Tus alumnos», for the label that opens a sentence; a name is already capitalised. */
+function capitalize(label: string): string {
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
 
 /** What a teacher may add: the exercise block (D29) only while «Ejercicios» is on. */
 export const ADDABLE_BLOCK_KINDS: ClassBlockKindCode[] = [
@@ -135,6 +143,7 @@ function BlockPopupForm({
   groupSize,
   endHour,
   studentLabel,
+  studentPlural = false,
   addClassBlock,
   updateClassBlock,
   fetchReferencePgn,
@@ -162,7 +171,12 @@ function BlockPopupForm({
     const error = state.fieldErrors?.[field];
     return error ? (CLASS_FIELD_ERRORS[error.code] ?? error.code) : undefined;
   };
-  const formError = state.formError ? (CLASS_FIELD_ERRORS[state.formError.code] ?? state.formError.code) : undefined;
+  // A refusal of the kind while editing has no field to land on (the kind is a hidden input then), so it is the form's.
+  const formError = state.formError
+    ? (CLASS_FIELD_ERRORS[state.formError.code] ?? state.formError.code)
+    : editing
+      ? message("kind")
+      : undefined;
   const errors = Object.fromEntries(
     ["text", "videoUrl", "pgn", "gameId", "lessonId", "caption", "exercises"].map((field) => [field, message(field)]),
   );
@@ -171,7 +185,7 @@ function BlockPopupForm({
     {
       value: CLASS_BLOCK_VISIBILITY.BEFORE,
       label: "Para preparar",
-      description: `${studentLabel} lo ve desde ahora.`,
+      description: `${capitalize(studentLabel)} lo ${studentPlural ? "ven" : "ve"} desde ahora.`,
     },
     {
       value: CLASS_BLOCK_VISIBILITY.AFTER,

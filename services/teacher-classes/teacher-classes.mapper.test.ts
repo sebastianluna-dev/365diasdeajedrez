@@ -198,32 +198,73 @@ describe("mapTeacherBlock", () => {
     position: null,
   };
 
+  const exercise = (id: string, title: string, extra: Partial<{ teacherId: string | null; status: string }> = {}) => ({
+    exerciseId: id,
+    exercise: {
+      id,
+      title,
+      kind: { code: "MATE_IN" },
+      mateIn: 2,
+      difficulty: 1400,
+      teacherId: "t-1",
+      status: { code: "READY" },
+      topics: [{ topic: { code: "TACTICS", label: "Táctica", order: 1 } }],
+      ...(extra.teacherId !== undefined ? { teacherId: extra.teacherId } : {}),
+      ...(extra.status ? { status: { code: extra.status } } : {}),
+    },
+  });
+
   it("an exercise block carries its exercises in order and is named by how many it holds (D29)", () => {
-    const block = mapTeacherBlock({
-      ...base,
-      kind: { code: CLASS_BLOCK_KIND.EXERCISE },
-      exercises: [
-        { exerciseId: "dmEjer02", exercise: { title: "El mate de Philidor" } },
-        { exerciseId: "dmEjer01", exercise: { title: "El pasillo abierto" } },
-      ],
-    });
+    const block = mapTeacherBlock(
+      {
+        ...base,
+        kind: { code: CLASS_BLOCK_KIND.EXERCISE },
+        exercises: [exercise("dmEjer02", "El mate de Philidor"), exercise("dmEjer01", "El pasillo abierto")],
+      },
+      "t-1",
+    );
     expect(block).toMatchObject({
       kind: CLASS_BLOCK_KIND.EXERCISE,
       exerciseIds: ["dmEjer02", "dmEjer01"],
+      unavailableExercises: [],
       referenceLabel: "2 ejercicios",
       isMovePathBroken: false,
     });
-    const one = mapTeacherBlock({
-      ...base,
-      kind: { code: CLASS_BLOCK_KIND.EXERCISE },
-      exercises: [{ exerciseId: "dmEjer02", exercise: { title: "El mate de Philidor" } }],
-    });
+    const one = mapTeacherBlock(
+      { ...base, kind: { code: CLASS_BLOCK_KIND.EXERCISE }, exercises: [exercise("dmEjer02", "El mate de Philidor")] },
+      "t-1",
+    );
     expect(one.referenceLabel).toBe("El mate de Philidor");
   });
 
+  it("the exercises the teacher could no longer pick come as cards for the popup: archived, or out of the library", () => {
+    const block = mapTeacherBlock(
+      {
+        ...base,
+        kind: { code: CLASS_BLOCK_KIND.EXERCISE },
+        exercises: [
+          exercise("own", "El pasillo abierto"),
+          exercise("archived", "La clavada", { status: "ARCHIVED" }),
+          exercise("library", "Desviación", { teacherId: "t-2", status: "PUBLISHED" }),
+          exercise("withdrawn", "El molino", { teacherId: "t-2", status: "READY" }),
+        ],
+      },
+      "t-1",
+    );
+    expect(block.exerciseIds).toEqual(["own", "archived", "library", "withdrawn"]);
+    expect(block.unavailableExercises).toEqual([
+      { id: "archived", title: "La clavada", facts: "Mate en 2 · 1400", topics: "Táctica" },
+      { id: "withdrawn", title: "El molino", facts: "Mate en 2 · 1400", topics: "Táctica" },
+    ]);
+  });
+
   it("any other kind carries no exercises", () => {
-    const block = mapTeacherBlock({ ...base, kind: { code: CLASS_BLOCK_KIND.TEXT }, text: "Hola", exercises: [] });
+    const block = mapTeacherBlock(
+      { ...base, kind: { code: CLASS_BLOCK_KIND.TEXT }, text: "Hola", exercises: [] },
+      "t-1",
+    );
     expect(block.exerciseIds).toBeUndefined();
+    expect(block.unavailableExercises).toBeUndefined();
     expect(block.referenceLabel).toBeUndefined();
   });
 });
@@ -236,11 +277,26 @@ describe("mapClassExerciseProgress (D29)", () => {
       exercises: [
         {
           exerciseId: "e1",
-          exercise: { title: "El pasillo abierto", kind: { code: "MATE_IN" }, mateIn: 1, difficulty: 900 },
+          exercise: {
+            title: "El pasillo abierto",
+            kind: { code: "MATE_IN" },
+            mateIn: 1,
+            difficulty: 900,
+            teacherId: "t-1",
+            status: { code: "READY" },
+          },
         },
         {
           exerciseId: "e2",
-          exercise: { title: "El mate de Philidor", kind: { code: "MATE_IN" }, mateIn: 2, difficulty: 1400 },
+          exercise: {
+            title: "El mate de Philidor",
+            kind: { code: "MATE_IN" },
+            mateIn: 2,
+            difficulty: 1400,
+            // Archived since: the students no longer get it, and the teacher's row says so.
+            teacherId: "t-1",
+            status: { code: "ARCHIVED" },
+          },
         },
       ],
     },
@@ -281,6 +337,7 @@ describe("mapClassExerciseProgress (D29)", () => {
       ],
       seats,
       "t-1",
+      CLASSES_NOW,
     );
     expect(progress).toMatchObject({ blockId: "b5", seatCount: 3 });
     const [first, second] = progress!.exercises;
@@ -291,6 +348,7 @@ describe("mapClassExerciseProgress (D29)", () => {
       solvedCount: 2,
       label: "2 de 3 lo resolvieron",
     });
+    expect(first!.unavailable).toBeUndefined();
     expect(first!.attempts.map((row) => [row.id, row.title, row.href, row.outcome, row.whereLabel])).toEqual([
       ["a-3", "Lucía Herrera", null, "solved", "Desde la clase"],
       ["a-2", "Alumno Demo", "/profesor/alumnos/u-d/ejercicios", "solved", "Desde la clase"],
@@ -302,13 +360,14 @@ describe("mapClassExerciseProgress (D29)", () => {
       n: 2,
       solvedCount: 0,
       label: "0 de 3 lo resolvieron",
+      unavailable: true,
       untried: ["Alumno Demo", "Lucía Herrera"],
     });
     expect(second!.attempts).toHaveLength(1);
   });
 
   it("with no seat, «Sin alumnos» and nothing to list", () => {
-    const [progress] = mapClassExerciseProgress(blocks, [], [], "t-1");
+    const [progress] = mapClassExerciseProgress(blocks, [], [], "t-1", CLASSES_NOW);
     expect(progress!.exercises.map((item) => [item.label, item.attempts.length, item.untried])).toEqual([
       ["Sin alumnos", 0, []],
       ["Sin alumnos", 0, []],

@@ -16,7 +16,7 @@ description: "«Agregar un bloque» / «Editar el bloque»: what it is, when the
 
 ## Purpose
 
-No trigger of its own: the block list opens it through its `ref` with a preset — a kind and a section for a new block, the block to edit, a game chosen elsewhere («Usar en una clase»). «¿Qué vas a agregar?» (Texto · Partida · Lección · Video · Ejercicio, the last behind `EXERCISES_ENABLED`; fixed when editing) and «¿Cuándo lo ve el alumno?» (Para preparar · Después de la clase · Guion del profesor; an exercise block is the student's task, so it is not offered «Guion del profesor», D30, and a TEACHER value goes back to «Para preparar» when the kind turns into exercises) are cards; the fields are [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form)'s. Submitted by hand (`onSubmit` → `startTransition(formAction)`), so React's reset does not reach the controlled pieces inside the fields.
+No trigger of its own: the block list opens it through its `ref` with a preset — a kind and a section for a new block, the block to edit, a game chosen elsewhere («Usar en una clase»). «¿Qué vas a agregar?» (Texto · Partida · Lección · Video · Ejercicio, the last behind `EXERCISES_ENABLED`; fixed when editing) and «¿Cuándo lo ve el alumno?» (Para preparar · Después de la clase · Guion del profesor; an exercise block is the student's task, so it is not offered «Guion del profesor», D30, and a TEACHER value goes back to «Para preparar» when the kind turns into exercises) are cards; the fields are [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form)'s. Submitted by hand (`onSubmit` → `startTransition(formAction)`), so React's reset does not reach the controlled pieces inside the fields. While editing, the kind is a hidden input, so a refusal of the kind — an exercise block saved with `EXERCISES_ENABLED` off («Los bloques de ejercicios no están disponibles por ahora…», `blockExercisesOff`) — is shown as the form's notice instead of landing on a field nobody sees. «Para preparar»'s line agrees with the class: «Alumno Demo lo ve desde ahora.», «Tus alumnos lo ven desde ahora.» (`studentLabel` as it reads mid-sentence, `studentPlural` for the verb).
 
 ## Props
 
@@ -25,6 +25,7 @@ No trigger of its own: the block list opens it through its `ref` with a preset �
 | `classId`                                                | `string`               | yes      |                                                                 |
 | `options`                                                | `{ games, exercises }` | yes      | What a game block may cite and what an exercise block may hold. |
 | `groupSize`, `endHour`, `studentLabel`                   |                        | yes      | The words of the cards and of the group warning.                |
+| `studentPlural`                                          | `boolean`              | no       | «tus alumnos» takes «ven»; one student, «ve». Default false.    |
 | `addClassBlock`, `updateClassBlock`, `fetchReferencePgn` |                        | yes      | The server actions.                                             |
 
 ## Markup & styling

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EXERCISE_BLOCK_LIMITS, exerciseBlockError, gameBlockSource } from "./block-rules";
+import { EXERCISE_BLOCK_LIMITS, blockVisibilityError, exerciseBlockError, gameBlockSource } from "./block-rules";
 
 describe("gameBlockSource", () => {
   it("la partida transcrita manda sobre la citada", () => {
@@ -28,5 +28,19 @@ describe("exerciseBlockError (D29, D30)", () => {
 
   it("nunca el guion del profesor: el bloque es la tarea del alumno", () => {
     expect(exerciseBlockError({ exerciseIds: ids(2), visibility: "TEACHER" })).toBe("blockExerciseVisibility");
+  });
+});
+
+describe("blockVisibilityError (D30)", () => {
+  it("an exercise block may be prepared or left for after the class, never the teacher's script", () => {
+    expect(blockVisibilityError({ kind: "EXERCISE", visibility: "BEFORE" })).toBeNull();
+    expect(blockVisibilityError({ kind: "EXERCISE", visibility: "AFTER" })).toBeNull();
+    expect(blockVisibilityError({ kind: "EXERCISE", visibility: "TEACHER" })).toBe("blockExerciseVisibility");
+  });
+
+  it("any other kind goes anywhere: a move into the script is refused only for exercises", () => {
+    for (const kind of ["TEXT", "VIDEO", "GAME_REF", "LESSON_REF", "POSITION_REF", "FILE"] as const) {
+      expect(blockVisibilityError({ kind, visibility: "TEACHER" })).toBeNull();
+    }
   });
 });

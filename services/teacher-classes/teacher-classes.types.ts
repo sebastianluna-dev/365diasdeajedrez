@@ -78,6 +78,12 @@ export interface TeacherClassBlock {
   positionId?: string;
   /** An EXERCISE block's exercises, in order (D29); the popup opens on them. */
   exerciseIds?: string[];
+  /**
+   * Those of them the teacher could no longer pick — archived, or taken out of
+   * the library (`seriesItemAvailability`) —, as cards: the popup draws them
+   * ticked and marked, to untick or to keep with the block's attempts.
+   */
+  unavailableExercises?: ExercisePickOption[];
   /** The stored movePath no longer resolves against the resource's current PGN. */
   isMovePathBroken: boolean;
 }

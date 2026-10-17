@@ -149,7 +149,10 @@ export const CLASS_FIELD_ERRORS: Record<string, string> = {
   blockExercises: "Elige de 1 a 10 ejercicios.",
   blockExercisesRepeated: "Hay un ejercicio repetido.",
   blockExerciseVisibility: "Un bloque de ejercicios es para el alumno: elige «Para preparar» o «Después de la clase».",
-  blockExercisesNotPickable: "Alguno de esos ejercicios ya no se puede agregar: cierra la ventana y vuelve a abrirla.",
+  blockExercisesNotPickable:
+    "Alguno de esos ejercicios ya no está disponible para tus alumnos: quítalo, o recarga la página para ver cuáles puedes agregar.",
+  blockExercisesOff:
+    "Los bloques de ejercicios no están disponibles por ahora, así que este bloque no se puede guardar.",
   blockChanged: "El bloque cambió mientras tanto: vuelve a intentarlo.",
   order: "No se pudo reordenar: recarga la página y vuelve a intentarlo.",
 };

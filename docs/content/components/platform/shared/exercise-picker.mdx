@@ -1,18 +1,18 @@
 ---
-description: "Exercises to tick, for a series or a class block: cards with each one's title, facts and topics, a search once there are a few, and the chosen ids sent as hidden inputs in the order they were ticked."
+description: "Exercises to tick, for a series or a class block: cards with each one's title, facts and topics, a search once there are a few, the ones the container holds and can no longer be picked set apart, and the chosen ids sent as hidden inputs in the order they were ticked."
 ---
 
 # `ExercisePicker`
 
-|            |                                                                                                                                                                                                                                                         |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/exercise-picker/exercise-picker.comp.tsx`; its option, `exercise-picker.types.ts`                                                                                                                                           |
-| Kind       | Client Component (the search's state)                                                                                                                                                                                                                   |
-| Stylesheet | `exercise-picker.comp.css` → block `.exercise-picker`                                                                                                                                                                                                   |
-| Story      | `exercise-picker.stories.tsx` (`platform/shared/ExercisePicker`): six exercises with the search, three without it, the tick order sent (`play`), a search that hides a chosen card (`play`), a server error                                             |
-| Used by    | [`AddSeriesExercisesPopup`](/components/platform/sections/teacher/exercises/add-series-exercises-popup) («Agregar ejercicios»), [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) (the block «Ejercicio», D29) |
-| Composes   | [`PlatformFormGroup`](/components/platform/shared/platform-form), [`PlatformCheckCards`](/components/platform/shared/platform-check-cards), [`PlatformSearchField`](/components/platform/shared/platform-search-field)                                  |
-| Uses       | `ExercisePickOption` (`{ id, title, facts, topics }`, what `mapSeriesPickOption` gives: `SeriesPickOption` and `PickableExercise` are its aliases), `foldForSearch`                                                                                     |
+|            |                                                                                                                                                                                                                                                                  |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/exercise-picker/exercise-picker.comp.tsx`; its option, `exercise-picker.types.ts`                                                                                                                                                    |
+| Kind       | Client Component (the search's state)                                                                                                                                                                                                                            |
+| Stylesheet | `exercise-picker.comp.css` → block `.exercise-picker`                                                                                                                                                                                                            |
+| Story      | `exercise-picker.stories.tsx` (`platform/shared/ExercisePicker`): six exercises with the search, three without it, the tick order sent (`play`), a search that hides a chosen card (`play`), a server error, two unavailable ones kept and one unticked (`play`) |
+| Used by    | [`AddSeriesExercisesPopup`](/components/platform/sections/teacher/exercises/add-series-exercises-popup) («Agregar ejercicios»), [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) (the block «Ejercicio», D29)          |
+| Composes   | [`PlatformFormGroup`](/components/platform/shared/platform-form), [`PlatformCheckCards`](/components/platform/shared/platform-check-cards), [`PlatformSearchField`](/components/platform/shared/platform-search-field)                                           |
+| Uses       | `ExercisePickOption` (`{ id, title, facts, topics }`, what `mapSeriesPickOption` gives: `SeriesPickOption` and `PickableExercise` are its aliases), `foldForSearch`                                                                                              |
 
 ## Purpose
 
@@ -24,6 +24,7 @@ One piece for the two places a teacher picks exercises (2026-10-16, phase 3 of [
 | --------------- | ------------------------- | -------- | ---------------------------------------------------------------------------------------------------------- |
 | `name`          | `string`                  | yes      | The name the chosen ids travel under, one hidden input each (`formData.getAll(name)` reads them in order). |
 | `exercises`     | `ExercisePickOption[]`    | yes      | What may be chosen, already filtered by the host.                                                          |
+| `unavailable`   | `ExercisePickOption[]`    | no       | What the container holds and the author could no longer pick, still in `value`: drawn apart, ticked.       |
 | `value`         | `string[]`                | yes      | The chosen ids, in tick order. Controlled: the host keeps the set and submits by hand.                     |
 | `onValueChange` | `(ids: string[]) => void` | yes      |                                                                                                            |
 | `label`         | `string`                  | yes      | The group's label: «Ejercicios».                                                                           |
@@ -33,14 +34,15 @@ One piece for the two places a teacher picks exercises (2026-10-16, phase 3 of [
 
 - From six exercises (`EXERCISE_PICKER_SEARCH_FROM`) a search over the title and the topics, without accents (`foldForSearch`); a chosen card the search hides stays mounted and sent (`hiddenValues`). With nothing matching: «Ningún ejercicio coincide con la búsqueda.»
 - The host says what happens to what is chosen and how many fit («Van al final de la serie…», «De 1 a 10 ejercicios…»), and shows its own empty state when there is nothing to offer: the picker only picks.
+- **What can no longer be picked** (2026-10-16, the phase-3 review): a block edited after one of its exercises was archived, or left the library, still holds it. The host passes those as `unavailable` (`TeacherClassBlock.unavailableExercises`, from `seriesItemAvailability`) and the picker draws the ones still in `value` apart, under «2 ya no están disponibles para tus alumnos: quítalos, o déjalos para conservar los intentos.» in the warning tone, each card ticked with «Ya no está disponible» as its line. Unticking one takes it off the screen and out of what is sent — it cannot be picked again —; leaving it ticked keeps it in the block, which the server allows on an edit (`readBlockFields`'s `keptExerciseIds`) so the attempts made from the block stay where they were.
 - Inside a form with controlled Radix cards, so the host submits by hand (`onSubmit` → `startTransition(formAction)`), as every such form does.
 
 ## Markup & styling
 
-Block `.exercise-picker` (14 lines): a column of the search, the group and the line that says nothing matched.
+Block `.exercise-picker` (32 lines): a column of the search, the group, the unavailable ones under their warning, and the line that says nothing matched.
 
-**Elements:** `.exercise-picker__empty`
+**Elements:** `.exercise-picker__unavailable`, `.exercise-picker__unavailable-note`, `.exercise-picker__empty`
 
-**Tokens:** `--platform-text-muted`
+**Tokens:** `--platform-text-muted`, `--platform-warning-ink`, `--platform-warning-soft`
 
 No media queries.

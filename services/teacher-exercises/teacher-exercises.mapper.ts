@@ -333,22 +333,25 @@ export function formatAttemptDuration(durationMs: number | null): string | null 
  * Where an attempt was made: its series by title, «De una serie eliminada»
  * for one whose series is gone (D45: the row keeps its SERIES context with no
  * series); its class by topic («Clase: Repaso de la Najdorf») or by day
- * («Clase del mié 14 oct», the academy's zone) when it has none, «De una
- * clase eliminada» for a block gone (D29); or the context's own label
- * («Práctica libre», «Repaso»…).
+ * («Clase del mié 14 oct», the academy's zone, with the year once it is not
+ * `now`'s) when it has none, «De un bloque de clase eliminado» when the block
+ * is gone (D29: the attempt's `classBlockId` goes null when the block is
+ * deleted or changes kind, while the class may well still exist); or the
+ * context's own label («Práctica libre», «Repaso»…).
  */
-export function attemptWhereLabel(attempt: Pick<TeacherAttemptRow, "context" | "series" | "classBlock">): string {
+export function attemptWhereLabel(
+  attempt: Pick<TeacherAttemptRow, "context" | "series" | "classBlock">,
+  now: Date,
+): string {
   if (attempt.context.code === ATTEMPT_CONTEXT.SERIES) {
     return attempt.series ? `Serie: ${attempt.series.title}` : "De una serie eliminada";
   }
   if (attempt.context.code === ATTEMPT_CONTEXT.CLASS) {
     const cls = attempt.classBlock?.class;
-    if (!cls) return "De una clase eliminada";
+    if (!cls) return "De un bloque de clase eliminado";
     const title = cls.title?.trim();
-    // The day, dated: a row is read long after, so «Hoy» would lie.
-    return title
-      ? `Clase: ${title}`
-      : `Clase del ${formatClassDay(cls.scheduledAt, STUDY_DAY_TIMEZONE, cls.scheduledAt)}`;
+    // Dated against `now`: a row is read long after, so «Hoy» would lie, and a class of another year says its year.
+    return title ? `Clase: ${title}` : `Clase del ${formatClassDay(cls.scheduledAt, STUDY_DAY_TIMEZONE, now)}`;
   }
   return attempt.context.label;
 }
@@ -360,7 +363,11 @@ export function attemptWhereLabel(attempt: Pick<TeacherAttemptRow, "context" | "
  * their arrows, the played one in the danger tone and the expected one in
  * the success tone, over the position it was played in.
  */
-export function mapExerciseAttemptRow(attempt: TeacherAttemptRow, teacherId: string): ExerciseAttemptRowData {
+export function mapExerciseAttemptRow(
+  attempt: TeacherAttemptRow,
+  teacherId: string,
+  now: Date,
+): ExerciseAttemptRowData {
   const mistake = attempt.mistakeDetails[0];
   const played = mistake ? moveSquaresOfSan(mistake.fen, mistake.playedSan) : undefined;
   const expected = mistake ? moveSquaresOfSan(mistake.fen, mistake.expectedSan) : undefined;
@@ -376,7 +383,7 @@ export function mapExerciseAttemptRow(attempt: TeacherAttemptRow, teacherId: str
     atLabel: formatSpanishDate(attempt.createdAt),
     outcome,
     outcomeLabel: OUTCOME_LABELS[outcome],
-    whereLabel: attemptWhereLabel(attempt),
+    whereLabel: attemptWhereLabel(attempt, now),
     durationLabel: formatAttemptDuration(attempt.durationMs),
     mistake:
       mistake && outcome === "failed"

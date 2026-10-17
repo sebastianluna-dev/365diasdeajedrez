@@ -217,7 +217,19 @@ const detailSelect = {
         orderBy: { order: "asc" },
         select: {
           exerciseId: true,
-          exercise: { select: { title: true, kind: { select: { code: true } }, mateIn: true, difficulty: true } },
+          // The card the popup draws for one the teacher could no longer pick, and what says whether they could.
+          exercise: {
+            select: {
+              id: true,
+              title: true,
+              kind: { select: { code: true } },
+              mateIn: true,
+              difficulty: true,
+              teacherId: true,
+              status: { select: { code: true } },
+              topics: { select: { topic: { select: { code: true, label: true, order: true } } } },
+            },
+          },
         },
       },
     },
@@ -340,13 +352,14 @@ export const getTeacherClassDetail = cache(async (classId: string): Promise<Teac
     }),
     meetingVisibleLine: meetingVisibleLine(source, timeZone),
     students,
-    blocks: row.blocks.map(mapTeacherBlock),
+    blocks: row.blocks.map((block) => mapTeacherBlock(block, teacher.id)),
     views: mapClassBlocks(viewRow.blocks, { audience: "teacher", phase, solvedLabels }),
     exerciseProgress: mapClassExerciseProgress(
       exerciseBlocks,
       attempts,
       seated.map((seat) => ({ userId: seat.userId, displayName: seat.displayName, isAssigned: seat.isAssigned })),
       teacher.id,
+      now,
     ),
     afterNotes: {
       summary: row.summary,

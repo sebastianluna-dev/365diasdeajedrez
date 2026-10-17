@@ -27,6 +27,7 @@ import {
 import type { ClassBlockView } from "@/services/classes/classes.types";
 import { blockOrderAfterDrop, isBlockVisibleToStudent, type BlockSections } from "@/services/shared/class-rules";
 import type { PopupFormState } from "@/services/shared/form-state";
+import { blockVisibilityError } from "@/services/teacher-classes/block-rules";
 import type { TeacherClassBlock } from "@/services/teacher-classes/teacher-classes.types";
 import type { BlockFormOptions } from "../class-block-editor/block-form.comp";
 import { ClassExerciseProgress } from "../class-exercise-progress/class-exercise-progress.comp";
@@ -50,8 +51,10 @@ export interface ClassBlockListProps {
   phase: ClassPhaseCode;
   /** The content may be edited in this phase. */
   editable: boolean;
-  /** «Alumno Demo», «tus alumnos». */
+  /** Who the student is, as it reads mid-sentence: «tus alumnos», «Alumno Demo»; capitalised when it opens one. */
   studentLabel: string;
+  /** «tus alumnos» takes «ven»; one student, «ve». */
+  studentPlural?: boolean;
   groupSize: number;
   /** «13:00»: when the material «Después de la clase» opens. */
   endHour: string;
@@ -102,6 +105,11 @@ function nameOf(block: TeacherClassBlock, view: ClassBlockView | undefined): str
   return KIND_LABELS[block.kind];
 }
 
+/** «tus alumnos» → «Tus alumnos», for the label that opens a sentence; a name is already capitalised. */
+function capitalize(label: string): string {
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
 function sectionsOf(blocks: TeacherClassBlock[]): BlockSections {
   const by = (visibility: ClassBlockVisibilityCode) =>
     blocks
@@ -129,12 +137,16 @@ export function ClassBlockList({
   phase,
   editable,
   studentLabel,
+  studentPlural = false,
   groupSize,
   endHour,
   options,
   initialGameId,
   actions,
 }: ClassBlockListProps) {
+  // «ve» or «ven»: the label is one student's name or «tus alumnos».
+  const sees = studentPlural ? "ven" : "ve";
+  const studentSubject = capitalize(studentLabel);
   const [sections, setSections] = useState(() => sectionsOf(blocks));
   const [baseline, setBaseline] = useState(blocks);
   if (blocks !== baseline) {
@@ -211,7 +223,7 @@ export function ClassBlockList({
       {asStudent ? (
         <div className="class-block-list__student">
           <p className="class-block-list__band">
-            Así lo ve {studentLabel} ahora:{" "}
+            Así lo {sees} {studentLabel} ahora:{" "}
             {visibleNow.length === 0
               ? "nada todavía"
               : `sólo ${visibleNow.map((section) => `«${section.label}»`).join(" y ")}`}
@@ -220,7 +232,9 @@ export function ClassBlockList({
           {studentSees.length > 0 ? (
             <ClassContentRenderer blocks={studentSees} />
           ) : (
-            <p className="class-block-list__empty">{studentLabel} no ve ningún bloque todavía.</p>
+            <p className="class-block-list__empty">
+              {studentSubject} no {sees} ningún bloque todavía.
+            </p>
           )}
         </div>
       ) : (
@@ -242,7 +256,7 @@ export function ClassBlockList({
                 </h3>
                 <p className="class-block-list__section-note">
                   {section.code === CLASS_BLOCK_VISIBILITY.BEFORE
-                    ? `${studentLabel} ya lo ve.`
+                    ? `${studentSubject} ya lo ${sees}.`
                     : section.code === CLASS_BLOCK_VISIBILITY.AFTER
                       ? `Lo verá cuando termine la clase, a las ${endHour}.`
                       : "Sólo lo ves tú."}
@@ -280,8 +294,8 @@ export function ClassBlockList({
               {editable && (
                 <p className="class-block-list__add">
                   {ADDABLE_BLOCK_KINDS.filter(
-                    // An exercise block is never the teacher's script (D30).
-                    (kind) => kind !== CLASS_BLOCK_KIND.EXERCISE || section.code !== CLASS_BLOCK_VISIBILITY.TEACHER,
+                    // An exercise block is never the teacher's script (D30): the same rule the row's «Pasar a …» follows.
+                    (kind) => blockVisibilityError({ kind, visibility: section.code }) === null,
                   ).map((kind) => (
                     <button
                       key={kind}
@@ -306,6 +320,7 @@ export function ClassBlockList({
         groupSize={groupSize}
         endHour={endHour}
         studentLabel={studentLabel}
+        studentPlural={studentPlural}
         addClassBlock={actions.addClassBlock}
         updateClassBlock={actions.updateClassBlock}
         fetchReferencePgn={actions.fetchReferencePgn}
@@ -348,7 +363,12 @@ function Row({ block, view, progress, name, number, editable, onEdit, onMoveTo, 
   });
   const steps = useSortableStep(block.id);
   const Icon = KIND_ICONS[block.kind];
-  const others = SECTIONS.filter((section) => section.code !== block.visibility);
+  // The sections the block could go to: not its own, and never the script for an exercise block (D30).
+  const others = SECTIONS.filter(
+    (section) =>
+      section.code !== block.visibility &&
+      blockVisibilityError({ kind: block.kind, visibility: section.code }) === null,
+  );
 
   return (
     <li

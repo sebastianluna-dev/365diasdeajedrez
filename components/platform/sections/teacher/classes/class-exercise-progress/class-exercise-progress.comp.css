@@ -41,6 +41,12 @@
     color: var(--platform-text-muted);
   }
 
+  /* The tag sits on its own line under the facts, as wide as its words. */
+  & .class-exercise-progress__tag {
+    align-self: flex-start;
+    margin-top: var(--platform-space-1);
+  }
+
   /* The popup's content: the figure, the attempts and who is missing. */
   & .class-exercise-progress__popup {
     display: flex;

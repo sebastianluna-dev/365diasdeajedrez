@@ -78,7 +78,8 @@ export function TeacherClassDetailSection({
             exerciseProgress={classDetail.exerciseProgress}
             phase={classDetail.phase}
             editable={editable.content}
-            studentLabel={studentLabel.charAt(0).toUpperCase() + studentLabel.slice(1)}
+            studentLabel={studentLabel}
+            studentPlural={classDetail.isGroup}
             groupSize={seated.length}
             endHour={endHour}
             options={{ games, exercises }}

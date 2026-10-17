@@ -35,7 +35,7 @@ import {
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
 import { nextOrder, planDenseRenumber, planFullReorder } from "@/services/shared/reorder";
 import { withErrorParam, withNoticeParam } from "@/services/shared/safe-return-to";
-import { exerciseBlockError, gameBlockSource } from "./block-rules";
+import { blockVisibilityError, exerciseBlockError, gameBlockSource } from "./block-rules";
 import { getPgnForReference } from "./teacher-classes.service";
 import { teacherPhaseOf } from "./teacher-classes.mapper";
 
@@ -51,9 +51,11 @@ import { teacherPhaseOf } from "./teacher-classes.mapper";
 //   runs redirect with the notice.
 // - An EXERCISE block's rows (`ClassBlockExercise`, D29) are written here and
 //   nowhere else, inside the block's transaction (`writeBlockExercises`): the
-//   exercises the teacher may pick are `buildPickableExercisesWhere`'s, one to
-//   ten, each once, never in the teacher's script (`exerciseBlockError`), and
-//   only while `EXERCISES_ENABLED` is on.
+//   exercises the teacher may pick are `buildPickableExercisesWhere`'s (plus,
+//   on an edit, the ones the block already holds: an archived one stays so
+//   its attempts are kept), one to ten, each once, never in the teacher's
+//   script (`exerciseBlockError`, and `blockVisibilityError` when a reorder
+//   moves the block there), and only while `EXERCISES_ENABLED` is on.
 
 const WINDOW_MS = 60_000;
 
@@ -301,6 +303,14 @@ export async function reorderClassBlocks(
         await tx.classBlock.update({ where: { id: update.id }, data: { order: update.order } });
       }
       if (moved && visibility?.success) {
+        // An exercise block never crosses into the script (D30): the row does not offer it, and a direct call is refused here.
+        const target = await tx.classBlock.findFirst({
+          where: { id: moved.blockId, classId },
+          select: { kind: { select: { code: true } } },
+        });
+        if (!target) throw new Refused("order");
+        if (blockVisibilityError({ kind: target.kind.code as ClassBlockKindCode, visibility: visibility.data }))
+          throw new Refused("blockExerciseVisibility");
         await tx.classBlock.updateMany({
           where: { id: moved.blockId, classId },
           data: { visibility: { connect: { code: visibility.data } } } as Prisma.ClassBlockUpdateManyMutationInput,
@@ -380,6 +390,8 @@ async function readBlockFields(
   common: { movePath: string | null; visibility: ClassBlockVisibilityCode },
   formData: FormData,
   teacher: { id: string; userId: string },
+  /** On an edit, the exercises the block already holds: kept even when the teacher could no longer pick them. */
+  keptExerciseIds: readonly string[],
 ): Promise<BlockFields> {
   const { movePath } = common;
   const empty: BlockFields = {
@@ -431,8 +443,9 @@ async function readBlockFields(
       return { ...empty, lessonId: lesson.id, movePath };
     }
     case CLASS_BLOCK_KIND.EXERCISE: {
-      // Behind the flag with the rest of «Ejercicios»: off, the kind is not offered and not accepted.
-      if (!EXERCISES_ENABLED) throw new BlockRefused("kind", { code: "blockKind" });
+      // Behind the flag with the rest of «Ejercicios»: off, the kind is not offered and not accepted
+      // — nor saved again on a block that already is one, which the popup says as its form error.
+      if (!EXERCISES_ENABLED) throw new BlockRefused("kind", { code: "blockExercisesOff" });
       const exerciseIds = formData
         .getAll("exercises")
         .filter((value): value is string => typeof value === "string")
@@ -441,11 +454,18 @@ async function readBlockFields(
       const refused = exerciseBlockError({ exerciseIds, visibility: common.visibility });
       if (refused === "blockExerciseVisibility") throw new BlockRefused("visibility", { code: refused });
       if (refused) throw new BlockRefused("exercises", { code: refused });
-      // What the teacher may put in a class is what they may put in a series (D08): their usable ones and the library's.
-      const pickable = await getPlatformDb().exercise.count({
-        where: { AND: [{ id: { in: exerciseIds } }, buildPickableExercisesWhere({ teacherId: teacher.id })] },
-      });
-      if (pickable !== exerciseIds.length) throw new BlockRefused("exercises", { code: "blockExercisesNotPickable" });
+      // What the teacher may put in a class is what they may put in a series (D08): their usable ones and
+      // the library's. What the block already holds stays if the teacher leaves it ticked: an exercise that
+      // was archived, or taken out of the library, keeps the block's attempts (the popup marks it for them).
+      const kept = new Set(keptExerciseIds);
+      const added = exerciseIds.filter((id) => !kept.has(id));
+      const pickable =
+        added.length === 0
+          ? 0
+          : await getPlatformDb().exercise.count({
+              where: { AND: [{ id: { in: added } }, buildPickableExercisesWhere({ teacherId: teacher.id })] },
+            });
+      if (pickable !== added.length) throw new BlockRefused("exercises", { code: "blockExercisesNotPickable" });
       return { ...empty, exerciseIds };
     }
     default:
@@ -499,7 +519,11 @@ function toUpdateData(fields: BlockFields) {
   };
 }
 
-async function readBlock(formData: FormData, teacher: { id: string; userId: string }) {
+async function readBlock(
+  formData: FormData,
+  teacher: { id: string; userId: string },
+  keptExerciseIds: readonly string[] = [],
+) {
   const common = parseForm(BLOCK_COMMON_SCHEMA, formData);
   if (!common.ok) {
     throw new BlockRefused(common.field, {
@@ -511,6 +535,7 @@ async function readBlock(formData: FormData, teacher: { id: string; userId: stri
     { movePath: common.data.movePath, visibility: common.data.visibility },
     formData,
     teacher,
+    keptExerciseIds,
   );
   return { common: common.data, fields };
 }
@@ -571,11 +596,18 @@ export async function updateClassBlock(
     return popupFormError({}, values, { code: "notEditable" });
 
   try {
-    const { common, fields } = await readBlock(formData, { id: teacher.id, userId: user.id });
     const db = getPlatformDb();
     // Looked up with classId in the where: a blockId of another class matches nothing.
-    const block = await db.classBlock.findFirst({ where: { id: blockId, classId }, select: { id: true } });
+    const block = await db.classBlock.findFirst({
+      where: { id: blockId, classId },
+      select: { id: true, exercises: { select: { exerciseId: true } } },
+    });
     if (!block) return popupFormError({}, values, { code: "blockMissing" });
+    const { common, fields } = await readBlock(
+      formData,
+      { id: teacher.id, userId: user.id },
+      block.exercises.map((item) => item.exerciseId),
+    );
     await db.$transaction(async (tx) => {
       await tx.classBlock.update({
         where: { id: block.id },

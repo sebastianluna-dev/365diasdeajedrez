@@ -107,7 +107,8 @@ function TextBlock({ text }: { text: string }) {
  * One exercise of an EXERCISE block (D29): the start drawn small, its number,
  * title and facts, and, for the student, their mark in THIS block — «Resuelto»
  * or «Fallado», always written beside its icon — and «Resolver», which opens
- * it under the class's address. The teacher and the staff read the same row
+ * it under the class's address («Volver a ver» once it is solved: the way in
+ * is the same, the verb is not). The teacher and the staff read the same row
  * with the count instead («2 de 3 lo resolvieron») and no way to solve.
  */
 function ExerciseRow({ item }: { item: ClassBlockExerciseView }) {
@@ -144,7 +145,7 @@ function ExerciseRow({ item }: { item: ClassBlockExerciseView }) {
       )}
       {item.href && (
         <Link href={item.href} className="platform-button platform-button_size_sm class-content__exercise-action">
-          Resolver
+          {item.mark === "solved" ? "Volver a ver" : "Resolver"}
         </Link>
       )}
     </li>

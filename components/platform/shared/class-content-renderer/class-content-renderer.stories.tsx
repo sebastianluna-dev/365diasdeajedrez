@@ -73,7 +73,7 @@ const POSITION: ClassBlockView = {
   position: { fen: "1K1k4/1P6/8/8/8/8/r7/2R5 w - - 0 1", orientation: "white", title: "Lucena" },
 };
 
-/** An exercise block as the student reads it: their marks in this block, and «Resolver». */
+/** An exercise block as the student reads it: their marks in this block, and «Resolver» («Volver a ver» once solved). */
 const EXERCISES: ClassBlockView = {
   id: "b6",
   kind: "EXERCISE",
@@ -194,7 +194,7 @@ export const Position: Story = { args: { blocks: [POSITION] } };
 /** A video, as a link out: the arrow, and «(se abre en una pestaña nueva)» for a screen reader. */
 export const Video: Story = { args: { blocks: [VIDEO] } };
 
-/** An exercise block as the student reads it (D29): one solved, one failed, one untried, each with «Resolver». */
+/** An exercise block as the student reads it (D29): one solved («Volver a ver»), one failed and one untried («Resolver»). */
 export const Exercises: Story = { args: { blocks: [EXERCISES] } };
 
 /**

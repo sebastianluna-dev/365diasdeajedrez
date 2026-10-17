@@ -20,7 +20,9 @@ interface ClassExerciseProgressProps {
  * the popup with each seated student's attempts from this block
  * (`ExerciseAttemptRow`, the student as the row's title, with the mistake to
  * unfold) and who has not tried it. Counted on reading over the seats not
- * moved, never stored; the staff's sheet shows the same count, read-only.
+ * moved, never stored; the staff's sheet shows the same count, read-only. An
+ * exercise the students no longer get wears «Ya no está disponible», as it
+ * does on the staff's rows.
  */
 export function ClassExerciseProgress({ progress }: ClassExerciseProgressProps) {
   const popup = useRef<PlatformPopupHandle>(null);
@@ -37,6 +39,11 @@ export function ClassExerciseProgress({ progress }: ClassExerciseProgressProps) 
                 {item.n}. {item.title}
               </span>
               <span className="class-exercise-progress__facts">{item.facts}</span>
+              {item.unavailable && (
+                <span className="platform-tag platform-tag_variant_warning class-exercise-progress__tag">
+                  Ya no está disponible
+                </span>
+              )}
             </span>
             <button
               type="button"
