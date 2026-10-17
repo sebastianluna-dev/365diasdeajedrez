@@ -31,6 +31,8 @@ export const EXERCISE_ERROR_MESSAGES: Record<string, string> = {
   disabled: "Los ejercicios todavía no están disponibles.",
   throttled: "Has hecho demasiados cambios seguidos. Espera un momento y vuelve a intentarlo.",
   notFound: "Ese ejercicio ya no existe o no es tuyo.",
+  /** The staff's, in the lesson editor: a lesson's exercise is nobody's, so «no es tuyo» would be false. */
+  exerciseMissing: "Ese ejercicio ya no existe.",
   locked: "Este ejercicio no se puede editar ahora: duplícalo para hacer tu versión.",
   changed: "Alguien cambió este ejercicio mientras lo editabas. Recarga la página y vuelve a intentarlo.",
   notReady: "Le falta algo para estar listo: ábrelo, complétalo y vuelve a intentarlo.",
@@ -73,6 +75,8 @@ export const EXERCISE_NOTICES = {
   exerciseDuplicated: "Ejercicio duplicado: esta es tu copia, como borrador.",
   exerciseArchived: "Ejercicio archivado.",
   exerciseRestored: "Ejercicio restaurado: vuelve a estar listo.",
+  exerciseRestoredToLesson:
+    "Ejercicio restaurado: vuelve a la lección como borrador, al final; publícalo cuando quieras.",
   exerciseDeleted: "Ejercicio eliminado.",
   exercisePublished: "Ejercicio guardado y publicado: los alumnos lo verán en la lección.",
   exerciseCopied: "Ejercicio agregado a la lección desde la biblioteca.",

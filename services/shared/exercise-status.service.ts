@@ -98,21 +98,33 @@ function ownerOf(row: Pick<TransitionRow, "teacherId" | "lessonId">): ExerciseOw
   return row.teacherId === null ? "academy" : "teacher";
 }
 
+/** Whether the move is a lesson exercise's archive (it loses its place) or restore (it takes one). */
+function isLessonArchive(rule: ExerciseTransitionRule, row: TransitionRow): boolean {
+  return rule.to === EXERCISE_STATUS.ARCHIVED && rule.owners.includes("lesson") && row.lessonId !== null;
+}
+function isLessonRestore(rule: ExerciseTransitionRule, row: TransitionRow): boolean {
+  return rule.from === EXERCISE_STATUS.ARCHIVED && rule.owners.includes("lesson") && row.lessonId !== null;
+}
+
 /** The review columns a move writes beside the status. */
 function transitionStamps(
   rule: ExerciseTransitionRule,
   row: TransitionRow,
-  actorUserId: string,
+  input: MoveInput,
   note: string | null,
-  now: Date,
-): Record<string, Date | string | null> {
-  const stamps: Record<string, Date | string | null> = {};
+): Record<string, Date | string | number | null> {
+  const { actorUserId, now } = input;
+  const stamps: Record<string, Date | string | number | null> = {};
   // A fresh proposal: the note of an earlier return no longer applies.
   if (rule.to === EXERCISE_STATUS.IN_REVIEW) Object.assign(stamps, { submittedAt: now, reviewNote: null });
   // An archived lesson exercise leaves the lesson's order (CHECK exercise_lesson_order_needs_lesson lets it stay
-  // without one): the panel lists it apart, and a new one takes the place.
-  if (rule.to === EXERCISE_STATUS.ARCHIVED && rule.owners.includes("lesson") && row.lessonId !== null) {
-    stamps.lessonOrder = null;
+  // without one): the panel lists it apart, and the caller closes the gap it leaves
+  // (closeLessonExerciseOrderGaps) in the same transaction.
+  if (isLessonArchive(rule, row)) stamps.lessonOrder = null;
+  // A restored one comes back at the end of the lesson: the place the caller read (nextLessonExerciseOrder).
+  if (isLessonRestore(rule, row)) {
+    if (input.lessonOrder === undefined) throw new Error("Restoring a lesson's exercise needs its lessonOrder");
+    stamps.lessonOrder = input.lessonOrder;
   }
   // Every move of the staff is a decision of the review, with its note.
   if (rule.role === "staff") Object.assign(stamps, { reviewedAt: now, reviewedById: actorUserId, reviewNote: note });
@@ -127,6 +139,8 @@ interface MoveInput {
   actorUserId: string;
   note: string | null;
   now: Date;
+  /** The place a restored lesson exercise takes (ARCHIVED → DRAFT of a lesson's); unused by every other move. */
+  lessonOrder?: number;
 }
 
 async function move(
@@ -186,7 +200,7 @@ async function move(
   // Conditioned on the status it started from: two moves that overlap write once.
   const result = await db.exercise.updateMany({
     where: { id: input.exerciseId, statusId: row.statusId },
-    data: { statusId: toId, ...transitionStamps(rule, row, input.actorUserId, note, input.now) },
+    data: { statusId: toId, ...transitionStamps(rule, row, input, note) },
   });
   return result.count > 0 ? { ok: true, from } : { ok: false, code: "changed" };
 }
@@ -219,13 +233,21 @@ export interface ReviewLibraryExerciseInput {
   /** «Devolver» and «Quitar de la biblioteca» require it; elsewhere it is optional. */
   note: string | null;
   now: Date;
+  /**
+   * Restoring a lesson's exercise (ARCHIVED → DRAFT) gives it back a place,
+   * which the caller reads with `nextLessonExerciseOrder` in the same
+   * transaction: the end of the lesson. Required for that move, ignored by
+   * every other.
+   */
+  lessonOrder?: number;
 }
 
 /**
  * The staff's moves: approve or return a proposal, take an exercise out of
  * the library, publish, archive or restore the academy's, and publish, take
- * back to draft or archive a lesson's (an archived one loses its
- * `lessonOrder`). Each one stamps who decided, when, and the note.
+ * back to draft, archive or restore a lesson's (an archived one loses its
+ * `lessonOrder`; a restored one takes `lessonOrder`, the end of the lesson,
+ * as a draft). Each one stamps who decided, when, and the note.
  */
 export async function reviewLibraryExercise(
   db: ExerciseStatusWriter,

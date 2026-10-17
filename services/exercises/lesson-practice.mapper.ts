@@ -2,12 +2,15 @@ import type { ExerciseSolverLink } from "@/components/platform/shared/exercise-s
 import type { ExerciseKindCode } from "@/constants/platform/exercise-codes.const";
 import { exerciseKindLabel, playerOfStart } from "@/lib/chess/exercise-labels";
 import { platformRoutes } from "@/lib/platform-routes";
-import { exerciseSolveKey, isSameStudyDay } from "@/services/shared/exercise-attempt.service";
+import { isSameStudyDay } from "@/services/shared/exercise-attempt.service";
 import { levelOfDifficulty, type DifficultyLevel } from "@/services/shared/exercise-level";
 import type { LessonPractice, LessonPracticeItem } from "./lesson-practice.types";
 
 // From the rows the lesson reads to what its card and its list draw. Pure, so
-// the counting by solve key and the one accent are tested here.
+// the counting by family and the one accent are tested here; the family
+// itself — the solve key, the exercise and every lesson copy of the key — is
+// `exerciseFamiliesOf`'s (services/shared/exercise-attempt.service.ts), the
+// writer's own rule, read once by the service and handed over.
 
 /** A lesson's exercise in play, as the service reads it. */
 export interface LessonExerciseRow {
@@ -35,10 +38,8 @@ export interface LessonPlace {
   lessonId: string;
 }
 
-/** The ids whose states speak for an exercise: itself and its solve key (a copy's library original). */
-export function practiceFamilyOf(exercise: Pick<LessonExerciseRow, "id" | "copiedFromId" | "lessonId">): string[] {
-  return [...new Set([exercise.id, exerciseSolveKey(exercise)])];
-}
+/** The ids whose states speak for each exercise, by its id: `exerciseFamiliesOf`'s answer. */
+export type PracticeFamilies = ReadonlyMap<string, readonly string[]>;
 
 /** «Mate en 2 · 1400 · Intermedio». */
 function factsOf(exercise: LessonExerciseRow, levels: readonly DifficultyLevel[]): string {
@@ -50,10 +51,11 @@ function factsOf(exercise: LessonExerciseRow, levels: readonly DifficultyLevel[]
 
 /**
  * The lesson's exercises with the student's standing: «resuelto» when any
- * row of the exercise's family has `firstSolvedAt` (D22, D28: the original
- * and its lesson copy are one exercise), and the way on to the first not
- * solved yet that can still count today — one attempted this study day would
- * open unscored (§2.7), so the accent skips it. Null with no exercise in play.
+ * row of the exercise's family has `firstSolvedAt` (D22, D28: the original,
+ * its lesson copies and this one are one exercise, the writer's family), and
+ * the way on to the first not solved yet that can still count today — one
+ * attempted this study day would open unscored (§2.7), so the accent skips
+ * it. Null with no exercise in play.
  */
 export function lessonPracticeOf(
   place: LessonPlace,
@@ -61,9 +63,11 @@ export function lessonPracticeOf(
   states: readonly PracticeStateRow[],
   levels: readonly DifficultyLevel[],
   now: Date,
+  families: PracticeFamilies,
 ): LessonPractice | null {
   if (rows.length === 0) return null;
   const byId = new Map(states.map((state) => [state.exerciseId, state]));
+  const familyOf = (exercise: LessonExerciseRow) => families.get(exercise.id) ?? [exercise.id];
   const items: LessonPracticeItem[] = rows.map((exercise, index) => ({
     n: index + 1,
     href: platformRoutes.lessonPractice(place.courseId, place.chapterOrder, place.lessonId, index + 1),
@@ -71,15 +75,15 @@ export function lessonPracticeOf(
     facts: factsOf(exercise, levels),
     startFen: exercise.startFen,
     orientation: playerOfStart(exercise.startFen),
-    solved: practiceFamilyOf(exercise).some((id) => byId.get(id)?.firstSolvedAt != null),
+    solved: familyOf(exercise).some((id) => byId.get(id)?.firstSolvedAt != null),
   }));
   const triedToday = (exercise: LessonExerciseRow) =>
-    practiceFamilyOf(exercise).some((id) => {
+    familyOf(exercise).some((id) => {
       const last = byId.get(id)?.lastAttemptAt;
       return last != null && isSameStudyDay(last, now);
     });
   const nextIndex = rows.findIndex((exercise, index) => !items[index]?.solved && !triedToday(exercise));
-  const started = rows.some((exercise) => practiceFamilyOf(exercise).some((id) => byId.get(id)?.lastAttemptAt != null));
+  const started = rows.some((exercise) => familyOf(exercise).some((id) => byId.get(id)?.lastAttemptAt != null));
   const start: ExerciseSolverLink | null =
     nextIndex < 0
       ? null

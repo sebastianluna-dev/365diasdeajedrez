@@ -25,7 +25,7 @@ description: "An exercise of a bank: its start position small, the title that op
 ## Behaviour
 
 - The diagram is the start with the side to move at the bottom; the status is a `platform-tag` (a draft plain, a ready one the success's, one in review the warning's, one in the library the accent's) and the kind another («Secuencia», «Mate en 2»).
-- The row's words are `.platform-row-action`: «Duplicar», «Archivar» (a draft or a ready one), «Restaurar» (an archived one), each a `<form>` bound to the id; «Eliminar», in the danger's ink, is `DeleteExercise`, the card's one client leaf: it opens a `PlatformConfirmPopup` that names the exercise. It is offered only for one nobody has tried and that is not in review or in the library: with attempts its history stays and it is archived instead. A lesson's panel hands only `archive` and `delete`, so a card there never says the bank's other two words.
+- The row's words are `.platform-row-action`: «Duplicar», «Archivar» (a draft or a ready one), «Restaurar» (an archived one), each a `<form>` bound to the id; «Eliminar», in the danger's ink, is `DeleteExercise`, the card's one client leaf: it opens a `PlatformConfirmPopup` that names the exercise. It is offered only for one nobody has tried and that is not in review or in the library: with attempts its history stays and it is archived instead. A lesson's panel hands `archive`, `restore` and `delete`, never `duplicate`, so a card there never says «Duplicar».
 - An archived card's diagram steps back (`opacity: 0.6`).
 
 ## Markup & styling

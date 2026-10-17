@@ -15,7 +15,8 @@ interface LessonExerciseEditorSectionProps {
  * server, so the editor imports none. Mounted again on every save
  * (`version`), so the board and the fields open on what was stored. «Desde
  * una partida» offers the chapter's collection, where the lesson's content
- * comes from.
+ * comes from (`gameSource="chapter"`, so an empty collection is named as such,
+ * not the teacher's studies).
  */
 export function LessonExerciseEditorSection({ editor, notice, errorMessage }: LessonExerciseEditorSectionProps) {
   const { courseId, chapterId, lessonId } = editor;
@@ -28,6 +29,7 @@ export function LessonExerciseEditorSection({ editor, notice, errorMessage }: Le
         exercise={editor.exercise}
         catalogs={editor.catalogs}
         games={editor.games}
+        gameSource="chapter"
         permissions={editor.permissions}
         buttons={editor.buttons}
         save={saveLessonExercise.bind(null, courseId, chapterId, lessonId, editor.exercise.id)}

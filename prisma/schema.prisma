@@ -1116,10 +1116,12 @@ model Exercise {
   /// are RESTRICT).
   lessonId          String?
   /// Its place in the lesson; null for an archived one, cleared by
-  /// exercise-status.service.ts when it archives it (CHECK
-  /// exercise_lesson_order_needs_lesson). Unique per lesson: the panel
-  /// reorders through services/shared/reorder.ts, and an insert that finds
-  /// its order taken answers `orderTaken` (isUniqueConstraintError).
+  /// exercise-status.service.ts when it archives it and given back, one past
+  /// the highest, when it restores it (CHECK exercise_lesson_order_needs_lesson).
+  /// Unique per lesson: the panel reorders through services/shared/reorder.ts,
+  /// the next place and the closing of a gap are
+  /// services/shared/lesson-exercise-order.service.ts's, and an insert that
+  /// finds its order taken answers `orderTaken` (isUniqueConstraintError).
   lessonOrder       Int?
   /// The review (D16). Only writer: services/shared/exercise-status.service.ts
   /// (transitionOwnExercise / reviewLibraryExercise). publishedAt is the FIRST

@@ -1,13 +1,17 @@
 import { EXERCISE_STATUS } from "@/constants/platform/exercise-codes.const";
+import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { lessonHasContent, lessonPgnNotEmptyWhere, lessonPgnSelect } from "@/services/shared/lesson-pgn";
 
 // The minimum a course needs to be published: a lesson with content in one of
 // its chapters — a game or PGN to read, or, since phase 2 of «Ejercicios»
-// (D25), a published exercise to solve: a practice-only lesson is content too.
-// Publishing an empty course would show the student blank lessons. The course
-// editor asks it to offer «Publicado» (`canPublish`) and `publishCourse` asks
-// it again before writing, so both read it from here.
+// (D25), a published exercise to solve: a practice-only lesson is content too,
+// but only while `EXERCISES_ENABLED` shows it: with the flag off the student
+// sees no practice (`getLessonPractice` hands null), so a lesson with nothing
+// but exercises would be a blank page to them and does not count. Publishing
+// an empty course would show the student blank lessons. The course editor
+// asks it to offer «Publicado» (`canPublish`) and `publishCourse` asks it
+// again before writing, so both read it from here.
 //
 // What "content" is stays `lessonHasContent`'s: the ruling PGN (the linked
 // game's when there is one) with something besides blanks. The database can
@@ -55,7 +59,8 @@ export type CourseContentReader = Pick<Prisma.TransactionClient, "lesson">;
  * One lesson is read: the first the database finds among the candidates. Only
  * when that one is blank text are the rest read, because the database cannot
  * tell blank from content and a blank one first is no answer. With no PGN
- * anywhere, a practice-only lesson is looked for by id alone.
+ * anywhere, a practice-only lesson is looked for by id alone — and only with
+ * the flag on, since off it the student would see nothing of it.
  */
 export async function courseHasContent(db: CourseContentReader, courseId: string): Promise<boolean> {
   const where = courseContentCandidatesWhere(courseId);
@@ -65,6 +70,7 @@ export async function courseHasContent(db: CourseContentReader, courseId: string
     const candidates = await db.lesson.findMany({ where, select: lessonPgnSelect });
     if (candidates.some(lessonHasContent)) return true;
   }
+  if (!EXERCISES_ENABLED) return false;
   const practice = await db.lesson.findFirst({ where: coursePracticeLessonsWhere(courseId), select: { id: true } });
   return practice !== null;
 }

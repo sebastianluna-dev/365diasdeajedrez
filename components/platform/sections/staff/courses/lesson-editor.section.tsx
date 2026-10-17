@@ -4,6 +4,7 @@ import {
   PlatformFormGroup,
 } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
+import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { BOARD_ORIENTATION, CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
 import { isPracticeOnlyLesson } from "@/services/staff-courses/lesson-exercises.mapper";
@@ -57,9 +58,11 @@ export function LessonEditorSection({
 }: LessonEditorSectionProps) {
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
   const saveLesson = updateLesson.bind(null, lesson.courseId, lesson.chapterId, lesson.id);
-  const hasContent = lesson.pgn.trim().length > 0;
+  // The one rule of «content» (`lessonHasContent`, read into `hasContent`), and «practice-only» as the student
+  // and `courseHasContent` see it: a PUBLISHED exercise in play, and only while the flag shows it.
+  const { hasContent } = lesson;
   const inPlay = lesson.exercises.filter((exercise) => exercise.lessonOrder !== null).length;
-  const practiceOnly = isPracticeOnlyLesson(hasContent, lesson.exercises);
+  const practiceOnly = EXERCISES_ENABLED && isPracticeOnlyLesson(hasContent, lesson.exercises);
 
   return (
     <div className="lesson-editor">

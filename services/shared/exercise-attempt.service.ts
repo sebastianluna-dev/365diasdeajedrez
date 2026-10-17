@@ -148,24 +148,50 @@ interface StateRow extends ExerciseStateColumns {
 
 /** The minimum of Prisma that reads a key's lesson copies. */
 export interface ExerciseFamilyReader {
-  exercise: { findMany(args: unknown): Promise<{ id: string }[]> };
+  exercise: { findMany(args: unknown): Promise<{ id: string; copiedFromId: string | null }[]> };
 }
 
 /**
- * The ids whose states make up an exercise's family (D22, D28): its solve
- * key, itself, and every lesson copy of the key — so solving a library
- * exercise and then its copy in a lesson is one exercise for the day gate and
- * for «Ejercicios superados», whichever of the two was solved first. The
- * writer reads it under the family's lock; the pages read it to say whether
- * the exercise was attempted today and whether it counts as solved.
+ * The family of each of several exercises (D22, D28), by the exercise's id:
+ * its solve key, itself, and every lesson copy of the key — so solving a
+ * library exercise and then its copy in a lesson is one exercise for the day
+ * gate and for «Ejercicios superados», whichever of the two was solved first.
+ * The copies of every key are read in ONE query: the lesson's page asks for
+ * its whole list at once. The one definition of «family»: the writer and the
+ * pages read it here and nowhere else.
+ */
+export async function exerciseFamiliesOf(
+  db: ExerciseFamilyReader,
+  exercises: readonly SolveKeyExercise[],
+): Promise<Map<string, string[]>> {
+  const keys = [...new Set(exercises.map(exerciseSolveKey))];
+  const copies =
+    keys.length === 0
+      ? []
+      : await db.exercise.findMany({
+          where: { copiedFromId: { in: keys }, lessonId: { not: null } },
+          select: { id: true, copiedFromId: true },
+        });
+  const copiesOf = new Map<string, string[]>();
+  for (const copy of copies) {
+    if (copy.copiedFromId === null) continue;
+    copiesOf.set(copy.copiedFromId, [...(copiesOf.get(copy.copiedFromId) ?? []), copy.id]);
+  }
+  return new Map(
+    exercises.map((exercise) => {
+      const solveKey = exerciseSolveKey(exercise);
+      return [exercise.id, [...new Set([solveKey, exercise.id, ...(copiesOf.get(solveKey) ?? [])])]];
+    }),
+  );
+}
+
+/**
+ * The ids whose states make up ONE exercise's family (`exerciseFamiliesOf` of
+ * it alone). The writer reads it under the family's lock; the solve pages
+ * read it to say whether the exercise was attempted today.
  */
 export async function exerciseFamilyIds(db: ExerciseFamilyReader, exercise: SolveKeyExercise): Promise<string[]> {
-  const solveKey = exerciseSolveKey(exercise);
-  const copies = await db.exercise.findMany({
-    where: { copiedFromId: solveKey, lessonId: { not: null } },
-    select: { id: true },
-  });
-  return [...new Set([solveKey, exercise.id, ...copies.map((copy) => copy.id)])];
+  return (await exerciseFamiliesOf(db, [exercise])).get(exercise.id) ?? [exercise.id];
 }
 
 /** The minimum of Prisma the lock needs. */

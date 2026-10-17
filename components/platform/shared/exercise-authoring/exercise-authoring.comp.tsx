@@ -94,8 +94,14 @@ export interface ExerciseAuthoringProps {
   /** The exercise, or a new one's prefill (`id` null). */
   exercise: ExerciseAuthoringExercise;
   catalogs: ExerciseAuthoringCatalogs;
-  /** The author's study games, for «Desde una partida». */
+  /** The games «Desde una partida» offers: the author's studies, or the chapter's collection in the staff lesson editor. */
   games: ExerciseAuthoringGame[];
+  /**
+   * Where those games come from, which is what the empty state names: the
+   * teacher's «Mis estudios» (`studies`, the default) or, in the staff lesson
+   * editor, the chapter's collection (`chapter`).
+   */
+  gameSource?: ExerciseGameSource;
   permissions: ExerciseAuthoringPermissions;
   /** The save bar's buttons, by what the author may ask for in this status. */
   buttons: ExerciseSaveButton[];
@@ -114,6 +120,15 @@ export interface ExerciseAuthoringProps {
 }
 
 type Way = "place" | "paste" | "game";
+
+/** Where «Desde una partida» reads its games. */
+export type ExerciseGameSource = "studies" | "chapter";
+
+/** What «Desde una partida» says with no game to offer, by where the games would come from. */
+const NO_GAMES: Record<ExerciseGameSource, string> = {
+  studies: "Todavía no tienes partidas en tus estudios. Agrega una en «Mis estudios» y vuelve aquí.",
+  chapter: "Este capítulo todavía no tiene partidas en su colección: agrégalas en el capítulo y vuelve aquí.",
+};
 
 /** The editor's steps: the three the form's errors belong to, and «Probar», which holds no field. */
 type AuthoringTab = ExerciseFormTab | "try";
@@ -203,6 +218,7 @@ export function ExerciseAuthoring({
   exercise,
   catalogs,
   games,
+  gameSource = "studies",
   permissions,
   buttons,
   save,
@@ -320,6 +336,7 @@ export function ExerciseAuthoring({
             setupProblem={setupCheck.ok ? null : SETUP_PROBLEM_MESSAGES[setupCheck.problem]}
             issue={issueOf("position")}
             games={games}
+            gameSource={gameSource}
             locked={locked}
             boardKey={boardKey}
             fetchGamePgn={fetchGamePgn}
@@ -418,6 +435,7 @@ interface PositionStepProps {
   setupProblem: string | null;
   issue: string | undefined;
   games: ExerciseAuthoringGame[];
+  gameSource: ExerciseGameSource;
   locked: boolean;
   boardKey: number;
   fetchGamePgn: FetchPgn;
@@ -433,6 +451,7 @@ function PositionStep({
   issue,
   games,
   locked,
+  gameSource,
   boardKey,
   fetchGamePgn,
   onSetupChange,
@@ -625,9 +644,7 @@ function PositionStep({
       ) : (
         <div className="exercise-authoring__from-game" data-field="position">
           {games.length === 0 ? (
-            <p className="exercise-authoring__lead">
-              Todavía no tienes partidas en tus estudios. Agrega una en «Mis estudios» y vuelve aquí.
-            </p>
+            <p className="exercise-authoring__lead">{NO_GAMES[gameSource]}</p>
           ) : (
             <>
               <PlatformForm className="exercise-authoring__fields" onSubmit={(event) => event.preventDefault()}>

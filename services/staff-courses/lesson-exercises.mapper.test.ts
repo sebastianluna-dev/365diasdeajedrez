@@ -47,19 +47,15 @@ describe("lessonExerciseAllowed", () => {
     expect(lessonExerciseAllowed("DRAFT", 1)).toMatchObject({ archive: true, delete: false });
   });
 
-  it("a un archivado no le ofrece nada: la lección no tiene vuelta para él", () => {
-    expect(lessonExerciseAllowed("ARCHIVED", 0)).toEqual({
-      duplicate: false,
-      archive: false,
-      restore: false,
-      delete: false,
-    });
-    expect(lessonExerciseAllowed("ARCHIVED", 5)).toEqual({
-      duplicate: false,
-      archive: false,
-      restore: false,
-      delete: false,
-    });
+  it("a un archivado le ofrece sólo «Restaurar», tenga intentos o no: vuelve a la lección como borrador", () => {
+    for (const attempts of [0, 5]) {
+      expect(lessonExerciseAllowed("ARCHIVED", attempts)).toEqual({
+        duplicate: false,
+        archive: false,
+        restore: true,
+        delete: false,
+      });
+    }
   });
 });
 
@@ -116,10 +112,13 @@ describe("mapLessonExerciseRow", () => {
 });
 
 describe("isPracticeOnlyLesson", () => {
-  it("es sólo de práctica sin contenido y con algún ejercicio en juego; uno archivado no cuenta", () => {
-    expect(isPracticeOnlyLesson(false, [{ lessonOrder: 1 }])).toBe(true);
-    expect(isPracticeOnlyLesson(false, [{ lessonOrder: null }])).toBe(false);
+  it("es sólo de práctica sin contenido y con algún ejercicio PUBLICADO en juego; un borrador o un archivado no cuentan", () => {
+    const published = { lessonOrder: 1, statusCode: "PUBLISHED" } as const;
+    expect(isPracticeOnlyLesson(false, [published])).toBe(true);
+    expect(isPracticeOnlyLesson(false, [{ lessonOrder: 1, statusCode: "DRAFT" }])).toBe(false);
+    expect(isPracticeOnlyLesson(false, [{ lessonOrder: null, statusCode: "ARCHIVED" }])).toBe(false);
+    expect(isPracticeOnlyLesson(false, [{ lessonOrder: 1, statusCode: "DRAFT" }, published])).toBe(true);
     expect(isPracticeOnlyLesson(false, [])).toBe(false);
-    expect(isPracticeOnlyLesson(true, [{ lessonOrder: 1 }])).toBe(false);
+    expect(isPracticeOnlyLesson(true, [published])).toBe(false);
   });
 });

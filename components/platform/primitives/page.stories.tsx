@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { ChevronLeftIcon } from "@/components/icons/chevron-left-icon.comp";
 import "@/components/platform/sections/shell/platform-shell.section.css";
 
 const WIDTHS = ["default", "wide", "full"] as const;
@@ -9,6 +10,10 @@ interface PageArgs {
   subtitle: string;
   width: (typeof WIDTHS)[number];
   actions: boolean;
+  /** The way back above the title (`__back`), drawn when given. */
+  back: string;
+  /** `__head_kind_solve`: a solve page's head, whose title steps down under 640px. */
+  solve: boolean;
 }
 
 /** How wide the page it sits in is drawn, kept up to date as the window changes. */
@@ -44,14 +49,23 @@ buttons take the whole width under the text. The stories put it in that \`<main>
 (\`.platform-shell__content\`, from \`platform-shell.section.css\`), which is
 what caps a page that does not cap itself; widen the window to see the three
 widths part. The fourth modifier, \`_height_screen\`, is the lesson's and needs
-the whole shell.
+the whole shell. A head with \`__back\` carries the way back above the title;
+one with \`__head_kind_solve\` (the solve pages, 2026-10-16) drops its title to
+the card title's size under 640px, so the board starts near the top of a phone.
 
 Reference: [Styling & design tokens › Global helpers](/ui/styling#global-helpers) in the docs site.
 `,
       },
     },
   },
-  args: { title: "Mis cursos", subtitle: "Los cursos que estás siguiendo.", width: "default", actions: false },
+  args: {
+    title: "Mis cursos",
+    subtitle: "Los cursos que estás siguiendo.",
+    width: "default",
+    actions: false,
+    back: "",
+    solve: false,
+  },
   argTypes: {
     title: { control: "text", description: "`.platform-page__title`, the page's `h1`." },
     subtitle: { control: "text", description: "`.platform-page__subtitle`." },
@@ -61,6 +75,8 @@ Reference: [Styling & design tokens › Global helpers](/ui/styling#global-helpe
       description: "`wide` adds `platform-page_width_wide`, `full` adds `platform-page_width_full`.",
     },
     actions: { control: "boolean", description: "Adds a `.platform-page__actions` with two buttons to the head." },
+    back: { control: "text", description: "Draws `.platform-page__back` above the title with this name." },
+    solve: { control: "boolean", description: "Adds `platform-page__head_kind_solve` to the head." },
   },
   decorators: [
     // The shell's frame without its bar; its full-window height is left out so
@@ -73,11 +89,17 @@ Reference: [Styling & design tokens › Global helpers](/ui/styling#global-helpe
       </div>
     ),
   ],
-  render: ({ title, subtitle, width, actions }) => (
+  render: ({ title, subtitle, width, actions, back, solve }) => (
     <div className={`platform-page${width === "default" ? "" : ` platform-page_width_${width}`}`}>
-      <header className="platform-page__head">
+      <header className={`platform-page__head${solve ? " platform-page__head_kind_solve" : ""}`}>
+        {back && (
+          <a href="#top" className="platform-page__back">
+            <ChevronLeftIcon variant="classic-solid" className="platform-page__back-icon" />
+            {back}
+          </a>
+        )}
         <h1 className="platform-page__title">{title}</h1>
-        <p className="platform-page__subtitle">{subtitle}</p>
+        {subtitle && <p className="platform-page__subtitle">{subtitle}</p>}
         {actions && (
           <div className="platform-page__actions">
             <button type="button" className="platform-button">
@@ -116,4 +138,24 @@ export const Full: Story = { args: { title: "El centro", subtitle: "Capítulo 1 
 /** `__actions`: the head as a row, the buttons top-aligned on the right; narrow the window under 640px to see them drop under the text. */
 export const Actions: Story = {
   args: { title: "Clases", subtitle: "Hoy · miércoles 14 de octubre", actions: true },
+};
+
+/**
+ * `__head_kind_solve` with `__back`, as the solve pages draw it, at 390px: a long exercise title at the card title's
+ * size, two lines at most, so the board under it starts near the top; from 640px the title is the page's.
+ */
+export const SolveHead: Story = {
+  args: {
+    title: "La enfilada en la columna abierta contra el rey desprotegido",
+    subtitle: "",
+    width: "wide",
+    back: "Lección 3 · Las clavadas",
+    solve: true,
+  },
+  parameters: {
+    viewport: {
+      options: { phone390: { name: "Phone, 390 × 844", styles: { width: "390px", height: "844px" }, type: "mobile" } },
+    },
+  },
+  globals: { viewport: { value: "phone390", isRotated: false } },
 };

@@ -34,7 +34,9 @@ export const STAFF_ERROR_MESSAGES: Record<string, string> = {
   sourceMissing: "Esa fuente ya no existe. Recarga la ficha y vuelve a intentarlo.",
   courseMissing: "Ese curso no existe.",
   lessonPgnMissing: "Esa lección ya lee una partida de la colección, o no tiene PGN propio que archivar.",
-  publishRequirements: "Para publicar, el curso necesita al menos un capítulo con una lección con PGN.",
+  publishRequirements:
+    "Para publicar, el curso necesita al menos un capítulo con una lección con partida o con ejercicios publicados.",
+  disabled: "Los ejercicios todavía no están disponibles.",
   deleteBlocked:
     "No se puede eliminar: el curso no está en borrador, ya hay alumnos con progreso o algún ejercicio tiene intentos.",
   exerciseDeleteBlocked: "Este ejercicio ya tiene intentos: archívalo en vez de eliminarlo.",

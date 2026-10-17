@@ -553,6 +553,7 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
       lesson._count.progresses === 0 &&
       !hasExerciseAttempts,
     pgn: lessonPgnOf(lesson),
+    hasContent: lessonHasContent(lesson),
     game: lesson.game
       ? {
           id: lesson.game.id,

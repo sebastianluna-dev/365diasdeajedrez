@@ -569,6 +569,18 @@ html body.platform-theme[data-scroll-locked] {
   height: 10px;
 }
 
+/* The head of a solve page (`_kind_solve`, the lesson's `practica/[n]` and a
+   series' item): the exercise's title is a name the student glances at on
+   the way to the board. On a phone the page title's size took three lines of
+   it and pushed the board below the fold (found 2026-10-16), so under 640px
+   it steps down to the card title's size and wraps tight. */
+@media (width < 640px) {
+  .platform-page__head_kind_solve .platform-page__title {
+    font-size: var(--platform-type-xl);
+    text-wrap: pretty;
+  }
+}
+
 /* A head with actions is a row: the title and the subtitle on the left, the
    actions on the right, top-aligned; under 640px the actions take the whole
    width under the text. A grid, so the markup stays flat (title, subtitle,

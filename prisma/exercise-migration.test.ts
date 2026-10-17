@@ -16,9 +16,14 @@ import { CATALOG_VALUES, COURSES, TOPIC_VALUES } from "./seed-data";
 
 const MIGRATION = new URL("./migrations/20261016120000_exercises/migration.sql", import.meta.url);
 const LESSON_MIGRATION = new URL("./migrations/20261016130000_lesson_exercises/migration.sql", import.meta.url);
+const PUBLISHED_AT_MIGRATION = new URL(
+  "./migrations/20261016140000_lesson_exercises_published_at/migration.sql",
+  import.meta.url,
+);
 const INIT = new URL("./migrations/20260830190612_init/migration.sql", import.meta.url);
 const sql = readFileSync(MIGRATION, "utf8");
 const lessonSql = readFileSync(LESSON_MIGRATION, "utf8");
+const publishedAtSql = readFileSync(PUBLISHED_AT_MIGRATION, "utf8");
 const init = readFileSync(INIT, "utf8");
 const schema = readFileSync(new URL("./schema.prisma", import.meta.url), "utf8");
 
@@ -277,5 +282,30 @@ describe("the 20261016130000_lesson_exercises migration", () => {
     expect(lesson).toMatch(/^\s+lessonExercises\s+Exercise\[\]/m);
     expect(columnComment("TrainingAttempt", "isLegacy")).toContain("20261016130000_lesson_exercises");
     expect(columnComment("Exercise", "lessonOrder")).toContain("exercise-status.service.ts");
+  });
+});
+
+// The data fix for what the phase 2 move left: PUBLISHED rows without the
+// first publication's date, which the status writer always stamps.
+describe("the 20261016140000_lesson_exercises_published_at migration", () => {
+  const statements = publishedAtSql
+    .split(/;\s*\n/)
+    .map((statement) => statement.replace(/^(\s*--[^\n]*\n)+/, "").trim())
+    .filter(Boolean);
+
+  it("is one UPDATE of Exercise and nothing else: no row is created, moved or dropped", () => {
+    expect(statements).toHaveLength(1);
+    expect(statements[0]).toMatch(/^UPDATE "Exercise" e\s/);
+    expect(publishedAtSql).not.toMatch(/INSERT|DELETE|DROP|ALTER/);
+  });
+
+  it("stamps the best date there is — the course's publication, else the row's creation, else now — on the moved rows only", () => {
+    expect(publishedAtSql).toContain(`SET "publishedAt" = COALESCE(c."publishedAt", e."createdAt", now())`);
+    expect(publishedAtSql).toContain(`JOIN "Course" c ON c."id" = ch."courseId"`);
+    expect(publishedAtSql).toContain(`e."lessonId" IS NOT NULL`);
+    expect(publishedAtSql).toContain(`e."statusId" = (SELECT "id" FROM "ExerciseStatus" WHERE "code" = 'PUBLISHED')`);
+    expect(publishedAtSql).toContain(`e."publishedAt" IS NULL`);
+    // The lesson exercise migration is what left the gap: this one comes right after it.
+    expect(lessonSql).not.toContain('"publishedAt"');
   });
 });

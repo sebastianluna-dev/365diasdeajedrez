@@ -46,7 +46,7 @@ export default async function LessonPracticePage({ params }: LessonPracticePageP
 
   return (
     <div className="platform-page platform-page_width_wide">
-      <header className="platform-page__head">
+      <header className="platform-page__head platform-page__head_kind_solve">
         <Link href={item.lesson.href} className="platform-page__back">
           <ChevronLeftIcon variant="classic-solid" className="platform-page__back-icon" />
           {item.lesson.name}

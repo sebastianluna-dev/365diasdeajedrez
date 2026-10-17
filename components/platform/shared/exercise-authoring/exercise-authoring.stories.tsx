@@ -228,3 +228,20 @@ export const Locked: Story = {
     duplicate: fn(async () => undefined).mockName("duplicate"),
   },
 };
+
+/**
+ * The staff lesson editor (`gameSource="chapter"`) with a chapter whose collection has no games: «Desde una partida»
+ * says so of the chapter — never of the author's studies, which the staff has none of here.
+ */
+export const ChapterWithoutGames: Story = {
+  args: { games: [], gameSource: "chapter" },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("radio", { name: "Desde una partida" }));
+    await expect(
+      canvas.getByText(
+        "Este capítulo todavía no tiene partidas en su colección: agrégalas en el capítulo y vuelve aquí.",
+      ),
+    ).toBeVisible();
+  },
+};

@@ -61,19 +61,22 @@ export const platformRoutes = {
   lessonDetail: (courseId: string, chapterOrder: number, lessonId: string) =>
     `/cursos/${courseId}/${chapterOrder}/${lessonId}`,
   /**
-   * The lesson's route as the App Router spells it, for revalidating every
-   * lesson at once: what the staff panel changes reaches whichever lessons
-   * show it, and from there the chapter's order number is not at hand.
+   * The lesson's route as the App Router spells it — route groups included,
+   * as `revalidatePath(pattern, "page")` wants it (its docs: `/(main)/blog/[slug]`;
+   * without the groups it matched nothing, found 2026-10-16) — for
+   * revalidating every lesson at once: what the staff panel changes reaches
+   * whichever lessons show it, and from there the chapter's order number is
+   * not at hand. `lib/platform-routes.test.ts` holds it to the page file.
    */
-  lessonPattern: "/cursos/[courseRef]/[chapterOrder]/[lessonId]",
+  lessonPattern: "/(platform)/cursos/[courseRef]/[chapterOrder]/(lesson)/[lessonId]",
   /**
    * The n-th exercise of a lesson (1-based, among the ones in play), solved
    * from the lesson («Ahora practica», D25): behind `EXERCISES_ENABLED`.
    */
   lessonPractice: (courseId: string, chapterOrder: number, lessonId: string, n: number) =>
     `/cursos/${courseId}/${chapterOrder}/${lessonId}/practica/${n}`,
-  /** The practice route as the App Router spells it, for revalidating every practice page at once. */
-  lessonPracticePattern: "/cursos/[courseRef]/[chapterOrder]/[lessonId]/practica/[n]",
+  /** The practice route as the App Router spells it (groups included, like `lessonPattern`), for revalidating every practice page at once. */
+  lessonPracticePattern: "/(platform)/cursos/[courseRef]/[chapterOrder]/(practice)/[lessonId]/practica/[n]",
   /**
    * The account: what is the person's own and the one thing they set. It hangs
    * from the root and not from a role's panel, because it is everyone's.

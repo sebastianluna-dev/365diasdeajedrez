@@ -22,8 +22,9 @@ import { reviewLibraryExercise, type ExerciseTransitionResult } from "@/services
 import { exerciseReadiness } from "@/services/shared/exercise-status-transitions";
 import { readIds } from "@/services/shared/form-schema";
 import { popupFormError, readFormValues, type FieldError, type PopupFormState } from "@/services/shared/form-state";
+import { closeLessonExerciseOrderGaps, nextLessonExerciseOrder } from "@/services/shared/lesson-exercise-order.service";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
-import { nextOrder, planDenseRenumber, planSwap, type MoveDirection } from "@/services/shared/reorder";
+import { planSwap, type MoveDirection } from "@/services/shared/reorder";
 import { withErrorParam, withNoticeParam } from "@/services/shared/safe-return-to";
 import { getChapterGamePgn } from "./lesson-exercises.service";
 
@@ -33,15 +34,18 @@ import { getChapterGamePgn } from "./lesson-exercises.service";
 //   its lesson in the `where`: one of a bank, or of another lesson, is not
 //   found. They are reachable by direct POST.
 // - An exercise is inserted only by `createExerciseRecord` (always DRAFT, at
-//   `nextOrder` of the lesson), its solution changed only by
-//   `syncExerciseSolution`, its status only by `reviewLibraryExercise` (the
-//   staff's moves of the transitions table: DRAFT ⇄ PUBLISHED, ARCHIVED from
-//   either), all inside one transaction with the rest of the write.
+//   the lesson's next place, `nextLessonExerciseOrder`: one past the highest,
+//   never `count + 1`), its solution changed only by `syncExerciseSolution`,
+//   its status only by `reviewLibraryExercise` (the staff's moves of the
+//   transitions table: DRAFT ⇄ PUBLISHED, ARCHIVED from either, and back to
+//   DRAFT), all inside one transaction with the rest of the write.
 // - A taken `lessonOrder` is a P2002 on `Exercise_lessonId_lessonOrder_key`,
 //   read with `isUniqueConstraintError` and answered as `orderTaken`.
 // - «Eliminar» destroys only an exercise nobody has tried (the condition
 //   travels in the `where`); one with attempts is archived, which takes its
-//   order away and keeps its history. Reordering goes through
+//   order away and keeps its history. Either way the ones left close the gap
+//   (`closeLessonExerciseOrderGaps`) in the same transaction, and a restored
+//   one comes back at the end. Reordering goes through
 //   services/shared/reorder.ts.
 // - Not behind `EXERCISES_ENABLED`: these replace a live, unflagged panel over
 //   data the phase 2 migration moved. The one exception is the copy from the
@@ -141,7 +145,8 @@ export async function saveLessonExercise(
         select: { id: true, statusId: true, status: { select: { code: true } } },
       })
     : null;
-  if (exerciseId && !existing) return popupFormError({}, values, { code: "notFound" });
+  // The staff's own code: the teacher's `notFound` says «o no es tuyo», which is not the case here.
+  if (exerciseId && !existing) return popupFormError({}, values, { code: "exerciseMissing" });
   const status = (existing?.status.code ?? null) as ExerciseStatusCode | null;
 
   const fromDraft = status === null || status === EXERCISE_STATUS.DRAFT;
@@ -169,10 +174,9 @@ export async function saveLessonExercise(
     savedId = await db.$transaction(async (tx) => {
       let id: string;
       if (!existing) {
-        const count = await tx.exercise.count({ where: { lessonId, lessonOrder: { not: null } } });
         const created = await createExerciseRecord(tx, {
           teacherId: null,
-          lesson: { lessonId, lessonOrder: nextOrder(count) },
+          lesson: { lessonId, lessonOrder: await nextLessonExerciseOrder(tx, lessonId) },
           authorUserId: user.id,
           solution,
           content,
@@ -266,7 +270,9 @@ export async function moveLessonExercise(
 
 /**
  * «Archivar» an exercise someone tried: PUBLISHED or DRAFT → ARCHIVED through
- * the status writer, which takes its order away; the row and its history stay.
+ * the status writer, which takes its order away; the row and its history
+ * stay, and the ones left close the gap in the same transaction, so the
+ * places stay 1..n. Reversible with «Restaurar».
  */
 export async function archiveLessonExercise(
   courseId: string,
@@ -284,18 +290,65 @@ export async function archiveLessonExercise(
   const exercise = await db.exercise.findFirst({ where: { id: exerciseId, lessonId }, select: { id: true } });
   if (!exercise) redirect(withErrorParam(lessonPath, "exerciseNotFound"));
 
-  const moved = await db.$transaction((tx) =>
-    reviewLibraryExercise(tx, {
+  const moved = await db.$transaction(async (tx) => {
+    const result = await reviewLibraryExercise(tx, {
       exerciseId: exercise.id,
       reviewerUserId: user.id,
       to: EXERCISE_STATUS.ARCHIVED,
       note: null,
       now: new Date(),
-    }),
-  );
+    });
+    if (result.ok) await closeLessonExerciseOrderGaps(tx, lessonId);
+    return result;
+  });
   if (!moved.ok) redirect(withErrorParam(lessonPath, "exerciseNotAllowed"));
   revalidateLesson(courseId, chapterId, lessonId, exercise.id);
   redirect(withNoticeParam(lessonPath, "exerciseArchived"));
+}
+
+/**
+ * «Restaurar» an archived exercise of the lesson: ARCHIVED → DRAFT through
+ * the status writer, which gives it back a place — the end of the lesson,
+ * read in the same transaction — as a draft the staff publishes again when
+ * it wants the students to see it.
+ */
+export async function restoreLessonExercise(
+  courseId: string,
+  chapterId: string,
+  lessonId: string,
+  exerciseId: string,
+  formData: FormData,
+): Promise<void> {
+  void formData;
+  const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
+  const { user, throttled } = await openPanel("lesson-exercise-save", 60);
+  if (throttled) redirect(withErrorParam(lessonPath, "throttled"));
+
+  const db = getPlatformDb();
+  const exercise = await db.exercise.findFirst({ where: { id: exerciseId, lessonId }, select: { id: true } });
+  if (!exercise) redirect(withErrorParam(lessonPath, "exerciseNotFound"));
+
+  let moved: ExerciseTransitionResult;
+  try {
+    moved = await db.$transaction(async (tx) =>
+      reviewLibraryExercise(tx, {
+        exerciseId: exercise.id,
+        reviewerUserId: user.id,
+        to: EXERCISE_STATUS.DRAFT,
+        note: null,
+        now: new Date(),
+        lessonOrder: await nextLessonExerciseOrder(tx, lessonId),
+      }),
+    );
+  } catch (error) {
+    if (isUniqueConstraintError(error, "Exercise_lessonId_lessonOrder_key", "lessonOrder")) {
+      redirect(withErrorParam(lessonPath, "orderTaken"));
+    }
+    throw error;
+  }
+  if (!moved.ok) redirect(withErrorParam(lessonPath, "exerciseNotAllowed"));
+  revalidateLesson(courseId, chapterId, lessonId, exercise.id);
+  redirect(withNoticeParam(lessonPath, "exerciseRestoredToLesson"));
 }
 
 /**
@@ -320,14 +373,7 @@ export async function deleteLessonExercise(
   const deleted = await db.$transaction(async (tx) => {
     const result = await tx.exercise.deleteMany({ where: { id: exerciseId, lessonId, attempts: { none: {} } } });
     if (result.count === 0) return false;
-    const rows = await tx.exercise.findMany({
-      where: { lessonId, lessonOrder: { not: null } },
-      select: { id: true, lessonOrder: true },
-    });
-    const remaining = rows.map((row) => ({ id: row.id, order: row.lessonOrder ?? 0 }));
-    for (const update of planDenseRenumber(remaining)) {
-      await tx.exercise.update({ where: { id: update.id }, data: { lessonOrder: update.order } });
-    }
+    await closeLessonExerciseOrderGaps(tx, lessonId);
     return true;
   });
   if (!deleted) redirect(withErrorParam(lessonPath, "exerciseDeleteBlocked"));
@@ -339,7 +385,7 @@ export async function deleteLessonExercise(
  * «Agregar desde la biblioteca» (D28; drawn from phase 4, when a library
  * exists): a copy of a PUBLISHED library exercise owned by the lesson, through
  * `createExerciseRecord` with the content whitelist (`exerciseCopyInput`) —
- * no review stamps, no study game — at the lesson's next order, and moved
+ * no review stamps, no study game — at the lesson's next place, and moved
  * DRAFT → PUBLISHED in the same transaction, since what the library approved
  * the lesson serves.
  */
@@ -387,10 +433,9 @@ export async function copyLibraryExerciseToLesson(
   let copied: { ok: true; id: string } | { ok: false; code: string };
   try {
     copied = await db.$transaction(async (tx) => {
-      const count = await tx.exercise.count({ where: { lessonId, lessonOrder: { not: null } } });
       const created = await createExerciseRecord(tx, {
         teacherId: null,
-        lesson: { lessonId, lessonOrder: nextOrder(count) },
+        lesson: { lessonId, lessonOrder: await nextLessonExerciseOrder(tx, lessonId) },
         authorUserId: user.id,
         ...copy,
       });

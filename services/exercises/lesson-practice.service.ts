@@ -6,12 +6,12 @@ import { ATTEMPT_CONTEXT } from "@/constants/platform/training-codes.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
-import { exerciseFamilyIds } from "@/services/shared/exercise-attempt.service";
+import { exerciseFamiliesOf, exerciseFamilyIds } from "@/services/shared/exercise-attempt.service";
 import { getExerciseViewer } from "@/services/shared/exercise-visibility";
 import { solvableInContextWhere } from "@/services/shared/exercise-visibility-rules";
 import { publishedLessonWhere } from "@/services/shared/published-content";
 import { attemptedToday, mapSolverExercise } from "./exercises.mapper";
-import { lessonPosition, lessonPracticeOf, nextInLesson, practiceFamilyOf } from "./lesson-practice.mapper";
+import { lessonPosition, lessonPracticeOf, nextInLesson } from "./lesson-practice.mapper";
 import type { LessonPractice, LessonPracticeExercise } from "./lesson-practice.types";
 
 // The student's side of a lesson's exercises (D25, D26; PLAN.md §7.1): what the
@@ -54,7 +54,9 @@ const lessonWithExercises = cache(async (lessonId: string) =>
 );
 
 /**
- * The lesson's exercises and the student's standing with them (by solve key),
+ * The lesson's exercises and the student's standing with them — by family,
+ * the writer's own (`exerciseFamiliesOf`: the solve key, the exercise and
+ * every lesson copy of the key, the copies read once for the whole list) —
  * or null: with the flag off, with no exercise in play, or when the lesson is
  * not published. Memoised per request: the lesson's page and its metadata
  * read it.
@@ -65,7 +67,8 @@ export const getLessonPractice = cache(async (lessonId: string): Promise<LessonP
   const lesson = await lessonWithExercises(lessonId);
   if (!lesson || lesson.lessonExercises.length === 0) return null;
   const db = getPlatformDb();
-  const familyIds = [...new Set(lesson.lessonExercises.flatMap(practiceFamilyOf))];
+  const families = await exerciseFamiliesOf(db, lesson.lessonExercises);
+  const familyIds = [...new Set([...families.values()].flat())];
   const [states, levels] = await Promise.all([
     db.userExerciseState.findMany({
       where: { userId: user.id, exerciseId: { in: familyIds } },
@@ -74,7 +77,7 @@ export const getLessonPractice = cache(async (lessonId: string): Promise<LessonP
     db.level.findMany({ select: LEVEL_SELECT, orderBy: { order: "asc" } }),
   ]);
   const place = { courseId: lesson.chapter.courseId, chapterOrder: lesson.chapter.order, lessonId: lesson.id };
-  return lessonPracticeOf(place, lesson.lessonExercises, states, levels, new Date());
+  return lessonPracticeOf(place, lesson.lessonExercises, states, levels, new Date(), families);
 });
 
 /**

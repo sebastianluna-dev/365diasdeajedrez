@@ -1,18 +1,18 @@
 ---
-description: "The lesson's exercises in the staff panel: each one the bank's card, with its order keys beside it and «Archivar» or «Eliminar» as its word; «Agregar ejercicio» under the list; the archived ones apart."
+description: "The lesson's exercises in the staff panel: each one the bank's card, with its order keys beside it and «Archivar» or «Eliminar» as its word; «Agregar ejercicio» under the list; the archived ones apart, each with «Restaurar»."
 ---
 
 # `LessonExercises`
 
-|            |                                                                                                                                                                                                     |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/courses/lesson-exercises.comp.tsx`                                                                                                                              |
-| Kind       | Server Component                                                                                                                                                                                    |
-| Stylesheet | `lesson-exercises.comp.css` → block `.lesson-exercises`                                                                                                                                             |
-| Used by    | [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section)                                                                                                          |
-| Composes   | [`ExerciseCard`](/components/platform/shared/exercise-card) (with its [`DeleteExercise`](/components/platform/shared/delete-exercise))                                                              |
-| Writes     | `moveLessonExercise()`, `archiveLessonExercise()`, `deleteLessonExercise()` · `services/staff-courses/lesson-exercises.actions.ts` — imported here and handed to the cards, which import none       |
-| Uses       | `LessonExerciseAdminRow` from `services/staff-courses/staff-courses.types` (mapped by `mapLessonExerciseRow`, `services/staff-courses/lesson-exercises.mapper.ts`); `staffRoutes.lessonExerciseNew` |
+|            |                                                                                                                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/courses/lesson-exercises.comp.tsx`                                                                                                                                                   |
+| Kind       | Server Component                                                                                                                                                                                                         |
+| Stylesheet | `lesson-exercises.comp.css` → block `.lesson-exercises`                                                                                                                                                                  |
+| Used by    | [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section)                                                                                                                               |
+| Composes   | [`ExerciseCard`](/components/platform/shared/exercise-card) (with its [`DeleteExercise`](/components/platform/shared/delete-exercise))                                                                                   |
+| Writes     | `moveLessonExercise()`, `archiveLessonExercise()`, `restoreLessonExercise()`, `deleteLessonExercise()` · `services/staff-courses/lesson-exercises.actions.ts` — imported here and handed to the cards, which import none |
+| Uses       | `LessonExerciseAdminRow` from `services/staff-courses/staff-courses.types` (mapped by `mapLessonExerciseRow`, `services/staff-courses/lesson-exercises.mapper.ts`); `staffRoutes.lessonExerciseNew`                      |
 
 ## Purpose
 
@@ -28,10 +28,10 @@ A lesson's exercises are `Exercise` rows owned by the lesson (D04, D05; [Exercis
 ## Behaviour
 
 - The exercises in play, in `lessonOrder`: beside each card two square keys, «Subir» and «Bajar» (`moveLessonExercise`, a swap through `planSwap`), the first and the last disabled at their end.
-- The card's words come from `lessonExerciseAllowed`: **«Eliminar»** only for an exercise nobody has tried — behind the confirmation of `DeleteExercise`, which here says «Se elimina el ejercicio con su solución. Los alumnos ya no lo verán en la lección.» —, and **«Archivar»** instead for one with attempts (PUBLISHED or DRAFT → ARCHIVED through the status writer, which takes its order away and keeps the row). Never both, never «Duplicar» nor «Restaurar» (AGENTS.md: one action, one verb; «Quitar» would mean a deletion here).
+- The card's words come from `lessonExerciseAllowed`: **«Eliminar»** only for an exercise nobody has tried — behind the confirmation of `DeleteExercise`, which here says «Se elimina el ejercicio con su solución. Los alumnos ya no lo verán en la lección.» —, and **«Archivar»** instead for one with attempts (PUBLISHED or DRAFT → ARCHIVED through the status writer, which takes its order away and keeps the row; the ones left close the gap in the same transaction, `closeLessonExerciseOrderGaps`, since 2026-10-16). Never both, never «Duplicar» (AGENTS.md: one action, one verb; «Quitar» would mean a deletion here). «Archivar» has no confirmation: it is reversible.
 - With no exercise in play, one sentence says what an exercise is and where the student meets it.
 - «Agregar ejercicio» is a `.platform-button` link to the lesson's new-exercise route, where [`LessonExerciseEditorSection`](/components/platform/sections/staff/courses/lesson-exercise-editor-section) mounts the editor.
-- The archived ones, when any, under «Archivados» with a note (they are kept for the attempts made at them): the same cards without actions, stepped back by the card's own archived state.
+- The archived ones, when any, under «Archivados» with a note (they are kept for the attempts made at them; «Restaurar» returns one as a draft at the end): the same cards, stepped back by the card's own archived state, each with **«Restaurar»** (`restoreLessonExercise`, since 2026-10-16: ARCHIVED → DRAFT, the place one past the highest given back in the same transaction; the notice `exerciseRestoredToLesson` says it came back as a draft, to publish again).
 - «Agregar desde la biblioteca» (D28) is written (`copyLibraryExerciseToLesson`) and not drawn: it waits for the library of phase 4.
 
 ## Markup & styling

@@ -248,6 +248,63 @@ describe("reviewLibraryExercise", () => {
       }
     });
 
+    it("restaurarlo lo devuelve a borrador con el lugar que le dan, al final; sin lugar no escribe", async () => {
+      const archived = exercise("ARCHIVED", { ...inLesson, lessonOrder: null, publishedAt: EARLIER });
+      const database = fakeExerciseDb({ exercise: [archived] });
+      await expect(approve(database.begin(), "DRAFT")).rejects.toThrow(/lessonOrder/);
+      expect(database.rows("exercise")[0]).toMatchObject({ statusId: S.ARCHIVED, lessonOrder: null });
+
+      const tx = database.begin();
+      await expect(
+        reviewLibraryExercise(writer(tx), {
+          exerciseId: "e-1",
+          reviewerUserId: "u-s",
+          to: "DRAFT",
+          note: null,
+          now: NOW,
+          lessonOrder: 4,
+        }),
+      ).resolves.toEqual({ ok: true, from: "ARCHIVED" });
+      tx.commit();
+      expect(database.rows("exercise")[0]).toMatchObject({
+        statusId: S.DRAFT,
+        lessonId: "l-1",
+        lessonOrder: 4,
+        reviewedById: "u-s",
+        // The first publication stays: it was once what the students saw.
+        publishedAt: EARLIER,
+      });
+      // Never straight back to PUBLISHED: the staff publishes it again from the draft.
+      const again = fakeExerciseDb({ exercise: [archived] });
+      await expect(
+        reviewLibraryExercise(writer(again.begin()), {
+          exerciseId: "e-1",
+          reviewerUserId: "u-s",
+          to: "PUBLISHED",
+          note: null,
+          now: NOW,
+          lessonOrder: 1,
+        }),
+      ).resolves.toEqual({ ok: false, code: "notAllowed" });
+    });
+
+    it("el lugar que llega con otro paso no se escribe", async () => {
+      const database = fakeExerciseDb({ exercise: [exercise("DRAFT", inLesson)], exerciseTopic: TOPIC });
+      const tx = database.begin();
+      await expect(
+        reviewLibraryExercise(writer(tx), {
+          exerciseId: "e-1",
+          reviewerUserId: "u-s",
+          to: "PUBLISHED",
+          note: null,
+          now: NOW,
+          lessonOrder: 9,
+        }),
+      ).resolves.toMatchObject({ ok: true });
+      tx.commit();
+      expect(database.rows("exercise")[0]).toMatchObject({ statusId: S.PUBLISHED, lessonOrder: 2 });
+    });
+
     it("sin preparar, no se publica, y dice qué le falta", async () => {
       const database = fakeExerciseDb({ exercise: [exercise("DRAFT", inLesson)] });
       await expect(approve(database.begin(), "PUBLISHED")).resolves.toMatchObject({

@@ -4,6 +4,8 @@ import { readSolution, replayAttempt } from "@/lib/chess/exercise-solver";
 import { createPositionHash } from "@/lib/chess/position-hash";
 import { FAKE_EXERCISE_IDS, fakeExerciseDb, type FakeExerciseClient } from "@/lib/testing/fake-exercise-db";
 import {
+  exerciseFamiliesOf,
+  exerciseFamilyIds,
   exerciseSolveKey,
   foldExerciseAttempt,
   EMPTY_EXERCISE_STATE,
@@ -311,6 +313,35 @@ describe("la familia de un ejercicio (D22, D28)", () => {
     await expect(submitAt(db, "copy", CLEAN, DAY1_LATER)).resolves.toEqual({ scored: false, attemptId: null });
     expect(db.rows("trainingAttempt")).toHaveLength(1);
     expect(db.rows("userActivity")).toHaveLength(0);
+  });
+
+  it("exerciseFamiliesOf lee las copias de todas las claves una sola vez y da la misma familia que exerciseFamilyIds", async () => {
+    const db = fakeExerciseDb({
+      exercise: [
+        { id: "orig", copiedFromId: null, lessonId: null, solutionPgn: BACK_RANK },
+        { id: "copy", copiedFromId: "orig", lessonId: "l-1", solutionPgn: BACK_RANK },
+        { id: "copy-2", copiedFromId: "orig", lessonId: "l-2", solutionPgn: BACK_RANK },
+        { id: "dup", copiedFromId: "orig", lessonId: null, solutionPgn: BACK_RANK },
+        { id: "own", copiedFromId: null, lessonId: "l-1", solutionPgn: BACK_RANK },
+      ],
+    });
+    const rows = db.rows("exercise").map((row) => ({
+      id: String(row.id),
+      copiedFromId: row.copiedFromId as string | null,
+      lessonId: row.lessonId as string | null,
+    }));
+    const tx = db.begin();
+    const families = await exerciseFamiliesOf(writer(tx), rows);
+    expect(tx.log).toEqual(["exercise.findMany"]);
+    expect(families.get("orig")).toEqual(["orig", "copy", "copy-2"]);
+    expect(families.get("copy")).toEqual(["orig", "copy", "copy-2"]);
+    expect(families.get("copy-2")).toEqual(["orig", "copy-2", "copy"]);
+    expect(families.get("dup")).toEqual(["dup"]);
+    expect(families.get("own")).toEqual(["own"]);
+    for (const row of rows) {
+      expect(await exerciseFamilyIds(writer(db.begin()), row), row.id).toEqual(families.get(row.id));
+    }
+    expect(await exerciseFamiliesOf(writer(db.begin()), [])).toEqual(new Map());
   });
 
   it("un «Duplicar» del profesor es otro ejercicio: su familia no es la del original", async () => {

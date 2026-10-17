@@ -136,8 +136,8 @@ export interface ChapterAdminDetail {
  * One of the lesson's exercises in the staff panel (D04, D05): the bank's card
  * data — the panel draws it with `ExerciseCard`, its `href` the staff editor's
  * — plus its place in the lesson. `allowed` is `lessonExerciseAllowed`'s:
- * «Eliminar» only for one nobody has tried, «Archivar» for the rest; never
- * «Duplicar» nor «Restaurar».
+ * «Eliminar» only for one nobody has tried, «Archivar» for the rest,
+ * «Restaurar» for an archived one; never «Duplicar».
  */
 export interface LessonExerciseAdminRow extends ExerciseCardData {
   /** Null for an archived one, which the panel lists apart and nobody reorders. */
@@ -183,6 +183,8 @@ export interface LessonAdminDetail {
   orientationCode: BoardOrientationCode;
   /** The content the student sees: the linked game's, or its own. */
   pgn: string;
+  /** `lessonHasContent`: that PGN has something besides blanks — the one rule of «content», the student's too. */
+  hasContent: boolean;
   pgnUpdatedAtLabel?: string;
   /** The game of the course collection the content comes from. */
   game?: CourseGameRow;

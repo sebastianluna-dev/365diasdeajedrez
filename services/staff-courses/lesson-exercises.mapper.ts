@@ -16,8 +16,8 @@ import type { LessonExerciseAdminRow } from "./staff-courses.types";
 // From the rows of a lesson's exercises to what the staff panel and its editor
 // draw (PLAN.md §7.1). Pure, so the row's words and the save bar are tested
 // here; what a status allows is the shared transitions table's (DRAFT ⇄
-// PUBLISHED, ARCHIVED from either, for the owner «lesson»), and a button or a
-// word never offers what the writer would refuse.
+// PUBLISHED, ARCHIVED from either and back to DRAFT, for the owner «lesson»),
+// and a button or a word never offers what the writer would refuse.
 
 /** A lesson's exercise as the panel reads it. */
 export interface LessonExerciseRow {
@@ -54,16 +54,17 @@ export function lessonExerciseStatusLabel(status: ExerciseStatusCode): string {
 /**
  * The row's words: «Eliminar» only for one nobody has tried (it destroys the
  * row and, with it, the solution); «Archivar» for one with attempts, whose
- * history stays (PUBLISHED or DRAFT → ARCHIVED). An archived one offers
- * nothing: the lesson's transitions have no way back for it, and it is kept
- * only for what the students did. Never «Duplicar» nor «Restaurar».
+ * history stays (PUBLISHED or DRAFT → ARCHIVED); «Restaurar» for an archived
+ * one, which comes back to the lesson as a draft at the end (ARCHIVED →
+ * DRAFT), like the teacher's bank's. Never «Duplicar»: a copy is a bank's
+ * thing.
  */
 export function lessonExerciseAllowed(status: ExerciseStatusCode, attemptCount: number): ExerciseCardData["allowed"] {
   const inLesson = status === EXERCISE_STATUS.DRAFT || status === EXERCISE_STATUS.PUBLISHED;
   return {
     duplicate: false,
     archive: inLesson && attemptCount > 0,
-    restore: false,
+    restore: status === EXERCISE_STATUS.ARCHIVED,
     delete: inLesson && attemptCount === 0,
   };
 }
@@ -121,10 +122,18 @@ export function mapLessonExerciseRow(
   };
 }
 
-/** Whether a lesson is practice-only (D25): no game or PGN to read, and exercises in play. */
+/**
+ * Whether a lesson is practice-only (D25): no game or PGN to read
+ * (`lessonHasContent`), and a PUBLISHED exercise in play — what the student
+ * sees and what `courseHasContent` counts (`coursePracticeLessonsWhere`); a
+ * draft is the staff's alone and makes no lesson.
+ */
 export function isPracticeOnlyLesson(
   hasContent: boolean,
-  exercises: readonly { lessonOrder: number | null }[],
+  exercises: readonly { lessonOrder: number | null; statusCode: ExerciseStatusCode }[],
 ): boolean {
-  return !hasContent && exercises.some((exercise) => exercise.lessonOrder !== null);
+  return (
+    !hasContent &&
+    exercises.some((exercise) => exercise.lessonOrder !== null && exercise.statusCode === EXERCISE_STATUS.PUBLISHED)
+  );
 }

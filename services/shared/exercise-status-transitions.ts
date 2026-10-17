@@ -17,7 +17,8 @@ import { analyzeSolution, type SolutionProblem } from "@/lib/chess/exercise-form
 // approves), PUBLISHED → READY (the staff's «Quitar de la biblioteca»), and
 // DRAFT/READY ⇄ ARCHIVED. The academy's (no teacher): DRAFT → PUBLISHED with
 // no review — the staff is the reviewer — and PUBLISHED → ARCHIVED →
-// DRAFT. A lesson's (phase 2): DRAFT ⇄ PUBLISHED, and ARCHIVED from either.
+// DRAFT. A lesson's (phase 2): DRAFT ⇄ PUBLISHED, ARCHIVED from either, and
+// back to DRAFT («Restaurar», at the end of the lesson).
 
 /** Who owns the exercise: a teacher, the academy (`teacherId` null), or a lesson (phase 2). */
 export type ExerciseOwnerKind = "teacher" | "academy" | "lesson";
@@ -72,7 +73,7 @@ export const EXERCISE_TRANSITIONS: readonly ExerciseTransitionRule[] = [
   rule(DRAFT, ARCHIVED, "ownerTeacher", ["teacher"]),
   rule(READY, ARCHIVED, "ownerTeacher", ["teacher"]),
   rule(ARCHIVED, READY, "ownerTeacher", ["teacher"], { readiness: true }),
-  rule(ARCHIVED, DRAFT, "staff", ["academy"]),
+  rule(ARCHIVED, DRAFT, "staff", ["academy", "lesson"]),
 ];
 
 /** The rule that lets `role` move an exercise of `owner` from `from` to `to`, or null. */

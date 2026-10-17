@@ -38,6 +38,7 @@ const TABLE: [
   [READY, ARCHIVED, "ownerTeacher", "teacher", false, false, false],
   [ARCHIVED, READY, "ownerTeacher", "teacher", true, false, false],
   [ARCHIVED, DRAFT, "staff", "academy", false, false, false],
+  [ARCHIVED, DRAFT, "staff", "lesson", false, false, false],
 ];
 
 const STATUSES = Object.values(EXERCISE_STATUS);

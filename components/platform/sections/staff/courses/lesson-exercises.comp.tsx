@@ -7,6 +7,7 @@ import {
   archiveLessonExercise,
   deleteLessonExercise,
   moveLessonExercise,
+  restoreLessonExercise,
 } from "@/services/staff-courses/lesson-exercises.actions";
 import type { LessonExerciseAdminRow } from "@/services/staff-courses/staff-courses.types";
 import "./lesson-exercises.comp.css";
@@ -26,8 +27,9 @@ const DELETE_DESCRIPTION = "Se elimina el ejercicio con su solución. Los alumno
  * The lesson's exercises (D04, D05): each one the bank's card, whose title
  * opens the staff editor, with «Subir»/«Bajar» beside it and the row's words
  * — «Eliminar» for one nobody has tried, «Archivar» for one with attempts —;
- * the archived ones apart, with nothing to do to them. The actions are
- * imported here and handed to the cards, which import none.
+ * the archived ones apart, each with «Restaurar», which brings it back to the
+ * lesson as a draft at the end. The actions are imported here and handed to
+ * the cards, which import none.
  */
 export function LessonExercises({ courseId, chapterId, lessonId, exercises }: LessonExercisesProps) {
   const active = exercises.filter((exercise) => exercise.lessonOrder !== null);
@@ -35,6 +37,7 @@ export function LessonExercises({ courseId, chapterId, lessonId, exercises }: Le
   const move = moveLessonExercise.bind(null, courseId, chapterId, lessonId);
   const actions = {
     archive: archiveLessonExercise.bind(null, courseId, chapterId, lessonId),
+    restore: restoreLessonExercise.bind(null, courseId, chapterId, lessonId),
     delete: deleteLessonExercise.bind(null, courseId, chapterId, lessonId),
   };
 
@@ -96,13 +99,14 @@ export function LessonExercises({ courseId, chapterId, lessonId, exercises }: Le
             Archivados
           </h3>
           <p className="lesson-exercises__archived-note">
-            Los alumnos ya no los ven; se conservan por los intentos que hicieron.
+            Los alumnos ya no los ven; se conservan por los intentos que hicieron. «Restaurar» devuelve uno a la lección
+            como borrador, al final de la lista.
           </p>
           <ul className="lesson-exercises__list">
             {archived.map((exercise) => (
               <li key={exercise.id} className="lesson-exercises__item lesson-exercises__item_state_archived">
                 <div className="lesson-exercises__card">
-                  <ExerciseCard exercise={exercise} />
+                  <ExerciseCard exercise={exercise} actions={actions} />
                 </div>
               </li>
             ))}

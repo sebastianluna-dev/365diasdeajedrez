@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   lessonHasContent,
   lessonPgnNotEmptyWhere,
@@ -12,6 +12,18 @@ import {
   coursePracticeLessonsWhere,
   type CourseContentReader,
 } from "@/services/staff-courses/course-content.service";
+
+// The flag, mocked so the test does not read the owner's local switch: a
+// practice-only lesson counts only while the student can see it.
+const flags = vi.hoisted(() => ({ exercises: true }));
+vi.mock("@/constants/platform/features.const", () => ({
+  get EXERCISES_ENABLED() {
+    return flags.exercises;
+  },
+}));
+afterEach(() => {
+  flags.exercises = true;
+});
 
 const COURSE = "10000009";
 const OTHER_COURSE = "10000010";
@@ -160,6 +172,17 @@ describe("courseHasContent", () => {
     expect(calls).toEqual(["findFirst", "findPractice"]);
     // In another course it counts for nothing.
     expect(await courseHasContent(reader(lessons).db, OTHER_COURSE)).toBe(false);
+  });
+
+  it("con la bandera apagada, una lección sólo de práctica no es contenido: el alumno no vería nada", async () => {
+    flags.exercises = false;
+    const lessons: StoredLesson[] = [{ courseId: COURSE, ...KINDS.justCreated, practice: true }];
+    const { db, calls } = reader(lessons);
+    expect(await courseHasContent(db, COURSE)).toBe(false);
+    // It does not even ask: the answer is known.
+    expect(calls).toEqual(["findFirst"]);
+    // A lesson with a PGN is content whatever the flag says.
+    expect(await courseHasContent(reader(inCourse(["own"])).db, COURSE)).toBe(true);
   });
 
   it("con PGN en blanco y sin ejercicios publicados, no se publica", async () => {
