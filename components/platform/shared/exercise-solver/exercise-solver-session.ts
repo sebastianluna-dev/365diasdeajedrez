@@ -16,6 +16,7 @@ import {
 } from "@/lib/chess/exercise-solver";
 import { sanToSpanish } from "@/lib/chess/notation";
 import { nodeAtPath, sansAlongPath } from "@/lib/chess/pgn-tree";
+import type { SolverMiss } from "./exercise-solver-notation";
 import type { ExerciseSolverMode } from "./exercise-solver.types";
 
 // The solve screen's state, pure (PLAN.md §5.3): the solver's own state
@@ -66,6 +67,8 @@ export interface SolverSession {
   /** The author's hints shown so far, in order (D20). */
   textHints: string[];
   walkthrough: SolverWalkthrough | null;
+  /** Every wrong move tried, in order, for the notation's variations; they teach, the attempt was decided by the first. */
+  misses: SolverMiss[];
 }
 
 export type SolverAction =
@@ -118,6 +121,7 @@ export function startSession(solution: Solution, mode: ExerciseSolverMode): Solv
     feedback: null,
     textHints: [],
     walkthrough: null,
+    misses: [],
   };
 }
 
@@ -140,6 +144,7 @@ export function reduceSession(session: SolverSession, action: SolverAction): Sol
           board: wrongBoard(session.board, action.san),
           waiting: "flash",
           feedback: { tone: "error", text: FEEDBACK.wrong },
+          misses: [...session.misses, { path: solve.path, san: action.san }],
         };
       }
       return {

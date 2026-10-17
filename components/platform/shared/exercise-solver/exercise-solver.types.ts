@@ -66,3 +66,20 @@ export type ExerciseAttemptReply =
 
 /** The server action that records an attempt; a stub in Storybook. */
 export type SubmitExerciseAttempt = (input: ExerciseAttemptSubmission) => Promise<ExerciseAttemptReply>;
+
+/**
+ * The full solve page (the Lichess-like screen): the column at the left with
+ * the rating, the exercise, its series or topic and the settings, and the
+ * visit's history under the board. Without it, the solver is the board and its
+ * panel alone (a lesson, a class block, the editor's «Probar»).
+ */
+export interface ExerciseSolverAside {
+  /** The visit the history belongs to: «practice», or a series by id. */
+  scope: string;
+  /** This exercise's own page, for its pill in the history; null when it has none. */
+  href: string | null;
+  /** The series it is solved in, for the ring: its 1-based place and the count. */
+  series?: { title: string; position: number; total: number };
+  /** The topic chosen in «Ejercicios por tema», and the way to another. */
+  topic?: { code: string; label: string; changeHref: string };
+}

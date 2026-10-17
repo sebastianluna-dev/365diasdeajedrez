@@ -1,4 +1,5 @@
 import { ExerciseSolver } from "@/components/platform/shared/exercise-solver/exercise-solver.comp";
+import { platformRoutes } from "@/lib/platform-routes";
 import { submitExerciseAttempt } from "@/services/exercises/exercises.actions";
 import type { StudentSeriesExercise } from "@/services/exercises/exercises.types";
 
@@ -22,6 +23,11 @@ export function ExerciseSolveSection({ item }: ExerciseSolveSectionProps) {
       next={item.next ?? undefined}
       back={item.back}
       submit={submitExerciseAttempt}
+      aside={{
+        scope: `series:${item.series.id}`,
+        href: platformRoutes.exerciseSeriesItem(item.series.id, item.series.position),
+        series: { title: item.series.title, position: item.series.position, total: item.series.total },
+      }}
     />
   );
 }

@@ -208,7 +208,7 @@ export async function getStudentSeriesExercise(seriesId: string, n: number): Pro
   });
   const href = platformRoutes.exerciseSeries(series.id);
   return {
-    series: { id: series.id, title: series.title, href },
+    series: { id: series.id, title: series.title, href, position: n, total: items.length },
     exercise: mapSolverExercise(exercise),
     mode: attemptedToday(states, now) ? "unscored" : "solve",
     context: { attempt, position: seriesPosition(n, items.length) },

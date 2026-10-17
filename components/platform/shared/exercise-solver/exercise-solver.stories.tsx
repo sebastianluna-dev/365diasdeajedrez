@@ -288,14 +288,14 @@ export const SolvedNotCounted: Story = {
   },
 };
 
-/** A phone at 390 px: a «Mate en 2» failed at the first move, the head on two lines — the prompt, then the clock, «3 / 5» and «Fallado». */
+/** A phone at 390 px: a «Mate en 2» failed at the first move — «Ésa no es la jugada» in the panel's foot and the try in the notation, crossed. */
 export const PhoneFailedMateInTwo: Story = {
   render: () => (
     <SolverState exercise={SMOTHERED} actions={[{ type: "move", san: "Nf7+" }, { type: "flashOver" }]} save="saved" />
   ),
   globals: { viewport: { value: "phone390", isRotated: false } },
   play: async ({ canvas }) => {
-    await waitFor(() => expect(canvas.getByText("Fallado")).toBeVisible());
-    await expect(canvas.getByText("Juegan blancas y dan mate en 2")).toBeVisible();
+    await waitFor(() => expect(canvas.getByText("Ésa no es la jugada")).toBeVisible());
+    await expect(canvas.getByText("tu intento")).toBeVisible();
   },
 };

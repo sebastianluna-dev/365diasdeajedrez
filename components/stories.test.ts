@@ -26,6 +26,12 @@ const WITHOUT_STORY: Record<string, string> = {
     "moved from the teacher's sections on 2026-10-17; its story is postponed on the owner's ask, with the rest of the exercises' documentation",
   "components/platform/shared/exercise-import-form/exercise-import-form.comp.tsx":
     "phase 5 of the exercises (2026-10-17); its story is postponed on the owner's ask, with the rest of the exercises' documentation",
+  "components/platform/shared/exercise-solve-aside/exercise-solve-aside.comp.tsx":
+    "the solve page's left column (2026-10-17); its story waits until the owner approves the design",
+  "components/platform/shared/exercise-session-history/exercise-session-history.comp.tsx":
+    "the solve page's «Esta sesión» (2026-10-17); its story waits until the owner approves the design",
+  "components/platform/shared/exercise-session-reset/exercise-session-reset.comp.tsx":
+    "it draws nothing: it empties the solve page's history when the student leaves it",
 };
 
 /** Folders whose stories are pages and not components: their title names the page, not an export. */

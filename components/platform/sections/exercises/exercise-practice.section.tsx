@@ -1,6 +1,7 @@
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { ExerciseSolver } from "@/components/platform/shared/exercise-solver/exercise-solver.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
+import { platformRoutes } from "@/lib/platform-routes";
 import { submitExerciseAttempt } from "@/services/exercises/exercises.actions";
 import type {
   PracticeChoice,
@@ -23,6 +24,7 @@ interface ExercisePracticeSectionProps {
  * that every one was solved already when so, or why nothing is served.
  */
 export function ExercisePracticeSection({ filters, choice, serving }: ExercisePracticeSectionProps) {
+  const topic = filters.topics.find((candidate) => candidate.code === choice.topicCode);
   return (
     <div className="exercise-practice">
       <PracticeFilters filters={filters} choice={choice} variant="page" />
@@ -55,6 +57,17 @@ export function ExercisePracticeSection({ filters, choice, serving }: ExercisePr
             next={serving.next}
             back={serving.back}
             submit={submitExerciseAttempt}
+            aside={{
+              scope: "practice",
+              href: null,
+              ...(topic && {
+                topic: {
+                  code: topic.code,
+                  label: topic.label,
+                  changeHref: platformRoutes.exercisePractice(choice.levelSlug ? { nivel: choice.levelSlug } : {}),
+                },
+              }),
+            }}
           />
         </>
       )}

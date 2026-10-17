@@ -64,7 +64,8 @@ export interface StudentSeriesView {
 
 /** The n-th exercise of a series, ready to solve. */
 export interface StudentSeriesExercise {
-  series: { id: string; title: string; href: string };
+  /** `position` is 1-based, of `total` solvable exercises: the ring of the solve page. */
+  series: { id: string; title: string; href: string; position: number; total: number };
   exercise: ExerciseSolverExercise;
   /** `unscored` when the exercise was already attempted this study day (§2.7). */
   mode: Extract<ExerciseSolverMode, "solve" | "unscored">;

@@ -1,94 +1,30 @@
-/* The solve screen. From 1024px the board is on the left and a panel on the
-   right holds the head, the feedback, the actions and the moves played; below
-   it everything stacks — the head, the board at the width of the screen (or
-   of what is left of its height, so a short screen keeps a board to play on),
-   the feedback and the actions within the thumb's reach — and a phone on its
-   side puts the actions beside the board again. */
+/* The solve screen. From 1024px the board is on the left and a panel as tall
+   as the board on the right: the notation on top, scrolling on its own, and
+   «Tu turno», the error or the result at its foot, with the ‹ › under it.
+   The full page (`_layout_page`) adds the column of the exercise's data at the
+   left and the visit's history under the board, from 1280px; below that the
+   column goes under the board. Under 1024px everything stacks, the board at
+   the width of the screen (or of what is left of its height, so a short
+   screen keeps a board to play on), and a phone on its side puts the panel
+   beside the board again. */
 .exercise-solver {
   display: grid;
   /* Its width is the page's, never its content's: the board's width is a
      share of it, and a container that shrank to the board would shrink the
      board in turn. */
   width: 100%;
-  grid-template-columns: minmax(0, 560px) minmax(260px, 1fr);
+  grid-template-columns: minmax(0, 600px) minmax(280px, 380px);
   grid-template-areas:
-    "board head"
-    "board feedback"
     "board panel"
-    "board moves"
+    ". nav"
     "full full";
-  grid-template-rows: auto auto auto 1fr auto;
-  column-gap: var(--platform-space-8);
+  justify-content: center;
+  column-gap: var(--platform-space-6);
   row-gap: var(--platform-space-4);
   align-items: start;
 
-  & .exercise-solver__head {
-    grid-area: head;
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-2);
-    min-width: 0;
-  }
-
-  & .exercise-solver__prompt {
-    margin: 0;
-    font-size: var(--platform-type-xl);
-    font-weight: 600;
-    line-height: 1.3;
-    color: var(--platform-text);
-    text-wrap: balance;
-  }
-
-  & .exercise-solver__meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--platform-space-3);
-    margin: 0;
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
-  }
-
-  /* Who plays: a disc in the pieces' colour, ringed so the white one shows on
-     white. Neither colour follows the theme, as the pieces do not: the white
-     is the cream written on ink, light in both, and the black is ink. */
-  & .exercise-solver__side {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    box-shadow: inset 0 0 0 1px var(--platform-border-strong);
-  }
-
-  & .exercise-solver__side_color_white {
-    background: var(--platform-on-ink);
-  }
-
-  & .exercise-solver__side_color_black {
-    background: var(--platform-ink);
-  }
-
-  & .exercise-solver__clock,
-  & .exercise-solver__position {
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
-  }
-
-  & .exercise-solver__failed {
-    background: var(--platform-danger-soft);
-    color: var(--platform-danger);
-    font-weight: 700;
-  }
-
-  & .exercise-solver__note {
-    margin: 0;
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
-  }
-
   & .exercise-solver__board {
     grid-area: board;
-    position: sticky;
-    top: var(--platform-space-4);
     width: 100%;
     border-radius: 8px;
   }
@@ -105,13 +41,238 @@
     }
   }
 
-  & .exercise-solver__feedback {
-    grid-area: feedback;
-    min-height: 1.5em;
+  /* As tall as the board and no taller: its content does not size the row
+     (size containment), so the notation scrolls and the foot stays put. */
+  & .exercise-solver__panel {
+    grid-area: panel;
+    align-self: stretch;
+    contain: size;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow-y: auto;
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .exercise-solver__notation {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
     margin: 0;
-    font-size: var(--platform-type-md);
-    font-weight: 600;
+    padding: 0;
+    list-style: none;
+    font-size: var(--platform-type-sm);
+    line-height: 1.4;
+    color: var(--platform-text);
+  }
+
+  & .exercise-solver__notation-empty {
+    flex: 1 1 auto;
+    margin: 0;
+    padding: var(--platform-space-3) var(--platform-space-5);
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-subtle);
+  }
+
+  & .exercise-solver__row {
+    display: grid;
+    grid-template-columns: 44px 1fr 1fr;
+  }
+
+  & .exercise-solver__number {
+    display: flex;
+    align-items: center;
+    padding: var(--platform-space-2) var(--platform-space-3);
+    background: var(--platform-bg);
+    box-shadow: inset -1px 0 0 var(--platform-border);
     color: var(--platform-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .exercise-solver__move {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-2) var(--platform-space-3);
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 500;
+    text-align: left;
+  }
+
+  & button.exercise-solver__move {
+    cursor: pointer;
+
+    &:hover {
+      background: var(--platform-surface-neutral);
+    }
+  }
+
+  & .exercise-solver__move_state_empty {
+    color: var(--platform-text-subtle);
+  }
+
+  & .exercise-solver__move.exercise-solver__move_state_current {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-weight: 700;
+  }
+
+  & .exercise-solver__move-mark {
+    width: 12px;
+    height: 12px;
+    color: var(--platform-success-ink);
+  }
+
+  & .exercise-solver__move_state_current .exercise-solver__move-mark {
+    color: currentcolor;
+  }
+
+  /* A wrong try: a variation under the row of the move it stood for. */
+  & .exercise-solver__miss {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-2) var(--platform-space-3) var(--platform-space-2)
+      calc(44px + var(--platform-space-3));
+    border-top: 1px solid var(--platform-border);
+    background: var(--platform-surface-soft);
+    color: var(--platform-text-muted);
+  }
+
+  & .exercise-solver__miss-mark {
+    width: 12px;
+    height: 12px;
+    color: var(--platform-danger);
+  }
+
+  & .exercise-solver__miss-note {
+    margin-left: var(--platform-space-2);
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-subtle);
+  }
+
+  & .exercise-solver__status {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-5);
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .exercise-solver__comment {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    line-height: 1.5;
+    color: var(--platform-text);
+  }
+
+  & .exercise-solver__turn {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--platform-space-4);
+  }
+
+  /* «Ésa no es la jugada»: the panel's foot turns to the danger's tint until the next move. */
+  & .exercise-solver__status_tone_wrong {
+    background: var(--platform-danger-soft);
+  }
+
+  & .exercise-solver__status_tone_wrong .exercise-solver__turn-title {
+    color: var(--platform-danger);
+  }
+
+  & .exercise-solver__turn-mark,
+  & .exercise-solver__result-mark {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    color: var(--platform-danger);
+  }
+
+  & .exercise-solver__result-mark_tone_ok {
+    color: var(--platform-success-ink);
+  }
+
+  & .exercise-solver__result-mark_tone_late {
+    color: var(--platform-warning-ink);
+  }
+
+  & .exercise-solver__turn-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    min-width: 0;
+  }
+
+  & .exercise-solver__turn-title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-xl);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--platform-text);
+  }
+
+  & .exercise-solver__turn-line {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    line-height: 1.45;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  /* Who plays: a disc in the pieces' colour, ringed so the white one shows on
+     white. Neither colour follows the theme, as the pieces do not: the white
+     is the cream written on ink, light in both, and the black is ink. */
+  & .exercise-solver__side {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 2px var(--platform-border-strong);
+  }
+
+  & .exercise-solver__side_color_white {
+    background: var(--platform-on-ink);
+  }
+
+  & .exercise-solver__side_color_black {
+    background: var(--platform-ink);
+  }
+
+  & .exercise-solver__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-3);
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .exercise-solver__clock,
+  & .exercise-solver__position {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+
+  & .exercise-solver__failed {
+    background: var(--platform-danger-soft);
+    color: var(--platform-danger);
+    font-weight: 700;
+  }
+
+  & .exercise-solver__feedback {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    font-weight: 600;
   }
 
   & .exercise-solver__feedback_tone_ok {
@@ -127,12 +288,10 @@
     color: var(--platform-text);
   }
 
-  & .exercise-solver__panel {
-    grid-area: panel;
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-4);
-    min-width: 0;
+  & .exercise-solver__note {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-muted);
   }
 
   & .exercise-solver__hints {
@@ -170,31 +329,17 @@
   & .exercise-solver__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--platform-space-3);
-  }
-
-  & .exercise-solver__walk {
-    display: flex;
-    align-items: center;
     gap: var(--platform-space-2);
-  }
 
-  & .exercise-solver__walk-count {
-    margin-left: var(--platform-space-2);
-    font-size: var(--platform-type-sm);
-    font-variant-numeric: tabular-nums;
-    color: var(--platform-text-muted);
+    & > .platform-button {
+      flex: 1 1 0;
+    }
   }
 
   & .exercise-solver__result {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     gap: var(--platform-space-3);
-    padding: var(--platform-space-5);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    box-shadow: var(--platform-shadow-card);
     animation: exercise-solver-result-in 160ms ease-out both;
   }
 
@@ -204,33 +349,10 @@
     }
   }
 
-  & .exercise-solver__result-title {
-    display: flex;
-    align-items: center;
-    gap: var(--platform-space-2);
-    margin: 0;
-    font-size: var(--platform-type-2xl);
-    font-weight: 700;
-  }
-
-  & .exercise-solver__result-title_tone_ok {
-    color: var(--platform-success-ink);
-  }
-
-  & .exercise-solver__result-title_tone_error {
-    color: var(--platform-danger);
-  }
-
-  & .exercise-solver__result-icon {
-    flex: none;
-    width: 22px;
-    height: 22px;
-  }
-
   & .exercise-solver__result-line,
   & .exercise-solver__explanation {
     margin: 0;
-    font-size: var(--platform-type-md);
+    font-size: var(--platform-type-sm);
     line-height: 1.5;
     color: var(--platform-text);
   }
@@ -239,24 +361,28 @@
     white-space: pre-line;
   }
 
+  & .exercise-solver__next {
+    width: 100%;
+    justify-content: center;
+  }
+
   & .exercise-solver__result-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--platform-space-3);
-    margin-top: var(--platform-space-2);
+    align-items: center;
+    gap: var(--platform-space-2) var(--platform-space-3);
   }
 
-  & .exercise-solver__moves {
-    grid-area: moves;
-    margin: 0;
-    font-size: var(--platform-type-sm);
-    line-height: 1.6;
-    color: var(--platform-text);
-    overflow-wrap: anywhere;
-  }
+  & .exercise-solver__nav {
+    grid-area: nav;
+    display: grid;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+    gap: var(--platform-space-2);
 
-  & .exercise-solver__moves-label {
-    color: var(--platform-text-muted);
+    & > .platform-button {
+      width: auto;
+    }
   }
 
   & .exercise-solver__full {
@@ -264,44 +390,81 @@
     min-width: 0;
   }
 
-  /* Tablets and phones: one column, the board as wide as the screen allows
-     while leaving the head and the actions in sight. */
-  @media (width < 1024px) {
-    grid-template-columns: minmax(0, 1fr);
+  /* The full page: the data's column at the left, the history under the board. */
+  &.exercise-solver_layout_page {
+    grid-template-columns: minmax(220px, 280px) minmax(0, 600px) minmax(280px, 340px);
     grid-template-areas:
-      "head"
-      "board"
-      "feedback"
-      "panel"
-      "moves"
-      "full";
-    grid-template-rows: auto;
-    row-gap: var(--platform-space-3);
+      "aside board panel"
+      "aside history nav"
+      "full full full";
+    grid-template-rows: auto auto auto;
+  }
+
+  & .exercise-session-history {
+    grid-area: history;
+  }
+
+  & .exercise-solve-aside {
+    grid-area: aside;
+  }
+
+  @media (width < 1280px) {
+    &.exercise-solver_layout_page {
+      grid-template-columns: minmax(0, 600px) minmax(280px, 360px);
+      grid-template-areas:
+        "board panel"
+        "history nav"
+        "aside aside"
+        "full full";
+    }
+  }
+
+  /* Tablets and phones: one column, the board as wide as the screen allows
+     while leaving the panel's foot in sight; the panel takes its own height. */
+  @media (width < 1024px) {
+    &,
+    &.exercise-solver_layout_page {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        "board"
+        "nav"
+        "panel"
+        "history"
+        "aside"
+        "full";
+      row-gap: var(--platform-space-3);
+    }
 
     & .exercise-solver__board {
-      position: static;
       justify-self: center;
       width: max(min(100vw - 32px, 100svh - 240px), 280px);
       max-width: 100%;
     }
 
-    & .exercise-solver__actions > .platform-button {
-      flex: 1 1 0;
+    & .exercise-solver__panel {
+      contain: none;
+      overflow: visible;
+    }
+
+    & .exercise-solver__notation {
+      max-height: 240px;
     }
   }
 
   /* A phone on its side: the board on the left, the rest beside it. An
      orientation is not a width, so it is no breakpoint of its own. */
   @media (width < 1024px) and (orientation: landscape) {
-    grid-template-columns: auto minmax(0, 1fr);
-    grid-template-areas:
-      "board head"
-      "board feedback"
-      "board panel"
-      "board moves"
-      "full full";
-    grid-template-rows: auto auto auto 1fr auto;
-    column-gap: var(--platform-space-5);
+    &,
+    &.exercise-solver_layout_page {
+      grid-template-columns: auto minmax(0, 1fr);
+      grid-template-areas:
+        "board panel"
+        "nav panel"
+        "history history"
+        "aside aside"
+        "full full";
+      column-gap: var(--platform-space-5);
+    }
 
     & .exercise-solver__board {
       width: max(min(100svh - 96px, 55vw), 240px);
@@ -309,11 +472,7 @@
   }
 
   @media (width < 640px) {
-    & .exercise-solver__prompt {
-      font-size: var(--platform-type-lg);
-    }
-
-    & .exercise-solver__result {
+    & .exercise-solver__status {
       padding: var(--platform-space-4);
     }
   }
