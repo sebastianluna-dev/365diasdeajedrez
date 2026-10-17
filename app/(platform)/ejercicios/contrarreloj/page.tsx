@@ -33,9 +33,9 @@ export default async function ExerciseStormPage() {
   return (
     <div className="platform-page">
       <header className="platform-page__head">
-        <Link href={platformRoutes.exercises} className="platform-page__back">
+        <Link href={platformRoutes.exerciseOverview} className="platform-page__back">
           <ChevronLeftIcon variant="classic-solid" className="platform-page__back-icon" />
-          Ejercicios
+          Series y más
         </Link>
         <h1 className="platform-page__title">Contrarreloj</h1>
       </header>

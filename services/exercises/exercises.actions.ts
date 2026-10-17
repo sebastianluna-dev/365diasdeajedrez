@@ -94,7 +94,8 @@ export async function submitExerciseAttempt(input: ExerciseAttemptSubmission): P
   );
 
   revalidatePath(platformRoutes.dashboard);
-  revalidatePath(platformRoutes.exercises);
+  // Not «Ejercicios» itself: it is the board the student is on, and revalidating it would deal another exercise under the result.
+  revalidatePath(platformRoutes.exerciseOverview);
   if (context.kind === ATTEMPT_CONTEXT.SERIES) revalidatePath(platformRoutes.exerciseSeries(context.seriesId));
   // A class's attempt moves the block's marks on the class page and «2 de 3 lo resolvieron» on the teacher's and the staff's.
   if (context.kind === ATTEMPT_CONTEXT.CLASS) {

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AngleRightIcon } from "@/components/icons/angle-right-icon.comp";
 import { ArrowDownRightIcon } from "@/components/icons/arrow-down-right-icon.comp";
 import { ArrowUpRightIcon } from "@/components/icons/arrow-up-right-icon.comp";
 import { BullseyeIcon } from "@/components/icons/bullseye-icon.comp";
@@ -138,6 +139,31 @@ export function ExerciseSolveAside({ aside, exercise }: ExerciseSolveAsideProps)
             </p>
           </div>
         </section>
+      )}
+
+      {aside.general && (
+        <nav className="exercise-solve-aside__links" aria-label="Más ejercicios">
+          <Link
+            href={aside.general.topicsHref}
+            className="exercise-solve-aside__card exercise-solve-aside__card_kind_link"
+          >
+            <span className="exercise-solve-aside__fact-text">
+              <span className="exercise-solve-aside__title">Ejercicios por tema</span>
+              <span className="exercise-solve-aside__muted">Ahora: de todos los temas</span>
+            </span>
+            <AngleRightIcon variant="classic-solid" className="exercise-solve-aside__link-icon" />
+          </Link>
+          <Link
+            href={aside.general.overviewHref}
+            className="exercise-solve-aside__card exercise-solve-aside__card_kind_link"
+          >
+            <span className="exercise-solve-aside__fact-text">
+              <span className="exercise-solve-aside__title">Series y más</span>
+              <span className="exercise-solve-aside__muted">Tus series, contrarreloj e historial</span>
+            </span>
+            <AngleRightIcon variant="classic-solid" className="exercise-solve-aside__link-icon" />
+          </Link>
+        </nav>
       )}
 
       <section className="exercise-solve-aside__card" aria-label="Ajustes">

@@ -19,8 +19,9 @@ const TONE_LABEL: Record<SolveHistoryTone, string> = {
   shown: "con la solución",
 };
 
+/** The rating change, always written: «+12», «−9», and «0» when it did not count. */
 function deltaOf(delta: number | null): string {
-  if (delta === null || delta === 0) return "";
+  if (delta === null || delta === 0) return "0";
   return delta > 0 ? `+${delta}` : `−${Math.abs(delta)}`;
 }
 
@@ -36,7 +37,8 @@ function PillBody({ entry }: { entry: SolveHistoryEntry }) {
 
 /**
  * «Esta sesión»: a pill per exercise finished in this visit, coloured by how
- * it went and with its rating change, the one on the board ringed at the end.
+ * it went and with its rating change, going back to its exercise; the one on
+ * the board ringed at the end. It explains itself: no note, no legend.
  * It lives in memory (exercise-solve-history.store.ts): leaving the page and
  * coming back starts it again.
  */
@@ -46,15 +48,12 @@ export function ExerciseSessionHistory({ scope, current }: ExerciseSessionHistor
 
   return (
     <section className="exercise-session-history" aria-label="Esta sesión">
-      <div className="exercise-session-history__head">
-        <p className="exercise-session-history__title">Esta sesión</p>
-        <p className="exercise-session-history__note">Se reinicia al salir de la página</p>
-      </div>
+      <p className="exercise-session-history__title">Esta sesión</p>
       <ol className="exercise-session-history__pills">
         {entries.map((entry, index) => {
           const ringed = !current.open && index === last;
           const className = `exercise-session-history__pill exercise-session-history__pill_tone_${entry.tone}${ringed ? " exercise-session-history__pill_state_current" : ""}`;
-          const label = `${entry.title}, ${TONE_LABEL[entry.tone]}${entry.delta ? `, ${deltaOf(entry.delta)}` : ""}`;
+          const label = `${entry.title}, ${TONE_LABEL[entry.tone]}, ${deltaOf(entry.delta)}`;
           return (
             <li key={entry.key}>
               {entry.href ? (
@@ -81,11 +80,6 @@ export function ExerciseSessionHistory({ scope, current }: ExerciseSessionHistor
           </li>
         )}
       </ol>
-      <ul className="exercise-session-history__legend" aria-label="Qué dice cada color">
-        <li className="exercise-session-history__key exercise-session-history__key_tone_clean">A la primera</li>
-        <li className="exercise-session-history__key exercise-session-history__key_tone_late">Resuelto tras fallar</li>
-        <li className="exercise-session-history__key exercise-session-history__key_tone_shown">Con la solución</li>
-      </ul>
     </section>
   );
 }

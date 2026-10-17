@@ -1,12 +1,10 @@
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
-import { ExerciseSolver } from "@/components/platform/shared/exercise-solver/exercise-solver.comp";
-import { platformRoutes } from "@/lib/platform-routes";
-import { submitExerciseAttempt } from "@/services/exercises/exercises.actions";
 import type {
   PracticeChoice,
   PracticeFilters as PracticeFiltersData,
   PracticeServing,
 } from "@/services/exercises/practice.types";
+import { ExerciseTrainerSection } from "./exercise-trainer.section";
 import { PracticeFilters } from "./practice-filters/practice-filters.comp";
 import "./exercise-practice.section.css";
 
@@ -27,30 +25,7 @@ export function ExercisePracticeSection({ filters, choice, serving }: ExercisePr
   // Serving one, the page is the solve screen alone, the window's height: the
   // filters come back through the topic card's «Cambiar de tema».
   if (serving.kind === "exercise") {
-    return (
-      // A new exercise is a new board: «Siguiente» never carries the last one's state.
-      <ExerciseSolver
-        key={serving.exercise.id}
-        exercise={serving.exercise}
-        mode={serving.mode}
-        context={serving.context}
-        next={serving.next}
-        back={serving.back}
-        submit={submitExerciseAttempt}
-        aside={{
-          scope: "practice",
-          href: null,
-          ...(topic && {
-            topic: {
-              code: topic.code,
-              label: topic.label,
-              changeHref: platformRoutes.exercisePractice(choice.levelSlug ? { nivel: choice.levelSlug } : {}),
-              note: serving.exhausted ? "Ya resolviste todos los de este tema y nivel: ahora se repiten." : null,
-            },
-          }),
-        }}
-      />
-    );
+    return <ExerciseTrainerSection serving={serving} topic={topic ?? null} levelSlug={choice.levelSlug} />;
   }
   return (
     <div className="exercise-practice">

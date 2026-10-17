@@ -5,25 +5,11 @@
   gap: var(--platform-space-2);
   min-width: 0;
 
-  & .exercise-session-history__head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--platform-space-1) var(--platform-space-3);
-  }
-
   & .exercise-session-history__title {
     margin: 0;
     font-size: var(--platform-type-sm);
     font-weight: 600;
     color: var(--platform-text);
-  }
-
-  & .exercise-session-history__note {
-    margin: 0;
-    font-size: var(--platform-type-xs);
-    color: var(--platform-text-muted);
   }
 
   & .exercise-session-history__pills {
@@ -77,41 +63,5 @@
     box-shadow:
       0 0 0 2px var(--platform-bg),
       0 0 0 4px var(--platform-accent-ink);
-  }
-
-  & .exercise-session-history__legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--platform-space-1) var(--platform-space-4);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    font-size: var(--platform-type-xs);
-    color: var(--platform-text-muted);
-  }
-
-  & .exercise-session-history__key {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--platform-space-1);
-
-    &::before {
-      content: "";
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-  }
-
-  & .exercise-session-history__key_tone_clean::before {
-    background: var(--platform-success-ink);
-  }
-
-  & .exercise-session-history__key_tone_late::before {
-    background: var(--platform-warning-ink);
-  }
-
-  & .exercise-session-history__key_tone_shown::before {
-    background: var(--platform-danger);
   }
 }

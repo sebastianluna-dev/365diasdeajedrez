@@ -244,8 +244,8 @@ export function StormRunner({ deck, bestScore, sample = false }: StormRunnerProp
             <button type="button" className="platform-button platform-button_variant_accent" onClick={start}>
               Jugar otra vez
             </button>
-            <Link href={platformRoutes.exercises} className="platform-button">
-              Volver a Ejercicios
+            <Link href={platformRoutes.exerciseOverview} className="platform-button">
+              Volver a Series y más
             </Link>
           </div>
         </div>

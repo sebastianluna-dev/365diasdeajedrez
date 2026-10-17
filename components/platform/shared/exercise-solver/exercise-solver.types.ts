@@ -80,6 +80,8 @@ export interface ExerciseSolverAside {
   href: string | null;
   /** The series it is solved in, for the ring: its 1-based place and the count. */
   series?: { title: string; href: string; position: number; total: number };
+  /** «Ejercicios» itself, any topic: the way to choose one, and to the series and the other modes. */
+  general?: { topicsHref: string; overviewHref: string };
   /** The topic chosen in «Ejercicios por tema», and the way to another. */
   topic?: {
     code: string;

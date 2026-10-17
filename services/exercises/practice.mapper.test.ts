@@ -37,6 +37,11 @@ describe("buildPracticeWhere", () => {
   it("sin tema no encuentra nada", () => {
     expect(buildPracticeWhere([], { eloMin: 800, eloMax: 1199 })).toEqual({ id: { in: [] } });
   });
+
+  it("with no topic and no level, reads the whole library («Ejercicios» itself)", () => {
+    const where = buildPracticeWhere(null, null);
+    expect(where).toEqual({ AND: [expect.anything()] });
+  });
 });
 
 describe("pickPracticeExercise", () => {

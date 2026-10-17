@@ -27,18 +27,21 @@ export function practiceTopicCodes(topics: readonly PracticeTopic[], code: strin
 
 /**
  * The library's exercises of these topics in the level's Elo range (D32:
- * only the library is practised). With no topic code, nothing.
+ * only the library is practised). With no topic code, nothing; `null` topics
+ * are any topic and a `null` level any level («Ejercicios» itself).
  */
 export function buildPracticeWhere(
-  topicCodes: readonly string[],
-  level: Pick<DifficultyLevel, "eloMin" | "eloMax">,
+  topicCodes: readonly string[] | null,
+  level: Pick<DifficultyLevel, "eloMin" | "eloMax"> | null,
 ): Prisma.ExerciseWhereInput {
-  if (topicCodes.length === 0) return { id: { in: [] } };
+  if (topicCodes?.length === 0) return { id: { in: [] } };
   return {
     AND: [
       buildLibraryExercisesWhere(),
-      { topics: { some: { topic: { code: { in: [...topicCodes] } } } } },
-      { difficulty: { gte: level.eloMin, ...(level.eloMax === null ? {} : { lte: level.eloMax }) } },
+      ...(topicCodes ? [{ topics: { some: { topic: { code: { in: [...topicCodes] } } } } }] : []),
+      ...(level
+        ? [{ difficulty: { gte: level.eloMin, ...(level.eloMax === null ? {} : { lte: level.eloMax }) } }]
+        : []),
     ],
   };
 }

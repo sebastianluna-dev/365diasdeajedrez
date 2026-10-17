@@ -21,6 +21,31 @@
     gap: var(--platform-space-4);
   }
 
+  & .exercise-solve-aside__links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+  }
+
+  & .exercise-solve-aside__card_kind_link {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--platform-space-4) var(--platform-space-5);
+    text-decoration: none;
+
+    &:hover .exercise-solve-aside__title {
+      color: var(--platform-accent-ink);
+    }
+  }
+
+  & .exercise-solve-aside__link-icon {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    color: var(--platform-accent-ink);
+  }
+
   & .exercise-solve-aside__fact {
     display: flex;
     align-items: flex-start;

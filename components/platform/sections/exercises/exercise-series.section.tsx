@@ -30,9 +30,9 @@ export function ExerciseSeriesSection({ series }: ExerciseSeriesSectionProps) {
   return (
     <>
       <header className="platform-page__head">
-        <Link href={platformRoutes.exercises} className="platform-page__back">
+        <Link href={platformRoutes.exerciseOverview} className="platform-page__back">
           <ChevronLeftIcon variant="classic-solid" className="platform-page__back-icon" />
-          Ejercicios
+          Series y más
         </Link>
         <h1 className="platform-page__title">{series.title}</h1>
         <p className="platform-page__subtitle">{subtitle}</p>

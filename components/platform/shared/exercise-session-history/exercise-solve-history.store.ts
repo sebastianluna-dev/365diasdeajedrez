@@ -60,7 +60,7 @@ export function useSolveHistory(scope: string): SolveHistoryEntry[] {
   );
 }
 
-/** The pages a visit's history lives on: practice and a series' exercise. */
+/** The pages a visit's history lives on: «Ejercicios» itself, practice, a library exercise again, and a series' exercise. */
 export function isSolvePath(pathname: string): boolean {
-  return /^\/ejercicios\/(practica|series\/[^/]+\/\d+)\/?$/.test(pathname);
+  return /^\/ejercicios(\/(practica|biblioteca\/[^/]+|series\/[^/]+\/\d+))?\/?$/.test(pathname);
 }

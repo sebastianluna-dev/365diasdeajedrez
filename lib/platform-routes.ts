@@ -121,6 +121,23 @@ export const platformRoutes = {
    * (`tema`, a Topic code) at a level (`nivel`, a Level slug); `tras` is the
    * exercise just solved, which «Siguiente» skips.
    */
+  /**
+   * «Ejercicios» itself, the board (the Lichess-like trainer): a random library
+   * exercise of any topic, or of `tema`/`nivel` when given; `tras` is the one
+   * just solved, which «Siguiente» skips.
+   */
+  exerciseTrainer: (query: { tema?: string; nivel?: string; tras?: string } = {}) => {
+    const params = new URLSearchParams();
+    if (query.tema) params.set("tema", query.tema);
+    if (query.nivel) params.set("nivel", query.nivel);
+    if (query.tras) params.set("tras", query.tras);
+    const text = params.toString();
+    return text ? `/ejercicios?${text}` : "/ejercicios";
+  },
+  /** A library exercise by its id, to solve again: where a pill of «Esta sesión» goes. */
+  exerciseLibraryItem: (exerciseId: string) => `/ejercicios/biblioteca/${exerciseId}`,
+  /** What «Ejercicios» was before it opened on the board: the series given to the student and the other modes. */
+  exerciseOverview: "/ejercicios/series",
   exercisePractice: (query: { tema?: string; nivel?: string; tras?: string } = {}) => {
     const params = new URLSearchParams();
     if (query.tema) params.set("tema", query.tema);

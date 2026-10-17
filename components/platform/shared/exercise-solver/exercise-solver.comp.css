@@ -409,7 +409,7 @@
      scroll inside; the history takes what is left under it. */
   @media (width >= 1280px) and (height > 620px) {
     &.exercise-solver_layout_page {
-      --solve-history: 112px;
+      --solve-history: 72px;
       --solve-board: max(
         320px,
         min(
