@@ -1,0 +1,212 @@
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "La dama apoyada por el rey"]
+[Difficulty "800"]
+[Topics "MATING_ATTACK"]
+[MateIn "1"]
+[Explanation "La dama da mate en g7 porque el rey blanco la protege desde h6: el rey negro no puede capturarla ni escapar a h7 o g8."]
+[SetUp "1"]
+[FEN "7k/8/6QK/8/8/8/8/8 w - - 0 1"]
+
+1. Qg7# *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "El pasillo con torre"]
+[Difficulty "850"]
+[Topics "BACK_RANK_MATE"]
+[MateIn "1"]
+[Explanation "El rey negro está encerrado por sus propios peones: la torre llega a la octava fila y no hay escape ni defensor."]
+[SetUp "1"]
+[FEN "r5k1/8/8/8/8/8/5PPP/6K1 b - - 0 1"]
+
+1... Ra1# *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "La torre que corta la octava"]
+[Difficulty "900"]
+[Topics "MATING_ATTACK, ENDGAME"]
+[MateIn "1"]
+[Explanation "Con el rey blanco en g6 cubriendo g7 y h7, la torre en la octava fila da mate: el rey negro no puede salir de la esquina."]
+[SetUp "1"]
+[FEN "7k/8/6K1/8/8/8/8/R7 w - - 0 1"]
+
+1. Ra8# *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "Mate del pastor"]
+[Difficulty "950"]
+[Topics "MATING_ATTACK"]
+[MateIn "1"]
+[Explanation "La dama captura en f7 protegida por el alfil de c4. El rey negro no puede capturarla ni huir: e7 está atacado por la dama."]
+[SetUp "1"]
+[FEN "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4"]
+
+1. Qxf7# *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "La dama remata en la esquina"]
+[Difficulty "1000"]
+[Topics "MATING_ATTACK"]
+[MateIn "1"]
+[Explanation "El rey negro, apoyado desde f3, protege a la dama en g2: el rey blanco no tiene ninguna casilla."]
+[SetUp "1"]
+[FEN "8/8/8/8/8/5kq1/8/7K b - - 0 1"]
+
+1... Qg2# *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "El mate ahogado"]
+[Difficulty "1050"]
+[Topics "MATING_ATTACK"]
+[MateIn "1"]
+[Explanation "El caballo da mate en f7: el rey negro está ahogado por su propia torre y sus peones, y nadie puede capturar al caballo."]
+[SetUp "1"]
+[FEN "6rk/6pp/8/6N1/8/8/8/6K1 w - - 0 1"]
+
+1. Nf7# *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "El pasillo con captura"]
+[Difficulty "1100"]
+[Topics "BACK_RANK_MATE"]
+[MateIn "1"]
+[Explanation "La dama captura la torre en c8 y da mate en la octava fila: el rey no puede salir porque sus peones le cierran el paso."]
+[SetUp "1"]
+[FEN "2r3k1/5ppp/8/8/8/8/5PPP/2Q3K1 w - - 0 1"]
+
+1. Qxc8# *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "El mate árabe"]
+[Difficulty "1150"]
+[Topics "MATING_ATTACK"]
+[MateIn "1"]
+[Explanation "La torre llega a h7 protegida por el caballo de f6, que además cubre g8: es el mate árabe, torre y caballo contra el rey en la esquina."]
+[SetUp "1"]
+[FEN "7k/R7/5N2/8/8/8/6K1/8 w - - 0 1"]
+
+1. Rh7# *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "El mate de las charreteras"]
+[Difficulty "1200"]
+[Topics "MATING_ATTACK"]
+[MateIn "1"]
+[Explanation "Las dos torres negras, a los lados del rey, le quitan sus propias casillas: la dama llega a e7 protegida por el caballo y es mate."]
+[SetUp "1"]
+[FEN "3rkr2/8/2N5/8/7Q/8/8/4K3 w - - 0 1"]
+
+1. Qe7# *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "La dama y el rey"]
+[Difficulty "1250"]
+[Topics "MATING_ATTACK, ENDGAME"]
+[MateIn "1"]
+[Explanation "La dama llega a g7 protegida por el rey de f6 y cubre f8, h8 y h7: el rey negro no tiene adónde ir."]
+[SetUp "1"]
+[FEN "6k1/8/5K1Q/8/8/8/8/8 w - - 0 1"]
+
+1. Qg7# *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "La coronación decide"]
+[Difficulty "1300"]
+[Topics "PROMOTION, ENDGAME"]
+[Explanation "El peón corona antes de que el rey negro pueda alcanzarlo: con dama contra rey, el final está decidido."]
+[SetUp "1"]
+[FEN "8/P5k1/8/8/8/8/8/K7 w - - 0 1"]
+
+1. a8=Q *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "La horquilla de caballo"]
+[Difficulty "1350"]
+[Topics "FORK"]
+[Explanation "El caballo da jaque en c7 y al mismo tiempo ataca la torre de a8: el rey tiene que moverse y la torre se pierde."]
+[SetUp "1"]
+[FEN "r3k3/8/8/3N4/8/8/8/4K3 w - - 0 1"]
+
+1. Nc7+ Kd8 (1... Kd7 2. Nxa8) (1... Ke7 2. Nxa8) 2. Nxa8 *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "La enfilada en la columna"]
+[Difficulty "1450"]
+[Topics "SKEWER"]
+[Explanation "La torre da jaque en la columna e; cuando el rey se aparta, la dama que estaba detrás queda a su merced."]
+[SetUp "1"]
+[FEN "4q3/8/8/8/4k3/8/8/3R2K1 w - - 0 1"]
+
+1. Re1+ Kd5 (1... Kf5 2. Rxe8) (1... Kd4 2. Rxe8) 2. Rxe8 *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "La clavada que gana la pieza"]
+[Difficulty "1550"]
+[Topics "PIN"]
+[Explanation "El caballo está clavado por la torre: no puede moverse mientras el rey siga en d8. El peón lo ataca y, haga lo que haga el rey, se captura en la jugada siguiente."]
+[SetUp "1"]
+[FEN "3k4/8/8/3n4/8/4P3/8/3RK3 w - - 0 1"]
+
+1. e4 Ke7 (1... Kc7 2. exd5) 2. exd5 *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "El ataque a la descubierta"]
+[Difficulty "1650"]
+[Topics "DISCOVERED_ATTACK"]
+[Explanation "Al moverse el caballo, la torre de e1 da jaque; el caballo, además, ataca la dama de b5. Las negras tienen que responder al jaque y pierden la dama."]
+[SetUp "1"]
+[FEN "4k3/8/8/1q6/8/8/4N3/4R1K1 w - - 0 1"]
+
+1. Nd4+ Kd7 (1... Qe5 2. Rxe5+) (1... Qe2 2. Nxe2) 2. Nxb5 *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "Eliminar al defensor"]
+[Difficulty "1750"]
+[Topics "REMOVING_THE_DEFENDER, BACK_RANK_MATE"]
+[Explanation "El caballo de d6 era el único defensor de e8. Al capturarlo, la torre entra en la octava fila y da mate del pasillo."]
+[SetUp "1"]
+[FEN "3r2k1/5ppp/3n4/8/8/8/5PPP/3RR1K1 w - - 0 1"]
+
+1. Rxd6 Rxd6 2. Re8# *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "La desviación en la octava"]
+[Difficulty "1850"]
+[Topics "DEFLECTION, BACK_RANK_MATE"]
+[MateIn "2"]
+[Explanation "La primera torre se sacrifica en d8 para desviar a la torre negra; la segunda la recaptura y da mate en la octava fila."]
+[SetUp "1"]
+[FEN "2r3k1/5ppp/8/8/8/8/3R1PPP/3R2K1 w - - 0 1"]
+
+1. Rd8+ Rxd8 2. Rxd8# *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "La escalera de torres"]
+[Difficulty "2000"]
+[Topics "MATING_ATTACK, ENDGAME"]
+[MateIn "2"]
+[Explanation "Una torre corta la séptima fila y la otra remata en la octava: el rey, empujado contra el borde, no tiene escape."]
+[SetUp "1"]
+[FEN "7k/8/8/8/8/8/R7/1R4K1 w - - 0 1"]
+
+1. Ra7 Kg8 2. Rb8# *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "El rey acompaña a la torre"]
+[Difficulty "2300"]
+[Topics "MATING_ATTACK, ENDGAME"]
+[MateIn "2"]
+[Explanation "Primero el rey quita las casillas de escape; después la torre da mate en la octava fila. Es la técnica del final de torre contra rey."]
+[SetUp "1"]
+[FEN "7k/8/5K2/8/8/8/8/R7 w - - 0 1"]
+
+1. Kg6 Kg8 2. Ra8# *
+
+[Event "Biblioteca de ejercicios de la academia"]
+[Title "El puente de Lucena"]
+[Difficulty "2700"]
+[Topics "ENDGAME"]
+[Explanation "La torre se coloca en la cuarta fila para construir el puente: el rey sale de la columna del peón y la torre lo cubre de los jaques, hasta que el peón corona."]
+[SetUp "1"]
+[FEN "1K6/1P1k4/8/8/8/8/r7/2R5 w - - 0 1"]
+
+1. Rd1+ Ke7 2. Rd4 Ra1 3. Kc7 Rc1+ 4. Kb6 Rb1+ 5. Kc6 Rc1+ 6. Kb5 Rb1+ 7. Rb4 *

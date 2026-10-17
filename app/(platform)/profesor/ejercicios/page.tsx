@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { FileImportIcon } from "@/components/icons/file-import-icon.comp";
 import { PlusIcon } from "@/components/icons/plus-icon.comp";
 import { NewSeriesButton } from "@/components/platform/shared/series-data-popup/series-data-popup.comp";
 import { TeacherExercisesSection } from "@/components/platform/sections/teacher/exercises/teacher-exercises.section";
@@ -49,6 +50,10 @@ export default async function TeacherExercisesPage({ searchParams }: TeacherExer
             Nuevo ejercicio
           </Link>
           <NewSeriesButton save={createExerciseSeries} />
+          <Link href={teacherRoutes.exerciseImport} className="platform-button">
+            <FileImportIcon variant="classic-solid" className="platform-button__icon" />
+            Importar PGN
+          </Link>
         </div>
       </header>
       <TeacherExercisesSection

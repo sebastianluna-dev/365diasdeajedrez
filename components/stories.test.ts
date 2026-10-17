@@ -24,6 +24,8 @@ const WITHOUT_STORY: Record<string, string> = {
     "moved from the teacher's sections on 2026-10-17; its story is postponed on the owner's ask, with the rest of the exercises' documentation",
   "components/platform/shared/series-items/series-items.comp.tsx":
     "moved from the teacher's sections on 2026-10-17; its story is postponed on the owner's ask, with the rest of the exercises' documentation",
+  "components/platform/shared/exercise-import-form/exercise-import-form.comp.tsx":
+    "phase 5 of the exercises (2026-10-17); its story is postponed on the owner's ask, with the rest of the exercises' documentation",
 };
 
 /** Folders whose stories are pages and not components: their title names the page, not an export. */

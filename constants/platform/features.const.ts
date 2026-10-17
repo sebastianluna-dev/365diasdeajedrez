@@ -61,3 +61,15 @@ export const ANALYSIS_BOARD_ENABLED = false as boolean;
  * migration moves, so they show whatever this says.
  */
 export const EXERCISES_ENABLED = false as boolean;
+
+/**
+ * The persistence of the exercises' phases 5–7 — the PGN import's write, the
+ * student's «Historial» over their stored attempts, and the contrarreloj's
+ * runs and best score. Off (2026-10-17, on the owner's ask): those screens
+ * run on the client over sample data, so the front can be tried before the
+ * database holds anything of theirs — the import reviews the file in the
+ * browser and only says what it would write, the history lists sample
+ * attempts, and the contrarreloj keeps its best score in the browser. It
+ * lives inside «Ejercicios», so it needs `EXERCISES_ENABLED` too.
+ */
+export const EXERCISES_PERSISTENCE_ENABLED = false as boolean;

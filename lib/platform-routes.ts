@@ -209,6 +209,8 @@ export const teacherRoutes = {
    */
   newExerciseFromGame,
   exerciseDetail: (exerciseId: string) => `/profesor/ejercicios/${exerciseId}`,
+  /** «Importar PGN» (D12, phase 5): a file with one exercise per game, into the teacher's bank. */
+  exerciseImport: "/profesor/ejercicios/importar",
   /** A series of the teacher's: its exercises in order, who has it, its title. */
   exerciseSeries: (seriesId: string) => `/profesor/ejercicios/series/${seriesId}`,
   /** The same series on «Progreso»: who solved what (D24). */
@@ -274,6 +276,8 @@ export const staffRoutes = {
   },
   /** An exercise of a bank — the academy's, or a teacher's proposed or in the library — in the staff editor with its review bar. */
   exerciseDetail: (exerciseId: string) => `/administracion/ejercicios/${exerciseId}`,
+  /** «Importar PGN» (D12, phase 5): a file with one exercise per game, into the academy's bank or straight into the library. */
+  exerciseImport: "/administracion/ejercicios/importar",
   /** The academy's series, which every student sees once published. */
   exerciseSeriesList: "/administracion/ejercicios/series",
   exerciseSeries: (seriesId: string) => `/administracion/ejercicios/series/${seriesId}`,

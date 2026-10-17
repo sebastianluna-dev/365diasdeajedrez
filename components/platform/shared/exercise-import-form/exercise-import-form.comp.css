@@ -1,0 +1,97 @@
+/* «Importar PGN»: the file and the defaults in one column, the report under
+   it as a table. Each row's outcome wears the colour of what will happen. */
+.exercise-import {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-8);
+
+  & .exercise-import__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-5);
+    max-width: 72ch;
+  }
+
+  & .exercise-import__file {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin-top: calc(-1 * var(--platform-space-3));
+  }
+
+  & .exercise-import__file-label {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .exercise-import__file-input {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text);
+  }
+
+  & .exercise-import__file-input:focus-visible {
+    outline: 2px solid var(--platform-selection);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  & .exercise-import__defaults {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-5);
+    margin: 0;
+    padding: var(--platform-space-5);
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface);
+  }
+
+  & .exercise-import__legend {
+    padding: 0 var(--platform-space-2);
+    font-size: var(--platform-type-sm);
+    font-weight: 600;
+    color: var(--platform-text-muted);
+  }
+
+  & .exercise-import__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-3);
+  }
+
+  & .exercise-import__report {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+  }
+
+  & .exercise-import__heading {
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .exercise-import__summary {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+  }
+
+  & .exercise-import__outcome {
+    font-weight: 600;
+  }
+
+  & .exercise-import__outcome_kind_ready {
+    color: var(--platform-success-ink);
+  }
+
+  & .exercise-import__outcome_kind_draft {
+    color: var(--platform-text);
+  }
+
+  & .exercise-import__outcome_kind_skipped {
+    color: var(--platform-danger);
+  }
+}

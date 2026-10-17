@@ -479,3 +479,13 @@ export async function getSeriesProgress(seriesId: string): Promise<SeriesProgres
     attempts,
   );
 }
+
+/** The teacher's series, for «Agregar a la serie» of the import (D12): ids and titles, the last changed first. */
+export async function listTeacherSeriesOptions(): Promise<{ id: string; title: string }[]> {
+  const { teacher } = await requireTeacher();
+  return getPlatformDb().exerciseSeries.findMany({
+    where: { teacherId: teacher.id },
+    select: { id: true, title: true },
+    orderBy: [{ updatedAt: "desc" }],
+  });
+}

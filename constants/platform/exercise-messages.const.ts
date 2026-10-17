@@ -1,4 +1,6 @@
 import type { SolutionProblem, SolutionWarning } from "@/lib/chess/exercise-format";
+import type { ExerciseImportNote, ExerciseImportReading, ExerciseImportRow } from "@/services/shared/exercise-import";
+import type { ExerciseImportReport } from "@/services/shared/exercise-import-form";
 import { numberedMoveLabel, sanToSpanish } from "@/lib/chess/notation";
 import { parsePgnTree, type PgnTree } from "@/lib/chess/pgn-tree";
 import type { SetupProblem } from "@/lib/chess/position-setup";
@@ -78,6 +80,12 @@ export const EXERCISE_ERROR_MESSAGES: Record<string, string> = {
   exerciseNotAllowed: "Ese cambio no se puede hacer en este momento.",
   exerciseAlreadyInLesson:
     "La lección ya tiene una copia de alguno de esos ejercicios: cierra la ventana y vuelve a abrirla.",
+  /** The import's form (phase 5). */
+  pgn: "Pega un PGN o carga un archivo.",
+  pgnTooLong: "El PGN es demasiado largo para una sola importación.",
+  step: "La dificultad va de 400 a 3000, de 50 en 50.",
+  importNothing: "No hay nada que importar: ninguna partida del archivo pasó la revisión.",
+  importChanged: "El archivo cambió desde que lo revisaste: vuelve a pulsar «Revisar».",
 };
 
 /** What the address's `?aviso=` says on the exercise pages. */
@@ -114,10 +122,106 @@ export const EXERCISE_NOTICES = {
 
 export type ExerciseNoticeCode = keyof typeof EXERCISE_NOTICES;
 
+/** The import's notice (phase 5), with its two counts: `exercisesImported.<ready>.<drafts>`. */
+const IMPORTED_NOTICE = /^exercisesImported\.(\d{1,4})\.(\d{1,4})$/;
+
+/** «Se importaron 12 ejercicios (3 como borrador).» */
+export function exercisesImportedNotice(ready: number, drafts: number): string {
+  const total = ready + drafts;
+  const went = total === 1 ? "Se importó 1 ejercicio" : `Se importaron ${total} ejercicios`;
+  if (drafts === 0) return `${went}.`;
+  return `${went} (${drafts === total ? (drafts === 1 ? "como borrador" : "todos como borrador") : `${drafts} como borrador`}).`;
+}
+
 /** The notice of a `?aviso=` value, or null for anything `withNoticeParam` could not have written here. */
 export function readExerciseNotice(raw: string | string[] | undefined): string | null {
-  if (typeof raw !== "string" || !Object.hasOwn(EXERCISE_NOTICES, raw)) return null;
+  if (typeof raw !== "string") return null;
+  const imported = IMPORTED_NOTICE.exec(raw);
+  if (imported) return exercisesImportedNotice(Number(imported[1]), Number(imported[2]));
+  if (!Object.hasOwn(EXERCISE_NOTICES, raw)) return null;
   return EXERCISE_NOTICES[raw as ExerciseNoticeCode];
+}
+
+// --- The import's report (phase 5) ---------------------------------------------
+
+/** What «ready» means by who imports: the teacher's «Listo», the staff's «En la biblioteca». */
+export type ExerciseImportAudience = "teacher" | "academy";
+
+const MISSING_WORDS: Record<"topic" | "explanation", string> = {
+  topic: "le faltan temas",
+  explanation: "le falta la explicación",
+};
+
+/** The row's outcome in words: «Se importará», «Se importará como borrador: …», «No se importará: …». */
+export function exerciseImportRowText(
+  row: ExerciseImportRow,
+  target: "draft" | "ready" | "library",
+  audience: ExerciseImportAudience,
+): string {
+  if (row.outcome === "ready") {
+    if (target === "draft") return "Se importará como borrador";
+    return audience === "academy" ? "Se importará a la biblioteca" : "Se importará como listo";
+  }
+  if (row.outcome === "draft") {
+    return `Se importará como borrador: ${row.missing.map((item) => MISSING_WORDS[item]).join(" y ")}`;
+  }
+  const { refusal } = row;
+  switch (refusal.code) {
+    case "noFen":
+      return "No se importará: no tiene [FEN]";
+    case "unreadable":
+      return "No se importará: no se pudo leer";
+    case "badPosition":
+      return "No se importará: su [FEN] no es una posición posible";
+    case "unsupportedVariant":
+      return "No se importará: sólo se admite el ajedrez estándar";
+    case "duplicate":
+      return audience === "academy" ? "Ya está en el banco de la academia" : "Ya está en tus ejercicios";
+    case "repeated":
+      return "No se importará: está repetido en el archivo";
+    case "overLimit":
+      return "No se importará: una importación admite hasta 500 ejercicios";
+    case "solution":
+      return `No se importará: ${importProblemText(refusal.problem)}`;
+  }
+}
+
+/** A solution's problem as the report says it, lower case and without the editor's instructions. */
+function importProblemText(problem: SolutionProblem): string {
+  switch (problem.code) {
+    case "noMoves":
+      return "no tiene jugadas";
+    case "illegalMove":
+      return problem.detail.replace(/^Jugada ilegal o no reconocida/, "tiene una jugada ilegal:").replace(/\.$/, "");
+    case "notMate":
+      return "una de sus líneas no termina en mate";
+    case "mateTooLong":
+      return "una de sus líneas da mate en más jugadas de las que dice";
+    case "mateLengthMismatch":
+      return "su línea principal da mate antes de lo que dice";
+    case "notForced":
+      return "hay una defensa que evita el mate";
+    case "mistakeVariant":
+      return "una variante marcada como error se aceptaría como solución";
+    default:
+      return (EXERCISE_ERROR_MESSAGES[problem.code] ?? EXERCISE_ERROR_MESSAGES.invalid ?? "").replace(/\.$/, "");
+  }
+}
+
+/** A row's note in words. */
+export function exerciseImportNoteText(note: ExerciseImportNote): string {
+  switch (note.code) {
+    case "droppedVariant":
+      return `Se quitó la variante ${note.label} (marcada como error).`;
+    case "alternatives":
+      return `Se aceptan varias jugadas: ${note.sans.map(sanToSpanish).join(", ")}.`;
+    case "mateInIgnored":
+      return "Su [MateIn] no se entendió: se usa el tipo elegido.";
+    case "difficultyIgnored":
+      return "Su [Difficulty] no se entendió: se usa la dificultad elegida.";
+    case "unknownTopics":
+      return `Temas que no existen, ignorados: ${note.names.join(", ")}.`;
+  }
 }
 
 /** «14. Cxe5»: the move at a path, numbered, in Spanish; the bare path's depth when the tree lacks it. */
@@ -168,4 +272,22 @@ export function solutionWarningText(warning: SolutionWarning, pgn: string): stri
     case "shortAlternative":
       return `La variante de ${moveAt(parsePgnTree(pgn), warning.path)} termina antes que la línea principal.`;
   }
+}
+
+/** The report the page draws: every row in words, and the counts. */
+export function exerciseImportReport(
+  reading: ExerciseImportReading,
+  target: "draft" | "ready" | "library",
+  audience: ExerciseImportAudience,
+): ExerciseImportReport {
+  return {
+    rows: reading.rows.map((row) => ({
+      index: row.index,
+      title: row.title,
+      outcome: row.outcome,
+      status: exerciseImportRowText(row, target, audience),
+      notes: row.notes.map(exerciseImportNoteText),
+    })),
+    counts: reading.counts,
+  };
 }

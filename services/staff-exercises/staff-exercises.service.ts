@@ -314,3 +314,13 @@ export const getStaffSeriesEditor = cache(async (seriesId: string): Promise<Staf
     pickable: pickable.map(mapSeriesPickOption),
   };
 });
+
+/** The academy's series, for «Agregar a la serie» of the import (D12): ids and titles, the last changed first. */
+export async function listAcademySeriesOptions(): Promise<{ id: string; title: string }[]> {
+  await requireStaff();
+  return getPlatformDb().exerciseSeries.findMany({
+    where: { teacherId: null },
+    select: { id: true, title: true },
+    orderBy: [{ updatedAt: "desc" }],
+  });
+}

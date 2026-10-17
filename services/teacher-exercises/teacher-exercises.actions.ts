@@ -15,7 +15,19 @@ import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { staffRoutes, teacherRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { syncCatalogJoin } from "@/services/shared/catalog-join.service";
+import { exerciseImportReport } from "@/constants/platform/exercise-messages.const";
 import { EXERCISE_FORM_FIELDS, exerciseErrorTab, readExerciseForm } from "@/services/shared/exercise-form";
+import { firstSanOf, readExerciseImport } from "@/services/shared/exercise-import";
+import {
+  EXERCISE_IMPORT_FIELDS,
+  readExerciseImportForm,
+  type ExerciseImportFormState,
+} from "@/services/shared/exercise-import-form";
+import {
+  ExerciseImportRefused,
+  ExerciseImportSeriesFull,
+  writeExerciseImport,
+} from "@/services/shared/exercise-import.service";
 import {
   createExerciseRecord,
   exerciseCopyInput,
@@ -36,7 +48,7 @@ import {
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
 import { nextOrder, planDenseRenumber, planFullReorder } from "@/services/shared/reorder";
 import { withErrorParam, withNoticeParam } from "@/services/shared/safe-return-to";
-import { getTeacherGamePgn, isTeacherGame } from "./teacher-exercises.service";
+import { getExerciseCatalogs, getTeacherGamePgn, isTeacherGame } from "./teacher-exercises.service";
 
 // Writes of the teacher's exercise bank (PLAN.md §4.2). Rules that are NOT
 // negotiable:
@@ -683,4 +695,102 @@ export async function unshareSeriesWithStudent(seriesId: string, formData: FormD
   });
   revalidateSeries(seriesId);
   redirect(withNoticeParam(back, "seriesUnshared"));
+}
+
+// --- Import (D12; PLAN.md §4.5) ---------------------------------------------
+
+/** The import's budget: ten files per ten minutes, by user. */
+const IMPORT_WINDOW_MS = 10 * 60_000;
+
+/**
+ * «Importar PGN», in two steps through `useActionState` (the second of the
+ * documented exceptions to «every action redirects», with the editor's save):
+ * «Revisar» (`intent=preview`) reads the file and answers the report — one
+ * row per game, what will happen to it and why — and writes nothing;
+ * «Importar» (`intent=import`) reads it again and writes the accepted rows in
+ * one transaction, each through `createExerciseRecord` and, for «Listo», the
+ * owner's status writer, then into the chosen series; then it redirects to
+ * the bank with the counts. A refusal comes back with the report still on
+ * screen. The PGN is not handed back in `values`: the page keeps it.
+ */
+export async function importTeacherExercises(
+  prev: ExerciseImportFormState,
+  formData: FormData,
+): Promise<ExerciseImportFormState> {
+  void prev;
+  const values = readFormValues(
+    formData,
+    EXERCISE_IMPORT_FIELDS.filter((field) => field !== "pgn"),
+  );
+  if (!EXERCISES_ENABLED) return popupFormError({}, values, { code: "disabled" });
+  const { teacher, user } = await requireTeacher();
+  if (!(await allowAction(`${user.id}:exercise-import`, 10, IMPORT_WINDOW_MS))) {
+    return popupFormError({}, values, { code: "throttled" });
+  }
+
+  const read = readExerciseImportForm(formData);
+  if (!read.ok) {
+    const code = read.field === "pgn" ? (read.code === "too_big" ? "pgnTooLong" : "pgn") : read.field;
+    return popupFormError({ [read.field || "pgn"]: { code } }, values);
+  }
+  const { pgn, intent, status, seriesId, defaults } = read.values;
+  if (seriesId && !(await ownsSeries(seriesId, teacher.id))) {
+    return popupFormError({ seriesId: { code: "seriesNotFound" } }, values);
+  }
+
+  const db = getPlatformDb();
+  const [catalogs, own] = await Promise.all([
+    getExerciseCatalogs(),
+    db.exercise.findMany({
+      where: buildOwnExercisesWhere(teacher.id),
+      select: { startPositionHash: true, solutionPgn: true },
+    }),
+  ]);
+  const target = status === "draft" ? "draft" : "ready";
+  const reading = readExerciseImport(
+    pgn,
+    { ...defaults, target },
+    catalogs.topics,
+    own.map((row) => ({ startPositionHash: row.startPositionHash, firstSan: firstSanOf(row.solutionPgn) })),
+  );
+  const report = exerciseImportReport(reading, target, "teacher");
+  if (intent === "preview") return { status: "idle", values, report };
+  if (reading.accepted.length === 0) return { ...popupFormError({}, values, { code: "importNothing" }), report };
+
+  const now = new Date();
+  let written: { ready: number; drafts: number };
+  try {
+    written = await db.$transaction(
+      (tx) =>
+        writeExerciseImport(tx, {
+          accepted: reading.accepted,
+          teacherId: teacher.id,
+          authorUserId: user.id,
+          move:
+            target === "draft"
+              ? null
+              : (client, exerciseId) =>
+                  transitionOwnExercise(client as typeof tx, {
+                    exerciseId,
+                    teacherId: teacher.id,
+                    actorUserId: user.id,
+                    to: EXERCISE_STATUS.READY,
+                    now,
+                  }),
+          seriesId,
+        }),
+      { timeout: 60_000 },
+    );
+  } catch (error) {
+    if (error instanceof ExerciseImportRefused) {
+      return { ...popupFormError({}, values, { code: error.result.code }), report };
+    }
+    if (error instanceof ExerciseImportSeriesFull) {
+      return { ...popupFormError({ seriesId: { code: "seriesFull" } }, values), report };
+    }
+    throw error;
+  }
+  revalidateExercise();
+  if (seriesId) revalidateSeries(seriesId);
+  redirect(withNoticeParam(teacherRoutes.exercises, "exercisesImported", [written.ready, written.drafts]));
 }

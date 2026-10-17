@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { FileImportIcon } from "@/components/icons/file-import-icon.comp";
 import { PlusIcon } from "@/components/icons/plus-icon.comp";
 import { StaffExercisesSection } from "@/components/platform/sections/staff/exercises/staff-exercises.section";
 import { EXERCISE_ERROR_MESSAGES, readExerciseNotice } from "@/constants/platform/exercise-messages.const";
@@ -38,6 +39,10 @@ export default async function StaffExercisesPage({ searchParams }: StaffExercise
           <Link href={staffRoutes.newExercise} className="platform-button platform-button_variant_accent">
             <PlusIcon variant="classic-solid" className="platform-button__icon" />
             Nuevo ejercicio
+          </Link>
+          <Link href={staffRoutes.exerciseImport} className="platform-button">
+            <FileImportIcon variant="classic-solid" className="platform-button__icon" />
+            Importar PGN
           </Link>
         </div>
       </header>
