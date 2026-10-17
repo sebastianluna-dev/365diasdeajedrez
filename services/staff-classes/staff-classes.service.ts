@@ -1,6 +1,7 @@
 import { cache } from "react";
 import type { ClassAgendaDay } from "@/components/platform/shared/class-agenda/class-agenda.comp";
 import {
+  CLASS_BLOCK_KIND,
   CLASS_FORMAT,
   CLASS_PHASE,
   CLASS_STATUS,
@@ -15,6 +16,7 @@ import type { Prisma } from "@/lib/platform-db/generated/client";
 import { staffRoutes } from "@/lib/platform-routes";
 import { dayKeyIn, formatDateTimeLocal, parseDateTimeLocal } from "@/lib/timezone";
 import { classDetailInclude, classPhaseOf, mapClassBlocks } from "@/services/classes/classes.mapper";
+import { classSolvedLabels } from "@/services/shared/class-exercise-progress";
 import { buildClassHistory } from "@/services/shared/class-history";
 import { editableClassFields } from "@/services/shared/class-rules";
 import { meetingVisibleFrom } from "@/services/shared/meeting-visible-from";
@@ -454,6 +456,26 @@ export const getClassAdminDetail = cache(async (classId: string): Promise<StaffC
   };
   const seats = seatRows.map((seat) => mapStaffSeat(seat, context));
   const seated = seats.filter((seat) => !seat.moved);
+
+  // «2 de 3 lo resolvieron» on the EXERCISE blocks, read-only: the same count the teacher reads (D29).
+  const exerciseBlocks = blocksRow.blocks.filter((block) => block.kind.code === CLASS_BLOCK_KIND.EXERCISE);
+  const seatIds = seated.map((seat) => seat.userId);
+  const blockAttempts =
+    exerciseBlocks.length > 0 && seatIds.length > 0
+      ? await db.trainingAttempt.findMany({
+          where: {
+            classBlockId: { in: exerciseBlocks.map((block) => block.id) },
+            userId: { in: seatIds },
+            exerciseId: { not: null },
+          },
+          select: { userId: true, classBlockId: true, exerciseId: true, result: { select: { code: true } } },
+        })
+      : [];
+  const solvedLabels = classSolvedLabels(
+    exerciseBlocks.map((block) => ({ id: block.id, exerciseIds: block.exercises.map((item) => item.exercise.id) })),
+    blockAttempts,
+    seatIds,
+  );
   const agendaRow = toAgendaRow({
     ...row,
     participants: row.participants.map((seat) => ({ ...seat, paymentId: seat.payment?.id ?? null })),
@@ -579,7 +601,7 @@ export const getClassAdminDetail = cache(async (classId: string): Promise<StaffC
             note: row.rescheduleNote,
           }
         : null,
-    blocks: mapClassBlocks(blocksRow.blocks, { audience: "staff", phase }),
+    blocks: mapClassBlocks(blocksRow.blocks, { audience: "staff", phase, solvedLabels }),
     history,
     finalize: {
       classId: row.id,

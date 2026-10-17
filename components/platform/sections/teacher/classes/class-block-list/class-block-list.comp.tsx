@@ -29,6 +29,8 @@ import { blockOrderAfterDrop, isBlockVisibleToStudent, type BlockSections } from
 import type { PopupFormState } from "@/services/shared/form-state";
 import type { TeacherClassBlock } from "@/services/teacher-classes/teacher-classes.types";
 import type { BlockFormOptions } from "../class-block-editor/block-form.comp";
+import { ClassExerciseProgress } from "../class-exercise-progress/class-exercise-progress.comp";
+import type { ClassExerciseProgressData } from "../class-exercise-progress/class-exercise-progress.types";
 import {
   ADDABLE_BLOCK_KINDS,
   BlockPopup,
@@ -43,6 +45,8 @@ export interface ClassBlockListProps {
   blocks: TeacherClassBlock[];
   /** The same blocks as the student's renderer draws them. */
   views: ClassBlockView[];
+  /** Per EXERCISE block, who solved what from it (D29): the teacher's row draws this instead of the student's list. */
+  exerciseProgress?: ClassExerciseProgressData[];
   phase: ClassPhaseCode;
   /** The content may be edited in this phase. */
   editable: boolean;
@@ -121,6 +125,7 @@ export function ClassBlockList({
   classId,
   blocks,
   views,
+  exerciseProgress = [],
   phase,
   editable,
   studentLabel,
@@ -143,6 +148,7 @@ export function ClassBlockList({
   const [pendingDelete, setPendingDelete] = useState<TeacherClassBlock | null>(null);
   const byId = new Map(blocks.map((block) => [block.id, block]));
   const viewById = new Map(views.map((view) => [view.id, view]));
+  const progressById = new Map(exerciseProgress.map((progress) => [progress.blockId, progress]));
 
   const save = (next: BlockSections, moved?: { blockId: string; visibility: ClassBlockVisibilityCode }) => {
     setSections(next);
@@ -255,6 +261,7 @@ export function ClassBlockList({
                           key={item.id}
                           block={block}
                           view={viewById.get(item.id)}
+                          progress={progressById.get(item.id)}
                           name={item.name}
                           number={index + 1}
                           editable={editable}
@@ -323,6 +330,8 @@ export function ClassBlockList({
 interface RowProps {
   block: TeacherClassBlock;
   view: ClassBlockView | undefined;
+  /** An EXERCISE block's «2 de 3 lo resolvieron», drawn in the row instead of the student's list. */
+  progress?: ClassExerciseProgressData;
   name: string;
   number: number;
   editable: boolean;
@@ -331,8 +340,8 @@ interface RowProps {
   onDelete: () => void;
 }
 
-/** A block in its section: the grip, the line that folds its render, and its «…». */
-function Row({ block, view, name, number, editable, onEdit, onMoveTo, onDelete }: RowProps) {
+/** A block in its section: the grip, the line that folds its render — an exercise block, who solved it —, and its «…». */
+function Row({ block, view, progress, name, number, editable, onEdit, onMoveTo, onDelete }: RowProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: block.id,
     data: { name },
@@ -369,7 +378,9 @@ function Row({ block, view, name, number, editable, onEdit, onMoveTo, onDelete }
           )}
         </summary>
         <div className="class-block-list__body">
-          {view ? (
+          {progress ? (
+            <ClassExerciseProgress progress={progress} />
+          ) : view ? (
             <ClassContentRenderer blocks={[view]} />
           ) : (
             <p className="class-block-list__empty">Este bloque no se puede mostrar.</p>

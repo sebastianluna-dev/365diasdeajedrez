@@ -354,15 +354,16 @@ const ATTEMPT_SELECT = {
   context: { select: { code: true, label: true } },
   exercise: { select: { id: true, title: true, teacherId: true, startFen: true } },
   series: { select: { title: true } },
+  classBlock: { select: { class: { select: { title: true, scheduledAt: true } } } },
   mistakeDetails: { select: { fen: true, expectedSan: true, playedSan: true }, take: 1 },
 } as const;
 
 /**
  * `/profesor/alumnos/[studentId]/ejercicios`: every attempt of the student
  * the teacher may see (`teacherVisibleAttemptsWhere`: their own series —
- * deleted since or not, D45 —, and the neutral contexts at their own or the
- * library's exercises; never by current status, so «Archivar» hides
- * nothing), the latest first, the first `page` pages. Null when the student
+ * deleted since or not, D45 —, the blocks of their own classes (D29), and the
+ * neutral contexts at their own or the library's exercises; never by current
+ * status, so «Archivar» hides nothing), the latest first, the first `page` pages. Null when the student
  * is not assigned to the teacher now (the page answers 404): the same
  * criterion as their studies.
  */

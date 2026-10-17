@@ -162,6 +162,8 @@ export interface TeacherAttemptRow {
   context: { code: string; label: string };
   exercise: { id: string; title: string; teacherId: string | null; startFen: string } | null;
   series: { title: string } | null;
+  /** The class block it was solved from (D29), with its class's topic and date for «Clase: …» / «Clase del 14 oct». */
+  classBlock: { class: { title: string | null; scheduledAt: Date } } | null;
   mistakeDetails: { fen: string; expectedSan: string; playedSan: string }[];
 }
 

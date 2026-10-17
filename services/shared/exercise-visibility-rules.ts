@@ -193,16 +193,17 @@ export function buildOwnExercisesWhere(teacherId: string): Prisma.ExerciseWhereI
 
 /**
  * The attempts of a student that a teacher may see (D24, bounded by D08): in
- * their own context — a series of theirs, whatever the exercise (they put it
- * there when they could pick it; phase 3 adds their class blocks) — or in a
- * neutral context at an exercise that is theirs (any status), was ever in the
- * library (`publishedAt` is kept when it leaves) or is a lesson's (D04: the
- * courses are everyone's, so what a student did in them is their teacher's to see).
- * Never by current status: archiving an exercise hides none of its history.
- * A deleted series leaves its attempts with no series (`SetNull`): those at
- * the teacher's own exercise stay theirs to see, noted «de una serie
- * eliminada» (D45); at anyone else's, whose series it was can no longer be
- * told, so they stay out.
+ * their own context — a series of theirs, or a block of a class they give
+ * (D29), whatever the exercise (they put it there when they could pick it) —
+ * or in a neutral context at an exercise that is theirs (any status), was
+ * ever in the library (`publishedAt` is kept when it leaves) or is a lesson's
+ * (D04: the courses are everyone's, so what a student did in them is their
+ * teacher's to see). Never by current status: archiving an exercise hides
+ * none of its history. A deleted series leaves its attempts with no series
+ * (`SetNull`): those at the teacher's own exercise stay theirs to see, noted
+ * «de una serie eliminada» (D45); at anyone else's, whose series it was can
+ * no longer be told, so they stay out — and a deleted block's the same way.
+ * A class given by another teacher stays out, as their series do.
  */
 export function teacherVisibleAttemptsWhere(teacherId: string, studentId: string): Prisma.TrainingAttemptWhereInput {
   return {
@@ -211,6 +212,8 @@ export function teacherVisibleAttemptsWhere(teacherId: string, studentId: string
     OR: [
       { series: { teacherId } },
       { seriesId: null, context: { code: ATTEMPT_CONTEXT.SERIES }, exercise: { teacherId } },
+      { classBlock: { class: { teacherId } } },
+      { classBlockId: null, context: { code: ATTEMPT_CONTEXT.CLASS }, exercise: { teacherId } },
       {
         context: { code: { in: [...NEUTRAL_ATTEMPT_CONTEXTS] } },
         exercise: { OR: [{ teacherId }, { publishedAt: { not: null } }, { lessonId: { not: null } }] },

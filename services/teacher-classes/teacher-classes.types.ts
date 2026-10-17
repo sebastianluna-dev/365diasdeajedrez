@@ -1,4 +1,5 @@
 import type { AttendanceMarkView } from "@/components/platform/shared/attendance-row/attendance-row.types";
+import type { ClassExerciseProgressData } from "@/components/platform/sections/teacher/classes/class-exercise-progress/class-exercise-progress.types";
 import type { ClassRowData } from "@/components/platform/shared/class-row/class-row.types";
 import type { ExercisePickOption } from "@/components/platform/shared/exercise-picker/exercise-picker.types";
 import type { FinalizeClassData } from "@/components/platform/shared/finalize-class-popup/finalize-class-popup.types";
@@ -104,8 +105,10 @@ export interface TeacherClassDetail {
   students: TeacherSeatView[];
   /** The blocks to edit. */
   blocks: TeacherClassBlock[];
-  /** The same blocks as the student's renderer draws them, every visibility. */
+  /** The same blocks as the student's renderer draws them, every visibility, with «2 de 3 lo resolvieron» on the exercise rows. */
   views: ClassBlockView[];
+  /** Per EXERCISE block, who solved each exercise and their attempts from it (D29). */
+  exerciseProgress: ClassExerciseProgressData[];
   afterNotes: {
     summary: string | null;
     recordingUrl: string | null;

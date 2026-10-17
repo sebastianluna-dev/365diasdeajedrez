@@ -344,6 +344,25 @@ describe("los intentos que un profesor puede ver", () => {
     expect(visible(attempt("SERIES", exercise("e", null, "PUBLISHED", [], new Date("2026-09-01"))))).toBe(false);
   });
 
+  it("los de un bloque de una clase suya, sea de quien sea el ejercicio; nunca los de la clase de otro profesor (fase 3)", () => {
+    const inClass = (teacherId: string, ex: Row, classBlock: Row | null) => ({
+      userId: ALICE,
+      exerciseId: ex.id,
+      seriesId: null,
+      classBlockId: classBlock ? "b-1" : null,
+      context: { code: "CLASS" },
+      exercise: ex,
+      series: null,
+      classBlock: classBlock ? { ...classBlock, class: { teacherId } } : null,
+    });
+    expect(visible(inClass(T1, exercise("e", T2, "PUBLISHED"), { id: "b-1" }))).toBe(true);
+    expect(visible(inClass(T1, exercise("e", T1, "READY"), { id: "b-1" }))).toBe(true);
+    expect(visible(inClass(T2, exercise("e", T2, "READY"), { id: "b-1" }))).toBe(false);
+    // A deleted block: only at the teacher's own exercise.
+    expect(visible(inClass(T1, exercise("e", T1, "ARCHIVED"), null))).toBe(true);
+    expect(visible(inClass(T1, exercise("e", T2, "READY"), null))).toBe(false);
+  });
+
   it("sólo del alumno pedido, y sólo intentos de ejercicios", () => {
     const where = teacherVisibleAttemptsWhere(T1, ALICE);
     expect(where).toMatchObject({ userId: ALICE, exerciseId: { not: null } });

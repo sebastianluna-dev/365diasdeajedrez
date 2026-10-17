@@ -1,0 +1,43 @@
+---
+description: "An exercise block as its teacher reads it: one row per exercise and «2 de 3 lo resolvieron», a button that opens the popup with each seated student's attempts from this block and who has not tried it."
+---
+
+# `ClassExerciseProgress`
+
+|            |                                                                                                                                                                                                                                                                  |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/class-exercise-progress/class-exercise-progress.comp.tsx`; its data, `class-exercise-progress.types.ts`                                                                                                            |
+| Kind       | Client Component (which exercise the popup is open on)                                                                                                                                                                                                           |
+| Stylesheet | `class-exercise-progress.comp.css` → block `.class-exercise-progress`                                                                                                                                                                                            |
+| Story      | `class-exercise-progress.stories.tsx` (`platform/sections/teacher/classes/ClassExerciseProgress`): two exercises of a group class, the popup of one solved by two (`play`), the popup of one nobody tried (`play`), a class with no seat                         |
+| Used by    | [`ClassBlockList`](/components/platform/sections/teacher/classes/class-block-list) (the body of an EXERCISE block's row, instead of the student's list)                                                                                                          |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup) (`md`, a sheet on a phone), [`ExerciseAttemptRow`](/components/platform/shared/exercise-attempt-row)                                                                                               |
+| Reads      | `ClassExerciseProgressData`, mapped by `mapClassExerciseProgress` (`services/teacher-classes/teacher-classes.mapper.ts`) over the attempts with the block's `classBlockId` by the seats not moved; the count is `classExerciseSolvedCounts` (`services/shared/`) |
+
+## Purpose
+
+D29's «the teacher sees «2 de 3 lo resolvieron»» (2026-10-16, phase 3 of [Exercises](/platform/exercises)). In the teacher's record of a class, an EXERCISE block folds to a line like any other; unfolded, it shows this instead of the student's list: each exercise with its number, title and facts, and the count as its action (`.platform-row-action`). The count opens a popup named after the exercise: the figure again, every attempt made from the block by a seated student — the latest first, each an [`ExerciseAttemptRow`](/components/platform/shared/exercise-attempt-row) whose title is the student (a link to their «Ejercicios» tab when they are the teacher's, a name alone when they are not), with the mistake to unfold — and «Sin intentar: Mateo Ríos y Diego Salas.». Nothing is stored: the staff's sheet reads the same count through the renderer's rows.
+
+## Props
+
+| Prop       | Type                        | Required | Meaning                                                                                                        |
+| ---------- | --------------------------- | -------- | -------------------------------------------------------------------------------------------------------------- |
+| `progress` | `ClassExerciseProgressData` | yes      | `{ blockId, seatCount, exercises: [{ exerciseId, n, title, facts, solvedCount, label, attempts, untried }] }`. |
+
+## Behaviour
+
+- The label is `solvedCountLabel`'s: «2 de 3 lo resolvieron», «1 de 3 lo resolvió», «Sin alumnos» when nobody is seated. The denominator is the seats not moved; an attempt from a seat moved since counts for nothing.
+- The popup's content is remounted on each close (`onClose` bumps a key), so the rows' disclosures start folded on the next exercise. With no attempt: «Nadie lo ha intentado todavía desde la clase.»
+- `aria-haspopup="dialog"` on the count; the popup is a `PlatformPopup`, named by its title.
+
+## Markup & styling
+
+Block `.class-exercise-progress` (86 lines): the rows as cards of the surface with the count on the right (wrapping under the title on a narrow row), and the popup's column.
+
+**Elements:** `.class-exercise-progress__list`, `.class-exercise-progress__row`, `.class-exercise-progress__body`, `.class-exercise-progress__title`, `.class-exercise-progress__facts`, `.class-exercise-progress__popup`, `.class-exercise-progress__summary`, `.class-exercise-progress__figure`, `.class-exercise-progress__note`, `.class-exercise-progress__attempts`, `.class-exercise-progress__untried`
+
+**Other classes it renders:** `.platform-row-action`.
+
+**Tokens:** `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries.

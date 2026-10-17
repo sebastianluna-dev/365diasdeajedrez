@@ -151,6 +151,7 @@ import {
   type BlockPopupHandle,
 } from "@/components/platform/sections/teacher/classes/class-block-editor/block-popup.comp";
 import { ClassBlockList } from "@/components/platform/sections/teacher/classes/class-block-list/class-block-list.comp";
+import { ClassExerciseProgress } from "@/components/platform/sections/teacher/classes/class-exercise-progress/class-exercise-progress.comp";
 import { TopicButton } from "@/components/platform/sections/teacher/classes/topic-popup/topic-popup.comp";
 import { FinalizeClassButton } from "@/components/platform/shared/finalize-class-popup/finalize-class-popup.comp";
 import { MeetingCountdown } from "@/components/platform/shared/meeting-countdown/meeting-countdown.comp";
@@ -2584,6 +2585,42 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             </Tile>
             <Tile name="ExercisePicker" docs="platform-shared-exercisepicker" width={480} height={240} surface>
               <ExercisePickerHost />
+            </Tile>
+            <Tile
+              name="ClassExerciseProgress"
+              docs="platform-sections-teacher-classes-classexerciseprogress"
+              width={560}
+              height={168}
+              surface
+            >
+              <ClassExerciseProgress
+                progress={{
+                  blockId: "b5",
+                  seatCount: 3,
+                  exercises: [
+                    {
+                      exerciseId: "ex000001",
+                      n: 1,
+                      title: "Mate del pasillo",
+                      facts: "Mate en 1 · 900",
+                      solvedCount: 2,
+                      label: "2 de 3 lo resolvieron",
+                      attempts: [],
+                      untried: ["Diego Salas"],
+                    },
+                    {
+                      exerciseId: "ex000002",
+                      n: 2,
+                      title: "El mate de Philidor",
+                      facts: "Mate en 2 · 1400",
+                      solvedCount: 0,
+                      label: "0 de 3 lo resolvieron",
+                      attempts: [],
+                      untried: ["Alumno Demo", "Mateo Ríos", "Diego Salas"],
+                    },
+                  ],
+                }}
+              />
             </Tile>
             <Tile name="MovePathPicker" docs="platform-shared-movepathpicker" width={960} height={640}>
               <MovePathPicker

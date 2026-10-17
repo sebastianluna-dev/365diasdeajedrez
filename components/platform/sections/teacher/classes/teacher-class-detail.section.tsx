@@ -75,6 +75,7 @@ export function TeacherClassDetailSection({
             classId={classDetail.id}
             blocks={classDetail.blocks}
             views={classDetail.views}
+            exerciseProgress={classDetail.exerciseProgress}
             phase={classDetail.phase}
             editable={editable.content}
             studentLabel={studentLabel.charAt(0).toUpperCase() + studentLabel.slice(1)}

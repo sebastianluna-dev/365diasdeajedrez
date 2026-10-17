@@ -10,7 +10,7 @@ description: "One attempt of a student at an exercise, for their teacher: the ex
 | Kind       | Client Component (the disclosure's state)                                                                                                                                                                                                                   |
 | Stylesheet | `exercise-attempt-row.comp.css` → block `.exercise-attempt-row`                                                                                                                                                                                             |
 | Story      | `exercise-attempt-row.stories.tsx` (`platform/shared/ExerciseAttemptRow`): a failed attempt folded, the same expanded by its `play`, a clean pass in free practice at a library exercise, one solved with a hint, and «Vio la solución» in a deleted series |
-| Used by    | [`StudentExerciseAttemptsSection`](/components/platform/sections/teacher/students/student-exercise-attempts-section)                                                                                                                                        |
+| Used by    | [`StudentExerciseAttemptsSection`](/components/platform/sections/teacher/students/student-exercise-attempts-section), [`ClassExerciseProgress`](/components/platform/sections/teacher/classes/class-exercise-progress) (the student as the row's title)     |
 | Composes   | [`StaticDiagram`](/components/chess/static-diagram) (with `arrows`), [`LocalDateTime`](/components/platform/shared/local-datetime)                                                                                                                          |
 | Reads      | `ExerciseAttemptRowData`, mapped by `mapExerciseAttemptRow` (`services/teacher-exercises/teacher-exercises.mapper.ts`)                                                                                                                                      |
 
@@ -24,7 +24,7 @@ description: "One attempt of a student at an exercise, for their teacher: the ex
 
 - A list item (`<li>`): the section lists them in an `<ol>`, the latest first. The title links to the editor when the exercise is the teacher's; a library exercise is named and not linked.
 - The outcome is a `platform-tag`: «Resuelto» in the success tone, «Resuelto con pista» in the warning tone, «Fallado» and «Vio la solución» plain — the same four words the student saw (D20, D33).
-- `whereLabel` says where it was solved: «Serie: Táctica 1», «Práctica libre», or «De una serie eliminada» when the series is gone (D45).
+- `whereLabel` says where it was solved: «Serie: Táctica 1», «Práctica libre», «De una serie eliminada» when the series is gone (D45), «Clase: Repaso de la Najdorf» or «Clase del mié 14 oct» for a class block (D29), «De una clase eliminada» when the block is gone.
 - **«Ver el error»**, only with a `mistake`: a `platform-button` with `aria-expanded` and `aria-controls` that shows the panel under the row — the position at the mistake (`StaticDiagram`, with the move played as a danger arrow and the one expected as a success arrow) beside «Jugó Td7 en vez de Td8#», the two moves in the same tones. The panel is `hidden` while closed; «Ocultar el error» closes it. «Ver la solución» has no wrong move, so no button.
 
 ## Markup & styling

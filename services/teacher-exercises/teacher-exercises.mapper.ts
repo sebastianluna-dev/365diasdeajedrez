@@ -14,7 +14,9 @@ import {
 import { emptySolutionPgn } from "@/lib/chess/exercise-format";
 import { EXERCISE_LIMITS } from "@/constants/platform/exercise.const";
 import { teacherRoutes } from "@/lib/platform-routes";
+import { formatClassDay } from "@/lib/format-class-when";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
+import { STUDY_DAY_TIMEZONE } from "@/constants/platform/timezones.const";
 import type { StudentShareRow } from "@/components/platform/shared/student-share-panel/student-share-panel.types";
 import { exerciseFacts } from "@/services/shared/exercise-facts";
 import { levelOfDifficulty, type DifficultyLevel } from "@/services/shared/exercise-level";
@@ -330,11 +332,25 @@ export function formatAttemptDuration(durationMs: number | null): string | null 
 /**
  * Where an attempt was made: its series by title, «De una serie eliminada»
  * for one whose series is gone (D45: the row keeps its SERIES context with no
- * series), or the context's own label («Práctica libre», «Repaso»…).
+ * series); its class by topic («Clase: Repaso de la Najdorf») or by day
+ * («Clase del mié 14 oct», the academy's zone) when it has none, «De una
+ * clase eliminada» for a block gone (D29); or the context's own label
+ * («Práctica libre», «Repaso»…).
  */
-export function attemptWhereLabel(attempt: Pick<TeacherAttemptRow, "context" | "series">): string {
-  if (attempt.context.code !== ATTEMPT_CONTEXT.SERIES) return attempt.context.label;
-  return attempt.series ? `Serie: ${attempt.series.title}` : "De una serie eliminada";
+export function attemptWhereLabel(attempt: Pick<TeacherAttemptRow, "context" | "series" | "classBlock">): string {
+  if (attempt.context.code === ATTEMPT_CONTEXT.SERIES) {
+    return attempt.series ? `Serie: ${attempt.series.title}` : "De una serie eliminada";
+  }
+  if (attempt.context.code === ATTEMPT_CONTEXT.CLASS) {
+    const cls = attempt.classBlock?.class;
+    if (!cls) return "De una clase eliminada";
+    const title = cls.title?.trim();
+    // The day, dated: a row is read long after, so «Hoy» would lie.
+    return title
+      ? `Clase: ${title}`
+      : `Clase del ${formatClassDay(cls.scheduledAt, STUDY_DAY_TIMEZONE, cls.scheduledAt)}`;
+  }
+  return attempt.context.label;
 }
 
 /**

@@ -1,0 +1,86 @@
+/* An exercise block for its teacher: a row per exercise with its count as the
+   action, and the popup with the students' attempts. */
+.class-exercise-progress {
+  & .class-exercise-progress__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .class-exercise-progress__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-2) var(--platform-space-4);
+    padding: var(--platform-space-3);
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface);
+  }
+
+  & .class-exercise-progress__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    min-width: 0;
+  }
+
+  & .class-exercise-progress__title {
+    font-size: var(--platform-type-md);
+    font-weight: 600;
+    color: var(--platform-text);
+    overflow-wrap: anywhere;
+  }
+
+  & .class-exercise-progress__facts {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  /* The popup's content: the figure, the attempts and who is missing. */
+  & .class-exercise-progress__popup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-6);
+  }
+
+  & .class-exercise-progress__summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--platform-space-2);
+    margin: 0;
+  }
+
+  & .class-exercise-progress__figure {
+    font-size: var(--platform-type-xl);
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .class-exercise-progress__note {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-subtle);
+  }
+
+  & .class-exercise-progress__attempts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .class-exercise-progress__untried {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    line-height: 1.5;
+    color: var(--platform-text-subtle);
+  }
+}

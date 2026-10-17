@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { academyWhatsappHref } from "@/constants/platform/academy-contact.const";
 import {
+  CLASS_BLOCK_KIND,
   CLASS_FORMAT,
   CLASS_PHASE,
   CLASS_STATUS,
@@ -18,12 +19,14 @@ import type { Prisma } from "@/lib/platform-db/generated/client";
 import { teacherRoutes } from "@/lib/platform-routes";
 import { classTimeZone, dayRangeIn } from "@/lib/timezone";
 import { classDetailInclude, mapClassBlocks } from "@/services/classes/classes.mapper";
+import { classSolvedLabels } from "@/services/shared/class-exercise-progress";
 import { canFinalizeClass, editableClassFields } from "@/services/shared/class-rules";
 import { buildPickableExercisesWhere } from "@/services/shared/exercise-visibility-rules";
 import { lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
 import { mapSeriesPickOption } from "@/services/teacher-exercises/teacher-exercises.mapper";
 import {
   adminLineOf,
+  mapClassExerciseProgress,
   mapTeacherBlock,
   mapTeacherClassRow,
   mapTeacherSeat,
@@ -210,16 +213,44 @@ const detailSelect = {
       game: { select: { id: true, white: true, black: true, pgn: true } },
       lesson: { select: { id: true, name: true, ...lessonPgnSelect, chapter: { select: { name: true } } } },
       position: { select: { id: true, title: true, fen: true } },
-      exercises: { orderBy: { order: "asc" }, select: { exerciseId: true, exercise: { select: { title: true } } } },
+      exercises: {
+        orderBy: { order: "asc" },
+        select: {
+          exerciseId: true,
+          exercise: { select: { title: true, kind: { select: { code: true } }, mateIn: true, difficulty: true } },
+        },
+      },
     },
   },
 } satisfies Prisma.ClassSelect;
 
+/** An attempt from one of the class's EXERCISE blocks, as «2 de 3 lo resolvieron» and its popup read it. */
+const blockAttemptSelect = {
+  id: true,
+  userId: true,
+  classBlockId: true,
+  exerciseId: true,
+  seriesId: true,
+  createdAt: true,
+  durationMs: true,
+  hintsUsed: true,
+  solutionShown: true,
+  result: { select: { code: true } },
+  context: { select: { code: true, label: true } },
+  exercise: { select: { id: true, title: true, teacherId: true, startFen: true } },
+  series: { select: { title: true } },
+  classBlock: { select: { class: { select: { title: true, scheduledAt: true } } } },
+  mistakeDetails: { select: { fen: true, expectedSan: true, playedSan: true }, take: 1 },
+  user: { select: { displayName: true } },
+} satisfies Prisma.TrainingAttemptSelect;
+
 /**
  * The teacher's record of a class (PROF-2): the blocks to edit and as the
  * student sees them, the students with their marks and the staff's changes,
- * the meeting, what was written after, and the staff's facts. Cached per
- * request: the page and its metadata read it once.
+ * the meeting, what was written after, the staff's facts and, per EXERCISE
+ * block, who solved what from it (D29: the attempts with that `classBlockId`
+ * by the seats not moved). Cached per request: the page and its metadata
+ * read it once.
  */
 export const getTeacherClassDetail = cache(async (classId: string): Promise<TeacherClassDetail | null> => {
   const { teacher, user } = await requireTeacher();
@@ -265,6 +296,27 @@ export const getTeacherClassDetail = cache(async (classId: string): Promise<Teac
   const whatsappHref = academyWhatsappHref(`Hola, soy ${teacher.displayName}. Sobre la clase «${title}»:`);
   const isGroup = source.formatCode === CLASS_FORMAT.GROUP;
   const students = seatSources.map((seat) => mapTeacherSeat(seat, timeZone, now));
+
+  // The EXERCISE blocks' attempts, from the seats not moved: «2 de 3 lo resolvieron» and its popup.
+  const exerciseBlocks = row.blocks.filter((block) => block.kind.code === CLASS_BLOCK_KIND.EXERCISE);
+  const seated = seatSources.filter((seat) => seat.seatMovedAt === null);
+  const attempts =
+    exerciseBlocks.length > 0 && seated.length > 0
+      ? await db.trainingAttempt.findMany({
+          where: {
+            classBlockId: { in: exerciseBlocks.map((block) => block.id) },
+            userId: { in: seated.map((seat) => seat.userId) },
+            exerciseId: { not: null },
+          },
+          select: blockAttemptSelect,
+        })
+      : [];
+  const seatIds = seated.map((seat) => seat.userId);
+  const solvedLabels = classSolvedLabels(
+    exerciseBlocks.map((block) => ({ id: block.id, exerciseIds: block.exercises.map((item) => item.exerciseId) })),
+    attempts,
+    seatIds,
+  );
   const whenLine = formatClassWhen({ start: row.scheduledAt, durationMin: row.durationMin, timeZone, now });
 
   return {
@@ -289,7 +341,13 @@ export const getTeacherClassDetail = cache(async (classId: string): Promise<Teac
     meetingVisibleLine: meetingVisibleLine(source, timeZone),
     students,
     blocks: row.blocks.map(mapTeacherBlock),
-    views: mapClassBlocks(viewRow.blocks, { audience: "teacher", phase }),
+    views: mapClassBlocks(viewRow.blocks, { audience: "teacher", phase, solvedLabels }),
+    exerciseProgress: mapClassExerciseProgress(
+      exerciseBlocks,
+      attempts,
+      seated.map((seat) => ({ userId: seat.userId, displayName: seat.displayName, isAssigned: seat.isAssigned })),
+      teacher.id,
+    ),
     afterNotes: {
       summary: row.summary,
       recordingUrl: row.recordingUrl,

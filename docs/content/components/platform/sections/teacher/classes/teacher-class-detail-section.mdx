@@ -11,7 +11,7 @@ description: "The teacher's record of a class (PROF-2): the material to prepare 
 | Stylesheet | `teacher-class-detail.section.css` → block `.teacher-class`                                                                                                                                                                                                                                                                                                                                                |
 | Used by    | `/profesor/clases/[classId]`                                                                                                                                                                                                                                                                                                                                                                               |
 | Composes   | [`ClassBlockList`](/components/platform/sections/teacher/classes/class-block-list), [`MeetingJoinCard`](/components/platform/shared/meeting-join-card) (`compact`), [`AttendanceRow`](/components/platform/shared/attendance-row) (read), [`AfterNotesPopup`](/components/platform/sections/teacher/classes/after-notes-popup) («Editar»), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Reads      | `TeacherClassDetail` from `getTeacherClassDetail()` · `services/teacher-classes/teacher-classes.service.ts`                                                                                                                                                                                                                                                                                                |
+| Reads      | `TeacherClassDetail` from `getTeacherClassDetail()` · `services/teacher-classes/teacher-classes.service.ts` (with `exerciseProgress`, who solved what from each EXERCISE block, D29) and the pickable exercises from `listPickableExercises()`                                                                                                                                                             |
 | Writes     | `addClassBlock()`, `updateClassBlock()`, `deleteClassBlock()`, `reorderClassBlocks()`, `fetchReferencePgn()`, `updateClassAfterNotes()` — imported here and handed to the client pieces as props                                                                                                                                                                                                           |
 
 ## Purpose
@@ -20,12 +20,13 @@ The page draws the head: the phase, the title with «Editar el tema» ([`TopicPo
 
 ## Props
 
-| Prop                     | Type                       | Required | Meaning                                  |
-| ------------------------ | -------------------------- | -------- | ---------------------------------------- |
-| `classDetail`            | `TeacherClassDetail`       | yes      |                                          |
-| `games`                  | `ReferenceableGameGroup[]` | yes      | What a game block may cite.              |
-| `initialGameId`          | `string`                   | no       | `?gameId=`: the block popup opens on it. |
-| `notice`, `errorMessage` | `string`                   | no       |                                          |
+| Prop                     | Type                       | Required | Meaning                                                                                  |
+| ------------------------ | -------------------------- | -------- | ---------------------------------------------------------------------------------------- |
+| `classDetail`            | `TeacherClassDetail`       | yes      |                                                                                          |
+| `games`                  | `ReferenceableGameGroup[]` | yes      | What a game block may cite.                                                              |
+| `exercises`              | `PickableExercise[]`       | yes      | What an exercise block may hold (D29): the teacher's usable exercises and the library's. |
+| `initialGameId`          | `string`                   | no       | `?gameId=`: the block popup opens on it.                                                 |
+| `notice`, `errorMessage` | `string`                   | no       |                                                                                          |
 
 ## Behaviour
 

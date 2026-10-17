@@ -1,4 +1,5 @@
 import type { AttendanceMarkView } from "@/components/platform/shared/attendance-row/attendance-row.types";
+import type { ClassExerciseProgressData } from "@/components/platform/sections/teacher/classes/class-exercise-progress/class-exercise-progress.types";
 import type { ClassRowChip } from "@/components/platform/shared/class-row/class-row.types";
 import type { FinalizeClassData } from "@/components/platform/shared/finalize-class-popup/finalize-class-popup.types";
 import type { MeetingJoinData } from "@/components/platform/shared/meeting-join-card/meeting-join-card.types";
@@ -23,7 +24,11 @@ import {
   classDisplayTitle,
   editableClassFields,
 } from "@/services/shared/class-rules";
+import { classExerciseSolvedCounts, solvedCountLabel } from "@/services/shared/class-exercise-progress";
+import { exerciseFacts } from "@/services/shared/exercise-facts";
 import { lessonPgnOf } from "@/services/shared/lesson-pgn";
+import { mapExerciseAttemptRow } from "@/services/teacher-exercises/teacher-exercises.mapper";
+import type { TeacherAttemptRow } from "@/services/teacher-exercises/teacher-exercises.types";
 import { meetingVisibleFrom, meetingVisibleUntil } from "@/services/shared/meeting-visible-from";
 import type { TeacherClassBlock, TeacherClassRow, TeacherSeatView } from "./teacher-classes.types";
 
@@ -349,6 +354,72 @@ export function mapTeacherBlock(block: TeacherBlockSource): TeacherClassBlock {
     exerciseIds: kind === CLASS_BLOCK_KIND.EXERCISE ? exercises.map((item) => item.exerciseId) : undefined,
     isMovePathBroken: isMovePathBroken(block.movePath, referencedPgn),
   };
+}
+
+/** An attempt from a class block as the progress reads it: the row's data plus who made it. */
+export interface ClassBlockAttemptRow extends TeacherAttemptRow {
+  userId: string;
+  classBlockId: string | null;
+  user: { displayName: string };
+}
+
+/** An EXERCISE block as the progress reads it: its exercises in order. */
+export interface ClassBlockExerciseSource {
+  id: string;
+  exercises: {
+    exerciseId: string;
+    exercise: { title: string; kind: { code: string }; mateIn: number | null; difficulty: number };
+  }[];
+}
+
+/**
+ * «2 de 3 lo resolvieron» per exercise of each EXERCISE block (D29), from the
+ * attempts made from the block by the students seated now (the count is the
+ * shared fold's, `classExerciseSolvedCounts`), with every one of those
+ * attempts as a row whose title is the student — their tab when they are the
+ * teacher's, a name alone when they are not — and who has not tried it.
+ */
+export function mapClassExerciseProgress(
+  blocks: readonly ClassBlockExerciseSource[],
+  attempts: readonly ClassBlockAttemptRow[],
+  seats: readonly { userId: string; displayName: string; isAssigned: boolean }[],
+  teacherId: string,
+): ClassExerciseProgressData[] {
+  const seatIds = seats.map((seat) => seat.userId);
+  const seated = new Set(seatIds);
+  const counts = classExerciseSolvedCounts(attempts, seatIds);
+  const byTime = [...attempts]
+    .filter((attempt) => seated.has(attempt.userId))
+    .sort((left, right) => right.createdAt.getTime() - left.createdAt.getTime() || left.id.localeCompare(right.id));
+  return blocks.map((block) => ({
+    blockId: block.id,
+    seatCount: seatIds.length,
+    exercises: block.exercises.map((item, index) => {
+      const own = byTime.filter(
+        (attempt) => attempt.classBlockId === block.id && attempt.exerciseId === item.exerciseId,
+      );
+      const tried = new Set(own.map((attempt) => attempt.userId));
+      const solvedCount = counts.get(block.id)?.get(item.exerciseId) ?? 0;
+      return {
+        exerciseId: item.exerciseId,
+        n: index + 1,
+        title: item.exercise.title,
+        facts: exerciseFacts(item.exercise),
+        solvedCount,
+        label: solvedCountLabel(solvedCount, seatIds.length),
+        attempts: own.map((attempt) => {
+          const seat = seats.find((candidate) => candidate.userId === attempt.userId);
+          return {
+            ...mapExerciseAttemptRow(attempt, teacherId),
+            title: attempt.user.displayName,
+            href: seat?.isAssigned ? teacherRoutes.studentExercises(attempt.userId) : null,
+            whereLabel: "Desde la clase",
+          };
+        }),
+        untried: seats.filter((seat) => !tried.has(seat.userId)).map((seat) => seat.displayName),
+      };
+    }),
+  }));
 }
 
 /** «Individual · 60 min · creada por Staff Demo el jue 1 oct». */

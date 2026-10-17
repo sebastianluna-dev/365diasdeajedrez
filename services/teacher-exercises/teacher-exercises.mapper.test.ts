@@ -253,6 +253,7 @@ describe("the teacher's view of an attempt (D24, D45)", () => {
     context: { code: "SERIES", label: "Serie" },
     exercise: { id: "ex000001", title: "Mate del pasillo", teacherId: "t-1", startFen: BACK_RANK },
     series: { title: "Táctica de la semana" },
+    classBlock: null,
     mistakeDetails: [{ fen: BACK_RANK, expectedSan: "Rd8#", playedSan: "Rd7" }],
   };
 
@@ -269,6 +270,18 @@ describe("the teacher's view of an attempt (D24, D45)", () => {
     expect(
       attemptWhereLabel({ ...ATTEMPT, context: { code: "PRACTICE", label: "Práctica libre" }, series: null }),
     ).toBe("Práctica libre");
+  });
+
+  it("dice la clase: por su tema, por su día sin tema, o «De una clase eliminada» (fase 3)", () => {
+    const inClass = { ...ATTEMPT, context: { code: "CLASS", label: "Clase" }, series: null };
+    const scheduledAt = new Date("2026-10-14T18:00:00.000Z");
+    expect(
+      attemptWhereLabel({ ...inClass, classBlock: { class: { title: "Repaso de la Najdorf", scheduledAt } } }),
+    ).toBe("Clase: Repaso de la Najdorf");
+    expect(attemptWhereLabel({ ...inClass, classBlock: { class: { title: null, scheduledAt } } })).toBe(
+      "Clase del mié 14 oct",
+    );
+    expect(attemptWhereLabel({ ...inClass, classBlock: null })).toBe("De una clase eliminada");
   });
 
   it("escribe el tiempo en segundos o en minutos, y nada sin tiempo", () => {
