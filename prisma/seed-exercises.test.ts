@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { EXERCISE_KIND } from "@/constants/platform/exercise-codes.const";
 import { EXERCISE_LIMITS } from "@/constants/platform/exercise.const";
-import { analyzeSolution } from "@/lib/chess/exercise-format";
+import { deriveExerciseData } from "@/lib/chess/exercise-derivation";
+import { analyzeSolution, solutionPgnFromLine } from "@/lib/chess/exercise-format";
+import { startFenOf } from "@/lib/chess/mainline";
 import { exerciseReadiness } from "@/services/shared/exercise-status-transitions";
+import { buildAttempts, COURSES, IDS } from "./seed-data";
 import {
   DEMO_EXERCISE_ATTEMPTS,
   DEMO_EXERCISES,
@@ -42,6 +46,59 @@ describe("DEMO_EXERCISES", () => {
     const ids = DEMO_EXERCISES.map((exercise) => exercise.id);
     expect(new Set(ids).size).toBe(ids.length);
     for (const id of ids) expect(id).toHaveLength(8);
+  });
+});
+
+describe("the lesson exercises of the seed data (COURSES)", () => {
+  const seeded = COURSES.flatMap((course) =>
+    course.chapters.flatMap((chapter) =>
+      chapter.lessons.flatMap((lesson) =>
+        lesson.exercises.map((exercise) => ({
+          lesson,
+          exercise,
+          solutionPgn: solutionPgnFromLine(
+            deriveExerciseData({
+              initialFen: startFenOf(lesson.pgn),
+              afterSans: exercise.afterSans,
+              lineSans: exercise.lineSans,
+            }).startFen,
+            exercise.lineSans,
+          ),
+        })),
+      ),
+    ),
+  );
+
+  it("are the four the migration moved, each a sequence `analyzeSolution` accepts and everything PUBLISHED asks for", () => {
+    expect(seeded.map(({ exercise }) => exercise.id).sort()).toEqual(
+      [IDS.exNajdorfLine, IDS.exPoisonedPawn, IDS.exLucenaBridge, IDS.exPhilidorDefense].sort(),
+    );
+    for (const { exercise, solutionPgn } of seeded) {
+      const solution = { solutionPgn, kind: EXERCISE_KIND.SEQUENCE, mateIn: null };
+      const analysis = analyzeSolution(solution);
+      expect(analysis.ok ? [] : analysis.problems, exercise.id).toEqual([]);
+      expect(
+        exerciseReadiness({ ...solution, title: exercise.title, topicCount: exercise.topics.length, explanation: null })
+          .ok,
+        exercise.id,
+      ).toBe(true);
+      expect(exercise.difficulty % EXERCISE_LIMITS.difficultyStep, exercise.id).toBe(0);
+      expect(exercise.title.length).toBeLessThanOrEqual(EXERCISE_LIMITS.title);
+      expect(exercise.promptText.length).toBeLessThanOrEqual(EXERCISE_LIMITS.prompt);
+    }
+  });
+
+  it("start at order 1 in their lesson, as the panel's nextOrder gives a new one", () => {
+    for (const { exercise } of seeded) expect(exercise.order, exercise.id).toBe(1);
+  });
+
+  it("the legacy attempts point at seeded lesson exercises, on earlier days", () => {
+    const now = new Date("2026-10-16T18:00:00.000Z");
+    const ids = new Set(seeded.map(({ exercise }) => exercise.id));
+    for (const attempt of buildAttempts(now)) {
+      expect(ids.has(attempt.exerciseId), attempt.id).toBe(true);
+      expect(attempt.createdAt.getTime()).toBeLessThan(now.getTime());
+    }
   });
 });
 

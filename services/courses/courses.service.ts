@@ -391,7 +391,7 @@ export async function getLessonView(lessonId: string): Promise<LessonView | null
       estimatedDuration: true,
       ...lessonPgnSelect,
       orientation: { select: { code: true } },
-      exercises: { select: { id: true } },
+      trainingExercises: { select: { id: true } },
       chapter: { select: { courseId: true } },
     },
   });

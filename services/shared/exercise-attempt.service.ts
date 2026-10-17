@@ -99,15 +99,21 @@ export interface FoldedAttempt {
   review: ExerciseOutcome;
 }
 
+/** What every attempt, legacy or not, tells the state. */
+export type LegacyFoldedAttempt = Pick<FoldedAttempt, "at" | "resultCode" | "resultId">;
+
 /**
- * The state after one scored attempt: one more attempt, its dates and result,
- * the first pass if it is one, and the review ladder (`applyExerciseReview`),
- * which a «Contrarreloj» attempt never moves (time pressure is not what the
- * review measures). `lastReviewedAt` is the last attempt made in «Para
- * repasar hoy». Shared by the writer and the rebuild, so the two cannot drift.
+ * The facts of one attempt: one more, its dates and result, the first pass
+ * if it is one. What the phase 2 migration (`20261016130000_lesson_exercises`)
+ * computed in SQL for the attempts it moved from the hand-made
+ * `TrainingExercise` rows (`count`, `min`, `min … FILTER PASSED`, `max`, the
+ * last result): they were recorded under the trainer's rules, where PASSED
+ * allowed mistakes and nothing gated the day, so the review ladder never hears
+ * them. The rebuild folds an `isLegacy` row with this alone, so running it on a
+ * migrated database never rewrites what the migration chose.
  */
-export function foldExerciseAttempt(state: ExerciseStateColumns, attempt: FoldedAttempt): ExerciseStateColumns {
-  const next: ExerciseStateColumns = {
+export function foldLegacyAttempt(state: ExerciseStateColumns, attempt: LegacyFoldedAttempt): ExerciseStateColumns {
+  return {
     ...state,
     attemptCount: state.attemptCount + 1,
     firstAttemptAt: state.firstAttemptAt ?? attempt.at,
@@ -115,6 +121,17 @@ export function foldExerciseAttempt(state: ExerciseStateColumns, attempt: Folded
     lastAttemptAt: attempt.at,
     lastResultId: attempt.resultId,
   };
+}
+
+/**
+ * The state after one scored attempt: its facts (`foldLegacyAttempt`) and
+ * the review ladder (`applyExerciseReview`), which a «Contrarreloj» attempt
+ * never moves (time pressure is not what the review measures).
+ * `lastReviewedAt` is the last attempt made in «Para repasar hoy». Shared by
+ * the writer and the rebuild, so the two cannot drift.
+ */
+export function foldExerciseAttempt(state: ExerciseStateColumns, attempt: FoldedAttempt): ExerciseStateColumns {
+  const next = foldLegacyAttempt(state, attempt);
   if (attempt.contextCode === ATTEMPT_CONTEXT.STORM) return next;
   const review = applyExerciseReview({ reviewStep: state.reviewStep }, attempt.review, attempt.at);
   return {
@@ -320,6 +337,8 @@ interface AttemptRow {
   resultId: number;
   contextId: number;
   hintsUsed: number;
+  /** Moved by the phase 2 migration from a hand-made `TrainingExercise`: folded as it did (`foldLegacyAttempt`). */
+  isLegacy: boolean;
 }
 
 export interface ExerciseStateRebuilder {
@@ -344,9 +363,13 @@ function reviewOf(resultCode: AttemptResultCode, hintsUsed: number): ExerciseOut
  * exactly the writer's rules — the family's study-day gate, the ladder, the
  * first pass — and rewrites them (the seed; the drift fixer of IMPROVEMENTS).
  * An attempt the gate would have refused (a «Contrarreloj» row stored on a
- * day already taken) moves nothing. Activities are not written here: they are
- * the append-only log the writer kept. Run it inside a transaction, or on a
- * database nobody else writes (the seed). Returns how many states it wrote.
+ * day already taken) moves nothing. A legacy row (`isLegacy`, the phase 2
+ * migration's) is folded as the migration folded it: its facts, never the
+ * ladder, and never refused by the gate — several the same day all count —,
+ * though, like any attempt, it is the family's last for the gate that
+ * follows. Activities are not written here: they are the append-only log the
+ * writer kept. Run it inside a transaction, or on a database nobody else
+ * writes (the seed). Returns how many states it wrote.
  */
 export async function rebuildUserExerciseState(db: ExerciseStateRebuilder, userId: string): Promise<number> {
   const [results, contexts, attempts] = await Promise.all([
@@ -355,7 +378,7 @@ export async function rebuildUserExerciseState(db: ExerciseStateRebuilder, userI
     db.trainingAttempt.findMany({
       where: { userId, exerciseId: { not: null } },
       orderBy: [{ createdAt: "asc" }, { id: "asc" }],
-      select: { exerciseId: true, createdAt: true, resultId: true, contextId: true, hintsUsed: true },
+      select: { exerciseId: true, createdAt: true, resultId: true, contextId: true, hintsUsed: true, isLegacy: true },
     }),
   ]);
   const exerciseIds = [...new Set(attempts.map((attempt) => attempt.exerciseId).filter((id) => id !== null))];
@@ -376,6 +399,18 @@ export async function rebuildUserExerciseState(db: ExerciseStateRebuilder, userI
     const context = contextCode.get(attempt.contextId);
     if (exerciseId === null || !result || !context) continue;
     const key = keyOf.get(exerciseId) ?? exerciseId;
+    if (attempt.isLegacy) {
+      states.set(
+        exerciseId,
+        foldLegacyAttempt(states.get(exerciseId) ?? EMPTY_EXERCISE_STATE, {
+          at: attempt.createdAt,
+          resultCode: result,
+          resultId: attempt.resultId,
+        }),
+      );
+      familyLast.set(key, attempt.createdAt);
+      continue;
+    }
     const last = familyLast.get(key);
     if (last && isSameStudyDay(last, attempt.createdAt)) continue;
     states.set(

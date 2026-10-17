@@ -239,7 +239,8 @@ export const getChapterAdmin = cache(
             estimatedDuration: true,
             role: { select: { code: true, label: true } },
             ...lessonPgnSelect,
-            _count: { select: { exercises: true, progresses: true } },
+            // The lesson's exercises in play (the archived ones have no order).
+            _count: { select: { lessonExercises: { where: { lessonOrder: { not: null } } }, progresses: true } },
           },
           orderBy: { order: "asc" },
         },
@@ -268,7 +269,7 @@ export const getChapterAdmin = cache(
           isPriority: lesson.isPriority,
           hasPgn: lessonHasContent(lesson),
           durationMin: lesson.estimatedDuration ?? undefined,
-          exerciseCount: lesson._count.exercises,
+          exerciseCount: lesson._count.lessonExercises,
           progressCount: lesson._count.progresses,
           href: staffRoutes.lessonDetail(chapter.courseId, chapter.id, lesson.id),
         })),
@@ -506,7 +507,8 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
       },
       _count: { select: { progresses: true } },
       lessonTopics: { select: { topic: { select: { code: true } } } },
-      exercises: {
+      trainingExercises: {
+        where: { isDerived: false },
         select: {
           id: true,
           order: true,
@@ -554,7 +556,7 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
       : undefined,
     pgnUpdatedAtLabel: lesson.pgnUpdatedAt ? formatSpanishDate(lesson.pgnUpdatedAt) : undefined,
     topicCodes: lesson.lessonTopics.map((lessonTopic) => lessonTopic.topic.code),
-    exercises: lesson.exercises.map((exercise) => ({
+    exercises: lesson.trainingExercises.map((exercise) => ({
       id: exercise.id,
       order: exercise.order,
       modeCode: exercise.mode.code as ExerciseModeCode,

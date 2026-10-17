@@ -300,6 +300,76 @@ describe("rebuildUserExerciseState", () => {
     expect(rebuilt).toMatchObject({ attemptCount: 3, firstSolvedAt: DAY2, lastReviewedAt: DAY5 });
   });
 
+  it("reproduce lo que la migración de fase 2 dejó en las filas isLegacy: cuentas y fechas, sin repaso ni puerta del día", async () => {
+    const R = FAKE_EXERCISE_IDS.result;
+    const C = FAKE_EXERCISE_IDS.context;
+    // Two attempts the same study day (the trainer gated nothing) and one the day after; one more, not legacy.
+    const db = fakeExerciseDb({
+      exercise: [{ id: "e-1", copiedFromId: null, solutionPgn: BACK_RANK }],
+      trainingAttempt: [
+        {
+          id: "a-1",
+          userId: USER,
+          exerciseId: "e-1",
+          resultId: R.FAILED,
+          contextId: C.TRAINER,
+          createdAt: DAY1,
+          isLegacy: true,
+        },
+        {
+          id: "a-2",
+          userId: USER,
+          exerciseId: "e-1",
+          resultId: R.PASSED,
+          contextId: C.TRAINER,
+          createdAt: DAY1_LATER,
+          isLegacy: true,
+        },
+        {
+          id: "a-3",
+          userId: USER,
+          exerciseId: "e-1",
+          resultId: R.FAILED,
+          contextId: C.LESSON,
+          createdAt: DAY2,
+          isLegacy: true,
+        },
+      ],
+    });
+    const tx = db.begin();
+    await expect(rebuildUserExerciseState(tx as unknown as ExerciseStateRebuilder, USER)).resolves.toBe(1);
+    tx.commit();
+    // What the migration's SQL computes: count(*), min, min FILTER PASSED, max, the last result; the review columns null.
+    expect(state(db)).toMatchObject({
+      attemptCount: 3,
+      firstAttemptAt: DAY1,
+      firstSolvedAt: DAY1_LATER,
+      lastAttemptAt: DAY2,
+      lastResultId: R.FAILED,
+      reviewStep: null,
+      nextReviewAt: null,
+      lastReviewedAt: null,
+    });
+
+    // A scored attempt after them climbs from nothing, as the writer would over the migration's row.
+    await submit(db, CLEAN, DAY5);
+    expect(state(db)).toMatchObject({
+      attemptCount: 4,
+      firstSolvedAt: DAY1_LATER,
+      reviewStep: null,
+      lastAttemptAt: DAY5,
+    });
+    const again = db.begin();
+    await rebuildUserExerciseState(again as unknown as ExerciseStateRebuilder, USER);
+    again.commit();
+    expect(state(db)).toMatchObject({
+      attemptCount: 4,
+      firstSolvedAt: DAY1_LATER,
+      reviewStep: null,
+      lastAttemptAt: DAY5,
+    });
+  });
+
   it("sin intentos, deja al alumno sin estados", async () => {
     const db = fakeExerciseDb({ userExerciseState: [{ userId: USER, exerciseId: "e-1" }] });
     const tx = db.begin();

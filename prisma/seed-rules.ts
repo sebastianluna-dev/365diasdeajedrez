@@ -108,8 +108,9 @@ export async function resolveCollectionIds(
 
 /**
  * The order moves that let the seed write one parent's children (a course's
- * chapters, a chapter's lessons, a lesson's exercises, a class's blocks) with
- * the order its data gives them.
+ * chapters, a chapter's lessons, a lesson's exercises —
+ * `Exercise_lessonId_lessonOrder_key`, over `lessonOrder` —, a class's blocks)
+ * with the order its data gives them.
  *
  * Each of those lists is unique by `[parent, order]`, and the seed upserts
  * every row by id with its seeded order. Once the staff has reordered a seeded
@@ -125,8 +126,9 @@ export async function resolveCollectionIds(
  *   one is in the way, it and every row the seed does not own after it go
  *   right after the seeded rows, in the order they were in: kept, never
  *   deleted, never ahead of a seeded row. Below the first one in the way
- *   nothing moves, so the derived exercise stays at order 0, where
- *   `syncLessonTrainingExercise` writes it again on every save.
+ *   nothing moves, so a row at an order the seed never uses (the line
+ *   trainer's derived drill at 0, where `syncLessonTrainingExercise` writes
+ *   it again on every save) stays where it is.
  *
  * A second seed finds every row in its place and moves nothing, and a parent
  * the seed writes no row into is never touched.

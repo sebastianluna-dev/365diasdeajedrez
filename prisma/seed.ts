@@ -11,6 +11,10 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { startFenOf } from "../lib/chess/mainline";
 import { isLocalDatabase } from "../lib/database-target";
 import { deriveExerciseData } from "../lib/chess/exercise-derivation";
+import { solutionPgnFromLine } from "../lib/chess/exercise-format";
+import { EXERCISE_KIND, EXERCISE_STATUS } from "../constants/platform/exercise-codes.const";
+import { syncCatalogJoin } from "../services/shared/catalog-join.service";
+import { exerciseKindIds, exerciseSolutionColumns } from "../services/shared/exercise-record.service";
 import { PrismaClient, type Prisma } from "../lib/platform-db/generated/client";
 import { hashPassword } from "../lib/platform-auth/password";
 import { indexGamePositions } from "../services/game-positions/game-positions.service";
@@ -177,11 +181,13 @@ async function main() {
   const sourceType = await seedCatalog(db.sourceType, CATALOG_VALUES.sourceType);
   const level = await seedLevels();
   const boardOrientation = await seedCatalog(db.boardOrientation, CATALOG_VALUES.boardOrientation);
-  const exerciseMode = await seedCatalog(db.exerciseMode, CATALOG_VALUES.exerciseMode);
+  // The line trainer's catalog: no seeded row reads it since the lesson exercises moved to `Exercise`.
+  await seedCatalog(db.exerciseMode, CATALOG_VALUES.exerciseMode);
   const progressStatus = await seedCatalog(db.progressStatus, CATALOG_VALUES.progressStatus);
   const attemptResult = await seedCatalog(db.attemptResult, CATALOG_VALUES.attemptResult);
   const attemptContext = await seedCatalog(db.attemptContext, CATALOG_VALUES.attemptContext);
   await seedCatalog(db.exerciseKind, CATALOG_VALUES.exerciseKind);
+  const exerciseKind = await exerciseKindIds(db);
   const exerciseStatus = await seedCatalog(db.exerciseStatus, CATALOG_VALUES.exerciseStatus);
   const ownerType = await seedCatalog(db.ownerType, CATALOG_VALUES.ownerType);
   await seedCatalog(db.contentRole, CATALOG_VALUES.contentRole);
@@ -426,41 +432,65 @@ async function main() {
           });
         }
 
-        // The exercises the seed does not own (made by hand in the panel, or
-        // the derived one) are never deleted: the plan only moves them out of
-        // the way when they stand in it.
+        // The lesson's exercises the seed does not own (made in the panel) are
+        // never deleted: the plan only moves them out of the way when they stand
+        // in it. Their list is unique by `Exercise_lessonId_lessonOrder_key`; an
+        // archived one has no order and is not in the way.
         await clearSeededOrders(
           lesson.exercises,
-          () => db.trainingExercise.findMany({ where: { lessonId: lesson.id }, select: { id: true, order: true } }),
-          (tx, update) => tx.trainingExercise.update({ where: { id: update.id }, data: { order: update.order } }),
+          async () =>
+            (
+              await db.exercise.findMany({
+                where: { lessonId: lesson.id, lessonOrder: { not: null } },
+                select: { id: true, lessonOrder: true },
+              })
+            ).map((row) => ({ id: row.id, order: row.lessonOrder ?? 0 })),
+          (tx, update) => tx.exercise.update({ where: { id: update.id }, data: { lessonOrder: update.order } }),
         );
 
         for (const exercise of lesson.exercises) {
-          // The frozen copy (startFen, line, path) is computed by the same module the
-          // staff editor uses: if they diverged, the seeded exercises and the hand-made
-          // ones would behave differently.
-          const derived = deriveExerciseData({
-            // From the PGN, which is the only source of the position since there is no
-            // `Lesson.initialFen`. Without this, the Lucena and Philidor exercises would be
-            // derived from the starting position and the seed would break when validating
-            // their moves.
+          // The start is replayed from the lesson's PGN, which is the only source
+          // of the position (there is no `Lesson.initialFen`): without this the
+          // Lucena and Philidor exercises would start from the standard position.
+          const { startFen } = deriveExerciseData({
             initialFen: startFenOf(lesson.pgn),
             afterSans: exercise.afterSans,
             lineSans: exercise.lineSans,
           });
+          // The seed is the documented exception to the single writers: the row
+          // goes by its fixed id, the solution spreads `exerciseSolutionColumns`
+          // as createExerciseRecord does, and the status is written as seeded
+          // data — PUBLISHED, which is how a lesson exercise is served.
           const exerciseData = {
+            ...exerciseSolutionColumns(
+              {
+                solutionPgn: solutionPgnFromLine(startFen, exercise.lineSans),
+                kind: EXERCISE_KIND.SEQUENCE,
+                mateIn: null,
+              },
+              exerciseKind,
+            ),
+            teacherId: null,
+            authorUserId: IDS.staffUser,
+            statusId: idOf(exerciseStatus, EXERCISE_STATUS.PUBLISHED),
             lessonId: lesson.id,
-            order: exercise.order,
-            modeId: idOf(exerciseMode, exercise.mode),
-            ...derived,
-            // Frozen at the same time as the lesson's PGN: it is not born stale.
-            frozenAt: new Date(now.getTime() - 30 * DAY_MS),
-            promptText: exercise.promptText,
+            lessonOrder: exercise.order,
+            title: exercise.title,
+            prompt: exercise.promptText,
+            difficulty: exercise.difficulty,
+            hints: [] as string[],
+            explanation: null,
+            publishedAt: new Date(now.getTime() - 30 * DAY_MS),
           };
-          await db.trainingExercise.upsert({
+          await db.exercise.upsert({
             where: { id: exercise.id },
             update: exerciseData,
             create: { id: exercise.id, ...exerciseData },
+          });
+          await syncCatalogJoin(db.exerciseTopic, db.topic, {
+            parent: { exerciseId: exercise.id },
+            catalogColumn: "topicId",
+            codes: exercise.topics,
           });
         }
       }
@@ -651,10 +681,13 @@ async function main() {
     });
   }
 
+  // The legacy attempts at the lesson exercises, as the phase 2 migration left
+  // them; `seedExercises` folds the student's states afterwards.
   for (const attempt of buildAttempts(now)) {
     const data = {
       userId: attempt.userId,
-      trainingExerciseId: attempt.trainingExerciseId,
+      exerciseId: attempt.exerciseId,
+      isLegacy: true,
       resultId: idOf(attemptResult, attempt.result),
       mistakes: attempt.mistakes,
       durationMs: attempt.durationMs,

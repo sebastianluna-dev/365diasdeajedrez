@@ -14,7 +14,7 @@ export async function getTrainerData(): Promise<TrainerData> {
     db.chapter.findMany({
       where: {
         course: publishedCourseWhere,
-        lessons: { some: { exercises: { some: {} } } },
+        lessons: { some: { trainingExercises: { some: {} } } },
       },
       orderBy: [{ course: { name: "asc" } }, { order: "asc" }],
       select: { id: true, name: true, order: true, courseId: true, course: { select: { name: true } } },

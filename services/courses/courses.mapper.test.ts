@@ -96,7 +96,7 @@ const lessonRow = (id: string, chapterId: string, order: number): LessonRowForVi
     pgn: "1. e4 *",
     game: null,
     orientation: { code: "WHITE" },
-    exercises: [],
+    trainingExercises: [],
   }) as LessonRowForView;
 
 describe("con el filtro apagado, todo como siempre", () => {

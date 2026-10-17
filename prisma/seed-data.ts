@@ -499,19 +499,28 @@ export const AUTHOR = {
 
 // ---------------------------------------------------------------------------
 // Courses → chapters → lessons → exercises
-// The exercises define afterSans (previous moves from the lesson's initial
-// position) and lineSans (the segment to be trained); the seed computes startFen
-// by replaying those moves with chessops, so that the frozen copy is always
-// legal and coherent with the PGN.
+// A lesson's exercises are `Exercise` rows owned by the lesson (D04, D05; the
+// migration 20261016130000_lesson_exercises moved the old hand-made
+// TrainingExercise rows there, keeping these ids). The data describes each one
+// as afterSans (previous moves from the lesson's initial position) and
+// lineSans (the solution); the seed replays them with chessops to get the
+// start, writes the solution as a PGN (`solutionPgnFromLine`) and spreads
+// `exerciseSolutionColumns`, as the writers do.
 // ---------------------------------------------------------------------------
 
-export interface SeedExercise {
+export interface SeedLessonExercise {
   id: string;
+  /** `Exercise.lessonOrder`, unique per lesson (Exercise_lessonId_lessonOrder_key). */
   order: number;
-  mode: string;
+  title: string;
   promptText: string;
+  /** Previous moves from the lesson's start up to the exercise's position. */
   afterSans: string[];
+  /** The solution: the player's move first, then the replies, a plain line (D01). */
   lineSans: string[];
+  /** The author's Elo-like difficulty (400–3000, by 50). */
+  difficulty: number;
+  topics: TopicCode[];
 }
 
 export interface SeedLesson {
@@ -524,7 +533,7 @@ export interface SeedLesson {
   orientation: string;
   pgn: string;
   topics: string[];
-  exercises: SeedExercise[];
+  exercises: SeedLessonExercise[];
 }
 
 export interface SeedChapter {
@@ -654,10 +663,12 @@ export const COURSES: SeedCourse[] = [
               {
                 id: IDS.exNajdorfLine,
                 order: 1,
-                mode: EXERCISE_MODE.REPRODUCE_LINE,
+                title: "La línea principal de la Najdorf",
                 promptText: "Reproduce la línea principal de la Najdorf jugando con negras.",
                 afterSans: ["e4"],
                 lineSans: ["c5", "Nf3", "d6", "d4", "cxd4", "Nxd4", "Nf6", "Nc3", "a6"],
+                difficulty: 1000,
+                topics: [TOPIC.OPENING_LINE],
               },
             ],
           },
@@ -675,7 +686,7 @@ export const COURSES: SeedCourse[] = [
               {
                 id: IDS.exPoisonedPawn,
                 order: 1,
-                mode: EXERCISE_MODE.FIND_MOVE,
+                title: "El peón envenenado",
                 promptText:
                   "El blanco acaba de jugar 8.Dd2 defendiendo indirectamente. ¿Cómo gana un peón el negro de todas formas?",
                 afterSans: [
@@ -696,6 +707,8 @@ export const COURSES: SeedCourse[] = [
                   "Qd2",
                 ],
                 lineSans: ["Qxb2"],
+                difficulty: 1400,
+                topics: [TOPIC.OPENING_LINE, TOPIC.TACTICS],
               },
             ],
           },
@@ -734,7 +747,7 @@ export const COURSES: SeedCourse[] = [
               {
                 id: IDS.exLucenaBridge,
                 order: 1,
-                mode: EXERCISE_MODE.REPRODUCE_LINE,
+                title: "El puente de Lucena",
                 promptText: "Construye el puente de Lucena y lleva el peón a la coronación.",
                 afterSans: [],
                 lineSans: [
@@ -752,6 +765,8 @@ export const COURSES: SeedCourse[] = [
                   "Rb1+",
                   "Rb4",
                 ],
+                difficulty: 1200,
+                topics: [TOPIC.ENDGAME],
               },
             ],
           },
@@ -771,10 +786,12 @@ export const COURSES: SeedCourse[] = [
               {
                 id: IDS.exPhilidorDefense,
                 order: 1,
-                mode: EXERCISE_MODE.FIND_MOVE,
+                title: "La defensa Philidor",
                 promptText: "Juegan negras. ¿Cuál es la jugada que asegura las tablas según Philidor?",
                 afterSans: [],
                 lineSans: ["Ra6"],
+                difficulty: 1100,
+                topics: [TOPIC.ENDGAME],
               },
             ],
           },
@@ -1119,12 +1136,18 @@ export function buildProgress(now: Date) {
   };
 }
 
+/**
+ * The demo student's attempts at the lesson exercises, as the phase 2
+ * migration left the old trainer's: `isLegacy`, recorded under the trainer's
+ * rules (a PASSED with mistakes, a TRAINER context), so
+ * `rebuildUserExerciseState` folds them without the ladder or the day gate.
+ */
 export function buildAttempts(now: Date) {
   return [
     {
       id: IDS.attempt1,
       userId: IDS.demoUser,
-      trainingExerciseId: IDS.exNajdorfLine,
+      exerciseId: IDS.exNajdorfLine,
       result: ATTEMPT_RESULT.FAILED,
       mistakes: 2,
       durationMs: 95000,
@@ -1134,7 +1157,7 @@ export function buildAttempts(now: Date) {
     {
       id: IDS.attempt2,
       userId: IDS.demoUser,
-      trainingExerciseId: IDS.exNajdorfLine,
+      exerciseId: IDS.exNajdorfLine,
       result: ATTEMPT_RESULT.PASSED,
       mistakes: 0,
       durationMs: 61000,
@@ -1144,7 +1167,7 @@ export function buildAttempts(now: Date) {
     {
       id: IDS.attempt3,
       userId: IDS.demoUser,
-      trainingExerciseId: IDS.exPoisonedPawn,
+      exerciseId: IDS.exPoisonedPawn,
       result: ATTEMPT_RESULT.PASSED,
       mistakes: 1,
       durationMs: 30000,

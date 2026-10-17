@@ -32,6 +32,9 @@
 //   exercise_series_library_published (a teacher's series is never published
 //   to the library) and training_attempt_one_exercise (an attempt is at
 //   exactly one of a TrainingExercise or an Exercise).
+// - Lesson exercises (migration 20261016130000_lesson_exercises):
+//   exercise_single_owner (not both teacherId and lessonId) and
+//   exercise_lesson_order_needs_lesson (lessonOrder only with a lessonId).
 // Rules validated in the services layer (impossible in a CHECK without
 // crossing tables): ownerType↔populated column coherence, ClassBlock.kind↔field
 // used; and for the classes (see services/shared/, each rule names its writer):
@@ -645,12 +648,17 @@ model Lesson {
   orientation   BoardOrientation  @relation(fields: [orientationId], references: [id])
   trainingColor BoardOrientation? @relation("LessonTrainingColor", fields: [trainingColorId], references: [id])
 
-  exercises        TrainingExercise[]
-  trainings        UserLessonTraining[]
-  progresses       LessonProgress[]
-  lessonTopics     LessonTopic[]
-  classBlocks      ClassBlock[]
-  courseProgresses CourseProgress[]     @relation("CourseProgressLastLesson")
+  /// The line trainer's derived drill (isDerived). Renamed from `exercises`
+  /// on 2026-10-16 so no reader counts the new lesson exercises by mistake.
+  trainingExercises TrainingExercise[]
+  /// The lesson's own exercises (D04, D05): Exercise rows with this lesson
+  /// as owner, in lessonOrder; the archived ones have none.
+  lessonExercises   Exercise[]
+  trainings         UserLessonTraining[]
+  progresses        LessonProgress[]
+  lessonTopics      LessonTopic[]
+  classBlocks       ClassBlock[]
+  courseProgresses  CourseProgress[]     @relation("CourseProgressLastLesson")
 
   @@unique([chapterId, order])
   /// At most one introduction and one closing per chapter; see Chapter.
@@ -908,6 +916,13 @@ model TrainingAttempt {
   /// The whole sequence first time and without hints. It is stored apart from the
   /// accuracy: one can get 92 % right and not have a perfect review.
   isPerfect          Boolean  @default(false)
+  /// Set only by the migration 20261016130000_lesson_exercises, on the
+  /// attempts it moved from the hand-made TrainingExercise rows into
+  /// Exercise: they were recorded under the trainer's rules (PASSED allowed
+  /// mistakes, no study-day rule), so rebuildUserExerciseState folds them as
+  /// the migration did (counts, dates, firstSolvedAt; no review, no day
+  /// gate). No code writes it.
+  isLegacy           Boolean  @default(false)
   createdAt          DateTime @default(now())
 
   user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -1094,6 +1109,18 @@ model Exercise {
   /// The exercise it was copied from («Duplicar»; a library exercise copied to
   /// a lesson, D28).
   copiedFromId      String?
+  /// Owner when set: the lesson's exercise (D04, D05), authored by the staff,
+  /// never in a bank, a series or the library. CHECK exercise_single_owner:
+  /// not both teacherId and lessonId. Cascade: a lesson deleted takes its
+  /// exercises (deleteLesson refuses when one of them has attempts, which
+  /// are RESTRICT).
+  lessonId          String?
+  /// Its place in the lesson; null for an archived one, cleared by
+  /// exercise-status.service.ts when it archives it (CHECK
+  /// exercise_lesson_order_needs_lesson). Unique per lesson: the panel
+  /// reorders through services/shared/reorder.ts, and an insert that finds
+  /// its order taken answers `orderTaken` (isUniqueConstraintError).
+  lessonOrder       Int?
   /// The review (D16). Only writer: services/shared/exercise-status.service.ts
   /// (transitionOwnExercise / reviewLibraryExercise). publishedAt is the FIRST
   /// publication and is kept when the exercise leaves the library: «was ever in
@@ -1119,12 +1146,14 @@ model Exercise {
   sourceGame Game?          @relation(fields: [sourceGameId], references: [id], onDelete: SetNull)
   copiedFrom Exercise?      @relation("ExerciseCopies", fields: [copiedFromId], references: [id], onDelete: SetNull)
   copies     Exercise[]     @relation("ExerciseCopies")
+  lesson     Lesson?        @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   topics      ExerciseTopic[]
   seriesItems ExerciseSeriesItem[]
   attempts    TrainingAttempt[]
   states      UserExerciseState[]
 
+  @@unique([lessonId, lessonOrder])
   @@index([teacherId, statusId])
   @@index([statusId, difficulty])
   @@index([startPositionHash])

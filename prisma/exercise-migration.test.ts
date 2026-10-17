@@ -1,7 +1,11 @@
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { TOPIC } from "../constants/platform/shared-codes.const";
-import { CATALOG_VALUES, TOPIC_VALUES } from "./seed-data";
+import { deriveExerciseData } from "../lib/chess/exercise-derivation";
+import { startFenOf } from "../lib/chess/mainline";
+import { createPositionHash } from "../lib/chess/position-hash";
+import { CATALOG_VALUES, COURSES, TOPIC_VALUES } from "./seed-data";
 
 // The migration that brought the exercise bank is hand-written (docs/ →
 // Platform → Data model → Migrations): Prisma's diff gives the structure and
@@ -11,10 +15,26 @@ import { CATALOG_VALUES, TOPIC_VALUES } from "./seed-data";
 // adds its block here.
 
 const MIGRATION = new URL("./migrations/20261016120000_exercises/migration.sql", import.meta.url);
+const LESSON_MIGRATION = new URL("./migrations/20261016130000_lesson_exercises/migration.sql", import.meta.url);
 const INIT = new URL("./migrations/20260830190612_init/migration.sql", import.meta.url);
 const sql = readFileSync(MIGRATION, "utf8");
+const lessonSql = readFileSync(LESSON_MIGRATION, "utf8");
 const init = readFileSync(INIT, "utf8");
 const schema = readFileSync(new URL("./schema.prisma", import.meta.url), "utf8");
+
+/** The comment right above a column of a model in the schema, and nothing of a neighbour's. */
+function columnComment(model: string, column: string): string {
+  const start = schema.indexOf(`\nmodel ${model} {`);
+  const block = schema.slice(start, schema.indexOf("\n}\n", start)).split("\n");
+  const line = block.findIndex((text) => new RegExp(`^\\s+${column}\\s`).test(text));
+  expect(line, `${model}.${column}`).toBeGreaterThan(-1);
+  const comment: string[] = [];
+  for (const text of block.slice(0, line).reverse()) {
+    if (!text.trim().startsWith("///")) break;
+    comment.push(text);
+  }
+  return comment.join(" ");
+}
 
 const CHECKS = [
   "exercise_difficulty_range",
@@ -139,17 +159,123 @@ describe("the 20261016120000_exercises migration", () => {
       ["UserExerciseState", "nextReviewAt", "recordExerciseAttempt"],
     ];
     for (const [model, column, writer] of cases) {
-      const start = schema.indexOf(`\nmodel ${model} {`);
-      const block = schema.slice(start, schema.indexOf("\n}\n", start)).split("\n");
-      const line = block.findIndex((text) => new RegExp(`^\\s+${column}\\s`).test(text));
-      expect(line, `${model}.${column}`).toBeGreaterThan(-1);
-      // Only the comment right above the column, not a neighbour's.
-      const comment: string[] = [];
-      for (const text of block.slice(0, line).reverse()) {
-        if (!text.trim().startsWith("///")) break;
-        comment.push(text);
-      }
-      expect(comment.join(" "), `${model}.${column} names ${writer}`).toContain(writer);
+      expect(columnComment(model, column), `${model}.${column} names ${writer}`).toContain(writer);
     }
+  });
+});
+
+// Phase 2: the hand-made TrainingExercise rows move into Exercise with the
+// lesson as owner, keeping their ids (PLAN.md §2.5). The SQL computes what the
+// writers would, and this holds it to them.
+describe("the 20261016130000_lesson_exercises migration", () => {
+  const LESSON_CHECKS = ["exercise_single_owner", "exercise_lesson_order_needs_lesson"];
+
+  /** The seeded lesson exercises with the start their data gives them, as the seed derives it. */
+  const seededStarts = COURSES.flatMap((course) =>
+    course.chapters.flatMap((chapter) =>
+      chapter.lessons.flatMap((lesson) =>
+        lesson.exercises.map((exercise) => ({
+          id: exercise.id,
+          lineSans: exercise.lineSans,
+          startFen: deriveExerciseData({
+            initialFen: startFenOf(lesson.pgn),
+            afterSans: exercise.afterSans,
+            lineSans: exercise.lineSans,
+          }).startFen,
+        })),
+      ),
+    ),
+  );
+
+  it("adds the columns, the unique order per lesson and the cascade from the lesson, as Prisma's diff writes them", () => {
+    expect(lessonSql).toContain(
+      `ALTER TABLE "Exercise" ADD COLUMN     "lessonId" TEXT,\nADD COLUMN     "lessonOrder" INTEGER;`,
+    );
+    expect(lessonSql).toContain(
+      `ALTER TABLE "TrainingAttempt" ADD COLUMN     "isLegacy" BOOLEAN NOT NULL DEFAULT false;`,
+    );
+    expect(lessonSql).toContain(
+      `CREATE UNIQUE INDEX "Exercise_lessonId_lessonOrder_key" ON "Exercise"("lessonId", "lessonOrder");`,
+    );
+    const key = lessonSql.split("\n").find((line) => line.includes(`"Exercise_lessonId_fkey"`));
+    expect(key).toContain(`REFERENCES "Lesson"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+    expect(lessonSql).not.toMatch(/DROP COLUMN|DROP TABLE/);
+  });
+
+  it("writes the two CHECKs by name, and the schema's header comment names each one", () => {
+    const header = schema.slice(0, schema.indexOf("generator client"));
+    for (const name of LESSON_CHECKS) {
+      expect(lessonSql, name).toContain(`CONSTRAINT "${name}" CHECK`);
+      expect(header, name).toContain(name);
+    }
+    expect(lessonSql).toContain(`CHECK (NOT ("teacherId" IS NOT NULL AND "lessonId" IS NOT NULL))`);
+    expect(lessonSql).toContain(`CHECK ("lessonOrder" IS NULL OR "lessonId" IS NOT NULL)`);
+  });
+
+  it("moves only the hand-made rows: the isDerived filter is on the insert, the attempts' update and the delete", () => {
+    const statements = lessonSql
+      .split(/;\s*\n/)
+      .map((statement) => statement.replace(/^(\s*--[^\n]*\n)+/, "").trim())
+      .filter(Boolean);
+    const insert = statements.find((statement) => statement.startsWith(`INSERT INTO "Exercise"`));
+    const topics = statements.find((statement) => statement.startsWith(`INSERT INTO "ExerciseTopic"`));
+    const update = statements.find((statement) => statement.startsWith(`UPDATE "TrainingAttempt"`));
+    const remove = statements.find((statement) => statement.startsWith(`DELETE FROM "TrainingExercise"`));
+    for (const [name, statement] of Object.entries({ insert, topics, update, remove })) {
+      expect(statement, name).toBeDefined();
+      expect(statement, `${name} filters isDerived`).toMatch(/NOT (?:te\.|x\.)?"isDerived"/);
+    }
+    // The order of the moves: the rows first, then their topics, their attempts and their states, and only then the delete.
+    const at = (statement: string | undefined) => (statement ? lessonSql.indexOf(statement) : -1);
+    expect(at(insert)).toBeLessThan(at(topics));
+    expect(at(topics)).toBeLessThan(at(update));
+    expect(at(update)).toBeLessThan(lessonSql.indexOf(`INSERT INTO "UserExerciseState"`));
+    expect(lessonSql.indexOf(`INSERT INTO "UserExerciseState"`)).toBeLessThan(at(remove));
+    expect(statements.filter((statement) => statement.startsWith("DELETE"))).toHaveLength(1);
+  });
+
+  it("keeps the ids and marks the moved attempts legacy, with their exercise and nothing of the drill left", () => {
+    expect(lessonSql).toMatch(/INSERT INTO "Exercise" \("id",[^)]*\)\s*SELECT te\."id"/);
+    expect(lessonSql).toContain(
+      `UPDATE "TrainingAttempt" SET "exerciseId" = "trainingExerciseId", "trainingExerciseId" = NULL, "isLegacy" = true`,
+    );
+    // The states and their last result are built from the legacy rows alone.
+    expect(lessonSql.match(/WHERE a\."isLegacy" AND a\."exerciseId" IS NOT NULL/g)).toHaveLength(2);
+    expect(lessonSql).toContain(`min(a."createdAt") FILTER (WHERE r."code" = 'PASSED')`);
+    expect(lessonSql).toContain(`SELECT DISTINCT ON (a."userId", a."exerciseId")`);
+  });
+
+  it("writes what the solution writer would: a SEQUENCE, PUBLISHED, the line as a PGN, the plies and the player's moves", () => {
+    expect(lessonSql).toContain(`(SELECT "id" FROM "ExerciseKind" WHERE "code" = 'SEQUENCE')`);
+    expect(lessonSql).toContain(`(SELECT "id" FROM "ExerciseStatus" WHERE "code" = 'PUBLISHED')`);
+    expect(lessonSql).toContain(`'[SetUp "1"]' || E'\\n' || '[FEN "' || te."startFen" || '"]' || E'\\n\\n' ||`);
+    // FIND_MOVE kept only its first SAN, which is where the trainer stopped.
+    expect(lessonSql).toContain(
+      `CASE m."code" WHEN 'FIND_MOVE' THEN split_part(trim(te."line"), ' ', 1) ELSE trim(te."line") END`,
+    );
+    expect(lessonSql).toContain(`p.plies, (p.plies + 1) / 2`);
+    // The difficulty stays inside exercise_difficulty_range whatever the course's levels say.
+    expect(lessonSql).toContain(`LEAST(3000, GREATEST(400, COALESCE(`);
+  });
+
+  it("hashes the start as createPositionHash does: a replica of the SQL over the seed's start FENs", () => {
+    const expression = `encode(sha256(convert_to(array_to_string((string_to_array(te."startFen", ' '))[1:4], ' '), 'UTF8')), 'hex')`;
+    expect(lessonSql).toContain(expression);
+    // string_to_array … [1:4] + array_to_string: the first four fields joined by one space; sha256 as hex.
+    const replica = (fen: string) => createHash("sha256").update(fen.split(" ").slice(0, 4).join(" ")).digest("hex");
+    expect(seededStarts).toHaveLength(4);
+    for (const { id, startFen } of seededStarts) {
+      expect(replica(startFen), id).toBe(createPositionHash(startFen));
+    }
+  });
+
+  it("the schema no longer calls the drills `exercises` on Lesson, and isLegacy's comment names this migration", () => {
+    const start = schema.indexOf("\nmodel Lesson {");
+    const lesson = schema.slice(start, schema.indexOf("\n}\n", start));
+    expect(lesson).not.toMatch(/^\s+exercises\s/m);
+    expect(lesson).toMatch(/^\s+trainingExercises\s+TrainingExercise\[\]/m);
+    expect(lesson).toMatch(/^\s+lessonExercises\s+Exercise\[\]/m);
+    expect(columnComment("TrainingAttempt", "isLegacy")).toContain("20261016130000_lesson_exercises");
+    expect(columnComment("Exercise", "lessonOrder")).toContain("exercise-status.service.ts");
   });
 });

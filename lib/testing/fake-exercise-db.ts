@@ -145,6 +145,7 @@ const DEFAULTS: Partial<Record<ExerciseTable, Row>> = {
     hintsUsed: 0,
     solutionShown: false,
     isPerfect: false,
+    isLegacy: false,
   },
   userExerciseState: {
     attemptCount: 0,

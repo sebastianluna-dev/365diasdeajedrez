@@ -551,7 +551,8 @@ export interface LessonRowForView {
   /** The game of the course collection, if the lesson references it. */
   game: { pgn: string } | null;
   orientation: { code: string };
-  exercises: { id: string }[];
+  /** The line trainer's derived drills (`TrainingExercise`), not the lesson's exercises. */
+  trainingExercises: { id: string }[];
 }
 
 export function mapLessonView(
@@ -598,11 +599,11 @@ export function mapLessonView(
     pgn: lessonPgnOf(lesson),
     orientation: effective === BOARD_ORIENTATION.BLACK ? "black" : "white",
     statusCode: asStatus(state.lessonStatus.get(lesson.id)),
-    exerciseCount: lesson.exercises.length,
+    exerciseCount: lesson.trainingExercises.length,
     prevLessonHref: prev ? platformRoutes.lessonDetail(course.id, prev.chapterOrder, prev.id) : undefined,
     nextLessonHref: next ? platformRoutes.lessonDetail(course.id, next.chapterOrder, next.id) : undefined,
     href: platformRoutes.lessonDetail(course.id, chapter.order, lesson.id),
     chapterHref: platformRoutes.chapterDetail(course.id, chapter.order),
-    trainerHref: lesson.exercises.length > 0 ? `${platformRoutes.trainer}?lesson=${lesson.id}` : undefined,
+    trainerHref: lesson.trainingExercises.length > 0 ? `${platformRoutes.trainer}?lesson=${lesson.id}` : undefined,
   };
 }
