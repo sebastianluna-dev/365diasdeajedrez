@@ -12,9 +12,14 @@
     align-items: stretch;
   }
 
+  /* Clipped, as ChessBoard clips its own: chessground draws the file
+     coordinates 24px wider than the board (`coords.files`), which on a 390px
+     phone ran past the page's edge. A piece dragged off the board to take it
+     off leaves the frame with it. */
   & .piece-placement-board__frame {
     flex: 1;
     min-width: 0;
+    overflow: hidden;
   }
 
   /* Square, whatever chessground does inside it. */

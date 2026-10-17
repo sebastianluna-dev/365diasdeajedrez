@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { NewSeriesButton } from "@/components/platform/sections/teacher/exercises/series-data-popup/series-data-popup.comp";
+import { NewSeriesButton } from "@/components/platform/shared/series-data-popup/series-data-popup.comp";
 import { StaffExercisesSection } from "@/components/platform/sections/staff/exercises/staff-exercises.section";
 import { EXERCISE_ERROR_MESSAGES, readExerciseNotice } from "@/constants/platform/exercise-messages.const";
 import { EXERCISES_ENABLED } from "@/constants/platform/features.const";

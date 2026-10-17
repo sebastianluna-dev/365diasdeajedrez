@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PlusIcon } from "@/components/icons/plus-icon.comp";
-import { NewSeriesButton } from "@/components/platform/sections/teacher/exercises/series-data-popup/series-data-popup.comp";
+import { NewSeriesButton } from "@/components/platform/shared/series-data-popup/series-data-popup.comp";
 import { TeacherExercisesSection } from "@/components/platform/sections/teacher/exercises/teacher-exercises.section";
 import { EXERCISE_ERROR_MESSAGES, readExerciseNotice } from "@/constants/platform/exercise-messages.const";
 import { EXERCISES_ENABLED } from "@/constants/platform/features.const";

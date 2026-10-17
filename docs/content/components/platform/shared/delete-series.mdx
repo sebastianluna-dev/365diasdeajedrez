@@ -4,13 +4,15 @@ description: "«Eliminar la serie», at the foot of its page's aside, behind its
 
 # `DeleteSeries`
 
-|          |                                                                                                                                    |
-| -------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| File     | `components/platform/sections/teacher/exercises/delete-series/delete-series.comp.tsx`                                              |
-| Kind     | Client Component (it hosts the confirmation)                                                                                       |
-| Used by  | [`TeacherSeriesEditorSection`](/components/platform/sections/teacher/exercises/teacher-series-editor-section)                      |
-| Composes | [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup)                                                       |
-| Uses     | `action` as a prop: `deleteExerciseSeries` bound to the series, which redirects to the bank's «Series» with `?aviso=seriesDeleted` |
+|            |                                                                                                                                                                                                                                                                                                                      |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/delete-series/delete-series.comp.tsx`                                                                                                                                                                                                                                                    |
+| Kind       | Client Component (it hosts the confirmation)                                                                                                                                                                                                                                                                         |
+| Stylesheet | none (the button is a `.platform-button`, the confirmation its own)                                                                                                                                                                                                                                                  |
+| Story      | none yet (postponed on 2026-10-17; listed in `WITHOUT_STORY` of `components/stories.test.ts`)                                                                                                                                                                                                                        |
+| Used by    | [`TeacherSeriesEditorSection`](/components/platform/sections/teacher/exercises/teacher-series-editor-section) and [`StaffSeriesEditorSection`](/components/platform/sections/staff/exercises/staff-series-editor-section) (`audience="academy"`; since 2026-10-17 the piece lives in `shared/`, where both reach it) |
+| Composes   | [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup)                                                                                                                                                                                                                                         |
+| Uses       | `action` as a prop: `deleteExerciseSeries` (or `deleteAcademySeries`) bound to the series, which redirects to the bank's «Series» with `?aviso=seriesDeleted` (`academySeriesDeleted`)                                                                                                                               |
 
 ## Props
 
@@ -24,4 +26,4 @@ description: "«Eliminar la serie», at the foot of its page's aside, behind its
 
 ## Behaviour
 
-A small danger button with the bin, and a `PlatformConfirmPopup` («Eliminar»): «Se elimina la serie. Sus ejercicios siguen en tu banco.», then who stops seeing it in «Ejercicios» and that the attempts stay in the students' history (their `seriesId` is set to null by the foreign key). No stylesheet of its own.
+A small danger button with the bin, and a `PlatformConfirmPopup` («Eliminar»): «Se elimina la serie. Sus ejercicios siguen en tu banco.» («… siguen en la biblioteca.» for the academy's), then who stops seeing it in «Ejercicios» — the students who have it; for an academy series, every student when it is published, nobody when it is not — and that the attempts stay in the students' history (their `seriesId` is set to null by the foreign key). No stylesheet of its own.

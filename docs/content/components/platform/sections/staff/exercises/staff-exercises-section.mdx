@@ -22,7 +22,7 @@ description: "The academy's exercise bank: «Biblioteca», «En revisión» and 
 
 ## Behaviour
 
-«Biblioteca · n», «En revisión · n» and «Series · n» are links (three pages, not a query). The library lists every PUBLISHED exercise of a bank (`buildLibraryExercisesWhere`), the last published first, then the academy's drafts and archived ones, each card naming its author («Academia» or the teacher); the queue lists the teachers' proposals, the oldest first, each under «Propuesto el … por …». The cards carry no row words: a decision is taken on the exercise's page, which the title opens. The page's head adds «Nuevo ejercicio» (the accent) on the library and «Nueva serie» ([`SeriesDataPopup`](/components/platform/sections/teacher/exercises/series-data-popup)) on the series.
+«Biblioteca · n», «En revisión · n» and «Series · n» are links (three pages, not a query). The library lists every PUBLISHED exercise of a bank (`buildLibraryExercisesWhere`), the last published first, then the academy's drafts and archived ones, each card naming its author («Academia» or the teacher); the queue lists the teachers' proposals, the oldest first, each under «Propuesto el … por …». The cards carry no row words: a decision is taken on the exercise's page, which the title opens. The page's head adds «Nuevo ejercicio» (the accent) on the library and «Nueva serie» ([`SeriesDataPopup`](/components/platform/shared/series-data-popup)) on the series.
 
 On «Series» each academy series is a row: its title (the link to [its page](/components/platform/sections/staff/exercises/staff-series-editor-section)), «4 ejercicios · publicada», its description, and how many of its exercises the students no longer see (taken out of the library, `seriesItemAvailability` with no owner).
 

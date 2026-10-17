@@ -118,8 +118,8 @@ import { ExerciseCard } from "@/components/platform/shared/exercise-card/exercis
 import { SeriesProgressTable } from "@/components/platform/shared/series-progress-table/series-progress-table.comp";
 import { ExerciseSolver } from "@/components/platform/shared/exercise-solver/exercise-solver.comp";
 import { StudentSharePanel } from "@/components/platform/shared/student-share-panel/student-share-panel.comp";
-import { AddSeriesExercisesButton } from "@/components/platform/sections/teacher/exercises/add-series-exercises-popup/add-series-exercises-popup.comp";
-import { NewSeriesButton } from "@/components/platform/sections/teacher/exercises/series-data-popup/series-data-popup.comp";
+import { AddSeriesExercisesButton } from "@/components/platform/shared/add-series-exercises-popup/add-series-exercises-popup.comp";
+import { NewSeriesButton } from "@/components/platform/shared/series-data-popup/series-data-popup.comp";
 import { courseTabs } from "@/components/platform/shared/staff-tabs/staff-tabs.const";
 import { ClassAgenda } from "@/components/platform/shared/class-agenda/class-agenda.comp";
 import { ClassDateTile } from "@/components/platform/shared/class-date-tile/class-date-tile.comp";
@@ -2568,20 +2568,10 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 unshare={async () => undefined}
               />
             </Tile>
-            <Tile
-              name="SeriesDataPopup"
-              docs="platform-sections-teacher-exercises-seriesdatapopup"
-              width={400}
-              height={72}
-            >
+            <Tile name="SeriesDataPopup" docs="platform-shared-seriesdatapopup" width={400} height={72}>
               <NewSeriesButton save={async () => popupFormDone("seriesSaved")} />
             </Tile>
-            <Tile
-              name="AddSeriesExercisesPopup"
-              docs="platform-sections-teacher-exercises-addseriesexercisespopup"
-              width={400}
-              height={72}
-            >
+            <Tile name="AddSeriesExercisesPopup" docs="platform-shared-addseriesexercisespopup" width={400} height={72}>
               <AddSeriesExercisesButton
                 seriesId="se000001"
                 exercises={OVERVIEW_PICKABLE}

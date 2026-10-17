@@ -6,6 +6,7 @@ import { StaffExerciseEditorSection } from "@/components/platform/sections/staff
 import { EXERCISE_STATUS } from "@/constants/platform/exercise-codes.const";
 import { EXERCISE_ERROR_MESSAGES, readExerciseNotice } from "@/constants/platform/exercise-messages.const";
 import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
+import { requireStaff } from "@/lib/platform-auth/roles";
 import { staffRoutes } from "@/lib/platform-routes";
 import { getStaffExerciseEditor } from "@/services/staff-exercises/staff-exercises.service";
 
@@ -16,6 +17,7 @@ interface StaffExercisePageProps {
 
 export async function generateMetadata({ params }: StaffExercisePageProps): Promise<Metadata> {
   if (!EXERCISES_ENABLED) return {};
+  await requireStaff();
   const { exerciseId } = await params;
   const editor = await getStaffExerciseEditor(exerciseId);
   return editor ? { title: editor.exercise.title } : {};
@@ -29,6 +31,7 @@ export async function generateMetadata({ params }: StaffExercisePageProps): Prom
  */
 export default async function StaffExercisePage({ params, searchParams }: StaffExercisePageProps) {
   if (!EXERCISES_ENABLED) notFound();
+  await requireStaff();
   const [{ exerciseId }, { aviso, error }] = await Promise.all([params, searchParams]);
   const editor = await getStaffExerciseEditor(exerciseId);
   if (!editor || !editor.review) notFound();

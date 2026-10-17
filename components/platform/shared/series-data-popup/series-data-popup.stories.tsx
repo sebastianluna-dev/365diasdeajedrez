@@ -4,7 +4,7 @@ import { popupFormDone, popupFormError } from "@/services/shared/form-state";
 import { EditSeriesButton, NewSeriesButton } from "./series-data-popup.comp";
 
 const meta = {
-  title: "platform/sections/teacher/exercises/SeriesDataPopup",
+  title: "platform/shared/SeriesDataPopup",
   component: EditSeriesButton,
   parameters: {
     docs: {
@@ -15,8 +15,8 @@ before they start: «Nueva serie» from the bank (\`NewSeriesButton\`), «Editar
 la serie» from the pen beside its title (\`EditSeriesButton\`). The action
 comes as a prop; the stories pass a stub.
 
-Source: \`components/platform/sections/teacher/exercises/series-data-popup/series-data-popup.comp.tsx\`.
-Reference page: [Components › SeriesDataPopup](/components/platform/sections/teacher/exercises/series-data-popup) in the docs site.
+Source: \`components/platform/shared/series-data-popup/series-data-popup.comp.tsx\`.
+Reference page: [Components › SeriesDataPopup](/components/platform/shared/series-data-popup) in the docs site.
 `,
       },
     },
@@ -54,6 +54,9 @@ export const New: Story = {
   render: (args) => <NewSeriesButton save={args.save} />,
   play: open("Nueva serie"),
 };
+
+/** An academy series: the description's hint says «los alumnos», not «tus alumnos». */
+export const Academy: Story = { args: { audience: "academy" }, play: open("Editar la serie") };
 
 /** A refused save: the title came back empty, said under its field, with what was written kept. */
 export const Refused: Story = {

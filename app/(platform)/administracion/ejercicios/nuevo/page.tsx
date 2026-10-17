@@ -28,6 +28,7 @@ interface NewStaffExercisePageProps {
  */
 export default async function NewStaffExercisePage({ searchParams }: NewStaffExercisePageProps) {
   if (!EXERCISES_ENABLED) notFound();
+  await requireStaff();
   const { estudio, partida, jugada } = await searchParams;
   const from =
     estudio && partida && jugada !== undefined ? { studyId: estudio, gameId: partida, path: jugada } : undefined;

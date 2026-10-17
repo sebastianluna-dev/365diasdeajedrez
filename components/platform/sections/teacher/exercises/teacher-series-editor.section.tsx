@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { ChevronLeftIcon } from "@/components/icons/chevron-left-icon.comp";
+import { AddSeriesExercisesButton } from "@/components/platform/shared/add-series-exercises-popup/add-series-exercises-popup.comp";
+import { DeleteSeries } from "@/components/platform/shared/delete-series/delete-series.comp";
 import { FilterPills } from "@/components/platform/shared/filter-pills/filter-pills.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
+import { EditSeriesButton } from "@/components/platform/shared/series-data-popup/series-data-popup.comp";
+import { SeriesItems } from "@/components/platform/shared/series-items/series-items.comp";
 import { SeriesProgressTable } from "@/components/platform/shared/series-progress-table/series-progress-table.comp";
 import { StudentSharePanel } from "@/components/platform/shared/student-share-panel/student-share-panel.comp";
 import { teacherRoutes } from "@/lib/platform-routes";
@@ -15,10 +19,6 @@ import {
   updateExerciseSeries,
 } from "@/services/teacher-exercises/teacher-exercises.actions";
 import type { SeriesProgressView, TeacherSeriesEditor } from "@/services/teacher-exercises/teacher-exercises.types";
-import { AddSeriesExercisesButton } from "./add-series-exercises-popup/add-series-exercises-popup.comp";
-import { DeleteSeries } from "./delete-series/delete-series.comp";
-import { EditSeriesButton } from "./series-data-popup/series-data-popup.comp";
-import { SeriesItems } from "./series-items/series-items.comp";
 import "./teacher-series-editor.section.css";
 
 interface TeacherSeriesEditorSectionProps {

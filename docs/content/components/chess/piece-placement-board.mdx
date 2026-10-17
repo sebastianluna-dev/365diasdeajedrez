@@ -51,7 +51,7 @@ It is the second component that creates a chessground, after [`ChessBoard`](/com
 
 ## Markup & styling
 
-Block `.piece-placement-board` (188 lines).
+Block `.piece-placement-board` (193 lines): the frame clips what chessground draws past the board (its file coordinates), as `ChessBoard` does.
 
 **Layout.** The palette sits beside the board in two columns of seven 48px squares (the white pieces and «Mover» on the left, the black ones and «Quitar pieza» on the right); under 640px it goes under the board in two rows of seven that share its width. Both arrangements line the two colours up piece by piece, from one order of the markup.
 

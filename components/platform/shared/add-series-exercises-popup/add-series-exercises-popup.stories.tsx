@@ -14,19 +14,20 @@ const EXERCISES: SeriesPickOption[] = [
 ];
 
 const meta = {
-  title: "platform/sections/teacher/exercises/AddSeriesExercisesPopup",
+  title: "platform/shared/AddSeriesExercisesPopup",
   component: AddSeriesExercisesButton,
   parameters: {
     docs: {
       description: {
         component: `
-«Agregar ejercicios», from a series' page: the exercises the teacher may give
-that are not in the series yet, as cards to tick, with a search once there
-are a few. What is chosen goes to the end of the series. The action comes as
-a prop; the stories pass a stub.
+«Agregar ejercicios», from a series' page — the teacher's, or the academy's
+over the library alone (\`source="library"\`) —: the exercises that may be
+given and are not in the series yet, as cards to tick, with a search once
+there are a few. What is chosen goes to the end of the series. The action
+comes as a prop; the stories pass a stub.
 
-Source: \`components/platform/sections/teacher/exercises/add-series-exercises-popup/add-series-exercises-popup.comp.tsx\`.
-Reference page: [Components › AddSeriesExercisesPopup](/components/platform/sections/teacher/exercises/add-series-exercises-popup) in the docs site.
+Source: \`components/platform/shared/add-series-exercises-popup/add-series-exercises-popup.comp.tsx\`.
+Reference page: [Components › AddSeriesExercisesPopup](/components/platform/shared/add-series-exercises-popup) in the docs site.
 `,
       },
     },
@@ -85,3 +86,6 @@ export const Changed: Story = {
 
 /** Every ready exercise is already in the series: nothing to tick, and the popup says so. */
 export const NothingLeft: Story = { name: "Nothing left", args: { exercises: [], itemCount: 5 }, play: open };
+
+/** An academy series, over the library alone: the same cards, and an empty library says so in the library's words. */
+export const Library: Story = { args: { source: "library", exercises: [], itemCount: 0 }, play: open };
