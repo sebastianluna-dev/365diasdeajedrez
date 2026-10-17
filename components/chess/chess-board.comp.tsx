@@ -120,6 +120,13 @@ export function ChessBoard({
   );
 
   const [ply, setPlyState] = useState(0);
+  // Whether this board has ever taken moves: chessground binds its drag
+  // handlers only when it is created, so a board that once was interactive
+  // keeps its instance and is locked through `set` while it waits (the
+  // opponent's reply, a wrong move on show). Destroying it there would draw
+  // the starting position for a frame and slide every piece back in.
+  const [movesEver, setMovesEver] = useState(interactive);
+  if (interactive && !movesEver) setMovesEver(true);
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [flipToggled, setFlipToggled] = useState(false);
   const orientation: "white" | "black" = (flipBoard ? !flipToggled : flipToggled) ? "black" : "white";
@@ -133,6 +140,13 @@ export function ChessBoard({
   const isInViewportRef = useRef(false);
   const hasBeenClickedRef = useRef(false);
   const onShapesChangeRef = useRef(onShapesChange);
+  /** A new instance shows its first position at once, never sliding in from the starting one. */
+  const freshRef = useRef(true);
+  /**
+   * The position a move was played from, until the parent answers with a new
+   * position: if it never does (the move was not taken), the board goes back.
+   */
+  const revertFenRef = useRef<string | null>(null);
   useEffect(() => {
     onShapesChangeRef.current = onShapesChange;
   }, [onShapesChange]);
@@ -188,9 +202,7 @@ export function ChessBoard({
     const api = Chessground(boardRef.current, {
       coordinates: true,
       animation: { enabled: !calm, duration: 200 },
-      viewOnly: !interactive,
-      draggable: { enabled: interactive },
-      selectable: { enabled: interactive },
+      viewOnly: !movesEver,
       // A move is made on one's turn or not at all: no premoves.
       premovable: { enabled: false },
       drawable: {
@@ -199,11 +211,29 @@ export function ChessBoard({
       },
     });
     apiRef.current = api;
+    freshRef.current = true;
     return () => {
       api.destroy();
       apiRef.current = null;
     };
-  }, [interactive, editableShapes]);
+  }, [movesEver, editableShapes]);
+
+  /**
+   * After a move is handed to the parent: the board keeps the piece where it
+   * was dropped, and the parent's new position (the same one) moves nothing.
+   * Two frames give React the time to render it; with no answer by then, the
+   * move was not taken and the board goes back to `fen`.
+   */
+  const awaitAnswer = useCallback((fen: string) => {
+    revertFenRef.current = fen;
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        if (revertFenRef.current !== fen) return;
+        revertFenRef.current = null;
+        apiRef.current?.set({ fen });
+      }),
+    );
+  }, []);
 
   // Push the current position into chessground.
   useEffect(() => {
@@ -211,6 +241,8 @@ export function ChessBoard({
     if (!api) return;
     const current = position ?? positions[ply];
     if (!current) return;
+    // The parent answered: no going back.
+    revertFenRef.current = null;
     const { fen, lastMove, check } = current;
     const color = turnColor(fen);
     const config: Config = {
@@ -221,6 +253,10 @@ export function ChessBoard({
       check: check ? color : false,
       // An empty map takes an earlier hint away.
       highlight: { custom: new Map(hintSquare ? [[hintSquare as Key, "hint"]] : []) },
+      draggable: { enabled: interactive },
+      selectable: { enabled: interactive },
+      // Locked while it is not the board's to move: no piece lifts, no square shows.
+      movable: { color: undefined, dests: new Map() },
     };
     if (interactive) {
       const mover = movableColor ?? color;
@@ -239,7 +275,7 @@ export function ChessBoard({
             }
             const san = sanForMove(fen, orig as Key, dest as Key);
             if (san) onMoveRef.current?.(san, fen);
-            apiRef.current?.set({ fen });
+            awaitAnswer(fen);
           },
         },
       };
@@ -247,9 +283,28 @@ export function ChessBoard({
     // Editable ones go as the user's shapes; otherwise as read-only
     // autoShapes. Mixing them would paint every arrow twice.
     if (editableShapes) config.drawable = { shapes: position?.shapes ?? [] };
-    api.set(config);
+    if (freshRef.current) {
+      freshRef.current = false;
+      const animation = api.state.animation.enabled;
+      api.set({ animation: { enabled: false } });
+      api.set(config);
+      api.set({ animation: { enabled: animation } });
+    } else {
+      api.set(config);
+    }
     if (!editableShapes) api.setAutoShapes(position?.shapes ?? []);
-  }, [ply, positions, position, orientation, interactive, movableColor, editableShapes, hintSquare]);
+  }, [
+    ply,
+    positions,
+    position,
+    orientation,
+    interactive,
+    movableColor,
+    editableShapes,
+    hintSquare,
+    movesEver,
+    awaitAnswer,
+  ]);
 
   // Keep chessground sized to its container.
   useEffect(() => {
@@ -312,16 +367,19 @@ export function ChessBoard({
     });
   }, []);
 
-  const confirmPromotion = useCallback((role: PromotionRole) => {
-    setPendingPromotion((pending) => {
-      if (pending) {
-        const san = sanForMove(pending.fen, pending.orig, pending.dest, role);
-        if (san) onMoveRef.current?.(san, pending.fen);
-        apiRef.current?.set({ fen: pending.fen });
-      }
-      return null;
-    });
-  }, []);
+  const confirmPromotion = useCallback(
+    (role: PromotionRole) => {
+      setPendingPromotion((pending) => {
+        if (pending) {
+          const san = sanForMove(pending.fen, pending.orig, pending.dest, role);
+          if (san) onMoveRef.current?.(san, pending.fen);
+          awaitAnswer(pending.fen);
+        }
+        return null;
+      });
+    },
+    [awaitAnswer],
+  );
 
   // Promotion picker: base chessground brings no dialog, so the move stays
   // pending until the user picks the piece.
