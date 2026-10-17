@@ -1,0 +1,56 @@
+/* «Historial»: the three filters in a row, the count, the attempts as the
+   teacher's rows, and «Ver más» under them. */
+.exercise-history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-4);
+
+  & .exercise-history__sample {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .exercise-history__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-3);
+  }
+
+  & .exercise-history__filters > * {
+    min-width: 0;
+  }
+
+  & .exercise-history__count {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .exercise-history__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .exercise-history__more {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+  }
+
+  & .exercise-history__more-count {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (width < 640px) {
+    & .exercise-history__filters {
+      flex-direction: column;
+    }
+  }
+}

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { AngleRightIcon } from "@/components/icons/angle-right-icon.comp";
+import { ClockRotateLeftIcon } from "@/components/icons/clock-rotate-left-icon.comp";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
+import { platformRoutes } from "@/lib/platform-routes";
 import type { StudentExercisesHome, StudentSeriesSummary } from "@/services/exercises/exercises.types";
 import type { PracticeFilters as PracticeFiltersData } from "@/services/exercises/practice.types";
 import { PracticeFilters } from "./practice-filters/practice-filters.comp";
@@ -103,6 +105,19 @@ export function ExercisesHomeSection({ home, practice }: ExercisesHomeSectionPro
           <SeriesRows series={home.academySeries} />
         </section>
       )}
+
+      <section className="platform-card exercises-home" aria-labelledby="exercises-home-history">
+        <h2 className="platform-card__title" id="exercises-home-history">
+          Historial
+        </h2>
+        <p className="exercises-home__lead">
+          Cada intento que contó, con su resultado y, si fallaste, la jugada que era.
+        </p>
+        <Link href={platformRoutes.exerciseHistory} className="platform-button exercises-home__go">
+          <ClockRotateLeftIcon variant="classic-solid" className="platform-button__icon" />
+          Ver el historial
+        </Link>
+      </section>
     </>
   );
 }
