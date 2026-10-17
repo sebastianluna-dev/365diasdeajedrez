@@ -1,5 +1,6 @@
 import type { AttendanceMarkView } from "@/components/platform/shared/attendance-row/attendance-row.types";
 import type { ClassRowData } from "@/components/platform/shared/class-row/class-row.types";
+import type { ExercisePickOption } from "@/components/platform/shared/exercise-picker/exercise-picker.types";
 import type { FinalizeClassData } from "@/components/platform/shared/finalize-class-popup/finalize-class-popup.types";
 import type { MeetingJoinData } from "@/components/platform/shared/meeting-join-card/meeting-join-card.types";
 import type {
@@ -74,6 +75,8 @@ export interface TeacherClassBlock {
   pgn?: string;
   lessonId?: string;
   positionId?: string;
+  /** An EXERCISE block's exercises, in order (D29); the popup opens on them. */
+  exerciseIds?: string[];
   /** The stored movePath no longer resolves against the resource's current PGN. */
   isMovePathBroken: boolean;
 }
@@ -126,6 +129,9 @@ export interface ReferenceableGame {
   id: string;
   label: string;
 }
+
+/** An exercise the teacher may put in a block (D08, D29): theirs and usable, or the library's; what `ExercisePicker` offers. */
+export type PickableExercise = ExercisePickOption;
 
 export interface ReferenceableGameGroup {
   studyId: string;

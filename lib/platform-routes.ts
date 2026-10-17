@@ -112,6 +112,11 @@ export const platformRoutes = {
   exerciseSeries: (seriesId: string) => `/ejercicios/series/${seriesId}`,
   /** The n-th exercise of a series (1-based), counted among the ones the student may solve. */
   exerciseSeriesItem: (seriesId: string, n: number) => `/ejercicios/series/${seriesId}/${n}`,
+  /**
+   * The n-th exercise of an EXERCISE block of a class (1-based, among the ones
+   * the student may solve), solved from the class (D29): behind `EXERCISES_ENABLED`.
+   */
+  classExercise: (classId: string, blockId: string, n: number) => `/clases/${classId}/ejercicios/${blockId}/${n}`,
   /** The own profile: it redirects to `/perfil/<slug>`, so a menu needs no user name. */
   profile: "/perfil",
   /** A person's profile, by their user name. */

@@ -146,5 +146,10 @@ export const CLASS_FIELD_ERRORS: Record<string, string> = {
   blockPgn: "Esa partida no se puede leer. Revisa las jugadas del tablero antes de guardar.",
   blockPgnEmpty: "La partida no tiene ninguna jugada. Juega la partida en el tablero o pega su PGN.",
   blockPgnTooLong: "La partida es demasiado larga.",
+  blockExercises: "Elige de 1 a 10 ejercicios.",
+  blockExercisesRepeated: "Hay un ejercicio repetido.",
+  blockExerciseVisibility: "Un bloque de ejercicios es para el alumno: elige «Para preparar» o «Después de la clase».",
+  blockExercisesNotPickable: "Alguno de esos ejercicios ya no se puede agregar: cierra la ventana y vuelve a abrirla.",
+  blockChanged: "El bloque cambió mientras tanto: vuelve a intentarlo.",
   order: "No se pudo reordenar: recarga la página y vuelve a intentarlo.",
 };

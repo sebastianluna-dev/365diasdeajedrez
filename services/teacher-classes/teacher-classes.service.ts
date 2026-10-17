@@ -10,6 +10,7 @@ import {
   type ClassStatusCode,
 } from "@/constants/platform/class-codes.const";
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
+import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
 import { formatClassStamp, formatClassWhen } from "@/lib/format-class-when";
 import { requireTeacher } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
@@ -18,7 +19,9 @@ import { teacherRoutes } from "@/lib/platform-routes";
 import { classTimeZone, dayRangeIn } from "@/lib/timezone";
 import { classDetailInclude, mapClassBlocks } from "@/services/classes/classes.mapper";
 import { canFinalizeClass, editableClassFields } from "@/services/shared/class-rules";
+import { buildPickableExercisesWhere } from "@/services/shared/exercise-visibility-rules";
 import { lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
+import { mapSeriesPickOption } from "@/services/teacher-exercises/teacher-exercises.mapper";
 import {
   adminLineOf,
   mapTeacherBlock,
@@ -33,6 +36,7 @@ import {
   type TeacherSeatSource,
 } from "./teacher-classes.mapper";
 import type {
+  PickableExercise,
   ReferenceableGameGroup,
   TeacherClassDetail,
   TeacherClassesFilters,
@@ -206,6 +210,7 @@ const detailSelect = {
       game: { select: { id: true, white: true, black: true, pgn: true } },
       lesson: { select: { id: true, name: true, ...lessonPgnSelect, chapter: { select: { name: true } } } },
       position: { select: { id: true, title: true, fen: true } },
+      exercises: { orderBy: { order: "asc" }, select: { exerciseId: true, exercise: { select: { title: true } } } },
     },
   },
 } satisfies Prisma.ClassSelect;
@@ -389,6 +394,29 @@ export async function listReferenceableGames(): Promise<ReferenceableGameGroup[]
       studyName: database.name,
       games: database.games.map((game) => ({ id: game.id, label: `${game.white} – ${game.black}` })),
     }));
+}
+
+/**
+ * The exercises the teacher may put in an EXERCISE block (D08, D29): what
+ * they may put in a series — their own usable ones and the library's —, the
+ * last changed first. Empty with the flag off, when the kind is not offered.
+ */
+export async function listPickableExercises(): Promise<PickableExercise[]> {
+  const { teacher } = await requireTeacher();
+  if (!EXERCISES_ENABLED) return [];
+  const rows = await getPlatformDb().exercise.findMany({
+    where: buildPickableExercisesWhere({ teacherId: teacher.id }),
+    select: {
+      id: true,
+      title: true,
+      difficulty: true,
+      mateIn: true,
+      kind: { select: { code: true } },
+      topics: { select: { topic: { select: { code: true, label: true, order: true } } } },
+    },
+    orderBy: [{ updatedAt: "desc" }, { id: "asc" }],
+  });
+  return rows.map(mapSeriesPickOption);
 }
 
 /**

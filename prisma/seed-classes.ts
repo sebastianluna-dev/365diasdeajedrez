@@ -21,6 +21,7 @@ import {
 } from "../services/shared/class-schedule.service";
 import { moveClassSeat, syncClassSeat, type SeatCoverage } from "../services/shared/class-seats.service";
 import { IDS } from "./seed-data";
+import { EXERCISE_IDS } from "./seed-exercises";
 
 // The classes demo: five classmates beside the demo student, five payments,
 // twenty classes — one in every phase at 11:40 of the reference day, a group
@@ -408,6 +409,8 @@ interface SeedBlock {
   lessonId: string | null;
   positionId: string | null;
   movePath: string | null;
+  /** An EXERCISE block's exercises, in order (`ClassBlockExercise`); empty for every other kind. */
+  exerciseIds: string[];
 }
 
 function block(
@@ -416,7 +419,9 @@ function block(
   order: number,
   kind: string,
   visibility: ClassBlockVisibilityCode,
-  fields: Partial<Pick<SeedBlock, "text" | "caption" | "videoUrl" | "gameId" | "lessonId" | "positionId" | "movePath">>,
+  fields: Partial<
+    Pick<SeedBlock, "text" | "caption" | "videoUrl" | "gameId" | "lessonId" | "positionId" | "movePath" | "exerciseIds">
+  >,
 ): SeedBlock {
   return {
     id,
@@ -431,6 +436,7 @@ function block(
     lessonId: null,
     positionId: null,
     movePath: null,
+    exerciseIds: [],
     ...fields,
   };
 }
@@ -493,6 +499,20 @@ export const CLASS_BLOCKS: SeedBlock[] = [
     CLASS_BLOCK_VISIBILITY.TEACHER,
     {
       text: "Preguntas para abrir: ¿por qué 5...a6? ¿Qué pasa si las blancas juegan 6.Ag5 y no 6.Ae3?",
+    },
+  ),
+  // Two of the teacher's exercises to prepare (D29, phase 3 of «Ejercicios»):
+  // the block is written here, its ClassBlockExercise rows by `prisma/seed.ts`
+  // once `seedExercises` has written the exercises they point at.
+  block(
+    "b1000000-0000-4000-8000-00000000000c",
+    IDS.classUpcoming,
+    5,
+    CLASS_BLOCK_KIND.EXERCISE,
+    CLASS_BLOCK_VISIBILITY.BEFORE,
+    {
+      caption: "Dos mates para calentar antes de la clase.",
+      exerciseIds: [EXERCISE_IDS.backRank, EXERCISE_IDS.smothered],
     },
   ),
   // The group class.

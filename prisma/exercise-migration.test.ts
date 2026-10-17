@@ -20,10 +20,15 @@ const PUBLISHED_AT_MIGRATION = new URL(
   "./migrations/20261016140000_lesson_exercises_published_at/migration.sql",
   import.meta.url,
 );
+const CLASS_BLOCKS_MIGRATION = new URL(
+  "./migrations/20261016150000_class_exercise_blocks/migration.sql",
+  import.meta.url,
+);
 const INIT = new URL("./migrations/20260830190612_init/migration.sql", import.meta.url);
 const sql = readFileSync(MIGRATION, "utf8");
 const lessonSql = readFileSync(LESSON_MIGRATION, "utf8");
 const publishedAtSql = readFileSync(PUBLISHED_AT_MIGRATION, "utf8");
+const classBlocksSql = readFileSync(CLASS_BLOCKS_MIGRATION, "utf8");
 const init = readFileSync(INIT, "utf8");
 const schema = readFileSync(new URL("./schema.prisma", import.meta.url), "utf8");
 
@@ -307,5 +312,54 @@ describe("the 20261016140000_lesson_exercises_published_at migration", () => {
     expect(publishedAtSql).toContain(`e."publishedAt" IS NULL`);
     // The lesson exercise migration is what left the gap: this one comes right after it.
     expect(lessonSql).not.toContain('"publishedAt"');
+  });
+});
+
+// Phase 3: the class block «Ejercicio» (D29, D30; PLAN.md §7.2). The structure
+// is Prisma's diff; the catalog row is added by hand with the seed's label.
+describe("the 20261016150000_class_exercise_blocks migration", () => {
+  it("inserts the EXERCISE kind with the seed's label and order, after FILE", () => {
+    const values = CATALOG_VALUES.classBlockKind;
+    const index = values.findIndex(([code]) => code === "EXERCISE");
+    expect(index).toBe(values.length - 1);
+    expect(classBlocksSql).toContain(`INSERT INTO "ClassBlockKind" ("code", "label", "order") VALUES`);
+    expect(classBlocksSql).toContain(`('EXERCISE', '${values[index]?.[1]}', ${index})`);
+    expect(classBlocksSql).toContain(
+      `ON CONFLICT ("code") DO UPDATE SET "label" = EXCLUDED."label", "order" = EXCLUDED."order"`,
+    );
+  });
+
+  it("creates the join table with its key, its unique order and its index, and the attempt's block, as Prisma's diff writes them", () => {
+    expect(classBlocksSql).toContain(`ALTER TABLE "TrainingAttempt" ADD COLUMN     "classBlockId" TEXT;`);
+    expect(classBlocksSql).toContain(`CONSTRAINT "ClassBlockExercise_pkey" PRIMARY KEY ("blockId","exerciseId")`);
+    expect(classBlocksSql).toContain(
+      `CREATE UNIQUE INDEX "ClassBlockExercise_blockId_order_key" ON "ClassBlockExercise"("blockId", "order");`,
+    );
+    expect(classBlocksSql).toContain(
+      `CREATE INDEX "ClassBlockExercise_exerciseId_idx" ON "ClassBlockExercise"("exerciseId");`,
+    );
+    expect(classBlocksSql).toContain(
+      `CREATE INDEX "TrainingAttempt_classBlockId_userId_idx" ON "TrainingAttempt"("classBlockId", "userId");`,
+    );
+    // Structure and one catalog row only: nothing moves or goes.
+    expect(classBlocksSql).not.toMatch(/DROP COLUMN|DROP TABLE|DELETE FROM|^UPDATE /m);
+  });
+
+  it("a block deleted takes its rows and leaves its attempts; an exercise a class points at is never deleted", () => {
+    const keys = classBlocksSql.split("\n").filter((line) => line.includes("FOREIGN KEY"));
+    expect(keys).toHaveLength(3);
+    for (const line of keys) expect(line, line).toContain("ON UPDATE CASCADE");
+    expect(keys.find((line) => line.includes(`"ClassBlockExercise_blockId_fkey"`))).toContain("ON DELETE CASCADE");
+    expect(keys.find((line) => line.includes(`"ClassBlockExercise_exerciseId_fkey"`))).toContain("ON DELETE RESTRICT");
+    expect(keys.find((line) => line.includes(`"TrainingAttempt_classBlockId_fkey"`))).toContain("ON DELETE SET NULL");
+  });
+
+  it("the schema names the only writer of the block's rows and of the attempt's block", () => {
+    expect(columnComment("TrainingAttempt", "classBlockId")).toContain("recordExerciseAttempt");
+    const start = schema.indexOf("\nmodel ClassBlockExercise {");
+    expect(start).toBeGreaterThan(-1);
+    const comment = schema.slice(schema.lastIndexOf("\n\n", start), start);
+    expect(comment).toContain("teacher-classes.actions.ts");
+    expect(comment).toContain("writeBlockExercises");
   });
 });

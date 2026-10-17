@@ -2,7 +2,10 @@ import Link from "next/link";
 import { ArrowUpRightFromSquareIcon } from "@/components/icons/arrow-up-right-from-square-icon.comp";
 import { BookOpenIcon } from "@/components/icons/book-open-icon.comp";
 import { ChessKnightIcon } from "@/components/icons/chess-knight-icon.comp";
+import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
+import { CircleXmarkIcon } from "@/components/icons/circle-xmark-icon.comp";
 import { ParagraphIcon } from "@/components/icons/paragraph-icon.comp";
+import { PuzzlePieceIcon } from "@/components/icons/puzzle-piece-icon.comp";
 import { VideoIcon } from "@/components/icons/video-icon.comp";
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
 import { StaticDiagram } from "@/components/chess/static-diagram.comp";
@@ -11,7 +14,7 @@ import {
   type SaveClassGameAction,
 } from "@/components/platform/shared/class-game-save/class-game-save.comp";
 import { CLASS_BLOCK_VISIBILITY, type ClassBlockVisibilityCode } from "@/constants/platform/class-codes.const";
-import type { ClassBlockView } from "@/services/classes/classes.types";
+import type { ClassBlockExerciseView, ClassBlockView } from "@/services/classes/classes.types";
 import "./class-content-renderer.comp.css";
 
 interface ClassContentRendererProps {
@@ -40,6 +43,7 @@ const KIND_ICONS = {
   LESSON_REF: BookOpenIcon,
   POSITION_REF: ChessKnightIcon,
   FILE: ParagraphIcon,
+  EXERCISE: PuzzlePieceIcon,
 } as const;
 
 /** The heading a block gets without a title of its own: the material's name, or the kind's word. */
@@ -56,6 +60,8 @@ function headingOf(block: ClassBlockView): string {
       return "Video";
     case "FILE":
       return "Archivo";
+    case "EXERCISE":
+      return block.exercises.length === 1 ? "Ejercicio" : "Ejercicios";
     default:
       return "Nota";
   }
@@ -94,6 +100,54 @@ function TextBlock({ text }: { text: string }) {
         ),
       )}
     </div>
+  );
+}
+
+/**
+ * One exercise of an EXERCISE block (D29): the start drawn small, its number,
+ * title and facts, and, for the student, their mark in THIS block — «Resuelto»
+ * or «Fallado», always written beside its icon — and «Resolver», which opens
+ * it under the class's address. The teacher and the staff read the same row
+ * with the count instead («2 de 3 lo resolvieron») and no way to solve.
+ */
+function ExerciseRow({ item }: { item: ClassBlockExerciseView }) {
+  return (
+    <li className="class-content__exercise">
+      <span className="class-content__exercise-diagram">
+        <StaticDiagram fen={item.startFen} orientation={item.orientation} />
+      </span>
+      <span className="class-content__exercise-body">
+        <span className="class-content__exercise-title">
+          {item.n}. {item.title}
+        </span>
+        <span className="class-content__exercise-facts">
+          {item.facts}
+          {item.solvedLabel && ` · ${item.solvedLabel}`}
+        </span>
+        {item.unavailable && (
+          <span className="platform-tag platform-tag_variant_warning class-content__exercise-tag">
+            Ya no está disponible
+          </span>
+        )}
+      </span>
+      {item.mark === "solved" && (
+        <span className="class-content__exercise-mark class-content__exercise-mark_state_solved">
+          <CircleCheckIcon variant="classic-solid" className="class-content__exercise-mark-icon" />
+          Resuelto
+        </span>
+      )}
+      {item.mark === "failed" && (
+        <span className="class-content__exercise-mark class-content__exercise-mark_state_failed">
+          <CircleXmarkIcon variant="classic-solid" className="class-content__exercise-mark-icon" />
+          Fallado
+        </span>
+      )}
+      {item.href && (
+        <Link href={item.href} className="platform-button platform-button_size_sm class-content__exercise-action">
+          Resolver
+        </Link>
+      )}
+    </li>
   );
 }
 
@@ -189,6 +243,14 @@ function Block({ block, saveGame }: { block: ClassBlockView; saveGame?: SaveGame
           <span className="class-content__link-label">{block.caption ?? "Material de la clase"}</span>
         </div>
       )}
+
+      {block.kind === "EXERCISE" && (
+        <ol className="class-content__exercises">
+          {block.exercises.map((item) => (
+            <ExerciseRow key={item.id} item={item} />
+          ))}
+        </ol>
+      )}
     </article>
   );
 }
@@ -198,10 +260,12 @@ function Block({ block, saveGame }: { block: ClassBlockView; saveGame?: SaveGame
  * icon of its kind, its heading and its lead: text as paragraphs, a video as
  * an outgoing link, a game and a lesson inside `GameViewer` (with the game's
  * players and result when its record has them, and with its next moves
- * hidden when its study says so), a position as a `StaticDiagram`. The chess
- * blocks are references to the original material, not copies; with
- * `saveGame`, the student may copy a game into a study of their own. A block
- * the teacher added after the class started wears «Nuevo».
+ * hidden when its study says so), a position as a `StaticDiagram`, and the
+ * exercises of an EXERCISE block as rows with the student's mark and
+ * «Resolver» (D29). The chess blocks are references to the original
+ * material, not copies; with `saveGame`, the student may copy a game into a
+ * study of their own. A block the teacher added after the class started wears
+ * «Nuevo».
  *
  * No `"use client"` and no reads, so it is also mounted inside a client
  * component.

@@ -1,9 +1,9 @@
 import type { ExerciseSolverLink } from "@/components/platform/shared/exercise-solver/exercise-solver.types";
-import type { ExerciseKindCode } from "@/constants/platform/exercise-codes.const";
-import { exerciseKindLabel, playerOfStart } from "@/lib/chess/exercise-labels";
+import { playerOfStart } from "@/lib/chess/exercise-labels";
 import { platformRoutes } from "@/lib/platform-routes";
 import { isSameStudyDay } from "@/services/shared/exercise-attempt.service";
-import { levelOfDifficulty, type DifficultyLevel } from "@/services/shared/exercise-level";
+import { exerciseFacts } from "@/services/shared/exercise-facts";
+import type { DifficultyLevel } from "@/services/shared/exercise-level";
 import type { LessonPractice, LessonPracticeItem } from "./lesson-practice.types";
 
 // From the rows the lesson reads to what its card and its list draw. Pure, so
@@ -41,14 +41,6 @@ export interface LessonPlace {
 /** The ids whose states speak for each exercise, by its id: `exerciseFamiliesOf`'s answer. */
 export type PracticeFamilies = ReadonlyMap<string, readonly string[]>;
 
-/** «Mate en 2 · 1400 · Intermedio». */
-function factsOf(exercise: LessonExerciseRow, levels: readonly DifficultyLevel[]): string {
-  const level = levelOfDifficulty(exercise.difficulty, levels)?.name;
-  return [exerciseKindLabel(exercise.kind.code as ExerciseKindCode, exercise.mateIn), exercise.difficulty, level]
-    .filter((part) => part !== undefined)
-    .join(" · ");
-}
-
 /**
  * The lesson's exercises with the student's standing: «resuelto» when any
  * row of the exercise's family has `firstSolvedAt` (D22, D28: the original,
@@ -72,7 +64,7 @@ export function lessonPracticeOf(
     n: index + 1,
     href: platformRoutes.lessonPractice(place.courseId, place.chapterOrder, place.lessonId, index + 1),
     title: exercise.title,
-    facts: factsOf(exercise, levels),
+    facts: exerciseFacts(exercise, levels),
     startFen: exercise.startFen,
     orientation: playerOfStart(exercise.startFen),
     solved: familyOf(exercise).some((id) => byId.get(id)?.firstSolvedAt != null),

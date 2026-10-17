@@ -112,9 +112,27 @@ function block(overrides: Record<string, unknown> & { kind: { code: string } }):
     game: null,
     lesson: null,
     position: null,
+    exercises: [],
+    class: { teacherId: "t-1" },
     createdAt: new Date("2026-10-01T00:00:00.000Z"),
     ...overrides,
   } as unknown as BlockRow;
+}
+
+/** An exercise of an EXERCISE block, as the include reads it: the owner and the status decide who still sees it. */
+function blockExercise(id: string, title: string, teacherId: string | null, status: string) {
+  return {
+    exercise: {
+      id,
+      title,
+      teacherId,
+      difficulty: 1400,
+      mateIn: 2,
+      startFen: "r6k/6pp/7N/8/2Q5/8/6PP/6K1 w - - 0 1",
+      kind: { code: "MATE_IN" },
+      status: { code: status },
+    },
+  };
 }
 
 function detailRow(overrides: Record<string, unknown> = {}): ClassDetailRow {
@@ -417,6 +435,68 @@ describe("mapStudentClassDetail", () => {
     expect(blocks.map((item) => item.kind)).toEqual(["TEXT", "VIDEO", "POSITION_REF", "FILE"]);
     expect(blocks[0]).toMatchObject({ id: "t1", caption: "Intro", text: "Hola" });
     expect(blocks[2]).toMatchObject({ position: { orientation: "black", title: undefined } });
+  });
+
+  it("an exercise block (D29): the student sees what still reaches them, numbered, with their marks and «Resolver»", () => {
+    const exercises = [
+      blockExercise("e1", "El pasillo abierto", "t-1", "READY"),
+      blockExercise("e2", "Archivado", "t-1", "ARCHIVED"),
+      blockExercise("e3", "De la biblioteca", "t-2", "PUBLISHED"),
+      blockExercise("e4", "De otro profesor", "t-2", "READY"),
+    ];
+    const row = detailRow({ blocks: [block({ id: "x1", kind: { code: CLASS_BLOCK_KIND.EXERCISE }, exercises })] });
+    const marks = new Map([
+      [
+        "x1",
+        new Map([
+          ["e1", "solved" as const],
+          ["e3", "failed" as const],
+        ]),
+      ],
+    ]);
+    const [view] = mapClassBlocks(row.blocks, {
+      audience: "student",
+      phase: CLASS_PHASE.OPEN,
+      solve: { classId: "c2", marks },
+    });
+    expect(view?.kind).toBe("EXERCISE");
+    if (view?.kind !== "EXERCISE") return;
+    expect(view.exercises.map((item) => [item.n, item.id, item.mark, item.href])).toEqual([
+      [1, "e1", "solved", "/clases/c2/ejercicios/x1/1"],
+      [2, "e3", "failed", "/clases/c2/ejercicios/x1/2"],
+    ]);
+    expect(view.exercises[0]).toMatchObject({
+      title: "El pasillo abierto",
+      facts: "Mate en 2 · 1400",
+      orientation: "white",
+    });
+    expect(view.exercises.every((item) => item.solvedLabel === undefined && item.unavailable === undefined)).toBe(true);
+    // Without `solve` (a moved seat) the rows are read-only.
+    const [readOnly] = mapClassBlocks(row.blocks, { audience: "student", phase: CLASS_PHASE.OPEN });
+    if (readOnly?.kind !== "EXERCISE") throw new Error("expected an exercise block");
+    expect(readOnly.exercises.map((item) => item.href)).toEqual([undefined, undefined]);
+    // A block none of whose exercises reach the student is dropped.
+    const gone = detailRow({
+      blocks: [block({ id: "x2", kind: { code: CLASS_BLOCK_KIND.EXERCISE }, exercises: exercises.slice(1, 2) })],
+    });
+    expect(mapClassBlocks(gone.blocks, { audience: "student", phase: CLASS_PHASE.OPEN })).toEqual([]);
+  });
+
+  it("the teacher and the staff see every exercise of the block, the lost ones marked, with the counts and no way to solve", () => {
+    const exercises = [
+      blockExercise("e1", "El pasillo abierto", "t-1", "READY"),
+      blockExercise("e4", "De otro profesor", "t-2", "READY"),
+    ];
+    const row = detailRow({ blocks: [block({ id: "x1", kind: { code: CLASS_BLOCK_KIND.EXERCISE }, exercises })] });
+    const solvedLabels = new Map([["x1", new Map([["e1", "2 de 3 lo resolvieron"]])]]);
+    for (const audience of ["teacher", "staff"] as const) {
+      const [view] = mapClassBlocks(row.blocks, { audience, phase: CLASS_PHASE.UPCOMING, solvedLabels });
+      if (view?.kind !== "EXERCISE") throw new Error("expected an exercise block");
+      expect(view.exercises.map((item) => [item.n, item.id, item.unavailable, item.solvedLabel, item.href])).toEqual([
+        [1, "e1", undefined, "2 de 3 lo resolvieron", undefined],
+        [2, "e4", true, undefined, undefined],
+      ]);
+    }
   });
 
   it("a game block carries the players, the result, the orientation, the concealment and the pinned comment", () => {

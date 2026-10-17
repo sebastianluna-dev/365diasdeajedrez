@@ -12,6 +12,7 @@ import {
 } from "@/constants/platform/class-codes.const";
 import { PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
+import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { assertTeacherCanReferenceGame, assertTeacherOwnsClass } from "@/lib/platform-auth/guards";
 import { requireTeacher } from "@/lib/platform-auth/roles";
@@ -22,6 +23,7 @@ import { allowAction } from "@/lib/rate-limit";
 import { recordAttendance } from "@/services/shared/class-attendance.service";
 import { editableClassFields } from "@/services/shared/class-rules";
 import { transitionClassStatus } from "@/services/shared/class-status.service";
+import { buildPickableExercisesWhere } from "@/services/shared/exercise-visibility-rules";
 import { formOptionalText, formOptionalUrl, formText, parseForm } from "@/services/shared/form-schema";
 import {
   popupFormDone,
@@ -33,7 +35,7 @@ import {
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
 import { nextOrder, planDenseRenumber, planFullReorder } from "@/services/shared/reorder";
 import { withErrorParam, withNoticeParam } from "@/services/shared/safe-return-to";
-import { gameBlockSource } from "./block-rules";
+import { exerciseBlockError, gameBlockSource } from "./block-rules";
 import { getPgnForReference } from "./teacher-classes.service";
 import { teacherPhaseOf } from "./teacher-classes.mapper";
 
@@ -47,6 +49,11 @@ import { teacherPhaseOf } from "./teacher-classes.mapper";
 //   are theirs alone: title, description, summary, recording and the blocks.
 // - The popup actions return a `PopupFormState`; the ones a confirmation
 //   runs redirect with the notice.
+// - An EXERCISE block's rows (`ClassBlockExercise`, D29) are written here and
+//   nowhere else, inside the block's transaction (`writeBlockExercises`): the
+//   exercises the teacher may pick are `buildPickableExercisesWhere`'s, one to
+//   ten, each once, never in the teacher's script (`exerciseBlockError`), and
+//   only while `EXERCISES_ENABLED` is on.
 
 const WINDOW_MS = 60_000;
 
@@ -310,7 +317,13 @@ export async function reorderClassBlocks(
 }
 
 const BLOCK_COMMON_SCHEMA = z.object({
-  kind: z.enum([CLASS_BLOCK_KIND.TEXT, CLASS_BLOCK_KIND.VIDEO, CLASS_BLOCK_KIND.GAME_REF, CLASS_BLOCK_KIND.LESSON_REF]),
+  kind: z.enum([
+    CLASS_BLOCK_KIND.TEXT,
+    CLASS_BLOCK_KIND.VIDEO,
+    CLASS_BLOCK_KIND.GAME_REF,
+    CLASS_BLOCK_KIND.LESSON_REF,
+    CLASS_BLOCK_KIND.EXERCISE,
+  ]),
   visibility: VISIBILITY,
   caption: formOptionalText(200),
   movePath: formOptionalText(200),
@@ -333,6 +346,7 @@ const BLOCK_FIELDS = [
   "gameId",
   "lessonId",
   "source",
+  "exercises",
 ];
 
 interface BlockFields {
@@ -342,6 +356,8 @@ interface BlockFields {
   videoUrl: string | null;
   movePath: string | null;
   pgn: string | null;
+  /** An EXERCISE block's exercises, in the order the teacher ticked them; empty for every other kind. */
+  exerciseIds: string[];
 }
 
 /** A field the form refused, with its code. */
@@ -361,11 +377,20 @@ class BlockRefused extends Error {
  */
 async function readBlockFields(
   kind: ClassBlockKindCode,
-  movePath: string | null,
+  common: { movePath: string | null; visibility: ClassBlockVisibilityCode },
   formData: FormData,
   teacher: { id: string; userId: string },
 ): Promise<BlockFields> {
-  const empty: BlockFields = { gameId: null, lessonId: null, text: null, videoUrl: null, movePath: null, pgn: null };
+  const { movePath } = common;
+  const empty: BlockFields = {
+    gameId: null,
+    lessonId: null,
+    text: null,
+    videoUrl: null,
+    movePath: null,
+    pgn: null,
+    exerciseIds: [],
+  };
   switch (kind) {
     case CLASS_BLOCK_KIND.TEXT: {
       const parsed = parseForm(BLOCK_TEXT_SCHEMA, formData);
@@ -405,9 +430,49 @@ async function readBlockFields(
       if (!lesson) throw new BlockRefused("lessonId", { code: "blockRef" });
       return { ...empty, lessonId: lesson.id, movePath };
     }
+    case CLASS_BLOCK_KIND.EXERCISE: {
+      // Behind the flag with the rest of «Ejercicios»: off, the kind is not offered and not accepted.
+      if (!EXERCISES_ENABLED) throw new BlockRefused("kind", { code: "blockKind" });
+      const exerciseIds = formData
+        .getAll("exercises")
+        .filter((value): value is string => typeof value === "string")
+        .map((value) => value.trim())
+        .filter((value) => value.length > 0 && value.length <= 64);
+      const refused = exerciseBlockError({ exerciseIds, visibility: common.visibility });
+      if (refused === "blockExerciseVisibility") throw new BlockRefused("visibility", { code: refused });
+      if (refused) throw new BlockRefused("exercises", { code: refused });
+      // What the teacher may put in a class is what they may put in a series (D08): their usable ones and the library's.
+      const pickable = await getPlatformDb().exercise.count({
+        where: { AND: [{ id: { in: exerciseIds } }, buildPickableExercisesWhere({ teacherId: teacher.id })] },
+      });
+      if (pickable !== exerciseIds.length) throw new BlockRefused("exercises", { code: "blockExercisesNotPickable" });
+      return { ...empty, exerciseIds };
+    }
     default:
       throw new BlockRefused("kind", { code: "blockKind" });
   }
+}
+
+/**
+ * The ONLY writer of `ClassBlockExercise`: the block's exercises, rewritten
+ * whole in the block's transaction — a change of kind leaves none behind,
+ * and a reorder or a swap never meets its own old rows on
+ * `ClassBlockExercise_blockId_order_key`.
+ */
+async function writeBlockExercises(tx: Prisma.TransactionClient, blockId: string, exerciseIds: string[]) {
+  await tx.classBlockExercise.deleteMany({ where: { blockId } });
+  if (exerciseIds.length === 0) return;
+  await tx.classBlockExercise.createMany({
+    data: exerciseIds.map((exerciseId, index) => ({ blockId, exerciseId, order: index + 1 })),
+  });
+}
+
+/** A race lost on the block's order or on its exercises: the popup says «cambió mientras tanto». */
+function isBlockRace(error: unknown): boolean {
+  return (
+    isUniqueConstraintError(error, "ClassBlock_classId_order_key", "order") ||
+    isUniqueConstraintError(error, "ClassBlockExercise_pkey", "ClassBlockExercise_blockId_order_key", "exerciseId")
+  );
 }
 
 function toCreateData(fields: BlockFields) {
@@ -441,7 +506,12 @@ async function readBlock(formData: FormData, teacher: { id: string; userId: stri
       code: common.field === "kind" ? "blockKind" : common.field === "visibility" ? "blockVisibility" : "invalid",
     });
   }
-  const fields = await readBlockFields(common.data.kind, common.data.movePath, formData, teacher);
+  const fields = await readBlockFields(
+    common.data.kind,
+    { movePath: common.data.movePath, visibility: common.data.visibility },
+    formData,
+    teacher,
+  );
   return { common: common.data, fields };
 }
 
@@ -461,20 +531,24 @@ export async function addClassBlock(
 
   try {
     const { common, fields } = await readBlock(formData, { id: teacher.id, userId: user.id });
-    const db = getPlatformDb();
-    const count = await db.classBlock.count({ where: { classId } });
-    await db.classBlock.create({
-      data: {
-        class: { connect: { id: classId } },
-        order: nextOrder(count),
-        kind: { connect: { code: common.kind } },
-        visibility: { connect: { code: common.visibility } },
-        caption: common.caption,
-        ...toCreateData(fields),
-      },
+    await getPlatformDb().$transaction(async (tx) => {
+      const count = await tx.classBlock.count({ where: { classId } });
+      const block = await tx.classBlock.create({
+        data: {
+          class: { connect: { id: classId } },
+          order: nextOrder(count),
+          kind: { connect: { code: common.kind } },
+          visibility: { connect: { code: common.visibility } },
+          caption: common.caption,
+          ...toCreateData(fields),
+        },
+        select: { id: true },
+      });
+      await writeBlockExercises(tx, block.id, fields.exerciseIds);
     });
   } catch (error) {
     if (error instanceof BlockRefused) return popupFormError({ [error.field]: error.fieldError }, values);
+    if (isBlockRace(error)) return popupFormError({}, values, { code: "blockChanged" });
     throw error;
   }
   revalidateClass(classId);
@@ -502,17 +576,21 @@ export async function updateClassBlock(
     // Looked up with classId in the where: a blockId of another class matches nothing.
     const block = await db.classBlock.findFirst({ where: { id: blockId, classId }, select: { id: true } });
     if (!block) return popupFormError({}, values, { code: "blockMissing" });
-    await db.classBlock.update({
-      where: { id: block.id },
-      data: {
-        kind: { connect: { code: common.kind } },
-        visibility: { connect: { code: common.visibility } },
-        caption: common.caption,
-        ...toUpdateData(fields),
-      },
+    await db.$transaction(async (tx) => {
+      await tx.classBlock.update({
+        where: { id: block.id },
+        data: {
+          kind: { connect: { code: common.kind } },
+          visibility: { connect: { code: common.visibility } },
+          caption: common.caption,
+          ...toUpdateData(fields),
+        },
+      });
+      await writeBlockExercises(tx, block.id, fields.exerciseIds);
     });
   } catch (error) {
     if (error instanceof BlockRefused) return popupFormError({ [error.field]: error.fieldError }, values);
+    if (isBlockRace(error)) return popupFormError({}, values, { code: "blockChanged" });
     throw error;
   }
   revalidateClass(classId);

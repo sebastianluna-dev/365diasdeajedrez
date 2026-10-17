@@ -6,6 +6,7 @@ import type {
   ExerciseSaveButton,
 } from "@/components/platform/shared/exercise-authoring/exercise-authoring.types";
 import type { ExerciseAttemptRowData } from "@/components/platform/shared/exercise-attempt-row/exercise-attempt-row.types";
+import type { ExercisePickOption } from "@/components/platform/shared/exercise-picker/exercise-picker.types";
 import type { ExerciseCardData } from "@/components/platform/shared/exercise-card/exercise-card.types";
 import type { SeriesProgressData } from "@/components/platform/shared/series-progress-table/series-progress-table.types";
 import type {
@@ -53,15 +54,8 @@ export interface SeriesItemData {
   availability: SeriesItemAvailability;
 }
 
-/** An exercise the teacher may add to a series: theirs and usable, or the library's (D08). */
-export interface SeriesPickOption {
-  id: string;
-  title: string;
-  /** «Mate en 2 · 1400». */
-  facts: string;
-  /** The topics, «Táctica, Clavada». */
-  topics: string;
-}
+/** An exercise the teacher may add to a series: theirs and usable, or the library's (D08); what `ExercisePicker` offers. */
+export type SeriesPickOption = ExercisePickOption;
 
 /** What the editor of a series opens with. */
 export interface TeacherSeriesEditor {

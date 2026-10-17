@@ -277,6 +277,7 @@ export const CATALOG_VALUES = {
     [CLASS_BLOCK_KIND.LESSON_REF, "Lección"],
     [CLASS_BLOCK_KIND.POSITION_REF, "Posición"],
     [CLASS_BLOCK_KIND.FILE, "Archivo"],
+    [CLASS_BLOCK_KIND.EXERCISE, "Ejercicio"],
   ],
   transcriptStatus: [
     [TRANSCRIPT_STATUS.PENDING, "Pendiente"],

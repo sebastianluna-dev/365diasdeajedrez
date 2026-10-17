@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { ACTIVITY_TYPE } from "../constants/platform/activity-codes.const";
-import { CLASS_FORMAT, CLASS_PHASE, CLASS_STATUS } from "../constants/platform/class-codes.const";
+import { CLASS_BLOCK_KIND, CLASS_FORMAT, CLASS_PHASE, CLASS_STATUS } from "../constants/platform/class-codes.const";
 import { classPhase } from "../services/shared/class-phase";
 import { paymentSeats, studentSeatBalance, type SeatRow } from "../services/shared/payment-seats";
+import { exerciseBlockError } from "../services/teacher-classes/block-rules";
 import { buildClassPayments, buildClassSchedule, CLASS_BLOCKS, DEMO_CLASSMATES } from "./seed-classes";
 import { ACTIVITIES, IDS } from "./seed-data";
+import { DEMO_EXERCISES } from "./seed-exercises";
 
 // The demo as the rules read it, without a database: the reference instant
 // is Wednesday 14 October 2026 at 18:00 UTC, so D is that day in Mexico City
@@ -154,5 +156,30 @@ describe("the classes demo", () => {
     expect(CLASS_BLOCKS.filter((block) => block.visibility === "TEACHER")).toHaveLength(2);
     expect(DEMO_CLASSMATES).toHaveLength(5);
     expect(new Set(DEMO_CLASSMATES.map((user) => user.email)).size).toBe(5);
+  });
+
+  it("one EXERCISE block «Para preparar», in the Najdorf class, with two of the demo teacher's exercises (D29)", () => {
+    const blocks = CLASS_BLOCKS.filter((block) => block.kind === CLASS_BLOCK_KIND.EXERCISE);
+    expect(blocks).toHaveLength(1);
+    const [block] = blocks;
+    expect(block).toMatchObject({ classId: IDS.classUpcoming, visibility: "BEFORE" });
+    expect(block!.exerciseIds).toHaveLength(2);
+    expect(exerciseBlockError({ exerciseIds: block!.exerciseIds, visibility: block!.visibility })).toBeNull();
+    const demo = new Set(DEMO_EXERCISES.map((exercise) => exercise.id));
+    for (const id of block!.exerciseIds) expect(demo.has(id), id).toBe(true);
+    // An exercise block uses none of the single references, and no other kind carries exercises.
+    expect([block!.gameId, block!.lessonId, block!.positionId, block!.text, block!.videoUrl]).toEqual([
+      null,
+      null,
+      null,
+      null,
+      null,
+    ]);
+    for (const other of CLASS_BLOCKS) {
+      if (other.kind !== CLASS_BLOCK_KIND.EXERCISE) expect(other.exerciseIds, other.id).toEqual([]);
+    }
+    expect(new Set(CLASS_BLOCKS.map((candidate) => `${candidate.classId}:${candidate.order}`)).size).toBe(
+      CLASS_BLOCKS.length,
+    );
   });
 });

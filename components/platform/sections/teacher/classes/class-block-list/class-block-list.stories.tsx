@@ -43,6 +43,16 @@ const BLOCKS: TeacherClassBlock[] = [
     caption: "Preguntas para abrir",
     isMovePathBroken: false,
   },
+  {
+    id: "b5",
+    order: 5,
+    kind: CLASS_BLOCK_KIND.EXERCISE,
+    visibility: CLASS_BLOCK_VISIBILITY.BEFORE,
+    caption: "Dos mates para calentar antes de la clase.",
+    referenceLabel: "2 ejercicios",
+    exerciseIds: ["dmEjer01", "dmEjer02"],
+    isMovePathBroken: false,
+  },
 ];
 
 const PGN = "1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 *";
@@ -93,6 +103,35 @@ const VIEWS: ClassBlockView[] = [
     caption: "Preguntas para abrir",
     text: "¿Por qué 5...a6?",
   },
+  {
+    id: "b5",
+    kind: "EXERCISE",
+    visibility: "BEFORE",
+    isNew: false,
+    caption: "Dos mates para calentar antes de la clase.",
+    exercises: [
+      {
+        id: "dmEjer01",
+        n: 1,
+        title: "El pasillo abierto",
+        facts: "Mate en 1 · 900",
+        startFen: "6k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1",
+        orientation: "white",
+        mark: null,
+        solvedLabel: "1 de 1 lo resolvió",
+      },
+      {
+        id: "dmEjer02",
+        n: 2,
+        title: "El mate de Philidor",
+        facts: "Mate en 2 · 1400",
+        startFen: "r6k/6pp/7N/8/2Q5/8/6PP/6K1 w - - 0 1",
+        orientation: "white",
+        mark: null,
+        solvedLabel: "0 de 1 lo resolvieron",
+      },
+    ],
+  },
 ] as ClassBlockView[];
 
 const stubs = {
@@ -131,7 +170,13 @@ Reference page: [Components › ClassBlockList](/components/platform/sections/te
     studentLabel: "Alumno Demo",
     groupSize: 1,
     endHour: "13:00",
-    options: { games: [] },
+    options: {
+      games: [],
+      exercises: [
+        { id: "dmEjer01", title: "El pasillo abierto", facts: "Mate en 1 · 900", topics: "Táctica" },
+        { id: "dmEjer02", title: "El mate de Philidor", facts: "Mate en 2 · 1400", topics: "Táctica" },
+      ],
+    },
     actions: stubs,
   },
   argTypes: { blocks: { control: "object" }, views: { control: "object" } },

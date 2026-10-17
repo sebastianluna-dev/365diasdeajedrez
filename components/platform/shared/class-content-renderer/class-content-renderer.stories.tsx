@@ -73,6 +73,46 @@ const POSITION: ClassBlockView = {
   position: { fen: "1K1k4/1P6/8/8/8/8/r7/2R5 w - - 0 1", orientation: "white", title: "Lucena" },
 };
 
+/** An exercise block as the student reads it: their marks in this block, and «Resolver». */
+const EXERCISES: ClassBlockView = {
+  id: "b6",
+  kind: "EXERCISE",
+  visibility: "BEFORE",
+  caption: "Dos mates para calentar antes de la clase.",
+  exercises: [
+    {
+      id: "dmEjer01",
+      n: 1,
+      title: "El pasillo abierto",
+      facts: "Mate en 1 · 900",
+      startFen: "6k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1",
+      orientation: "white",
+      mark: "solved",
+      href: "/clases/c2/ejercicios/b6/1",
+    },
+    {
+      id: "dmEjer02",
+      n: 2,
+      title: "El mate de Philidor",
+      facts: "Mate en 2 · 1400",
+      startFen: "r6k/6pp/7N/8/2Q5/8/6PP/6K1 w - - 0 1",
+      orientation: "white",
+      mark: "failed",
+      href: "/clases/c2/ejercicios/b6/2",
+    },
+    {
+      id: "dmEjer03",
+      n: 3,
+      title: "Mate de las negras",
+      facts: "Mate en 1 · 1000",
+      startFen: "3r2k1/5ppp/8/8/8/8/5PPP/6K1 b - - 0 1",
+      orientation: "black",
+      mark: null,
+      href: "/clases/c2/ejercicios/b6/3",
+    },
+  ],
+};
+
 const meta = {
   title: "platform/shared/ClassContentRenderer",
   component: ClassContentRenderer,
@@ -85,9 +125,11 @@ icon of its kind, its heading and its lead: text (a line that starts with
 «## » is a subheading), a video as a link out, a game and a lesson inside
 \`GameViewer\` — the game with its players and result, and with its next moves
 hidden when its study says so — with a link to open them in full, and a
-position as a \`StaticDiagram\`. The chess blocks are references to the
-original material, not copies. A block added after the class started wears
-«Nuevo»; \`groups="byVisibility"\` folds the blocks by who sees them.
+position as a \`StaticDiagram\`, and an exercise block as rows with the
+student's mark in it and «Resolver» (D29) — the teacher and the staff read the
+count instead. The chess blocks are references to the original material, not
+copies. A block added after the class started wears «Nuevo»;
+\`groups="byVisibility"\` folds the blocks by who sees them.
 
 Source: \`components/platform/shared/class-content-renderer/class-content-renderer.comp.tsx\`.
 Reference page: [Components › ClassContentRenderer](/components/platform/shared/class-content-renderer) in the docs site.
@@ -95,7 +137,7 @@ Reference page: [Components › ClassContentRenderer](/components/platform/share
       },
     },
   },
-  args: { blocks: [TEXT, VIDEO, GAME, LESSON_REF, POSITION], groups: "none" },
+  args: { blocks: [TEXT, VIDEO, GAME, LESSON_REF, POSITION, EXERCISES], groups: "none" },
   argTypes: {
     blocks: { control: "object", description: "`ClassBlockView[]` from `services/classes/classes.types`, in order." },
     groups: { control: "inline-radio", options: ["none", "byVisibility"] },
@@ -151,6 +193,31 @@ export const Position: Story = { args: { blocks: [POSITION] } };
 
 /** A video, as a link out: the arrow, and «(se abre en una pestaña nueva)» for a screen reader. */
 export const Video: Story = { args: { blocks: [VIDEO] } };
+
+/** An exercise block as the student reads it (D29): one solved, one failed, one untried, each with «Resolver». */
+export const Exercises: Story = { args: { blocks: [EXERCISES] } };
+
+/**
+ * The same block as the teacher and the staff read it: «2 de 3 lo resolvieron» beside each exercise, no way to
+ * solve, and one the students no longer see.
+ */
+export const ExercisesReadOnly: Story = {
+  name: "Exercises, read only",
+  args: {
+    blocks: [
+      {
+        ...EXERCISES,
+        exercises: EXERCISES.exercises.map((item, index) => ({
+          ...item,
+          mark: null,
+          href: undefined,
+          solvedLabel: ["2 de 3 lo resolvieron", "1 de 3 lo resolvió", "0 de 3 lo resolvieron"][index],
+          unavailable: index === 2 ? true : undefined,
+        })),
+      },
+    ],
+  },
+};
 
 /** A game with its record: the players' strips and the result around the board, and the next moves hidden. */
 export const GameWithPlayers: Story = {

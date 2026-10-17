@@ -24,6 +24,7 @@ const meta: MetaRecord = {
   "exercise-attempt-row": "ExerciseAttemptRow",
   "exercise-authoring": "ExerciseAuthoring",
   "exercise-card": "ExerciseCard",
+  "exercise-picker": "ExercisePicker",
   "exercise-solver": "ExerciseSolver",
   "filter-pills": "FilterPills",
   "finalize-class-popup": "FinalizeClassPopup",

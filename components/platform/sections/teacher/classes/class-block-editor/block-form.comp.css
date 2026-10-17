@@ -23,4 +23,12 @@
   & .block-form__annotate {
     margin: 0;
   }
+
+  /* What an exercise block does with what is ticked, over the picker. */
+  & .block-form__note {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+  }
 }

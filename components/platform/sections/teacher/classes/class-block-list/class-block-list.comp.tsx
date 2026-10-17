@@ -7,6 +7,7 @@ import { BookOpenIcon } from "@/components/icons/book-open-icon.comp";
 import { ChessKnightIcon } from "@/components/icons/chess-knight-icon.comp";
 import { GripDotsVerticalIcon } from "@/components/icons/grip-dots-vertical-icon.comp";
 import { ParagraphIcon } from "@/components/icons/paragraph-icon.comp";
+import { PuzzlePieceIcon } from "@/components/icons/puzzle-piece-icon.comp";
 import { VideoIcon } from "@/components/icons/video-icon.comp";
 import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer/class-content-renderer.comp";
 import { PlatformActionsMenu } from "@/components/platform/shared/platform-actions-menu/platform-actions-menu.comp";
@@ -20,7 +21,6 @@ import { useSortableStep } from "@/components/platform/shared/sortable-dnd/use-s
 import {
   CLASS_BLOCK_KIND,
   CLASS_BLOCK_VISIBILITY,
-  type ClassBlockKindCode,
   type ClassBlockVisibilityCode,
   type ClassPhaseCode,
 } from "@/constants/platform/class-codes.const";
@@ -29,7 +29,12 @@ import { blockOrderAfterDrop, isBlockVisibleToStudent, type BlockSections } from
 import type { PopupFormState } from "@/services/shared/form-state";
 import type { TeacherClassBlock } from "@/services/teacher-classes/teacher-classes.types";
 import type { BlockFormOptions } from "../class-block-editor/block-form.comp";
-import { BlockPopup, KIND_LABELS, type BlockPopupHandle } from "../class-block-editor/block-popup.comp";
+import {
+  ADDABLE_BLOCK_KINDS,
+  BlockPopup,
+  KIND_LABELS,
+  type BlockPopupHandle,
+} from "../class-block-editor/block-popup.comp";
 import type { FetchReferencePgn } from "@/services/teacher-classes/teacher-classes.types";
 import "./class-block-list.comp.css";
 
@@ -74,13 +79,6 @@ const SECTIONS: { code: ClassBlockVisibilityCode; label: string }[] = [
   { code: CLASS_BLOCK_VISIBILITY.TEACHER, label: "Guion del profesor" },
 ];
 
-const ADDABLE: ClassBlockKindCode[] = [
-  CLASS_BLOCK_KIND.TEXT,
-  CLASS_BLOCK_KIND.GAME_REF,
-  CLASS_BLOCK_KIND.LESSON_REF,
-  CLASS_BLOCK_KIND.VIDEO,
-];
-
 const KIND_ICONS = {
   TEXT: ParagraphIcon,
   VIDEO: VideoIcon,
@@ -88,6 +86,7 @@ const KIND_ICONS = {
   LESSON_REF: BookOpenIcon,
   POSITION_REF: ChessKnightIcon,
   FILE: ParagraphIcon,
+  EXERCISE: PuzzlePieceIcon,
 } as const;
 
 /** The block's heading in a row: its caption, its material's name, or its kind. */
@@ -273,7 +272,10 @@ export function ClassBlockList({
               )}
               {editable && (
                 <p className="class-block-list__add">
-                  {ADDABLE.map((kind) => (
+                  {ADDABLE_BLOCK_KINDS.filter(
+                    // An exercise block is never the teacher's script (D30).
+                    (kind) => kind !== CLASS_BLOCK_KIND.EXERCISE || section.code !== CLASS_BLOCK_VISIBILITY.TEACHER,
+                  ).map((kind) => (
                     <button
                       key={kind}
                       type="button"

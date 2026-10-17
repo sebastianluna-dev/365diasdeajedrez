@@ -13,9 +13,15 @@ import { PROJECT_ROOT, reach } from "@/lib/testing/module-reach";
 // No exceptions: since phase 6 (2026-10-15) the teacher neither creates nor
 // schedules classes nor seats students; their actions reach only the
 // attendance and status writers.
+//
+// An exercise block is the teacher's content, like a game block (phase 3 of
+// «Ejercicios», D29): their side writes ClassBlockExercise and reads attempts,
+// and never reaches the staff's exercise services nor the library's review
+// writer (`reviewLibraryExercise`, the staff's alone, D16).
 
 const TEACHER_SIDE = [
   "services/teacher-classes",
+  "services/teacher-exercises",
   "services/teacher",
   "components/platform/sections/teacher",
   "app/(platform)/profesor",
@@ -25,8 +31,10 @@ const STAFF_ONLY = [
   "services/shared/class-schedule.service.ts",
   "services/staff-classes/",
   "services/staff-payments/",
+  "services/staff-exercises/",
 ];
 const PAYMENT_TOKEN = /\b(?:classPayment|ClassPayment)\b/;
+const REVIEW_TOKEN = /\breviewLibraryExercise\b/;
 
 function sourcesOf(folder: string): string[] {
   const directory = join(PROJECT_ROOT, folder);
@@ -57,6 +65,13 @@ describe("the teacher's side", () => {
   it("never names a payment", () => {
     const offenders = files
       .filter((file) => PAYMENT_TOKEN.test(readFileSync(file, "utf8")))
+      .map((file) => relative(PROJECT_ROOT, file));
+    expect(offenders).toEqual([]);
+  });
+
+  it("never reviews the library", () => {
+    const offenders = files
+      .filter((file) => REVIEW_TOKEN.test(readFileSync(file, "utf8")))
       .map((file) => relative(PROJECT_ROOT, file));
     expect(offenders).toEqual([]);
   });

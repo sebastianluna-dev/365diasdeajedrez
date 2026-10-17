@@ -13,7 +13,11 @@ import { TEACHER_ERROR_MESSAGES } from "@/constants/platform/teacher-messages.co
 import { formatClassWhen } from "@/lib/format-class-when";
 import { teacherRoutes } from "@/lib/platform-routes";
 import { changeAttendance, finalizeClass, updateClassTopic } from "@/services/teacher-classes/teacher-classes.actions";
-import { getTeacherClassDetail, listReferenceableGames } from "@/services/teacher-classes/teacher-classes.service";
+import {
+  getTeacherClassDetail,
+  listPickableExercises,
+  listReferenceableGames,
+} from "@/services/teacher-classes/teacher-classes.service";
 import type { TeacherClassDetail } from "@/services/teacher-classes/teacher-classes.types";
 import "./teacher-class-page.css";
 
@@ -51,9 +55,10 @@ export default async function TeacherClassPage({ params, searchParams }: Teacher
   const { classId } = await params;
   // The service opens with requireTeacher() and filters by teacherId in the where:
   // another teacher's class is a 404, not a row to be discarded.
-  const [classDetail, games, { gameId, finalizar, aviso, error }] = await Promise.all([
+  const [classDetail, games, exercises, { gameId, finalizar, aviso, error }] = await Promise.all([
     getTeacherClassDetail(classId),
     listReferenceableGames(),
+    listPickableExercises(),
     searchParams,
   ]);
   if (!classDetail) notFound();
@@ -121,6 +126,7 @@ export default async function TeacherClassPage({ params, searchParams }: Teacher
         <TeacherClassDetailSection
           classDetail={classDetail}
           games={games}
+          exercises={exercises}
           initialGameId={gameId}
           notice={noticeText(readNotice(aviso), classDetail)}
           errorMessage={errorMessage}

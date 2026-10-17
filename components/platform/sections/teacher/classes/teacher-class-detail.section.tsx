@@ -12,7 +12,11 @@ import {
   updateClassAfterNotes,
   updateClassBlock,
 } from "@/services/teacher-classes/teacher-classes.actions";
-import type { ReferenceableGameGroup, TeacherClassDetail } from "@/services/teacher-classes/teacher-classes.types";
+import type {
+  PickableExercise,
+  ReferenceableGameGroup,
+  TeacherClassDetail,
+} from "@/services/teacher-classes/teacher-classes.types";
 import { AfterNotesButton } from "./after-notes-popup/after-notes-popup.comp";
 import { ClassBlockList } from "./class-block-list/class-block-list.comp";
 import "./teacher-class-detail.section.css";
@@ -20,6 +24,8 @@ import "./teacher-class-detail.section.css";
 interface TeacherClassDetailSectionProps {
   classDetail: TeacherClassDetail;
   games: ReferenceableGameGroup[];
+  /** What an exercise block may hold (D29): the teacher's usable exercises and the library's. */
+  exercises: PickableExercise[];
   /** A game chosen elsewhere («Usar en una clase»): the block popup opens on it. */
   initialGameId?: string;
   notice?: string;
@@ -36,6 +42,7 @@ interface TeacherClassDetailSectionProps {
 export function TeacherClassDetailSection({
   classDetail,
   games,
+  exercises,
   initialGameId,
   notice,
   errorMessage,
@@ -73,7 +80,7 @@ export function TeacherClassDetailSection({
             studentLabel={studentLabel.charAt(0).toUpperCase() + studentLabel.slice(1)}
             groupSize={seated.length}
             endHour={endHour}
-            options={{ games }}
+            options={{ games, exercises }}
             initialGameId={initialGameId}
             actions={{ addClassBlock, updateClassBlock, deleteClassBlock, reorderClassBlocks, fetchReferencePgn }}
           />

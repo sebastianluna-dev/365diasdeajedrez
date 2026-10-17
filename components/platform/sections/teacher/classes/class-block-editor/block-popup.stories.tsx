@@ -23,6 +23,12 @@ const GAMES = [
   },
 ];
 
+const EXERCISES = [
+  { id: "ex000001", title: "Mate del pasillo", facts: "Mate en 1 · 900", topics: "Táctica, Mate del pasillo" },
+  { id: "ex000002", title: "El mate de Philidor", facts: "Mate en 2 · 1400", topics: "Táctica, Mate ahogado" },
+  { id: "ex000003", title: "Las negras rematan", facts: "Mate en 1 · 1000", topics: "Táctica" },
+];
+
 /** A host with a button that opens the popup on a preset. */
 function Host({ preset, groupSize = 1 }: { preset: BlockPopupPreset; groupSize?: number }) {
   const popup = useRef<BlockPopupHandle>(null);
@@ -34,7 +40,7 @@ function Host({ preset, groupSize = 1 }: { preset: BlockPopupPreset; groupSize?:
       <BlockPopup
         ref={popup}
         classId="c2"
-        options={{ games: GAMES }}
+        options={{ games: GAMES, exercises: EXERCISES }}
         groupSize={groupSize}
         endHour="13:00"
         studentLabel="Alumno Demo"
@@ -113,6 +119,16 @@ export const Lesson: Story = {
 export const Video: Story = {
   args: { preset: { kind: CLASS_BLOCK_KIND.VIDEO, visibility: CLASS_BLOCK_VISIBILITY.TEACHER } },
   play: open,
+};
+
+/** An exercise block (D29): the exercises to tick, and no «Guion del profesor» among the visibilities (D30). */
+export const Exercise: Story = {
+  args: { preset: { kind: CLASS_BLOCK_KIND.EXERCISE, visibility: CLASS_BLOCK_VISIBILITY.AFTER } },
+  play: async ({ canvasElement }) => {
+    await open({ canvasElement });
+    const dialog = canvasElement.querySelector("dialog");
+    if (dialog) await userEvent.click(within(dialog).getByRole("checkbox", { name: /El mate de Philidor/ }));
+  },
 };
 
 /** A group class citing a student's game: the warning that every student will see it. */

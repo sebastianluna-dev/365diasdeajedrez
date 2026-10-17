@@ -17,6 +17,11 @@ export const MEETING_PROVIDER = {
 
 export type MeetingProviderCode = (typeof MEETING_PROVIDER)[keyof typeof MEETING_PROVIDER];
 
+/**
+ * What a block of a class holds (`ClassBlock.kindId`). EXERCISE (D29, phase 3
+ * of «Ejercicios») holds one to ten exercises through `ClassBlockExercise`
+ * and none of the single references; the student solves them from the class.
+ */
 export const CLASS_BLOCK_KIND = {
   TEXT: "TEXT",
   VIDEO: "VIDEO",
@@ -24,6 +29,7 @@ export const CLASS_BLOCK_KIND = {
   LESSON_REF: "LESSON_REF",
   POSITION_REF: "POSITION_REF",
   FILE: "FILE",
+  EXERCISE: "EXERCISE",
 } as const;
 
 export type ClassBlockKindCode = (typeof CLASS_BLOCK_KIND)[keyof typeof CLASS_BLOCK_KIND];

@@ -723,6 +723,18 @@ async function main() {
   // them. Before the stats, which the passes feed.
   await seedExercises(db, now, { exerciseStatus, attemptResult, attemptContext, activityType, subjectType });
 
+  // The exercises of the seeded EXERCISE block (D29), once the exercises they
+  // point at exist. Rewritten whole, as the series' items are: an order left
+  // by an earlier seed would collide with `ClassBlockExercise_blockId_order_key`.
+  // The app writes these rows only through the teacher's block actions; the
+  // seed is the documented exception.
+  for (const block of CLASS_BLOCKS.filter((candidate) => candidate.exerciseIds.length > 0)) {
+    await db.classBlockExercise.deleteMany({ where: { blockId: block.id } });
+    await db.classBlockExercise.createMany({
+      data: block.exerciseIds.map((exerciseId, index) => ({ blockId: block.id, exerciseId, order: index + 1 })),
+    });
+  }
+
   // «Jugar»: its catalogs, the bots and the demo student's games. Playing
   // writes no activity, so it goes apart from what the stats are rebuilt from.
   await seedPlay(

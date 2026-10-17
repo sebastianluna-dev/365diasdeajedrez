@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { CLASS_FORMAT, CLASS_PHASE, CLASS_STATUS } from "@/constants/platform/class-codes.const";
+import { CLASS_BLOCK_KIND, CLASS_FORMAT, CLASS_PHASE, CLASS_STATUS } from "@/constants/platform/class-codes.const";
 import { CLASSES_NOW, CLASSES_TIME_ZONE, cdmx } from "@/lib/testing/fixtures/classes";
 import {
   adminLineOf,
+  mapTeacherBlock,
   mapTeacherClassRow,
   meetingVisibleLine,
   teacherCanChangeMark,
@@ -175,5 +176,53 @@ describe("the join card and the lane", () => {
         CLASSES_NOW,
       ),
     ).toBe("Individual · 60 min · creada por Staff Demo el jue 1 oct");
+  });
+});
+
+describe("mapTeacherBlock", () => {
+  const base = {
+    id: "b5",
+    order: 5,
+    visibility: { code: "BEFORE" },
+    text: null,
+    videoUrl: null,
+    caption: null,
+    movePath: null,
+    gameId: null,
+    pgn: null,
+    lessonId: null,
+    positionId: null,
+    game: null,
+    lesson: null,
+    position: null,
+  };
+
+  it("an exercise block carries its exercises in order and is named by how many it holds (D29)", () => {
+    const block = mapTeacherBlock({
+      ...base,
+      kind: { code: CLASS_BLOCK_KIND.EXERCISE },
+      exercises: [
+        { exerciseId: "dmEjer02", exercise: { title: "El mate de Philidor" } },
+        { exerciseId: "dmEjer01", exercise: { title: "El pasillo abierto" } },
+      ],
+    });
+    expect(block).toMatchObject({
+      kind: CLASS_BLOCK_KIND.EXERCISE,
+      exerciseIds: ["dmEjer02", "dmEjer01"],
+      referenceLabel: "2 ejercicios",
+      isMovePathBroken: false,
+    });
+    const one = mapTeacherBlock({
+      ...base,
+      kind: { code: CLASS_BLOCK_KIND.EXERCISE },
+      exercises: [{ exerciseId: "dmEjer02", exercise: { title: "El mate de Philidor" } }],
+    });
+    expect(one.referenceLabel).toBe("El mate de Philidor");
+  });
+
+  it("any other kind carries no exercises", () => {
+    const block = mapTeacherBlock({ ...base, kind: { code: CLASS_BLOCK_KIND.TEXT }, text: "Hola", exercises: [] });
+    expect(block.exerciseIds).toBeUndefined();
+    expect(block.referenceLabel).toBeUndefined();
   });
 });

@@ -39,6 +39,8 @@ function indexLabel(block: ClassBlockView): string {
       return "Video";
     case "FILE":
       return "Archivo";
+    case "EXERCISE":
+      return block.exercises.length === 1 ? "Ejercicio" : "Ejercicios";
     default:
       return "Nota";
   }

@@ -2,11 +2,17 @@
 
 import Link from "next/link";
 import { useCallback, useState } from "react";
+import { ExercisePicker } from "@/components/platform/shared/exercise-picker/exercise-picker.comp";
 import { PlatformChoiceCards } from "@/components/platform/shared/platform-choice-cards/platform-choice-cards.comp";
 import { PlatformFormField, PlatformFormGroup } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { CLASS_BLOCK_KIND, type ClassBlockKindCode } from "@/constants/platform/class-codes.const";
 import { platformRoutes } from "@/lib/platform-routes";
-import type { ReferenceableGameGroup, TeacherClassBlock } from "@/services/teacher-classes/teacher-classes.types";
+import { EXERCISE_BLOCK_LIMITS } from "@/services/teacher-classes/block-rules";
+import type {
+  PickableExercise,
+  ReferenceableGameGroup,
+  TeacherClassBlock,
+} from "@/services/teacher-classes/teacher-classes.types";
 import { BlockGameField } from "./block-game-field.comp";
 import { GameSelector } from "./game-selector.comp";
 import { LessonReferenceField } from "./lesson-reference-field.comp";
@@ -16,6 +22,8 @@ import "./block-form.comp.css";
 
 export interface BlockFormOptions {
   games: ReferenceableGameGroup[];
+  /** What an EXERCISE block may hold (D29): the teacher's usable exercises and the library's; empty with the flag off. */
+  exercises: PickableExercise[];
 }
 
 interface BlockFormProps {
@@ -51,7 +59,7 @@ function ownerOf(groups: ReferenceableGameGroup[], gameId: string): string | nul
  * study, one or the other —, the lesson by id with its viewer as the check,
  * the opening position of a game or a lesson, and the caption. The state
  * that lives here is interface only (which reference is chosen, which
- * position is marked); saving is the popup's.
+ * position is marked, which exercises are ticked); saving is the popup's.
  */
 export function BlockForm({
   kind,
@@ -70,6 +78,10 @@ export function BlockForm({
   const [gameId, setGameId] = useState(text("gameId", block?.gameId ?? ""));
   const [lessonId, setLessonId] = useState(text("lessonId", block?.lessonId ?? ""));
   const [movePath, setMovePath] = useState(text("movePath", block?.movePath ?? ""));
+  const sentExercises = values.exercises;
+  const [exerciseIds, setExerciseIds] = useState<string[]>(
+    Array.isArray(sentExercises) ? sentExercises : sentExercises ? [sentExercises] : (block?.exerciseIds ?? []),
+  );
 
   const referenceId = kind === CLASS_BLOCK_KIND.GAME_REF ? (source === "game" ? gameId : "") : lessonId;
   const referenceKind = kind === CLASS_BLOCK_KIND.GAME_REF ? CLASS_BLOCK_KIND.GAME_REF : CLASS_BLOCK_KIND.LESSON_REF;
@@ -155,6 +167,29 @@ export function BlockForm({
           {errors.lessonId && <p className="block-form__error">{errors.lessonId}</p>}
         </>
       )}
+
+      {kind === CLASS_BLOCK_KIND.EXERCISE &&
+        (options.exercises.length === 0 ? (
+          <p className="block-form__note">
+            Todavía no tienes ejercicios listos: márcalos como listos en el editor para agregarlos aquí.
+          </p>
+        ) : (
+          <>
+            <p className="block-form__note">
+              {exerciseIds.length === 0
+                ? `De ${EXERCISE_BLOCK_LIMITS.min} a ${EXERCISE_BLOCK_LIMITS.max} ejercicios, en el orden en que los elijas. El alumno los resuelve desde la clase.`
+                : `${exerciseIds.length} ${exerciseIds.length === 1 ? "elegido" : "elegidos"} de ${EXERCISE_BLOCK_LIMITS.max} · el alumno los resuelve desde la clase.`}
+            </p>
+            <ExercisePicker
+              name="exercises"
+              exercises={options.exercises}
+              value={exerciseIds}
+              onValueChange={setExerciseIds}
+              label="Ejercicios"
+              serverError={errors.exercises}
+            />
+          </>
+        ))}
 
       {supportsMovePath && (
         <>

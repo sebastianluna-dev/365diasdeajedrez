@@ -9,8 +9,11 @@ import {
   type ClassStatusCode,
   type TranscriptStatusCode,
 } from "@/constants/platform/class-codes.const";
+import type { ExerciseStatusCode } from "@/constants/platform/exercise-codes.const";
+import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
 import { GAME_ANALYSIS_MODE } from "@/constants/platform/study-codes.const";
 import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
+import { playerOfStart } from "@/lib/chess/exercise-labels";
 import { endPathOf, nodeAtPath, parsePgnTree } from "@/lib/chess/pgn-tree";
 import { formatClassDay } from "@/lib/format-class-when";
 import { MONTHS_ES } from "@/lib/format-spanish-date";
@@ -25,9 +28,13 @@ import {
   joinSpanish,
   type ClassAudience,
 } from "@/services/shared/class-rules";
+import { exerciseFacts } from "@/services/shared/exercise-facts";
+import type { ExerciseMark } from "@/services/shared/exercise-marks";
+import { seriesItemAvailability } from "@/services/shared/exercise-visibility-rules";
 import { lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
 import { meetingVisibleFrom, meetingVisibleUntil } from "@/services/shared/meeting-visible-from";
 import type {
+  ClassBlockExerciseView,
   ClassBlockView,
   ClassCardData,
   ClassDetailView,
@@ -139,6 +146,27 @@ export const classDetailInclude = {
         },
       },
       position: { select: { fen: true, title: true, orientation: { select: { code: true } } } },
+      // An EXERCISE block's exercises in order (D29), with what decides whether
+      // the students still see each one: its owner and status against the
+      // class's teacher (the series' rule, `seriesItemAvailability`).
+      exercises: {
+        orderBy: { order: "asc" },
+        select: {
+          exercise: {
+            select: {
+              id: true,
+              title: true,
+              teacherId: true,
+              difficulty: true,
+              mateIn: true,
+              startFen: true,
+              kind: { select: { code: true } },
+              status: { select: { code: true } },
+            },
+          },
+        },
+      },
+      class: { select: { teacherId: true } },
     },
   },
 } satisfies Prisma.ClassInclude;
@@ -243,9 +271,46 @@ function mapBlock(block: ClassDetailRow["blocks"][number], reader: BlockReader):
         : null;
     case CLASS_BLOCK_KIND.FILE:
       return { ...base, kind: "FILE" };
+    case CLASS_BLOCK_KIND.EXERCISE: {
+      // Behind the flag with the rest of «Ejercicios»: off, the student does not see the block.
+      if (!EXERCISES_ENABLED && reader.audience === "student") return null;
+      const exercises = mapBlockExercises(block, reader);
+      return exercises.length > 0 ? { ...base, kind: "EXERCISE", exercises } : null;
+    }
     default:
       return null;
   }
+}
+
+/**
+ * The exercises of an EXERCISE block as the reader sees them: the student only
+ * the ones that still reach them — the class teacher's usable ones and the
+ * library's, the series' own condition —, numbered among those; the teacher
+ * and the staff every one, the lost ones marked. The student's mark and
+ * «Resolver» come with `reader.solve`; the counts with `reader.solvedLabels`.
+ */
+function mapBlockExercises(block: ClassDetailRow["blocks"][number], reader: BlockReader): ClassBlockExerciseView[] {
+  const items = (block.exercises ?? []).map(({ exercise }) => ({
+    ...exercise,
+    available:
+      seriesItemAvailability(
+        { teacherId: exercise.teacherId, statusCode: exercise.status.code as ExerciseStatusCode },
+        block.class.teacherId,
+      ) === "available",
+  }));
+  const shown = reader.audience === "student" ? items.filter((item) => item.available) : items;
+  return shown.map((item, index) => ({
+    id: item.id,
+    n: index + 1,
+    title: item.title,
+    facts: exerciseFacts(item),
+    startFen: item.startFen,
+    orientation: playerOfStart(item.startFen),
+    mark: reader.solve?.marks.get(block.id)?.get(item.id) ?? null,
+    href: reader.solve ? platformRoutes.classExercise(reader.solve.classId, block.id, index + 1) : undefined,
+    solvedLabel: reader.solvedLabels?.get(block.id)?.get(item.id),
+    unavailable: item.available ? undefined : true,
+  }));
 }
 
 export interface BlockReader {
@@ -256,6 +321,15 @@ export interface BlockReader {
   scheduledAt?: Date;
   /** Whose studies may be opened from a game block. */
   viewerId?: string;
+  /**
+   * The student solving the EXERCISE blocks: their marks by block and exercise
+   * (`exerciseMarksBy` over their attempts with that `classBlockId`) and the
+   * class whose address «Resolver» opens. Without it the list is read-only
+   * (the teacher's and the staff's sheets, a seat that was moved).
+   */
+  solve?: { classId: string; marks: ReadonlyMap<string, ReadonlyMap<string, ExerciseMark>> };
+  /** «2 de 3 lo resolvieron» by block and exercise: the teacher's and the staff's sheets. */
+  solvedLabels?: ReadonlyMap<string, ReadonlyMap<string, string>>;
 }
 
 /**

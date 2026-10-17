@@ -291,6 +291,8 @@ export interface TeacherBlockSource {
   pgn: string | null;
   lessonId: string | null;
   positionId: string | null;
+  /** An EXERCISE block's rows, in order. */
+  exercises?: { exerciseId: string; exercise: { title: string } }[];
   game: { id: string; white: string; black: string; pgn: string } | null;
   lesson: ({ id: string; name: string; chapter: { name: string } } & Parameters<typeof lessonPgnOf>[0]) | null;
   position: { id: string; title: string | null; fen: string } | null;
@@ -318,13 +320,18 @@ export function mapTeacherBlock(block: TeacherBlockSource): TeacherClassBlock {
           ? lessonPgnOf(block.lesson)
           : null
         : null;
+  const exercises = block.exercises ?? [];
   const referenceLabel = block.game
     ? `${block.game.white} – ${block.game.black}`
     : block.lesson
       ? `${block.lesson.chapter.name} › ${block.lesson.name}`
       : block.position
         ? (block.position.title ?? "Posición guardada")
-        : undefined;
+        : kind === CLASS_BLOCK_KIND.EXERCISE
+          ? exercises.length === 1
+            ? (exercises[0]?.exercise.title ?? "1 ejercicio")
+            : `${exercises.length} ejercicios`
+          : undefined;
   return {
     id: block.id,
     order: block.order,
@@ -339,6 +346,7 @@ export function mapTeacherBlock(block: TeacherBlockSource): TeacherClassBlock {
     pgn: block.pgn ?? undefined,
     lessonId: block.lessonId ?? undefined,
     positionId: block.positionId ?? undefined,
+    exerciseIds: kind === CLASS_BLOCK_KIND.EXERCISE ? exercises.map((item) => item.exerciseId) : undefined,
     isMovePathBroken: isMovePathBroken(block.movePath, referencedPgn),
   };
 }

@@ -113,6 +113,7 @@ import { MovePathPicker } from "@/components/platform/shared/move-path-picker/mo
 import { ExerciseAuthoring } from "@/components/platform/shared/exercise-authoring/exercise-authoring.comp";
 import { DeleteExercise } from "@/components/platform/shared/delete-exercise/delete-exercise.comp";
 import { ExerciseAttemptRow } from "@/components/platform/shared/exercise-attempt-row/exercise-attempt-row.comp";
+import { ExercisePicker } from "@/components/platform/shared/exercise-picker/exercise-picker.comp";
 import { ExerciseCard } from "@/components/platform/shared/exercise-card/exercise-card.comp";
 import { SeriesProgressTable } from "@/components/platform/shared/series-progress-table/series-progress-table.comp";
 import { ExerciseSolver } from "@/components/platform/shared/exercise-solver/exercise-solver.comp";
@@ -456,6 +457,25 @@ const OVERVIEW_FINALIZE = {
   recordingUrl: null,
 };
 const OVERVIEW_PGN = "1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 *";
+/** What an exercise block or a series may pick from: two of the demo teacher's exercises. */
+const OVERVIEW_PICKABLE = [
+  { id: "ex000001", title: "Mate del pasillo", facts: "Mate en 1 · 900", topics: "Táctica" },
+  { id: "ex000002", title: "El mate de Philidor", facts: "Mate en 2 · 1400", topics: "Táctica" },
+];
+
+/** A host for the exercise picker's tile: it keeps the ticked set. */
+function ExercisePickerHost() {
+  const [chosen, setChosen] = useState<string[]>(["ex000002"]);
+  return (
+    <ExercisePicker
+      name="exercises"
+      exercises={OVERVIEW_PICKABLE}
+      value={chosen}
+      onValueChange={setChosen}
+      label="Ejercicios"
+    />
+  );
+}
 
 /** A host for the block popup's tile: a button that opens it. */
 function BlockPopupTrigger() {
@@ -474,7 +494,7 @@ function BlockPopupTrigger() {
       <BlockPopup
         ref={popup}
         classId="c2"
-        options={{ games: [] }}
+        options={{ games: [], exercises: OVERVIEW_PICKABLE }}
         groupSize={1}
         endHour="13:00"
         studentLabel="Alumno Demo"
@@ -2087,7 +2107,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 studentLabel="Alumno Demo"
                 groupSize={1}
                 endHour="13:00"
-                options={{ games: [] }}
+                options={{ games: [], exercises: OVERVIEW_PICKABLE }}
                 actions={{
                   addClassBlock: async () => popupFormDone("blockAdded"),
                   updateClassBlock: async () => popupFormDone("blockSaved"),
@@ -2557,13 +2577,13 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             >
               <AddSeriesExercisesButton
                 seriesId="se000001"
-                exercises={[
-                  { id: "ex000001", title: "Mate del pasillo", facts: "Mate en 1 · 900", topics: "Táctica" },
-                  { id: "ex000002", title: "El mate de Philidor", facts: "Mate en 2 · 1400", topics: "Táctica" },
-                ]}
+                exercises={OVERVIEW_PICKABLE}
                 itemCount={3}
                 addExercisesToSeries={async () => popupFormDone("seriesExercisesAdded")}
               />
+            </Tile>
+            <Tile name="ExercisePicker" docs="platform-shared-exercisepicker" width={480} height={240} surface>
+              <ExercisePickerHost />
             </Tile>
             <Tile name="MovePathPicker" docs="platform-shared-movepathpicker" width={960} height={640}>
               <MovePathPicker

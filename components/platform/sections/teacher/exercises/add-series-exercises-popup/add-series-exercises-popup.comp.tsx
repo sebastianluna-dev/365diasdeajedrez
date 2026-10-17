@@ -3,18 +3,16 @@
 import { useActionState, useEffect, useImperativeHandle, useRef, useState, useTransition, type Ref } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { PlusIcon } from "@/components/icons/plus-icon.comp";
-import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
-import { PlatformForm, PlatformFormGroup } from "@/components/platform/shared/platform-form/platform-form.comp";
+import { ExercisePicker } from "@/components/platform/shared/exercise-picker/exercise-picker.comp";
+import { PlatformForm } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import {
   PlatformPopup,
   type PlatformPopupHandle,
 } from "@/components/platform/shared/platform-popup/platform-popup.comp";
-import { PlatformSearchField } from "@/components/platform/shared/platform-search-field/platform-search-field.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { SERIES_LIMITS } from "@/constants/platform/exercise.const";
 import { EXERCISE_ERROR_MESSAGES } from "@/constants/platform/exercise-messages.const";
-import { foldForSearch } from "@/lib/fold-for-search";
 import { POPUP_FORM_IDLE, type PopupFormState } from "@/services/shared/form-state";
 import { withNoticeParam } from "@/services/shared/safe-return-to";
 import type { SeriesPickOption } from "@/services/teacher-exercises/teacher-exercises.types";
@@ -35,16 +33,13 @@ export interface AddSeriesExercisesPopupProps {
   ref?: Ref<AddSeriesExercisesPopupHandle>;
 }
 
-/** From how many exercises the search box is drawn: a handful are read at a glance. */
-const SEARCH_FROM = 6;
-
 /**
  * «Agregar ejercicios» (PLAN.md §6.2): the exercises the teacher may give
- * that are not in the series yet, as cards to tick, with a search over their
- * titles and topics once there are a few. A draft or an archived exercise is
- * never offered. What is chosen goes to the end of the series, in the order
- * the teacher ticked it (the cards keep that order; the form is rewritten
- * with it, because the browser would send the list's order instead).
+ * that are not in the series yet, as cards to tick (`ExercisePicker`), with
+ * a search over their titles and topics once there are a few. A draft or an
+ * archived exercise is never offered. What is chosen goes to the end of the
+ * series, in the order the teacher ticked it: the picker sends the ids in
+ * that order, because the browser would send the list's order instead.
  */
 export function AddSeriesExercisesPopup({ ref, ...props }: AddSeriesExercisesPopupProps) {
   const popup = useRef<PlatformPopupHandle>(null);
@@ -103,19 +98,12 @@ function AddSeriesExercisesForm({
   const [pending, startSubmit] = useTransition();
   const sent = state.values?.exercises;
   const [chosen, setChosen] = useState<string[]>(Array.isArray(sent) ? sent : sent ? [sent] : []);
-  const [search, setSearch] = useState("");
 
   useEffect(() => {
     if (state.status === "done" && state.notice) onDone(state.notice);
   }, [state, onDone]);
 
   const room = Math.max(0, SERIES_LIMITS.items - itemCount);
-  const query = foldForSearch(search.trim());
-  const hidden = query
-    ? exercises
-        .filter((exercise) => !foldForSearch(`${exercise.title} ${exercise.topics}`).includes(query))
-        .map((exercise) => exercise.id)
-    : [];
   const fieldError = state.fieldErrors?.exercises;
   const formError = state.formError
     ? (EXERCISE_ERROR_MESSAGES[state.formError.code] ?? EXERCISE_ERROR_MESSAGES.invalid)
@@ -140,11 +128,7 @@ function AddSeriesExercisesForm({
       className="add-series-exercises__form"
       onSubmit={(event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        // The cards' DOM order is the list's; the series takes the tick order.
-        data.delete("exercises");
-        for (const id of chosen) data.append("exercises", id);
-        startSubmit(() => formAction(data));
+        startSubmit(() => formAction(new FormData(event.currentTarget)));
       }}
     >
       <p className="add-series-exercises__summary">
@@ -154,35 +138,16 @@ function AddSeriesExercisesForm({
         {chosen.length > room && ` Caben ${room} más.`}
       </p>
       {formError && <PlatformNotice message={formError} />}
-      {exercises.length >= SEARCH_FROM && (
-        <PlatformSearchField
-          label="Buscar ejercicio"
-          placeholder="Buscar por título o tema"
-          onValueChange={setSearch}
-        />
-      )}
-      <PlatformFormGroup
+      <ExercisePicker
+        name="exercises"
+        exercises={exercises}
+        value={chosen}
+        onValueChange={setChosen}
         label="Ejercicios"
         serverError={
           fieldError ? (EXERCISE_ERROR_MESSAGES[fieldError.code] ?? EXERCISE_ERROR_MESSAGES.invalid) : undefined
         }
-      >
-        <PlatformCheckCards
-          name="exercises"
-          value={chosen}
-          onValueChange={setChosen}
-          hiddenValues={hidden}
-          options={exercises.map((exercise) => ({
-            value: exercise.id,
-            label: exercise.title,
-            meta: exercise.facts,
-            description: exercise.topics || undefined,
-          }))}
-        />
-      </PlatformFormGroup>
-      {query && hidden.length === exercises.length && (
-        <p className="add-series-exercises__empty">Ningún ejercicio coincide con la búsqueda.</p>
-      )}
+      />
       <div className="add-series-exercises__foot">
         <SubmitButton
           className="platform-button platform-button_variant_ink"

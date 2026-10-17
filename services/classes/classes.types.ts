@@ -5,6 +5,7 @@ import type {
   TranscriptStatusCode,
 } from "@/constants/platform/class-codes.const";
 import type { StudentClassView } from "@/services/shared/class-phase";
+import type { ExerciseMark } from "@/services/shared/exercise-marks";
 
 // What the student's screens read. Never an amount, never a classmate's
 // email, and never which payment a class belongs to: a class says who gives
@@ -18,6 +19,32 @@ export interface ClassGamePlayer {
   title?: string;
   /** FIDE's three-letter federation code. */
   country?: string;
+}
+
+/** How the student stands with an exercise of a class block, in THAT block (`exerciseMarksBy`); null untried. */
+export type ClassExerciseMark = ExerciseMark | null;
+
+/** An exercise of an EXERCISE block (D29), as the renderer lists it. */
+export interface ClassBlockExerciseView {
+  id: string;
+  /** 1-based, among the exercises of the block the reader sees. */
+  n: number;
+  title: string;
+  /** «Mate en 2 · 1400». */
+  facts: string;
+  startFen: string;
+  orientation: "white" | "black";
+  /** The student's mark in this block; null for a reader who does not solve (the teacher, the staff) or untried. */
+  mark: ClassExerciseMark;
+  /** Where «Resolver» leads: the student's, while they hold a seat not moved; absent for the teacher and the staff. */
+  href?: string;
+  /** «2 de 3 lo resolvieron»: the teacher's and the staff's count, never the student's. */
+  solvedLabel?: string;
+  /**
+   * The exercise no longer reaches the students (archived, or taken out of the
+   * library): the teacher and the staff see it marked; the student never sees it.
+   */
+  unavailable?: boolean;
 }
 
 /**
@@ -73,7 +100,9 @@ export type ClassBlockView =
       kind: "POSITION_REF";
       position: { fen: string; orientation: "white" | "black"; title?: string };
     })
-  | (ClassBlockBase & { kind: "FILE" });
+  | (ClassBlockBase & { kind: "FILE" })
+  /** One to ten exercises the student solves from the class (D29); a block none of whose exercises the reader sees is dropped. */
+  | (ClassBlockBase & { kind: "EXERCISE"; exercises: ClassBlockExerciseView[] });
 
 export interface ClassTranscriptView {
   statusCode: TranscriptStatusCode;

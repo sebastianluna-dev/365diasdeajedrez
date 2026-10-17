@@ -16,6 +16,7 @@ import { EXERCISE_LIMITS } from "@/constants/platform/exercise.const";
 import { teacherRoutes } from "@/lib/platform-routes";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import type { StudentShareRow } from "@/components/platform/shared/student-share-panel/student-share-panel.types";
+import { exerciseFacts } from "@/services/shared/exercise-facts";
 import { levelOfDifficulty, type DifficultyLevel } from "@/services/shared/exercise-level";
 import { isExerciseContentLocked } from "@/services/shared/exercise-status-transitions";
 import { seriesItemAvailability } from "@/services/shared/exercise-visibility-rules";
@@ -214,16 +215,8 @@ export function exercisePrefillFromGame(
 
 // --- Series ------------------------------------------------------------------
 
-/** What a series' item or a pickable exercise says of itself: «Mate en 2 · 1400 · Intermedio». */
-export function exerciseFacts(
-  exercise: { kind: { code: string }; mateIn: number | null; difficulty: number },
-  levels: readonly DifficultyLevel[] = [],
-): string {
-  const level = levelOfDifficulty(exercise.difficulty, levels)?.name;
-  return [exerciseKindLabel(exercise.kind.code as ExerciseKindCode, exercise.mateIn), exercise.difficulty, level]
-    .filter((part) => part !== undefined)
-    .join(" · ");
-}
+/** What a series' item or a pickable exercise says of itself: «Mate en 2 · 1400 · Intermedio» (the shared wording). */
+export { exerciseFacts };
 
 /**
  * An item of a series in its editor. The teacher's own exercise opens in

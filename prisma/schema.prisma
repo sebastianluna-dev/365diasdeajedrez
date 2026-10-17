@@ -893,9 +893,13 @@ model TrainingAttempt {
   /// An Exercise. Only writer of these rows: recordExerciseAttempt
   /// (services/shared/exercise-attempt.service.ts).
   exerciseId         String?
-  /// Where it was solved: the series (D24 per series); later the class block
-  /// and the contrarreloj run.
+  /// Where it was solved: the series (D24 per series); later the
+  /// contrarreloj run.
   seriesId           String?
+  /// The class block it was solved from (D29, context CLASS). Only writer:
+  /// recordExerciseAttempt (services/shared/exercise-attempt.service.ts).
+  /// SetNull: a block deleted leaves its attempts, with no block.
+  classBlockId       String?
   resultId           Int
   mistakes           Int      @default(0)
   durationMs         Int?
@@ -931,6 +935,7 @@ model TrainingAttempt {
   /// history and the teacher's view of the mistakes depend on it).
   exercise         Exercise?         @relation(fields: [exerciseId], references: [id], onDelete: Restrict)
   series           ExerciseSeries?   @relation(fields: [seriesId], references: [id], onDelete: SetNull)
+  classBlock       ClassBlock?       @relation(fields: [classBlockId], references: [id], onDelete: SetNull)
   result           AttemptResult     @relation(fields: [resultId], references: [id])
   context          AttemptContext    @relation(fields: [contextId], references: [id])
 
@@ -940,6 +945,7 @@ model TrainingAttempt {
   @@index([trainingExerciseId])
   @@index([exerciseId, userId])
   @@index([seriesId, userId])
+  @@index([classBlockId, userId])
 }
 
 /// One row PER FAILED MOVE, not per move. A student who gets everything right
@@ -1150,10 +1156,11 @@ model Exercise {
   copies     Exercise[]     @relation("ExerciseCopies")
   lesson     Lesson?        @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
-  topics      ExerciseTopic[]
-  seriesItems ExerciseSeriesItem[]
-  attempts    TrainingAttempt[]
-  states      UserExerciseState[]
+  topics          ExerciseTopic[]
+  seriesItems     ExerciseSeriesItem[]
+  classBlockItems ClassBlockExercise[]
+  attempts        TrainingAttempt[]
+  states          UserExerciseState[]
 
   @@unique([lessonId, lessonOrder])
   @@index([teacherId, statusId])
@@ -1738,6 +1745,8 @@ model ClassAttendanceChange {
 /// Ordered content of the class. A block uses the field of its kind and the
 /// references are pointers, never copies. CHECK "at most one reference" in the
 /// migration. `movePath` uses the same dotted path as TrainingExercise.path.
+/// An EXERCISE block (D29) uses none of them: its exercises are its
+/// ClassBlockExercise rows.
 model ClassBlock {
   id           String   @id @default(uuid())
   classId      String
@@ -1768,7 +1777,30 @@ model ClassBlock {
   lesson     Lesson?              @relation(fields: [lessonId], references: [id], onDelete: SetNull)
   position   Position?            @relation(fields: [positionId], references: [id], onDelete: SetNull)
 
+  exercises ClassBlockExercise[]
+  attempts  TrainingAttempt[]
+
   @@unique([classId, order])
+}
+
+/// The exercises of an EXERCISE block, in order (D29): 1–10, each once, the
+/// teacher's own usable ones or the library's (buildPickableExercisesWhere).
+/// Written only by the teacher's block actions (addClassBlock /
+/// updateClassBlock, services/teacher-classes/teacher-classes.actions.ts,
+/// through writeBlockExercises), inside the block's transaction; nobody else
+/// touches these rows. Restrict: an exercise a class points at is archived,
+/// never deleted.
+model ClassBlockExercise {
+  blockId    String
+  exerciseId String
+  order      Int
+
+  block    ClassBlock @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  exercise Exercise   @relation(fields: [exerciseId], references: [id], onDelete: Restrict)
+
+  @@id([blockId, exerciseId])
+  @@unique([blockId, order])
+  @@index([exerciseId])
 }
 
 model ClassTranscript {

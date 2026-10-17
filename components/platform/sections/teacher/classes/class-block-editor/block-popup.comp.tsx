@@ -17,6 +17,7 @@ import {
   type ClassBlockVisibilityCode,
 } from "@/constants/platform/class-codes.const";
 import { CLASS_FIELD_ERRORS } from "@/constants/platform/class-messages.const";
+import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
 import { POPUP_FORM_IDLE, type PopupFormState } from "@/services/shared/form-state";
 import { withNoticeParam } from "@/services/shared/safe-return-to";
 import type { TeacherClassBlock } from "@/services/teacher-classes/teacher-classes.types";
@@ -64,13 +65,16 @@ export const KIND_LABELS: Record<ClassBlockKindCode, string> = {
   [CLASS_BLOCK_KIND.LESSON_REF]: "Lección",
   [CLASS_BLOCK_KIND.POSITION_REF]: "Posición",
   [CLASS_BLOCK_KIND.FILE]: "Archivo",
+  [CLASS_BLOCK_KIND.EXERCISE]: "Ejercicio",
 };
 
-const ADDABLE: ClassBlockKindCode[] = [
+/** What a teacher may add: the exercise block (D29) only while «Ejercicios» is on. */
+export const ADDABLE_BLOCK_KINDS: ClassBlockKindCode[] = [
   CLASS_BLOCK_KIND.TEXT,
   CLASS_BLOCK_KIND.GAME_REF,
   CLASS_BLOCK_KIND.LESSON_REF,
   CLASS_BLOCK_KIND.VIDEO,
+  ...(EXERCISES_ENABLED ? [CLASS_BLOCK_KIND.EXERCISE] : []),
 ];
 
 /**
@@ -78,6 +82,8 @@ const ADDABLE: ClassBlockKindCode[] = [
  * sees it, and its fields by kind. No trigger of its own: the block list
  * opens it through its `ref` with a preset. Submitted by hand, so React's
  * reset of the form does not reach the controlled pieces inside the fields.
+ * An exercise block (D29) is the student's task, so «Guion del profesor» is
+ * not offered for it (D30).
  */
 export function BlockPopup({ ref, ...props }: BlockPopupProps) {
   const popup = useRef<PlatformPopupHandle>(null);
@@ -158,8 +164,30 @@ function BlockPopupForm({
   };
   const formError = state.formError ? (CLASS_FIELD_ERRORS[state.formError.code] ?? state.formError.code) : undefined;
   const errors = Object.fromEntries(
-    ["text", "videoUrl", "pgn", "gameId", "lessonId", "caption"].map((field) => [field, message(field)]),
+    ["text", "videoUrl", "pgn", "gameId", "lessonId", "caption", "exercises"].map((field) => [field, message(field)]),
   );
+  const isExercise = kind === CLASS_BLOCK_KIND.EXERCISE;
+  const visibilityOptions = [
+    {
+      value: CLASS_BLOCK_VISIBILITY.BEFORE,
+      label: "Para preparar",
+      description: `${studentLabel} lo ve desde ahora.`,
+    },
+    {
+      value: CLASS_BLOCK_VISIBILITY.AFTER,
+      label: "Después de la clase",
+      description: `Lo verá cuando termine la clase, a las ${endHour}.`,
+    },
+    ...(isExercise
+      ? []
+      : [{ value: CLASS_BLOCK_VISIBILITY.TEACHER, label: "Guion del profesor", description: "Sólo lo ves tú." }]),
+  ];
+  // A script of exercises is nobody's to solve: when the kind turns into
+  // exercises, a visibility of TEACHER goes back to «Para preparar».
+  const visibilityValue =
+    isExercise && initialVisibility === CLASS_BLOCK_VISIBILITY.TEACHER
+      ? CLASS_BLOCK_VISIBILITY.BEFORE
+      : initialVisibility;
 
   return (
     <PlatformForm
@@ -185,7 +213,7 @@ function BlockPopupForm({
             required
             defaultValue={kind}
             onValueChange={(value) => setKind(value as ClassBlockKindCode)}
-            options={ADDABLE.map((item) => ({ value: item, label: KIND_LABELS[item] }))}
+            options={ADDABLE_BLOCK_KINDS.map((item) => ({ value: item, label: KIND_LABELS[item] }))}
           />
         </PlatformFormGroup>
       )}
@@ -195,23 +223,13 @@ function BlockPopupForm({
         serverError={message("visibility")}
         valueMissing="Elige cuándo lo ve el alumno."
       >
+        {/* Mounted again when the options change with the kind: the cards start from the value they are given. */}
         <PlatformChoiceCards
+          key={isExercise ? "exercise" : "any"}
           name="visibility"
           required
-          defaultValue={initialVisibility}
-          options={[
-            {
-              value: CLASS_BLOCK_VISIBILITY.BEFORE,
-              label: "Para preparar",
-              description: `${studentLabel} lo ve desde ahora.`,
-            },
-            {
-              value: CLASS_BLOCK_VISIBILITY.AFTER,
-              label: "Después de la clase",
-              description: `Lo verá cuando termine la clase, a las ${endHour}.`,
-            },
-            { value: CLASS_BLOCK_VISIBILITY.TEACHER, label: "Guion del profesor", description: "Sólo lo ves tú." },
-          ]}
+          defaultValue={visibilityValue}
+          options={visibilityOptions}
         />
       </PlatformFormGroup>
 

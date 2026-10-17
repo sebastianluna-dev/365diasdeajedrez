@@ -1,0 +1,46 @@
+---
+description: "Exercises to tick, for a series or a class block: cards with each one's title, facts and topics, a search once there are a few, and the chosen ids sent as hidden inputs in the order they were ticked."
+---
+
+# `ExercisePicker`
+
+|            |                                                                                                                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/exercise-picker/exercise-picker.comp.tsx`; its option, `exercise-picker.types.ts`                                                                                                                                           |
+| Kind       | Client Component (the search's state)                                                                                                                                                                                                                   |
+| Stylesheet | `exercise-picker.comp.css` → block `.exercise-picker`                                                                                                                                                                                                   |
+| Story      | `exercise-picker.stories.tsx` (`platform/shared/ExercisePicker`): six exercises with the search, three without it, the tick order sent (`play`), a search that hides a chosen card (`play`), a server error                                             |
+| Used by    | [`AddSeriesExercisesPopup`](/components/platform/sections/teacher/exercises/add-series-exercises-popup) («Agregar ejercicios»), [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) (the block «Ejercicio», D29) |
+| Composes   | [`PlatformFormGroup`](/components/platform/shared/platform-form), [`PlatformCheckCards`](/components/platform/shared/platform-check-cards), [`PlatformSearchField`](/components/platform/shared/platform-search-field)                                  |
+| Uses       | `ExercisePickOption` (`{ id, title, facts, topics }`, what `mapSeriesPickOption` gives: `SeriesPickOption` and `PickableExercise` are its aliases), `foldForSearch`                                                                                     |
+
+## Purpose
+
+One piece for the two places a teacher picks exercises (2026-10-16, phase 3 of [Exercises](/platform/exercises)): a series and a class block. The host reads what may be picked — `buildPickableExercisesWhere`, the teacher's usable exercises and the library's (D08), minus what the container already holds — and hands it over as cards; a draft or an archived exercise is never offered. The chosen ids leave the form as hidden inputs **in the order they were ticked**: the cards' DOM order is the list's (the last changed first), and a series or a block takes the tick order, so the cards carry no `name` of their own.
+
+## Props
+
+| Prop            | Type                      | Required | Meaning                                                                                                    |
+| --------------- | ------------------------- | -------- | ---------------------------------------------------------------------------------------------------------- |
+| `name`          | `string`                  | yes      | The name the chosen ids travel under, one hidden input each (`formData.getAll(name)` reads them in order). |
+| `exercises`     | `ExercisePickOption[]`    | yes      | What may be chosen, already filtered by the host.                                                          |
+| `value`         | `string[]`                | yes      | The chosen ids, in tick order. Controlled: the host keeps the set and submits by hand.                     |
+| `onValueChange` | `(ids: string[]) => void` | yes      |                                                                                                            |
+| `label`         | `string`                  | yes      | The group's label: «Ejercicios».                                                                           |
+| `serverError`   | `string`                  | no       | What the server said of the group, under the label.                                                        |
+
+## Behaviour
+
+- From six exercises (`EXERCISE_PICKER_SEARCH_FROM`) a search over the title and the topics, without accents (`foldForSearch`); a chosen card the search hides stays mounted and sent (`hiddenValues`). With nothing matching: «Ningún ejercicio coincide con la búsqueda.»
+- The host says what happens to what is chosen and how many fit («Van al final de la serie…», «De 1 a 10 ejercicios…»), and shows its own empty state when there is nothing to offer: the picker only picks.
+- Inside a form with controlled Radix cards, so the host submits by hand (`onSubmit` → `startTransition(formAction)`), as every such form does.
+
+## Markup & styling
+
+Block `.exercise-picker` (14 lines): a column of the search, the group and the line that says nothing matched.
+
+**Elements:** `.exercise-picker__empty`
+
+**Tokens:** `--platform-text-muted`
+
+No media queries.

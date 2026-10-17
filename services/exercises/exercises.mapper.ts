@@ -3,11 +3,12 @@ import type {
   ExerciseSolverLink,
 } from "@/components/platform/shared/exercise-solver/exercise-solver.types";
 import type { ExerciseKindCode, ExerciseStatusCode } from "@/constants/platform/exercise-codes.const";
-import { ATTEMPT_RESULT } from "@/constants/platform/training-codes.const";
-import { exerciseKindLabel, playerOfStart } from "@/lib/chess/exercise-labels";
+import { playerOfStart } from "@/lib/chess/exercise-labels";
 import { platformRoutes } from "@/lib/platform-routes";
 import { isSameStudyDay } from "@/services/shared/exercise-attempt.service";
-import { levelOfDifficulty, type DifficultyLevel } from "@/services/shared/exercise-level";
+import { exerciseFacts } from "@/services/shared/exercise-facts";
+import type { DifficultyLevel } from "@/services/shared/exercise-level";
+import { exerciseMarksBy } from "@/services/shared/exercise-marks";
 import { seriesItemAvailability } from "@/services/shared/exercise-visibility-rules";
 import type { StudentSeriesItem, StudentSeriesMark, StudentSeriesSummary, StudentSeriesView } from "./exercises.types";
 
@@ -64,28 +65,17 @@ export function solvableItems(row: Pick<StudentSeriesRow, "teacherId" | "items">
 /**
  * The student's marks, by series and exercise, from their attempts in each
  * series (§5.2): «Resuelto» with a pass there, «Fallado» with attempts and no
- * pass, nothing untried. An attempt elsewhere does not mark a series.
+ * pass, nothing untried. An attempt elsewhere does not mark a series. The
+ * fold is the shared one (`exerciseMarksBy`), the class blocks' too.
  */
 export function seriesMarks(attempts: readonly SeriesAttemptRow[]): Map<string, Map<string, StudentSeriesMark>> {
-  const marks = new Map<string, Map<string, StudentSeriesMark>>();
-  for (const attempt of attempts) {
-    if (attempt.seriesId === null || attempt.exerciseId === null) continue;
-    const series = marks.get(attempt.seriesId) ?? new Map<string, StudentSeriesMark>();
-    const passed = attempt.result.code === ATTEMPT_RESULT.PASSED;
-    if (passed || series.get(attempt.exerciseId) !== "solved") {
-      series.set(attempt.exerciseId, passed ? "solved" : "failed");
-    }
-    marks.set(attempt.seriesId, series);
-  }
-  return marks;
-}
-
-/** «Mate en 2 · 1400 · Intermedio». */
-function factsOf(exercise: SeriesExerciseRow, levels: readonly DifficultyLevel[]): string {
-  const level = levelOfDifficulty(exercise.difficulty, levels)?.name;
-  return [exerciseKindLabel(exercise.kind.code as ExerciseKindCode, exercise.mateIn), exercise.difficulty, level]
-    .filter((part) => part !== undefined)
-    .join(" · ");
+  return exerciseMarksBy(
+    attempts.map((attempt) => ({
+      containerId: attempt.seriesId,
+      exerciseId: attempt.exerciseId,
+      result: attempt.result,
+    })),
+  );
 }
 
 /**
@@ -155,7 +145,7 @@ export function mapStudentSeriesView(
     n: index + 1,
     href: platformRoutes.exerciseSeriesItem(row.id, index + 1),
     title: exercise.title,
-    facts: factsOf(exercise, levels),
+    facts: exerciseFacts(exercise, levels),
     startFen: exercise.startFen,
     orientation: playerOfStart(exercise.startFen),
     mark: marks.get(exercise.id) ?? null,
