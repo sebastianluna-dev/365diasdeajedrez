@@ -74,21 +74,10 @@ export async function getPracticeExercise(choice: PracticeChoice, after: string 
   const db = getPlatformDb();
   const levelRow = await db.level.findUnique({ where: { slug: level.slug }, select: { eloMin: true, eloMax: true } });
   if (!levelRow) return { kind: "choose" };
+  // The pick reads ids alone — a library of hundreds would carry every solution otherwise; the chosen row is read after.
   const candidates = await db.exercise.findMany({
     where: buildPracticeWhere(practiceTopicCodes(filters.topics, topic.code), levelRow),
-    select: {
-      id: true,
-      title: true,
-      prompt: true,
-      kind: { select: { code: true } },
-      mateIn: true,
-      solutionPgn: true,
-      hints: true,
-      explanation: true,
-      difficulty: true,
-      copiedFromId: true,
-      lessonId: true,
-    },
+    select: { id: true, copiedFromId: true, lessonId: true },
   });
   if (candidates.length === 0) return { kind: "empty", choiceLabel };
 
@@ -114,11 +103,27 @@ export async function getPracticeExercise(choice: PracticeChoice, after: string 
   });
   const pick = pickPracticeExercise(candidates, familyStates, after, now, Math.random());
   if (!pick) return { kind: "empty", choiceLabel };
+  const exercise = await db.exercise.findUnique({
+    where: { id: pick.exercise.id },
+    select: {
+      id: true,
+      title: true,
+      prompt: true,
+      kind: { select: { code: true } },
+      mateIn: true,
+      solutionPgn: true,
+      hints: true,
+      explanation: true,
+      difficulty: true,
+    },
+  });
+  // Taken out of the library between the two reads: the choice is asked again.
+  if (!exercise) return { kind: "empty", choiceLabel };
 
   const query = { tema: topic.code, nivel: level.slug };
   return {
     kind: "exercise",
-    exercise: mapSolverExercise(pick.exercise),
+    exercise: mapSolverExercise(exercise),
     mode: pick.triedToday ? "unscored" : "solve",
     context: { attempt: { kind: ATTEMPT_CONTEXT.PRACTICE }, position: choiceLabel },
     next: { href: platformRoutes.exercisePractice({ ...query, tras: pick.exercise.id }), label: "Siguiente" },

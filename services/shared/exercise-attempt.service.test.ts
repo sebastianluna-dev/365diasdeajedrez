@@ -72,14 +72,14 @@ async function submit(
   const tx = db.begin();
   const result = await recordExerciseAttempt(writer(tx), {
     userId: USER,
-    exercise: { id: "e-1", copiedFromId: null },
+    exercise: { id: "e-1", copiedFromId: null, lessonId: null },
     contextCode,
     // The containers travel always; the writer keeps only the one of the path claimed.
     seriesId: "s-1",
     classBlockId: "b-1",
     outcome,
     durationMs: 12_000,
-    now,
+    clock: () => now,
   });
   tx.commit();
   return { result, log: tx.log };
@@ -281,12 +281,12 @@ describe("recordExerciseAttempt", () => {
     const second = db.begin();
     const input = (outcome: AttemptOutcome) => ({
       userId: USER,
-      exercise: { id: "e-1", copiedFromId: null },
+      exercise: { id: "e-1", copiedFromId: null, lessonId: null },
       contextCode: "SERIES" as const,
       seriesId: "s-1",
       outcome,
       durationMs: null,
-      now: DAY1,
+      clock: () => DAY1,
     });
     // The wrong move's auto-submit and «Ver la solución», from two tabs.
     const one = recordExerciseAttempt(writer(first), input(FAILED));
@@ -297,6 +297,72 @@ describe("recordExerciseAttempt", () => {
     second.commit();
     expect(db.rows("trainingAttempt")).toHaveLength(1);
     expect(db.rows("userExerciseState")).toHaveLength(1);
+  });
+});
+
+describe("el instante del intento (createdAt)", () => {
+  it("se toma después del candado de la familia, nunca antes", async () => {
+    const db = database();
+    const tx = db.begin();
+    const statementsBefore: number[] = [];
+    await recordExerciseAttempt(writer(tx), {
+      userId: USER,
+      exercise: { id: "e-1", copiedFromId: null, lessonId: null },
+      contextCode: "SERIES",
+      seriesId: "s-1",
+      outcome: CLEAN,
+      durationMs: null,
+      clock: () => {
+        statementsBefore.push(tx.log.length);
+        return DAY1;
+      },
+    });
+    tx.commit();
+    // The instant of the row (the second reading) comes after the INSERT and the SELECT … FOR UPDATE.
+    const lockedAt = tx.log.findIndex((statement) => statement.includes("FOR UPDATE"));
+    expect(lockedAt).toBeGreaterThan(0);
+    expect(statementsBefore.at(-1)).toBeGreaterThan(lockedAt);
+    expect(db.rows("trainingAttempt")[0]).toMatchObject({ createdAt: DAY1 });
+  });
+
+  it("dos envíos de una familia se guardan en el orden en que se puntuaron: el que esperó el candado lleva el instante posterior", async () => {
+    const db = database();
+    const first = db.begin();
+    const second = db.begin();
+    // One clock for both: whoever reads it later gets the later instant, whatever the order the submits arrived in.
+    let tick = 0;
+    const clock = () => new Date(DAY1.getTime() + tick++ * 1000);
+    const input = (outcome: AttemptOutcome) => ({
+      userId: USER,
+      exercise: { id: "e-1", copiedFromId: null, lessonId: null },
+      contextCode: "CLASS" as const,
+      classBlockId: "b-1",
+      outcome,
+      durationMs: null,
+      clock,
+    });
+    // A class block keeps its row even on a day already scored (D49), so both rows are stored.
+    const one = recordExerciseAttempt(writer(first), input(FAILED));
+    const two = recordExerciseAttempt(writer(second), input(CLEAN));
+    await expect(one).resolves.toMatchObject({ scored: true });
+    first.commit();
+    await expect(two).resolves.toMatchObject({ scored: false });
+    second.commit();
+    const rows = db.rows("trainingAttempt");
+    expect(rows).toHaveLength(2);
+    const scored = rows.find((row) => row.resultId === FAKE_EXERCISE_IDS.result.FAILED)!;
+    const unscored = rows.find((row) => row.resultId === FAKE_EXERCISE_IDS.result.PASSED)!;
+    expect((scored.createdAt as Date) < (unscored.createdAt as Date)).toBe(true);
+
+    // So the rebuild, which folds by createdAt, scores the same row the writer did.
+    const tx = db.begin();
+    await rebuildUserExerciseState(tx as unknown as ExerciseStateRebuilder, USER);
+    tx.commit();
+    expect(state(db)).toMatchObject({
+      attemptCount: 1,
+      firstSolvedAt: null,
+      lastResultId: FAKE_EXERCISE_IDS.result.FAILED,
+    });
   });
 });
 
@@ -323,7 +389,7 @@ describe("la familia de un ejercicio (D22, D28)", () => {
       seriesId: id === "copy" ? null : "s-1",
       outcome,
       durationMs: 9_000,
-      now,
+      clock: () => now,
     });
     tx.commit();
     return result;
@@ -404,7 +470,6 @@ describe("exerciseSolveKey", () => {
   it("la copia de una lección es su original; un «Duplicar» es un ejercicio nuevo", () => {
     expect(exerciseSolveKey({ id: "copy", copiedFromId: "orig", lessonId: "l-1" })).toBe("orig");
     expect(exerciseSolveKey({ id: "dup", copiedFromId: "orig", lessonId: null })).toBe("dup");
-    expect(exerciseSolveKey({ id: "dup", copiedFromId: "orig" })).toBe("dup");
     expect(exerciseSolveKey({ id: "own", copiedFromId: null, lessonId: "l-1" })).toBe("own");
   });
 });
@@ -512,6 +577,40 @@ describe("rebuildUserExerciseState", () => {
       firstSolvedAt: DAY1_LATER,
       reviewStep: null,
       lastAttemptAt: DAY5,
+    });
+  });
+
+  it("una copia de lección se pliega con la clave de su original, como el escritor: un acierto en la copia el día del fallo en el original no cuenta", async () => {
+    const R = FAKE_EXERCISE_IDS.result;
+    const C = FAKE_EXERCISE_IDS.context;
+    // The original failed in a series, then its lesson copy passed the same study day from a class block: the
+    // writer stored the second row (D49) but scored nothing. The rebuild has to read the copy's `lessonId`
+    // to key it on the original; keyed on itself, the copy would get a state with a first solve.
+    const db = fakeExerciseDb({
+      exercise: [
+        { id: "orig", copiedFromId: null, lessonId: null, solutionPgn: BACK_RANK },
+        { id: "copy", copiedFromId: "orig", lessonId: "l-1", solutionPgn: BACK_RANK },
+      ],
+      trainingAttempt: [
+        { id: "a-1", userId: USER, exerciseId: "orig", resultId: R.FAILED, contextId: C.SERIES, createdAt: DAY1 },
+        { id: "a-2", userId: USER, exerciseId: "copy", resultId: R.PASSED, contextId: C.CLASS, createdAt: DAY1_LATER },
+        { id: "a-3", userId: USER, exerciseId: "copy", resultId: R.PASSED, contextId: C.LESSON, createdAt: DAY2 },
+      ],
+    });
+    const tx = db.begin();
+    await expect(rebuildUserExerciseState(tx as unknown as ExerciseStateRebuilder, USER)).resolves.toBe(2);
+    tx.commit();
+    const rows = db.rows("userExerciseState");
+    expect(rows.find((row) => row.exerciseId === "orig")).toMatchObject({
+      attemptCount: 1,
+      firstSolvedAt: null,
+      lastResultId: R.FAILED,
+    });
+    // The copy's state starts the next day, with the attempt the gate let through.
+    expect(rows.find((row) => row.exerciseId === "copy")).toMatchObject({
+      attemptCount: 1,
+      firstAttemptAt: DAY2,
+      firstSolvedAt: DAY2,
     });
   });
 

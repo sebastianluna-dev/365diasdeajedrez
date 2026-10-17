@@ -55,8 +55,13 @@ export type ExerciseAttemptContextCode = Exclude<AttemptContextCode, "CHAPTER_QU
 export interface SolveKeyExercise {
   id: string;
   copiedFromId: string | null;
-  /** Phase 2 (lesson exercises): set on a lesson's exercise. */
-  lessonId?: string | null;
+  /**
+   * Set on a lesson's exercise (phase 2). Required, not optional: a row
+   * selected without it would make every lesson copy its own key — the
+   * student credited twice, a same-day fail turned into a pass — and the
+   * compiler would let it through. Every reader selects it.
+   */
+  lessonId: string | null;
 }
 
 /**
@@ -263,7 +268,14 @@ export interface RecordExerciseAttemptInput {
   /** The server's replay of the submitted moves (`replayAttempt`), never the client's word. */
   outcome: AttemptOutcome;
   durationMs: number | null;
-  now: Date;
+  /**
+   * Where the attempt's instant comes from: the writer reads it AFTER taking
+   * the family's lock, so two submits of one family are stored in the order
+   * they were scored — the rebuild folds them by `createdAt`, and an instant
+   * taken before the lock could put the second one first. The tests inject
+   * theirs; the action leaves the default.
+   */
+  clock?: () => Date;
 }
 
 export type RecordExerciseAttemptResult =
@@ -274,16 +286,19 @@ export type RecordExerciseAttemptResult =
 
 /**
  * Records a decided attempt at an exercise (PLAN.md §5.4): the family's lock
- * first, then the study-day gate read under it, then the attempt, its first
- * mistake, the state with its review, the first pass and its activity.
+ * first, then the attempt's instant and the study-day gate read under it,
+ * then the attempt, its first mistake, the state with its review, the first
+ * pass and its activity.
  */
 export async function recordExerciseAttempt(
   db: ExerciseAttemptWriter,
   input: RecordExerciseAttemptInput,
 ): Promise<RecordExerciseAttemptResult> {
-  const { userId, exercise, outcome, now } = input;
+  const { userId, exercise, outcome, clock = () => new Date() } = input;
   const solveKey = exerciseSolveKey(exercise);
-  await lockExerciseFamily(db, userId, solveKey, now);
+  await lockExerciseFamily(db, userId, solveKey, clock());
+  // The attempt's instant, under the lock: the order of the rows is the order they were scored in.
+  const now = clock();
   if (exercise.id !== solveKey) await ensureExerciseState(db, userId, exercise.id, now);
 
   // The family as it stands under the lock: the key, this exercise and the key's lesson copies.
@@ -402,7 +417,7 @@ export interface ExerciseStateRebuilder {
   attemptResult: { findMany(args: unknown): Promise<{ id: number; code: string }[]> };
   attemptContext: { findMany(args: unknown): Promise<{ id: number; code: string }[]> };
   trainingAttempt: { findMany(args: unknown): Promise<AttemptRow[]> };
-  exercise: { findMany(args: unknown): Promise<{ id: string; copiedFromId: string | null }[]> };
+  exercise: { findMany(args: unknown): Promise<SolveKeyExercise[]> };
   userExerciseState: {
     deleteMany(args: unknown): Promise<unknown>;
     createMany(args: unknown): Promise<unknown>;
@@ -441,7 +456,10 @@ export async function rebuildUserExerciseState(db: ExerciseStateRebuilder, userI
   const exerciseIds = [...new Set(attempts.map((attempt) => attempt.exerciseId).filter((id) => id !== null))];
   const exercises =
     exerciseIds.length > 0
-      ? await db.exercise.findMany({ where: { id: { in: exerciseIds } }, select: { id: true, copiedFromId: true } })
+      ? await db.exercise.findMany({
+          where: { id: { in: exerciseIds } },
+          select: { id: true, copiedFromId: true, lessonId: true },
+        })
       : [];
   const resultCode = new Map(results.map((row) => [row.id, row.code as AttemptResultCode]));
   const contextCode = new Map(contexts.map((row) => [row.id, row.code as ExerciseAttemptContextCode]));

@@ -51,12 +51,13 @@ export async function submitExerciseAttempt(input: ExerciseAttemptSubmission): P
 
   const db = getPlatformDb();
   const viewer = await getExerciseViewer();
-  const now = new Date();
+  // The exercise's reachability is read now; the attempt's own instant is the writer's, taken under the family's lock.
   const exercise = await db.exercise.findFirst({
-    where: { AND: [{ id: submission.exerciseId }, solvableInContextWhere(context, viewer, now)] },
+    where: { AND: [{ id: submission.exerciseId }, solvableInContextWhere(context, viewer, new Date())] },
     select: {
       id: true,
       copiedFromId: true,
+      lessonId: true,
       solutionPgn: true,
       kind: { select: { code: true } },
       mateIn: true,
@@ -82,13 +83,13 @@ export async function submitExerciseAttempt(input: ExerciseAttemptSubmission): P
   const recorded = await db.$transaction((tx) =>
     recordExerciseAttempt(tx, {
       userId: user.id,
-      exercise: { id: exercise.id, copiedFromId: exercise.copiedFromId },
+      // The three columns of the solve key (`SolveKeyExercise` requires `lessonId`: a lesson copy is its original).
+      exercise: { id: exercise.id, copiedFromId: exercise.copiedFromId, lessonId: exercise.lessonId },
       contextCode: context.kind,
       seriesId: context.kind === ATTEMPT_CONTEXT.SERIES ? context.seriesId : null,
       classBlockId: context.kind === ATTEMPT_CONTEXT.CLASS ? context.classBlockId : null,
       outcome: replay.outcome,
       durationMs: submission.durationMs,
-      now,
     }),
   );
 

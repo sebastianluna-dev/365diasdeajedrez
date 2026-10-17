@@ -4,7 +4,7 @@ import { ATTEMPT_CONTEXT } from "@/constants/platform/training-codes.const";
 import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
-import { exerciseSolveKey } from "@/services/shared/exercise-attempt.service";
+import { exerciseFamilyIds } from "@/services/shared/exercise-attempt.service";
 import { getExerciseViewer } from "@/services/shared/exercise-visibility";
 import { solvableInContextWhere, studentVisibleSeriesWhere } from "@/services/shared/exercise-visibility-rules";
 import {
@@ -196,14 +196,14 @@ export async function getStudentSeriesExercise(seriesId: string, n: number): Pro
       explanation: true,
       difficulty: true,
       copiedFromId: true,
+      lessonId: true,
     },
   });
   if (!exercise) return null;
 
-  // The family of the exercise (§2.7); phase 2 adds the lesson copies of its key.
-  const family = [...new Set([exerciseSolveKey(exercise), exercise.id])];
+  // The family of the exercise (§2.7), the writer's own: a library exercise's lesson copies count too.
   const states = await db.userExerciseState.findMany({
-    where: { userId: viewer.userId, exerciseId: { in: family } },
+    where: { userId: viewer.userId, exerciseId: { in: await exerciseFamilyIds(db, exercise) } },
     select: { lastAttemptAt: true },
   });
   const href = platformRoutes.exerciseSeries(series.id);
