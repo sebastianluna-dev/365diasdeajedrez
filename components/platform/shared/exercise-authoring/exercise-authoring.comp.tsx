@@ -114,9 +114,10 @@ export interface ExerciseAuthoringProps {
   /**
    * The tab it opens on. Without it, a saved exercise opens on «Solución» and
    * a new one on «Posición»; a new one seeded from a game («Crear ejercicio
-   * desde aquí», D11) opens on «Solución», where what followed the move is.
+   * desde aquí», D11) opens on «Solución», where what followed the move is;
+   * the staff's review opens on «Probar», where a proposal is tried.
    */
-  initialTab?: ExerciseFormTab;
+  initialTab?: ExerciseFormTab | "try";
 }
 
 type Way = "place" | "paste" | "game";
@@ -144,6 +145,8 @@ const TABS: AuthoringTab[] = ["position", "solution", "data", "try"];
 const LOCK_REASONS: Record<ExerciseLockReason, string> = {
   inReview: "Está en revisión: retira la propuesta para editarlo.",
   inLibrary: "Está en la biblioteca: duplícalo para hacer tu versión.",
+  staffReview:
+    "Propuesta de un profesor: pruébala en «Probar» y decide con los botones de abajo. El contenido lo edita su autor.",
 };
 
 const CASTLING_RIGHTS = [

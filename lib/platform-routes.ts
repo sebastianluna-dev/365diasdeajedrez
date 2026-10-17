@@ -178,6 +178,8 @@ export const teacherRoutes = {
   exercises: "/profesor/ejercicios",
   archivedExercises: "/profesor/ejercicios?vista=archivados",
   exerciseSeriesList: "/profesor/ejercicios?vista=series",
+  /** «Biblioteca» (D08): the approved exercises the teacher may pick, read-only. */
+  libraryExercises: "/profesor/ejercicios?vista=biblioteca",
   /**
    * A new exercise; `from` opens it on a move of one of the teacher's study
    * games («Crear ejercicio desde aquí», D11): the game's address plus
@@ -242,6 +244,17 @@ export const staffRoutes = {
   /** One of the lesson's exercises, in the editor. */
   lessonExercise: (courseId: string, chapterId: string, lessonId: string, exerciseId: string) =>
     `/administracion/cursos/${courseId}/capitulos/${chapterId}/lecciones/${lessonId}/ejercicios/${exerciseId}`,
+  /** The academy's exercise bank (phase 4 of «Ejercicios», behind the flag): the library, the review queue and the academy's series. */
+  exercises: "/administracion/ejercicios",
+  /** «En revisión»: the teachers' proposals, the oldest first. */
+  exercisesReview: "/administracion/ejercicios/revision",
+  /** A new exercise of the academy's, in the editor. */
+  newExercise: "/administracion/ejercicios/nuevo",
+  /** An exercise of a bank — the academy's, or a teacher's proposed or in the library — in the staff editor with its review bar. */
+  exerciseDetail: (exerciseId: string) => `/administracion/ejercicios/${exerciseId}`,
+  /** The academy's series, which every student sees once published. */
+  exerciseSeriesList: "/administracion/ejercicios/series",
+  exerciseSeries: (seriesId: string) => `/administracion/ejercicios/series/${seriesId}`,
   classes: "/administracion/clases",
   /** The agenda with its filters in the address: `?vista=proximas|pasadas|canceladas&profesor=&q=&hasta=&pagina=`. */
   classesFiltered: (filters: { vista?: string; profesor?: string; q?: string; hasta?: string; pagina?: number }) => {

@@ -24,7 +24,7 @@ interface TeacherExercisesPageProps {
 
 /** The bank's view from `?vista=`: anything else is what is in use. */
 function tabOf(raw: string | undefined): TeacherExercisesTab {
-  return raw === "archivados" || raw === "series" ? raw : "activos";
+  return raw === "archivados" || raw === "series" || raw === "biblioteca" ? raw : "activos";
 }
 
 /** «Ejercicios»: the teacher's bank (D06, D07) and their series (D18, D31). */

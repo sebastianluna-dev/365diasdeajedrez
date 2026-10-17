@@ -20,11 +20,13 @@ import { STUDY_DAY_TIMEZONE } from "@/constants/platform/timezones.const";
 import type { StudentShareRow } from "@/components/platform/shared/student-share-panel/student-share-panel.types";
 import { exerciseFacts } from "@/services/shared/exercise-facts";
 import { levelOfDifficulty, type DifficultyLevel } from "@/services/shared/exercise-level";
-import { isExerciseContentLocked } from "@/services/shared/exercise-status-transitions";
+import { exerciseTransition, isExerciseContentLocked } from "@/services/shared/exercise-status-transitions";
 import { seriesItemAvailability } from "@/services/shared/exercise-visibility-rules";
 import type {
   ExerciseSeedGameRow,
+  LibraryExerciseRow,
   SeriesItemData,
+  TeacherExerciseEditor,
   SeriesItemRow,
   SeriesPickOption,
   SeriesProgressAttemptRow,
@@ -58,15 +60,38 @@ export const NEW_EXERCISE_DIFFICULTY = 1200;
  * while it is a draft or ready (in review or in the library it is not the
  * teacher's to take away); «Restaurar» when archived; «Eliminar» only for one
  * nobody has tried and that is not in review or in the library — with
- * attempts, its history is kept and it is archived instead.
+ * attempts, its history is kept and it is archived instead; «Proponer a la
+ * biblioteca» when ready and «Retirar la propuesta» while in review (D07,
+ * D16), the owner's rows of the transitions table.
  */
 export function teacherExerciseAllowed(status: ExerciseStatusCode, attemptCount: number): ExerciseCardData["allowed"] {
   const own = status === EXERCISE_STATUS.DRAFT || status === EXERCISE_STATUS.READY;
+  const may = (to: ExerciseStatusCode) => exerciseTransition(status, to, "ownerTeacher", "teacher") !== null;
   return {
     duplicate: true,
     archive: own,
     restore: status === EXERCISE_STATUS.ARCHIVED,
     delete: attemptCount === 0 && (own || status === EXERCISE_STATUS.ARCHIVED),
+    propose: may(EXERCISE_STATUS.IN_REVIEW),
+    withdraw: status === EXERCISE_STATUS.IN_REVIEW && may(EXERCISE_STATUS.READY),
+  };
+}
+
+/**
+ * The review bar of the teacher's exercise page: the same two moves as the
+ * card's words, and the staff's note while the exercise is theirs to fix — a
+ * returned one (READY) or one taken out of the library (READY too); in review
+ * or in the library the note is the past's.
+ */
+export function teacherExerciseReview(
+  status: ExerciseStatusCode,
+  reviewNote: string | null,
+): TeacherExerciseEditor["review"] {
+  const allowed = teacherExerciseAllowed(status, 0);
+  return {
+    canPropose: allowed.propose === true,
+    canWithdraw: allowed.withdraw === true,
+    note: status === EXERCISE_STATUS.READY ? reviewNote : null,
   };
 }
 
@@ -130,12 +155,45 @@ export function mapExerciseCard(row: TeacherExerciseRow, levels: readonly Diffic
     levelName: levelOfDifficulty(row.difficulty, levels)?.name ?? null,
     playerMoves: row.playerMoves,
     topicLabels: topicsOf(row).map((topic) => topic.label),
+    note: status === EXERCISE_STATUS.READY ? row.reviewNote : null,
     allowed: teacherExerciseAllowed(status, row._count.attempts),
   };
 }
 
+/** Who wrote a library exercise, as its card says: the academy's, or its teacher's. */
+export function exerciseAuthorLabel(row: {
+  teacherId: string | null;
+  teacher: { displayName: string } | null;
+}): string {
+  return row.teacherId === null ? "Academia" : (row.teacher?.displayName ?? "Un profesor");
+}
+
+/**
+ * A card of the teacher's «Biblioteca» (D08): a library exercise, read-only
+ * — no page of the teacher's (their own ones open from «En uso»), no words —
+ * with who wrote it.
+ */
+export function mapLibraryExerciseCard(row: LibraryExerciseRow, levels: readonly DifficultyLevel[]): ExerciseCardData {
+  return {
+    id: row.id,
+    href: null,
+    title: row.title,
+    startFen: row.startFen,
+    orientation: playerOfStart(row.startFen),
+    statusCode: row.status.code as ExerciseStatusCode,
+    statusLabel: row.status.label,
+    kindLabel: exerciseKindLabel(row.kind.code as ExerciseKindCode, row.mateIn),
+    difficulty: row.difficulty,
+    levelName: levelOfDifficulty(row.difficulty, levels)?.name ?? null,
+    playerMoves: row.playerMoves,
+    topicLabels: topicsOf(row).map((topic) => topic.label),
+    authorLabel: exerciseAuthorLabel(row),
+    allowed: { duplicate: false, archive: false, restore: false, delete: false },
+  };
+}
+
 /** A saved exercise as the editor opens it. */
-export function mapAuthoringExercise(row: TeacherExerciseRow): ExerciseAuthoringExercise {
+export function mapAuthoringExercise(row: Omit<TeacherExerciseRow, "reviewNote">): ExerciseAuthoringExercise {
   return {
     id: row.id,
     statusCode: row.status.code as ExerciseStatusCode,

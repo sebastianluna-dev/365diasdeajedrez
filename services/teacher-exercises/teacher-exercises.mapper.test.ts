@@ -16,7 +16,9 @@ import {
   mapSeriesPickOption,
   mapSeriesShare,
   newExercisePrefill,
+  mapLibraryExerciseCard,
   teacherExerciseAllowed,
+  teacherExerciseReview,
   teacherExercisePermissions,
   teacherSaveButtons,
 } from "./teacher-exercises.mapper";
@@ -50,6 +52,7 @@ const ROW: TeacherExerciseRow = {
     { topic: { code: "TACTICS", label: "Táctica", order: 0 } },
   ],
   updatedAt: new Date("2026-10-16T12:00:00Z"),
+  reviewNote: null,
   _count: { attempts: 0 },
 };
 
@@ -69,10 +72,57 @@ describe("the bank's cards", () => {
       archive: true,
       restore: false,
       delete: true,
+      propose: false,
+      withdraw: false,
     });
     expect(teacherExerciseAllowed(EXERCISE_STATUS.READY, 3).delete).toBe(false);
     expect(teacherExerciseAllowed(EXERCISE_STATUS.ARCHIVED, 0)).toMatchObject({ archive: false, restore: true });
     expect(teacherExerciseAllowed(EXERCISE_STATUS.PUBLISHED, 0)).toMatchObject({ archive: false, delete: false });
+  });
+
+  it("proponen a la biblioteca lo listo y retiran lo que está en revisión, nada más (D07, D16)", () => {
+    expect(teacherExerciseAllowed(EXERCISE_STATUS.READY, 0)).toMatchObject({ propose: true, withdraw: false });
+    expect(teacherExerciseAllowed(EXERCISE_STATUS.IN_REVIEW, 0)).toMatchObject({
+      propose: false,
+      withdraw: true,
+      archive: false,
+      delete: false,
+    });
+    expect(teacherExerciseAllowed(EXERCISE_STATUS.PUBLISHED, 0)).toMatchObject({ propose: false, withdraw: false });
+    expect(teacherExerciseAllowed(EXERCISE_STATUS.DRAFT, 0).propose).toBe(false);
+  });
+
+  it("la nota del staff se muestra sólo mientras el ejercicio vuelve a ser del profesor (listo)", () => {
+    const returned = { ...ROW, status: { code: "READY", label: "Listo" }, reviewNote: "Falta la explicación." };
+    expect(mapExerciseCard(returned, LEVELS).note).toBe("Falta la explicación.");
+    expect(
+      mapExerciseCard({ ...returned, status: { code: "IN_REVIEW", label: "En revisión" } }, LEVELS).note,
+    ).toBeNull();
+    expect(teacherExerciseReview(EXERCISE_STATUS.READY, "Falta la explicación.")).toEqual({
+      canPropose: true,
+      canWithdraw: false,
+      note: "Falta la explicación.",
+    });
+    expect(teacherExerciseReview(EXERCISE_STATUS.IN_REVIEW, "Falta la explicación.")).toEqual({
+      canPropose: false,
+      canWithdraw: true,
+      note: null,
+    });
+  });
+
+  it("una tarjeta de la biblioteca no abre ninguna página del profesor y nombra al autor (D08)", () => {
+    const card = mapLibraryExerciseCard(
+      { ...ROW, teacherId: null, teacher: null, status: { code: "PUBLISHED", label: "En la biblioteca" } },
+      LEVELS,
+    );
+    expect(card).toMatchObject({ href: null, authorLabel: "Academia", statusCode: "PUBLISHED" });
+    expect(card.allowed).toEqual({ duplicate: false, archive: false, restore: false, delete: false });
+    expect(
+      mapLibraryExerciseCard(
+        { ...ROW, teacherId: "t-2", teacher: { displayName: "Ana Ruiz" }, status: { code: "PUBLISHED", label: "" } },
+        LEVELS,
+      ).authorLabel,
+    ).toBe("Ana Ruiz");
   });
 });
 

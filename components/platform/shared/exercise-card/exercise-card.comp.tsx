@@ -2,6 +2,7 @@ import Link from "next/link";
 import { StaticDiagram } from "@/components/chess/static-diagram.comp";
 import { DeleteExercise } from "@/components/platform/shared/delete-exercise/delete-exercise.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
+import { CircleInfoIcon } from "@/components/icons/circle-info-icon.comp";
 import { EXERCISE_STATUS, type ExerciseStatusCode } from "@/constants/platform/exercise-codes.const";
 import type { ExerciseCardActions, ExerciseCardData } from "./exercise-card.types";
 import "./exercise-card.comp.css";
@@ -27,9 +28,12 @@ const TAG_VARIANTS: Record<ExerciseStatusCode, string | null> = {
  * An exercise of a bank: its start position drawn small, the title that
  * opens it, its status, its kind, its difficulty with the level it falls in,
  * the student's moves and its topics; and, with `actions`, the row's words —
- * «Duplicar», «Archivar» or «Restaurar», and «Eliminar» behind its
- * confirmation (`DeleteExercise`, the card's one client leaf), only for one
- * nobody has tried yet. Each word needs its action given and allowed.
+ * «Duplicar», «Archivar» or «Restaurar», «Proponer a la biblioteca» or
+ * «Retirar la propuesta», and «Eliminar» behind its confirmation
+ * (`DeleteExercise`, the card's one client leaf), only for one nobody has
+ * tried yet. Each word needs its action given and allowed. A returned one
+ * carries the staff's note («Devuelto: …»); a library's card may name its
+ * author and lead nowhere (a teacher has no page of it).
  */
 export function ExerciseCard({ exercise, actions, deleteDescription }: ExerciseCardProps) {
   const variant = TAG_VARIANTS[exercise.statusCode];
@@ -52,14 +56,27 @@ export function ExerciseCard({ exercise, actions, deleteDescription }: ExerciseC
           <span className="platform-tag">{exercise.kindLabel}</span>
         </p>
         <h3 className="exercise-card__title">
-          <Link href={exercise.href} className="exercise-card__link">
-            {exercise.title}
-          </Link>
+          {exercise.href ? (
+            <Link href={exercise.href} className="exercise-card__link">
+              {exercise.title}
+            </Link>
+          ) : (
+            exercise.title
+          )}
         </h3>
         <p className="exercise-card__meta">
           Dificultad {difficulty} · {moves}
+          {exercise.authorLabel && ` · ${exercise.authorLabel}`}
         </p>
         {exercise.topicLabels.length > 0 && <p className="exercise-card__topics">{exercise.topicLabels.join(", ")}</p>}
+        {exercise.note && (
+          <p className="exercise-card__note">
+            <CircleInfoIcon variant="classic-solid" className="exercise-card__note-icon" />
+            <span>
+              <strong>Devuelto:</strong> {exercise.note}
+            </span>
+          </p>
+        )}
 
         {actions && (
           <div className="exercise-card__actions">
@@ -74,6 +91,20 @@ export function ExerciseCard({ exercise, actions, deleteDescription }: ExerciseC
               <form action={actions.archive.bind(null, exercise.id)}>
                 <SubmitButton className="platform-row-action" pendingLabel="Archivando…">
                   Archivar
+                </SubmitButton>
+              </form>
+            )}
+            {exercise.allowed.propose && actions.propose && (
+              <form action={actions.propose.bind(null, exercise.id)}>
+                <SubmitButton className="platform-row-action" pendingLabel="Proponiendo…">
+                  Proponer a la biblioteca
+                </SubmitButton>
+              </form>
+            )}
+            {exercise.allowed.withdraw && actions.withdraw && (
+              <form action={actions.withdraw.bind(null, exercise.id)}>
+                <SubmitButton className="platform-row-action" pendingLabel="Retirando…">
+                  Retirar la propuesta
                 </SubmitButton>
               </form>
             )}

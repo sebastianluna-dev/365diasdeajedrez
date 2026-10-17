@@ -1,5 +1,5 @@
 ---
-description: "«Ejercicios» of a teacher: what is in use, what is archived and the series, as pills; the cards of their own exercises, the last changed first, or their series."
+description: "«Ejercicios» of a teacher: what is in use, what is archived, the series and the library, as pills; the cards of their own exercises, the last changed first, their series, or the library's exercises read-only."
 ---
 
 # `TeacherExercisesSection`
@@ -12,7 +12,7 @@ description: "«Ejercicios» of a teacher: what is in use, what is archived and 
 | Used by    | `/profesor/ejercicios` (behind `EXERCISES_ENABLED`)                                                                                                                                                                                                                                                                                                                                                     |
 | Composes   | [`FilterPills`](/components/platform/shared/filter-pills), [`ExerciseCard`](/components/platform/shared/exercise-card), [`EmptyState`](/components/platform/shared/empty-state), [`PlatformNotice`](/components/platform/shared/platform-notice); the page's head adds «Nuevo ejercicio» and [`SeriesDataPopup`](/components/platform/sections/teacher/exercises/series-data-popup) (`NewSeriesButton`) |
 | Reads      | `TeacherExercisesView` from `getTeacherExercises(tab)` · `services/teacher-exercises/teacher-exercises.service.ts`                                                                                                                                                                                                                                                                                      |
-| Writes     | `duplicateTeacherExercise()`, `archiveTeacherExercise()`, `restoreTeacherExercise()`, `deleteTeacherExercise()` — imported here and handed to the cards as props                                                                                                                                                                                                                                        |
+| Writes     | `duplicateTeacherExercise()`, `archiveTeacherExercise()`, `restoreTeacherExercise()`, `deleteTeacherExercise()`, `proposeTeacherExercise()`, `withdrawTeacherExercise()` — imported here and handed to the cards as props; a library card gets none                                                                                                                                                     |
 
 ## Props
 
@@ -23,7 +23,9 @@ description: "«Ejercicios» of a teacher: what is in use, what is archived and 
 
 ## Behaviour
 
-«En uso · n», «Archivados · n» and «Series · n» are links (`?vista=archivados`, `?vista=series`); the cards are the teacher's own exercises (`buildOwnExercisesWhere`), two to a row from 1024px. Empty, «En uso» says how to start and links to «Nuevo ejercicio», the page's accent in its header. The row actions redirect back with their notice.
+«En uso · n», «Archivados · n», «Series · n» and «Biblioteca · n» are links (`?vista=archivados`, `?vista=series`, `?vista=biblioteca`); the cards are the teacher's own exercises (`buildOwnExercisesWhere`), two to a row from 1024px. Empty, «En uso» says how to start and links to «Nuevo ejercicio», the page's accent in its header. The row actions redirect back with their notice; «Proponer a la biblioteca» and «Retirar la propuesta» are among them (D07, D16), and a returned exercise's card carries the staff's note.
+
+On «Biblioteca» (D08, phase 4) the cards are the library's exercises (`buildLibraryExercisesWhere`: the academy's and every teacher's approved one, the last published first), read-only: no page of the teacher's (their own open from «En uso»), no words, and the author named. It is what they may pick for a series or a class block.
 
 On «Series» each of the teacher's series is a row: its title (the link to [its page](/components/platform/sections/teacher/exercises/teacher-series-editor-section)), «5 ejercicios · la tienen 2 alumnos» (only the shares to a student still assigned, `activeSeriesSharesWhere`), its description clamped to two lines, and, in the danger's ink with a triangle, how many of its exercises the students no longer see (`seriesItemAvailability`, the visibility rule's own condition). «Nueva serie», the head's secondary button, opens the popup that creates one and goes to it.
 

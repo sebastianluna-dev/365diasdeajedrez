@@ -47,8 +47,13 @@ export interface ExerciseAuthoringGame {
   studyName: string;
 }
 
-/** Why the content cannot be changed: in review (the proposal is withdrawn first) or in the library (it is duplicated). */
-export type ExerciseLockReason = "inReview" | "inLibrary";
+/**
+ * Why the content cannot be changed: in review (the proposal is withdrawn
+ * first) or in the library (it is duplicated), for its teacher; `staffReview`
+ * for the staff reading a teacher's proposal, which is decided from the
+ * review bar, not edited.
+ */
+export type ExerciseLockReason = "inReview" | "inLibrary" | "staffReview";
 
 /** What the author may do with this exercise (`exercise-status-transitions.ts` decides it on the server). */
 export interface ExerciseAuthoringPermissions {

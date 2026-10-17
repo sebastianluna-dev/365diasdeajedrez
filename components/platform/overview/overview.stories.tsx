@@ -152,6 +152,7 @@ import {
 } from "@/components/platform/sections/teacher/classes/class-block-editor/block-popup.comp";
 import { ClassBlockList } from "@/components/platform/sections/teacher/classes/class-block-list/class-block-list.comp";
 import { ClassExerciseProgress } from "@/components/platform/sections/teacher/classes/class-exercise-progress/class-exercise-progress.comp";
+import { ExerciseReviewBar } from "@/components/platform/sections/staff/exercises/exercise-review-bar/exercise-review-bar.comp";
 import { TopicButton } from "@/components/platform/sections/teacher/classes/topic-popup/topic-popup.comp";
 import { FinalizeClassButton } from "@/components/platform/shared/finalize-class-popup/finalize-class-popup.comp";
 import { MeetingCountdown } from "@/components/platform/shared/meeting-countdown/meeting-countdown.comp";
@@ -2451,13 +2452,14 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   levelName: "Intermedio",
                   playerMoves: 2,
                   topicLabels: ["Táctica", "Desviación", "Sacrificio"],
-                  allowed: { duplicate: true, archive: true, restore: false, delete: true },
+                  allowed: { duplicate: true, archive: true, restore: false, delete: true, propose: true },
                 }}
                 actions={{
                   duplicate: async () => undefined,
                   archive: async () => undefined,
                   restore: async () => undefined,
                   delete: async () => undefined,
+                  propose: async () => undefined,
                 }}
               />
             </Tile>
@@ -2489,7 +2491,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                     title: "Mate del pasillo",
                     href: "#",
                     atIso: "2026-10-15T20:12:00.000Z",
-                    atLabel: "15 de octubre de 2026",
+                    atLabel: "15 de octubre, 2026",
                     outcome: "failed",
                     outcomeLabel: "Fallado",
                     whereLabel: "Serie: Táctica de la semana",
@@ -2620,6 +2622,33 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                       untried: ["Alumno Demo", "Mateo Ríos", "Diego Salas"],
                     },
                   ],
+                }}
+              />
+            </Tile>
+            <Tile
+              name="ExerciseReviewBar"
+              docs="platform-sections-staff-exercises-exercisereviewbar"
+              width={720}
+              height={96}
+            >
+              <ExerciseReviewBar
+                title="El mate de Philidor"
+                review={{
+                  statusCode: "IN_REVIEW",
+                  statusLabel: "En revisión",
+                  owner: "teacher",
+                  authorLabel: "Profesor Demo",
+                  submittedLabel: "Propuesto el 14 de octubre, 2026",
+                  reviewedLabel: null,
+                  reviewNote: null,
+                  canApprove: true,
+                  canReturn: true,
+                  canRemove: false,
+                }}
+                actions={{
+                  approve: async () => undefined,
+                  returnWithNote: async () => popupFormDone("exerciseReturned"),
+                  remove: async () => undefined,
                 }}
               />
             </Tile>

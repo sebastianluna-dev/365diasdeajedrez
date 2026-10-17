@@ -27,6 +27,8 @@ export const EXERCISE_LIMITS = {
   difficultyStep: 50,
   /** A solution with variants and comments; far below the import's PGN ceiling. */
   solutionPgn: 100_000,
+  /** `Exercise.reviewNote`, VarChar(500): the staff's note on «Devolver» and «Quitar de la biblioteca». */
+  reviewNote: 500,
 } as const;
 
 /** The limits of a series, shared by its popup's controls and its actions. */

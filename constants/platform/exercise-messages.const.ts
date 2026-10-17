@@ -36,6 +36,11 @@ export const EXERCISE_ERROR_MESSAGES: Record<string, string> = {
   locked: "Este ejercicio no se puede editar ahora: duplícalo para hacer tu versión.",
   changed: "Alguien cambió este ejercicio mientras lo editabas. Recarga la página y vuelve a intentarlo.",
   notReady: "Le falta algo para estar listo: ábrelo, complétalo y vuelve a intentarlo.",
+  /** «Proponer a la biblioteca» without an explanation: a library exercise is solved by students with no teacher to ask. */
+  explanationRequired:
+    "Para proponerlo a la biblioteca necesita una explicación, la que leen los alumnos al terminar: escríbela en «Datos» y vuelve a intentarlo.",
+  /** The staff's «Devolver» and «Quitar de la biblioteca» need the note the author reads. */
+  noteRequired: "Escribe una nota para el autor: es lo que lee para saber qué cambiar.",
   notAllowed: "Ese cambio no se puede hacer en este momento.",
   deleteBlocked: "Este ejercicio ya tiene intentos: archívalo en vez de eliminarlo.",
   title: "Escribe un título.",
@@ -78,6 +83,11 @@ export const EXERCISE_NOTICES = {
   exerciseRestoredToLesson:
     "Ejercicio restaurado: vuelve a la lección como borrador, al final; publícalo cuando quieras.",
   exerciseDeleted: "Ejercicio eliminado.",
+  exerciseProposed: "Propuesto a la biblioteca: el equipo lo revisará. Mientras tanto tus alumnos lo siguen viendo.",
+  exerciseWithdrawn: "Propuesta retirada: vuelve a estar listo y puedes editarlo.",
+  exerciseApproved: "Aprobado: ya está en la biblioteca.",
+  exerciseReturned: "Devuelto al profesor con tu nota.",
+  exerciseRemovedFromLibrary: "Quitado de la biblioteca.",
   exercisePublished: "Ejercicio guardado y publicado: los alumnos lo verán en la lección.",
   exerciseCopied: "Ejercicio agregado a la lección desde la biblioteca.",
   seriesCreated: "Serie creada: agrégale ejercicios y dásela a tus alumnos.",

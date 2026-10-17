@@ -16,7 +16,7 @@ const READY: ExerciseCardData = {
   levelName: "Intermedio",
   playerMoves: 2,
   topicLabels: ["Táctica", "Desviación", "Sacrificio"],
-  allowed: { duplicate: true, archive: true, restore: false, delete: true },
+  allowed: { duplicate: true, archive: true, restore: false, delete: true, propose: true, withdraw: false },
 };
 
 const action = () => fn(async () => undefined);
@@ -41,7 +41,14 @@ Reference page: [Components › ExerciseCard](/components/platform/shared/exerci
   },
   args: {
     exercise: READY,
-    actions: { duplicate: action(), archive: action(), restore: action(), delete: action() },
+    actions: {
+      duplicate: action(),
+      archive: action(),
+      restore: action(),
+      delete: action(),
+      propose: action(),
+      withdraw: action(),
+    },
   },
   decorators: [
     (Story) => (
@@ -55,8 +62,45 @@ Reference page: [Components › ExerciseCard](/components/platform/shared/exerci
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** A ready «Mate en 2» nobody has tried: «Duplicar», «Archivar» and «Eliminar». */
+/** A ready «Mate en 2» nobody has tried: «Duplicar», «Proponer a la biblioteca», «Archivar» and «Eliminar». */
 export const Ready: Story = {};
+
+/** Returned by the staff with a note, so ready again: «Devuelto: …» under the topics, and «Proponer a la biblioteca» once it is fixed. */
+export const Returned: Story = {
+  args: {
+    exercise: {
+      ...READY,
+      note: "La explicación no dice por qué el rey no puede capturar en g8: agrégalo y vuelve a proponerlo.",
+    },
+  },
+};
+
+/** Proposed to the library: the warning tag, no «Archivar» nor «Eliminar», and «Retirar la propuesta». */
+export const InReview: Story = {
+  args: {
+    exercise: {
+      ...READY,
+      statusCode: "IN_REVIEW",
+      statusLabel: "En revisión",
+      allowed: { duplicate: true, archive: false, restore: false, delete: false, propose: false, withdraw: true },
+    },
+  },
+};
+
+/** A library exercise as a teacher sees it on «Biblioteca»: the accent tag, who wrote it, no page and no words. */
+export const LibraryForTeacher: Story = {
+  args: {
+    exercise: {
+      ...READY,
+      href: null,
+      statusCode: "PUBLISHED",
+      statusLabel: "En la biblioteca",
+      authorLabel: "Academia",
+      allowed: { duplicate: false, archive: false, restore: false, delete: false },
+    },
+    actions: undefined,
+  },
+};
 
 /** A draft sequence with Black to move: the plain tag, the board turned, no level for its difficulty. */
 export const Draft: Story = {

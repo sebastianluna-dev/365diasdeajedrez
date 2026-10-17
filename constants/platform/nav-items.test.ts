@@ -45,14 +45,15 @@ describe("buildPlatformNavGroups", () => {
     ]);
   });
 
-  it("da el menú de administración al staff, sin «Jugar» ni «Herramientas»", () => {
+  it("da el menú de administración al staff, sin «Jugar» ni «Herramientas»; sólo «Ejercicios» con su interruptor", () => {
     const groups = buildPlatformNavGroups(STAFF, ALL_ON);
     expect(groups).toHaveLength(1);
-    expect(groups[0]?.items).toEqual(STAFF_NAV_ITEMS);
+    expect(groups[0]?.items.filter((item) => item.label !== "Ejercicios")).toEqual(STAFF_NAV_ITEMS);
+    expect(buildPlatformNavGroups(STAFF, ALL_OFF)[0]?.items).toEqual(STAFF_NAV_ITEMS);
   });
 
   it("con varios roles manda el de mayor alcance: staff sobre profesor", () => {
-    const groups = buildPlatformNavGroups({ isTeacher: true, isStaff: true }, ALL_ON);
+    const groups = buildPlatformNavGroups({ isTeacher: true, isStaff: true }, ALL_OFF);
     expect(groups[0]?.label).toBe("Administración");
     expect(groups[0]?.items).toEqual(STAFF_NAV_ITEMS);
   });
@@ -106,8 +107,20 @@ describe("buildPlatformNavGroups", () => {
     expect(hrefsOf(buildPlatformNavGroups(TEACHER, { ...ALL_ON, exercises: "withTeacher" }))).toContain(
       "/profesor/ejercicios",
     );
-    // The staff's menu is the panel's: their exercises arrive with the library (phase 4).
+    // The staff's menu is the panel's: «Ejercicios» after «Cursos» with the switch (phase 4), never the teacher's bank.
     expect(hrefsOf(buildPlatformNavGroups(STAFF, ALL_ON))).not.toContain("/profesor/ejercicios");
+    expect(labelsOf(buildPlatformNavGroups(STAFF, ALL_ON))).toEqual([
+      "Administración",
+      "Alumnos",
+      "Profesores",
+      "Cursos",
+      "Ejercicios",
+      "Clases",
+    ]);
+    expect(hrefsOf(buildPlatformNavGroups(STAFF, ALL_ON))).toContain("/administracion/ejercicios");
+    expect(hrefsOf(buildPlatformNavGroups(STAFF, { ...ALL_ON, exercises: false }))).not.toContain(
+      "/administracion/ejercicios",
+    );
     // A teacher's menu never carries the student's section, whatever they have.
     expect(hrefsOf(buildPlatformNavGroups({ ...TEACHER, hasExerciseSource: true }, ALL_ON))).not.toContain(
       "/ejercicios",

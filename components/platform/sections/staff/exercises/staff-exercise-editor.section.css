@@ -1,0 +1,6 @@
+/* The staff's exercise page: the editor and, under it, the review bar. */
+.staff-exercise-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-6);
+}

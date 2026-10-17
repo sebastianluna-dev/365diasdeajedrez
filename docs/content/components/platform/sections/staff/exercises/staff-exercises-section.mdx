@@ -1,0 +1,35 @@
+---
+description: "The academy's exercise bank: «Biblioteca» and «En revisión» as pills, and the cards whose title opens the staff editor with its review bar."
+---
+
+# `StaffExercisesSection`
+
+|            |                                                                                                                                                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/exercises/staff-exercises.section.tsx`                                                                                                                                                                       |
+| Kind       | Server Component                                                                                                                                                                                                                                 |
+| Stylesheet | `staff-exercises.section.css` → block `.staff-exercises`                                                                                                                                                                                         |
+| Used by    | `/administracion/ejercicios`, `/administracion/ejercicios/revision` (behind `EXERCISES_ENABLED`)                                                                                                                                                 |
+| Composes   | [`FilterPills`](/components/platform/shared/filter-pills), [`ExerciseCard`](/components/platform/shared/exercise-card), [`EmptyState`](/components/platform/shared/empty-state), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Reads      | `StaffExercisesView` from `getStaffExercises(tab)` · `services/staff-exercises/staff-exercises.service.ts`                                                                                                                                       |
+
+## Props
+
+| Prop                     | Type                 | Required | Meaning                                                         |
+| ------------------------ | -------------------- | -------- | --------------------------------------------------------------- |
+| `view`                   | `StaffExercisesView` | yes      | The tab, the library's cards or the proposals, and the counts.  |
+| `notice`, `errorMessage` | `string`             | no       | From the page's `?aviso=` (`readExerciseNotice`) and `?error=`. |
+
+## Behaviour
+
+«Biblioteca · n» and «En revisión · n» are links (two pages, not a query). The library lists every PUBLISHED exercise of a bank (`buildLibraryExercisesWhere`), the last published first, each card naming its author («Academia» or the teacher); the queue lists the teachers' proposals, the oldest first, each under «Propuesto el … por …». The cards carry no row words: a decision is taken on the exercise's page, which the title opens.
+
+## Markup & styling
+
+Block `.staff-exercises` (34 lines): the pills and a grid of cards, two to a row, one under 1024px; the proposal's line above its card.
+
+**Elements:** `.staff-exercises__list`, `.staff-exercises__item`, `.staff-exercises__submitted`
+
+**Tokens:** `--platform-text-muted`
+
+**Breakpoints:** `(width < 1024px)`.

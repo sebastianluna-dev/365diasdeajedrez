@@ -4,12 +4,17 @@ import type {
   ExerciseAuthoringExercise,
   ExerciseAuthoringGame,
 } from "@/components/platform/shared/exercise-authoring/exercise-authoring.types";
-import { EXERCISE_STATUS, type ExerciseKindCode } from "@/constants/platform/exercise-codes.const";
+import {
+  EXERCISE_STATUS,
+  type ExerciseKindCode,
+  type ExerciseStatusCode,
+} from "@/constants/platform/exercise-codes.const";
 import { requireTeacher } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import type { DifficultyLevel } from "@/services/shared/exercise-level";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import {
+  buildLibraryExercisesWhere,
   buildOwnExercisesWhere,
   buildPickableExercisesWhere,
   teacherVisibleAttemptsWhere,
@@ -21,6 +26,7 @@ import {
   mapAuthoringExercise,
   mapExerciseAttemptRow,
   mapExerciseCard,
+  mapLibraryExerciseCard,
   mapSeriesProgress,
   mapSeriesCard,
   mapSeriesItem,
@@ -28,6 +34,7 @@ import {
   mapSeriesShare,
   newExercisePrefill,
   teacherExercisePermissions,
+  teacherExerciseReview,
   teacherSaveButtons,
 } from "./teacher-exercises.mapper";
 import type {
@@ -66,8 +73,24 @@ const EXERCISE_SELECT = {
   kind: { select: { code: true } },
   status: { select: { code: true, label: true } },
   topics: { select: { topic: { select: { code: true, label: true, order: true } } } },
+  reviewNote: true,
   updatedAt: true,
   _count: { select: { attempts: true } },
+} as const;
+
+/** What the teacher's «Biblioteca» reads of a library exercise (D08): the card and its author. */
+const LIBRARY_SELECT = {
+  id: true,
+  title: true,
+  difficulty: true,
+  mateIn: true,
+  startFen: true,
+  playerMoves: true,
+  teacherId: true,
+  teacher: { select: { displayName: true } },
+  kind: { select: { code: true } },
+  status: { select: { code: true, label: true } },
+  topics: { select: { topic: { select: { code: true, label: true, order: true } } } },
 } as const;
 
 const LEVEL_SELECT = { slug: true, name: true, order: true, eloMin: true, eloMax: true, isActive: true } as const;
@@ -88,7 +111,9 @@ export function activeSeriesSharesWhere(teacherId: string): Prisma.ExerciseSerie
 
 /**
  * «Ejercicios»: the teacher's exercises in use, or the archived ones, the
- * last changed first; or, on the «Series» view, their series.
+ * last changed first; on the «Series» view, their series; on «Biblioteca»
+ * (D08), the library's exercises — what they may pick for a series or a
+ * block — read-only, the last published first.
  */
 export async function getTeacherExercises(tab: TeacherExercisesTab): Promise<TeacherExercisesView> {
   const { teacher } = await requireTeacher();
@@ -96,43 +121,56 @@ export async function getTeacherExercises(tab: TeacherExercisesTab): Promise<Tea
   const own = buildOwnExercisesWhere(teacher.id);
   const archived = { status: { code: EXERCISE_STATUS.ARCHIVED } };
   const inUse = { status: { code: { not: EXERCISE_STATUS.ARCHIVED } } };
+  const library = buildLibraryExercisesWhere();
 
-  const [rows, seriesRows, levelRows, active, archivedCount, seriesCount] = await Promise.all([
-    tab === "series"
-      ? []
-      : db.exercise.findMany({
-          where: { AND: [own, tab === "archivados" ? archived : inUse] },
-          select: EXERCISE_SELECT,
-          orderBy: [{ updatedAt: "desc" }, { id: "asc" }],
-        }),
-    tab === "series"
-      ? db.exerciseSeries.findMany({
-          where: { teacherId: teacher.id },
-          select: {
-            id: true,
-            title: true,
-            description: true,
-            items: { select: { exercise: { select: { teacherId: true, status: { select: { code: true } } } } } },
-            _count: { select: { shares: { where: activeSeriesSharesWhere(teacher.id) } } },
-          },
-          orderBy: [{ updatedAt: "desc" }, { id: "asc" }],
-        })
-      : [],
-    levels(),
-    db.exercise.count({ where: { AND: [own, inUse] } }),
-    db.exercise.count({ where: { AND: [own, archived] } }),
-    db.exerciseSeries.count({ where: { teacherId: teacher.id } }),
-  ]);
+  const [rows, libraryRows, seriesRows, levelRows, active, archivedCount, seriesCount, libraryCount] =
+    await Promise.all([
+      tab === "series" || tab === "biblioteca"
+        ? []
+        : db.exercise.findMany({
+            where: { AND: [own, tab === "archivados" ? archived : inUse] },
+            select: EXERCISE_SELECT,
+            orderBy: [{ updatedAt: "desc" }, { id: "asc" }],
+          }),
+      tab === "biblioteca"
+        ? db.exercise.findMany({
+            where: library,
+            select: LIBRARY_SELECT,
+            orderBy: [{ publishedAt: "desc" }, { id: "asc" }],
+          })
+        : [],
+      tab === "series"
+        ? db.exerciseSeries.findMany({
+            where: { teacherId: teacher.id },
+            select: {
+              id: true,
+              title: true,
+              description: true,
+              items: { select: { exercise: { select: { teacherId: true, status: { select: { code: true } } } } } },
+              _count: { select: { shares: { where: activeSeriesSharesWhere(teacher.id) } } },
+            },
+            orderBy: [{ updatedAt: "desc" }, { id: "asc" }],
+          })
+        : [],
+      levels(),
+      db.exercise.count({ where: { AND: [own, inUse] } }),
+      db.exercise.count({ where: { AND: [own, archived] } }),
+      db.exerciseSeries.count({ where: { teacherId: teacher.id } }),
+      db.exercise.count({ where: library }),
+    ]);
   return {
     tab,
-    exercises: rows.map((row) => mapExerciseCard(row, levelRows)),
+    exercises:
+      tab === "biblioteca"
+        ? libraryRows.map((row) => mapLibraryExerciseCard(row, levelRows))
+        : rows.map((row) => mapExerciseCard(row, levelRows)),
     series: seriesRows.map((row) =>
       mapSeriesCard(
         { ...row, items: row.items.map((item) => item.exercise), shareCount: row._count.shares },
         teacher.id,
       ),
     ),
-    counts: { active, archived: archivedCount, series: seriesCount },
+    counts: { active, archived: archivedCount, series: seriesCount, library: libraryCount },
   };
 }
 
@@ -207,6 +245,7 @@ export async function getTeacherExerciseEditor(exerciseId: string): Promise<Teac
     games,
     permissions: teacherExercisePermissions(exercise.statusCode),
     buttons: teacherSaveButtons(exercise.statusCode),
+    review: teacherExerciseReview(row.status.code as ExerciseStatusCode, row.reviewNote),
   };
 }
 
@@ -248,6 +287,7 @@ export async function getNewTeacherExerciseEditor(from?: ExerciseGameSeed): Prom
     permissions: teacherExercisePermissions(null),
     buttons: teacherSaveButtons(null),
     initialTab: prefill ? "solution" : undefined,
+    review: { canPropose: false, canWithdraw: false, note: null },
   };
 }
 

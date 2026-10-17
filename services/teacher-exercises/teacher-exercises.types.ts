@@ -16,17 +16,17 @@ import type {
 import type { ExerciseFormTab } from "@/services/shared/exercise-form";
 import type { SeriesItemAvailability } from "@/services/shared/exercise-visibility-rules";
 
-/** The bank's three views: what is in use, what was archived, and the series. */
-export type TeacherExercisesTab = "activos" | "archivados" | "series";
+/** The bank's views: what is in use, what was archived, the series and, from phase 4, the library (D08). */
+export type TeacherExercisesTab = "activos" | "archivados" | "series" | "biblioteca";
 
 /** «Ejercicios» of a teacher: their own exercises, newest first, or their series. */
 export interface TeacherExercisesView {
   tab: TeacherExercisesTab;
-  /** Empty on the «Series» view. */
+  /** Empty on the «Series» view. On «Biblioteca», the library's exercises, read-only (D08). */
   exercises: ExerciseCardData[];
   /** Filled only on the «Series» view. */
   series: TeacherSeriesCard[];
-  counts: { active: number; archived: number; series: number };
+  counts: { active: number; archived: number; series: number; library: number };
 }
 
 /** A series in the bank's «Series» view. */
@@ -102,6 +102,18 @@ export interface TeacherExerciseEditor {
   buttons: ExerciseSaveButton[];
   /** The tab the editor opens on: «Solución» for a new exercise seeded from a game («Crear ejercicio desde aquí»). */
   initialTab?: ExerciseFormTab;
+  /** The library's review, as the teacher sees it (D07, D16): what they may ask, and the staff's last note. */
+  review: TeacherExerciseReview;
+}
+
+/** The review bar of a teacher's exercise page. */
+export interface TeacherExerciseReview {
+  /** «Proponer a la biblioteca»: a ready exercise. */
+  canPropose: boolean;
+  /** «Retirar la propuesta»: one in review. */
+  canWithdraw: boolean;
+  /** The staff's note on a returned exercise, or on one taken out of the library; null otherwise. */
+  note: string | null;
 }
 
 /** A move of one of the teacher's study games: where «Crear ejercicio desde aquí» (D11) starts a new exercise. */
@@ -143,8 +155,19 @@ export interface TeacherExerciseRow {
   kind: { code: string };
   status: { code: string; label: string };
   topics: { topic: { code: string; label: string; order: number } }[];
+  /** The staff's note (`reviewNote`): what a returned exercise's card and page show. */
+  reviewNote: string | null;
   updatedAt: Date;
   _count: { attempts: number };
+}
+
+/** A library exercise as the teacher's «Biblioteca» reads it: a card with its author, no page of theirs (D08). */
+export interface LibraryExerciseRow extends Pick<
+  TeacherExerciseRow,
+  "id" | "title" | "difficulty" | "mateIn" | "startFen" | "playerMoves" | "kind" | "status" | "topics"
+> {
+  teacherId: string | null;
+  teacher: { displayName: string } | null;
 }
 
 // --- The teacher's view of attempts (D24, D45) ---------------------------

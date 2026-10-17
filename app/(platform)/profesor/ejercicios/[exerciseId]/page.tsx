@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeftIcon } from "@/components/icons/chevron-left-icon.comp";
-import { TeacherExerciseEditorSection } from "@/components/platform/sections/teacher/exercises/teacher-exercise-editor.section";
+import {
+  TeacherExerciseEditorSection,
+  TeacherExerciseReviewActions,
+} from "@/components/platform/sections/teacher/exercises/teacher-exercise-editor.section";
 import { EXERCISE_ERROR_MESSAGES, readExerciseNotice } from "@/constants/platform/exercise-messages.const";
 import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
 import { teacherRoutes } from "@/lib/platform-routes";
@@ -20,7 +23,11 @@ export async function generateMetadata({ params }: TeacherExercisePageProps): Pr
   return editor ? { title: editor.exercise.title } : {};
 }
 
-/** One of the teacher's exercises, in the editor. Another teacher's is a 404 (the service filters by owner). */
+/**
+ * One of the teacher's exercises, in the editor, with the library's review in
+ * its head («Proponer a la biblioteca», «Retirar la propuesta», D07, D16).
+ * Another teacher's is a 404 (the service filters by owner).
+ */
 export default async function TeacherExercisePage({ params, searchParams }: TeacherExercisePageProps) {
   if (!EXERCISES_ENABLED) notFound();
   const [{ exerciseId }, { aviso, error }] = await Promise.all([params, searchParams]);
@@ -40,6 +47,7 @@ export default async function TeacherExercisePage({ params, searchParams }: Teac
             <span className="platform-tag">{editor.statusLabel}</span>
           </p>
         )}
+        <TeacherExerciseReviewActions exerciseId={exerciseId} review={editor.review} />
       </header>
       <TeacherExerciseEditorSection
         editor={editor}

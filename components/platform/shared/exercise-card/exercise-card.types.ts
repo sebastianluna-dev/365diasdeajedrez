@@ -7,8 +7,8 @@ import type { ExerciseStatusCode } from "@/constants/platform/exercise-codes.con
 
 export interface ExerciseCardData {
   id: string;
-  /** Where the title leads: the editor. */
-  href: string;
+  /** Where the title leads: the editor; null when the reader has no page of it (a teacher looking at the library). */
+  href: string | null;
   title: string;
   /** The start position, drawn small; with the side to move at the bottom. */
   startFen: string;
@@ -24,8 +24,23 @@ export interface ExerciseCardData {
   /** The student's moves in the main line. */
   playerMoves: number;
   topicLabels: string[];
-  /** The row actions this exercise offers, by its status and its history. */
-  allowed: { duplicate: boolean; archive: boolean; restore: boolean; delete: boolean };
+  /** Who wrote it, when the reader is not its owner: «Academia», or the teacher's name (the library, the review queue). */
+  authorLabel?: string | null;
+  /** The staff's note on a returned exercise, or on one taken out of the library: «Devuelto: …» (D16). */
+  note?: string | null;
+  /**
+   * The row actions this exercise offers, by its status and its history;
+   * `propose` and `withdraw` are the teacher's «Proponer a la biblioteca»
+   * (READY) and «Retirar la propuesta» (IN_REVIEW).
+   */
+  allowed: {
+    duplicate: boolean;
+    archive: boolean;
+    restore: boolean;
+    delete: boolean;
+    propose?: boolean;
+    withdraw?: boolean;
+  };
 }
 
 /** A row action of the bank: a server action bound to nothing, given the id. */
@@ -37,4 +52,8 @@ export interface ExerciseCardActions {
   archive?: ExerciseCardAction;
   restore?: ExerciseCardAction;
   delete?: ExerciseCardAction;
+  /** «Proponer a la biblioteca» (READY → IN_REVIEW, D07, D16). */
+  propose?: ExerciseCardAction;
+  /** «Retirar la propuesta» (IN_REVIEW → READY). */
+  withdraw?: ExerciseCardAction;
 }

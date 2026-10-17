@@ -59,7 +59,8 @@ export interface PlatformNavFeatures {
   trainer: boolean;
   /**
    * «Ejercicios» (`EXERCISES_ENABLED`). Off: nobody's. On, the teacher's bank
-   * after «Clases que imparto», and the student's section after «Mis cursos»:
+   * after «Clases que imparto», the staff's after «Cursos», and the student's
+   * section after «Mis cursos»:
    * for every student (`"all"`, from phase 4, when the library gives anyone
    * something to solve) or only for one who has something there
    * (`"withTeacher"`, phases 1–3: an active teacher or a series given to them,
@@ -128,6 +129,18 @@ const TEACHER_EXERCISES_ITEM: PlatformNavItem = { label: "Ejercicios", href: tea
 
 /** The student's «Ejercicios», right after their courses. */
 const STUDENT_EXERCISES_ITEM: PlatformNavItem = { label: "Ejercicios", href: platformRoutes.exercises };
+
+/** The academy's exercise bank — the library, the review queue and the academy's series — right after the courses. */
+const STAFF_EXERCISES_ITEM: PlatformNavItem = { label: "Ejercicios", href: staffRoutes.exercises };
+
+/** The staff's items with what is switched on: «Ejercicios» after «Cursos» (phase 4 of the exercises). */
+function withStaffFeatures(items: PlatformNavItem[], features: PlatformNavFeatures): PlatformNavEntry[] {
+  return items.flatMap((item): PlatformNavEntry[] =>
+    item.href === staffRoutes.courses
+      ? [item, ...(features.exercises !== false ? [STAFF_EXERCISES_ITEM] : [])]
+      : [item],
+  );
+}
 
 /**
  * Whether the menu needs to know if the student has something in
@@ -203,7 +216,8 @@ function withFeatures(
  * Pure (testable) function that picks the right menu. It always returns ONE
  * single group: the list of the widest role the user has. The student's and
  * the teacher's gain «Jugar» and «Herramientas» with their switches
- * (`features`); the staff's menu is the panel's and has neither.
+ * (`features`); the staff's menu is the panel's and has neither, only
+ * «Ejercicios» after «Cursos» with its switch.
  *
  * It still returns an array (and not a loose group) so as not to force the
  * component to change shape if one day there is more than one again.
@@ -212,7 +226,7 @@ export function buildPlatformNavGroups(
   roles: PlatformNavRoles,
   features: PlatformNavFeatures = FEATURES,
 ): PlatformNavGroup[] {
-  if (roles.isStaff) return [{ label: "Administración", items: STAFF_NAV_ITEMS }];
+  if (roles.isStaff) return [{ label: "Administración", items: withStaffFeatures(STAFF_NAV_ITEMS, features) }];
   if (roles.isTeacher) return [{ label: "Profesor", items: withFeatures(TEACHER_NAV_ITEMS, features, false) }];
   const studentExercises =
     features.exercises === "all" || (features.exercises === "withTeacher" && roles.hasExerciseSource === true);

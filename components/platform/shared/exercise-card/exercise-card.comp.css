@@ -55,6 +55,28 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* The staff's note on a returned one: the information tone, beside its icon. */
+  & .exercise-card__note {
+    display: flex;
+    gap: var(--platform-space-2);
+    align-items: flex-start;
+    margin: 0;
+    padding: var(--platform-space-2) var(--platform-space-3);
+    border-radius: 8px;
+    background: var(--platform-surface-sunken);
+    font-size: var(--platform-type-sm);
+    line-height: 1.45;
+    color: var(--platform-text-muted);
+  }
+
+  & .exercise-card__note-icon {
+    flex-shrink: 0;
+    width: var(--platform-space-4);
+    height: var(--platform-space-4);
+    margin-top: var(--platform-space-0-5);
+    color: var(--platform-text-muted);
+  }
+
   & .exercise-card__actions {
     display: flex;
     flex-wrap: wrap;

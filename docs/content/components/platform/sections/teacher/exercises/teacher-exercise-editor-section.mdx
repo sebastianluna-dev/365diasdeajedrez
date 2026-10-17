@@ -4,14 +4,14 @@ description: "The editor of a teacher's exercise, new or saved: ExerciseAuthorin
 
 # `TeacherExerciseEditorSection`
 
-|          |                                                                                                                                                              |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| File     | `components/platform/sections/teacher/exercises/teacher-exercise-editor.section.tsx`                                                                         |
-| Kind     | Server Component                                                                                                                                             |
-| Used by  | `/profesor/ejercicios/nuevo`, `/profesor/ejercicios/[exerciseId]` (behind `EXERCISES_ENABLED`)                                                               |
-| Composes | [`ExerciseAuthoring`](/components/platform/shared/exercise-authoring), [`PlatformNotice`](/components/platform/shared/platform-notice)                       |
-| Reads    | `TeacherExerciseEditor` from `getTeacherExerciseEditor(id)` or `getNewTeacherExerciseEditor()` · `services/teacher-exercises/teacher-exercises.service.ts`   |
-| Writes   | `saveTeacherExercise(id)` (through `useActionState`), `duplicateTeacherExercise(id)`, `fetchTeacherGamePgn()` — bound here and handed to the editor as props |
+|          |                                                                                                                                                                                                                                                                   |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File     | `components/platform/sections/teacher/exercises/teacher-exercise-editor.section.tsx`                                                                                                                                                                              |
+| Kind     | Server Component                                                                                                                                                                                                                                                  |
+| Used by  | `/profesor/ejercicios/nuevo`, `/profesor/ejercicios/[exerciseId]` (behind `EXERCISES_ENABLED`)                                                                                                                                                                    |
+| Composes | [`ExerciseAuthoring`](/components/platform/shared/exercise-authoring), [`PlatformNotice`](/components/platform/shared/platform-notice)                                                                                                                            |
+| Reads    | `TeacherExerciseEditor` from `getTeacherExerciseEditor(id)` or `getNewTeacherExerciseEditor()` · `services/teacher-exercises/teacher-exercises.service.ts`                                                                                                        |
+| Writes   | `saveTeacherExercise(id)` (through `useActionState`), `duplicateTeacherExercise(id)`, `fetchTeacherGamePgn()` — bound here and handed to the editor as props; `TeacherExerciseReviewActions` binds `proposeTeacherExercise(id)` and `withdrawTeacherExercise(id)` |
 
 ## Props
 
@@ -23,3 +23,5 @@ description: "The editor of a teacher's exercise, new or saved: ExerciseAuthorin
 ## Behaviour
 
 The editor is keyed by `editor.version` (the exercise's `updatedAt`): the save of a saved exercise redirects to its own page, and the board and the fields open again on what was stored instead of keeping the draft. Another teacher's exercise never reaches here: the page answers 404 when the service finds nothing.
+
+The same file exports `TeacherExerciseReviewActions` (phase 4, D07, D16), which the page mounts in its head: «Proponer a la biblioteca» on a ready exercise and «Retirar la propuesta» on one in review, each a form with `origin=editor` so the move comes back to this page; and the section says the staff's note on a returned exercise above the editor («Devuelto por el equipo: …»).

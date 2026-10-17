@@ -75,6 +75,15 @@ const published = { code: EXERCISE_STATUS.PUBLISHED } satisfies Prisma.ExerciseS
 /** In the library now: PUBLISHED and nobody's lesson's — a lesson's exercise is never the library's (D04). */
 const inLibrary = { status: published, lessonId: null } satisfies Prisma.ExerciseWhereInput;
 
+/**
+ * The library (D16, D32): what free practice serves, what the teacher's
+ * «Biblioteca» lists, what the staff's library view holds. The academy's
+ * PUBLISHED exercises and the teachers' approved ones; never a lesson's.
+ */
+export function buildLibraryExercisesWhere(): Prisma.ExerciseWhereInput {
+  return inLibrary;
+}
+
 /** The lesson branch (4): a lesson's PUBLISHED exercise, its lesson in a published course. */
 const inPublishedLesson = {
   lessonId: { not: null },

@@ -12,7 +12,7 @@ import {
 import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
 import { requireTeacher } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
-import { teacherRoutes } from "@/lib/platform-routes";
+import { staffRoutes, teacherRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { syncCatalogJoin } from "@/services/shared/catalog-join.service";
 import { EXERCISE_FORM_FIELDS, exerciseErrorTab, readExerciseForm } from "@/services/shared/exercise-form";
@@ -284,10 +284,20 @@ export async function duplicateTeacherExercise(exerciseId: string, formData: For
   redirect(withNoticeParam(teacherRoutes.exerciseDetail(created.id), "exerciseDuplicated"));
 }
 
+/**
+ * Why a move was refused, as the address's `?error=`: a proposal that lacks
+ * its explanation says so (a library exercise is solved by students with no
+ * teacher to ask); anything else, the refusal's own code.
+ */
+function moveErrorCode(moved: Exclude<ExerciseTransitionResult, { ok: true }>): string {
+  if (moved.code === "notReady" && moved.readiness.missing.includes("explanation")) return "explanationRequired";
+  return moved.code;
+}
+
 /** A status move of the bank's rows, with its notice, back to the bank's view it was made from. */
 async function moveOwnExercise(
   exerciseId: string,
-  to: typeof EXERCISE_STATUS.ARCHIVED | typeof EXERCISE_STATUS.READY,
+  to: typeof EXERCISE_STATUS.ARCHIVED | typeof EXERCISE_STATUS.READY | typeof EXERCISE_STATUS.IN_REVIEW,
   notice: string,
   back: string,
 ): Promise<void> {
@@ -298,9 +308,34 @@ async function moveOwnExercise(
   const moved = await getPlatformDb().$transaction((tx) =>
     transitionOwnExercise(tx, { exerciseId, teacherId: teacher.id, actorUserId: user.id, to, now: new Date() }),
   );
-  if (!moved.ok) redirect(withErrorParam(back, moved.code));
+  if (!moved.ok) redirect(withErrorParam(back, moveErrorCode(moved)));
   revalidateExercise(exerciseId);
+  revalidatePath(staffRoutes.exercisesReview);
   redirect(withNoticeParam(back, notice));
+}
+
+/**
+ * Where a review move comes back to: the exercise's own page when its review
+ * bar asked (`origin=editor`, a hidden input), the bank's list otherwise. A
+ * flag, not an address: nothing of the browser's is followed.
+ */
+function reviewBack(exerciseId: string, formData: FormData): string {
+  return formData.get("origin") === "editor" ? teacherRoutes.exerciseDetail(exerciseId) : teacherRoutes.exercises;
+}
+
+/**
+ * «Proponer a la biblioteca» (D07, D16): READY → IN_REVIEW through the status
+ * writer, which asks for the readiness gate with an explanation and stamps
+ * `submittedAt`. The students keep seeing it meanwhile (IN_REVIEW is usable);
+ * its content is locked until the staff decides or the teacher withdraws.
+ */
+export async function proposeTeacherExercise(exerciseId: string, formData: FormData): Promise<void> {
+  await moveOwnExercise(exerciseId, EXERCISE_STATUS.IN_REVIEW, "exerciseProposed", reviewBack(exerciseId, formData));
+}
+
+/** «Retirar la propuesta»: IN_REVIEW → READY, so the teacher can edit it again. */
+export async function withdrawTeacherExercise(exerciseId: string, formData: FormData): Promise<void> {
+  await moveOwnExercise(exerciseId, EXERCISE_STATUS.READY, "exerciseWithdrawn", reviewBack(exerciseId, formData));
 }
 
 /** «Archivar» a draft or a ready one: it leaves the bank's list and the series' students, its history stays. */
