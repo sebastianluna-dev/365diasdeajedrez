@@ -1,0 +1,26 @@
+---
+description: "The n-th exercise of a class's «Ejercicio» block, to solve from the class: the server side of the solve screen, with the attempt's action bound and the context CLASS."
+---
+
+# `ClassPracticeSection`
+
+|          |                                                                                                                            |
+| -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| File     | `components/platform/sections/classes/class-practice/class-practice.section.tsx`                                           |
+| Kind     | Server Component                                                                                                           |
+| Used by  | `/clases/[classId]/ejercicios/[blockId]/[n]` (behind `EXERCISES_ENABLED`)                                                  |
+| Composes | [`ExerciseSolver`](/components/platform/shared/exercise-solver)                                                            |
+| Reads    | `ClassPracticeExercise` from `getClassBlockExercise(classId, blockId, n)` · `services/exercises/class-practice.service.ts` |
+| Writes   | `submitExerciseAttempt` · `services/exercises/exercises.actions.ts`, handed to the solver as a prop                        |
+
+## Props
+
+| Prop   | Type                    | Required | Meaning                                                                                                                                                    |
+| ------ | ----------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `item` | `ClassPracticeExercise` | yes      | The class and its block, the exercise for the solver, its mode, the attempt's context (`CLASS`, «2 / 3»), the next exercise and the way back to the class. |
+
+## Behaviour
+
+D29's «the student solves it there» (2026-10-16, phase 3 of [Exercises](/platform/exercises#classes-phase-3)). `n` is 1-based among the exercises of the block the student may solve — the class teacher's usable ones and the library's, the number the class page shows. The service reads the block through `studentSolvableClassBlockWhere` (a seat not moved, the class not cancelled, the block visible in the class's phase: an AFTER block only once the class ended) and the exercise again through `solvableInContextWhere` with the context `CLASS`, the same `where` the submit checks at its own `now`; it opens **unscored** when the exercise's family was attempted this study day. The solver is mounted under the block and the exercise as its `key`. «Siguiente ejercicio» walks the block; at the last, «Volver a la clase».
+
+The page draws its head itself: the way back to the class by its title («Clase con GM Profesor Demo» when it has none), and the exercise's title.
