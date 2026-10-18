@@ -1,7 +1,7 @@
-/* The map is a sheet of paper laid in the platform's page: its row sticks under the bar. */
+/* The map is the page itself: its page bleeds (`platform-page_frame_bleed`),
+   so the paper meets the bar and the window's sides with no corner or shadow
+   of its own (2026-10-18). Its row sticks under the bar. */
 .adventure-map {
   position: relative;
-  border-radius: 8px;
   overflow: clip;
-  box-shadow: var(--adventure-shadow);
 }

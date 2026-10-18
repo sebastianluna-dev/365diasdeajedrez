@@ -36,7 +36,7 @@ export default async function AdventureMapPage({ params, searchParams }: Adventu
   const errorMessage = studentErrorMessage(error);
 
   return (
-    <div className="platform-page platform-page_width_full">
+    <div className="platform-page platform-page_width_full platform-page_frame_bleed">
       {errorMessage && <PlatformNotice message={errorMessage} />}
       <AdventureMapSection slug={adventureSlug} victory={victoryOf(victoria)} autoScroll={!errorMessage} />
     </div>

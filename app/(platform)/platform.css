@@ -481,9 +481,10 @@ html body.platform-theme[data-scroll-locked] {
   }
 }
 
-/* A page that bleeds fills the window under the bar edge to edge: the frame
-   drops its padding (platform-shell.section.css) and the one thing on the
-   page stretches to the page's height. */
+/* A page that bleeds meets the bar and the window's sides: the frame drops
+   its padding (platform-shell.section.css). With `_height_screen` it fills
+   the window and its last child stretches to the page's height; without it,
+   the page is as tall as what it holds and scrolls as usual. */
 .platform-page.platform-page_frame_bleed {
   gap: 0;
 
