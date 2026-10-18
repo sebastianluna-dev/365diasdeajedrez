@@ -15,7 +15,7 @@
  * `as boolean`, so the branches that read it are not narrowed to the one
  * value it has today.
  */
-export const MOVE_TRAINER_ENABLED = false as boolean;
+export const MOVE_TRAINER_ENABLED = true as boolean;
 
 /**
  * «Jugar»: games against the bots, `/jugar`, the profile at `/perfil` with the
@@ -25,7 +25,7 @@ export const MOVE_TRAINER_ENABLED = false as boolean;
  * has checked the screens: the pages answer 404 — also one opened by a game's
  * id — and the actions of `services/play` answer `disabled`.
  */
-export const PLAY_ENABLED = false as boolean;
+export const PLAY_ENABLED = true as boolean;
 
 /**
  * «Modo aventura»: the first adventure, «El cuaderno del viajero», a map of
@@ -38,7 +38,7 @@ export const PLAY_ENABLED = false as boolean;
  * rules of the data — the hidden bot group and the refusal of its bots by
  * `startPlayedGame` and `rematchPlayedGame` —, which hold whatever this says.
  */
-export const ADVENTURE_ENABLED = false as boolean;
+export const ADVENTURE_ENABLED = true as boolean;
 
 /**
  * «Herramientas»: the analysis board at `/herramientas/tablero-de-analisis` and
@@ -46,7 +46,7 @@ export const ADVENTURE_ENABLED = false as boolean;
  * nothing and needs no calibration nor migration, so it can be switched on
  * before `PLAY_ENABLED`.
  */
-export const ANALYSIS_BOARD_ENABLED = false as boolean;
+export const ANALYSIS_BOARD_ENABLED = true as boolean;
 
 /**
  * «Ejercicios»: the exercise bank, its editor and the series a teacher gives
@@ -60,7 +60,7 @@ export const ANALYSIS_BOARD_ENABLED = false as boolean;
  * phase 2): they replace a panel that is live today, over data that phase's
  * migration moves, so they show whatever this says.
  */
-export const EXERCISES_ENABLED = false as boolean;
+export const EXERCISES_ENABLED = true as boolean;
 
 /**
  * The persistence of the exercises' phases 5–7 — the PGN import's write, the
