@@ -31,7 +31,7 @@ export default async function PlayPage({ searchParams }: PlayPageProps) {
   // adventure, this address stays what it has been, the gallery of bots.
   if (ADVENTURE_ENABLED) {
     return (
-      <div className="platform-page platform-page_width_wide">
+      <div className="platform-page platform-page_width_full platform-page_height_screen platform-page_frame_bleed">
         {errorMessage && <PlatformNotice message={errorMessage} />}
         <AdventureCoverSection />
       </div>

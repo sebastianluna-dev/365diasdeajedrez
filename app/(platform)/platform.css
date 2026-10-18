@@ -481,6 +481,25 @@ html body.platform-theme[data-scroll-locked] {
   }
 }
 
+/* A page that bleeds fills the window under the bar edge to edge: the frame
+   drops its padding (platform-shell.section.css) and the one thing on the
+   page stretches to the page's height. */
+.platform-page.platform-page_frame_bleed {
+  gap: 0;
+
+  & > :last-child {
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* What bleeds is drawn for the window it fills, and under 800px of height
+     it no longer fits: there the page scrolls again, as under 620px. */
+  @media (height < 800px) {
+    height: auto;
+    overflow: visible;
+  }
+}
+
 /* While the page IS the window, the document itself never scrolls and shows
    no scrollbar (Sebastian's call, 2026-10-06): what is longer than the window
    scrolls inside its own column (the lessons, the notes). The same widths and
@@ -488,6 +507,12 @@ html body.platform-theme[data-scroll-locked] {
 @media (width >= 1280px) and (height > 620px) {
   :root:has(.platform-page_height_screen) {
     overflow: hidden;
+  }
+}
+
+@media (height < 800px) {
+  :root:has(.platform-page_frame_bleed) {
+    overflow: visible;
   }
 }
 

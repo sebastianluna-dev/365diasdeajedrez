@@ -3,8 +3,9 @@
    paper world's frame inside the platform's page. */
 .adventure-cover {
   position: relative;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  border-radius: 8px;
   color: var(--adventure-on-wood);
   font-family: var(--adventure-font-data);
   background:
@@ -19,15 +20,21 @@
     ),
     var(--adventure-wood);
 
+  /* The scene takes the desk's height: where the page is the window (from
+     1280px), the notebook gets what the title leaves and nothing scrolls. */
   & .adventure-cover__scene {
     position: relative;
+    flex: 1;
+    min-height: 0;
+    box-sizing: border-box;
     display: grid;
     grid-template-columns: minmax(0, 1fr) 330px;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
     column-gap: 48px;
+    width: 100%;
     max-width: 1270px;
     margin: 0 auto;
-    padding: 26px 32px 56px;
+    padding: 26px 32px 44px;
   }
 
   & .adventure-cover__intro {
@@ -66,7 +73,14 @@
   & .adventure-cover__book {
     position: relative;
     grid-column: 1;
-    grid-row: 2 / 4;
+    grid-row: 2;
+    align-self: start;
+    /* As tall as the room allows, up to the height it was drawn at: on a
+       very tall window the desk grows, not the notebook. */
+    height: 100%;
+    max-height: 800px;
+    min-height: 0;
+    box-sizing: border-box;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     padding: 12px;
@@ -125,7 +139,7 @@
   }
 
   & .adventure-cover__page_side_map {
-    min-height: 480px;
+    min-height: 0;
     border-radius: 6px 0 0 6px;
     box-shadow: inset -26px 0 30px -18px rgba(70, 45, 20, 0.45);
   }
@@ -143,9 +157,12 @@
   }
 
   /* The picture of the whole journey, stuck to the page with two strips of tape. */
+  /* The art is drawn to cover its frame (`slice`): on a page taller than
+     the art, its sides are cut, never spilled over the spine. */
   & .adventure-cover__picture {
     position: absolute;
     inset: 22px 20px 20px 22px;
+    overflow: hidden;
     padding: 8px;
     transform: rotate(-0.6deg);
     background: var(--adventure-cream-bright);
@@ -184,7 +201,7 @@
 
   & .adventure-cover__tickets {
     grid-column: 2;
-    grid-row: 2 / 4;
+    grid-row: 2;
     display: grid;
     align-content: start;
     gap: 34px;
@@ -209,6 +226,42 @@
     width: 190px;
   }
 
+  /* Where the desk is the window, a short one tightens the title and the
+     notebook's page so the whole notebook still fits under the bar. */
+  @media (width >= 1280px) and (max-height: 860px) {
+    & .adventure-cover__scene {
+      padding-top: 16px;
+      padding-bottom: 28px;
+    }
+
+    & .adventure-cover__intro {
+      margin-bottom: 12px;
+    }
+
+    & .adventure-cover__title {
+      font-size: 38px;
+    }
+
+    & .adventure-cover__lead {
+      display: none;
+    }
+
+    & .notebook-card__premise,
+    & .notebook-card__progress,
+    & .notebook-card__next {
+      margin-bottom: 14px;
+    }
+
+    & .adventure-cover__page_side_info {
+      padding: 20px 30px 20px 32px;
+    }
+
+    & .adventure-cover__tickets {
+      gap: 24px;
+      margin-top: 6px;
+    }
+  }
+
   @media (width < 1280px) {
     & .adventure-cover__scene {
       grid-template-columns: minmax(0, 1fr);
@@ -216,6 +269,10 @@
 
     & .adventure-cover__book {
       grid-row: auto;
+    }
+
+    & .adventure-cover__page_side_map {
+      min-height: 480px;
     }
 
     & .adventure-cover__tickets {

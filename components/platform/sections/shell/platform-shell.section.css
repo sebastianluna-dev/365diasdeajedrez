@@ -104,6 +104,19 @@
     overflow: hidden;
   }
 
+  /* A page that bleeds (`platform-page_frame_bleed`) draws its own frame to
+     the window's edges: no padding around it, so what it paints meets the
+     bar and the sides of the window («Jugar»'s desk, 2026-10-18). */
+  & .platform-shell__content:has(> .platform-page_frame_bleed) {
+    padding: 0;
+
+    /* Too short for the drawing, it scrolls (platform.css). */
+    @media (height < 800px) {
+      height: auto;
+      overflow: visible;
+    }
+  }
+
   /* Piled up in one column, or on a screen too short for any of it to fit,
      the page goes back to scrolling like the rest. */
   @media (width < 1280px), (max-height: 620px) {
