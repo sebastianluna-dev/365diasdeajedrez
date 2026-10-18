@@ -24,6 +24,12 @@ interface PlatformUserMenuProps {
   initials: string;
   /** Their own page: their profile while «Jugar» is on; before it, the teacher's card. */
   profileHref?: string;
+  /**
+   * How the trigger is drawn: the avatar alone in the top bar (the default),
+   * or a row with the avatar and the name at the foot of the side bar, whose
+   * menu opens above it.
+   */
+  layout?: "avatar" | "row";
 }
 
 /** What the day has left, in words. */
@@ -51,7 +57,7 @@ function dayLabel(goal: StudyGoal): string {
  * rows keep the menu open on select (`preventDefault`), because closing it
  * would take the form out of the page before the browser submitted it.
  */
-export function PlatformUserMenu({ displayName, initials, profileHref }: PlatformUserMenuProps) {
+export function PlatformUserMenu({ displayName, initials, profileHref, layout = "avatar" }: PlatformUserMenuProps) {
   const [goal, setGoal] = useState<StudyGoal | null>(null);
 
   // Once per visit: the figures are read on the first opening and kept. A
@@ -66,12 +72,31 @@ export function PlatformUserMenu({ displayName, initials, profileHref }: Platfor
 
   return (
     <DropdownMenu.Root modal={false} onOpenChange={changeOpen}>
-      <DropdownMenu.Trigger className="platform-user-menu__avatar" aria-label={`Tu cuenta: ${displayName}`}>
-        {initials}
-      </DropdownMenu.Trigger>
+      {layout === "row" ? (
+        <DropdownMenu.Trigger className="platform-user-menu__row" aria-label={`Tu cuenta: ${displayName}`}>
+          <span className="platform-user-menu__avatar" aria-hidden="true">
+            {initials}
+          </span>
+          <span className="platform-user-menu__row-text">
+            <span className="platform-user-menu__row-name">{displayName}</span>
+            <span className="platform-user-menu__row-note">Tu cuenta</span>
+          </span>
+        </DropdownMenu.Trigger>
+      ) : (
+        <DropdownMenu.Trigger className="platform-user-menu__avatar" aria-label={`Tu cuenta: ${displayName}`}>
+          {initials}
+        </DropdownMenu.Trigger>
+      )}
 
       <DropdownMenu.Portal>
-        <DropdownMenu.Content className="platform-user-menu" align="end" sideOffset={10} aria-label="Tu cuenta">
+        <DropdownMenu.Content
+          className="platform-user-menu"
+          side={layout === "row" ? "top" : "bottom"}
+          align={layout === "row" ? "start" : "end"}
+          sideOffset={10}
+          collisionPadding={16}
+          aria-label="Tu cuenta"
+        >
           {goal && (
             <div className="platform-user-menu__day">
               <p className="platform-user-menu__figure">

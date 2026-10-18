@@ -7,7 +7,7 @@
 
   /* The board is measured by the HEIGHT that is left, not by the width: it is
      what one looks at, and it takes all of the window save what sits above
-     and below it — the shell's bar (70px), the air under the bar (the
+     and below it — the shell's bar (`--platform-bar`), the air under the bar (the
      shell's padding less the margin recovered above), the two player strips
      (a line of `xs` text at 1.3 and their padding) — and, at the foot, the
      gap and the row of tabs of the tools under the board (their padding and
@@ -17,7 +17,7 @@
   --game-board-max: max(
     320px,
     calc(
-      100vh - 70px - (var(--platform-space-12) - var(--platform-space-5)) - 2 *
+      100vh - var(--platform-bar) - (var(--platform-space-12) - var(--platform-space-5)) - 2 *
         (1.3 * var(--platform-type-xs) + 2 * var(--platform-space-1)) - var(--platform-space-6) -
         (var(--platform-space-4) + 1.5 * var(--platform-type-sm) + var(--platform-space-3))
     )

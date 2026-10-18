@@ -12,10 +12,10 @@
   }
 
   /* The filters stay in view while the courses scroll past, under the
-     shell's bar (70px, as `scroll-padding-top` counts it). */
+     shell's bar (`--platform-bar`, as `scroll-padding-top` counts it). */
   & .catalog-browser__aside {
     position: sticky;
-    top: calc(70px + var(--platform-space-6));
+    top: calc(var(--platform-bar) + var(--platform-space-6));
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-6);

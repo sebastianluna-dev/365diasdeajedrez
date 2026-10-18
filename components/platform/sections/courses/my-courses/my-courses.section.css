@@ -37,10 +37,10 @@
     }
   }
 
-  /* Under the shell's bar (70px, as `scroll-padding-top` counts it), with air. */
+  /* Under the shell's bar (`--platform-bar`, as `scroll-padding-top` counts it), with air. */
   & .streak-panel {
     position: sticky;
-    top: calc(70px + var(--platform-space-6));
+    top: calc(var(--platform-bar) + var(--platform-space-6));
 
     @media (width < 1024px) {
       position: static;

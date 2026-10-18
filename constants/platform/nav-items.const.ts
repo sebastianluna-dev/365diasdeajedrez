@@ -18,9 +18,14 @@ import { platformRoutes, staffRoutes, teacherRoutes } from "@/lib/platform-route
 // what really decides is `requireTeacher`/`requireStaff` in every page and
 // action, and nothing has changed there.
 
+/** The drawing an entry of the side menu carries, by what the entry is for (`NavArt`). */
+export type PlatformNavArt = "play" | "exercises" | "learn" | "tools";
+
 export interface PlatformNavItem {
   label: string;
   href: string;
+  /** Its drawing in the side menu; an entry without one is drawn as text. */
+  art?: PlatformNavArt;
 }
 
 /** An entry of a dropdown: its line says what it is for (M3), its icon is named by what it does. */
@@ -37,6 +42,8 @@ export interface PlatformNavMenuItem extends PlatformNavItem {
 export interface PlatformNavDropdown {
   label: string;
   items: PlatformNavMenuItem[];
+  /** Its drawing in the side menu; a section without one is drawn as text. */
+  art?: PlatformNavArt;
 }
 
 export type PlatformNavEntry = PlatformNavItem | PlatformNavDropdown;
@@ -109,7 +116,7 @@ export const STAFF_NAV_ITEMS: PlatformNavItem[] = [
 ];
 
 /** «Jugar», the student's first link and the teacher's before the explorer. */
-const PLAY_ITEM: PlatformNavItem = { label: "Jugar", href: platformRoutes.play };
+const PLAY_ITEM: PlatformNavItem = { label: "Jugar", href: platformRoutes.play, art: "play" };
 
 /** The teacher's exercise bank, right after the classes they give. */
 const TEACHER_EXERCISES_ITEM: PlatformNavItem = { label: "Ejercicios", href: teacherRoutes.exercises };
@@ -123,6 +130,7 @@ const EXPLORER_ITEM: PlatformNavItem = { label: "Explorador", href: platformRout
  */
 const STUDENT_EXERCISES_DROPDOWN: PlatformNavDropdown = {
   label: "Ejercicios",
+  art: "exercises",
   items: [
     {
       label: "Ejercicios",
@@ -148,6 +156,7 @@ const STUDENT_EXERCISES_DROPDOWN: PlatformNavDropdown = {
 /** «Aprender» (2026-10-18): what the student studies — courses, studies and classes. */
 const STUDENT_LEARN_DROPDOWN: PlatformNavDropdown = {
   label: "Aprender",
+  art: "learn",
   items: [
     {
       label: "Cursos",
@@ -203,6 +212,7 @@ export function needsStudentExerciseAccess(
 function toolsDropdown(features: PlatformNavFeatures): PlatformNavDropdown {
   return {
     label: "Herramientas",
+    art: "tools",
     items: [
       {
         label: "Tablero de análisis",

@@ -1,6 +1,6 @@
 /* A game being played is a workspace, as a study's game is: no big title, it
    starts right under the bar and the board takes the height that is left —
-   the shell's bar (70px), the air under it less what is recovered here, the
+   the shell's bar (`--platform-bar`), the air under it less what is recovered here, the
    compact head, and the two strips of a played game (a 40px portrait and
    their padding). The floor keeps the board from becoming a stamp. */
 .played-game-page {
@@ -8,7 +8,7 @@
   --viewer-board-max: max(
     320px,
     calc(
-      100vh - 70px - (var(--platform-space-12) - var(--platform-space-5)) - var(--played-game-head) - 2 *
+      100vh - var(--platform-bar) - (var(--platform-space-12) - var(--platform-space-5)) - var(--played-game-head) - 2 *
         (40px + 2 * var(--platform-space-2)) - var(--platform-space-6)
     )
   );
@@ -41,7 +41,7 @@
     --viewer-board-max: max(
       320px,
       calc(
-        100vh - 70px - (var(--platform-space-12) - var(--platform-space-5)) - 72px - 2 *
+        100vh - var(--platform-bar) - (var(--platform-space-12) - var(--platform-space-5)) - 72px - 2 *
           (40px + 2 * var(--platform-space-2)) - var(--platform-space-6) - 48px
       )
     );

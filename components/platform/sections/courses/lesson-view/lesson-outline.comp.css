@@ -12,15 +12,16 @@
   --mark-center: 40px;
 
   /* Pinned to the window, not laid out in the page: it starts right under the
-     bar, touches the left edge and goes down to the bottom one, so the
-     lessons are a panel of the screen and not a card floating on it. The page
-     only reserves its width (`lesson-frame.comp.css`).
+     bar, touches the left edge — the side bar's, from 1024px — and goes down
+     to the bottom one, so the lessons are a panel of the screen and not a
+     card floating on it. The page only reserves its width
+     (`lesson-frame.comp.css`).
 
-     `top` is the bar's height, in the same px the bar is drawn with, so the
-     two meet exactly. */
+     `top` and `left` are what the shell's chrome takes (`--platform-bar`,
+     `--platform-side`), so the two meet exactly. */
   position: fixed;
-  top: 70px;
-  left: 0;
+  top: var(--platform-bar);
+  left: var(--platform-side);
   bottom: 0;
   width: var(--outline-width, 360px);
   z-index: 10;

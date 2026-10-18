@@ -401,7 +401,7 @@
 
   /* Where the page is the window (`platform-page_height_screen`: from 1280px
      wide and over 620px tall), nothing scrolls the page: the board takes all
-     the height that is left — the window less the bar (70px), the shell's
+     the height that is left — the window less the bar (`--platform-bar`), the shell's
      padding above and below and the room kept for the history — or all the
      width the two columns and the shell's sides leave, whichever is less, as
      the study's board does. The columns at its sides are as tall as it and
@@ -412,7 +412,9 @@
       --solve-board: max(
         320px,
         min(
-          calc(100vh - 70px - 2 * var(--platform-space-6) - var(--solve-history) - var(--platform-space-4)),
+          calc(
+            100vh - var(--platform-bar) - 2 * var(--platform-space-6) - var(--solve-history) - var(--platform-space-4)
+          ),
           calc(100vw - 2 * var(--platform-space-12) - 280px - 340px - 2 * var(--platform-space-6))
         )
       );
