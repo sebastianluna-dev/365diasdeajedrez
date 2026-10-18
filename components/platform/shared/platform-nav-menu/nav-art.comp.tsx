@@ -147,7 +147,7 @@ const VIEW_BOXES: Record<PlatformNavArt, string> = {
 };
 
 /**
- * The drawing of an entry of the side menu (2026-10-18): illustrations, not
+ * The drawing of an entry of the menu bar (2026-10-18): illustrations, not
  * icons, so they keep their own colours in both themes (the board's cream
  * and wood, the accent's red) instead of reading `currentColor`. They are
  * decoration: the entry's name is its label, so the drawing is hidden from

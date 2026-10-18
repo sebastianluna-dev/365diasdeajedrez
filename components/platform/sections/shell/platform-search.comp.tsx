@@ -18,11 +18,11 @@ import "./platform-search.comp.css";
  * of these (a Docs page with two stories), and a fixed one would point both
  * labels at the first field.
  */
-export function PlatformSearch({ width = "bar" }: { width?: "bar" | "full" }) {
+export function PlatformSearch() {
   const fieldId = useId();
 
   return (
-    <div className={`platform-search${width === "full" ? " platform-search_width_full" : ""}`} role="search">
+    <div className="platform-search" role="search">
       <label className="platform-search__label" htmlFor={fieldId}>
         Buscar en la plataforma
       </label>

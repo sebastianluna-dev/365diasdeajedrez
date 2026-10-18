@@ -67,11 +67,6 @@
     width: 200px;
   }
 
-  /* In the side bar (2026-10-18) it takes the bar's width, at every size. */
-  &.platform-search_width_full {
-    width: 100%;
-  }
-
   /* The bar stacks at the widths where it no longer fits in one row, and there
      the field takes the row it is given. */
   @media (width < 1280px) {

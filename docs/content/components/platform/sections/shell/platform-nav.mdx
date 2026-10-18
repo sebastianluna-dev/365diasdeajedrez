@@ -26,6 +26,7 @@ Renders the navigation groups the shell composed on the server and marks the cur
 
 ## Behaviour
 
+- **Each entry can carry a drawing** (2026-10-18): `art` on an item or a dropdown in `nav-items.const.ts` names it, and [`NavArt`](/components/platform/shared/platform-nav-menu) draws it at 28px before the name — the pawn on a 3×3 board for «Jugar», the puzzle piece for «Ejercicios», the mortarboard for «Aprender», the toolbox for «Herramientas». They are illustrations with their own colours, not icons, and `aria-hidden`; the staff's menu has none. (A side bar with these drawings was tried the same day and taken back: the menu stays the top bar.)
 - `activeNavHref(groups, pathname)` returns the item whose `href` is the **longest prefix** of the current path, so `/profesor` and `/profesor/alumnos` do not both appear active on the students page. The active link gets the `_active` modifier and `aria-current="page"`.
 - **«Jugar» and «Herramientas»** (2026-10-08, planning decision §H): `buildPlatformNavGroups(roles, features)` puts «Jugar» before the explorer while `PLAY_ENABLED` is on, and gathers the analysis board, the explorer and (with `MOVE_TRAINER_ENABLED`) the trainer into the «Herramientas» dropdown once `ANALYSIS_BOARD_ENABLED` is on; until then the explorer stays a link of its own. The teacher's «Mi perfil» is «Mi ficha», because «Mi perfil» is everyone's profile now. `activeNavHref` looks inside a dropdown too, and its trigger lights up with its tool.
 - **The student's bar** (2026-10-18): «Jugar» (with `PLAY_ENABLED`), the «Ejercicios» dropdown («Ejercicios» `/ejercicios`, «Ejercicios por tema» `/ejercicios/temas`, «Puzzle Rush» `/puzzle-rush`), the «Aprender» dropdown («Cursos» `/cursos`, «Estudiar» `/estudios`, «Clases» `/clases`) and «Herramientas» (or the explorer's own link while it is off). «Inicio» is the logo's. The teacher's and the staff's bars are as below.
@@ -35,7 +36,7 @@ Renders the navigation groups the shell composed on the server and marks the cur
 
 ## Markup & styling
 
-Block `.platform-nav` (51 lines).
+Block `.platform-nav` (60 lines).
 
 **Elements:** `.platform-nav__group`, `.platform-nav__item`
 

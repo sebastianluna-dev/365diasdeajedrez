@@ -14,7 +14,7 @@
     --rush-board: max(
       320px,
       min(
-        calc(100vh - var(--platform-bar) - 2 * var(--platform-space-6)),
+        calc(100vh - 70px - 2 * var(--platform-space-6)),
         calc(100vw - 2 * var(--platform-space-12) - var(--rush-panel) - var(--platform-space-6))
       )
     );

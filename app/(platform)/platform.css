@@ -276,24 +276,6 @@
   --platform-shadow-lift: 0 1px 2px light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.4));
   /* The opposite: what is pressed in, as a chosen check card sinks. */
   --platform-shadow-inset: inset 0 1px 3px light-dark(rgba(0, 0, 0, 0.07), rgba(0, 0, 0, 0.45));
-
-  /* THE FRAME: what the shell's chrome takes from the window (2026-10-18).
-     Under 1024px the menu is the bar across the top, 70px tall in one row;
-     from 1024px it is the side bar on the left, and the top has nothing. A
-     page that measures itself against the window (`100vh`), sticks under the
-     chrome or is pinned to the window's edge reads these two, never a px of
-     its own. */
-  --platform-bar: 70px;
-  --platform-side: 0px;
-}
-
-/* From 1024px the menu is the side bar: the top is the page's, the left 264px
-   are the bar's. */
-@media (width >= 1024px) {
-  :root {
-    --platform-bar: 0px;
-    --platform-side: 264px;
-  }
 }
 
 /* FROM 1536px (Tailwind's `2xl`), where there is room to spare, the type takes
@@ -404,12 +386,12 @@
   overscroll-behavior: none;
   /* The bar stays stuck to the top: a control reached with the keyboard, or
      the target of the skip link, is scrolled to below it and not under it.
-     The bar, plus some air; from 1024px there is no bar on top, only the air. */
-  scroll-padding-top: calc(var(--platform-bar) + 8px);
+     70px is the bar, plus some air. */
+  scroll-padding-top: calc(70px + 8px);
 
-  /* Below 1024px the bar wraps into two rows: 12px of padding, the tools'
+  /* Below 1280px the bar wraps into two rows: 12px of padding, the tools'
      40px, 12px of gap, the menu's 40px and 12px more. */
-  @media (width < 1024px) {
+  @media (width < 1280px) {
     scroll-padding-top: calc(116px + 8px);
   }
 }

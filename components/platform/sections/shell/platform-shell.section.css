@@ -63,55 +63,6 @@
     gap: var(--platform-space-4);
   }
 
-  /* The side bar (2026-10-18): only from 1024px, where it takes the left
-     column whole, stuck to the window and scrolling on its own when the
-     menu is longer than the window. */
-  & .platform-shell__side {
-    display: none;
-  }
-
-  @media (width >= 1024px) {
-    display: grid;
-    grid-template-columns: var(--platform-side) minmax(0, 1fr);
-    align-items: start;
-
-    & .platform-shell__bar {
-      display: none;
-    }
-
-    & .platform-shell__side {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      grid-column: 1;
-      grid-row: 1;
-      height: 100vh;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      gap: var(--platform-space-4);
-      padding: var(--platform-space-6) var(--platform-space-4) var(--platform-space-4);
-      overflow-y: auto;
-      background: var(--platform-surface);
-      box-shadow: inset -1px 0 0 var(--platform-border);
-    }
-
-    & .platform-shell__side .platform-shell__logo {
-      padding: 0 var(--platform-space-3) var(--platform-space-2);
-    }
-
-    & .platform-shell__side-foot {
-      margin-top: auto;
-      padding-top: var(--platform-space-4);
-    }
-
-    & .platform-shell__content {
-      grid-column: 2;
-      grid-row: 1;
-      width: 100%;
-    }
-  }
-
   & .platform-shell__content {
     max-width: 1040px;
     margin: 0 auto;
@@ -138,12 +89,12 @@
   }
 
   /* A page that IS the window measures exactly what is left under the bar and
-     keeps its scroll to itself: the viewport's height less the bar's (`--platform-bar`, none from 1024px)
+     keeps its scroll to itself: the viewport's height less the 70px of the bar
      it sits under; the top padding shrinks because there is no
      title to give air to, and the bottom one only keeps the page off the
      edge. */
   & .platform-shell__content:has(> .platform-page_height_screen) {
-    height: calc(100vh - var(--platform-bar));
+    height: calc(100vh - 70px);
     /* As little air under the bar as at the foot, 24px: the board starts
        close under it, as in the design the lesson was drawn after, and every
        px given here is a px the board, measured by the height, loses

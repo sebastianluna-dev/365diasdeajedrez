@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { NavArt } from "@/components/platform/shared/platform-nav-menu/nav-art.comp";
 import { PlatformNavMenu } from "@/components/platform/shared/platform-nav-menu/platform-nav-menu.comp";
 import { activeNavHref, isNavDropdown, type PlatformNavGroup } from "@/constants/platform/nav-items.const";
 import "./platform-nav.comp.css";
@@ -33,6 +34,7 @@ export function PlatformNav({ groups }: PlatformNavProps) {
                 className={`platform-nav__item${isActive ? " platform-nav__item_active" : ""}`}
                 aria-current={isActive ? "page" : undefined}
               >
+                {item.art && <NavArt art={item.art} className="platform-nav__art" />}
                 {item.label}
               </Link>
             );

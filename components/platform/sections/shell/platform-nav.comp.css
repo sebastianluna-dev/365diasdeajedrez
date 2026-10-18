@@ -19,11 +19,20 @@
   }
 
   & .platform-nav__item {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
     padding: var(--platform-space-2) var(--platform-space-4);
     border-radius: 8px;
     color: var(--platform-text-muted);
     white-space: nowrap;
+  }
+
+  /* The entry's drawing (2026-10-18), at the height of the line it opens. */
+  & .platform-nav__art {
+    flex: none;
+    width: 28px;
+    height: 28px;
   }
 
   & .platform-nav__item:hover {

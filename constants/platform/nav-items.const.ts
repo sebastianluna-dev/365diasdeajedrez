@@ -18,13 +18,13 @@ import { platformRoutes, staffRoutes, teacherRoutes } from "@/lib/platform-route
 // what really decides is `requireTeacher`/`requireStaff` in every page and
 // action, and nothing has changed there.
 
-/** The drawing an entry of the side menu carries, by what the entry is for (`NavArt`). */
+/** The drawing an entry of the menu bar carries, by what the entry is for (`NavArt`). */
 export type PlatformNavArt = "play" | "exercises" | "learn" | "tools";
 
 export interface PlatformNavItem {
   label: string;
   href: string;
-  /** Its drawing in the side menu; an entry without one is drawn as text. */
+  /** Its drawing in the menu bar, beside its name; an entry without one is drawn as text. */
   art?: PlatformNavArt;
 }
 
@@ -42,7 +42,7 @@ export interface PlatformNavMenuItem extends PlatformNavItem {
 export interface PlatformNavDropdown {
   label: string;
   items: PlatformNavMenuItem[];
-  /** Its drawing in the side menu; a section without one is drawn as text. */
+  /** Its drawing in the menu bar, beside its name; a section without one is drawn as text. */
   art?: PlatformNavArt;
 }
 

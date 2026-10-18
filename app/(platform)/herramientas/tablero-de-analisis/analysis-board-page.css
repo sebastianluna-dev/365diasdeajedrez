@@ -4,7 +4,7 @@
   --viewer-board-max: max(
     320px,
     calc(
-      100vh - var(--platform-bar) - (var(--platform-space-12) - var(--platform-space-5)) - var(--platform-space-12) -
+      100vh - 70px - (var(--platform-space-12) - var(--platform-space-5)) - var(--platform-space-12) -
         var(--platform-space-6)
     )
   );

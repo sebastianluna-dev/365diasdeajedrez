@@ -13,6 +13,7 @@ import { PuzzlePieceIcon } from "@/components/icons/puzzle-piece-icon.comp";
 import { StopwatchIcon } from "@/components/icons/stopwatch-icon.comp";
 import { TagsIcon } from "@/components/icons/tags-icon.comp";
 import type { PlatformNavDropdown, PlatformNavMenuItem } from "@/constants/platform/nav-items.const";
+import { NavArt } from "./nav-art.comp";
 import "./platform-nav-menu.comp.css";
 
 const ICONS: Record<PlatformNavMenuItem["icon"], typeof ChessBoardIcon> = {
@@ -49,6 +50,7 @@ export function PlatformNavMenu({ menu, activeHref }: PlatformNavMenuProps) {
       <DropdownMenu.Trigger
         className={`platform-nav-menu__trigger${isActive ? " platform-nav-menu__trigger_state_active" : ""}`}
       >
+        {menu.art && <NavArt art={menu.art} className="platform-nav-menu__art" />}
         {menu.label}
         <AngleDownIcon variant="classic-solid" className="platform-nav-menu__chevron" />
       </DropdownMenu.Trigger>

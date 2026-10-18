@@ -27,6 +27,13 @@
     font-weight: 700;
   }
 
+  /* The section's drawing (2026-10-18), before its name. */
+  & .platform-nav-menu__art {
+    flex: none;
+    width: 28px;
+    height: 28px;
+  }
+
   & .platform-nav-menu__chevron {
     width: 12px;
     height: 12px;

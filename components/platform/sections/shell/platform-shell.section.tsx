@@ -10,7 +10,6 @@ import { getStudentExerciseAccess } from "@/services/exercises/exercises.service
 import { ClearResultParams } from "./clear-result-params.comp";
 import { PlatformNav } from "./platform-nav.comp";
 import { PlatformSearch } from "./platform-search.comp";
-import { PlatformSideNav } from "./platform-side-nav.comp";
 import { PlatformUserMenu } from "./platform-user-menu.comp";
 import "./platform-shell.section.css";
 
@@ -32,9 +31,7 @@ function initialsOf(displayName: string): string {
 }
 
 /**
- * Internal layout of the platform: the menu and the content area. The menu
- * is the side bar from 1024px (2026-10-18) and the bar across the top below
- * that; both are in the markup and the stylesheet shows the one that fits.
+ * Internal layout of the platform: top bar + content area.
  *
  * It reads the session only to show who is logged in and which menus they
  * get, never to protect: if there is no user it simply does not render the
@@ -52,46 +49,21 @@ export async function PlatformShell({ children }: PlatformShellProps) {
   // The logo leads to the role's home, not to the student dashboard: with
   // the exclusive menu that page is no longer in a teacher's or staff's menu.
   const homeHref = homeRouteFor(roles);
-  // Everyone's profile while «Jugar» is on (the teacher's card is «Mi ficha»
-  // in the menu); before it, only the teacher had a page.
-  const profileHref = PLAY_ENABLED ? platformRoutes.profile : roles.isTeacher ? teacherRoutes.profile : undefined;
-  const logo = (
-    <LogoWordmarkIcon
-      className="platform-shell__logo-image"
-      accentClassName="platform-shell__logo-accent"
-      wordClassName="platform-shell__logo-word"
-      marksClassName="platform-shell__logo-marks"
-    />
-  );
 
   return (
     <div className="platform-shell">
-      {/* From 1024px: the logo, the search, the menu and, at the foot, who is signed in. */}
-      <aside className="platform-shell__side" aria-label="Menú">
-        <Link href={homeHref} className="platform-shell__logo" aria-label={LOGO_LABEL}>
-          {logo}
-        </Link>
-        <PlatformSearch width="full" />
-        <PlatformSideNav groups={navGroups} />
-        {user && (
-          <div className="platform-shell__side-foot">
-            <PlatformUserMenu
-              displayName={user.displayName}
-              initials={initialsOf(user.displayName)}
-              profileHref={profileHref}
-              layout="row"
-            />
-          </div>
-        )}
-      </aside>
-
       <header className="platform-shell__bar">
         <div className="platform-shell__bar-inner">
           {/* The same wordmark the public site draws, painted with the
               platform's tokens: the SVG is aria-hidden, so the link carries
               the brand's name. */}
           <Link href={homeHref} className="platform-shell__logo" aria-label={LOGO_LABEL}>
-            {logo}
+            <LogoWordmarkIcon
+              className="platform-shell__logo-image"
+              accentClassName="platform-shell__logo-accent"
+              wordClassName="platform-shell__logo-word"
+              marksClassName="platform-shell__logo-marks"
+            />
           </Link>
 
           <PlatformNav groups={navGroups} />
@@ -105,7 +77,11 @@ export async function PlatformShell({ children }: PlatformShellProps) {
               <PlatformUserMenu
                 displayName={user.displayName}
                 initials={initialsOf(user.displayName)}
-                profileHref={profileHref}
+                // Everyone's profile while «Jugar» is on (the teacher's card is
+                // «Mi ficha» in the menu); before it, only the teacher had a page.
+                profileHref={
+                  PLAY_ENABLED ? platformRoutes.profile : roles.isTeacher ? teacherRoutes.profile : undefined
+                }
               />
             )}
           </div>
