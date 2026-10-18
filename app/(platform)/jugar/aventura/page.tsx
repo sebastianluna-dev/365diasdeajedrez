@@ -23,7 +23,7 @@ export default async function AdventurePage({ searchParams }: AdventurePageProps
   const errorMessage = studentErrorMessage((await searchParams).error);
 
   return (
-    <div className="platform-page platform-page_width_wide">
+    <div className="platform-page platform-page_width_full platform-page_height_screen platform-page_frame_bleed">
       {errorMessage && <PlatformNotice message={errorMessage} />}
       <AdventureShelfSection />
     </div>

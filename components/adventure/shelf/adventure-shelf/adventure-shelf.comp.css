@@ -1,9 +1,12 @@
 /* The shelf: a dark wooden room with the open notebook on the left and the
-   closed ones on two boards. */
+   closed ones on two boards. Since 2026-10-18 the room is the window: its
+   page bleeds and fills what the bar leaves, so it has no corners of its own
+   and its room stretches to the page's height. */
 .adventure-shelf {
   position: relative;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  border-radius: 8px;
   color: var(--adventure-on-wood);
   font-family: var(--adventure-font-data);
   background:
@@ -11,6 +14,8 @@
     radial-gradient(ellipse 120% 90% at 50% 50%, transparent 55%, rgba(20, 10, 4, 0.45)), var(--adventure-wood);
 
   & .adventure-shelf__room {
+    flex: 1;
+    box-sizing: border-box;
     min-height: 640px;
     padding: 30px 32px 60px;
   }
@@ -76,6 +81,32 @@
 
   & .platform-button {
     font-family: var(--platform-font);
+  }
+
+  /* Where the room is the window (from 1280px wide), a short one tightens
+     the room's air and stands smaller notebooks on the boards, so both
+     boards fit under the bar. */
+  @media (width >= 1280px) and (max-height: 960px) {
+    & .adventure-shelf__room {
+      padding-top: 22px;
+      padding-bottom: 28px;
+    }
+
+    & .adventure-shelf__head {
+      margin-bottom: 18px;
+    }
+
+    & .adventure-shelf__closed {
+      --spine-width: 124px;
+      gap: 30px 30px;
+    }
+  }
+
+  @media (width >= 1280px) and (max-height: 860px) {
+    & .adventure-shelf__closed {
+      --spine-width: 104px;
+      gap: 22px 30px;
+    }
   }
 
   @media (width < 1024px) {

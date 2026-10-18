@@ -9,9 +9,11 @@
   font-family: var(--adventure-font-title);
   text-align: center;
 
+  /* 150px wide, unless the shelf it stands on asks for less (`--spine-width`,
+     on a short window where the shelf is the window). */
   & .notebook-spine__cover {
     position: relative;
-    width: min(150px, 100%);
+    width: min(var(--spine-width, 150px), 100%);
   }
 
   & .notebook-spine__art {

@@ -20,6 +20,8 @@ Also exports `AdventureShelfSection`, the Server Component that reads the shelf 
 
 The way to choose an adventure: a dark wooden room with the notebooks that can be opened at the left — open, with the person's progress — and the six that are coming on two boards at the right, each with «Próximamente» and no action. A «Jugar» button (the platform's) goes back to the cover. The shelf is built for several playable adventures: `shelf.notebooks` is a list.
 
+Since 2026-10-18 the shelf is the window, like «Jugar»'s desk: the page is `platform-page_height_screen platform-page_frame_bleed`, the wood fills everything under the bar edge to edge, and the room stretches to the page's height, so from 1280px wide and 800px tall nothing scrolls. On a short window (up to 960px, and again up to 860px tall) the room's air tightens and the closed notebooks stand smaller, through `--spine-width` on the boards, which `NotebookSpine` reads.
+
 ## Props
 
 | Prop    | Type                 | Required | Meaning                                                       |
@@ -32,7 +34,7 @@ The way to choose an adventure: a dark wooden room with the notebooks that can b
 
 ## Markup & styling
 
-Block `.adventure-shelf` (129 lines).
+Block `.adventure-shelf` (160 lines).
 
 **Elements:** `.adventure-shelf__room`, `__head`, `__title`, `__lead`, `__shelves`, `__open`, `__closed`
 
