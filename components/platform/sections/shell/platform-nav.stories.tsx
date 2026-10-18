@@ -60,7 +60,7 @@ Reference page: [Components › PlatformNav](/components/platform/sections/shell
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** A student's menu, on a chapter of a course: «Mis cursos» is lit, because `/cursos` prefixes the address. */
+/** A student's menu, on a chapter of a course: «Aprender» is lit, because `/cursos` (its «Cursos») prefixes the address. */
 export const Student: Story = {};
 
 /** A teacher's menu, on one student's page: «Mis alumnos» is lit and «Panel del profesor» is not, though `/profesor` prefixes the address too. */
@@ -80,7 +80,7 @@ export const NothingActive: Story = {
   parameters: at(platformRoutes.settings),
 };
 
-/** The student's menu with «Ejercicios» on and a teacher who gave them a series, on one of its exercises: the item after «Mis cursos» is lit. */
+/** The student's menu with «Ejercicios» on and a teacher who gave them a series, on one of its exercises: the «Ejercicios» dropdown is lit. */
 export const StudentWithExercises: Story = {
   args: {
     groups: buildPlatformNavGroups(

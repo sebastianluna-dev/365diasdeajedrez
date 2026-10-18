@@ -23,10 +23,10 @@ export interface PlatformNavItem {
   href: string;
 }
 
-/** A tool in a dropdown: its line says what it is for (M3), its icon is named by what it does. */
+/** An entry of a dropdown: its line says what it is for (M3), its icon is named by what it does. */
 export interface PlatformNavMenuItem extends PlatformNavItem {
   description: string;
-  icon: "analysis-board" | "explorer" | "trainer";
+  icon: "analysis-board" | "explorer" | "trainer" | "exercises" | "topics" | "rush" | "courses" | "studies" | "classes";
 }
 
 /**
@@ -88,19 +88,6 @@ const FEATURES: PlatformNavFeatures = {
   exercises: EXERCISES_ENABLED ? "all" : false,
 };
 
-/**
- * The trainer is reached from courses and dashboard, so it takes no room here.
- * The explorer does: it is a cross-cutting tool, not the next step of any
- * other screen.
- */
-export const STUDENT_NAV_ITEMS: PlatformNavItem[] = [
-  { label: "Inicio", href: platformRoutes.dashboard },
-  { label: "Mis clases", href: platformRoutes.classes },
-  { label: "Mis estudios", href: platformRoutes.studies },
-  { label: "Mis cursos", href: platformRoutes.courses },
-  { label: "Explorador", href: platformRoutes.explorer },
-];
-
 export const TEACHER_NAV_ITEMS: PlatformNavItem[] = [
   { label: "Panel del profesor", href: teacherRoutes.home },
   { label: "Mis alumnos", href: teacherRoutes.students },
@@ -121,14 +108,67 @@ export const STAFF_NAV_ITEMS: PlatformNavItem[] = [
   { label: "Clases", href: staffRoutes.classes },
 ];
 
-/** «Jugar», for the student after their courses and for the teacher before the explorer. */
+/** «Jugar», the student's first link and the teacher's before the explorer. */
 const PLAY_ITEM: PlatformNavItem = { label: "Jugar", href: platformRoutes.play };
 
 /** The teacher's exercise bank, right after the classes they give. */
 const TEACHER_EXERCISES_ITEM: PlatformNavItem = { label: "Ejercicios", href: teacherRoutes.exercises };
 
-/** The student's «Ejercicios», right after their courses. */
-const STUDENT_EXERCISES_ITEM: PlatformNavItem = { label: "Ejercicios", href: platformRoutes.exercises };
+/** The explorer as a link of its own, while there is no «Herramientas» to gather it. */
+const EXPLORER_ITEM: PlatformNavItem = { label: "Explorador", href: platformRoutes.explorer };
+
+/**
+ * The student's «Ejercicios» (2026-10-18): the board of any topic, the one of
+ * a chosen topic, and «Puzzle Rush», as many as fit in the time.
+ */
+const STUDENT_EXERCISES_DROPDOWN: PlatformNavDropdown = {
+  label: "Ejercicios",
+  items: [
+    {
+      label: "Ejercicios",
+      href: platformRoutes.exercises,
+      description: "Resuelve ejercicios de todos los temas.",
+      icon: "exercises",
+    },
+    {
+      label: "Ejercicios por tema",
+      href: platformRoutes.exercisePractice(),
+      description: "Elige un tema y un nivel.",
+      icon: "topics",
+    },
+    {
+      label: "Puzzle Rush",
+      href: platformRoutes.exerciseStorm,
+      description: "Resuelve todos los que puedas antes de que acabe el tiempo.",
+      icon: "rush",
+    },
+  ],
+};
+
+/** «Aprender» (2026-10-18): what the student studies — courses, studies and classes. */
+const STUDENT_LEARN_DROPDOWN: PlatformNavDropdown = {
+  label: "Aprender",
+  items: [
+    {
+      label: "Cursos",
+      href: platformRoutes.courses,
+      description: "Tus cursos y los que puedes agregar.",
+      icon: "courses",
+    },
+    {
+      label: "Estudiar",
+      href: platformRoutes.studies,
+      description: "Tus estudios y las partidas de tus clases.",
+      icon: "studies",
+    },
+    {
+      label: "Clases",
+      href: platformRoutes.classes,
+      description: "Tus clases con tu profesor.",
+      icon: "classes",
+    },
+  ],
+};
 
 /** The academy's exercise bank — the library, the review queue and the academy's series — right after the courses. */
 const STAFF_EXERCISES_ITEM: PlatformNavItem = { label: "Ejercicios", href: staffRoutes.exercises };
@@ -191,25 +231,33 @@ function toolsDropdown(features: PlatformNavFeatures): PlatformNavDropdown {
 }
 
 /**
- * The student's or the teacher's items with what is switched on: «Jugar»
- * before the explorer, the explorer gathered into «Herramientas» once the
- * analysis board is on (until then it stays a link of its own, so it never
- * disappears), the teacher's «Ejercicios» after their classes and the
- * student's after their courses.
+ * The teacher's items with what is switched on: «Jugar» before the explorer,
+ * the explorer gathered into «Herramientas» once the analysis board is on
+ * (until then it stays a link of its own, so it never disappears) and
+ * «Ejercicios» after their classes.
  */
-function withFeatures(
-  items: PlatformNavItem[],
-  features: PlatformNavFeatures,
-  studentExercises: boolean,
-): PlatformNavEntry[] {
+function withTeacherFeatures(items: PlatformNavItem[], features: PlatformNavFeatures): PlatformNavEntry[] {
   return items.flatMap((item): PlatformNavEntry[] => {
     if (item.href === teacherRoutes.classes) {
       return [item, ...(features.exercises !== false ? [TEACHER_EXERCISES_ITEM] : [])];
     }
-    if (item.href === platformRoutes.courses) return [item, ...(studentExercises ? [STUDENT_EXERCISES_ITEM] : [])];
     if (item.href !== platformRoutes.explorer) return [item];
     return [...(features.play ? [PLAY_ITEM] : []), features.analysisBoard ? toolsDropdown(features) : item];
   });
+}
+
+/**
+ * The student's bar (2026-10-18): «Jugar», the «Ejercicios» dropdown, the
+ * «Aprender» dropdown and «Herramientas», each with its switch. «Inicio» is
+ * the logo's; the explorer stays a link of its own until «Herramientas» is on.
+ */
+function studentNav(features: PlatformNavFeatures, studentExercises: boolean): PlatformNavEntry[] {
+  return [
+    ...(features.play ? [PLAY_ITEM] : []),
+    ...(studentExercises ? [STUDENT_EXERCISES_DROPDOWN] : []),
+    STUDENT_LEARN_DROPDOWN,
+    features.analysisBoard ? toolsDropdown(features) : EXPLORER_ITEM,
+  ];
 }
 
 /**
@@ -227,10 +275,10 @@ export function buildPlatformNavGroups(
   features: PlatformNavFeatures = FEATURES,
 ): PlatformNavGroup[] {
   if (roles.isStaff) return [{ label: "Administración", items: withStaffFeatures(STAFF_NAV_ITEMS, features) }];
-  if (roles.isTeacher) return [{ label: "Profesor", items: withFeatures(TEACHER_NAV_ITEMS, features, false) }];
+  if (roles.isTeacher) return [{ label: "Profesor", items: withTeacherFeatures(TEACHER_NAV_ITEMS, features) }];
   const studentExercises =
     features.exercises === "all" || (features.exercises === "withTeacher" && roles.hasExerciseSource === true);
-  return [{ items: withFeatures(STUDENT_NAV_ITEMS, features, studentExercises) }];
+  return [{ items: studentNav(features, studentExercises) }];
 }
 
 /**

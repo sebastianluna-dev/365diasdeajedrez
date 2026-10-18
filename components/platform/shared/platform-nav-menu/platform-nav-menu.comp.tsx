@@ -3,9 +3,15 @@
 import Link from "next/link";
 import { DropdownMenu } from "radix-ui";
 import { AngleDownIcon } from "@/components/icons/angle-down-icon.comp";
+import { BookOpenIcon } from "@/components/icons/book-open-icon.comp";
+import { ChalkboardUserIcon } from "@/components/icons/chalkboard-user-icon.comp";
 import { ChessBoardIcon } from "@/components/icons/chess-board-icon.comp";
 import { DumbbellIcon } from "@/components/icons/dumbbell-icon.comp";
+import { GraduationCapIcon } from "@/components/icons/graduation-cap-icon.comp";
 import { MagnifyingGlassIcon } from "@/components/icons/magnifying-glass-icon.comp";
+import { PuzzlePieceIcon } from "@/components/icons/puzzle-piece-icon.comp";
+import { StopwatchIcon } from "@/components/icons/stopwatch-icon.comp";
+import { TagsIcon } from "@/components/icons/tags-icon.comp";
 import type { PlatformNavDropdown, PlatformNavMenuItem } from "@/constants/platform/nav-items.const";
 import "./platform-nav-menu.comp.css";
 
@@ -13,6 +19,12 @@ const ICONS: Record<PlatformNavMenuItem["icon"], typeof ChessBoardIcon> = {
   "analysis-board": ChessBoardIcon,
   explorer: MagnifyingGlassIcon,
   trainer: DumbbellIcon,
+  exercises: PuzzlePieceIcon,
+  topics: TagsIcon,
+  rush: StopwatchIcon,
+  courses: GraduationCapIcon,
+  studies: BookOpenIcon,
+  classes: ChalkboardUserIcon,
 };
 
 interface PlatformNavMenuProps {

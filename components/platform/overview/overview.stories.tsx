@@ -853,7 +853,7 @@ function PopupTrigger() {
 const TOOLS_MENU = buildPlatformNavGroups(
   { isTeacher: false, isStaff: false },
   { play: true, analysisBoard: true, trainer: true, exercises: "all" },
-)[0]!.items.find(isNavDropdown) as PlatformNavDropdown;
+)[0]!.items.find((entry) => isNavDropdown(entry) && entry.label === "Herramientas") as PlatformNavDropdown;
 
 /** The instant the profile's examples are read from, so «hace 5 horas» stays the same. */
 const PROFILE_NOW = new Date("2026-10-08T18:00:00Z");

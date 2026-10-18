@@ -7,7 +7,7 @@ import { PlatformNavMenu } from "./platform-nav-menu.comp";
 const TOOLS = buildPlatformNavGroups(
   { isTeacher: false, isStaff: false },
   { play: true, analysisBoard: true, trainer: true, exercises: "all" },
-)[0]!.items.find(isNavDropdown) as PlatformNavDropdown;
+)[0]!.items.find((entry) => isNavDropdown(entry) && entry.label === "Herramientas") as PlatformNavDropdown;
 
 const meta = {
   title: "platform/shared/PlatformNavMenu",
