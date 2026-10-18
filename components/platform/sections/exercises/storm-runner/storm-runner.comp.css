@@ -48,10 +48,13 @@
     width: 100%;
   }
 
+  /* Its own stacking context: chessground's pieces carry z-indexes up to 11,
+     which would otherwise rise over the end's burst and card. */
   & .storm-runner__board {
     width: 100%;
     aspect-ratio: 1;
     border-radius: 8px;
+    isolation: isolate;
   }
 
   & .storm-runner__board_state_wrong {
@@ -432,6 +435,7 @@
     position: absolute;
     inset: 0;
     display: grid;
+    z-index: 1;
     place-items: center;
     pointer-events: none;
     animation: storm-runner-burst 1400ms ease-out both;
@@ -459,6 +463,7 @@
 
   & .storm-runner__card {
     position: absolute;
+    z-index: 1;
     top: 50%;
     left: 50%;
     width: min(380px, 90%);
