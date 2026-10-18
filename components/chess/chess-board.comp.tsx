@@ -360,25 +360,24 @@ export function ChessBoard({
     if (activeCellRef.current) scrollWithin(activeCellRef.current, calm ? "auto" : "smooth");
   }, [ply]);
 
+  // The pending move is read as it stands, never inside a state updater:
+  // React may run an updater during a render (twice, in development), and
+  // `onMove` sets the parent's state.
   const cancelPromotion = useCallback(() => {
-    setPendingPromotion((pending) => {
-      if (pending) apiRef.current?.set({ fen: pending.fen });
-      return null;
-    });
-  }, []);
+    if (pendingPromotion) apiRef.current?.set({ fen: pendingPromotion.fen });
+    setPendingPromotion(null);
+  }, [pendingPromotion]);
 
   const confirmPromotion = useCallback(
     (role: PromotionRole) => {
-      setPendingPromotion((pending) => {
-        if (pending) {
-          const san = sanForMove(pending.fen, pending.orig, pending.dest, role);
-          if (san) onMoveRef.current?.(san, pending.fen);
-          awaitAnswer(pending.fen);
-        }
-        return null;
-      });
+      const pending = pendingPromotion;
+      setPendingPromotion(null);
+      if (!pending) return;
+      const san = sanForMove(pending.fen, pending.orig, pending.dest, role);
+      if (san) onMoveRef.current?.(san, pending.fen);
+      awaitAnswer(pending.fen);
     },
-    [awaitAnswer],
+    [pendingPromotion, awaitAnswer],
   );
 
   // Promotion picker: base chessground brings no dialog, so the move stays
