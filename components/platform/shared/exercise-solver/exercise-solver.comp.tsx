@@ -135,7 +135,6 @@ export function ExerciseSolver({ exercise, mode, context, next, back, submit, as
       back={back}
       aside={aside}
       session={session}
-      elapsedMs={controls.elapsedMs}
       save={controls.save}
       autoplay={controls.autoplay}
       onMove={controls.move}
@@ -156,7 +155,6 @@ export interface ExerciseSolverViewProps {
   aside?: ExerciseSolverAside;
   /** The state to draw (`useExerciseSolver`, or a story's `reduceSession` steps). */
   session: SolverSession;
-  elapsedMs: number;
   save: SolverSaveState;
   autoplay: boolean;
   onMove: (san: string) => void;
@@ -165,12 +163,6 @@ export interface ExerciseSolverViewProps {
   onStep: (to: number) => void;
   onToggleAutoplay: () => void;
   onRetry: () => void;
-}
-
-/** `mm:ss`, counting up (D21). */
-function clockOf(ms: number): string {
-  const seconds = Math.max(0, Math.floor(ms / 1000));
-  return `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
 }
 
 /** What a class block's solve says on a day the exercise was already scored (D49): it marks the block, nothing else. */
@@ -213,7 +205,6 @@ export function ExerciseSolverView({
   back,
   aside,
   session,
-  elapsedMs,
   save,
   autoplay,
   onMove,
@@ -329,7 +320,6 @@ export function ExerciseSolverView({
               result={result}
               misses={session.misses.length}
               solutionShown={solve.solutionShown}
-              elapsedMs={elapsedMs}
               mode={resultModeOf(mode, save)}
               explanation={exercise.explanation}
               next={next}
@@ -366,15 +356,15 @@ export function ExerciseSolverView({
                 <div className="exercise-solver__turn-text">
                   <p className="exercise-solver__turn-title">Tu turno</p>
                   <p className="exercise-solver__turn-line">{prompt}</p>
-                  <p className="exercise-solver__meta">
-                    <span className="exercise-solver__clock" role="timer" aria-label={`Tiempo: ${clockOf(elapsedMs)}`}>
-                      {clockOf(elapsedMs)}
-                    </span>
-                    {context?.position && !aside && (
-                      <span className="exercise-solver__position">{context.position}</span>
-                    )}
-                    {solve.failed && <span className="platform-tag exercise-solver__failed">Fallado</span>}
-                  </p>
+                  {/* No clock: only Puzzle Rush counts the time. */}
+                  {((context?.position && !aside) || solve.failed) && (
+                    <p className="exercise-solver__meta">
+                      {context?.position && !aside && (
+                        <span className="exercise-solver__position">{context.position}</span>
+                      )}
+                      {solve.failed && <span className="platform-tag exercise-solver__failed">Fallado</span>}
+                    </p>
+                  )}
                   {feedback && (
                     <p className={`exercise-solver__feedback exercise-solver__feedback_tone_${feedback.tone}`}>
                       {feedback.text}
@@ -496,14 +486,12 @@ function resultTextOf(
   result: SolverResult,
   misses: number,
   solutionShown: boolean,
-  elapsedMs: number,
   counts: boolean,
 ): { title: string; line: string | null; tone: "ok" | "late" | "error" } {
   if (!counts) {
     return { title: AGAIN_TITLES[result.kind], line: null, tone: isPassed(result) ? "ok" : "error" };
   }
-  if (result.kind === "clean")
-    return { title: "¡Resuelto!", line: `Sin errores, en ${clockOf(elapsedMs)}.`, tone: "ok" };
+  if (result.kind === "clean") return { title: "¡Resuelto!", line: "Sin errores.", tone: "ok" };
   if (result.kind === "hinted") return { title: "Resuelto con pista", line: "Cuenta como resuelto.", tone: "ok" };
   if (solutionShown) return { title: "Viste la solución", line: "Cuenta como fallado.", tone: "error" };
   return {
@@ -518,7 +506,6 @@ interface ResultPanelProps {
   /** The wrong tries, for «después de 2 errores». */
   misses: number;
   solutionShown: boolean;
-  elapsedMs: number;
   mode: ExerciseSolverMode;
   explanation: string | null;
   next?: ExerciseSolverLink;
@@ -535,7 +522,6 @@ function ResultPanel({
   result,
   misses,
   solutionShown,
-  elapsedMs,
   mode,
   explanation,
   next,
@@ -545,7 +531,7 @@ function ResultPanel({
   onToggleFullSolution,
   onRetry,
 }: ResultPanelProps) {
-  const text = resultTextOf(result, misses, solutionShown, elapsedMs, submitsAttempt(mode));
+  const text = resultTextOf(result, misses, solutionShown, submitsAttempt(mode));
   const Icon = text.tone === "error" ? CircleXmarkIcon : CircleCheckIcon;
   // One accent: the way on, or the way back when there is nothing after it.
   const accentBack = !next;

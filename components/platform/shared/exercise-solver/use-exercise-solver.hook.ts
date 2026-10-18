@@ -6,7 +6,6 @@ import { getViewerPreferences } from "@/components/chess/game-viewer/viewer-pref
 import { readSolution } from "@/lib/chess/exercise-solver";
 import {
   isCaptureAt,
-  isSessionOver,
   reduceSession,
   sessionSubmission,
   startSession,
@@ -23,7 +22,7 @@ import type {
 // The solve screen's behaviour over the pure session (exercise-solver-session.ts):
 // the timers — the opponent's reply after 450 ms with its sound, the wrong
 // move taken back after 600 ms, the solution's walk at 900 ms a step (not
-// under reduced motion), the clock — and the one submit, sent from the event
+// under reduced motion) — and the one submit, sent from the event
 // that decides the attempt (a wrong move, «Ver la solución», the last move;
 // D19, D20), so leaving the page cannot hide a failure.
 
@@ -56,7 +55,6 @@ export interface UseExerciseSolverOptions {
 export interface ExerciseSolverControls {
   /** Null when the solution does not read: there is nothing to solve. */
   session: SolverSession | null;
-  elapsedMs: number;
   save: SolverSaveState;
   /** «Ver la solución» is walking on by itself. */
   autoplay: boolean;
@@ -95,24 +93,17 @@ export function useExerciseSolver({
   const [session, setSession] = useState<SolverSession | null>(() => (solution ? startSession(solution, mode) : null));
   const [save, setSave] = useState<SolverSaveState>("idle");
   const [autoplay, setAutoplay] = useState(false);
-  const [elapsedMs, setElapsedMs] = useState(0);
   /** When the board was first on screen: set after mount, never during the server's render. */
   const startedAtRef = useRef<number | null>(null);
 
-  const over = session ? isSessionOver(session) : true;
   const waiting = session?.waiting ?? null;
   const walkthrough = session?.walkthrough ?? null;
   const walking = autoplay && walkthrough !== null && walkthrough.shown < walkthrough.steps.length;
 
-  // The clock counts up from the first paint and stops when it is over (D21).
+  // The attempt's duration counts from the first paint; nothing on screen shows it (only Puzzle Rush has a clock).
   useEffect(() => {
     startedAtRef.current ??= Date.now();
-    if (over) return;
-    const timer = window.setInterval(() => {
-      if (startedAtRef.current !== null) setElapsedMs(Date.now() - startedAtRef.current);
-    }, 1000);
-    return () => window.clearInterval(timer);
-  }, [over]);
+  }, []);
 
   // The opponent's reply, after a pause and with its sound.
   const replyPath = waiting === "reply" ? (session?.solve.path ?? null) : null;
@@ -163,7 +154,6 @@ export function useExerciseSolver({
 
   return {
     session,
-    elapsedMs,
     save,
     autoplay: walking,
     move: (san) => apply({ type: "move", san }),
@@ -184,7 +174,6 @@ export function useExerciseSolver({
     retry: () => {
       apply({ type: "retry" });
       setAutoplay(false);
-      setElapsedMs(0);
       startedAtRef.current = Date.now();
     },
   };

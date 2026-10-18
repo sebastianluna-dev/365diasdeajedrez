@@ -64,7 +64,6 @@ interface StateProps {
   exercise: ExerciseSolverExercise;
   actions?: SolverAction[];
   mode?: ExerciseSolverMode;
-  elapsedMs?: number;
   save?: SolverSaveState;
   autoplay?: boolean;
   withLinks?: boolean;
@@ -81,7 +80,6 @@ function SolverState({
   exercise,
   actions = [],
   mode = "solve",
-  elapsedMs = 23_000,
   save = "idle",
   autoplay = false,
   withLinks = true,
@@ -97,7 +95,6 @@ function SolverState({
       next={withLinks && !last ? NEXT : undefined}
       back={withLinks ? BACK : undefined}
       session={session}
-      elapsedMs={elapsedMs}
       save={save}
       autoplay={autoplay}
       {...handlers}
@@ -245,21 +242,13 @@ export const BlackToMove: Story = {
 
 /** A retry the same study day: «Ya lo intentaste hoy: este intento no cuenta.», and the result says only how it went. */
 export const UnscoredRetry: Story = {
-  render: () => (
-    <SolverState exercise={BLACK_MATE} mode="unscored" actions={[{ type: "move", san: "Rd1#" }]} elapsedMs={4_000} />
-  ),
+  render: () => <SolverState exercise={BLACK_MATE} mode="unscored" actions={[{ type: "move", san: "Rd1#" }]} />,
 };
 
 /** A class block's exercise already scored today (D49): the head says it counts for the class, not the streak, and a solve is still «¡Resuelto!» — the block's mark. */
 export const BlockOnly: Story = {
   render: () => (
-    <SolverState
-      exercise={BLACK_MATE}
-      mode="block"
-      actions={[{ type: "move", san: "Rd1#" }]}
-      elapsedMs={4_000}
-      save="stored"
-    />
+    <SolverState exercise={BLACK_MATE} mode="block" actions={[{ type: "move", san: "Rd1#" }]} save="stored" />
   ),
   play: async ({ canvas }) => {
     await waitFor(() => expect(canvas.getByText("¡Resuelto!")).toBeVisible());

@@ -257,7 +257,6 @@
     color: var(--platform-text-muted);
   }
 
-  & .exercise-solver__clock,
   & .exercise-solver__position {
     font-variant-numeric: tabular-nums;
     font-weight: 600;
