@@ -114,13 +114,11 @@ export const platformRoutes = {
   exerciseSeriesItem: (seriesId: string, n: number) => `/ejercicios/series/${seriesId}/${n}`,
   /** «Historial» (D51, phase 6): the student's scored attempts with filters. */
   exerciseHistory: "/ejercicios/historial",
-  /** «Contrarreloj» (D21, D34, phase 7): three minutes, over at the third mistake. */
-  exerciseStorm: "/ejercicios/contrarreloj",
   /**
-   * «Práctica libre» (D18, D32, phase 4): a random library exercise of a topic
-   * (`tema`, a Topic code) at a level (`nivel`, a Level slug); `tras` is the
-   * exercise just solved, which «Siguiente» skips.
+   * «Puzzle Rush», the contrarreloj (D21, D34, phase 7): three minutes, over at
+   * the third mistake. A top-level address, as the menu shows it beside «Ejercicios».
    */
+  exerciseStorm: "/puzzle-rush",
   /**
    * «Ejercicios» itself, the board (the Lichess-like trainer): a random library
    * exercise of any topic, or of `tema`/`nivel` when given; `tras` is the one
@@ -138,13 +136,18 @@ export const platformRoutes = {
   exerciseLibraryItem: (exerciseId: string) => `/ejercicios/biblioteca/${exerciseId}`,
   /** What «Ejercicios» was before it opened on the board: the series given to the student and the other modes. */
   exerciseOverview: "/ejercicios/series",
+  /**
+   * «Ejercicios por tema» (D18, D32, phase 4): a random library exercise of a
+   * topic (`tema`, a Topic code) at a level (`nivel`, a Level slug); `tras` is
+   * the exercise just solved, which «Siguiente» skips.
+   */
   exercisePractice: (query: { tema?: string; nivel?: string; tras?: string } = {}) => {
     const params = new URLSearchParams();
     if (query.tema) params.set("tema", query.tema);
     if (query.nivel) params.set("nivel", query.nivel);
     if (query.tras) params.set("tras", query.tras);
     const text = params.toString();
-    return text ? `/ejercicios/practica?${text}` : "/ejercicios/practica";
+    return text ? `/ejercicios/temas?${text}` : "/ejercicios/temas";
   },
   /**
    * The n-th exercise of an EXERCISE block of a class (1-based, among the ones

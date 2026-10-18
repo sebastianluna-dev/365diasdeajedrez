@@ -62,5 +62,5 @@ export function useSolveHistory(scope: string): SolveHistoryEntry[] {
 
 /** The pages a visit's history lives on: «Ejercicios» itself, practice, a library exercise again, and a series' exercise. */
 export function isSolvePath(pathname: string): boolean {
-  return /^\/ejercicios(\/(practica|biblioteca\/[^/]+|series\/[^/]+\/\d+))?\/?$/.test(pathname);
+  return /^\/ejercicios(\/(temas|biblioteca\/[^/]+|series\/[^/]+\/\d+))?\/?$/.test(pathname);
 }

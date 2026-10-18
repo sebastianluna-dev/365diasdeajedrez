@@ -16,12 +16,12 @@ description: "The two choices of «Práctica libre»: the topic, with each paren
 
 ## Props
 
-| Prop      | Type               | Required | Meaning                                                                                                                                                        |
-| --------- | ------------------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `filters` | `PracticeFilters`  | yes      | The topics with a library exercise (a parent with such a child too), the active levels with their Elo range, and whether the library is empty.                 |
-| `choice`  | `PracticeChoice`   | yes      | What the address says, `tema` and `nivel`, or nothing.                                                                                                         |
-| `variant` | `"home" \| "page"` | yes      | On the home's card the choice waits for «Empezar» (a link to `/ejercicios/practica?tema=&nivel=`); on the practice page a change replaces the address at once. |
-| `accent`  | `boolean`          | no       | On the home: whether «Empezar» is the screen's accent (when no series is left to continue).                                                                    |
+| Prop      | Type               | Required | Meaning                                                                                                                                                     |
+| --------- | ------------------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `filters` | `PracticeFilters`  | yes      | The topics with a library exercise (a parent with such a child too), the active levels with their Elo range, and whether the library is empty.              |
+| `choice`  | `PracticeChoice`   | yes      | What the address says, `tema` and `nivel`, or nothing.                                                                                                      |
+| `variant` | `"home" \| "page"` | yes      | On the home's card the choice waits for «Empezar» (a link to `/ejercicios/temas?tema=&nivel=`); on the practice page a change replaces the address at once. |
+| `accent`  | `boolean`          | no       | On the home: whether «Empezar» is the screen's accent (when no series is left to continue).                                                                 |
 
 ## Behaviour
 

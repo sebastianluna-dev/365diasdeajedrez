@@ -64,6 +64,7 @@ export const PROTECTED_PATH_PREFIXES = [
   "/estudios",
   "/cursos",
   "/ejercicios",
+  "/puzzle-rush",
   "/lecciones",
   "/ajustes",
   "/entrenador",

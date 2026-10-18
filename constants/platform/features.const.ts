@@ -50,7 +50,7 @@ export const ANALYSIS_BOARD_ENABLED = false as boolean;
 
 /**
  * «Ejercicios»: the exercise bank, its editor and the series a teacher gives
- * to their students (planning/ejercicios, D40). It hides `/ejercicios*`,
+ * to their students (planning/ejercicios, D40). It hides `/ejercicios*`, `/puzzle-rush`,
  * `/profesor/ejercicios*` and `/administracion/ejercicios*`, the menu items,
  * «Crear ejercicio desde aquí», a lesson's exercises card and practice pages,
  * «Agregar desde la biblioteca», the class block «Ejercicio» and its routes:

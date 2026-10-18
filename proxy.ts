@@ -94,6 +94,7 @@ export const config = {
     "/estudios/:path*",
     "/cursos/:path*",
     "/ejercicios/:path*",
+    "/puzzle-rush/:path*",
     "/lecciones/:path*",
     "/ajustes/:path*",
     "/entrenador/:path*",
