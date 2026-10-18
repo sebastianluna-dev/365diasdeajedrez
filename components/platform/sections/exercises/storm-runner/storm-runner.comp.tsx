@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ChessBoard } from "@/components/chess/chess-board.comp";
 import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
 import { BoltIcon } from "@/components/icons/bolt-icon.comp";
@@ -143,6 +143,55 @@ function longestStreak(outcomes: readonly Outcome[]): number {
   return best;
 }
 
+/** How long a chip takes to slide to its new place, or to come in. */
+const CHIP_MOVE_MS = 240;
+
+/**
+ * The chips glide instead of jumping (FLIP): before the browser paints a
+ * longer list, each chip that was already there starts from where it was
+ * and slides to its new place, and the new one grows in. The rows are
+ * centred, so a new chip moves all the others. Skipped under reduced motion.
+ */
+function useGlidingChips(count: number) {
+  const listRef = useRef<HTMLOListElement>(null);
+  const places = useRef(new Map<string, DOMRect>());
+
+  useLayoutEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+    const chips = Array.from(list.querySelectorAll<HTMLElement>("[data-chip]"));
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const next = new Map<string, DOMRect>();
+    for (const chip of chips) {
+      const key = chip.dataset.chip ?? "";
+      const place = chip.getBoundingClientRect();
+      next.set(key, place);
+      if (reduced || typeof chip.animate !== "function") continue;
+      const before = places.current.get(key);
+      if (!before) {
+        chip.animate(
+          [
+            { opacity: 0, transform: "scale(0.6)" },
+            { opacity: 1, transform: "none" },
+          ],
+          { duration: CHIP_MOVE_MS, easing: "ease-out" },
+        );
+        continue;
+      }
+      const dx = before.left - place.left;
+      const dy = before.top - place.top;
+      if (dx === 0 && dy === 0) continue;
+      chip.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }], {
+        duration: CHIP_MOVE_MS,
+        easing: "ease-out",
+      });
+    }
+    places.current = next;
+  }, [count]);
+
+  return listRef;
+}
+
 /** How long the score shows big on the board before the summary card. */
 const BURST_MS = 1400;
 
@@ -177,6 +226,7 @@ export function StormRunner({ deck }: StormRunnerProps) {
   const cardTitleId = useId();
   // The board of the exercise on screen, so «Salir» leaves it in place.
   const liveView = useRef<BoardView | null>(null);
+  const chipsRef = useGlidingChips(outcomes.length);
 
   const limit = MODES[mode].ms;
   const score = outcomes.filter((outcome) => outcome.passed).length;
@@ -526,10 +576,11 @@ export function StormRunner({ deck }: StormRunnerProps) {
               {phase === "running" && prompt && <p className="storm-runner__prompt">{prompt}</p>}
             </div>
 
-            <ol className="storm-runner__chips" aria-label="Ejercicios del rush">
+            <ol ref={chipsRef} className="storm-runner__chips" aria-label="Ejercicios del rush">
               {outcomes.map((outcome, slot) => (
                 <li
                   key={`${outcome.exercise.id}-${slot}`}
+                  data-chip={`${outcome.exercise.id}-${slot}`}
                   className={`storm-runner__chip storm-runner__chip_result_${outcome.passed ? "pass" : "miss"}`}
                 >
                   <span className="storm-runner__chip-mark">
