@@ -1,8 +1,7 @@
 /* The class page as one page to write on: the reading column of the
    student's notebook, with each block's «+» and ⋮⋮ in the margin to its left
    (shown while the block is pointed at or holds the focus; the ⋮⋮ is the row's
-   dnd-kit handle), who sees it in the
-   margin to its right, and the empty line that ends the page. */
+   dnd-kit handle), and the empty line that ends the page. */
 .class-page-editor {
   display: flex;
   flex-direction: column;
@@ -27,6 +26,14 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--platform-accent-ink);
+  }
+
+  /* Where the page already has its title: what the editor holds. */
+  & .class-page-editor__section-title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-xl);
+    font-weight: 600;
   }
 
   /* «Editar» and «Vista del alumno»: two options on one track. */
@@ -106,20 +113,6 @@
     box-shadow: var(--platform-shadow-popup);
   }
 
-  /* The teacher's script: on a grey of its own, so it is never read as the article. */
-  & .class-page-editor__row.class-page-editor__row_visibility_teacher .class-page-editor__body {
-    margin: 0 calc(-1 * var(--platform-space-3));
-    padding: var(--platform-space-3);
-    border-radius: 8px;
-    background: var(--platform-surface-sunken);
-  }
-
-  /* A note in the script is already on its grey: it keeps only its bulb. */
-  & .class-page-editor__row_visibility_teacher .editor-block__callout {
-    padding: 0;
-    background: transparent;
-  }
-
   /* The «+» and the ⋮⋮, on the first line of the block. */
   & .class-page-editor__gutter {
     position: absolute;
@@ -175,42 +168,6 @@
 
   & .class-page-editor__handle.class-page-editor__handle_role_grip {
     cursor: grab;
-  }
-
-  /* Who sees a block that is not «Para preparar»: in the right margin on a
-     wide screen, over the block on a narrower one. */
-  & .class-page-editor__tag {
-    position: absolute;
-    top: var(--platform-space-1);
-    left: calc(100% + var(--platform-space-6));
-    display: inline-flex;
-    align-items: center;
-    gap: var(--platform-space-1);
-    padding: var(--platform-space-0-5) var(--platform-space-2);
-    border-radius: 1000px;
-    font-size: var(--platform-type-2xs);
-    font-weight: 600;
-    white-space: nowrap;
-
-    @media (width < 1280px) {
-      position: static;
-      margin-bottom: var(--platform-space-1);
-    }
-  }
-
-  & .class-page-editor__tag.class-page-editor__tag_visibility_after {
-    background: var(--platform-selection-wash);
-    color: var(--platform-selection);
-  }
-
-  & .class-page-editor__tag.class-page-editor__tag_visibility_teacher {
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text-muted);
-  }
-
-  & .class-page-editor__tag-icon {
-    width: 12px;
-    height: 12px;
   }
 
   /* The empty line that ends the page: typing in it starts a paragraph, «/» opens the menu. */

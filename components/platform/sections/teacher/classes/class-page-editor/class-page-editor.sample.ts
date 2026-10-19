@@ -50,27 +50,23 @@ export const EDITOR_SAMPLE_BLOCKS: EditorBlock[] = [
   {
     id: "b1",
     kind: "text",
-    visibility: "BEFORE",
     lead: true,
     text: "El final de torre y peón contra torre es el que más aparece en tus partidas, y casi todo se decide por dos posiciones: la de Lucena, que se gana, y la de Philidor, que se hace tablas. Hoy nos quedamos con la primera.",
   },
   {
     id: "b2",
     kind: "callout",
-    visibility: "TEACHER",
-    text: "Antes del diagrama, pregunta quién ha llegado a esta posición en una partida suya.",
+    text: "Antes de seguir, piensa: ¿has llegado alguna vez a esta posición en una partida tuya?",
   },
-  { id: "b3", kind: "heading", visibility: "BEFORE", text: "Qué es la posición de Lucena" },
+  { id: "b3", kind: "heading", text: "Qué es la posición de Lucena" },
   {
     id: "b4",
     kind: "text",
-    visibility: "BEFORE",
     text: "El peón está en séptima, su rey delante y el rey rival cortado por una columna. Parece sencillo, pero si el rey sale sin preparar nada, los jaques de la torre no se acaban.",
   },
   {
     id: "b5",
     kind: "question",
-    visibility: "BEFORE",
     fen: LUCENA,
     orientation: "white",
     prompt: "Juegan las blancas. ¿Cuál es la primera jugada del plan?",
@@ -95,26 +91,24 @@ export const EDITOR_SAMPLE_BLOCKS: EditorBlock[] = [
       },
     ],
   },
-  { id: "b6", kind: "heading", visibility: "BEFORE", text: "El puente" },
+  { id: "b6", kind: "heading", text: "El puente" },
   {
     id: "b7",
     kind: "text",
-    visibility: "BEFORE",
     text: "La técnica tiene nombre: construir el puente. Lleva tu torre a la cuarta fila, saca al rey y, cuando lleguen los jaques laterales, interpón la torre.",
   },
   {
     id: "b8",
     kind: "diagram",
-    visibility: "BEFORE",
     pgn: `[SetUp "1"]
 [FEN "${BRIDGE}"]
 
 {El rey sale por c7 y la torre espera en c4 para interponerse en b4. [%csl Rd8] [%cal Gb8c7,Gc4b4]} *`,
   },
-  { id: "b9", kind: "game", visibility: "BEFORE", game: EDITOR_SAMPLE_OPTIONS.games[0] ?? null },
-  { id: "b10", kind: "lesson", visibility: "BEFORE", lesson: EDITOR_SAMPLE_OPTIONS.lessons[0] ?? null },
-  { id: "b11", kind: "subheading", visibility: "AFTER", text: "Lo que te llevas" },
-  { id: "b12", kind: "list", visibility: "AFTER", text: "Primero la torre a la cuarta fila; después el rey." },
-  { id: "b13", kind: "list", visibility: "AFTER", text: "Los jaques laterales se cortan interponiendo la torre." },
-  { id: "b14", kind: "exercises", visibility: "AFTER", series: EDITOR_SAMPLE_OPTIONS.series[0] ?? null },
+  { id: "b9", kind: "game", game: EDITOR_SAMPLE_OPTIONS.games[0] ?? null },
+  { id: "b10", kind: "lesson", lesson: EDITOR_SAMPLE_OPTIONS.lessons[0] ?? null },
+  { id: "b11", kind: "subheading", text: "Lo que te llevas" },
+  { id: "b12", kind: "list", text: "Primero la torre a la cuarta fila; después el rey." },
+  { id: "b13", kind: "list", text: "Los jaques laterales se cortan interponiendo la torre." },
+  { id: "b14", kind: "exercises", series: EDITOR_SAMPLE_OPTIONS.series[0] ?? null },
 ];

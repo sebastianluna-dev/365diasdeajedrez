@@ -1,5 +1,5 @@
-/* The menu of a block's handle: who sees it, what kind of text it is, and
-   its actions, one per line with its icon. It comes in in 160ms and goes out
+/* The menu of a block's handle: what kind of text it is, and its actions,
+   one per line with its icon. It comes in in 160ms and goes out
    in 120 on its `data-state`. */
 .editor-block-menu {
   z-index: 40;
@@ -31,12 +31,6 @@
     font-size: var(--platform-type-2xs);
     font-weight: 600;
     color: var(--platform-text-muted);
-  }
-
-  & .editor-block-menu__group {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-0-5);
   }
 
   & .editor-block-menu__item {
@@ -91,25 +85,6 @@
   & .editor-block-menu__item_tone_danger .editor-block-menu__icon,
   & .editor-block-menu__item_tone_danger:hover .editor-block-menu__icon {
     color: var(--platform-danger);
-  }
-
-  & .editor-block-menu__text {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-
-  & .editor-block-menu__hint {
-    font-size: var(--platform-type-2xs);
-    color: var(--platform-text-muted);
-  }
-
-  & .editor-block-menu__check {
-    flex: none;
-    width: 16px;
-    height: 16px;
-    margin-left: auto;
-    color: var(--platform-accent-ink);
   }
 
   & .editor-block-menu__chips {

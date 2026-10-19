@@ -28,7 +28,6 @@ Reference page: [Components › ClassPageEditor](/components/platform/sections/t
     dateline: "Jueves 29 de octubre · 18:00",
     blocks: EDITOR_SAMPLE_BLOCKS,
     options: EDITOR_SAMPLE_OPTIONS,
-    endHour: "19:00",
   },
   decorators: [
     (Story) => (
@@ -42,7 +41,7 @@ Reference page: [Components › ClassPageEditor](/components/platform/sections/t
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** A class written in the editor: text, the teacher's script, a question, a diagram, a game, a lesson and, for after the class, a list and a series. */
+/** A class written in the editor: text, a note, a question, a diagram, a game, a lesson, a list and a series, all one content. */
 export const Written: Story = {};
 
 /** A new class: no title and no blocks, only the line where the first one is typed. */
@@ -83,7 +82,17 @@ export const KeyboardMove: Story = {
   },
 };
 
-/** The same class as the student reads it after the class: no script, no empty blocks, no controls. */
+/** The same class as the student reads it: no empty blocks, no controls. */
 export const StudentView: Story = {
   args: { defaultMode: "student" },
+};
+
+/** As the teacher's class page holds it: the page's head already says the title and when, so the editor opens on «Contenido de la clase». */
+export const InClassPage: Story = {
+  args: { title: undefined, dateline: undefined },
+};
+
+/** A class that can no longer be edited (over, cancelled): the student's view, with no way to edit. */
+export const ReadOnly: Story = {
+  args: { title: undefined, dateline: undefined, readOnly: true },
 };

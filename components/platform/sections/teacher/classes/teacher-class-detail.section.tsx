@@ -3,22 +3,15 @@ import { WhatsappIcon } from "@/components/icons/whatsapp-icon.comp";
 import { AttendanceRow } from "@/components/platform/shared/attendance-row/attendance-row.comp";
 import { MeetingJoinCard } from "@/components/platform/shared/meeting-join-card/meeting-join-card.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
-import { formatClassHours } from "@/lib/format-class-when";
-import {
-  addClassBlock,
-  deleteClassBlock,
-  fetchReferencePgn,
-  reorderClassBlocks,
-  updateClassAfterNotes,
-  updateClassBlock,
-} from "@/services/teacher-classes/teacher-classes.actions";
+import { updateClassAfterNotes } from "@/services/teacher-classes/teacher-classes.actions";
 import type {
   PickableExercise,
   ReferenceableGameGroup,
   TeacherClassDetail,
 } from "@/services/teacher-classes/teacher-classes.types";
 import { AfterNotesButton } from "./after-notes-popup/after-notes-popup.comp";
-import { ClassBlockList } from "./class-block-list/class-block-list.comp";
+import { editorBlocksOf, editorOptionsOf } from "./class-page-editor/class-blocks-to-editor";
+import { ClassPageEditor } from "./class-page-editor/class-page-editor.comp";
 import "./teacher-class-detail.section.css";
 
 interface TeacherClassDetailSectionProps {
@@ -26,15 +19,17 @@ interface TeacherClassDetailSectionProps {
   games: ReferenceableGameGroup[];
   /** What an exercise block may hold (D29): the teacher's usable exercises and the library's. */
   exercises: PickableExercise[];
-  /** A game chosen elsewhere («Usar en una clase»): the block popup opens on it. */
+  /** A game chosen elsewhere («Usar en una clase»): it comes in as a game block at the end. */
   initialGameId?: string;
   notice?: string;
   errorMessage?: string;
 }
 
 /**
- * The teacher's record of a class (PROF-2): the material to prepare, by
- * section, as the student sees it; and the lane with the meeting, the
+ * The teacher's record of a class (PROF-2): its content, one page written in
+ * the class editor (`ClassPageEditor`, front-only since 2026-10-19: it reads
+ * the stored blocks, all of them, with no sections, and stores nothing yet);
+ * and the lane with the meeting, the
  * students and their marks (with the staff's changes), what was written
  * after the class, and the staff's facts. A Server Component: it imports
  * the actions and hands them to the client pieces as props.
@@ -47,9 +42,11 @@ export function TeacherClassDetailSection({
   notice,
   errorMessage,
 }: TeacherClassDetailSectionProps) {
-  const { timeZone, editable, students, afterNotes, join } = classDetail;
-  const endHour = formatClassHours(new Date(classDetail.endIso), 0, timeZone).split("–")[0] ?? "";
-  const studentLabel = classDetail.isGroup ? "tus alumnos" : (students[0]?.displayName ?? "el alumno");
+  const { editable, students, afterNotes, join } = classDetail;
+  const options = editorOptionsOf(games, exercises);
+  const chosenGame = initialGameId ? options.games.find((game) => game.id === initialGameId) : undefined;
+  const blocks = editorBlocksOf(classDetail.blocks, classDetail.views);
+  if (chosenGame) blocks.push({ id: `chosen:${chosenGame.id}`, kind: "game", game: chosenGame });
   const seated = students.filter((student) => !student.mark.moved);
   const moved = students.filter((student) => student.mark.moved);
 
@@ -70,23 +67,7 @@ export function TeacherClassDetailSection({
             message="Las horas se muestran en la hora de Ciudad de México. Elige tu zona en «Mi ficha»."
           />
         )}
-        <section className="platform-card">
-          <ClassBlockList
-            classId={classDetail.id}
-            blocks={classDetail.blocks}
-            views={classDetail.views}
-            exerciseProgress={classDetail.exerciseProgress}
-            phase={classDetail.phase}
-            editable={editable.content}
-            studentLabel={studentLabel}
-            studentPlural={classDetail.isGroup}
-            groupSize={seated.length}
-            endHour={endHour}
-            options={{ games, exercises }}
-            initialGameId={initialGameId}
-            actions={{ addClassBlock, updateClassBlock, deleteClassBlock, reorderClassBlocks, fetchReferencePgn }}
-          />
-        </section>
+        <ClassPageEditor blocks={blocks} options={options} readOnly={!editable.content} />
       </div>
 
       <aside className="teacher-class__lane" aria-label="La clase">

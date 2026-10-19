@@ -2139,7 +2139,6 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 dateline="Jueves 29 de octubre · 18:00"
                 blocks={EDITOR_SAMPLE_BLOCKS}
                 options={EDITOR_SAMPLE_OPTIONS}
-                endHour="19:00"
               />
             </Tile>
             <Tile

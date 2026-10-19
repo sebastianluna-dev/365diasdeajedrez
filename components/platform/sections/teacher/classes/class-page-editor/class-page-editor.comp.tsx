@@ -4,9 +4,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Popover } from "radix-ui";
 import { createContext, useContext, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
-import { ClockIcon } from "@/components/icons/clock-icon.comp";
 import { GripDotsVerticalIcon } from "@/components/icons/grip-dots-vertical-icon.comp";
-import { LockIcon } from "@/components/icons/lock-icon.comp";
 import { PlusIcon } from "@/components/icons/plus-icon.comp";
 import {
   PlatformConfirmPopup,
@@ -15,7 +13,6 @@ import {
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { SortableDnd } from "@/components/platform/shared/sortable-dnd/sortable-dnd.comp";
 import { useSortableStep } from "@/components/platform/shared/sortable-dnd/use-sortable-step.hook";
-import type { ClassBlockVisibilityCode } from "@/constants/platform/class-codes.const";
 import { readDiagramPgn, writeDiagramPgn } from "@/lib/chess/diagram-notation";
 import {
   convertText,
@@ -35,22 +32,23 @@ import {
 } from "./class-page-editor.model";
 import { EditableText } from "./editable-text.comp";
 import { EditorBlockView, type TextEditing } from "./editor-block.comp";
-import { EditorBlockMenu, visibilityWords } from "./editor-block-menu.comp";
+import { EditorBlockMenu } from "./editor-block-menu.comp";
 import { EditorBoardPopup, type EditorBoardPopupHandle } from "./editor-board-popup.comp";
 import { EditorSlashMenu } from "./editor-slash-menu.comp";
 import "./class-page-editor.comp.css";
 
 interface ClassPageEditorProps {
-  title: string;
-  /** «Jueves 29 de octubre · 18:00». */
-  dateline: string;
+  /** The class's title, typed over the blocks; none where the page already shows it in its head. */
+  title?: string;
+  /** «Jueves 29 de octubre · 18:00», over the title; none where the page already says when. */
+  dateline?: string;
   blocks: EditorBlock[];
   /** What the blocks that cite something can choose from. */
   options: ClassPageEditorOptions;
-  /** The hour the class ends, which «Después de la clase» names. */
-  endHour: string;
   /** The view it opens in: the student's, for a story. Default `edit`. */
   defaultMode?: "edit" | "student";
+  /** The class can no longer be edited (over, cancelled): only the student's view, with no way to edit. */
+  readOnly?: boolean;
 }
 
 /** Where the caret goes in a text block: its start, its end, or a number of characters in. */
@@ -111,14 +109,8 @@ function subjectOf(block: EditorBlock): string {
   return words.length > 40 ? `${words.slice(0, 40).trimEnd()}…` : words;
 }
 
-function rowClassOf(block: EditorBlock, editing: boolean): string {
-  return [
-    "class-page-editor__row",
-    `class-page-editor__row_kind_${block.kind}`,
-    editing && block.visibility === "TEACHER" ? "class-page-editor__row_visibility_teacher" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+function rowClassOf(block: EditorBlock): string {
+  return `class-page-editor__row class-page-editor__row_kind_${block.kind}`;
 }
 
 /** The handle of the row it is in, as dnd-kit gives it: what the ⋮⋮ spreads on itself. */
@@ -162,11 +154,9 @@ function SortableRow({
 
 interface RowGutterProps {
   block: EditorBlock;
-  endHour: string;
   menuOpen: boolean;
   onMenuOpenChange: (open: boolean) => void;
   onAdd: () => void;
-  onVisibility: (visibility: ClassBlockVisibilityCode) => void;
   onConvert: (kind: TextKind) => void;
   onDuplicate: () => void;
   onRemove: () => void;
@@ -180,7 +170,7 @@ interface RowGutterProps {
  * «Mover abajo» are the list's steps (`useSortableStep`), so where the block
  * lands is said too.
  */
-function RowGutter({ block, endHour, menuOpen, onMenuOpenChange, onAdd, ...menu }: RowGutterProps) {
+function RowGutter({ block, menuOpen, onMenuOpenChange, onAdd, ...menu }: RowGutterProps) {
   const handle = useContext(RowHandle);
   const steps = useSortableStep(block.id);
   const label = kindInfo(block.kind).label;
@@ -214,7 +204,6 @@ function RowGutter({ block, endHour, menuOpen, onMenuOpenChange, onAdd, ...menu 
         </Popover.Trigger>
         <EditorBlockMenu
           block={block}
-          endHour={endHour}
           canMoveUp={steps.up !== null}
           canMoveDown={steps.down !== null}
           onMove={(delta) => (delta < 0 ? steps.up : steps.down)?.()}
@@ -246,12 +235,13 @@ export function ClassPageEditor({
   dateline,
   blocks: initialBlocks,
   options,
-  endHour,
   defaultMode = "edit",
+  readOnly = false,
 }: ClassPageEditorProps) {
   const [blocks, setBlocks] = useState(initialBlocks);
-  const [heading, setHeading] = useState(title);
-  const [mode, setMode] = useState(defaultMode);
+  const [heading, setHeading] = useState(title ?? "");
+  const [chosenMode, setMode] = useState(defaultMode);
+  const mode = readOnly ? "student" : chosenMode;
   const [slash, setSlash] = useState<{ at: string | null; replace: boolean; use: number } | null>(null);
   const [menuFor, setMenuFor] = useState<string | null>(null);
   const [removing, setRemoving] = useState<EditorBlock | null>(null);
@@ -261,7 +251,6 @@ export function ClassPageEditor({
   const boardPopup = useRef<EditorBoardPopupHandle>(null);
   const confirm = useRef<PlatformConfirmPopupHandle>(null);
   const editing = mode === "edit";
-  const words = visibilityWords(endHour);
 
   // A caret asked for by the last change lands once the block it names is drawn.
   useEffect(() => {
@@ -299,7 +288,7 @@ export function ClassPageEditor({
     if (!target) return;
     setSlash(null);
     const anchor = blocks.find((item) => item.id === target.at);
-    const block = newBlock(kind, anchor?.visibility ?? "BEFORE", makeId);
+    const block = newBlock(kind, makeId);
     if (target.replace && anchor) {
       replaceBlock({ ...block, id: anchor.id });
       if (isTextKind(kind)) focusBlock(anchor.id, "start");
@@ -351,7 +340,7 @@ export function ClassPageEditor({
       }
       const offset = caretOffset(element);
       const before = value.slice(0, offset);
-      const split = newBlock(block.kind === "list" ? "list" : "text", block.visibility, makeId) as TextBlock;
+      const split = newBlock(block.kind === "list" ? "list" : "text", makeId) as TextBlock;
       // The block has the caret, so the text is cut here: the element does not rewrite itself while focused.
       element.textContent = before;
       setBlocks((list) =>
@@ -410,32 +399,17 @@ export function ClassPageEditor({
       openSlash(null, false);
     } else if (event.key === "Enter") {
       event.preventDefault();
-      const block = newBlock("text", "BEFORE", makeId);
+      const block = newBlock("text", makeId);
       setBlocks((list) => [...list, block]);
       focusBlock(block.id, "start");
     }
   };
 
-  const shown = editing ? blocks : blocks.filter((block) => block.visibility !== "TEACHER" && !isEmptyBlock(block));
+  const shown = editing ? blocks : blocks.filter((block) => !isEmptyBlock(block));
 
-  /** What a row holds besides its handles: who sees it, where a run of blocks seen alike begins, and the block. */
-  const rowBody = (block: EditorBlock, previous: EditorBlock | undefined) => (
+  /** What a row holds besides its handles: the block, with the «/» menu that opens under it. */
+  const rowBody = (block: EditorBlock) => (
     <>
-      {block.visibility !== "BEFORE" &&
-        block.visibility !== previous?.visibility &&
-        (editing || block.visibility === "AFTER") && (
-          <span
-            className={`class-page-editor__tag class-page-editor__tag_visibility_${block.visibility.toLowerCase()}`}
-          >
-            {block.visibility === "AFTER" ? (
-              <ClockIcon variant="classic-solid" className="class-page-editor__tag-icon" />
-            ) : (
-              <LockIcon variant="classic-solid" className="class-page-editor__tag-icon" />
-            )}
-            {words[block.visibility].label}
-          </span>
-        )}
-
       <Popover.Root open={slash?.at === block.id} onOpenChange={(open) => !open && closeSlash()}>
         <Popover.Anchor asChild>
           <div className="class-page-editor__body">
@@ -480,36 +454,42 @@ export function ClassPageEditor({
   return (
     <div className={`class-page-editor class-page-editor_mode_${mode}`}>
       <div className="class-page-editor__bar">
-        <p className="class-page-editor__dateline">{dateline}</p>
-        <div className="class-page-editor__modes" role="group" aria-label="Qué ves">
-          <button
-            type="button"
-            className="class-page-editor__mode"
-            aria-pressed={editing}
-            onClick={() => setMode("edit")}
-          >
-            Editar
-          </button>
-          <button
-            type="button"
-            className="class-page-editor__mode"
-            aria-pressed={!editing}
-            onClick={() => {
-              setSlash(null);
-              setMenuFor(null);
-              setMode("student");
-            }}
-          >
-            Vista del alumno
-          </button>
-        </div>
+        {dateline !== undefined ? (
+          <p className="class-page-editor__dateline">{dateline}</p>
+        ) : (
+          <h2 className="class-page-editor__section-title">Contenido de la clase</h2>
+        )}
+        {!readOnly && (
+          <div className="class-page-editor__modes" role="group" aria-label="Qué ves">
+            <button
+              type="button"
+              className="class-page-editor__mode"
+              aria-pressed={editing}
+              onClick={() => setMode("edit")}
+            >
+              Editar
+            </button>
+            <button
+              type="button"
+              className="class-page-editor__mode"
+              aria-pressed={!editing}
+              onClick={() => {
+                setSlash(null);
+                setMenuFor(null);
+                setMode("student");
+              }}
+            >
+              Vista del alumno
+            </button>
+          </div>
+        )}
       </div>
 
       {editing && (
         <PlatformNotice variant="info" message="Vista previa del editor: lo que escribas aquí todavía no se guarda." />
       )}
 
-      {editing ? (
+      {title === undefined ? null : editing ? (
         <EditableText
           className="class-page-editor__title"
           text={heading}
@@ -528,18 +508,13 @@ export function ClassPageEditor({
             noun="bloque"
             onMove={(activeId, overId) => setBlocks((list) => moveTo(list, activeId, overId))}
           >
-            {blocks.map((block, index) => (
-              <SortableRow key={block.id} id={block.id} name={subjectOf(block)} className={rowClassOf(block, true)}>
+            {blocks.map((block) => (
+              <SortableRow key={block.id} id={block.id} name={subjectOf(block)} className={rowClassOf(block)}>
                 <RowGutter
                   block={block}
-                  endHour={endHour}
                   menuOpen={menuFor === block.id}
                   onMenuOpenChange={(open) => setMenuFor(open ? block.id : null)}
                   onAdd={() => openSlash(block.id, false)}
-                  onVisibility={(visibility) => {
-                    replaceBlock({ ...block, visibility });
-                    setMenuFor(null);
-                  }}
                   onConvert={(kind) => {
                     if (isTextBlock(block)) replaceBlock(convertText(block, kind));
                     setMenuFor(null);
@@ -554,14 +529,14 @@ export function ClassPageEditor({
                     confirm.current?.open();
                   }}
                 />
-                {rowBody(block, blocks[index - 1])}
+                {rowBody(block)}
               </SortableRow>
             ))}
           </SortableDnd>
         ) : (
-          shown.map((block, index) => (
-            <div key={block.id} className={rowClassOf(block, false)}>
-              {rowBody(block, shown[index - 1])}
+          shown.map((block) => (
+            <div key={block.id} className={rowClassOf(block)}>
+              {rowBody(block)}
             </div>
           ))
         )}
@@ -581,7 +556,7 @@ export function ClassPageEditor({
                     const value = event.currentTarget.value;
                     event.currentTarget.value = "";
                     if (!value) return;
-                    const block = { ...(newBlock("text", "BEFORE", makeId) as TextBlock), text: value };
+                    const block = { ...(newBlock("text", makeId) as TextBlock), text: value };
                     setBlocks((list) => [...list, block]);
                     focusBlock(block.id, "end");
                   }}

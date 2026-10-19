@@ -7,11 +7,10 @@ import {
   matchKinds,
   moveTo,
   newBlock,
-  visibilityChoices,
   type EditorBlock,
 } from "./class-page-editor.model";
 
-const text = (id: string): EditorBlock => ({ id, kind: "text", visibility: "BEFORE", text: id });
+const text = (id: string): EditorBlock => ({ id, kind: "text", text: id });
 const ids = (blocks: EditorBlock[]) => blocks.map((block) => block.id);
 
 function counter() {
@@ -46,18 +45,12 @@ describe("markdownShortcut", () => {
 });
 
 describe("newBlock", () => {
-  it("never puts an exercise block in the teacher's script", () => {
-    expect(visibilityChoices("exercises")).toEqual(["BEFORE", "AFTER"]);
-    expect(newBlock("exercises", "TEACHER", counter()).visibility).toBe("BEFORE");
-    expect(newBlock("text", "TEACHER", counter()).visibility).toBe("TEACHER");
-  });
-
   it("starts a diagram on the initial position, and a question with two options, the first right", () => {
-    const diagram = newBlock("diagram", "BEFORE", counter());
+    const diagram = newBlock("diagram", counter());
     expect(diagram.kind === "diagram" && readDiagramPgn(diagram.pgn)?.fen).toBe(
       "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
     );
-    const question = newBlock("question", "BEFORE", counter());
+    const question = newBlock("question", counter());
     expect(question.kind === "question" && question.options.map((option) => option.correct)).toEqual([true, false]);
   });
 });
@@ -77,7 +70,7 @@ describe("the list operations", () => {
   });
 
   it("duplicate a block with ids of its own", () => {
-    const question = newBlock("question", "BEFORE", counter());
+    const question = newBlock("question", counter());
     const copied = duplicateBlock([question], question.id, () => "copy");
     expect(ids(copied)).toEqual([question.id, "copy"]);
     const copy = copied[1];

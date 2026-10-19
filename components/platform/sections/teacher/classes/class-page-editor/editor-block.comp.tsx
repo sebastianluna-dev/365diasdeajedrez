@@ -141,20 +141,20 @@ function BlockBody({ block, mode, options, onChange, text, onEditBoard }: Editor
       const game = block.game;
       return (
         <div className="editor-block__widget">
-          <div className="editor-block__widget-board">
-            <StaticDiagram fen={game.fen} />
-          </div>
+          {game.fen && (
+            <div className="editor-block__widget-board">
+              <StaticDiagram fen={game.fen} />
+            </div>
+          )}
           <div className="editor-block__widget-text">
             <span className="editor-block__eyebrow">Partida</span>
             <strong className="editor-block__widget-title">
               {game.white} – {game.black}
             </strong>
-            <span className="editor-block__meta">
-              {game.event} · {game.result}
-            </span>
+            <span className="editor-block__meta">{[game.event, game.result].filter(Boolean).join(" · ")}</span>
             <div className="editor-block__actions">
               <Link
-                href={platformRoutes.analysisBoard({ fen: game.fen })}
+                href={game.href ?? platformRoutes.analysisBoard(game.fen ? { fen: game.fen } : { partida: game.id })}
                 className="platform-button platform-button_size_sm"
               >
                 Abrir en el tablero
@@ -184,7 +184,7 @@ function BlockBody({ block, mode, options, onChange, text, onEditBoard }: Editor
             items={options.lessons.map((lesson) => ({
               id: lesson.id,
               label: lesson.title,
-              meta: lesson.course,
+              meta: lesson.course ?? "",
               pick: () => onChange({ ...block, lesson }),
             }))}
           />
@@ -193,7 +193,7 @@ function BlockBody({ block, mode, options, onChange, text, onEditBoard }: Editor
       return (
         <ReferenceCard
           kind="lesson"
-          eyebrow={`Lección · ${block.lesson.course}`}
+          eyebrow={block.lesson.course ? `Lección · ${block.lesson.course}` : "Lección"}
           title={block.lesson.title}
           onChange={editing ? () => onChange({ ...block, lesson: null }) : undefined}
         />
@@ -251,7 +251,7 @@ function BlockBody({ block, mode, options, onChange, text, onEditBoard }: Editor
       return (
         <ReferenceCard
           kind="file"
-          eyebrow={`Archivo · ${block.file.size}`}
+          eyebrow={block.file.size ? `Archivo · ${block.file.size}` : "Archivo"}
           title={block.file.name}
           onChange={editing ? () => onChange({ ...block, file: null }) : undefined}
         />
@@ -502,7 +502,11 @@ function Picker({
             </button>
           </li>
         ))}
-        {shown.length === 0 && <li className="editor-block__meta">Nada coincide con «{query.trim()}».</li>}
+        {shown.length === 0 && (
+          <li className="editor-block__meta">
+            {items.length === 0 ? "No hay nada para elegir todavía." : `Nada coincide con «${query.trim()}».`}
+          </li>
+        )}
       </ul>
     </div>
   );

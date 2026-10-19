@@ -1,5 +1,4 @@
 import { INITIAL_FEN } from "chessops/fen";
-import { CLASS_BLOCK_VISIBILITY, type ClassBlockVisibilityCode } from "@/constants/platform/class-codes.const";
 import { writeDiagramPgn } from "@/lib/chess/diagram-notation";
 
 // The blocks of the class editor (2026-10-19, option A of the editor canvas:
@@ -22,14 +21,17 @@ export interface EditorGame {
   black: string;
   event: string;
   result: string;
-  fen: string;
+  /** The position its small board shows; a game cited without one draws no board. */
+  fen?: string;
+  /** Where «Abrir en el tablero» leads: the game in its study; without one, the analysis board. */
+  href?: string;
 }
 
 export interface EditorLesson {
   id: string;
   title: string;
-  /** «Finales de torres · 2». */
-  course: string;
+  /** «Finales de torres · 2»; none when the page does not know it. */
+  course?: string;
 }
 
 /** A series of the exercise bank, by the titles of its exercises. */
@@ -41,8 +43,8 @@ export interface EditorSeries {
 
 export interface EditorFile {
   name: string;
-  /** «240 KB». */
-  size: string;
+  /** «240 KB»; none for a file already in the class. */
+  size?: string;
 }
 
 /** An option of an «Ahora tú» question, with the line the student reads on choosing it. */
@@ -53,9 +55,9 @@ export interface QuestionOption {
   correct: boolean;
 }
 
+/** A block is the class's content, all of it, with no section of its own: who sees what is no longer the block's to say. */
 interface BlockBase {
   id: string;
-  visibility: ClassBlockVisibilityCode;
 }
 
 export type EditorBlock = BlockBase &
@@ -169,17 +171,9 @@ export function markdownShortcut(text: string): { kind: TextKind; rest: string }
   return found ? { kind: found[1], rest: plain.slice(found[0].length) } : null;
 }
 
-/** «Para preparar», «Después de la clase» and «Guion del profesor», minus the script for an exercise block (D30). */
-export function visibilityChoices(kind: EditorKind): ClassBlockVisibilityCode[] {
-  const all = Object.values(CLASS_BLOCK_VISIBILITY);
-  return kind === "exercises" ? all.filter((code) => code !== CLASS_BLOCK_VISIBILITY.TEACHER) : all;
-}
-
-/** A new, empty block of a kind, seen when its neighbour is: an exercise block is never the teacher's script. */
-export function newBlock(kind: EditorKind, visibility: ClassBlockVisibilityCode, makeId: () => string): EditorBlock {
-  const id = makeId();
-  const seen = visibilityChoices(kind).includes(visibility) ? visibility : CLASS_BLOCK_VISIBILITY.BEFORE;
-  const base = { id, visibility: seen };
+/** A new, empty block of a kind. */
+export function newBlock(kind: EditorKind, makeId: () => string): EditorBlock {
+  const base = { id: makeId() };
   if (isTextKind(kind)) return { ...base, kind, text: "" };
   switch (kind) {
     case "divider":
@@ -216,11 +210,11 @@ export function newBlock(kind: EditorKind, visibility: ClassBlockVisibilityCode,
 }
 
 /**
- * The block turned into another kind of text, keeping its id, its visibility
- * and its words; only a paragraph opens the article in larger type.
+ * The block turned into another kind of text, keeping its id and its words;
+ * only a paragraph opens the article in larger type.
  */
 export function convertText(block: TextBlock, kind: TextKind, text = block.text): TextBlock {
-  return { id: block.id, visibility: block.visibility, kind, text };
+  return { id: block.id, kind, text };
 }
 
 /** The list with `block` after the block `afterId`, or at the end when `afterId` is null. */
