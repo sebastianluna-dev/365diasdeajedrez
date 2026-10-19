@@ -5,8 +5,7 @@ import {
   insertAfter,
   markdownShortcut,
   matchKinds,
-  moveBefore,
-  moveBlock,
+  moveTo,
   newBlock,
   visibilityChoices,
   type EditorBlock,
@@ -71,15 +70,10 @@ describe("the list operations", () => {
     expect(ids(insertAfter(blocks, null, text("x")))).toEqual(["a", "b", "c", "x"]);
   });
 
-  it("swap a block with a neighbour, and stay put at either end", () => {
-    expect(ids(moveBlock(blocks, "b", -1))).toEqual(["b", "a", "c"]);
-    expect(moveBlock(blocks, "c", 1)).toBe(blocks);
-  });
-
-  it("put a dragged block before another, or at the end", () => {
-    expect(ids(moveBefore(blocks, "c", "a"))).toEqual(["c", "a", "b"]);
-    expect(ids(moveBefore(blocks, "a", null))).toEqual(["b", "c", "a"]);
-    expect(moveBefore(blocks, "a", "a")).toBe(blocks);
+  it("put a dragged block in the place of the one it is dropped on, up or down", () => {
+    expect(ids(moveTo(blocks, "c", "a"))).toEqual(["c", "a", "b"]);
+    expect(ids(moveTo(blocks, "a", "c"))).toEqual(["b", "c", "a"]);
+    expect(moveTo(blocks, "a", "a")).toBe(blocks);
   });
 
   it("duplicate a block with ids of its own", () => {

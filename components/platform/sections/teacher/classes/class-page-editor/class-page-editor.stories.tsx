@@ -62,6 +62,27 @@ export const SlashMenu: Story = {
   },
 };
 
+/** A block moved down with the keyboard: Space on its ⋮⋮ picks it up, the arrow moves it, Space drops it. */
+export const KeyboardMove: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const [grip] = canvas.getAllByRole("button", { name: /^Opciones de «Título»/ });
+    grip?.focus();
+    // dnd-kit measures the rows between keys: each one waits for a frame or two, as a hand does.
+    const pause = () => new Promise((resolve) => setTimeout(resolve, 250));
+    await userEvent.keyboard(" ");
+    await pause();
+    await userEvent.keyboard("{ArrowDown}");
+    await pause();
+    await userEvent.keyboard(" ");
+    await pause();
+    const kinds = [...canvasElement.querySelectorAll(".class-page-editor__row")].map(
+      (row) => /_kind_(\w+)/.exec(row.className)?.[1],
+    );
+    await expect(kinds.slice(2, 4)).toEqual(["text", "heading"]);
+  },
+};
+
 /** The same class as the student reads it after the class: no script, no empty blocks, no controls. */
 export const StudentView: Story = {
   args: { defaultMode: "student" },

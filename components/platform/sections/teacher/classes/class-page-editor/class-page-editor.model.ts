@@ -230,24 +230,19 @@ export function insertAfter(blocks: EditorBlock[], afterId: string | null, block
   return [...blocks.slice(0, index + 1), block, ...blocks.slice(index + 1)];
 }
 
-/** The list with one block swapped with its neighbour above (-1) or below (1); unchanged at either end. */
-export function moveBlock(blocks: EditorBlock[], id: string, delta: -1 | 1): EditorBlock[] {
-  const index = blocks.findIndex((item) => item.id === id);
-  const other = index + delta;
-  if (index < 0 || other < 0 || other >= blocks.length) return blocks;
+/**
+ * The list with a dragged block in the place of the one it was dropped on,
+ * as dnd-kit says a move (`SortableDnd`'s `onMove`): moving down it lands
+ * after that block, moving up, before it.
+ */
+export function moveTo(blocks: EditorBlock[], id: string, overId: string): EditorBlock[] {
+  const from = blocks.findIndex((item) => item.id === id);
+  const to = blocks.findIndex((item) => item.id === overId);
+  if (from < 0 || to < 0 || from === to) return blocks;
   const next = [...blocks];
-  [next[index], next[other]] = [next[other] as EditorBlock, next[index] as EditorBlock];
+  const [moved] = next.splice(from, 1);
+  next.splice(to, 0, moved as EditorBlock);
   return next;
-}
-
-/** The list with a dragged block put right before `beforeId`, or at the end when `beforeId` is null. */
-export function moveBefore(blocks: EditorBlock[], id: string, beforeId: string | null): EditorBlock[] {
-  const moved = blocks.find((item) => item.id === id);
-  if (!moved || id === beforeId) return blocks;
-  const rest = blocks.filter((item) => item.id !== id);
-  const index = beforeId === null ? rest.length : rest.findIndex((item) => item.id === beforeId);
-  if (index < 0) return blocks;
-  return [...rest.slice(0, index), moved, ...rest.slice(index)];
 }
 
 /** A copy of a block right after it, with ids of its own (its options' too). */

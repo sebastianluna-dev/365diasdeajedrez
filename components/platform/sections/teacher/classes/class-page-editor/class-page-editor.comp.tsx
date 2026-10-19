@@ -1,7 +1,9 @@
 "use client";
 
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Popover } from "radix-ui";
-import { useEffect, useRef, useState, type DragEvent, type KeyboardEvent } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { ClockIcon } from "@/components/icons/clock-icon.comp";
 import { GripDotsVerticalIcon } from "@/components/icons/grip-dots-vertical-icon.comp";
 import { LockIcon } from "@/components/icons/lock-icon.comp";
@@ -11,6 +13,9 @@ import {
   type PlatformConfirmPopupHandle,
 } from "@/components/platform/shared/platform-confirm-popup/platform-confirm-popup.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
+import { SortableDnd } from "@/components/platform/shared/sortable-dnd/sortable-dnd.comp";
+import { useSortableStep } from "@/components/platform/shared/sortable-dnd/use-sortable-step.hook";
+import type { ClassBlockVisibilityCode } from "@/constants/platform/class-codes.const";
 import { readDiagramPgn, writeDiagramPgn } from "@/lib/chess/diagram-notation";
 import {
   convertText,
@@ -20,13 +25,13 @@ import {
   isTextKind,
   kindInfo,
   markdownShortcut,
-  moveBefore,
-  moveBlock,
+  moveTo,
   newBlock,
   type ClassPageEditorOptions,
   type EditorBlock,
   type EditorKind,
   type TextBlock,
+  type TextKind,
 } from "./class-page-editor.model";
 import { EditableText } from "./editable-text.comp";
 import { EditorBlockView, type TextEditing } from "./editor-block.comp";
@@ -106,6 +111,120 @@ function subjectOf(block: EditorBlock): string {
   return words.length > 40 ? `${words.slice(0, 40).trimEnd()}…` : words;
 }
 
+function rowClassOf(block: EditorBlock, editing: boolean): string {
+  return [
+    "class-page-editor__row",
+    `class-page-editor__row_kind_${block.kind}`,
+    editing && block.visibility === "TEACHER" ? "class-page-editor__row_visibility_teacher" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+/** The handle of the row it is in, as dnd-kit gives it: what the ⋮⋮ spreads on itself. */
+const RowHandle = createContext<Pick<
+  ReturnType<typeof useSortable>,
+  "attributes" | "listeners" | "setActivatorNodeRef"
+> | null>(null);
+
+/**
+ * A block's row while the page is edited: a sortable item of `SortableDnd`,
+ * moved by the ⋮⋮ of its gutter (`RowGutter`) and drawn where it travels.
+ * It only places what it is given.
+ */
+function SortableRow({
+  id,
+  name,
+  className,
+  children,
+}: {
+  id: string;
+  name: string;
+  className: string;
+  children: ReactNode;
+}) {
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+    data: { name },
+  });
+  return (
+    <div
+      ref={setNodeRef}
+      className={`${className}${isDragging ? " class-page-editor__row_state_dragging" : ""}`}
+      // The only inline style of the row: where it IS while it travels. Moved, never
+      // scaled: blocks differ in height, and a paragraph shrunk to a heading is unreadable.
+      style={{ transform: CSS.Translate.toString(transform), transition }}
+    >
+      <RowHandle value={{ attributes, listeners, setActivatorNodeRef }}>{children}</RowHandle>
+    </div>
+  );
+}
+
+interface RowGutterProps {
+  block: EditorBlock;
+  endHour: string;
+  menuOpen: boolean;
+  onMenuOpenChange: (open: boolean) => void;
+  onAdd: () => void;
+  onVisibility: (visibility: ClassBlockVisibilityCode) => void;
+  onConvert: (kind: TextKind) => void;
+  onDuplicate: () => void;
+  onRemove: () => void;
+}
+
+/**
+ * The «+» and the ⋮⋮ in a row's left margin. The ⋮⋮ is the row's dnd-kit
+ * handle and the trigger of its menu at once: a click opens the menu (a drag
+ * only starts after 5px), Enter opens it from the keyboard and Space picks
+ * the row up, as `SortableDnd` tells the screen reader. «Mover arriba» and
+ * «Mover abajo» are the list's steps (`useSortableStep`), so where the block
+ * lands is said too.
+ */
+function RowGutter({ block, endHour, menuOpen, onMenuOpenChange, onAdd, ...menu }: RowGutterProps) {
+  const handle = useContext(RowHandle);
+  const steps = useSortableStep(block.id);
+  const label = kindInfo(block.kind).label;
+  return (
+    <div className="class-page-editor__gutter">
+      <button
+        type="button"
+        className="class-page-editor__handle"
+        aria-label={`Agregar un bloque debajo de «${label}»`}
+        onClick={onAdd}
+      >
+        <PlusIcon variant="classic-solid" />
+      </button>
+      <Popover.Root open={menuOpen} onOpenChange={onMenuOpenChange}>
+        <Popover.Trigger
+          ref={handle?.setActivatorNodeRef}
+          className="class-page-editor__handle class-page-editor__handle_role_grip"
+          {...handle?.attributes}
+          {...handle?.listeners}
+          aria-label={`Opciones de «${label}»; arrástralo para moverlo`}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              onMenuOpenChange(true);
+              return;
+            }
+            handle?.listeners?.onKeyDown?.(event);
+          }}
+        >
+          <GripDotsVerticalIcon variant="classic-solid" />
+        </Popover.Trigger>
+        <EditorBlockMenu
+          block={block}
+          endHour={endHour}
+          canMoveUp={steps.up !== null}
+          canMoveDown={steps.down !== null}
+          onMove={(delta) => (delta < 0 ? steps.up : steps.down)?.()}
+          {...menu}
+        />
+      </Popover.Root>
+    </div>
+  );
+}
+
 /**
  * The teacher's class page as one page to write on, the way Notion works
  * (2026-10-19, option A of the editor canvas). The page looks like the
@@ -135,7 +254,6 @@ export function ClassPageEditor({
   const [mode, setMode] = useState(defaultMode);
   const [slash, setSlash] = useState<{ at: string | null; replace: boolean; use: number } | null>(null);
   const [menuFor, setMenuFor] = useState<string | null>(null);
-  const [drag, setDrag] = useState<{ id: string; over: string | null } | null>(null);
   const [removing, setRemoving] = useState<EditorBlock | null>(null);
   const elements = useRef(new Map<string, HTMLElement>());
   const endLine = useRef<HTMLInputElement>(null);
@@ -298,18 +416,66 @@ export function ClassPageEditor({
     }
   };
 
-  const dropOn = (beforeId: string | null) => (event: DragEvent<HTMLElement>) => {
-    event.preventDefault();
-    if (drag) setBlocks((list) => moveBefore(list, drag.id, beforeId));
-    setDrag(null);
-  };
-  const dragOver = (overId: string | null) => (event: DragEvent<HTMLElement>) => {
-    if (!drag) return;
-    event.preventDefault();
-    if (drag.over !== overId) setDrag({ ...drag, over: overId });
-  };
-
   const shown = editing ? blocks : blocks.filter((block) => block.visibility !== "TEACHER" && !isEmptyBlock(block));
+
+  /** What a row holds besides its handles: who sees it, where a run of blocks seen alike begins, and the block. */
+  const rowBody = (block: EditorBlock, previous: EditorBlock | undefined) => (
+    <>
+      {block.visibility !== "BEFORE" &&
+        block.visibility !== previous?.visibility &&
+        (editing || block.visibility === "AFTER") && (
+          <span
+            className={`class-page-editor__tag class-page-editor__tag_visibility_${block.visibility.toLowerCase()}`}
+          >
+            {block.visibility === "AFTER" ? (
+              <ClockIcon variant="classic-solid" className="class-page-editor__tag-icon" />
+            ) : (
+              <LockIcon variant="classic-solid" className="class-page-editor__tag-icon" />
+            )}
+            {words[block.visibility].label}
+          </span>
+        )}
+
+      <Popover.Root open={slash?.at === block.id} onOpenChange={(open) => !open && closeSlash()}>
+        <Popover.Anchor asChild>
+          <div className="class-page-editor__body">
+            <EditorBlockView
+              block={block}
+              mode={mode}
+              options={options}
+              onChange={replaceBlock}
+              text={textEditing}
+              onEditBoard={(event, target) => {
+                if (target.kind === "diagram") {
+                  boardPopup.current?.open(event, {
+                    pgn: target.pgn,
+                    positionOnly: false,
+                    onSave: (pgn) => replaceBlock({ ...target, pgn }),
+                  });
+                  return;
+                }
+                boardPopup.current?.open(event, {
+                  pgn: writeDiagramPgn({
+                    fen: target.fen,
+                    orientation: target.orientation,
+                    caption: "",
+                    circles: [],
+                    arrows: [],
+                  }),
+                  positionOnly: true,
+                  onSave: (pgn) => {
+                    const position = readDiagramPgn(pgn);
+                    if (position) replaceBlock({ ...target, fen: position.fen, orientation: position.orientation });
+                  },
+                });
+              }}
+            />
+          </div>
+        </Popover.Anchor>
+        <EditorSlashMenu key={slash?.use ?? 0} onChoose={choose} onClose={closeSlash} />
+      </Popover.Root>
+    </>
+  );
 
   return (
     <div className={`class-page-editor class-page-editor_mode_${mode}`}>
@@ -356,137 +522,52 @@ export function ClassPageEditor({
       )}
 
       <div className="class-page-editor__blocks">
-        {shown.map((block, index) => {
-          const label = kindInfo(block.kind).label;
-          const rowClass = [
-            "class-page-editor__row",
-            `class-page-editor__row_kind_${block.kind}`,
-            editing && block.visibility === "TEACHER" ? "class-page-editor__row_visibility_teacher" : "",
-            drag && drag.over === block.id && drag.id !== block.id ? "class-page-editor__row_state_drop" : "",
-          ]
-            .filter(Boolean)
-            .join(" ");
-          return (
-            <div key={block.id} className={rowClass} onDragOver={dragOver(block.id)} onDrop={dropOn(block.id)}>
-              {editing && (
-                <div className="class-page-editor__gutter">
-                  <button
-                    type="button"
-                    className="class-page-editor__handle"
-                    aria-label={`Agregar un bloque debajo de «${label}»`}
-                    onClick={() => openSlash(block.id, false)}
-                  >
-                    <PlusIcon variant="classic-solid" />
-                  </button>
-                  <Popover.Root open={menuFor === block.id} onOpenChange={(open) => setMenuFor(open ? block.id : null)}>
-                    <Popover.Trigger
-                      className="class-page-editor__handle class-page-editor__handle_role_grip"
-                      aria-label={`Opciones de «${label}»; arrástralo para moverlo`}
-                      draggable
-                      onDragStart={(event) => {
-                        event.dataTransfer.effectAllowed = "move";
-                        event.dataTransfer.setData("text/plain", block.id);
-                        setMenuFor(null);
-                        setDrag({ id: block.id, over: null });
-                      }}
-                      onDragEnd={() => setDrag(null)}
-                    >
-                      <GripDotsVerticalIcon variant="classic-solid" />
-                    </Popover.Trigger>
-                    <EditorBlockMenu
-                      block={block}
-                      endHour={endHour}
-                      canMoveUp={index > 0}
-                      canMoveDown={index < blocks.length - 1}
-                      onVisibility={(visibility) => {
-                        replaceBlock({ ...block, visibility });
-                        setMenuFor(null);
-                      }}
-                      onConvert={(kind) => {
-                        if (isTextBlock(block)) replaceBlock(convertText(block, kind));
-                        setMenuFor(null);
-                      }}
-                      onDuplicate={() => {
-                        setBlocks((list) => duplicateBlock(list, block.id, makeId));
-                        setMenuFor(null);
-                      }}
-                      onMove={(delta) => setBlocks((list) => moveBlock(list, block.id, delta))}
-                      onRemove={() => {
-                        setMenuFor(null);
-                        setRemoving(block);
-                        confirm.current?.open();
-                      }}
-                    />
-                  </Popover.Root>
-                </div>
-              )}
-
-              {/* Said once where a run of blocks seen alike begins, not on each of them. */}
-              {block.visibility !== "BEFORE" &&
-                block.visibility !== shown[index - 1]?.visibility &&
-                (editing || block.visibility === "AFTER") && (
-                  <span
-                    className={`class-page-editor__tag class-page-editor__tag_visibility_${block.visibility.toLowerCase()}`}
-                  >
-                    {block.visibility === "AFTER" ? (
-                      <ClockIcon variant="classic-solid" className="class-page-editor__tag-icon" />
-                    ) : (
-                      <LockIcon variant="classic-solid" className="class-page-editor__tag-icon" />
-                    )}
-                    {words[block.visibility].label}
-                  </span>
-                )}
-
-              <Popover.Root open={slash?.at === block.id} onOpenChange={(open) => !open && closeSlash()}>
-                <Popover.Anchor asChild>
-                  <div className="class-page-editor__body">
-                    <EditorBlockView
-                      block={block}
-                      mode={mode}
-                      options={options}
-                      onChange={replaceBlock}
-                      text={textEditing}
-                      onEditBoard={(event, target) => {
-                        if (target.kind === "diagram") {
-                          boardPopup.current?.open(event, {
-                            pgn: target.pgn,
-                            positionOnly: false,
-                            onSave: (pgn) => replaceBlock({ ...target, pgn }),
-                          });
-                          return;
-                        }
-                        boardPopup.current?.open(event, {
-                          pgn: writeDiagramPgn({
-                            fen: target.fen,
-                            orientation: target.orientation,
-                            caption: "",
-                            circles: [],
-                            arrows: [],
-                          }),
-                          positionOnly: true,
-                          onSave: (pgn) => {
-                            const position = readDiagramPgn(pgn);
-                            if (position) {
-                              replaceBlock({ ...target, fen: position.fen, orientation: position.orientation });
-                            }
-                          },
-                        });
-                      }}
-                    />
-                  </div>
-                </Popover.Anchor>
-                <EditorSlashMenu key={slash?.use ?? 0} onChoose={choose} onClose={closeSlash} />
-              </Popover.Root>
+        {editing ? (
+          <SortableDnd
+            items={blocks.map((block) => ({ id: block.id, name: subjectOf(block) }))}
+            noun="bloque"
+            onMove={(activeId, overId) => setBlocks((list) => moveTo(list, activeId, overId))}
+          >
+            {blocks.map((block, index) => (
+              <SortableRow key={block.id} id={block.id} name={subjectOf(block)} className={rowClassOf(block, true)}>
+                <RowGutter
+                  block={block}
+                  endHour={endHour}
+                  menuOpen={menuFor === block.id}
+                  onMenuOpenChange={(open) => setMenuFor(open ? block.id : null)}
+                  onAdd={() => openSlash(block.id, false)}
+                  onVisibility={(visibility) => {
+                    replaceBlock({ ...block, visibility });
+                    setMenuFor(null);
+                  }}
+                  onConvert={(kind) => {
+                    if (isTextBlock(block)) replaceBlock(convertText(block, kind));
+                    setMenuFor(null);
+                  }}
+                  onDuplicate={() => {
+                    setBlocks((list) => duplicateBlock(list, block.id, makeId));
+                    setMenuFor(null);
+                  }}
+                  onRemove={() => {
+                    setMenuFor(null);
+                    setRemoving(block);
+                    confirm.current?.open();
+                  }}
+                />
+                {rowBody(block, blocks[index - 1])}
+              </SortableRow>
+            ))}
+          </SortableDnd>
+        ) : (
+          shown.map((block, index) => (
+            <div key={block.id} className={rowClassOf(block, false)}>
+              {rowBody(block, shown[index - 1])}
             </div>
-          );
-        })}
+          ))
+        )}
 
         {editing && (
-          <div
-            className={`class-page-editor__row${drag && drag.over === null ? " class-page-editor__row_state_drop" : ""}`}
-            onDragOver={dragOver(null)}
-            onDrop={dropOn(null)}
-          >
+          <div className="class-page-editor__row">
             <Popover.Root open={slash?.at === null} onOpenChange={(open) => !open && closeSlash()}>
               <Popover.Anchor asChild>
                 <input

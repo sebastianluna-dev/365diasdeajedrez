@@ -1,6 +1,7 @@
 /* The class page as one page to write on: the reading column of the
    student's notebook, with each block's «+» and ⋮⋮ in the margin to its left
-   (shown while the block is pointed at or holds the focus), who sees it in the
+   (shown while the block is pointed at or holds the focus; the ⋮⋮ is the row's
+   dnd-kit handle), who sees it in the
    margin to its right, and the empty line that ends the page. */
 .class-page-editor {
   display: flex;
@@ -95,16 +96,14 @@
     position: relative;
   }
 
-  /* Where a dragged block lands: a line over the block it goes before. */
-  & .class-page-editor__row.class-page-editor__row_state_drop::before {
-    content: "";
-    position: absolute;
-    top: calc(-1 * var(--platform-space-1) - 1px);
-    right: 0;
-    left: 0;
-    height: 3px;
-    border-radius: 1000px;
-    background: var(--platform-selection);
+  /* The row being dragged: above the others, lifted on white, the white
+     reaching a little past its text so it reads as a sheet in the hand. */
+  & .class-page-editor__row.class-page-editor__row_state_dragging {
+    z-index: 2;
+    border-radius: 8px;
+    outline: var(--platform-space-2) solid var(--platform-surface);
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-popup);
   }
 
   /* The teacher's script: on a grey of its own, so it is never read as the article. */
