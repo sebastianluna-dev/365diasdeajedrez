@@ -4,6 +4,7 @@ import Link from "next/link";
 import { DropdownMenu } from "radix-ui";
 import { AngleDownIcon } from "@/components/icons/angle-down-icon.comp";
 import { BookOpenIcon } from "@/components/icons/book-open-icon.comp";
+import { CalendarWeekIcon } from "@/components/icons/calendar-week-icon.comp";
 import { ChalkboardUserIcon } from "@/components/icons/chalkboard-user-icon.comp";
 import { ChessBoardIcon } from "@/components/icons/chess-board-icon.comp";
 import { DumbbellIcon } from "@/components/icons/dumbbell-icon.comp";
@@ -30,6 +31,7 @@ const ICONS: Record<PlatformNavMenuItem["icon"], typeof ChessBoardIcon> = {
   courses: GraduationCapIcon,
   studies: BookOpenIcon,
   classes: ChalkboardUserIcon,
+  calendar: CalendarWeekIcon,
   panel: HouseIcon,
   students: UsersIcon,
   profile: IdCardIcon,

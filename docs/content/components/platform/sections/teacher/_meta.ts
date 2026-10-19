@@ -6,6 +6,7 @@ const meta: MetaRecord = {
   students: "students/",
   classes: "classes/",
   "class-templates": "class-templates/",
+  "class-calendar": "ClassCalendar",
   exercises: "exercises/",
 };
 

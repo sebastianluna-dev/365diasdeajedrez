@@ -1,0 +1,45 @@
+---
+description: "«Calendario»: the teacher's classes by day, week and month, the way Google Calendar shows a diary, each class a block in its phase's colours that opens a card. Front-only sample week."
+---
+
+# `ClassCalendar`
+
+|            |                                                                                                                                                                                                                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/platform/sections/teacher/class-calendar/`: `class-calendar.comp.tsx`, `class-calendar.dates.ts`                                                                                                                                                                                      |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                  |
+| Stylesheet | `class-calendar.comp.css` → block `.class-calendar`                                                                                                                                                                                                                                               |
+| Story      | `class-calendar.stories.tsx` (`platform/sections/teacher/ClassCalendar`): the week, a day, the month, an empty week, the card of the live class (`play`), the next month (`play`)                                                                                                                 |
+| Used by    | `/profesor/calendario`                                                                                                                                                                                                                                                                            |
+| Composes   | [`ClassStatusTag`](/components/platform/shared/class-status-tag), Radix `Popover`                                                                                                                                                                                                                 |
+| Uses       | `class-calendar.dates.ts` (plain days in the teacher's zone, the days of a view, its title, the lanes of overlapping classes; with its test); `class-calendar.sample.ts` (`CALENDAR_SAMPLE_CLASSES`, `CALENDAR_SAMPLE_ZONE`, `CALENDAR_SAMPLE_NOW`) for the page, the story and the overview tile |
+
+## Purpose
+
+Option A of the calendar canvas (2026-10-19), the teacher's «Calendario» in «Enseñar»: their classes the way Google Calendar shows a diary.
+
+- **The toolbar.** «Hoy», the arrows (a day, a week or a month away), the title of what is in sight («19 – 25 de octubre de 2026», «28 sep – 4 oct 2026», «octubre de 2026») and «Día · Semana · Mes». The week starts on Monday.
+- **The side.** A small month with its own arrows: the days in sight tinted as one band, today filled in the accent, a dot under each day with classes, and a click goes to that day. Under it, «Estados»: each phase's colour. Under 1024px the side is left out.
+- **The time grid** (day and week). The heads (a click opens that day), the zone beside the hours («GMT-6»), and 24 hours that scroll (a region «Horas» reached by Tab), opened an hour and a half before now when today is in sight and at 07:00 otherwise. Each class is a block set by its hours (`placeInLanes`: those that overlap share the width, as Google Calendar sets them), with its title and its hours, and who is in it from an hour and a half on; under an hour, its title and hours on one line. The card takes the focus when it opens. The weekend's columns are a shade off white, and a red line with its dot is now. The week keeps 720px and scrolls sideways below that; on a phone the calendar opens on the day.
+- **The month.** Six weeks; each day its number (a click opens the day), its first three classes as lines with their phase's dot (the live one filled) and «N más» for the rest.
+- **The card.** A block or a line opens a popover with the class's `ClassStatusTag`, its title, its day and hours, who is in it, «Entrar a la clase» (the call, in a new tab) while the link is open or the class is live, and «Ver la clase».
+
+The phases' colours are the tags': «Programada» white with its edge, «Enlace abierto» the accent's wash, «En vivo» the accent filled, «Por finalizar» the warning's, «Finalizada» the success's, «Cancelada» grey and struck through. Every day and hour is the teacher's zone (`zonedMoment`), never the browser's; days are counted on UTC dates, so no daylight change moves a column.
+
+Front-only: the page hands it a sample week (`class-calendar.sample.ts`) and says so; its «Ver la clase» links lead to sample ids. Reading the teacher's own classes needs a service that lists them by range.
+
+## Props
+
+| Prop          | Type                         | Required | Meaning                                                                                                       |
+| ------------- | ---------------------------- | -------- | ------------------------------------------------------------------------------------------------------------- |
+| `classes`     | `CalendarClass[]`            | yes      | The classes: `ClassRowData`'s id, link, title, phase, start, length and people, and an optional `meetingUrl`. |
+| `timeZone`    | `string`                     | yes      | The teacher's zone: the calendar's days and hours.                                                            |
+| `nowIso`      | `string`                     | yes      | Now: today, the red line and where the hours open.                                                            |
+| `defaultView` | `"day" \| "week" \| "month"` | no       | The view it opens in. Default `week`, or `day` under 640px.                                                   |
+| `defaultDay`  | `string`                     | no       | The day it opens on, «YYYY-MM-DD»; today by default.                                                          |
+
+## Markup & styling
+
+Block `.class-calendar` (750 lines): the toolbar, the side (`__mini`, `__legend`) and the main area, which is the time grid (`__heads` and `__scroll` share their columns, `--hour` is one hour's height) or the month (`__month`, `__cell`, `__chip`). Each phase sets `--phase-fill`, `--phase-edge` and `--phase-ink` on its block, line and swatch (`_phase_<phase>`). The card unfolds in 160 ms and folds in 120, stilled under reduced motion. The grid's height is a `clamp()` of the window's.
+
+**Breakpoints:** `(width < 1024px)`, `(width < 640px)`.

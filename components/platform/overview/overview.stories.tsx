@@ -150,6 +150,12 @@ import {
   BlockPopup,
   type BlockPopupHandle,
 } from "@/components/platform/sections/teacher/classes/class-block-editor/block-popup.comp";
+import { ClassCalendar } from "@/components/platform/sections/teacher/class-calendar/class-calendar.comp";
+import {
+  CALENDAR_SAMPLE_CLASSES,
+  CALENDAR_SAMPLE_NOW,
+  CALENDAR_SAMPLE_ZONE,
+} from "@/components/platform/sections/teacher/class-calendar/class-calendar.sample";
 import { ClassPageEditor } from "@/components/platform/sections/teacher/classes/class-page-editor/class-page-editor.comp";
 import {
   EDITOR_SAMPLE_BLOCKS,
@@ -2139,6 +2145,14 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 dateline="Jueves 29 de octubre · 18:00"
                 blocks={EDITOR_SAMPLE_BLOCKS}
                 options={EDITOR_SAMPLE_OPTIONS}
+              />
+            </Tile>
+            <Tile name="ClassCalendar" docs="platform-sections-teacher-classcalendar" width={1120} height={720}>
+              <ClassCalendar
+                classes={CALENDAR_SAMPLE_CLASSES}
+                timeZone={CALENDAR_SAMPLE_ZONE}
+                nowIso={CALENDAR_SAMPLE_NOW}
+                defaultView="day"
               />
             </Tile>
             <Tile

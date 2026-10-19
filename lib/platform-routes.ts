@@ -211,6 +211,8 @@ export const teacherRoutes = {
     return query ? `/profesor/clases?${query}` : "/profesor/clases";
   },
   classDetail: (classId: string) => `/profesor/clases/${classId}`,
+  /** «Calendario» (2026-10-19, front-only): the teacher's classes by day, week and month. */
+  calendar: "/profesor/calendario",
   /** «Clases prediseñadas» (2026-10-19, front-only): ready-made classes to start one from. */
   classTemplates: "/profesor/biblioteca-de-clases",
   classTemplate: (slug: string) => `/profesor/biblioteca-de-clases/${slug}`,

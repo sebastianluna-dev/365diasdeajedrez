@@ -56,6 +56,7 @@ describe("buildPlatformNavGroups", () => {
     expect(itemsOf("Enseñar")).toEqual([
       ["Panel del profesor", "/profesor"],
       ["Clases que imparto", "/profesor/clases"],
+      ["Calendario", "/profesor/calendario"],
       ["Mis alumnos", "/profesor/alumnos"],
       ["Mi ficha", "/profesor/perfil"],
     ]);

@@ -41,6 +41,7 @@ export interface PlatformNavMenuItem extends PlatformNavItem {
     | "courses"
     | "studies"
     | "classes"
+    | "calendar"
     | "panel"
     | "students"
     | "profile"
@@ -128,6 +129,12 @@ const TEACHER_TEACH_DROPDOWN: PlatformNavDropdown = {
       href: teacherRoutes.classes,
       description: "Próximas, por finalizar y pasadas.",
       icon: "classes",
+    },
+    {
+      label: "Calendario",
+      href: teacherRoutes.calendar,
+      description: "Tus clases por día, semana o mes.",
+      icon: "calendar",
     },
     {
       label: "Mis alumnos",
