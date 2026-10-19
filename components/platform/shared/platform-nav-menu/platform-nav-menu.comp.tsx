@@ -8,10 +8,14 @@ import { ChalkboardUserIcon } from "@/components/icons/chalkboard-user-icon.comp
 import { ChessBoardIcon } from "@/components/icons/chess-board-icon.comp";
 import { DumbbellIcon } from "@/components/icons/dumbbell-icon.comp";
 import { GraduationCapIcon } from "@/components/icons/graduation-cap-icon.comp";
+import { HouseIcon } from "@/components/icons/house-icon.comp";
+import { IdCardIcon } from "@/components/icons/id-card-icon.comp";
+import { LayerGroupIcon } from "@/components/icons/layer-group-icon.comp";
 import { MagnifyingGlassIcon } from "@/components/icons/magnifying-glass-icon.comp";
 import { PuzzlePieceIcon } from "@/components/icons/puzzle-piece-icon.comp";
 import { StopwatchIcon } from "@/components/icons/stopwatch-icon.comp";
 import { TagsIcon } from "@/components/icons/tags-icon.comp";
+import { UsersIcon } from "@/components/icons/users-icon.comp";
 import type { PlatformNavDropdown, PlatformNavMenuItem } from "@/constants/platform/nav-items.const";
 import { NavArt } from "./nav-art.comp";
 import "./platform-nav-menu.comp.css";
@@ -26,6 +30,10 @@ const ICONS: Record<PlatformNavMenuItem["icon"], typeof ChessBoardIcon> = {
   courses: GraduationCapIcon,
   studies: BookOpenIcon,
   classes: ChalkboardUserIcon,
+  panel: HouseIcon,
+  students: UsersIcon,
+  profile: IdCardIcon,
+  templates: LayerGroupIcon,
 };
 
 interface PlatformNavMenuProps {

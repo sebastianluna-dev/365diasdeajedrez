@@ -1,0 +1,22 @@
+---
+description: "One ready-made class, opened in the class editor in the student's view, with «Editar» to try changes. Front-only."
+---
+
+# `ClassTemplateSection`
+
+|          |                                                                                                                |
+| -------- | -------------------------------------------------------------------------------------------------------------- |
+| File     | `components/platform/sections/teacher/class-templates/class-template.section.tsx`                              |
+| Kind     | Server Component                                                                                               |
+| Used by  | `/profesor/biblioteca-de-clases/[templateSlug]`                                                                |
+| Composes | [`ClassPageEditor`](/components/platform/sections/teacher/classes/class-page-editor) (`defaultMode="student"`) |
+
+## Purpose
+
+One of the «Clases prediseñadas» (2026-10-19): the page's head says its title, course, level and length, and the class's content opens in the class editor in the student's view, so it reads as the student would read it; «Editar» turns it into the editor to try changes, which, like everything in the editor, are not stored. A slug no template has answers 404.
+
+## Props
+
+| Prop       | Type            | Required | Meaning    |
+| ---------- | --------------- | -------- | ---------- |
+| `template` | `ClassTemplate` | yes      | The class. |

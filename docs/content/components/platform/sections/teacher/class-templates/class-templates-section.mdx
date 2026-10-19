@@ -1,0 +1,32 @@
+---
+description: "«Clases prediseñadas»: the academy's ready-made classes as cards, each opening on its content in the class editor. Front-only sample data."
+---
+
+# `ClassTemplatesSection`
+
+|            |                                                                                                                      |
+| ---------- | -------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/class-templates/class-templates.section.tsx`                                   |
+| Kind       | Server Component                                                                                                     |
+| Stylesheet | `class-templates.section.css` → block `.class-templates`                                                             |
+| Used by    | `/profesor/biblioteca-de-clases`                                                                                     |
+| Composes   | [`StaticDiagram`](/components/chess/static-diagram), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Uses       | `class-templates.sample.ts` (`CLASS_TEMPLATES`, `classTemplateBySlug`), `teacherRoutes.classTemplate`                |
+
+## Purpose
+
+«Clases prediseñadas» (2026-10-19), the second entry of the teacher's «Material»: classes the academy has already written — the text, the diagrams, the questions — for a teacher to read as their student would, or to start from. Each card shows the class's board, its course and level, what it teaches, how long it takes and how many blocks it has, and opens [`ClassTemplateSection`](/components/platform/sections/teacher/class-templates/class-template-section).
+
+Front-only: the three classes are sample data (`class-templates.sample.ts`), every teacher sees the same ones, and nothing is stored or can be used in a class yet; the notice at the top says so.
+
+## Props
+
+| Prop        | Type              | Required | Meaning              |
+| ----------- | ----------------- | -------- | -------------------- |
+| `templates` | `ClassTemplate[]` | yes      | The cards, in order. |
+
+## Markup & styling
+
+Block `.class-templates` (78 lines): the notice and a grid of cards (`auto-fill`, at least 420px; one column under 640px), each a link with its board (136px) on the left and its words on the right, the meta line pushed to the bottom.
+
+**Breakpoints:** `(width < 640px)`.

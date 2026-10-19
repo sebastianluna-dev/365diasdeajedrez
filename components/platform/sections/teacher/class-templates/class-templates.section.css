@@ -1,0 +1,78 @@
+/* «Clases prediseñadas»: the notice, then a grid of cards, each with its
+   board on the left and what the class is on the right. */
+.class-templates {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-5);
+
+  & .class-templates__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: var(--platform-space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    @media (width < 640px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  & .class-templates__card {
+    display: flex;
+    gap: var(--platform-space-4);
+    height: 100%;
+    padding: var(--platform-space-4);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+    color: var(--platform-text);
+    text-decoration: none;
+
+    &:hover {
+      background: var(--platform-surface-soft);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-accent-ink);
+      outline-offset: 2px;
+    }
+  }
+
+  & .class-templates__board {
+    flex: 0 0 136px;
+  }
+
+  & .class-templates__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    min-width: 0;
+  }
+
+  & .class-templates__eyebrow {
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--platform-accent-ink);
+  }
+
+  & .class-templates__title {
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-lg);
+    font-weight: 600;
+  }
+
+  & .class-templates__summary {
+    font-size: var(--platform-type-sm);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-templates__meta {
+    margin-top: auto;
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-muted);
+  }
+}

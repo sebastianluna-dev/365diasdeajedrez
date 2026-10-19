@@ -211,6 +211,9 @@ export const teacherRoutes = {
     return query ? `/profesor/clases?${query}` : "/profesor/clases";
   },
   classDetail: (classId: string) => `/profesor/clases/${classId}`,
+  /** «Clases prediseñadas» (2026-10-19, front-only): ready-made classes to start one from. */
+  classTemplates: "/profesor/biblioteca-de-clases",
+  classTemplate: (slug: string) => `/profesor/biblioteca-de-clases/${slug}`,
   /** The teacher's bank: `?vista=archivados` lists the archived ones, `?vista=series` the series. */
   exercises: "/profesor/ejercicios",
   archivedExercises: "/profesor/ejercicios?vista=archivados",

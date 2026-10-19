@@ -63,7 +63,7 @@ type Story = StoryObj<typeof meta>;
 /** A student's menu, on a chapter of a course: «Aprender» is lit, because `/cursos` (its «Cursos») prefixes the address. */
 export const Student: Story = {};
 
-/** A teacher's menu, on one student's page: «Mis alumnos» is lit and «Panel del profesor» is not, though `/profesor` prefixes the address too. */
+/** A teacher's menu, on one student's page: «Enseñar» is lit by «Mis alumnos», not by «Panel del profesor», though `/profesor` prefixes the address too. */
 export const Teacher: Story = {
   args: { groups: buildPlatformNavGroups({ isTeacher: true, isStaff: false }) },
   parameters: at(teacherRoutes.studentDetail("1042")),

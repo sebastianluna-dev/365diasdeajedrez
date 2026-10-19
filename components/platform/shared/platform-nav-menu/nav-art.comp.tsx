@@ -138,16 +138,71 @@ function ToolsArt() {
   );
 }
 
+/** «Enseñar»: the wall board of a chess class on its easel, a pawn and the red arrow of the move. */
+function TeachArt() {
+  return (
+    <>
+      <path d="M120 156 L120 214" stroke="#5a3d22" strokeWidth="9" strokeLinecap="round" />
+      <path d="M98 156 L72 214 M142 156 L168 214" stroke="#8f6a45" strokeWidth="10" strokeLinecap="round" />
+      <path d="M84 188 H156" stroke="#a57c52" strokeWidth="7" strokeLinecap="round" />
+      <g transform="rotate(-3 120 90)">
+        <rect x="54" y="20" width="132" height="132" rx="8" fill="#8f6a45" />
+        <rect x="62" y="28" width="116" height="116" fill="#f4e8d2" />
+        <path
+          d="M91 28h29v29h-29z M149 28h29v29h-29z M62 57h29v29h-29z M120 57h29v29h-29z M91 86h29v29h-29z M149 86h29v29h-29z M62 115h29v29h-29z M120 115h29v29h-29z"
+          fill="#d2a46f"
+        />
+        <g transform="translate(76.5 134) scale(0.8)" fill="#16110d">
+          <path d="M-15 16 C-15 11 -12 9 -9 8 C-7 3 -5 -2 -5 -6 H5 C5 -2 7 3 9 8 C12 9 15 11 15 16 Z" />
+          <rect x="-9" y="-9" width="18" height="5" rx="2.5" />
+          <circle cx="0" cy="-16" r="8" />
+        </g>
+        <path d="M84 116 L126 80" stroke="#a81e22" strokeWidth="8" strokeLinecap="round" />
+        <path d="M134.5 71.5 L129.6 89.2 L116.8 76.4 Z" fill="#a81e22" />
+      </g>
+      <rect x="46" y="150" width="148" height="9" rx="3" fill="#a57c52" />
+    </>
+  );
+}
+
+/** «Material»: a stack of books with a diagram card laid on top. */
+function MaterialArt() {
+  return (
+    <>
+      <rect x="34" y="150" width="176" height="34" rx="5" fill="#2a2420" />
+      <rect x="60" y="162" width="40" height="10" rx="2" fill="#d2a46f" />
+      <rect x="50" y="118" width="156" height="32" rx="5" fill="#a81e22" />
+      <rect x="150" y="128" width="36" height="8" rx="2" fill="#f4e8d2" />
+      <rect x="42" y="90" width="150" height="28" rx="5" fill="#a57c52" />
+      <rect x="62" y="99" width="30" height="8" rx="2" fill="#f4e8d2" />
+      <g transform="rotate(-10 128 64)">
+        <rect x="80" y="40" width="96" height="60" rx="4" fill="#000000" opacity="0.15" />
+        <rect x="80" y="34" width="96" height="60" rx="4" fill="#fbf4e6" />
+        <rect x="92" y="46" width="72" height="36" fill="#f4e8d2" />
+        <path
+          d="M104 46h12v12h-12z M128 46h12v12h-12z M152 46h12v12h-12z M92 58h12v12h-12z M116 58h12v12h-12z M140 58h12v12h-12z M104 70h12v12h-12z M128 70h12v12h-12z M152 70h12v12h-12z"
+          fill="#d2a46f"
+        />
+        <path d="M104 76 L146 54" stroke="#a81e22" strokeWidth="4" strokeLinecap="round" />
+        <path d="M152 51 L144 60 L141 53 Z" fill="#a81e22" />
+      </g>
+    </>
+  );
+}
+
 /** Each drawing's frame: cut close to what it draws, so it fills its slot. */
 const VIEW_BOXES: Record<PlatformNavArt, string> = {
   play: "14 26 212 168",
   exercises: "28 -4 222 234",
   learn: "40 36 270 176",
   tools: "62 44 228 180",
+  teach: "40 12 160 210",
+  material: "26 20 192 172",
 };
 
 /**
- * The drawing of an entry of the menu bar (2026-10-18): illustrations, not
+ * The drawing of an entry of the menu bar (2026-10-18; the teacher's «Enseñar»
+ * and «Material» since 2026-10-19): illustrations, not
  * icons, so they keep their own colours in both themes (the board's cream
  * and wood, the accent's red) instead of reading `currentColor`. They are
  * decoration: the entry's name is its label, so the drawing is hidden from
@@ -163,6 +218,8 @@ export function NavArt({ art, className }: NavArtProps) {
       {art === "exercises" && <ExercisesArt clipId={clipId} />}
       {art === "learn" && <LearnArt />}
       {art === "tools" && <ToolsArt />}
+      {art === "teach" && <TeachArt />}
+      {art === "material" && <MaterialArt />}
     </svg>
   );
 }
