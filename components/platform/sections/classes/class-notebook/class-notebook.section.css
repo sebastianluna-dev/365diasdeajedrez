@@ -1,0 +1,451 @@
+/* The class as a notebook: one reading column, the way into the class on a
+   strip that stays at the top, and the teacher's blocks set as an article
+   with the serif for the text. */
+.class-notebook {
+  color: var(--platform-text);
+
+  /* The strip: the way in (or, afterwards, whether they came) and the bar of
+     what there is to do. It sticks under the platform's bar. */
+  & .class-notebook__strip {
+    position: sticky;
+    top: 70px;
+    z-index: 5;
+    background: var(--platform-surface);
+    box-shadow: 0 1px 0 var(--platform-border);
+
+    /* Under 1280px the bar is two rows tall and varies; the strip stays in the flow. */
+    @media (width < 1280px) {
+      position: static;
+    }
+  }
+
+  & .class-notebook__strip-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-2) var(--platform-space-6);
+    max-width: 760px;
+    margin: 0 auto;
+    padding: var(--platform-space-3) var(--platform-space-6) var(--platform-space-4);
+  }
+
+  & .class-notebook__strip-status {
+    display: flex;
+    gap: var(--platform-space-4);
+    align-items: center;
+  }
+
+  & .class-notebook__attended {
+    color: var(--platform-success-ink);
+  }
+
+  & .class-notebook__missed {
+    color: var(--platform-text-muted);
+  }
+
+  & .class-notebook__strip-count {
+    margin-left: auto;
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-muted);
+  }
+
+  & .class-notebook__strip-track {
+    flex: 1 0 100%;
+    height: 4px;
+    border-radius: 1000px;
+    background: var(--platform-track);
+    overflow: hidden;
+  }
+
+  & .class-notebook__strip-fill {
+    display: block;
+    height: 100%;
+    background: var(--platform-accent);
+    transition: width 240ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .class-notebook__strip-fill {
+      transition: none;
+    }
+  }
+
+  /* The reading column. */
+  & .class-notebook__column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+    max-width: 760px;
+    margin: 0 auto;
+    padding: var(--platform-space-12) var(--platform-space-6) var(--platform-space-24);
+  }
+
+  & .class-notebook__eyebrow {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--platform-accent-ink);
+  }
+
+  & .class-notebook__title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-5xl);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+
+  & .class-notebook__byline {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    padding-bottom: var(--platform-space-6);
+    box-shadow: 0 1px 0 var(--platform-border);
+  }
+
+  & .class-notebook__avatar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--platform-text);
+    color: var(--platform-bg);
+    font-weight: 700;
+  }
+
+  & .class-notebook__byline-text {
+    display: flex;
+    flex-direction: column;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+
+    & strong {
+      font-size: var(--platform-type-md);
+      color: var(--platform-text);
+    }
+  }
+
+  & .class-notebook__summary {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin-top: var(--platform-space-4);
+    padding: var(--platform-space-6) var(--platform-space-8);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .class-notebook__summary-text {
+    margin: 0;
+    font-family: var(--platform-font-serif);
+    font-size: var(--platform-type-lg);
+    line-height: 1.65;
+  }
+
+  /* The article. */
+  & .class-notebook__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+    margin-top: var(--platform-space-6);
+  }
+
+  & .class-notebook__heading {
+    margin: var(--platform-space-8) 0 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-2xl);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  & .class-notebook__paragraph {
+    margin: 0;
+    font-family: var(--platform-font-serif);
+    font-size: var(--platform-type-xl);
+    line-height: 1.7;
+  }
+
+  & .class-notebook__paragraph.class-notebook__paragraph_role_lead {
+    font-size: var(--platform-type-2xl);
+    line-height: 1.6;
+  }
+
+  & .class-notebook__figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--platform-space-3);
+    margin: var(--platform-space-6) 0;
+  }
+
+  & .class-notebook__figure-board {
+    width: min(420px, 100%);
+  }
+
+  & .class-notebook__caption {
+    max-width: 420px;
+    font-size: var(--platform-type-sm);
+    text-align: center;
+    color: var(--platform-text-muted);
+
+    & strong {
+      color: var(--platform-text);
+    }
+  }
+
+  /* «Ahora tú»: a position, a question and its options. */
+  & .class-notebook__question {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-6);
+    margin: var(--platform-space-6) 0;
+    padding: var(--platform-space-6);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .class-notebook__question-board {
+    flex: 0 0 240px;
+  }
+
+  & .class-notebook__question-body {
+    flex: 1 1 260px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+  }
+
+  & .class-notebook__question-prompt {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-xl);
+    font-weight: 600;
+  }
+
+  & .class-notebook__options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+  }
+
+  & .class-notebook__option {
+    min-height: 48px;
+    padding: 0 var(--platform-space-4);
+    border: 0;
+    border-radius: 8px;
+    background: var(--platform-surface-soft);
+    box-shadow: inset 0 0 0 1px var(--platform-border);
+    color: var(--platform-text);
+    font: inherit;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--platform-bg);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-accent-ink);
+      outline-offset: 2px;
+    }
+  }
+
+  & .class-notebook__option.class-notebook__option_state_right {
+    background: var(--platform-success-soft);
+    box-shadow: inset 0 0 0 2px var(--platform-success-ink);
+    color: var(--platform-success-ink);
+  }
+
+  & .class-notebook__option.class-notebook__option_state_wrong {
+    background: var(--platform-danger-soft);
+    box-shadow: inset 0 0 0 2px var(--platform-danger);
+    color: var(--platform-danger);
+  }
+
+  & .class-notebook__feedback {
+    min-height: 1.5em;
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    line-height: 1.5;
+  }
+
+  & .class-notebook__feedback.class-notebook__feedback_tone_right {
+    color: var(--platform-success-ink);
+  }
+
+  & .class-notebook__feedback.class-notebook__feedback_tone_wrong {
+    color: var(--platform-danger);
+  }
+
+  /* A game: a small board, who played it, and the way to the board. */
+  & .class-notebook__widget {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-5);
+    padding: var(--platform-space-4);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .class-notebook__widget-board {
+    flex: 0 0 128px;
+  }
+
+  & .class-notebook__widget-text {
+    flex: 1 1 200px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+  }
+
+  & .class-notebook__widget-title {
+    font-size: var(--platform-type-lg);
+  }
+
+  & .class-notebook__widget-meta {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  /* A lesson or a video cited by the article. */
+  & .class-notebook__card-link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-4) var(--platform-space-5);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: inset 0 0 0 1px var(--platform-border);
+    color: var(--platform-text);
+    text-decoration: none;
+
+    &:hover {
+      background: var(--platform-surface-soft);
+    }
+  }
+
+  & .class-notebook__card-kind {
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-notebook__card-title {
+    font-size: var(--platform-type-lg);
+  }
+
+  & .class-notebook__card-action {
+    font-weight: 600;
+    color: var(--platform-accent-ink);
+  }
+
+  & .class-notebook__exercises {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--platform-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .class-notebook__exercise {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-3);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: inset 0 0 0 1px var(--platform-border);
+  }
+
+  & .class-notebook__exercise-board {
+    flex: 0 0 72px;
+  }
+
+  & .class-notebook__exercise-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  & .class-notebook__mark {
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-muted);
+  }
+
+  & .class-notebook__mark.class-notebook__mark_tone_solved {
+    font-weight: 600;
+    color: var(--platform-success-ink);
+  }
+
+  & .class-notebook__mark.class-notebook__mark_tone_failed {
+    font-weight: 600;
+    color: var(--platform-danger);
+  }
+
+  & .class-notebook__takeaways {
+    margin-top: var(--platform-space-4);
+  }
+
+  & .class-notebook__takeaway-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin: var(--platform-space-3) 0 0;
+    padding-left: var(--platform-space-6);
+    list-style: decimal;
+    font-family: var(--platform-font-serif);
+    font-size: var(--platform-type-lg);
+    line-height: 1.6;
+
+    & li::marker {
+      font-weight: 700;
+      color: var(--platform-accent-ink);
+    }
+  }
+
+  & .class-notebook__foot {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin-top: var(--platform-space-12);
+    padding-top: var(--platform-space-6);
+    box-shadow: 0 -1px 0 var(--platform-border);
+  }
+
+  & .class-notebook__next {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    margin: 0 0 var(--platform-space-2);
+  }
+
+  & .class-notebook__muted {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  @media (width < 640px) {
+    & .class-notebook__title {
+      font-size: var(--platform-type-4xl);
+    }
+
+    & .class-notebook__question-board {
+      flex-basis: 100%;
+    }
+  }
+}
