@@ -2,12 +2,19 @@
 // in the grid's own coordinates (one unit per square), so the SVG scales with
 // the board and needs no marker. Pure, so the shape is tested without a DOM.
 
+/** The four colours a diagram draws in: lichess's green, red, blue and yellow. */
+export type StaticDiagramTone = "success" | "danger" | "info" | "warning";
+
 export interface StaticDiagramArrow {
   /** The squares, "e2" → "e4". */
   from: string;
   to: string;
-  /** What the arrow says: the move played (danger) or the one expected (success). */
-  tone: "danger" | "success";
+  /**
+   * What the arrow says: the move played (danger) or the one expected
+   * (success); a teacher's diagram also draws in the two other colours of a
+   * PGN's [%cal], blue (info) and yellow (warning).
+   */
+  tone: StaticDiagramTone;
 }
 
 /** The centre of a square in grid units, from the side at the bottom. */

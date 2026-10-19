@@ -3,6 +3,8 @@ import { StaticDiagram } from "@/components/chess/static-diagram.comp";
 import { ChevronLeftIcon } from "@/components/icons/chevron-left-icon.comp";
 import { MeetingJoinCard } from "@/components/platform/shared/meeting-join-card/meeting-join-card.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
+import type { StaticDiagramTone } from "@/components/chess/static-diagram-arrows";
+import { readDiagramPgn, type DiagramColor } from "@/lib/chess/diagram-notation";
 import { finalFenOf } from "@/lib/chess/replay";
 import { platformRoutes } from "@/lib/platform-routes";
 import type { ClassBlockView, ClassDetailView } from "@/services/classes/classes.types";
@@ -17,6 +19,14 @@ interface ClassNotebookSectionProps {
 }
 
 type NotebookBlock = ClassBlockView | NotebookSampleBlock;
+
+/** How a diagram's colours are painted: the board's four tones. */
+const DIAGRAM_TONE: Record<DiagramColor, StaticDiagramTone> = {
+  green: "success",
+  red: "danger",
+  blue: "info",
+  yellow: "warning",
+};
 
 /** «Jueves 22 de octubre · 18:00», in the class's time zone. */
 function dateline(classDetail: ClassDetailView): string {
@@ -92,17 +102,31 @@ function NotebookBlockView({ block, questionPosition }: { block: NotebookBlock; 
           <TextBlock text={block.text} />
         </>
       );
-    case "DIAGRAM":
+    case "DIAGRAM": {
+      const diagram = readDiagramPgn(block.pgn);
+      if (!diagram) return null;
       return (
         <figure className="class-notebook__figure">
           <div className="class-notebook__figure-board">
-            <StaticDiagram fen={block.fen} orientation={block.orientation} arrows={block.arrows} />
+            <StaticDiagram
+              fen={diagram.fen}
+              orientation={diagram.orientation}
+              arrows={diagram.arrows.map((arrow) => ({
+                from: arrow.from,
+                to: arrow.to,
+                tone: DIAGRAM_TONE[arrow.color],
+              }))}
+              circles={diagram.circles.map((circle) => ({ square: circle.square, tone: DIAGRAM_TONE[circle.color] }))}
+            />
           </div>
-          <figcaption className="class-notebook__caption">
-            <strong>{block.label}</strong> {block.caption}
-          </figcaption>
+          {diagram.caption && (
+            <figcaption className="class-notebook__caption">
+              <strong>{block.label}</strong> {diagram.caption}
+            </figcaption>
+          )}
         </figure>
       );
+    }
     case "POSITION_REF":
       return (
         <figure className="class-notebook__figure">

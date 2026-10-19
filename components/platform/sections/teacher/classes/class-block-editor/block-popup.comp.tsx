@@ -22,6 +22,7 @@ import { POPUP_FORM_IDLE, type PopupFormState } from "@/services/shared/form-sta
 import { withNoticeParam } from "@/services/shared/safe-return-to";
 import type { TeacherClassBlock } from "@/services/teacher-classes/teacher-classes.types";
 import { BlockForm, type BlockFormOptions } from "./block-form.comp";
+import { DiagramEditor } from "./diagram-editor.comp";
 import type { FetchReferencePgn } from "@/services/teacher-classes/teacher-classes.types";
 import "./block-popup.comp.css";
 
@@ -75,6 +76,14 @@ export const KIND_LABELS: Record<ClassBlockKindCode, string> = {
 function capitalize(label: string): string {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
+
+/**
+ * The diagram block (2026-10-19), front-only: it has no kind in the catalog
+ * yet, so it is offered as a kind of its own that nothing stores. Choosing it
+ * draws the diagram editor; «Agregar bloque» says it is not saved yet.
+ */
+const DIAGRAM_KIND = "DIAGRAM";
+type PopupKind = ClassBlockKindCode | typeof DIAGRAM_KIND;
 
 /** What a teacher may add: the exercise block (D29) only while «Ejercicios» is on. */
 export const ADDABLE_BLOCK_KINDS: ClassBlockKindCode[] = [
@@ -156,7 +165,7 @@ function BlockPopupForm({
   const [pending, startSubmit] = useTransition();
   const values = state.values ?? {};
   const sentKind = typeof values.kind === "string" ? (values.kind as ClassBlockKindCode) : undefined;
-  const [kind, setKind] = useState<ClassBlockKindCode | undefined>(
+  const [kind, setKind] = useState<PopupKind | undefined>(
     sentKind ?? editing?.kind ?? preset.kind ?? (preset.gameId ? CLASS_BLOCK_KIND.GAME_REF : undefined),
   );
   const sentVisibility =
@@ -181,6 +190,8 @@ function BlockPopupForm({
     ["text", "videoUrl", "pgn", "gameId", "lessonId", "caption", "exercises"].map((field) => [field, message(field)]),
   );
   const isExercise = kind === CLASS_BLOCK_KIND.EXERCISE;
+  const isDiagram = kind === DIAGRAM_KIND;
+  const [diagramNotice, setDiagramNotice] = useState(false);
   const visibilityOptions = [
     {
       value: CLASS_BLOCK_VISIBILITY.BEFORE,
@@ -208,11 +219,18 @@ function BlockPopupForm({
       className="block-popup__form"
       onSubmit={(event) => {
         event.preventDefault();
+        if (isDiagram) return setDiagramNotice(true);
         const data = new FormData(event.currentTarget);
         startSubmit(() => formAction(data));
       }}
     >
       {formError && <PlatformNotice message={formError} />}
+      {isDiagram && diagramNotice && (
+        <PlatformNotice
+          variant="info"
+          message="El diagrama todavía no se guarda: el editor es una vista previa. Lo que se guardaría está en «Lo que se guarda»."
+        />
+      )}
       {editing ? (
         <input type="hidden" name="kind" value={editing.kind} />
       ) : (
@@ -226,8 +244,14 @@ function BlockPopupForm({
             layout="line"
             required
             defaultValue={kind}
-            onValueChange={(value) => setKind(value as ClassBlockKindCode)}
-            options={ADDABLE_BLOCK_KINDS.map((item) => ({ value: item, label: KIND_LABELS[item] }))}
+            onValueChange={(value) => {
+              setKind(value as PopupKind);
+              setDiagramNotice(false);
+            }}
+            options={[
+              ...ADDABLE_BLOCK_KINDS.map((item) => ({ value: item, label: KIND_LABELS[item] })),
+              { value: DIAGRAM_KIND, label: "Diagrama" },
+            ]}
           />
         </PlatformFormGroup>
       )}
@@ -247,7 +271,9 @@ function BlockPopupForm({
         />
       </PlatformFormGroup>
 
-      {kind && (
+      {isDiagram && <DiagramEditor />}
+
+      {kind && kind !== DIAGRAM_KIND && (
         <BlockForm
           key={kind}
           kind={kind}

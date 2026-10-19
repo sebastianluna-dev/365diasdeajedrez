@@ -39,6 +39,38 @@
     color: var(--platform-success-ink);
   }
 
+  & .static-diagram__arrow_tone_info {
+    color: var(--platform-selection);
+  }
+
+  & .static-diagram__arrow_tone_warning {
+    color: var(--platform-warning-ink);
+  }
+
+  /* A circle round a square, in the arrows' four tones. */
+  & .static-diagram__circle {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 0.09;
+    opacity: 0.9;
+  }
+
+  & .static-diagram__circle_tone_danger {
+    color: var(--platform-danger);
+  }
+
+  & .static-diagram__circle_tone_success {
+    color: var(--platform-success-ink);
+  }
+
+  & .static-diagram__circle_tone_info {
+    color: var(--platform-selection);
+  }
+
+  & .static-diagram__circle_tone_warning {
+    color: var(--platform-warning-ink);
+  }
+
   & .static-diagram__square {
     position: relative;
   }

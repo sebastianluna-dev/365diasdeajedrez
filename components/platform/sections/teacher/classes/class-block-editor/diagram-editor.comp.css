@@ -1,0 +1,186 @@
+/* The diagram block's editor: the two steps on top, the working board on the
+   left, and what the student will see, its caption and its notation on the
+   right. */
+.diagram-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-4);
+
+  & .diagram-editor__steps,
+  & .diagram-editor__turn {
+    display: flex;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-1);
+    border-radius: 8px;
+    background: var(--platform-bg);
+  }
+
+  & .diagram-editor__step,
+  & .diagram-editor__option {
+    flex: 1;
+    min-height: 36px;
+    padding: 0 var(--platform-space-3);
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--platform-text);
+    }
+  }
+
+  & .diagram-editor__step.diagram-editor__step_state_current,
+  & .diagram-editor__option.diagram-editor__option_state_on {
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-lift);
+    color: var(--platform-text);
+  }
+
+  & .diagram-editor__body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-6);
+    align-items: flex-start;
+  }
+
+  & .diagram-editor__work {
+    flex: 1 1 360px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+  }
+
+  & .diagram-editor__side {
+    flex: 1 1 220px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+  }
+
+  & .diagram-editor__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-2);
+  }
+
+  /* The comments step: the student's board, with a square of buttons over
+     it that takes the clicks and the taps. */
+  & .diagram-editor__canvas {
+    position: relative;
+    width: min(420px, 100%);
+  }
+
+  & .diagram-editor__grid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  & .diagram-editor__square {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: crosshair;
+
+    &:focus-visible {
+      outline: 3px solid var(--platform-accent-ink);
+      outline-offset: -3px;
+    }
+  }
+
+  & .diagram-editor__square.diagram-editor__square_state_pending {
+    box-shadow: inset 0 0 0 4px var(--platform-text);
+  }
+
+  & .diagram-editor__colors {
+    display: flex;
+    gap: var(--platform-space-2);
+    margin-right: auto;
+  }
+
+  & .diagram-editor__color {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: currentColor;
+    cursor: pointer;
+  }
+
+  & .diagram-editor__color.diagram-editor__color_state_on {
+    box-shadow:
+      0 0 0 2px var(--platform-surface),
+      0 0 0 4px var(--platform-text);
+  }
+
+  & .diagram-editor__color_tone_success {
+    color: var(--platform-success-ink);
+  }
+
+  & .diagram-editor__color_tone_danger {
+    color: var(--platform-danger);
+  }
+
+  & .diagram-editor__color_tone_info {
+    color: var(--platform-selection);
+  }
+
+  & .diagram-editor__color_tone_warning {
+    color: var(--platform-warning-ink);
+  }
+
+  & .diagram-editor__keys {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+  }
+
+  & .diagram-editor__eyebrow {
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--platform-accent-ink);
+  }
+
+  & .diagram-editor__preview {
+    padding: var(--platform-space-4);
+    border-radius: 8px;
+    background: var(--platform-surface-soft);
+    box-shadow: inset 0 0 0 1px var(--platform-border);
+  }
+
+  & .diagram-editor__notation {
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-muted);
+
+    & summary {
+      cursor: pointer;
+    }
+
+    & pre {
+      margin: var(--platform-space-2) 0 0;
+      padding: var(--platform-space-2) var(--platform-space-3);
+      border-radius: 8px;
+      background: var(--platform-surface-sunken);
+      color: var(--platform-text);
+      font-family: var(--platform-font-mono);
+      font-size: var(--platform-type-2xs);
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  }
+}

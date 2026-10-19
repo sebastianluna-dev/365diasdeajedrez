@@ -4,18 +4,17 @@
 // of it is stored yet: every class draws this same sample until the teacher's
 // editor and the database learn these kinds. Take it out with them.
 
-import type { StaticDiagramArrow } from "@/components/chess/static-diagram-arrows";
-
-/** A static board with arrows, written by the teacher inside the article. */
+/**
+ * A static board written by the teacher inside the article: one PGN with the
+ * position, the caption and its circles and arrows (`lib/chess/diagram-notation`),
+ * what the diagram editor writes.
+ */
 export interface NotebookDiagramBlock {
   kind: "DIAGRAM";
   id: string;
-  fen: string;
-  orientation: "white" | "black";
-  arrows: StaticDiagramArrow[];
-  /** «Diagrama 1.» and what it shows. */
+  pgn: string;
+  /** «Diagrama 1.», before the caption. */
   label: string;
-  caption: string;
 }
 
 /** A question inside the article: a position, a prompt and options, each with why. */
@@ -113,14 +112,11 @@ export const NOTEBOOK_SAMPLE: NotebookSample = {
     {
       kind: "DIAGRAM",
       id: "sample-diagram",
-      fen: BRIDGE,
-      orientation: "white",
-      arrows: [
-        { from: "b8", to: "c7", tone: "success" },
-        { from: "c4", to: "b4", tone: "success" },
-      ],
+      pgn: `[SetUp "1"]
+[FEN "${BRIDGE}"]
+
+{El rey sale por c7 y la torre espera en c4 para interponerse en b4. [%csl Rd8] [%cal Gb8c7,Gc4b4]} *`,
       label: "Diagrama.",
-      caption: "El rey sale por c7 y la torre espera en c4 para interponerse en b4.",
     },
   ],
   takeaways: [
