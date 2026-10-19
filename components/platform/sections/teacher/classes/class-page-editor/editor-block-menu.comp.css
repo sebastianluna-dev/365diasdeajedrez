@@ -1,0 +1,188 @@
+/* The menu of a block's handle: who sees it, what kind of text it is, and
+   its actions, one per line with its icon. It comes in in 160ms and goes out
+   in 120 on its `data-state`. */
+.editor-block-menu {
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-0-5);
+  width: 300px;
+  max-width: calc(100vw - 16px);
+  max-height: var(--radix-popover-content-available-height);
+  overflow-y: auto;
+  padding: var(--platform-space-2);
+  border-radius: 8px;
+  background: var(--platform-surface);
+  box-shadow: var(--platform-shadow-popup);
+  color: var(--platform-text);
+  font-size: var(--platform-type-xs);
+  transform-origin: var(--radix-popover-content-transform-origin);
+
+  &[data-state="open"] {
+    animation: editor-block-menu-in 160ms ease-out;
+  }
+
+  &[data-state="closed"] {
+    animation: editor-block-menu-out 120ms ease-in forwards;
+  }
+
+  & .editor-block-menu__heading {
+    margin: var(--platform-space-2) var(--platform-space-2) var(--platform-space-1);
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    color: var(--platform-text-muted);
+  }
+
+  & .editor-block-menu__group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+  }
+
+  & .editor-block-menu__item {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    width: 100%;
+    min-height: 36px;
+    padding: var(--platform-space-1) var(--platform-space-2);
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background: var(--platform-bg);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-accent-ink);
+      outline-offset: -2px;
+    }
+
+    &:disabled {
+      color: var(--platform-text-muted);
+      cursor: default;
+    }
+  }
+
+  & .editor-block-menu__item.editor-block-menu__item_tone_danger {
+    color: var(--platform-danger);
+
+    &:hover {
+      background: var(--platform-danger-soft);
+    }
+  }
+
+  & .editor-block-menu__icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    color: var(--platform-text-muted);
+  }
+
+  & .editor-block-menu__item:hover:not(:disabled) .editor-block-menu__icon {
+    color: var(--platform-text);
+  }
+
+  & .editor-block-menu__item_tone_danger .editor-block-menu__icon,
+  & .editor-block-menu__item_tone_danger:hover .editor-block-menu__icon {
+    color: var(--platform-danger);
+  }
+
+  & .editor-block-menu__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  & .editor-block-menu__hint {
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-text-muted);
+  }
+
+  & .editor-block-menu__check {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+    color: var(--platform-accent-ink);
+  }
+
+  & .editor-block-menu__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-1);
+    padding: 0 var(--platform-space-2) var(--platform-space-2);
+  }
+
+  & .editor-block-menu__chip {
+    height: 28px;
+    padding: 0 var(--platform-space-3);
+    border: 0;
+    border-radius: 1000px;
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text);
+    font: inherit;
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--platform-bg);
+    }
+
+    &[aria-pressed="true"] {
+      background: var(--platform-ink);
+      color: var(--platform-on-ink);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-accent-ink);
+      outline-offset: 2px;
+    }
+  }
+
+  & .editor-block-menu__rule {
+    width: 100%;
+    height: 1px;
+    margin: var(--platform-space-1) 0;
+    border: 0;
+    background: var(--platform-track);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &[data-state="open"],
+    &[data-state="closed"] {
+      animation: none;
+    }
+  }
+}
+
+/* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */
+@keyframes editor-block-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes editor-block-menu-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}

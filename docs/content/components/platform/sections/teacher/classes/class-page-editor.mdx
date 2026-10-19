@@ -1,0 +1,49 @@
+---
+description: "The teacher's class page as one page to write on, the way Notion works: blocks typed in place, «/» for the menu of blocks, a ⋮⋮ handle to drag and to open each block's menu. Front-only."
+---
+
+# `ClassPageEditor`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/platform/sections/teacher/classes/class-page-editor/`: `class-page-editor.comp.tsx`, `editor-block.comp.tsx`, `editor-slash-menu.comp.tsx`, `editor-block-menu.comp.tsx`, `editor-board-popup.comp.tsx`, `editable-text.comp.tsx`, `block-kind-icon.comp.tsx`                                                                                                                                                                          |
+| Kind       | Client Components                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Stylesheet | `class-page-editor.comp.css` → block `.class-page-editor`; `editor-block.comp.css` → `.editor-block`; `editor-slash-menu.comp.css` → `.editor-slash-menu`; `editor-block-menu.comp.css` → `.editor-block-menu`; `editor-board-popup.comp.css` → `.editor-board-popup`                                                                                                                                                                              |
+| Story      | `class-page-editor.stories.tsx` (`platform/sections/teacher/classes/ClassPageEditor`): a written class, an empty one, the «/» menu (`play`), the student's view                                                                                                                                                                                                                                                                                    |
+| Used by    | Nothing yet: it is seen in Storybook until the owner approves it and the blocks are stored                                                                                                                                                                                                                                                                                                                                                         |
+| Composes   | [`StaticDiagram`](/components/chess/static-diagram), `DiagramEditor` (in a [`PlatformPopup`](/components/platform/shared/platform-popup)), [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup), [`PlatformSearchField`](/components/platform/shared/platform-search-field), [`PlatformForm`](/components/platform/shared/platform-form), [`PlatformNotice`](/components/platform/shared/platform-notice), Radix `Popover` |
+| Uses       | `class-page-editor.model.ts` (the blocks, the kinds of the «/» menu, the shortcuts and the list operations, with its test); `readDiagramPgn`/`writeDiagramPgn` (`lib/chess/diagram-notation`); `class-page-editor.sample.ts` for the story and the overview tile                                                                                                                                                                                   |
+
+## Purpose
+
+Option A of the editor canvas (2026-10-19): the page the teacher writes looks like the student's notebook and is typed where it stands, instead of a list of blocks edited in popups ([`ClassBlockList`](/components/platform/sections/teacher/classes/class-block-list), which it would replace).
+
+- **Adding.** «/» in an empty paragraph, or in the line that ends the page, opens the menu of blocks under it (`EditorSlashMenu`): Texto, Título, Subtítulo, Lista, Cita, Destacado and Separador; Diagrama and Partida; Ahora tú and Ejercicios; Lección, Video and Archivo. What follows the slash filters it, without accents; the arrows walk it, Enter takes a kind, and Escape, or Backspace with nothing typed, closes it. Chosen from an empty paragraph the kind takes its place; from a block's «+», it goes under it. Typing in the last line starts a paragraph.
+- **Writing.** Each text is plain text on a `contenteditable` (`EditableText`, uncontrolled so React never rewrites what is under the caret). «# », «## », «- » and «> » at the start of a paragraph turn it into a title, a subtitle, a point of a list or a quote. Enter splits the block at the caret (a point makes another point; an empty point leaves the list); Backspace at the start turns a title, a point or a quote back into a paragraph, joins a paragraph to the text above, or takes an empty one away; the arrows go up and down between texts.
+- **Each block.** Pointing at a block, or giving it the focus, shows in its left margin its «+» and its ⋮⋮ handle. The handle is dragged to move the block (a blue line marks where it lands) and opens its menu (`EditorBlockMenu`): who sees it (Para preparar, Después de la clase, Guion del profesor; an exercise block is never the script, D30), «Convertir en» for a text, Duplicar, Mover arriba, Mover abajo (the keyboard's way of dragging) and Eliminar, which asks first with `PlatformConfirmPopup`. A block that is not «Para preparar» says so in the right margin (above it under 1280px), and the script sits on a grey of its own.
+- **The chess blocks.** A diagram is its PGN (`[FEN]`, caption, `[%csl]`/`[%cal]`): drawn with `StaticDiagram`, its caption typed under it, and «Editar el diagrama» opens `DiagramEditor` in a popup (`EditorBoardPopup`). «Ahora tú» is typed in place: the prompt, each option with the line the student reads on choosing it, the round mark of the right one, «Agregar opción» (up to five) and «Quitar» (down to two); «Cambiar la posición» opens the same editor on its position step alone (`positionOnly`).
+- **What it cites.** A game, a lesson, a series, a video or a file starts as a picker — a search over what `options` offers, the link checked as a URL, a file chosen from the computer — and becomes its card once chosen, with «Cambiar».
+- **«Vista del alumno».** The page as the student reads it after the class: no script, no empty block, no controls, and «Ahora tú» answers when an option is chosen.
+
+Front-only: the blocks live in the component's state, and the page says so («Vista previa del editor: lo que escribas aquí todavía no se guarda.»). Text has no inline marks yet (bold, links).
+
+## Props
+
+| Prop          | Type                     | Required | Meaning                                               |
+| ------------- | ------------------------ | -------- | ----------------------------------------------------- |
+| `title`       | `string`                 | yes      | The class's title, typed over the blocks.             |
+| `dateline`    | `string`                 | yes      | «Jueves 29 de octubre · 18:00».                       |
+| `blocks`      | `EditorBlock[]`          | yes      | Where it starts.                                      |
+| `options`     | `ClassPageEditorOptions` | yes      | The games, lessons and series the pickers offer.      |
+| `endHour`     | `string`                 | yes      | When «Después de la clase» begins, in the block menu. |
+| `defaultMode` | `"edit" \| "student"`    | no       | The view it opens in. Default `edit`.                 |
+
+## Markup & styling
+
+Block `.class-page-editor` (260 lines): the reading column, padded on the left for the margin of handles; the bar with the dateline and the two views; the title; the rows, each with its gutter (`opacity` while it is not pointed at), its tag and its body; the line that ends the page.
+
+`editor-block.comp.css` (538 lines): the article set as the notebook sets it — the serif for the text, the display face for the headings — and the question, the game widget, the cards and the pickers. An empty text shows its placeholder (a paragraph only while it has the caret).
+
+`editor-slash-menu.comp.css` (156 lines) and `editor-block-menu.comp.css` (188 lines): the two menus, white cards that come in in 160ms and go out in 120 on Radix's `data-state`. `editor-board-popup.comp.css` (14 lines): the diagram editor and its foot.
+
+**Breakpoints:** `(width < 1280px)` (the tag goes above its block), `(width < 768px)` (a narrower margin, its handles one over the other).

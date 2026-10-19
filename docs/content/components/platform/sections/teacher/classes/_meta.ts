@@ -5,6 +5,7 @@ const meta: MetaRecord = {
   "teacher-classes-search": "TeacherClassesSearch",
   "teacher-class-detail-section": "TeacherClassDetailSection",
   "class-block-list": "ClassBlockList",
+  "class-page-editor": "ClassPageEditor",
   "class-exercise-progress": "ClassExerciseProgress",
   "class-block-editor": "class-block-editor",
   "topic-popup": "TopicPopup",

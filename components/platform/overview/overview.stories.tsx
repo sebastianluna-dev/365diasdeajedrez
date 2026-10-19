@@ -150,6 +150,11 @@ import {
   BlockPopup,
   type BlockPopupHandle,
 } from "@/components/platform/sections/teacher/classes/class-block-editor/block-popup.comp";
+import { ClassPageEditor } from "@/components/platform/sections/teacher/classes/class-page-editor/class-page-editor.comp";
+import {
+  EDITOR_SAMPLE_BLOCKS,
+  EDITOR_SAMPLE_OPTIONS,
+} from "@/components/platform/sections/teacher/classes/class-page-editor/class-page-editor.sample";
 import { ClassBlockList } from "@/components/platform/sections/teacher/classes/class-block-list/class-block-list.comp";
 import { ClassExerciseProgress } from "@/components/platform/sections/teacher/classes/class-exercise-progress/class-exercise-progress.comp";
 import { ExerciseReviewBar } from "@/components/platform/sections/staff/exercises/exercise-review-bar/exercise-review-bar.comp";
@@ -2121,6 +2126,20 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   reorderClassBlocks: async () => ({ ok: true }),
                   fetchReferencePgn: async () => OVERVIEW_PGN,
                 }}
+              />
+            </Tile>
+            <Tile
+              name="ClassPageEditor"
+              docs="platform-sections-teacher-classes-classpageeditor"
+              width={960}
+              height={640}
+            >
+              <ClassPageEditor
+                title="La posición de Lucena"
+                dateline="Jueves 29 de octubre · 18:00"
+                blocks={EDITOR_SAMPLE_BLOCKS}
+                options={EDITOR_SAMPLE_OPTIONS}
+                endHour="19:00"
               />
             </Tile>
             <Tile

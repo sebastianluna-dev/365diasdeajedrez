@@ -39,6 +39,11 @@ interface Marks {
 interface DiagramEditorProps {
   /** A diagram already written, to edit it; none starts from the initial position. */
   defaultPgn?: string;
+  /**
+   * The position step alone, with no comments and no preview: the board of an
+   * «Ahora tú» question, which draws no marks (the class editor).
+   */
+  positionOnly?: boolean;
 }
 
 /** The squares in the order the grid draws them, from the side at the bottom. */
@@ -72,9 +77,10 @@ function colorOf(event: MouseEvent, chosen: DiagramColor): DiagramColor {
  * it is drawn. Front-only for now: the PGN travels in a hidden `pgn` field,
  * which nothing stores yet.
  */
-export function DiagramEditor({ defaultPgn }: DiagramEditorProps) {
+export function DiagramEditor({ defaultPgn, positionOnly = false }: DiagramEditorProps) {
   const initial = defaultPgn ? readDiagramPgn(defaultPgn) : null;
-  const [step, setStep] = useState<"position" | "comments">("position");
+  const [chosenStep, setStep] = useState<"position" | "comments">("position");
+  const step = positionOnly ? "position" : chosenStep;
   const [placement, setPlacement] = useState(initial?.fen.split(" ")[0] ?? START);
   const [boardKey, setBoardKey] = useState(0);
   const [turn, setTurn] = useState<"white" | "black">(initial?.fen.split(" ")[1] === "b" ? "black" : "white");
@@ -127,27 +133,29 @@ export function DiagramEditor({ defaultPgn }: DiagramEditorProps) {
     <div className="diagram-editor">
       <input type="hidden" name="pgn" value={pgn} />
 
-      <div className="diagram-editor__steps" role="group" aria-label="Pasos del diagrama">
-        <button
-          type="button"
-          className={`diagram-editor__step${step === "position" ? " diagram-editor__step_state_current" : ""}`}
-          aria-pressed={step === "position"}
-          onClick={() => {
-            setStep("position");
-            setPending(null);
-          }}
-        >
-          1. Posición
-        </button>
-        <button
-          type="button"
-          className={`diagram-editor__step${step === "comments" ? " diagram-editor__step_state_current" : ""}`}
-          aria-pressed={step === "comments"}
-          onClick={() => setStep("comments")}
-        >
-          2. Comentarios
-        </button>
-      </div>
+      {!positionOnly && (
+        <div className="diagram-editor__steps" role="group" aria-label="Pasos del diagrama">
+          <button
+            type="button"
+            className={`diagram-editor__step${step === "position" ? " diagram-editor__step_state_current" : ""}`}
+            aria-pressed={step === "position"}
+            onClick={() => {
+              setStep("position");
+              setPending(null);
+            }}
+          >
+            1. Posición
+          </button>
+          <button
+            type="button"
+            className={`diagram-editor__step${step === "comments" ? " diagram-editor__step_state_current" : ""}`}
+            aria-pressed={step === "comments"}
+            onClick={() => setStep("comments")}
+          >
+            2. Comentarios
+          </button>
+        </div>
+      )}
 
       <div className="diagram-editor__body">
         <div className="diagram-editor__work">
@@ -263,19 +271,21 @@ export function DiagramEditor({ defaultPgn }: DiagramEditorProps) {
           )}
         </div>
 
-        <div className="diagram-editor__side">
-          <p className="diagram-editor__eyebrow">Así lo verá el alumno</p>
-          <div className="diagram-editor__preview">
-            <StaticDiagram fen={fen} orientation={orientation} caption={caption || undefined} {...preview} />
+        {!positionOnly && (
+          <div className="diagram-editor__side">
+            <p className="diagram-editor__eyebrow">Así lo verá el alumno</p>
+            <div className="diagram-editor__preview">
+              <StaticDiagram fen={fen} orientation={orientation} caption={caption || undefined} {...preview} />
+            </div>
+            <PlatformFormField name="caption" label="Pie del diagrama">
+              <textarea value={caption} onChange={(event) => setCaption(event.target.value)} rows={2} maxLength={300} />
+            </PlatformFormField>
+            <details className="diagram-editor__notation">
+              <summary>Lo que se guarda</summary>
+              <pre>{pgn}</pre>
+            </details>
           </div>
-          <PlatformFormField name="caption" label="Pie del diagrama">
-            <textarea value={caption} onChange={(event) => setCaption(event.target.value)} rows={2} maxLength={300} />
-          </PlatformFormField>
-          <details className="diagram-editor__notation">
-            <summary>Lo que se guarda</summary>
-            <pre>{pgn}</pre>
-          </details>
-        </div>
+        )}
       </div>
     </div>
   );

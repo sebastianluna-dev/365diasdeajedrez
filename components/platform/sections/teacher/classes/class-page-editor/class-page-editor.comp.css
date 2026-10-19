@@ -1,0 +1,260 @@
+/* The class page as one page to write on: the reading column of the
+   student's notebook, with each block's «+» and ⋮⋮ in the margin to its left
+   (shown while the block is pointed at or holds the focus), who sees it in the
+   margin to its right, and the empty line that ends the page. */
+.class-page-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-4);
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--platform-space-8) var(--platform-space-6) var(--platform-space-24) var(--platform-space-16);
+  color: var(--platform-text);
+
+  & .class-page-editor__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-3);
+  }
+
+  & .class-page-editor__dateline {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--platform-accent-ink);
+  }
+
+  /* «Editar» and «Vista del alumno»: two options on one track. */
+  & .class-page-editor__modes {
+    display: flex;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-1);
+    border-radius: 8px;
+    background: var(--platform-surface-neutral);
+  }
+
+  & .class-page-editor__mode {
+    height: 32px;
+    padding: 0 var(--platform-space-3);
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    font: inherit;
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--platform-text);
+    }
+
+    &[aria-pressed="true"] {
+      background: var(--platform-surface);
+      box-shadow: var(--platform-shadow-lift);
+      color: var(--platform-text);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-accent-ink);
+      outline-offset: 2px;
+    }
+  }
+
+  & .class-page-editor__title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-4xl);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+
+    &[contenteditable] {
+      outline: none;
+      cursor: text;
+    }
+
+    &[contenteditable]:empty::before {
+      content: attr(data-placeholder);
+      color: var(--platform-text-muted);
+    }
+  }
+
+  & .class-page-editor__blocks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin-top: var(--platform-space-4);
+  }
+
+  & .class-page-editor__row {
+    position: relative;
+  }
+
+  /* Where a dragged block lands: a line over the block it goes before. */
+  & .class-page-editor__row.class-page-editor__row_state_drop::before {
+    content: "";
+    position: absolute;
+    top: calc(-1 * var(--platform-space-1) - 1px);
+    right: 0;
+    left: 0;
+    height: 3px;
+    border-radius: 1000px;
+    background: var(--platform-selection);
+  }
+
+  /* The teacher's script: on a grey of its own, so it is never read as the article. */
+  & .class-page-editor__row.class-page-editor__row_visibility_teacher .class-page-editor__body {
+    margin: 0 calc(-1 * var(--platform-space-3));
+    padding: var(--platform-space-3);
+    border-radius: 8px;
+    background: var(--platform-surface-sunken);
+  }
+
+  /* A note in the script is already on its grey: it keeps only its bulb. */
+  & .class-page-editor__row_visibility_teacher .editor-block__callout {
+    padding: 0;
+    background: transparent;
+  }
+
+  /* The «+» and the ⋮⋮, on the first line of the block. */
+  & .class-page-editor__gutter {
+    position: absolute;
+    top: var(--platform-space-1);
+    left: calc(-1 * var(--platform-space-12));
+    display: flex;
+    gap: var(--platform-space-0-5);
+    opacity: 0;
+    transition: opacity 120ms ease-out;
+  }
+
+  & .class-page-editor__row:hover .class-page-editor__gutter,
+  & .class-page-editor__row:focus-within .class-page-editor__gutter {
+    opacity: 1;
+  }
+
+  & .class-page-editor__row_kind_heading .class-page-editor__gutter {
+    top: var(--platform-space-6);
+  }
+
+  & .class-page-editor__row_kind_subheading .class-page-editor__gutter {
+    top: var(--platform-space-4);
+  }
+
+  & .class-page-editor__handle {
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    cursor: pointer;
+
+    & svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover,
+    &[data-state="open"] {
+      background: var(--platform-surface-neutral);
+      color: var(--platform-text);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-accent-ink);
+      outline-offset: 1px;
+    }
+  }
+
+  & .class-page-editor__handle.class-page-editor__handle_role_grip {
+    cursor: grab;
+  }
+
+  /* Who sees a block that is not «Para preparar»: in the right margin on a
+     wide screen, over the block on a narrower one. */
+  & .class-page-editor__tag {
+    position: absolute;
+    top: var(--platform-space-1);
+    left: calc(100% + var(--platform-space-6));
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-0-5) var(--platform-space-2);
+    border-radius: 1000px;
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    white-space: nowrap;
+
+    @media (width < 1280px) {
+      position: static;
+      margin-bottom: var(--platform-space-1);
+    }
+  }
+
+  & .class-page-editor__tag.class-page-editor__tag_visibility_after {
+    background: var(--platform-selection-wash);
+    color: var(--platform-selection);
+  }
+
+  & .class-page-editor__tag.class-page-editor__tag_visibility_teacher {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text-muted);
+  }
+
+  & .class-page-editor__tag-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* The empty line that ends the page: typing in it starts a paragraph, «/» opens the menu. */
+  & .class-page-editor__end {
+    width: 100%;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--platform-text);
+    font-family: var(--platform-font-serif);
+    font-size: var(--platform-type-xl);
+
+    &::placeholder {
+      color: var(--platform-text-muted);
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible::placeholder {
+      color: var(--platform-text-muted);
+    }
+  }
+
+  &.class-page-editor_mode_student {
+    padding-left: var(--platform-space-6);
+  }
+
+  @media (width < 768px) {
+    padding-right: var(--platform-space-4);
+    padding-left: var(--platform-space-12);
+
+    & .class-page-editor__gutter {
+      left: calc(-1 * var(--platform-space-10) - var(--platform-space-1));
+      flex-direction: column;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .class-page-editor__gutter {
+      transition: none;
+    }
+  }
+}
