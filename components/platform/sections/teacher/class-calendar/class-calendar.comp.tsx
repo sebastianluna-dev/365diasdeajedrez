@@ -33,6 +33,8 @@ import {
   type CalendarView,
   type PlainDay,
 } from "./class-calendar.dates";
+import { PlatformHeaderContext } from "@/components/platform/sections/shell/platform-header-context.comp";
+import { ClassCalendarToolbar } from "./class-calendar-toolbar.comp";
 import "./class-calendar.comp.css";
 
 /** A class as the calendar draws it: the same fields «Clases que imparto» lists it by, and its call. */
@@ -64,12 +66,6 @@ const PHASE_WORDS: Record<ClassPhaseCode, string> = {
   [CLASS_PHASE.DONE]: "Finalizada",
   [CLASS_PHASE.CANCELLED]: "Cancelada",
 };
-
-const VIEWS: { view: CalendarView; label: string }[] = [
-  { view: "day", label: "Día" },
-  { view: "week", label: "Semana" },
-  { view: "month", label: "Mes" },
-];
 
 const MINUTES_IN_DAY = 24 * 60;
 /** The hour the day and week views open on when today is not in sight. */
@@ -182,45 +178,15 @@ export function ClassCalendar({ classes, timeZone, nowIso, defaultView, defaultD
 
   return (
     <div className="class-calendar">
-      <div className="class-calendar__toolbar">
-        <button type="button" className="platform-button platform-button_size_sm" onClick={() => goTo(now.day)}>
-          Hoy
-        </button>
-        <div className="class-calendar__steps">
-          <button
-            type="button"
-            className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square"
-            aria-label={view === "day" ? "Día anterior" : view === "week" ? "Semana anterior" : "Mes anterior"}
-            onClick={() => goTo(stepDay(view, day, -1))}
-          >
-            <ChevronLeftIcon variant="classic-solid" className="platform-button__icon" />
-          </button>
-          <button
-            type="button"
-            className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square"
-            aria-label={view === "day" ? "Día siguiente" : view === "week" ? "Semana siguiente" : "Mes siguiente"}
-            onClick={() => goTo(stepDay(view, day, 1))}
-          >
-            <ChevronRightIcon variant="classic-solid" className="platform-button__icon" />
-          </button>
-        </div>
-        <h2 className="class-calendar__title" aria-live="polite">
-          {viewTitle(view, day)}
-        </h2>
-        <div className="class-calendar__views" role="group" aria-label="Vista">
-          {VIEWS.map((option) => (
-            <button
-              key={option.view}
-              type="button"
-              className="class-calendar__view"
-              aria-pressed={view === option.view}
-              onClick={() => setView(option.view)}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <PlatformHeaderContext inlineClassName="class-calendar__toolbar-row">
+        <ClassCalendarToolbar
+          view={view}
+          title={viewTitle(view, day)}
+          onToday={() => goTo(now.day)}
+          onStep={(direction) => goTo(stepDay(view, day, direction))}
+          onView={setView}
+        />
+      </PlatformHeaderContext>
 
       <div className="class-calendar__body">
         <aside className="class-calendar__side" aria-label="Elegir un día">

@@ -10,65 +10,12 @@
   background: var(--platform-surface);
   overflow: hidden;
 
-  & .class-calendar__toolbar {
+  /* Where there is no platform bar (a story), the controls stay over the
+     calendar, in this row. */
+  & .class-calendar__toolbar-row {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--platform-space-2);
     padding: var(--platform-space-3) var(--platform-space-4);
     box-shadow: 0 1px 0 var(--platform-border);
-  }
-
-  & .class-calendar__steps {
-    display: flex;
-    gap: var(--platform-space-0-5);
-  }
-
-  & .class-calendar__title {
-    flex: 1;
-    min-width: 0;
-    margin: 0 0 0 var(--platform-space-2);
-    font-family: var(--platform-font-display);
-    font-size: var(--platform-type-xl);
-    font-weight: 500;
-  }
-
-  /* «Día · Semana · Mes»: one joined control, the view in sight in the accent's wash. */
-  & .class-calendar__views {
-    display: flex;
-    border: 1px solid var(--platform-border-strong);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  & .class-calendar__view {
-    height: 32px;
-    padding: 0 var(--platform-space-4);
-    border: 0;
-    background: var(--platform-surface);
-    color: var(--platform-text-muted);
-    font-family: inherit;
-    font-size: var(--platform-type-xs);
-    cursor: pointer;
-  }
-
-  & .class-calendar__view + .class-calendar__view {
-    box-shadow: -1px 0 0 var(--platform-border-strong);
-  }
-
-  & .class-calendar__view:hover {
-    color: var(--platform-text);
-  }
-
-  & .class-calendar__view[aria-pressed="true"] {
-    background: var(--platform-accent-wash);
-    color: var(--platform-accent-ink);
-    font-weight: 600;
-  }
-
-  & .class-calendar__view:focus-visible {
-    outline: 2px solid var(--platform-accent-ink);
-    outline-offset: -2px;
   }
 
   & .class-calendar__body {
@@ -713,15 +660,8 @@
   }
 
   @media (width < 640px) {
-    & .class-calendar__toolbar {
+    & .class-calendar__toolbar-row {
       padding: var(--platform-space-2) var(--platform-space-3);
-    }
-
-    & .class-calendar__title {
-      flex-basis: 100%;
-      order: -1;
-      margin: 0;
-      font-size: var(--platform-type-lg);
     }
   }
 }

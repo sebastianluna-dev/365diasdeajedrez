@@ -607,6 +607,18 @@ html body.platform-theme[data-scroll-locked] {
   }
 }
 
+/* A head the bar already says (`_display_bar`): a page whose name and
+   controls live in the platform's bar (the calendar, 2026-10-19) keeps its
+   `<h1>` for assistive technology and draws nothing. */
+.platform-page__head_display_bar {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* A head with actions is a row: the title and the subtitle on the left, the
    actions on the right, top-aligned; under 640px the actions take the whole
    width under the text. A grid, so the markup stays flat (title, subtitle,

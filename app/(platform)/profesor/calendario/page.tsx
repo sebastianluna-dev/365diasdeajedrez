@@ -15,9 +15,9 @@ export default async function TeacherCalendarPage() {
   await requireTeacher();
   return (
     <div className="platform-page platform-page_width_full">
-      <header className="platform-page__head">
+      {/* The bar says «Calendario» and carries the calendar's controls. */}
+      <header className="platform-page__head platform-page__head_display_bar">
         <h1 className="platform-page__title">Calendario</h1>
-        <p className="platform-page__subtitle">Tus clases por día, semana o mes, en hora de Ciudad de México.</p>
       </header>
       <PlatformNotice
         variant="info"
