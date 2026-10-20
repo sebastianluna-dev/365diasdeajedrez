@@ -18,11 +18,11 @@
      at the right, and the bar reads as the frame of the window and not as
      one more column of the page. */
   & .platform-shell__bar-inner {
-    padding: 0 var(--platform-space-12);
+    padding: 0 var(--platform-space-4) 0 var(--platform-space-6);
     height: 70px;
     display: flex;
     align-items: center;
-    gap: var(--platform-space-12);
+    gap: var(--platform-space-4);
   }
 
   /* The wordmark at the height the public site draws it on desktop. The
@@ -52,15 +52,25 @@
     fill: var(--platform-logo-accent);
   }
 
-  /* At the right edge: the search field and the avatar that opens the menu.
-     The block is pushed there by `margin-left: auto`, and what it measures is
-     whatever those two measure. */
+  /* What the page puts in the bar (`PlatformHeaderContext`): it takes the
+     room between the page's name and the tools, its controls in one line. */
+  & .platform-shell__context {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+  }
+
+  /* At the right edge: the tools menu and the avatar, the two things every
+     page keeps. The block is pushed there by `margin-left: auto`, and what it
+     measures is whatever those two measure. */
   & .platform-shell__tools {
     flex: none;
     margin-left: auto;
     display: flex;
     align-items: center;
-    gap: var(--platform-space-4);
+    gap: var(--platform-space-2);
   }
 
   & .platform-shell__content {
@@ -126,43 +136,37 @@
     }
   }
 
-  /* In one row the gaps between the wordmark, the menu and the tools are
-     24px, not 48: with «Herramientas» the student's menu fits from 1280px
-     (where the search also narrows) and the teacher's, the longest, from
-     about 1330px (2026-10-09; below that it scrolls, as it always did). */
-  @media (width >= 1280px) {
-    & .platform-shell__bar-inner {
-      gap: var(--platform-space-6);
-    }
-  }
-
-  /* The design was drawn at a fixed 1440 px. Below that the bar splits into
-     two rows rather than shrinking the menu: logo and user on top, the
-     navigation below with its own scroll if it does not fit. */
   @media (width < 1280px) {
-    & .platform-shell__bar-inner {
-      height: auto;
-      flex-wrap: wrap;
-      gap: var(--platform-space-3) var(--platform-space-6);
-      padding: var(--platform-space-3) var(--platform-space-6);
-    }
-
-    /* The search field takes what is left of the top row, and the avatar
-       stays at its end: two rows is already the concession, three would be
-       one too many. */
-    & .platform-shell__tools {
-      flex: 1;
-      min-width: 0;
-    }
-
     & .platform-shell__content {
       padding: var(--platform-space-8) var(--platform-space-6) var(--platform-space-16);
     }
   }
 
+  /* Without room for one line, the page's controls take a second row under
+     the wordmark and the tools; a page with none keeps the bar in one. */
+  @media (width < 1024px) {
+    & .platform-shell__bar-inner {
+      height: auto;
+      min-height: 70px;
+      flex-wrap: wrap;
+      row-gap: var(--platform-space-2);
+      padding-block: var(--platform-space-3);
+    }
+
+    & .platform-shell__context {
+      order: 3;
+      flex-basis: 100%;
+      flex-wrap: wrap;
+    }
+
+    & .platform-shell__context:empty {
+      display: none;
+    }
+  }
+
   @media (width < 640px) {
     & .platform-shell__bar-inner {
-      padding: var(--platform-space-3) var(--platform-space-4);
+      padding-inline: var(--platform-space-4) var(--platform-space-2);
     }
 
     & .platform-shell__content {

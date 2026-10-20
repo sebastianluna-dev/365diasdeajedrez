@@ -145,7 +145,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/entrenador` (the Move Trainer; **switched off**: it answers 404 while `MOVE_TRAINER_ENABLED` in `constants/platform/features.const.ts` is `false`)
 - `/explorador` (search for games by position; student and teacher share it)
 - `/jugar` (the way in: the adventure's cover while `ADVENTURE_ENABLED` is on, the gallery of bots while it is off), `/jugar/partida-libre` (the gallery of bots, «Partida libre»), `/jugar/aventura` (the adventure's shelf, behind `ADVENTURE_ENABLED`), `/jugar/aventura/[adventureSlug]` (its map; `?victoria=` and `?error=encounterLocked`; behind `ADVENTURE_ENABLED`, which needs `PLAY_ENABLED`; docs → Platform → Adventure mode), `/jugar/partidas/[gameId]` (games against the bots), `/perfil`, `/perfil/[slug]`, `/perfil/[slug]/partidas` (a person's profile and every game they played; seen by them, their teachers and the staff) — **switched off** while `PLAY_ENABLED` is `false`
-- `/herramientas` (goes to the board) and `/herramientas/tablero-de-analisis` — **switched off** while `ANALYSIS_BOARD_ENABLED` is `false`; once on, «Herramientas» in the bar gathers the board with the explorer
+- `/herramientas` (goes to the board) and `/herramientas/tablero-de-analisis` — **switched off** while `ANALYSIS_BOARD_ENABLED` is `false`; once on, the tools menu offers the board beside the explorer
 
 **Platform — teacher** (requires an active `Teacher` row)
 
@@ -155,9 +155,9 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/profesor/alumnos/[studentId]/ejercicios` (the student's exercise attempts with their mistakes) — **switched off** while `EXERCISES_ENABLED` is `false`
 - `/profesor/clases` («Clases que imparto»), `/profesor/clases/[classId]` (the material, the meeting, the attendance; the staff creates and schedules the classes)
 - `/profesor/ejercicios` (the exercise bank: in use, archived, series, the library; «Proponer a la biblioteca»), `/profesor/ejercicios/nuevo` (also with `?estudio=&partida=&jugada=`, «Crear ejercicio desde aquí» from a move of the teacher's own game), `/profesor/ejercicios/[exerciseId]` (the editor) and `/profesor/ejercicios/series/[seriesId]` (a series and who has it; `?vista=progreso`, who solved what) — **switched off** while `EXERCISES_ENABLED` is `false`
-- `/profesor/calendario` («Calendario» in the teacher's «Enseñar»: their classes by day, week and month, Google Calendar style; front-only sample week)
-- `/profesor/biblioteca-de-clases`, `/profesor/biblioteca-de-clases/[templateSlug]` («Clases prediseñadas» in the teacher's «Material»: ready-made classes, front-only sample data opened in the class editor)
-- `/profesor/perfil` («Mi ficha» in the teacher's «Enseñar»: the public card the student sees)
+- `/profesor/calendario` («Calendario» in the teacher's tools menu: their classes by day, week and month, Google Calendar style; front-only sample week)
+- `/profesor/biblioteca-de-clases`, `/profesor/biblioteca-de-clases/[templateSlug]` («Clases prediseñadas» in the teacher's tools menu: ready-made classes, front-only sample data opened in the class editor)
+- `/profesor/perfil` («Mi ficha» in the teacher's tools menu: the public card the student sees)
 
 **Platform — administration** (requires a `Staff` row; `/admin` belongs to Payload)
 

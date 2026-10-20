@@ -75,13 +75,15 @@ description: "Index of components/platform: the shared primitives and every sect
 
 ## `sections/shell/`
 
-| Page                                                                           | Kind   | What it is                                                                                         |
-| ------------------------------------------------------------------------------ | ------ | -------------------------------------------------------------------------------------------------- |
-| [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)  | server | Top bar and content area; reads the session to display, never to protect.                          |
-| [`PlatformNav`](/components/platform/sections/shell/platform-nav)              | client | The role's links with the active item by longest prefix.                                           |
-| [`PlatformSearch`](/components/platform/sections/shell/platform-search)        | server | The bar's search field, which does not search yet.                                                 |
-| [`PlatformUserMenu`](/components/platform/sections/shell/platform-user-menu)   | client | The avatar and what is behind it: the day's streak, the name and the way out.                      |
-| [`ClearResultParams`](/components/platform/sections/shell/clear-result-params) | client | Draws nothing: takes `?error=` and `?importadas=` out of the address once the page has drawn them. |
+| Page                                                                                   | Kind   | What it is                                                                                         |
+| -------------------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------- |
+| [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)          | server | Top bar and content area; reads the session to display, never to protect.                          |
+| [`PlatformAppsMenu`](/components/platform/sections/shell/platform-apps-menu)           | client | The nine squares and the role's tools behind them: the whole navigation.                           |
+| [`NavArt`](/components/platform/sections/shell/nav-art)                                | server | The drawing of each tool, with the piece that moves when pointed at.                               |
+| [`PlatformPageName`](/components/platform/sections/shell/platform-page-name)           | client | The page's name beside the wordmark: the name of its tool.                                         |
+| [`PlatformHeaderContext`](/components/platform/sections/shell/platform-header-context) | client | Puts a page's own controls in the bar, through a portal.                                           |
+| [`PlatformUserMenu`](/components/platform/sections/shell/platform-user-menu)           | client | The avatar and what is behind it: the day's streak, the name and the way out.                      |
+| [`ClearResultParams`](/components/platform/sections/shell/clear-result-params)         | client | Draws nothing: takes `?error=` and `?importadas=` out of the address once the page has drawn them. |
 
 ## `sections/dashboard/` — `/inicio`
 

@@ -96,12 +96,10 @@ import { MyCourseCard } from "@/components/platform/sections/courses/my-courses/
 import { StatsCards } from "@/components/platform/sections/dashboard/activity-stats/stats-cards.comp";
 import { ExplorerGames } from "@/components/platform/sections/explorer/explorer-games.comp";
 import { ExplorerNextMoves } from "@/components/platform/sections/explorer/explorer-next-moves.comp";
-import { PlatformNav } from "@/components/platform/sections/shell/platform-nav.comp";
-import { PlatformNavMenu } from "@/components/platform/shared/platform-nav-menu/platform-nav-menu.comp";
+import { PlatformAppsMenu } from "@/components/platform/sections/shell/platform-apps-menu.comp";
 import { SaveToStudyPopup } from "@/components/platform/shared/save-to-study-popup/save-to-study-popup.comp";
 import { PlayVsEngine } from "@/components/platform/sections/tools/analysis-board/play-vs-engine/play-vs-engine.comp";
 import { PositionInput } from "@/components/platform/sections/tools/analysis-board/position-input/position-input.comp";
-import { PlatformSearch } from "@/components/platform/sections/shell/platform-search.comp";
 import { AuthorAvatar } from "@/components/platform/sections/staff/courses/authors-manager/author-avatar.comp";
 import { CourseSourceForm } from "@/components/platform/sections/staff/courses/course-sources/course-source-form.comp";
 import { NewCourseForm } from "@/components/platform/sections/staff/courses/new-course/new-course-form.comp";
@@ -231,7 +229,7 @@ import { ProgressIndicator } from "@/components/platform/shared/progress-indicat
 import { StudyStreak } from "@/components/platform/shared/study-streak/study-streak.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { CONTENT_ROLE } from "@/constants/platform/course-codes.const";
-import { buildPlatformNavGroups, isNavDropdown, type PlatformNavDropdown } from "@/constants/platform/nav-items.const";
+import { buildPlatformApps } from "@/constants/platform/nav-items.const";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { GAME_RESULT } from "@/constants/platform/study-codes.const";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
@@ -860,11 +858,11 @@ function PopupTrigger() {
   );
 }
 
-/** «Herramientas», as the student's menu builds it with everything on. */
-const TOOLS_MENU = buildPlatformNavGroups(
-  { isTeacher: false, isStaff: false },
+/** The teacher's tools, as the shell builds them with everything on. */
+const TEACHER_APPS = buildPlatformApps(
+  { isTeacher: true, isStaff: false },
   { play: true, analysisBoard: true, trainer: true, exercises: "all" },
-)[0]!.items.find((entry) => isNavDropdown(entry) && entry.label === "Herramientas") as PlatformNavDropdown;
+);
 
 /** The instant the profile's examples are read from, so «hace 5 horas» stays the same. */
 const PROFILE_NOW = new Date("2026-10-08T18:00:00Z");
@@ -1292,9 +1290,6 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   </PlatformFormField>
                 </OptionalFields>
               </PlatformForm>
-            </Tile>
-            <Tile name="PlatformSearch" docs="platform-sections-shell-platformsearch" surface width={400} height={144}>
-              <PlatformSearch />
             </Tile>
             <Tile name="GameFields" docs="platform-shared-gamefields" width={720} height={840}>
               <PlatformForm onSubmit={(event) => event.preventDefault()}>
@@ -1760,11 +1755,14 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 />
               </div>
             </Tile>
-            <Tile name="PlatformNavMenu" docs="platform-shared-platformnavmenu" surface width={400} height={88}>
-              <PlatformNavMenu menu={TOOLS_MENU} activeHref={null} />
-            </Tile>
-            <Tile name="PlatformNav" docs="platform-sections-shell-platformnav" surface width={960} height={152}>
-              <PlatformNav groups={buildPlatformNavGroups({ isTeacher: false, isStaff: true })} />
+            <Tile
+              name="PlatformAppsMenu"
+              docs="platform-sections-shell-platformappsmenu"
+              surface
+              width={400}
+              height={88}
+            >
+              <PlatformAppsMenu apps={TEACHER_APPS} />
             </Tile>
           </Section>
 

@@ -1,0 +1,36 @@
+---
+description: "The drawing of each tool of the platform's menu: illustrations in the board's cream and wood and the brand's red, each with the piece that moves when its tile is pointed at."
+---
+
+# `NavArt`
+
+|            |                                                                              |
+| ---------- | ---------------------------------------------------------------------------- |
+| File       | `components/platform/sections/shell/nav-art.comp.tsx`                        |
+| Kind       | Component without state, drawn inside the client menu                        |
+| Stylesheet | `nav-art.comp.css` → block `.nav-art`                                        |
+| Used by    | [`PlatformAppsMenu`](/components/platform/sections/shell/platform-apps-menu) |
+| Uses       | `PlatformNavArt` from `constants/platform/nav-items.const`                   |
+
+## Purpose
+
+Illustrations, not icons (`AGENTS.md`, «Componentes»): drawn by hand as SVG beside the menu that uses them, in their own colours in both themes — the board's cream (`#f4e8d2`) and wood (`#8f6a45`, `#a57c52`), the squares' tan, the brand's red — never `currentColor`, and `aria-hidden`, because the tool's name is its label.
+
+The first six were the drawings of the bar's sections (2026-10-18): «Jugar» (a red pawn on a 3×3 board), «Ejercicios» (a puzzle piece cut from a board), «Aprender» (a mortarboard, now «Cursos»), «Enseñar» (the class's wall board on its easel, now the classes), «Material» (books with a diagram, now «Clases prediseñadas») and «Herramientas» (a toolbox, gone with its section). With the Google-style header (2026-10-19) each tool has its own: «Ejercicios por tema» (two labels), «Puzzle Rush» (a stopwatch), «Estudiar» (an open book), «Panel del profesor» (a house), «Calendario» (a desk calendar with a ringed day), «Mis alumnos» and «Alumnos» (two pawns), «Mi ficha» (a card with a pawn's portrait), «Tablero de análisis» (a board with an arrow and the evaluation bar), «Explorador» (a magnifying glass), «Entrenador» (a dumbbell), «Administración» (a clipboard), «Profesores» (a pawn under a mortarboard), «Revisión» (a sheet and its stamp), «Series» (fanned cards) and «Importar» (a sheet into a tray).
+
+## Props
+
+| Prop        | Type             | Required | Meaning                                                          |
+| ----------- | ---------------- | -------- | ---------------------------------------------------------------- |
+| `art`       | `PlatformNavArt` | yes      | Which drawing.                                                   |
+| `className` | `string`         | no       | The menu's class for its size; the root also carries `.nav-art`. |
+
+## Behaviour
+
+- Each drawing has its own `viewBox`, cut close to what it draws, so it fills its slot.
+- The piece that moves when the tile is pointed at — the pawn, the arrow, the tassel, the ring of the day — is `.nav-art__move`, turning about its own middle (`transform-box: fill-box`); the menu says when and how it moves, and stills it under reduced motion.
+- The puzzle piece's clip is referenced by id, generated with `useId`, because a page can draw it twice.
+
+## Markup & styling
+
+Block `.nav-art` (8 lines). **Elements:** `.nav-art__move`.

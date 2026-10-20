@@ -1,0 +1,174 @@
+/* The panel the nine squares open, portalled to `<body>`: a grey tray with
+   «Tus atajos» on a white card and the rest of the tools under it, as
+   Google's apps menu draws them. The trigger is a quiet `.platform-button`. */
+.platform-apps-menu {
+  z-index: 50;
+  width: 372px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100dvh - 96px);
+  box-sizing: border-box;
+  overflow-y: auto;
+  padding: var(--platform-space-3);
+  border-radius: 8px;
+  background: var(--platform-bg);
+  box-shadow: var(--platform-shadow-popup);
+  /* Portalled to `<body>`, it says its ink itself. */
+  color: var(--platform-text);
+  transform-origin: var(--radix-popover-content-transform-origin);
+
+  /* It takes the focus on opening so Tab walks its tiles; its edge already says where the focus is. */
+  &:focus {
+    outline: none;
+  }
+
+  &[data-state="open"] {
+    animation: platform-apps-menu-in 160ms ease-out;
+  }
+
+  &[data-state="closed"] {
+    animation: platform-apps-menu-out 120ms ease-in forwards;
+  }
+
+  & .platform-apps-menu__nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+  }
+
+  & .platform-apps-menu__shortcuts {
+    padding: var(--platform-space-4) var(--platform-space-2) var(--platform-space-2);
+    border-radius: 8px;
+    background: var(--platform-surface);
+  }
+
+  & .platform-apps-menu__title {
+    margin: 0 0 var(--platform-space-2);
+    padding: 0 var(--platform-space-2);
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-lg);
+    font-weight: 500;
+    color: var(--platform-text);
+  }
+
+  & .platform-apps-menu__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--platform-space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .platform-apps-menu__grid_place_more {
+    padding: 0 var(--platform-space-2);
+  }
+
+  & .platform-apps-menu__tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--platform-space-2);
+    height: 100%;
+    box-sizing: border-box;
+    padding: var(--platform-space-3) var(--platform-space-1);
+    border-radius: 8px;
+    color: var(--platform-text);
+    font-size: var(--platform-type-xs);
+    line-height: 1.25;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  & .platform-apps-menu__tile:hover {
+    background: var(--platform-surface-neutral);
+  }
+
+  & .platform-apps-menu__grid_place_more .platform-apps-menu__tile:hover {
+    background: var(--platform-surface);
+  }
+
+  & .platform-apps-menu__tile:focus-visible {
+    outline: 2px solid var(--platform-accent-ink);
+    outline-offset: -2px;
+  }
+
+  & .platform-apps-menu__tile.platform-apps-menu__tile_state_current {
+    background: var(--platform-accent-wash);
+    color: var(--platform-accent-ink);
+    font-weight: 600;
+  }
+
+  & .platform-apps-menu__art {
+    flex: none;
+    width: 48px;
+    height: 48px;
+    transition: transform 200ms ease-out;
+  }
+
+  /* Pointed at, the drawing tilts and rises and its moving piece bobs. */
+  & .platform-apps-menu__tile:hover .platform-apps-menu__art,
+  & .platform-apps-menu__tile:focus-visible .platform-apps-menu__art {
+    transform: translateY(-3px) rotate(-4deg) scale(1.06);
+  }
+
+  & .platform-apps-menu__tile:hover .nav-art__move,
+  & .platform-apps-menu__tile:focus-visible .nav-art__move {
+    animation: platform-apps-menu-bob 900ms ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &[data-state="open"],
+    &[data-state="closed"] {
+      animation: none;
+    }
+
+    & .platform-apps-menu__art {
+      transition: none;
+    }
+
+    & .platform-apps-menu__tile:hover .platform-apps-menu__art,
+    & .platform-apps-menu__tile:focus-visible .platform-apps-menu__art {
+      transform: none;
+    }
+
+    & .platform-apps-menu__tile:hover .nav-art__move,
+    & .platform-apps-menu__tile:focus-visible .nav-art__move {
+      animation: none;
+    }
+  }
+}
+
+/* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */
+@keyframes platform-apps-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes platform-apps-menu-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+
+@keyframes platform-apps-menu-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6%);
+  }
+}

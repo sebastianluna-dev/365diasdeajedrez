@@ -1,0 +1,8 @@
+.nav-art {
+  /* The piece that moves when the tool's tile is pointed at turns and rises
+     about its own middle, not the drawing's corner; the menu says when. */
+  & .nav-art__move {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+}

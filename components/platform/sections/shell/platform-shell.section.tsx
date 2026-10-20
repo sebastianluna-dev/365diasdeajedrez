@@ -1,15 +1,16 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { LOGO_LABEL, LogoWordmarkIcon } from "@/components/icons/logo-wordmark-icon.comp";
-import { buildPlatformNavGroups, needsStudentExerciseAccess } from "@/constants/platform/nav-items.const";
+import { buildPlatformApps, needsStudentExerciseAccess } from "@/constants/platform/nav-items.const";
 import { getSessionUser } from "@/lib/platform-auth/current-user";
 import { getSessionRoles } from "@/lib/platform-auth/roles";
 import { PLAY_ENABLED } from "@/constants/platform/features.const";
 import { homeRouteFor, platformRoutes, teacherRoutes } from "@/lib/platform-routes";
 import { getStudentExerciseAccess } from "@/services/exercises/exercises.service";
 import { ClearResultParams } from "./clear-result-params.comp";
-import { PlatformNav } from "./platform-nav.comp";
-import { PlatformSearch } from "./platform-search.comp";
+import { PlatformAppsMenu } from "./platform-apps-menu.comp";
+import { PLATFORM_HEADER_CONTEXT_ID } from "./platform-header-context.comp";
+import { PlatformPageName } from "./platform-page-name.comp";
 import { PlatformUserMenu } from "./platform-user-menu.comp";
 import "./platform-shell.section.css";
 
@@ -33,6 +34,12 @@ function initialsOf(displayName: string): string {
 /**
  * Internal layout of the platform: top bar + content area.
  *
+ * The bar is Google's (2026-10-19): the wordmark and the page's name at the
+ * left, what the page puts there in the middle (`PlatformHeaderContext`:
+ * the calendar's «Hoy», arrows and view), and at the right the only two
+ * things every page keeps — the tools menu, which is the whole navigation,
+ * and the avatar.
+ *
  * It reads the session only to show who is logged in and which menus they
  * get, never to protect: if there is no user it simply does not render the
  * block. What blocks the way is the DAL inside each page (the Next 16 docs
@@ -45,7 +52,7 @@ export async function PlatformShell({ children }: PlatformShellProps) {
   // «Ejercicios» is a student's only once they have something there (an
   // active teacher, a series given): the database is asked only then.
   const hasExerciseSource = user && needsStudentExerciseAccess(roles) ? await getStudentExerciseAccess() : false;
-  const navGroups = buildPlatformNavGroups({ ...roles, hasExerciseSource });
+  const apps = buildPlatformApps({ ...roles, hasExerciseSource });
   // The logo leads to the role's home, not to the student dashboard: with
   // the exclusive menu that page is no longer in a teacher's or staff's menu.
   const homeHref = homeRouteFor(roles);
@@ -66,12 +73,16 @@ export async function PlatformShell({ children }: PlatformShellProps) {
             />
           </Link>
 
-          <PlatformNav groups={navGroups} />
+          <PlatformPageName apps={apps} />
 
-          {/* At the right end, the two things that are not the menu: what is
-              searched for, and who is signed in. */}
+          {/* The page's own controls land here, through a portal; empty, it
+              only pushes the tools to the right. */}
+          <div id={PLATFORM_HEADER_CONTEXT_ID} className="platform-shell__context" />
+
+          {/* At the right end, the two things every page keeps: the tools,
+              and who is signed in. */}
           <div className="platform-shell__tools">
-            <PlatformSearch />
+            <PlatformAppsMenu apps={apps} />
 
             {user && (
               <PlatformUserMenu

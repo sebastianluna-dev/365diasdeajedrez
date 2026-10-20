@@ -1,0 +1,58 @@
+---
+description: "The nine squares at the right of the bar and the panel they open: «Tus atajos», the role's first six tools, and the rest, each a tile with its drawing. The platform's whole navigation since the Google-style header."
+---
+
+# `PlatformAppsMenu`
+
+|            |                                                                                                                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/shell/platform-apps-menu.comp.tsx`                                                                                                                                                                      |
+| Kind       | Client Component                                                                                                                                                                                                                      |
+| Stylesheet | `platform-apps-menu.comp.css` → block `.platform-apps-menu` (the panel; the trigger is a quiet `.platform-button`)                                                                                                                    |
+| Story      | `platform-apps-menu.stories.tsx` (`platform/sections/shell/PlatformAppsMenu`): the closed button, and the teacher's, the student's and the staff's tools open (`play`), each on one of their pages, and a student with everything off |
+| Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)                                                                                                                                                         |
+| Composes   | [`NavArt`](/components/platform/sections/shell/nav-art), Radix `Popover`                                                                                                                                                              |
+| Uses       | `activeApp`, `PlatformApps` from `constants/platform/nav-items.const`<br />`usePathname` from `next/navigation`<br />`GridIcon` · `components/icons/grid-icon.comp.tsx`                                                               |
+
+## Purpose
+
+The Google-style header (2026-10-19, option A1 of the calendar canvas): every page keeps at the right of the bar only two things, this button and the avatar ([`PlatformUserMenu`](/components/platform/sections/shell/platform-user-menu)); the rest of the bar is the page's ([`PlatformPageName`](/components/platform/sections/shell/platform-page-name) and [`PlatformHeaderContext`](/components/platform/sections/shell/platform-header-context)). The dropdowns of the bar («Enseñar», «Material», «Aprender», «Herramientas»…) and the search field that did not search are gone: this panel is the whole navigation.
+
+## Props
+
+| Prop   | Type           | Required | Meaning                                                                                                                      |
+| ------ | -------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `apps` | `PlatformApps` | yes      | `{ shortcuts, more }`, composed by role and switches in the shell with `buildPlatformApps(roles)`. Here they are only drawn. |
+
+## Behaviour
+
+- **The button** is a quiet square `.platform-button` with the nine squares (`GridIcon`, Classic Solid), named «Herramientas»; open, it keeps the quiet button's pressed grey (`aria-expanded`).
+- **The panel** opens under it, aligned to its right edge, portalled to `<body>`: a grey tray (`--platform-bg`) with «Tus atajos» on a white card — the first `PLATFORM_SHORTCUTS` (six) tools of the role, two rows of three — and the rest under the card, three to a row. Each tool is a tile: its drawing at 48px and its name. «Tus atajos» cannot be edited yet: the six are the role's first six.
+- **The page's tile is marked** (`aria-current="page"`, the accent's wash and ink): `activeApp(apps, pathname)` gives the tool whose address is the longest that starts the page's, so `/profesor` and `/profesor/alumnos` never both light up, and the staff's «Revisión» wins over «Ejercicios» on the review queue.
+- **A tile closes the panel** as it leads away (the open state is the component's). Escape and a click outside close it too; the focus moves into the panel and back to the button, with the primitive.
+- **Pointed at or focused**, a tile's drawing tilts and rises and its moving piece bobs (`.nav-art__move`); all of it is stilled under reduced motion. The panel unfolds in 160 ms and folds in 120.
+
+## The tools of each role
+
+`buildPlatformApps(roles, features)` in `constants/platform/nav-items.const.ts`, the widest role's list:
+
+- **Student:** «Jugar» (with `PLAY_ENABLED`), «Ejercicios», «Ejercicios por tema» and «Puzzle Rush» (with `EXERCISES_ENABLED`: for every student with `"all"`, or only one who has something there with `"withTeacher"`, asked of `getStudentExerciseAccess()` only then), «Cursos», «Clases», «Estudiar», and the tools: «Tablero de análisis» (with `ANALYSIS_BOARD_ENABLED`), «Explorador» and «Entrenador» (with the board and `MOVE_TRAINER_ENABLED`).
+- **Teacher:** «Panel del profesor», «Clases que imparto», «Calendario», «Mis alumnos», «Ejercicios» (with its switch), «Tablero de análisis», then «Clases prediseñadas», «Cursos», «Estudiar», «Explorador», «Entrenador» and «Mi ficha». No «Jugar».
+- **Staff:** «Administración», «Clases», «Alumnos», «Profesores», «Cursos», and with the exercises' switch «Ejercicios», «Revisión», «Series» and «Importar», each page of the bank reached straight from the menu.
+
+Hiding a tool authorises nothing: every page and action checks the role again.
+
+## Markup & styling
+
+Block `.platform-apps-menu` (174 lines).
+
+**Elements:** `.platform-apps-menu__nav`, `.platform-apps-menu__shortcuts` (the white card), `.platform-apps-menu__title`, `.platform-apps-menu__grid`, `.platform-apps-menu__tile`, `.platform-apps-menu__art`, `.platform-apps-menu__label`
+
+**Modifiers and states:** `.platform-apps-menu__grid_place_more` (the tools under the card), `.platform-apps-menu__tile_state_current`, `[data-state="open"|"closed"]`
+
+**Tokens:** `--platform-accent-ink`, `--platform-accent-wash`, `--platform-bg`, `--platform-font-display`, `--platform-shadow-popup`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`
+
+## Related
+
+- [`NavArt`](/components/platform/sections/shell/nav-art), the drawings.
+- `constants/platform/nav-items.const.ts` and its test, which cover each role's list, the switches and the longest-prefix rule.

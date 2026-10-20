@@ -18,8 +18,6 @@ const SHARED = "components/platform/shared";
 
 /** The shared pieces without a story, and why. */
 const WITHOUT_STORY: Record<string, string> = {
-  "components/platform/shared/platform-nav-menu/nav-art.comp.tsx":
-    "the drawings of the menu bar's entries, seen in PlatformNav's and PlatformNavMenu's stories",
   "components/platform/shared/image-upload.comp.tsx":
     "its hook imports a server action (createUploadSignature) that reaches Prisma: it waits for the module mocks storybook.mdx plans",
   "components/platform/shared/delete-series/delete-series.comp.tsx":

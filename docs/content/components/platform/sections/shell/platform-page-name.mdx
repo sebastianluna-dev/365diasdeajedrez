@@ -1,0 +1,27 @@
+---
+description: "The page's name beside the wordmark, as Google writes its product's: the name of the tool the page belongs to."
+---
+
+# `PlatformPageName`
+
+|            |                                                                                                                 |
+| ---------- | --------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/shell/platform-page-name.comp.tsx`                                                |
+| Kind       | Client Component                                                                                                |
+| Stylesheet | `platform-page-name.comp.css` → block `.platform-page-name`                                                     |
+| Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)                                   |
+| Uses       | `activeApp`, `PlatformApps` from `constants/platform/nav-items.const`<br />`usePathname` from `next/navigation` |
+
+## Purpose
+
+The Google-style header (2026-10-19) names the page beside the wordmark — «Calendario», «Ejercicios», «Clases» — after a hairline, in the display font. The name is the label of the tool the page belongs to (`activeApp`, the longest address that starts the page's), so a deep page keeps its tool's name («Mis alumnos» on one student's page), and a page no tool leads to (the home, a lesson) shows none. Client, because it follows the address.
+
+## Props
+
+| Prop   | Type           | Required | Meaning                                    |
+| ------ | -------------- | -------- | ------------------------------------------ |
+| `apps` | `PlatformApps` | yes      | The role's tools, the same the menu draws. |
+
+## Markup & styling
+
+Block `.platform-page-name` (15 lines): `--platform-font-display` at `--platform-type-xl`, a left hairline (`--platform-border`). **Breakpoints:** `(width < 640px)` hides it: on a phone the bar keeps the wordmark and its two buttons.

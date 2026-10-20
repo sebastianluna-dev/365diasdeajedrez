@@ -1,0 +1,31 @@
+---
+description: "Puts a page's own controls in the platform's bar, between the page's name and the tools, through a portal; where there is no bar, they stay in the page."
+---
+
+# `PlatformHeaderContext`
+
+|         |                                                                                                                        |
+| ------- | ---------------------------------------------------------------------------------------------------------------------- |
+| File    | `components/platform/sections/shell/platform-header-context.comp.tsx`                                                  |
+| Kind    | Client Component                                                                                                       |
+| Used by | [`ClassCalendar`](/components/platform/sections/teacher/class-calendar), for «Hoy», the arrows, the title and the view |
+| Uses    | `createPortal` from `react-dom`, `useSyncExternalStore`                                                                |
+
+## Purpose
+
+In the Google-style header (2026-10-19) the middle of the bar is the page's: what Google Calendar puts there — «Hoy», the arrows, the week, the view — is what the page needs at hand. The shell draws an empty slot (`id="platform-header-context"`, `PLATFORM_HEADER_CONTEXT_ID`) and a page that has controls for it wraps them in this component, which portals them there. The controls keep living in the page, with the state they work on; the bar only holds them.
+
+It is a container (`children`, the one exception of `AGENTS.md`'s «recibe datos, no componentes»): its one job is to place what it is given.
+
+## Props
+
+| Prop              | Type        | Required | Meaning                                                                                                                  |
+| ----------------- | ----------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `children`        | `ReactNode` | yes      | The page's controls, never the navigation.                                                                               |
+| `inlineClassName` | `string`    | no       | Where there is no slot (a story, a page outside the shell), the controls stay in place inside a `<div>` with this class. |
+
+## Behaviour
+
+- The server draws nothing, since it cannot reach the slot; the browser portals on hydrating. A page whose controls live in the bar shows them a moment after its first paint.
+- With no slot in the document the controls are drawn in place, in `inlineClassName`: the calendar's story shows its toolbar over the calendar.
+- Empty, the slot only pushes the tools to the right; under 1024px it takes a second row of the bar, and with nothing in it (`:empty`) it is not drawn.

@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
-  activeNavHref,
-  buildPlatformNavGroups,
-  isNavDropdown,
+  activeApp,
+  buildPlatformApps,
   needsStudentExerciseAccess,
+  PLATFORM_SHORTCUTS,
+  type PlatformApps,
   type PlatformNavFeatures,
-  type PlatformNavGroup,
-  STAFF_NAV_ITEMS,
+  type PlatformNavRoles,
 } from "./nav-items.const";
 
 const ALL_ON: PlatformNavFeatures = { play: true, analysisBoard: true, trainer: true, exercises: "all" };
@@ -15,167 +15,147 @@ const STUDENT = { isTeacher: false, isStaff: false };
 const TEACHER = { isTeacher: true, isStaff: false };
 const STAFF = { isTeacher: false, isStaff: true };
 
-/** Every address of a menu, a dropdown's tools in place of the dropdown. */
-const hrefsOf = (groups: PlatformNavGroup[]) =>
-  groups.flatMap((group) =>
-    group.items.flatMap((entry) => (isNavDropdown(entry) ? entry.items.map((item) => item.href) : [entry.href])),
-  );
+/** Every tool of a menu, «Tus atajos» first, by its name. */
+const labelsOf = (apps: PlatformApps) => [...apps.shortcuts, ...apps.more].map((app) => app.label);
+/** Every address of a menu. */
+const hrefsOf = (apps: PlatformApps) => [...apps.shortcuts, ...apps.more].map((app) => app.href);
+const labels = (roles: PlatformNavRoles, features: PlatformNavFeatures) => labelsOf(buildPlatformApps(roles, features));
 
-/** What the bar shows at its top level: a link's label or a dropdown's. */
-const labelsOf = (groups: PlatformNavGroup[]) => groups.flatMap((group) => group.items.map((entry) => entry.label));
-
-describe("buildPlatformNavGroups", () => {
-  it("da sólo el grupo del alumno, sin encabezado", () => {
-    const groups = buildPlatformNavGroups(STUDENT, ALL_OFF);
-    expect(groups).toHaveLength(1);
-    expect(groups[0]?.label).toBeUndefined();
-    expect(labelsOf(groups)).toEqual(["Aprender", "Explorador"]);
+describe("buildPlatformApps", () => {
+  it("da al alumno «Jugar», sus ejercicios, lo que estudia y las herramientas, en ese orden", () => {
+    expect(labels(STUDENT, ALL_ON)).toEqual([
+      "Jugar",
+      "Ejercicios",
+      "Ejercicios por tema",
+      "Puzzle Rush",
+      "Cursos",
+      "Clases",
+      "Estudiar",
+      "Tablero de análisis",
+      "Explorador",
+      "Entrenador",
+    ]);
+    expect(hrefsOf(buildPlatformApps(STUDENT, ALL_ON))).toContain("/ejercicios/temas");
   });
 
-  it("reúne cursos, estudios y clases del alumno en «Aprender»", () => {
-    const learn = buildPlatformNavGroups(STUDENT, ALL_OFF)[0]?.items.find(isNavDropdown);
-    expect(learn?.label).toBe("Aprender");
-    expect(learn?.items.map((item) => [item.label, item.href])).toEqual([
-      ["Cursos", "/cursos"],
-      ["Estudiar", "/estudios"],
-      ["Clases", "/clases"],
+  it("parte la lista en «Tus atajos», dos filas de tres, y el resto", () => {
+    const apps = buildPlatformApps(STUDENT, ALL_ON);
+    expect(apps.shortcuts).toHaveLength(PLATFORM_SHORTCUTS);
+    expect(apps.shortcuts.map((app) => app.label)).toEqual([
+      "Jugar",
+      "Ejercicios",
+      "Ejercicios por tema",
+      "Puzzle Rush",
+      "Cursos",
+      "Clases",
+    ]);
+    // With less switched on, the shortcuts are what there is, and nothing is left under them.
+    const few = buildPlatformApps(STUDENT, ALL_OFF);
+    expect(few.shortcuts.map((app) => app.label)).toEqual(["Cursos", "Clases", "Estudiar", "Explorador"]);
+    expect(few.more).toEqual([]);
+  });
+
+  it("sustituye el menú del alumno por el del profesor, no lo suma", () => {
+    expect(labels(TEACHER, ALL_ON)).toEqual([
+      "Panel del profesor",
+      "Clases que imparto",
+      "Calendario",
+      "Mis alumnos",
+      "Ejercicios",
+      "Tablero de análisis",
+      "Clases prediseñadas",
+      "Cursos",
+      "Estudiar",
+      "Explorador",
+      "Entrenador",
+      "Mi ficha",
+    ]);
+    expect(labels(TEACHER, ALL_OFF)).toEqual([
+      "Panel del profesor",
+      "Clases que imparto",
+      "Calendario",
+      "Mis alumnos",
+      "Clases prediseñadas",
+      "Cursos",
+      "Estudiar",
+      "Explorador",
+      "Mi ficha",
     ]);
   });
 
-  it("sustituye el menú del alumno por el del profesor, no lo apila", () => {
-    const groups = buildPlatformNavGroups(TEACHER, ALL_OFF);
-    expect(groups).toHaveLength(1);
-    expect(groups[0]?.label).toBe("Profesor");
-    expect(labelsOf(groups)).toEqual(["Enseñar", "Material", "Aprender", "Explorador"]);
-  });
-
-  it("reúne el trabajo del profesor en «Enseñar», su material en «Material» y los cursos en «Aprender»", () => {
-    const menus = buildPlatformNavGroups(TEACHER, ALL_ON)[0]?.items.filter(isNavDropdown) ?? [];
-    const itemsOf = (label: string) =>
-      menus.find((menu) => menu.label === label)?.items.map((item) => [item.label, item.href]);
-    expect(itemsOf("Enseñar")).toEqual([
-      ["Panel del profesor", "/profesor"],
-      ["Clases que imparto", "/profesor/clases"],
-      ["Calendario", "/profesor/calendario"],
-      ["Mis alumnos", "/profesor/alumnos"],
-      ["Mi ficha", "/profesor/perfil"],
-    ]);
-    expect(itemsOf("Material")).toEqual([
-      ["Ejercicios", "/profesor/ejercicios"],
-      ["Clases prediseñadas", "/profesor/biblioteca-de-clases"],
-    ]);
-    expect(itemsOf("Aprender")).toEqual([
-      ["Cursos", "/cursos"],
-      ["Estudiar", "/estudios"],
-    ]);
-    expect(menus.every((menu) => menu.items.every((item) => item.description.length > 0))).toBe(true);
-  });
-
-  it("da el menú de administración al staff, sin «Jugar» ni «Herramientas»; sólo «Ejercicios» con su interruptor", () => {
-    const groups = buildPlatformNavGroups(STAFF, ALL_ON);
-    expect(groups).toHaveLength(1);
-    expect(groups[0]?.items.filter((item) => item.label !== "Ejercicios")).toEqual(STAFF_NAV_ITEMS);
-    expect(buildPlatformNavGroups(STAFF, ALL_OFF)[0]?.items).toEqual(STAFF_NAV_ITEMS);
-  });
-
-  it("con varios roles manda el de mayor alcance: staff sobre profesor", () => {
-    const groups = buildPlatformNavGroups({ isTeacher: true, isStaff: true }, ALL_OFF);
-    expect(groups[0]?.label).toBe("Administración");
-    expect(groups[0]?.items).toEqual(STAFF_NAV_ITEMS);
-  });
-
-  it("ofrece el explorador al alumno y al profesor, de primer nivel o dentro de «Herramientas»", () => {
-    // It is a cross-cutting tool: who sees which games is decided by the
-    // visibility filter, not the menu.
-    for (const features of [ALL_ON, ALL_OFF]) {
-      expect(hrefsOf(buildPlatformNavGroups(STUDENT, features))).toContain("/explorador");
-      expect(hrefsOf(buildPlatformNavGroups(TEACHER, features))).toContain("/explorador");
-    }
-  });
-
-  it("con todo encendido, el alumno ve «Jugar», «Ejercicios», «Aprender» y «Herramientas»", () => {
-    const groups = buildPlatformNavGroups(STUDENT, ALL_ON);
-    expect(labelsOf(groups)).toEqual(["Jugar", "Ejercicios", "Aprender", "Herramientas"]);
-    const exercises = groups[0]?.items.find((entry) => isNavDropdown(entry) && entry.label === "Ejercicios");
-    expect(exercises && isNavDropdown(exercises) && exercises.items.map((item) => [item.label, item.href])).toEqual([
-      ["Ejercicios", "/ejercicios"],
-      ["Ejercicios por tema", "/ejercicios/temas"],
-      ["Puzzle Rush", "/puzzle-rush"],
-    ]);
-    const tools = groups[0]?.items.find((entry) => isNavDropdown(entry) && entry.label === "Herramientas");
-    if (!tools || !isNavDropdown(tools)) throw new Error("no «Herramientas»");
-    expect(tools.items.map((item) => item.label)).toEqual(["Tablero de análisis", "Explorador", "Entrenador"]);
-    expect(
-      groups[0]?.items.filter(isNavDropdown).every((menu) => menu.items.every((item) => item.description.length > 0)),
-    ).toBe(true);
-    expect(labelsOf(buildPlatformNavGroups(TEACHER, ALL_ON))).toEqual([
-      "Enseñar",
-      "Material",
-      "Aprender",
-      "Herramientas",
-    ]);
-  });
-
-  it("deja fuera lo apagado: «Jugar» sin su interruptor, el entrenador sin el suyo", () => {
-    const noPlay = buildPlatformNavGroups(STUDENT, { ...ALL_ON, play: false });
-    expect(hrefsOf(noPlay)).not.toContain("/jugar");
-    const noTrainer = buildPlatformNavGroups(STUDENT, { ...ALL_ON, trainer: false });
-    expect(hrefsOf(noTrainer)).not.toContain("/entrenador");
-    const noBoard = buildPlatformNavGroups(STUDENT, { ...ALL_ON, analysisBoard: false, exercises: false });
-    expect(labelsOf(noBoard)).toEqual(["Jugar", "Aprender", "Explorador"]);
-  });
-
-  it("nunca da «Jugar» al profesor", () => {
-    expect(hrefsOf(buildPlatformNavGroups(TEACHER, ALL_ON))).not.toContain("/jugar");
-  });
-
-  it("da «Ejercicios» al profesor en «Material», sólo con su interruptor", () => {
-    expect(hrefsOf(buildPlatformNavGroups(TEACHER, ALL_ON))).toContain("/profesor/ejercicios");
-    expect(hrefsOf(buildPlatformNavGroups(TEACHER, { ...ALL_ON, exercises: false }))).not.toContain(
-      "/profesor/ejercicios",
-    );
-    expect(hrefsOf(buildPlatformNavGroups(TEACHER, { ...ALL_ON, exercises: "withTeacher" }))).toContain(
-      "/profesor/ejercicios",
-    );
-    // The staff's menu is the panel's: «Ejercicios» after «Cursos» with the switch (phase 4), never the teacher's bank.
-    expect(hrefsOf(buildPlatformNavGroups(STAFF, ALL_ON))).not.toContain("/profesor/ejercicios");
-    expect(labelsOf(buildPlatformNavGroups(STAFF, ALL_ON))).toEqual([
+  it("da a administración su panel y, con su interruptor, el banco de ejercicios con revisión, series e importar", () => {
+    expect(labels(STAFF, ALL_ON)).toEqual([
       "Administración",
+      "Clases",
       "Alumnos",
       "Profesores",
       "Cursos",
       "Ejercicios",
-      "Clases",
+      "Revisión",
+      "Series",
+      "Importar",
     ]);
-    expect(hrefsOf(buildPlatformNavGroups(STAFF, ALL_ON))).toContain("/administracion/ejercicios");
-    expect(hrefsOf(buildPlatformNavGroups(STAFF, { ...ALL_ON, exercises: false }))).not.toContain(
-      "/administracion/ejercicios",
-    );
-    // A teacher's menu never carries the student's section, whatever they have.
-    expect(hrefsOf(buildPlatformNavGroups({ ...TEACHER, hasExerciseSource: true }, ALL_ON))).not.toContain(
-      "/ejercicios",
+    expect(labels(STAFF, ALL_OFF)).toEqual(["Administración", "Clases", "Alumnos", "Profesores", "Cursos"]);
+    expect(hrefsOf(buildPlatformApps(STAFF, ALL_ON))).toEqual(
+      expect.arrayContaining([
+        "/administracion/ejercicios",
+        "/administracion/ejercicios/revision",
+        "/administracion/ejercicios/series",
+        "/administracion/ejercicios/importar",
+      ]),
     );
   });
 
-  it("da «Ejercicios» al alumno antes de «Aprender»: a todos, a quien tiene algo ahí, o a nadie", () => {
-    const labels = (features: PlatformNavFeatures, hasExerciseSource?: boolean) =>
-      labelsOf(buildPlatformNavGroups({ ...STUDENT, hasExerciseSource }, { ...ALL_OFF, ...features }));
-    const withItem = ["Ejercicios", "Aprender", "Explorador"];
-    const withoutItem = ["Aprender", "Explorador"];
+  it("el rol más amplio manda: administración sobre profesor, profesor sobre alumno", () => {
+    expect(labels({ isTeacher: true, isStaff: true }, ALL_OFF)).toEqual(labels(STAFF, ALL_OFF));
+    expect(hrefsOf(buildPlatformApps({ ...TEACHER, hasExerciseSource: true }, ALL_ON))).not.toContain("/ejercicios");
+  });
+
+  it("ofrece el explorador al alumno y al profesor, con o sin el tablero", () => {
+    // It is a cross-cutting tool: who sees which games is decided by the
+    // visibility filter, not the menu.
+    for (const features of [ALL_ON, ALL_OFF]) {
+      expect(hrefsOf(buildPlatformApps(STUDENT, features))).toContain("/explorador");
+      expect(hrefsOf(buildPlatformApps(TEACHER, features))).toContain("/explorador");
+    }
+  });
+
+  it("deja fuera lo apagado: «Jugar» sin su interruptor, el entrenador sin el suyo o sin el tablero", () => {
+    expect(hrefsOf(buildPlatformApps(STUDENT, { ...ALL_ON, play: false }))).not.toContain("/jugar");
+    expect(hrefsOf(buildPlatformApps(STUDENT, { ...ALL_ON, trainer: false }))).not.toContain("/entrenador");
+    expect(hrefsOf(buildPlatformApps(STUDENT, { ...ALL_ON, analysisBoard: false }))).not.toContain("/entrenador");
+  });
+
+  it("nunca da «Jugar» al profesor ni a administración", () => {
+    expect(hrefsOf(buildPlatformApps(TEACHER, ALL_ON))).not.toContain("/jugar");
+    expect(hrefsOf(buildPlatformApps(STAFF, ALL_ON))).not.toContain("/jugar");
+  });
+
+  it("da «Ejercicios» al profesor sólo con su interruptor, y nunca su banco a administración", () => {
+    expect(hrefsOf(buildPlatformApps(TEACHER, ALL_ON))).toContain("/profesor/ejercicios");
+    expect(hrefsOf(buildPlatformApps(TEACHER, { ...ALL_ON, exercises: false }))).not.toContain("/profesor/ejercicios");
+    expect(hrefsOf(buildPlatformApps(TEACHER, { ...ALL_ON, exercises: "withTeacher" }))).toContain(
+      "/profesor/ejercicios",
+    );
+    expect(hrefsOf(buildPlatformApps(STAFF, ALL_ON))).not.toContain("/profesor/ejercicios");
+  });
+
+  it("da los ejercicios al alumno: a todos, a quien tiene algo ahí, o a nadie", () => {
+    const has = (features: PlatformNavFeatures, hasExerciseSource?: boolean) =>
+      hrefsOf(buildPlatformApps({ ...STUDENT, hasExerciseSource }, features)).includes("/ejercicios");
 
     // "all": every student, with or without a teacher (phase 4, the library).
-    expect(labels({ ...ALL_OFF, exercises: "all" })).toEqual(withItem);
-    expect(labels({ ...ALL_OFF, exercises: "all" }, false)).toEqual(withItem);
+    expect(has({ ...ALL_OFF, exercises: "all" })).toBe(true);
+    expect(has({ ...ALL_OFF, exercises: "all" }, false)).toBe(true);
     // "withTeacher": only one with an active teacher or a series given (phases 1–3).
-    expect(labels({ ...ALL_OFF, exercises: "withTeacher" }, true)).toEqual(withItem);
-    expect(labels({ ...ALL_OFF, exercises: "withTeacher" }, false)).toEqual(withoutItem);
-    expect(labels({ ...ALL_OFF, exercises: "withTeacher" })).toEqual(withoutItem);
+    expect(has({ ...ALL_OFF, exercises: "withTeacher" }, true)).toBe(true);
+    expect(has({ ...ALL_OFF, exercises: "withTeacher" }, false)).toBe(false);
+    expect(has({ ...ALL_OFF, exercises: "withTeacher" })).toBe(false);
     // Off: nobody, whatever they have.
-    expect(labels({ ...ALL_OFF, exercises: false }, true)).toEqual(withoutItem);
-    expect(hrefsOf(buildPlatformNavGroups({ ...STUDENT, hasExerciseSource: true }, ALL_ON))).toContain("/ejercicios");
+    expect(has({ ...ALL_OFF, exercises: false }, true)).toBe(false);
   });
 
-  it("pregunta a la base por lo del alumno sólo cuando el ítem depende de ello", () => {
+  it("pregunta a la base por lo del alumno sólo cuando el menú depende de ello", () => {
     const withTeacher: PlatformNavFeatures = { ...ALL_OFF, exercises: "withTeacher" };
     expect(needsStudentExerciseAccess(STUDENT, withTeacher)).toBe(true);
     expect(needsStudentExerciseAccess(TEACHER, withTeacher)).toBe(false);
@@ -185,47 +165,42 @@ describe("buildPlatformNavGroups", () => {
   });
 });
 
-describe("activeNavHref", () => {
-  const alumno = buildPlatformNavGroups(STUDENT, ALL_ON);
-  const profesor = buildPlatformNavGroups(TEACHER, ALL_ON);
-  const staff = buildPlatformNavGroups(STAFF, ALL_ON);
+describe("activeApp", () => {
+  const alumno = buildPlatformApps(STUDENT, ALL_ON);
+  const profesor = buildPlatformApps(TEACHER, ALL_ON);
+  const staff = buildPlatformApps(STAFF, ALL_ON);
+  const hrefOf = (apps: PlatformApps, pathname: string) => activeApp(apps, pathname)?.href ?? null;
 
-  it("marca la coincidencia exacta", () => {
-    expect(activeNavHref(alumno, "/jugar")).toBe("/jugar");
+  it("marca la coincidencia exacta, y su nombre es el de la página", () => {
+    expect(activeApp(alumno, "/jugar")?.label).toBe("Jugar");
+    expect(activeApp(profesor, "/profesor/calendario")?.label).toBe("Calendario");
   });
 
-  it("marca el ítem por prefijo en las rutas hijas", () => {
-    expect(activeNavHref(alumno, "/estudios/abc/partidas/xyz")).toBe("/estudios");
+  it("marca la herramienta por prefijo en las rutas hijas", () => {
+    expect(hrefOf(alumno, "/estudios/abc/partidas/xyz")).toBe("/estudios");
+    expect(hrefOf(alumno, "/herramientas/tablero-de-analisis")).toBe("/herramientas/tablero-de-analisis");
   });
 
-  it("encuentra una herramienta dentro de su desplegable", () => {
-    expect(activeNavHref(alumno, "/herramientas/tablero-de-analisis")).toBe("/herramientas/tablero-de-analisis");
-    expect(activeNavHref(profesor, "/explorador")).toBe("/explorador");
+  it("se queda con la coincidencia más larga y no enciende dos herramientas", () => {
+    expect(hrefOf(profesor, "/profesor/alumnos/abc")).toBe("/profesor/alumnos");
+    expect(hrefOf(profesor, "/profesor")).toBe("/profesor");
+    expect(hrefOf(profesor, "/profesor/ejercicios/abc")).toBe("/profesor/ejercicios");
+    expect(hrefOf(alumno, "/ejercicios/series/abc/2")).toBe("/ejercicios");
+    expect(hrefOf(alumno, "/ejercicios/temas")).toBe("/ejercicios/temas");
+    expect(hrefOf(staff, "/administracion/cursos/abc/capitulos/def")).toBe("/administracion/cursos");
+    expect(hrefOf(staff, "/administracion/ejercicios/revision")).toBe("/administracion/ejercicios/revision");
+    expect(hrefOf(staff, "/administracion/ejercicios/abc")).toBe("/administracion/ejercicios");
   });
 
-  it("se queda con la coincidencia más larga y no enciende dos ítems", () => {
-    expect(activeNavHref(profesor, "/profesor/alumnos")).toBe("/profesor/alumnos");
-    expect(activeNavHref(profesor, "/profesor/alumnos/abc")).toBe("/profesor/alumnos");
-    expect(activeNavHref(profesor, "/profesor")).toBe("/profesor");
-    expect(activeNavHref(profesor, "/profesor/ejercicios/abc")).toBe("/profesor/ejercicios");
-    expect(activeNavHref(alumno, "/ejercicios/series/abc/2")).toBe("/ejercicios");
-    expect(activeNavHref(alumno, "/ejercicios/temas")).toBe("/ejercicios/temas");
-    expect(activeNavHref(staff, "/administracion/cursos/abc/capitulos/def")).toBe("/administracion/cursos");
-  });
-
-  it("no marca nada fuera de la plataforma", () => {
-    expect(activeNavHref(alumno, "/iniciar-sesion")).toBeNull();
-  });
-
-  it("marca los estudios y los cursos del profesor en su «Aprender», y nada de las secciones del alumno", () => {
-    expect(activeNavHref(profesor, "/estudios/abc")).toBe("/estudios");
-    expect(activeNavHref(profesor, "/cursos")).toBe("/cursos");
-    expect(activeNavHref(profesor, "/clases/abc")).toBeNull();
-    expect(activeNavHref(profesor, "/ejercicios")).toBeNull();
+  it("no marca nada fuera de la plataforma ni lo que no es del rol", () => {
+    expect(activeApp(alumno, "/iniciar-sesion")).toBeNull();
+    expect(activeApp(alumno, "/inicio")).toBeNull();
+    expect(activeApp(profesor, "/clases/abc")).toBeNull();
+    expect(activeApp(profesor, "/ejercicios")).toBeNull();
   });
 
   it("no confunde un prefijo textual con una ruta hija", () => {
     // "/profesor" must not light up on "/profesorado".
-    expect(activeNavHref(profesor, "/profesorado")).toBeNull();
+    expect(activeApp(profesor, "/profesorado")).toBeNull();
   });
 });

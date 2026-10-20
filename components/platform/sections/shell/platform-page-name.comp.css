@@ -1,0 +1,15 @@
+.platform-page-name {
+  flex: none;
+  padding-left: var(--platform-space-4);
+  box-shadow: inset 1px 0 0 var(--platform-border);
+  font-family: var(--platform-font-display);
+  font-size: var(--platform-type-xl);
+  font-weight: 500;
+  color: var(--platform-text);
+  white-space: nowrap;
+
+  /* On a phone the bar keeps the wordmark and the two buttons. */
+  @media (width < 640px) {
+    display: none;
+  }
+}
