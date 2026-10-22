@@ -17,6 +17,19 @@
      centred: the wordmark sits at the left edge of the screen and the user
      at the right, and the bar reads as the frame of the window and not as
      one more column of the page. */
+  /* A page moved to the new design system (`.platform-workspace`, in
+     platform.css) lies on Material 3's canvas, and the bar is that canvas
+     too, with no line under it: bar, side column and canvas read as one
+     ground, and the page's white panel as the only thing on it. */
+  &:has(.platform-workspace) {
+    background: var(--platform-m3-canvas);
+
+    & .platform-shell__bar {
+      background: var(--platform-m3-canvas);
+      box-shadow: none;
+    }
+  }
+
   & .platform-shell__bar-inner {
     padding: 0 var(--platform-space-4) 0 var(--platform-space-6);
     height: 70px;

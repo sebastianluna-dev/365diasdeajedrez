@@ -3,11 +3,12 @@ import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
-// The platform rounds a corner in one of three ways: 8px, 4px on a control
-// too small for 8, or all the way. A card, a button, a field, a tag, a
-// dialog: none of them decides a radius of its own, so a stylesheet never has
-// to. This reads every stylesheet of the platform and fails on the first
-// value that is none of the three.
+// The platform rounds a corner in one of a few fixed ways: 8px, 4px on a
+// control too small for 8, all the way, and — for the new design system,
+// Material 3 (2026-10-22) — 12px for a card, 16px for a panel or an extended
+// button and 24px for a block that stands out inside a panel. None of them
+// decides a radius of its own, so a stylesheet never has to. This reads every
+// stylesheet of the platform and fails on the first value out of the list.
 
 const ROOT = fileURLToPath(new URL("../../", import.meta.url));
 
@@ -17,6 +18,15 @@ const ROOT = fileURLToPath(new URL("../../", import.meta.url));
  * platform's tokens and are what a lesson is made of, so they follow its rule.
  */
 const PLATFORM_STYLES = ["app/(platform)", "app/(auth)", "components/platform", "components/auth", "components/chess"];
+
+/**
+ * Material 3's three larger corners (2026-10-22), each for one kind of thing
+ * on the pages moved to the new design system: 12px a card (`MyCourseCard`),
+ * 16px the white panel of `.platform-workspace`, an extended button and a
+ * picture inside a block, 24px a block that stands out inside the panel
+ * («Sigue donde ibas», the streak's band).
+ */
+const MATERIAL_3 = ["12px", "16px", "24px"];
 
 /**
  * What a corner can be: 8px; 4px, and ONLY on a control of about 20px or
@@ -29,7 +39,7 @@ const PLATFORM_STYLES = ["app/(platform)", "app/(auth)", "components/platform", 
  * it: a stylesheet that reaches for it on anything of a normal size is
  * deciding a radius, which is what this rule is here to prevent.
  */
-const ALLOWED = new Set(["8px", "4px", "1000px", "50%", "0", "inherit"]);
+const ALLOWED = new Set(["8px", "4px", "1000px", "50%", "0", "inherit", ...MATERIAL_3]);
 
 const DECLARATION = /border(?:-[a-z]+)*-radius:\s*([^;]+);/g;
 
@@ -59,7 +69,7 @@ describe("the platform's corners", () => {
     expect(PLATFORM_STYLES.flatMap((directory) => stylesheetsOf(join(ROOT, directory))).length).toBeGreaterThan(50);
   });
 
-  it("are 8px, 4px on a tiny control, or all the way — and nothing else", () => {
+  it("are 8px, 4px on a tiny control, all the way or one of Material 3's three — and nothing else", () => {
     expect(offendersOf(PLATFORM_STYLES)).toEqual([]);
   });
 });

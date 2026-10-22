@@ -54,6 +54,7 @@ const meta: MetaRecord = {
   "platform-actions-menu": "PlatformActionsMenu",
   "platform-search-field": "PlatformSearchField",
   "platform-select": "PlatformSelect",
+  "platform-side-nav": "PlatformSideNav",
   "platform-switch": "PlatformSwitch",
   "platform-tabs": "PlatformTabs",
   "platform-table": "PlatformTable",

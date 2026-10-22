@@ -194,6 +194,34 @@
   --platform-ring-tricolor-white: light-dark(#ddd6cb, #f3efe9);
   --platform-ring-tricolor-red: light-dark(#ce1126, #ff6b6f);
 
+  /* MATERIAL 3 (2026-10-22): the roles of Google's Material 3 baseline, as
+     Gmail and Drive draw it, for the pages already moved to the new design
+     system (`.platform-workspace`, see below). A blue-grey canvas under the
+     bar and the side column, the page on a white panel, and the primary in
+     Google's blue instead of the accent's red. The pages not yet moved keep
+     the tokens above; a page is moved whole, never half. */
+  --platform-m3-canvas: light-dark(#f8fafd, #131314);
+  --platform-m3-panel: light-dark(#ffffff, #1e1f20);
+  --platform-m3-container: light-dark(#f0f4f9, #282a2c);
+  --platform-m3-container-high: light-dark(#e9eef6, #333537);
+  --platform-m3-on-surface: light-dark(#1f1f1f, #e3e3e3);
+  --platform-m3-on-surface-variant: light-dark(#444746, #c4c7c5);
+  --platform-m3-outline: light-dark(#747775, #8e918f);
+  --platform-m3-outline-variant: light-dark(#c4c7c5, #444746);
+  --platform-m3-primary: light-dark(#0b57d0, #a8c7fa);
+  --platform-m3-primary-hover: light-dark(#0a4cb8, #bcd4fb);
+  --platform-m3-on-primary: light-dark(#ffffff, #062e6f);
+  --platform-m3-primary-container: light-dark(#c2e7ff, #004a77);
+  --platform-m3-on-primary-container: light-dark(#001d35, #c2e7ff);
+  --platform-m3-secondary-container: light-dark(#d3e3fd, #0842a0);
+  --platform-m3-on-secondary-container: light-dark(#041e49, #d3e3fd);
+  --platform-m3-success: light-dark(#188038, #6dd58c);
+  /* The streak's grid, the more done the deeper: Google's blue in four steps. */
+  --platform-m3-heat-0: light-dark(#b5cdf5, #2d3f5c);
+  --platform-m3-heat-1: light-dark(#7cacf8, #3d6bb3);
+  --platform-m3-heat-2: light-dark(#4285f4, #6f9be8);
+  --platform-m3-heat-3: light-dark(#0b57d0, #a8c7fa);
+
   /* Typography. The whole platform uses SF Pro Display — display and text —;
      Gramatika and Suisse Intl stay on the public site. A single token so that
      no file of the private area names a specific font. */
@@ -514,6 +542,65 @@ html body.platform-theme[data-scroll-locked] {
 @media (height < 800px) {
   :root:has(.platform-page_frame_bleed) {
     overflow: visible;
+  }
+}
+
+/**
+ * THE WORKSPACE (2026-10-22, the new design system, Material 3 as Gmail and
+ * Drive draw it): the page bleeds to the window on the blue-grey canvas,
+ * which the bar takes too (platform-shell.section.css); at the left a column
+ * with the page's own things — its main action and its views, a
+ * `PlatformSideNav` —, never the platform's navigation, which is the tools
+ * menu; and the page itself on a white panel with rounded corners. Under
+ * 1024px the column goes above the panel.
+ */
+.platform-workspace {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--platform-space-2);
+  min-height: calc(100vh - 70px);
+  padding: 0 var(--platform-space-4) var(--platform-space-4) var(--platform-space-2);
+  box-sizing: border-box;
+  background: var(--platform-m3-canvas);
+  color: var(--platform-m3-on-surface);
+
+  & .platform-workspace__side {
+    position: sticky;
+    top: 70px;
+    flex: none;
+    width: 256px;
+  }
+
+  & .platform-workspace__panel {
+    flex: 1;
+    min-width: 0;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-6);
+    padding: var(--platform-space-6);
+    border-radius: 16px;
+    background: var(--platform-m3-panel);
+    box-sizing: border-box;
+  }
+
+  @media (width < 1024px) {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0 var(--platform-space-4) var(--platform-space-4);
+
+    & .platform-workspace__side {
+      position: static;
+      width: auto;
+    }
+  }
+
+  @media (width < 640px) {
+    padding: 0 var(--platform-space-2) var(--platform-space-2);
+
+    & .platform-workspace__panel {
+      padding: var(--platform-space-4);
+    }
   }
 }
 
@@ -914,6 +1001,83 @@ html body.platform-theme[data-scroll-locked] {
   color: var(--platform-text-faint);
 }
 
+/* MATERIAL 3 (2026-10-22): the buttons of the pages moved to the new design
+   system (`.platform-workspace`), each a pill as Material 3 draws them, in the
+   same three heights. THE PRIMARY in Google's blue, the one reason of the
+   screen; THE TONAL in the primary's container, a step under it; THE OUTLINED
+   with only its outline, beside a primary; THE TEXT one with no box at all,
+   the action of a card or a row. On those pages they take the place of the
+   accent, soft and quiet ones; the pages not yet moved keep those. */
+.platform-button_variant_primary,
+.platform-button_variant_tonal,
+.platform-button_variant_outlined,
+.platform-button_variant_text {
+  border-radius: 1000px;
+  box-shadow: none;
+}
+
+.platform-button_variant_primary {
+  background: var(--platform-m3-primary);
+  color: var(--platform-m3-on-primary);
+}
+
+.platform-button_variant_primary:hover {
+  background: var(--platform-m3-primary-hover);
+  color: var(--platform-m3-on-primary);
+}
+
+.platform-button_variant_primary:active {
+  background: color-mix(in srgb, var(--platform-m3-on-primary) 12%, var(--platform-m3-primary));
+}
+
+.platform-button_variant_primary:disabled {
+  background: color-mix(in srgb, var(--platform-m3-primary) 40%, var(--platform-m3-panel));
+  color: var(--platform-m3-on-primary);
+}
+
+.platform-button_variant_tonal {
+  background: var(--platform-m3-primary-container);
+  color: var(--platform-m3-on-primary-container);
+}
+
+.platform-button_variant_tonal:hover {
+  background: color-mix(in srgb, var(--platform-m3-on-primary-container) 8%, var(--platform-m3-primary-container));
+  color: var(--platform-m3-on-primary-container);
+}
+
+.platform-button_variant_tonal:active {
+  background: color-mix(in srgb, var(--platform-m3-on-primary-container) 14%, var(--platform-m3-primary-container));
+}
+
+.platform-button_variant_outlined {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--platform-m3-outline);
+  color: var(--platform-m3-primary);
+}
+
+.platform-button_variant_text {
+  background: transparent;
+  color: var(--platform-m3-primary);
+}
+
+.platform-button_variant_outlined:hover,
+.platform-button_variant_text:hover {
+  background: color-mix(in srgb, var(--platform-m3-primary) 8%, transparent);
+  color: var(--platform-m3-primary);
+}
+
+.platform-button_variant_outlined:active,
+.platform-button_variant_text:active {
+  background: color-mix(in srgb, var(--platform-m3-primary) 14%, transparent);
+}
+
+.platform-button_variant_tonal:disabled,
+.platform-button_variant_outlined:disabled,
+.platform-button_variant_text:disabled {
+  background: transparent;
+  color: var(--platform-m3-outline);
+}
+
 /* THE ICON'S INK. A neutral icon on white is drawn in the muted grey, a step
    under its word: in the word's ink an icon, solid and compact, weighed more
    than the word beside it (2026-10-07, when the board's keys read black). It
@@ -929,7 +1093,11 @@ html body.platform-theme[data-scroll-locked] {
 .platform-button_variant_soft > .platform-button__icon,
 .platform-button_variant_ink > .platform-button__icon,
 .platform-button_variant_danger > .platform-button__icon,
-.platform-button_variant_quiet > .platform-button__icon {
+.platform-button_variant_quiet > .platform-button__icon,
+.platform-button_variant_primary > .platform-button__icon,
+.platform-button_variant_tonal > .platform-button__icon,
+.platform-button_variant_outlined > .platform-button__icon,
+.platform-button_variant_text > .platform-button__icon {
   color: inherit;
 }
 

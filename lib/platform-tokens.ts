@@ -251,6 +251,19 @@ export const TEXT_PAIRS: readonly (readonly [text: string, background: string])[
   ["text", "selection-wash"],
   // A portrait's initials on each of its six tones.
   ...[1, 2, 3, 4, 5, 6].map((tone) => ["on-avatar", `avatar-${tone}`] as const),
+  // Material 3 (the new design system): its two inks on its canvas, panel
+  // and containers, the primary as ink on the white and on the container, and
+  // each «on» role on its own fill.
+  ...["m3-on-surface", "m3-on-surface-variant"].flatMap((text) =>
+    ["m3-canvas", "m3-panel", "m3-container", "m3-container-high"].map((background) => [text, background] as const),
+  ),
+  ["m3-primary", "m3-panel"],
+  ["m3-primary", "m3-container"],
+  ["m3-success", "m3-panel"],
+  ["m3-on-primary", "m3-primary"],
+  ["m3-on-primary", "m3-primary-hover"],
+  ["m3-on-primary-container", "m3-primary-container"],
+  ["m3-on-secondary-container", "m3-secondary-container"],
 ];
 
 /**
@@ -273,6 +286,7 @@ export const COLOUR_GROUPS: readonly { name: string; pattern: RegExp }[] = [
   { name: "Ink", pattern: /^(ink|on-ink|accent-on-ink)$/ },
   { name: "Levels", pattern: /^level-[0-9]+$/ },
   { name: "Avatar", pattern: /^(avatar-[0-9]+|on-avatar|ring(-[a-z]+)+)$/ },
+  { name: "Material 3", pattern: /^m3-[a-z0-9-]+$/ },
 ];
 
 export interface ColourGroup {

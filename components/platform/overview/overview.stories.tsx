@@ -130,6 +130,7 @@ import { CopyLinkButton } from "@/components/platform/shared/copy-link-button/co
 import { FilterPills } from "@/components/platform/shared/filter-pills/filter-pills.comp";
 import { PlatformActionsMenu } from "@/components/platform/shared/platform-actions-menu/platform-actions-menu.comp";
 import { PlatformSearchField } from "@/components/platform/shared/platform-search-field/platform-search-field.comp";
+import { PlatformSideNav } from "@/components/platform/shared/platform-side-nav/platform-side-nav.comp";
 import { ClassSlotFields } from "@/components/platform/shared/class-slot-fields/class-slot-fields.comp";
 import { RegisterPaymentButton } from "@/components/platform/shared/register-payment-popup/register-payment-popup.comp";
 import { ScheduleSeatPopup } from "@/components/platform/shared/schedule-seat-popup/schedule-seat-popup.comp";
@@ -1821,6 +1822,29 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                     label: "Hoy · miércoles 14 de octubre",
                     isToday: true,
                     rows: [OVERVIEW_CLASS_ROW],
+                  },
+                ]}
+              />
+            </Tile>
+            <Tile name="PlatformSideNav" docs="platform-shared-platformsidenav" width={280} height={400}>
+              <PlatformSideNav
+                label="Cursos"
+                action={{ label: "Seguir donde iba", href: "#continuar" }}
+                groups={[
+                  {
+                    title: "Tus cursos",
+                    links: [
+                      { label: "Todos", href: "?", count: 4, icon: "graduation-cap", current: true },
+                      { label: "En curso", href: "?estado=en-curso", count: 2, icon: "play" },
+                      { label: "Completados", href: "?estado=completados", count: 1, icon: "circle-check" },
+                    ],
+                  },
+                  {
+                    title: "Catálogo",
+                    links: [
+                      { label: "Todo el catálogo", href: "/cursos/explorar", count: 10, icon: "book-open" },
+                      { label: "Principiante", href: "/cursos/explorar?nivel=principiante", count: 3, level: 1 },
+                    ],
                   },
                 ]}
               />

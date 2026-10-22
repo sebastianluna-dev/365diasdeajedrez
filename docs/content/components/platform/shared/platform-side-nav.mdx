@@ -1,0 +1,55 @@
+---
+description: "The side column of a page moved to the new design system (Material 3): the page's main action as an extended button, and its views in groups of links with counts, the current one lit."
+---
+
+# `PlatformSideNav`
+
+|            |                                                                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/shared/platform-side-nav/platform-side-nav.comp.tsx`                                                      |
+| Kind       | Server Component                                                                                                               |
+| Stylesheet | `platform-side-nav.comp.css` → block `.platform-side-nav`                                                                      |
+| Story      | `platform-side-nav.stories.tsx` (`platform/shared/PlatformSideNav`): «Cursos» with its action, another view current, no action |
+| Used by    | «Mis cursos» (`MyCoursesSection`), the first page moved to the new design system (2026-10-22)                                  |
+| Uses       | `next/link`; `PlayIcon`, `GraduationCapIcon`, `CircleCheckIcon`, `ClockIcon`, `BookOpenIcon`                                   |
+
+## Purpose
+
+The left column of a `.platform-workspace` page, as Gmail draws its labels: what the page offers — its main action, its views, its catalog — never the platform's navigation, which is the tools menu of the bar. A view lives in the address, so a link is the right element: it can be shared and the back button undoes it, as with [`FilterPills`](/components/platform/shared/filter-pills).
+
+## Props
+
+| Prop     | Type                                                | Required | Meaning                                                        |
+| -------- | --------------------------------------------------- | -------- | -------------------------------------------------------------- |
+| `label`  | `string`                                            | yes      | The nav's accessible name.                                     |
+| `action` | `{ label: string; href: string }`                   | no       | The page's main action, drawn as Material 3's extended button. |
+| `groups` | `{ title: string; links: PlatformSideNavLink[] }[]` | yes      | The views, in groups.                                          |
+
+A `PlatformSideNavLink` is `{ label, href, count?, current?, icon?, level? }`. `icon` is a name (`"play"`, `"graduation-cap"`, `"circle-check"`, `"clock"`, `"book-open"`), never a component: the component receives data and draws the icon itself. `level` replaces the icon with a dot in a course level's colour (`--platform-level-1` … `-6`).
+
+## Behaviour
+
+A `<nav aria-label>` with the action on top and a list per group. The current link carries `aria-current="page"`, is lit in the secondary container and draws its icon solid; the rest draw it in Duotone Light. Under 1024px the column sits above the panel and its groups go side by side.
+
+## Markup & styling
+
+Block `.platform-side-nav`.
+
+**Elements:** `__action`, `__action-icon`, `__group`, `__title`, `__list`, `__link`, `__icon`, `__level`, `__label`, `__count`
+
+**Modifiers and states:** `.platform-side-nav__link_state_current`, `.platform-side-nav__level_tone_{1…6}`
+
+**Tokens:** the `--platform-m3-*` roles (`on-surface`, `on-surface-variant`, `primary`, `primary-container`, `on-primary-container`, `secondary-container`, `on-secondary-container`, `container-high`) and `--platform-level-*`.
+
+The transitions fade colours only.
+
+## Usage
+
+```tsx
+<div className="platform-workspace">
+  <div className="platform-workspace__side">
+    <PlatformSideNav label="Cursos" action={{ label: "Seguir donde iba", href: lessonHref }} groups={groups} />
+  </div>
+  <section className="platform-workspace__panel">…</section>
+</div>
+```
