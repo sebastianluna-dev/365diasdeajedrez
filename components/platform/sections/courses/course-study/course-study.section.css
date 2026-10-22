@@ -1,11 +1,44 @@
 .course-study {
-  /* The toolbar: back to «Tus cursos», and the trail. */
+  /* The toolbar stays under the bar while the page scrolls, as Gmail's: it
+     spans the panel, on the panel's white, its top corners the panel's.
+     Under 1024px the bar is no longer one row of 70px, and it scrolls away
+     with the page. */
   & .course-study__toolbar {
+    position: sticky;
+    top: 70px;
+    z-index: 2;
     display: flex;
     align-items: center;
-    gap: var(--platform-space-2);
-    margin: calc(-1 * var(--platform-space-2)) 0 calc(-1 * var(--platform-space-2)) calc(-1 * var(--platform-space-2));
-    min-width: 0;
+    gap: var(--platform-space-4);
+    margin: calc(-1 * var(--platform-space-6)) calc(-1 * var(--platform-space-6)) 0;
+    padding: var(--platform-space-2) var(--platform-space-6) var(--platform-space-2) var(--platform-space-4);
+    isolation: isolate;
+
+    /* Its white, with the panel's top corners, drawn over a strip of the
+       canvas: once stuck, what scrolls under it does not show through the
+       corners. */
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+    }
+
+    &::before {
+      bottom: auto;
+      height: var(--md-sys-shape-corner-lg);
+      background: var(--platform-m3-canvas);
+    }
+
+    &::after {
+      border-radius: var(--md-sys-shape-corner-lg) var(--md-sys-shape-corner-lg) 0 0;
+      background: var(--platform-m3-panel);
+    }
+
+    @media (width < 1024px) {
+      position: static;
+    }
   }
 
   & .course-study__crumb {

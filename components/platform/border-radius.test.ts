@@ -56,7 +56,7 @@ function offendersOf(directories: readonly string[]): string[] {
     .flatMap((path) =>
       [...readFileSync(path, "utf8").matchAll(DECLARATION)]
         .map((match) => match[1]?.trim() ?? "")
-        .filter((value) => !MATERIAL_SHAPE.test(value) && value.split(/\s+/).some((corner) => !ALLOWED.has(corner)))
+        .filter((value) => value.split(/\s+/).some((corner) => !ALLOWED.has(corner) && !MATERIAL_SHAPE.test(corner)))
         .map((value) => `${relative(ROOT, path)}: ${value}`),
     );
 }

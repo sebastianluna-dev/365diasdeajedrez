@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import {
-  ChapterStudySection,
-  chapterLessonsViewOf,
-} from "@/components/platform/sections/courses/course-study/chapter-study.section";
+import { ChapterStudySection } from "@/components/platform/sections/courses/course-study/chapter-study.section";
 import { isCourseId } from "@/services/courses/course-rules";
 import { getChapterView } from "@/services/courses/courses.service";
 
 interface ChapterPageProps {
   /** The course by its id: a chapter is part of the course to study, never of its information page. */
   params: Promise<{ courseRef: string; chapterOrder: string }>;
-  /** `lecciones`: the tab (`por-aprender`, `aprendidas`; none is «Todas»); `error`: what a setting bounced back with. */
-  searchParams: Promise<{ error?: string; lecciones?: string }>;
+  searchParams: Promise<{ error?: string }>;
 }
 
 /** The chapter of the URL, or null when the URL is not one of a chapter. */
@@ -29,7 +25,7 @@ export async function generateMetadata({ params }: ChapterPageProps): Promise<Me
 
 export default async function ChapterPage({ params, searchParams }: ChapterPageProps) {
   const { courseRef, chapterOrder } = await params;
-  const [chapter, { error, lecciones }] = await Promise.all([chapterOf(courseRef, chapterOrder), searchParams]);
+  const [chapter, { error }] = await Promise.all([chapterOf(courseRef, chapterOrder), searchParams]);
   if (!chapter) notFound();
 
   // The same border as the course's page: it is studied once it is added.
@@ -39,7 +35,7 @@ export default async function ChapterPage({ params, searchParams }: ChapterPageP
     // The new design system (2026-10-22): the page takes the window and
     // bleeds onto the canvas; the section draws the workspace.
     <div className="platform-page platform-page_width_full platform-page_frame_bleed chapter-page">
-      <ChapterStudySection chapter={chapter} view={chapterLessonsViewOf(lecciones)} errorCode={error} />
+      <ChapterStudySection chapter={chapter} errorCode={error} />
     </div>
   );
 }

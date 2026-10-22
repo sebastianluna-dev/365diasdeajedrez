@@ -1,10 +1,8 @@
 ---
-description: "A chapter of a course being studied, in the new design system: the course's side column with it lit, a toolbar with its neighbours, Material's tabs and its lessons as rows, as Gmail lists mail."
+description: "A chapter of a course being studied, in the new design system: the course's side column with it lit, a toolbar with its neighbours that stays under the bar, and its lessons as rows, as Gmail lists mail."
 ---
 
 # `ChapterStudySection`
-
-Also exports `chapterLessonsViewOf(value)`, the tab an address asks for (`?lecciones=por-aprender` or `aprendidas`; anything else is «Todas»).
 
 |            |                                                                                                                                                 |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -14,7 +12,7 @@ Also exports `chapterLessonsViewOf(value)`, the tab an address asks for (`?lecci
 | Used by    | `/cursos/[courseRef]/[chapterOrder]` (`platform-page_width_full` + `_frame_bleed`)                                                              |
 | Composes   | [`CourseSide`](/components/platform/sections/courses/course-study/course-side), [`PlatformNotice`](/components/platform/shared/platform-notice) |
 | Reads      | `getChapterView(courseId, order)` · `services/courses/courses.service.ts` (the page)                                                            |
-| Uses       | `mdIconButton`, `mdTabs`, `mdTab` · `lib/material/material-classes.ts`; `formatDuration`; `studentErrorMessage`                                 |
+| Uses       | `mdIconButton` · `lib/material/material-classes.ts`; `formatDuration`; `studentErrorMessage`                                                    |
 
 ## Purpose
 
@@ -22,32 +20,30 @@ Also exports `chapterLessonsViewOf(value)`, the tab an address asks for (`?lecci
 
 ## Props
 
-| Prop        | Type                 | Required | Meaning                                                              |
-| ----------- | -------------------- | -------- | -------------------------------------------------------------------- |
-| `chapter`   | `ChapterView`        | yes      | The chapter, its lessons, its neighbours and the course around it.   |
-| `view`      | `ChapterLessonsView` | yes      | The tab (`chapterLessonsViewOf(lecciones)`); `undefined` is «Todas». |
-| `errorCode` | `string`             | no       | What a setting bounced back with: a `PlatformNotice` on the panel.   |
+| Prop        | Type          | Required | Meaning                                                            |
+| ----------- | ------------- | -------- | ------------------------------------------------------------------ |
+| `chapter`   | `ChapterView` | yes      | The chapter, its lessons, its neighbours and the course around it. |
+| `errorCode` | `string`      | no       | What a setting bounced back with: a `PlatformNotice` on the panel. |
 
 ## Behaviour
 
 The panel, from top to bottom:
 
-1. **A toolbar**: Material's icon button and the course's name back to the course, «Capítulo N · name» as the trail's current step; at the right «Capítulo N de M» and the arrows to the chapters before and after (named after them; switched off at either end).
-2. **Material's tabs** (`tabs`, `tab`, `selected`, links with `aria-current`): «Todas», «Por aprender» and «Aprendidas», each with its count, as `?lecciones=`.
-3. **The chapter**: its name, and its description when the staff wrote one.
-4. **Its lessons, as rows** (as Gmail lists mail), the whole row the link: an icon that says where the lesson is — learned (the success green's check), the next one «Aprender» opens (the primary's play, the row on the container, and a «Siguiente» label), or still to come (a clock) —, its name, in bold while it is still to learn, the moves of its game with how it ended (one line, cut where the row ends; a diagram's description instead), and its labels: «Prioritaria» and its length. The columns are the same on every row (the labels' one fixed at 180px), so the moves start at the same place down the list.
-5. **At the foot**, the chapters before and after by name.
+1. **A toolbar**: Material's icon button and the course's name back to the course, «Capítulo N · name» as the trail's current step; at the right «Capítulo N de M» and the arrows to the chapters before and after (named after them; switched off at either end). It **stays under the bar** while the page scrolls, as Gmail's (`position: sticky; top: 70px`), spanning the panel on its white with the panel's top corners, drawn over a strip of the canvas so nothing scrolling under it shows through the corners; under 1024px, where the bar is no longer one row of 70px, it scrolls away.
+2. **The chapter**: its name, and its description when the staff wrote one.
+3. **Its lessons, as rows** (as Gmail lists mail), the whole row the link: an icon that says where the lesson is — learned (the success green's check), the next one «Aprender» opens (the primary's play, the row on the container, and a «Siguiente» label), or still to come (a clock) —, its name, in bold while it is still to learn, the moves of its game with how it ended (one line, cut where the row ends; a diagram's description instead), and its labels: «Prioritaria» and its length. The columns are the same on every row (the labels' one fixed at 180px), so the moves start at the same place down the list.
+4. **At the foot**, the chapters before and after by name.
 
-With no lessons it says why — none marked as priority with the filter on, or none yet —, and a tab with nothing in it says so.
+With no lessons it says why: none marked as priority with the filter on, or none yet. The tabs that filtered the lessons («Todas», «Por aprender», «Aprendidas») went on 2026-10-22, the day they came: a chapter has few lessons.
 
 ## Markup & styling
 
-Block `.chapter-study` (262 lines), set on `.platform-workspace__panel`.
+Block `.chapter-study` (272 lines), set on `.platform-workspace__panel`.
 
-**Elements:** `__toolbar`, `__trail`, `__steps`, `__crumb`, `__crumb-step`, `__crumb-here`, `__position`, `__tabs`, `__tab-count`, `__head`, `__name`, `__about`, `__empty`, `__lessons`, `__lesson`, `__status`, `__status-icon`, `__status-label`, `__lesson-name`, `__next`, `__moves`, `__labels`, `__label`, `__pager`, `__pager-link`, `__pager-icon`
+**Elements:** `__toolbar`, `__trail`, `__steps`, `__crumb`, `__crumb-step`, `__crumb-here`, `__position`, `__head`, `__name`, `__about`, `__empty`, `__lessons`, `__lesson`, `__status`, `__status-icon`, `__status-label`, `__lesson-name`, `__next`, `__moves`, `__labels`, `__label`, `__pager`, `__pager-link`, `__pager-icon`
 
 **Modifiers:** `__lesson_state_{done,next,later}`, `__step_state_off`
 
-**Other classes it renders:** Material's `tabs`, `tab focus-ring-inner ripple selected`, `icon-btn …`.
+**Other classes it renders:** Material's `icon-btn …`.
 
 **Breakpoints:** `(width < 1024px)` puts the moves on a second line of the row.

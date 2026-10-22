@@ -11,4 +11,3 @@ import "@material/web/labs/gb/components/card/card.css";
 import "@material/web/labs/gb/components/chip/chip.css";
 import "@material/web/labs/gb/components/fab/fab.css";
 import "@material/web/labs/gb/components/iconbutton/icon-button.css";
-import "@material/web/labs/gb/components/tabs/tabs.css";

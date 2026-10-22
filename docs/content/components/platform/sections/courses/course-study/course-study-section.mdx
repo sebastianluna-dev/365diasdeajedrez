@@ -31,7 +31,7 @@ Since 2026-10-22 it is drawn in the new design system («M4» of the owner's can
 
 The panel, from top to bottom:
 
-1. **A toolbar**: Material's icon button and «Tus cursos» back to `/cursos`, and the course's name as the trail's current step.
+1. **A toolbar**: Material's icon button and «Tus cursos» back to `/cursos`, and the course's name as the trail's current step. It stays under the bar while the page scrolls, as the chapter's does (see [`ChapterStudySection`](/components/platform/sections/courses/course-study/chapter-study-section)).
 2. **The course**: its picture (the cover, or the square picture, at 16:10 with 16 corners), its name in the display font, a line with its authors, its levels (`levelSpan`), its topics and its chapters, its progress (`WavyProgress`, large, with the percentage), and its buttons — «Continuar», «Empezar» or «Repasar» (`ctaLabel`, Material's filled button, 56px) to `learnHref`; «Repasar N» (outlined) when the Move Trainer has something due, or switched off as «Repasar · Al día» when it is up to date. A course without lessons in view draws no progress and no «Aprender».
 3. **Its chapters**: a heading with «N de M lecciones aprendidas», and one card per chapter (Material's outlined card, the whole card the link): «Capítulo N», «Prioridad» when the staff marked it, its state — «Aprendido», «Siguiente» (the first not learned, where «Aprender» leads; it stands on the container, without outline), «En curso» or «Por empezar» —, its name, its description (two lines), its progress, and at the foot its count and what pressing it does («Repasar», «Seguir», «Empezar»).
 
@@ -39,7 +39,7 @@ A chapter's count is of the lessons the student **sees**: with only the priority
 
 ## Markup & styling
 
-Block `.course-study` (249 lines), set on `.platform-workspace__panel`.
+Block `.course-study` (282 lines), set on `.platform-workspace__panel`.
 
 **Elements:** `__toolbar`, `__crumb`, `__crumb-step`, `__crumb-here`, `__hero`, `__cover`, `__cover-image`, `__heading`, `__name`, `__about`, `__meter`, `__percent`, `__actions`, `__list`, `__list-head`, `__list-title`, `__count`, `__chapters`, `__item`, `__chapter`, `__chapter-head`, `__eyebrow`, `__tag`, `__state`, `__chapter-name`, `__chapter-about`, `__chapter-meter`, `__chapter-foot`, `__chapter-action`, `__chapter-chevron`
 
