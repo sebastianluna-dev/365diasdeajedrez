@@ -30,8 +30,20 @@
     }
   }
 
+  /* The page's drawing and name take the wordmark's place, as a Google
+     product names itself; where no tool names the page (a lesson), the
+     wordmark stays. */
+  & .platform-shell__bar-inner:has(.platform-page-name) .platform-shell__logo {
+    display: none;
+  }
+
+  /* The three bars only where there is a side column to hide. */
+  &:not(:has(.platform-workspace__side)) .platform-side-toggle {
+    display: none;
+  }
+
   & .platform-shell__bar-inner {
-    padding: 0 var(--platform-space-4) 0 var(--platform-space-6);
+    padding: 0 var(--platform-space-4) 0 var(--platform-space-4);
     height: 70px;
     display: flex;
     align-items: center;

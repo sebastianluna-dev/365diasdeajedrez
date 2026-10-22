@@ -571,6 +571,11 @@ html body.platform-theme[data-scroll-locked] {
     width: 256px;
   }
 
+  /* The bar's three bars hid it (`PlatformSideToggle`): the panel takes the room. */
+  :root[data-side-nav="hidden"] & .platform-workspace__side {
+    display: none;
+  }
+
   & .platform-workspace__panel {
     flex: 1;
     min-width: 0;

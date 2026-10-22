@@ -5,6 +5,8 @@ const meta: MetaRecord = {
   "platform-apps-menu": "PlatformAppsMenu",
   "nav-art": "NavArt",
   "platform-page-name": "PlatformPageName",
+  "platform-side-toggle": "PlatformSideToggle",
+  "platform-streak-chip": "PlatformStreakChip",
   "platform-header-context": "PlatformHeaderContext",
   "platform-user-menu": "PlatformUserMenu",
   "clear-result-params": "ClearResultParams",

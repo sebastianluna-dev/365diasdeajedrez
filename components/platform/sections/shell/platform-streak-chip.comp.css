@@ -1,0 +1,41 @@
+.platform-streak-chip {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--platform-space-2);
+  height: 40px;
+  margin: 0;
+  padding: 0 var(--platform-space-4) 0 var(--platform-space-3);
+  border-radius: 1000px;
+  background: var(--platform-m3-container-high);
+  color: var(--platform-m3-on-surface);
+  font-size: var(--platform-type-sm);
+  font-weight: 600;
+  white-space: nowrap;
+
+  & .platform-streak-chip__flame {
+    width: 18px;
+    height: 18px;
+    color: var(--platform-flame);
+  }
+
+  /* Said to a screen reader only: on screen the flame says it. */
+  & .platform-streak-chip__hint {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  & .platform-streak-chip__core {
+    color: var(--platform-flame-core);
+  }
+
+  /* On a phone the bar keeps the name and the two buttons. */
+  @media (width < 640px) {
+    display: none;
+  }
+}

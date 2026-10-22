@@ -1,20 +1,20 @@
 ---
-description: "The page's name beside the wordmark, as Google writes its product's: the name of the tool the page belongs to."
+description: "The page's drawing and name at the left of the bar, in the wordmark's place, as Google writes its product's: the tool the page belongs to."
 ---
 
 # `PlatformPageName`
 
-|            |                                                                                                                 |
-| ---------- | --------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/shell/platform-page-name.comp.tsx`                                                |
-| Kind       | Client Component                                                                                                |
-| Stylesheet | `platform-page-name.comp.css` → block `.platform-page-name`                                                     |
-| Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)                                   |
-| Uses       | `activeApp`, `PlatformApps` from `constants/platform/nav-items.const`<br />`usePathname` from `next/navigation` |
+|            |                                                                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/shell/platform-page-name.comp.tsx`                                                                                                         |
+| Kind       | Client Component                                                                                                                                                         |
+| Stylesheet | `platform-page-name.comp.css` → block `.platform-page-name`                                                                                                              |
+| Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)                                                                                            |
+| Uses       | [`NavArt`](/components/platform/sections/shell/nav-art); `activeApp`, `PlatformApps` from `constants/platform/nav-items.const`<br />`usePathname` from `next/navigation` |
 
 ## Purpose
 
-The Google-style header (2026-10-19) names the page beside the wordmark — «Calendario», «Ejercicios», «Clases» — after a hairline, in the display font. The name is the label of the tool the page belongs to (`activeApp`, the longest address that starts the page's), so a deep page keeps its tool's name («Mis alumnos» on one student's page), and a page no tool leads to (the home, a lesson) shows none. Client, because it follows the address.
+The Google-style header (2026-10-19) names the page — «Calendario», «Ejercicios», «Clases» — in the display font, and since 2026-10-22 (the new design system's header) with the tool's drawing before it (the `NavArt` of its tile in the tools menu, still) and **in the wordmark's place**: the shell hides the wordmark while a name is drawn (`:has(.platform-page-name)`), so the wordmark stays only where no tool names the page. The name is the label of the tool the page belongs to (`activeApp`, the longest address that starts the page's), so a deep page keeps its tool's name («Mis alumnos» on one student's page), and a page no tool leads to (a lesson) shows none. Client, because it follows the address.
 
 ## Props
 
@@ -24,4 +24,4 @@ The Google-style header (2026-10-19) names the page beside the wordmark — «Ca
 
 ## Markup & styling
 
-Block `.platform-page-name` (15 lines): `--platform-font-display` at `--platform-type-xl`, a left hairline (`--platform-border`). **Breakpoints:** `(width < 640px)` hides it: on a phone the bar keeps the wordmark and its two buttons.
+Block `.platform-page-name` (18 lines): `--platform-font-display` at `--platform-type-xl`, weight 400; `.platform-page-name__art`, the drawing, 30px high. No media queries: it is the bar's name on a phone too.

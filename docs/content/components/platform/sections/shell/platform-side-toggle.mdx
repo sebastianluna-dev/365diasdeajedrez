@@ -1,0 +1,20 @@
+---
+description: "The three bars at the left of the bar, as Gmail's: they hide and show the side column of a page of the new design system."
+---
+
+# `PlatformSideToggle`
+
+|         |                                                                                     |
+| ------- | ----------------------------------------------------------------------------------- |
+| File    | `components/platform/sections/shell/platform-side-toggle.comp.tsx`                  |
+| Kind    | Client Component                                                                    |
+| Used by | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)       |
+| Uses    | `BarsIcon` in Classic Solid; `.platform-button` (`_variant_quiet`, `_shape_square`) |
+
+## Purpose
+
+The header of the new design system (2026-10-22) opens with Gmail's three bars. Pressed, they write `data-side-nav="hidden"` on the root, and `platform.css` hides `.platform-workspace__side`, so the panel takes the whole width; pressed again, they take it away. The button says what it will do («Ocultar la barra lateral» / «Mostrar la barra lateral») and carries `aria-pressed`.
+
+The shell draws it on every page and hides it where there is no side column (`platform-shell.section.css`). The choice is not kept: a new visit shows the column.
+
+No stylesheet of its own: it is the platform's quiet square button.

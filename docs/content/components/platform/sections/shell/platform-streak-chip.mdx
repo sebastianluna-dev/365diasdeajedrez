@@ -1,0 +1,27 @@
+---
+description: "A student's streak in the bar: the flame and the days, in a pill of Material 3's container."
+---
+
+# `PlatformStreakChip`
+
+|            |                                                                               |
+| ---------- | ----------------------------------------------------------------------------- |
+| File       | `components/platform/sections/shell/platform-streak-chip.comp.tsx`            |
+| Kind       | Server Component                                                              |
+| Stylesheet | `platform-streak-chip.comp.css` → block `.platform-streak-chip`               |
+| Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section) |
+| Uses       | `FireIcon` in Duotone Solid                                                   |
+
+## Purpose
+
+The streak where every page sees it, as the new design system's header draws it (2026-10-22): before the tools menu, a 40px pill in `--platform-m3-container-high` with the flame and «12 días». It only says; the day's goal and the rest are behind the avatar ([`PlatformUserMenu`](/components/platform/sections/shell/platform-user-menu)). A screen reader hears «Racha de estudio: 12 días» (the first words are visually hidden). Only a student's: the shell reads `getStudyStreak()` only for someone who neither teaches nor runs the academy.
+
+## Props
+
+| Prop   | Type     | Required | Meaning                                    |
+| ------ | -------- | -------- | ------------------------------------------ |
+| `days` | `number` | yes      | Days in a row studying (`getStudyStreak`). |
+
+## Markup & styling
+
+Block `.platform-streak-chip`. **Elements:** `__flame`, `__core`, `__hint`. **Breakpoints:** `(width < 640px)` hides it: on a phone the bar keeps the name and its two buttons.

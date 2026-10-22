@@ -1,15 +1,18 @@
 .platform-page-name {
   flex: none;
-  padding-left: var(--platform-space-4);
-  box-shadow: inset 1px 0 0 var(--platform-border);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--platform-space-3);
   font-family: var(--platform-font-display);
   font-size: var(--platform-type-xl);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--platform-text);
   white-space: nowrap;
 
-  /* On a phone the bar keeps the wordmark and the two buttons. */
-  @media (width < 640px) {
-    display: none;
+  /* The tool's drawing, at the height of a line of the bar. */
+  & .platform-page-name__art {
+    flex: none;
+    width: auto;
+    height: 30px;
   }
 }

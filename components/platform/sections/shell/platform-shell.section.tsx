@@ -7,10 +7,13 @@ import { getSessionRoles } from "@/lib/platform-auth/roles";
 import { PLAY_ENABLED } from "@/constants/platform/features.const";
 import { homeRouteFor, platformRoutes, teacherRoutes } from "@/lib/platform-routes";
 import { getStudentExerciseAccess } from "@/services/exercises/exercises.service";
+import { getStudyStreak } from "@/services/study-goal/study-goal.service";
 import { ClearResultParams } from "./clear-result-params.comp";
 import { PlatformAppsMenu } from "./platform-apps-menu.comp";
 import { PLATFORM_HEADER_CONTEXT_ID } from "./platform-header-context.comp";
 import { PlatformPageName } from "./platform-page-name.comp";
+import { PlatformSideToggle } from "./platform-side-toggle.comp";
+import { PlatformStreakChip } from "./platform-streak-chip.comp";
 import { PlatformUserMenu } from "./platform-user-menu.comp";
 import "./platform-shell.section.css";
 
@@ -34,11 +37,13 @@ function initialsOf(displayName: string): string {
 /**
  * Internal layout of the platform: top bar + content area.
  *
- * The bar is Google's (2026-10-19): the wordmark and the page's name at the
- * left, what the page puts there in the middle (`PlatformHeaderContext`:
- * the calendar's «Hoy», arrows and view), and at the right the only two
- * things every page keeps — the tools menu, which is the whole navigation,
- * and the avatar.
+ * The bar is Google's (2026-10-19; the new design system's since 2026-10-22):
+ * at the left the three bars that hide a workspace's side column (only where
+ * there is one) and the page's drawing and name — the wordmark where no tool
+ * names the page —, what the page puts there in the middle
+ * (`PlatformHeaderContext`: the calendar's «Hoy», arrows and view), and at
+ * the right a student's streak, the tools menu, which is the whole
+ * navigation, and the avatar.
  *
  * It reads the session only to show who is logged in and which menus they
  * get, never to protect: if there is no user it simply does not render the
@@ -56,6 +61,9 @@ export async function PlatformShell({ children }: PlatformShellProps) {
   // The logo leads to the role's home, not to the student dashboard: with
   // the exclusive menu that page is no longer in a teacher's or staff's menu.
   const homeHref = homeRouteFor(roles);
+  // The streak is a student's: whoever teaches or runs the academy has none
+  // to keep in the bar. One read per request, cached with the pages that use it.
+  const streak = user && !roles.isTeacher && !roles.isStaff ? await getStudyStreak() : null;
 
   return (
     <div className="platform-shell">
@@ -64,6 +72,8 @@ export async function PlatformShell({ children }: PlatformShellProps) {
           {/* The same wordmark the public site draws, painted with the
               platform's tokens: the SVG is aria-hidden, so the link carries
               the brand's name. */}
+          <PlatformSideToggle />
+
           <Link href={homeHref} className="platform-shell__logo" aria-label={LOGO_LABEL}>
             <LogoWordmarkIcon
               className="platform-shell__logo-image"
@@ -82,6 +92,7 @@ export async function PlatformShell({ children }: PlatformShellProps) {
           {/* At the right end, the two things every page keeps: the tools,
               and who is signed in. */}
           <div className="platform-shell__tools">
+            {streak && <PlatformStreakChip days={streak.days} />}
             <PlatformAppsMenu apps={apps} />
 
             {user && (
