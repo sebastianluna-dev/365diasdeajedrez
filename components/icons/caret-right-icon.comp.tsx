@@ -13,7 +13,23 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
  */
 export function CaretRightIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
-    <svg className={className} viewBox="0 0 256 512" width="8" height="16" fill="currentColor" aria-hidden="true">
+    <svg
+      className={className}
+      viewBox={
+        {
+          "duotone-light": "0 0 256 512",
+          "duotone-solid": "0 0 256 512",
+          "classic-solid": "0 0 256 512",
+          "classic-light": "0 0 256 512",
+          "sharp-duotone-light": "-181.33 -85.33 682.67 682.67",
+          "sharp-light": "-181.33 -85.33 682.67 682.67",
+        }[variant]
+      }
+      width="8"
+      height="16"
+      fill="currentColor"
+      aria-hidden="true"
+    >
       {variant === "duotone-light" && (
         <>
           <path
@@ -32,6 +48,13 @@ export function CaretRightIcon({ className, variant = "duotone-light" }: IconPro
       {variant === "classic-light" && (
         <path d="M246.9 233.4c11.6 12.9 12.8 32.4 0 45.2l-128 128c-9.1 9.2-22.9 11.9-34.9 6.9l-4.3-2.2c-9.5-5.7-15.5-16.1-15.5-27.4l0-256 .3-4.8c1.4-9.4 7-17.7 15.1-22.6l4.3-2.2c10.5-4.3 22.3-2.8 31.2 3.8l3.7 3.1 128 128zm-23 22.7c-.1-.3-.3-.7-.7-1.1L96.3 128 96.3 384 224 256.3c0-.1-.1-.2-.1-.2z" />
       )}
+      {variant === "sharp-duotone-light" && (
+        <>
+          <path opacity=".4" d="M128 150.8L247.6 256 128 361.2 128 150.8z" />
+          <path d="M96 432L96 80 296 256 96 432zm32-281.2L128 361.2 247.6 256 128 150.8z" />
+        </>
+      )}
+      {variant === "sharp-light" && <path d="M96 432L96 80 296 256 96 432zm32-281.2L128 361.2 247.6 256 128 150.8z" />}
     </svg>
   );
 }

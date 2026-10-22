@@ -2,7 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Resetting the mobile chess clock. Font Awesome's `arrow-rotate-left`, in
- * Duotone Light (the default), Duotone Solid, Classic Solid or Classic Light,
+ * Duotone Light (the default), Duotone Solid, Classic Solid, Classic Light, Sharp Duotone Light or Sharp Light,
  * as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
@@ -35,6 +35,12 @@ export function ArrowRotateLeftIcon({ className, variant = "duotone-light" }: Ic
       )}
       {variant === "classic-light" && (
         <path d="M16 0c8.8 0 16 7.2 16 16l0 103.8 37-39.1C117.6 29.2 185.2 0 256 0 397.4 0 512 114.6 512 256S397.4 512 256 512c-98.3 0-183.6-55.4-226.5-136.5-4.1-7.8-1.1-17.5 6.7-21.6s17.5-1.1 21.6 6.7C95.4 431.6 170.1 480 256 480 379.7 480 480 379.7 480 256S379.7 32 256 32c-62 0-121.2 25.5-163.8 70.6L53.1 144 160 144c8.8 0 16 7.2 16 16s-7.2 16-16 16L16 176c-8.8 0-16-7.2-16-16L0 16C0 7.2 7.2 0 16 0z" />
+      )}
+      {variant === "sharp-duotone-light" && (
+        <path d="M32 0l0 119.8 37-39.1C117.6 29.2 185.2 0 256 0 395.7 0 511.9 116.4 512 256 512.1 395.3 395.7 511.9 256 512 155.9 512.1 62.7 451.5 22.1 360.1l29.2-13c35.4 79.9 117.2 133 204.7 132.9 122.1-.1 224.1-102.4 224-224-.1-121.9-102-224-224-224-62 0-121.2 25.5-163.8 70.6L53.1 144 176 144 176 176 0 176 0 0 32 0z" />
+      )}
+      {variant === "sharp-light" && (
+        <path d="M32 0l0 119.8 37-39.1C117.6 29.2 185.2 0 256 0 395.7 0 511.9 116.4 512 256 512.1 395.3 395.7 511.9 256 512 155.9 512.1 62.7 451.5 22.1 360.1l29.2-13c35.4 79.9 117.2 133 204.7 132.9 122.1-.1 224.1-102.4 224-224-.1-121.9-102-224-224-224-62 0-121.2 25.5-163.8 70.6L53.1 144 176 144 176 176 0 176 0 0 32 0z" />
       )}
     </svg>
   );

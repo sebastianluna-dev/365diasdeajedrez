@@ -17,6 +17,8 @@ export function EllipsisVerticalIcon({ className, variant = "duotone-light" }: I
           "duotone-solid": "-277.33 -85.33 682.67 682.67",
           "classic-solid": "-277.33 -85.33 682.67 682.67",
           "classic-light": "-309.33 -85.33 682.67 682.67",
+          "sharp-duotone-light": "-309.33 -85.33 682.67 682.67",
+          "sharp-light": "-309.33 -85.33 682.67 682.67",
         }[variant]
       }
       width="24"
@@ -38,6 +40,12 @@ export function EllipsisVerticalIcon({ className, variant = "duotone-light" }: I
       )}
       {variant === "classic-light" && (
         <path d="M32 416c17.7 0 32 14.3 32 32s-14.3 32-32 32-32-14.3-32-32 14.3-32 32-32zm0-192c17.7 0 32 14.3 32 32s-14.3 32-32 32-32-14.3-32-32 14.3-32 32-32zM0 64A32 32 0 1 1 64 64 32 32 0 1 1 0 64z" />
+      )}
+      {variant === "sharp-duotone-light" && (
+        <path d="M0 32l64 0 0 64-64 0 0-64zM0 224l64 0 0 64-64 0 0-64zM64 416l0 64-64 0 0-64 64 0z" />
+      )}
+      {variant === "sharp-light" && (
+        <path d="M0 32l64 0 0 64-64 0 0-64zM0 224l64 0 0 64-64 0 0-64zM64 416l0 64-64 0 0-64 64 0z" />
       )}
     </svg>
   );

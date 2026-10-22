@@ -31,6 +31,8 @@ export function MinusIcon({ className, variant = "duotone-light" }: IconProps) {
       {variant === "classic-light" && (
         <path d="M0 256c0-8.8 7.2-16 16-16l416 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L16 272c-8.8 0-16-7.2-16-16z" />
       )}
+      {variant === "sharp-duotone-light" && <path d="M0 240l448 0 0 32-448 0 0-32z" />}
+      {variant === "sharp-light" && <path d="M0 240l448 0 0 32-448 0 0-32z" />}
     </svg>
   );
 }

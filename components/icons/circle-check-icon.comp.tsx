@@ -12,7 +12,23 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
  */
 export function CircleCheckIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
-    <svg className={className} viewBox="0 0 512 512" width="18" height="18" fill="currentColor" aria-hidden="true">
+    <svg
+      className={className}
+      viewBox={
+        {
+          "duotone-light": "0 0 512 512",
+          "duotone-solid": "0 0 512 512",
+          "classic-solid": "0 0 512 512",
+          "classic-light": "0 0 512 512",
+          "sharp-duotone-light": "-85.33 -85.33 682.67 682.67",
+          "sharp-light": "-85.33 -85.33 682.67 682.67",
+        }[variant]
+      }
+      width="18"
+      height="18"
+      fill="currentColor"
+      aria-hidden="true"
+    >
       {variant === "duotone-light" && (
         <>
           <path
@@ -36,6 +52,18 @@ export function CircleCheckIcon({ className, variant = "duotone-light" }: IconPr
       )}
       {variant === "classic-light" && (
         <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zm0-480a224 224 0 1 0 0 448 224 224 0 1 0 0-448zm83.1 134.6c5.2-7.1 15.2-8.7 22.3-3.5s8.7 15.2 3.5 22.3l-128 176c-2.8 3.8-7 6.2-11.7 6.5s-9.3-1.3-12.6-4.6l-64-64c-6.2-6.2-6.2-16.4 0-22.6s16.4-6.2 22.6 0l50.7 50.7 117-160.8z" />
+      )}
+      {variant === "sharp-duotone-light" && (
+        <>
+          <path
+            opacity=".4"
+            d="M32 256a224 224 0 1 0 448 0 224 224 0 1 0 -448 0zm105.4 32l22.6-22.6 62.1 62.1 117-160.8 9.4-12.9 25.9 18.8-9.4 12.9-128 176-11 15.2-88.6-88.6z"
+          />
+          <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zm0-480a224 224 0 1 0 0 448 224 224 0 1 0 0-448zM374.3 172.5l-9.4 12.9-128 176-11 15.2-88.6-88.6 22.6-22.6 62.1 62.1 117-160.8 9.4-12.9 25.9 18.8z" />
+        </>
+      )}
+      {variant === "sharp-light" && (
+        <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zm0-480a224 224 0 1 0 0 448 224 224 0 1 0 0-448zM374.3 172.5l-9.4 12.9-128 176-11 15.2-88.6-88.6 22.6-22.6 62.1 62.1 117-160.8 9.4-12.9 25.9 18.8z" />
       )}
     </svg>
   );

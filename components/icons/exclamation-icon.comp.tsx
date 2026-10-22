@@ -17,6 +17,8 @@ export function ExclamationIcon({ className, variant = "duotone-light" }: IconPr
           "duotone-solid": "-277.33 -85.33 682.67 682.67",
           "classic-solid": "-277.33 -85.33 682.67 682.67",
           "classic-light": "-309.33 -85.33 682.67 682.67",
+          "sharp-duotone-light": "-309.33 -85.33 682.67 682.67",
+          "sharp-light": "-309.33 -85.33 682.67 682.67",
         }[variant]
       }
       width="24"
@@ -39,6 +41,8 @@ export function ExclamationIcon({ className, variant = "duotone-light" }: IconPr
       {variant === "classic-light" && (
         <path d="M32 464c13.3 0 24 10.7 24 24s-10.7 24-24 24-24-10.7-24-24 10.7-24 24-24zM32 0C45.4 0 56.1 11 55.8 24.4L48 368.4c-.2 8.7-7.3 15.6-16 15.6s-15.8-6.9-16-15.6L8.2 24.4C7.9 11 18.6 0 32 0z" />
       )}
+      {variant === "sharp-duotone-light" && <path d="M52 512l-40 0 0-40 40 0 0 40zM56 0L48 384 16 384 8 0 56 0z" />}
+      {variant === "sharp-light" && <path d="M52 512l-40 0 0-40 40 0 0 40zM56 0L48 384 16 384 8 0 56 0z" />}
     </svg>
   );
 }

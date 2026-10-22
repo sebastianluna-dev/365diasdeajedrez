@@ -35,6 +35,12 @@ export function BarsFilterIcon({ className, variant = "duotone-light" }: IconPro
       {variant === "classic-light" && (
         <path d="M0 80c0-8.8 7.2-16 16-16l480 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L16 96C7.2 96 0 88.8 0 80zM96 256c0-8.8 7.2-16 16-16l288 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-288 0c-8.8 0-16-7.2-16-16zM320 432c0 8.8-7.2 16-16 16l-96 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l96 0c8.8 0 16 7.2 16 16z" />
       )}
+      {variant === "sharp-duotone-light" && (
+        <path d="M0 64l512 0 0 32-512 0 0-32zM96 240l320 0 0 32-320 0 0-32zM320 416l0 32-128 0 0-32 128 0z" />
+      )}
+      {variant === "sharp-light" && (
+        <path d="M0 64l512 0 0 32-512 0 0-32zM96 240l320 0 0 32-320 0 0-32zM320 416l0 32-128 0 0-32 128 0z" />
+      )}
     </svg>
   );
 }

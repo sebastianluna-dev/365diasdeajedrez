@@ -31,6 +31,12 @@ export function PlusLargeIcon({ className, variant = "duotone-light" }: IconProp
       {variant === "classic-light" && (
         <path d="M272 16c0-8.8-7.2-16-16-16s-16 7.2-16 16l0 224-224 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l224 0 0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224 224 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-224 0 0-224z" />
       )}
+      {variant === "sharp-duotone-light" && (
+        <path d="M272 16l0-16-32 0 0 240-240 0 0 32 240 0 0 240 32 0 0-240 240 0 0-32-240 0 0-224z" />
+      )}
+      {variant === "sharp-light" && (
+        <path d="M272 16l0-16-32 0 0 240-240 0 0 32 240 0 0 240 32 0 0-240 240 0 0-32-240 0 0-224z" />
+      )}
     </svg>
   );
 }

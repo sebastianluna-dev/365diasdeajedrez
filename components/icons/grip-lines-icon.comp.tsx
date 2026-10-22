@@ -35,6 +35,8 @@ export function GripLinesIcon({ className, variant = "duotone-light" }: IconProp
       {variant === "classic-light" && (
         <path d="M448 176c0-8.8-7.2-16-16-16L16 160c-8.8 0-16 7.2-16 16s7.2 16 16 16l416 0c8.8 0 16-7.2 16-16zm0 160c0-8.8-7.2-16-16-16L16 320c-8.8 0-16 7.2-16 16s7.2 16 16 16l416 0c8.8 0 16-7.2 16-16z" />
       )}
+      {variant === "sharp-duotone-light" && <path d="M448 192l0-32-448 0 0 32 448 0zm0 160l0-32-448 0 0 32 448 0z" />}
+      {variant === "sharp-light" && <path d="M448 192l0-32-448 0 0 32 448 0zm0 160l0-32-448 0 0 32 448 0z" />}
     </svg>
   );
 }

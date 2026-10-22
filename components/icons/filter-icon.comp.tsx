@@ -11,7 +11,16 @@ export function FilterIcon({ className, variant = "duotone-light" }: IconProps) 
   return (
     <svg
       className={className}
-      viewBox="-85.33 -85.33 682.67 682.67"
+      viewBox={
+        {
+          "duotone-light": "-85.33 -85.33 682.67 682.67",
+          "duotone-solid": "-85.33 -85.33 682.67 682.67",
+          "classic-solid": "-85.33 -85.33 682.67 682.67",
+          "classic-light": "-85.33 -85.33 682.67 682.67",
+          "sharp-duotone-light": "-53.33 -85.33 682.67 682.67",
+          "sharp-light": "-53.33 -85.33 682.67 682.67",
+        }[variant]
+      }
       width="24"
       height="24"
       fill="currentColor"
@@ -40,6 +49,15 @@ export function FilterIcon({ className, variant = "duotone-light" }: IconProps) 
       )}
       {variant === "classic-light" && (
         <path d="M2.4 83.8C7.4 71.8 19.1 64 32 64l448 0c12.9 0 24.6 7.8 29.6 19.8s2.2 25.7-6.9 34.9L320 301.3 320 480c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-64-64c-6-6-9.4-14.1-9.4-22.6L192 301.3 9.4 118.6C.2 109.5-2.5 95.7 2.4 83.8zM480 96L32 96 219.3 283.3c3 3 4.7 7.1 4.7 11.3l0 121.4 64 64 0-185.4c0-4.2 1.7-8.3 4.7-11.3L480 96z" />
+      )}
+      {variant === "sharp-duotone-light" && (
+        <>
+          <path opacity=".4" d="M93.3 96l153.4 153.4 9.4 9.4 0 128 64 64 0-192 9.4-9.4 153.4-153.4-389.5 0z" />
+          <path d="M352 272l208-208-544 0 208 208 0 128 128 128 0-256zM320 450.7l-64-64 0-128-9.4-9.4-153.4-153.4 389.5 0-153.4 153.4-9.4 9.4 0 192z" />
+        </>
+      )}
+      {variant === "sharp-light" && (
+        <path d="M352 272l208-208-544 0 208 208 0 128 128 128 0-256zM320 450.7l-64-64 0-128-9.4-9.4-153.4-153.4 389.5 0-153.4 153.4-9.4 9.4 0 192z" />
       )}
     </svg>
   );

@@ -31,6 +31,12 @@ export function EqualsIcon({ className, variant = "duotone-light" }: IconProps) 
       {variant === "classic-light" && (
         <path d="M16 128c-8.8 0-16 7.2-16 16s7.2 16 16 16l416 0c8.8 0 16-7.2 16-16s-7.2-16-16-16L16 128zm0 224c-8.8 0-16 7.2-16 16s7.2 16 16 16l416 0c8.8 0 16-7.2 16-16s-7.2-16-16-16L16 352z" />
       )}
+      {variant === "sharp-duotone-light" && (
+        <path d="M16 128l-16 0 0 32 448 0 0-32-432 0zm0 224l-16 0 0 32 448 0 0-32-432 0z" />
+      )}
+      {variant === "sharp-light" && (
+        <path d="M16 128l-16 0 0 32 448 0 0-32-432 0zm0 224l-16 0 0 32 448 0 0-32-432 0z" />
+      )}
     </svg>
   );
 }

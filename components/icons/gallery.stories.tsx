@@ -1886,7 +1886,7 @@ type Scale = "app" | "large";
  * The gallery, with each icon's export under it and the wordmark on a row of
  * its own. At `app`, the icons the app draws, each as tall and in the weight
  * its caller asks for, in the text colour; at `large`, every icon of the
- * library in a 48px box, in its four styles, in the accent.
+ * library in a 48px box, in its six styles, in the accent.
  */
 function IconsGallery({ scale }: { scale: Scale }) {
   const large = scale === "large";

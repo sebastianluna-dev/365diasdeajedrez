@@ -12,7 +12,23 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
  */
 export function EllipsisIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
-    <svg className={className} viewBox="0 200 448 112" width="16" height="4" fill="currentColor" aria-hidden="true">
+    <svg
+      className={className}
+      viewBox={
+        {
+          "duotone-light": "0 200 448 112",
+          "duotone-solid": "0 200 448 112",
+          "classic-solid": "0 200 448 112",
+          "classic-light": "0 200 448 112",
+          "sharp-duotone-light": "-117.33 -85.33 682.67 682.67",
+          "sharp-light": "-117.33 -85.33 682.67 682.67",
+        }[variant]
+      }
+      width="16"
+      height="4"
+      fill="currentColor"
+      aria-hidden="true"
+    >
       {variant === "duotone-light" && (
         <path d="M448 256a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm-192 0a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM32 288a32 32 0 1 1 0-64 32 32 0 1 1 0 64z" />
       )}
@@ -27,6 +43,12 @@ export function EllipsisIcon({ className, variant = "duotone-light" }: IconProps
       )}
       {variant === "classic-light" && (
         <path d="M448 256a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm-192 0a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM32 288a32 32 0 1 1 0-64 32 32 0 1 1 0 64z" />
+      )}
+      {variant === "sharp-duotone-light" && (
+        <path d="M0 288l0-64 64 0 0 64-64 0zm192 0l0-64 64 0 0 64-64 0zm192-64l64 0 0 64-64 0 0-64z" />
+      )}
+      {variant === "sharp-light" && (
+        <path d="M0 288l0-64 64 0 0 64-64 0zm192 0l0-64 64 0 0 64-64 0zm192-64l64 0 0 64-64 0 0-64z" />
       )}
     </svg>
   );

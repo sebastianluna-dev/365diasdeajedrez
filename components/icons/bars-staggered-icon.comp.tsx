@@ -35,6 +35,12 @@ export function BarsStaggeredIcon({ className, variant = "duotone-light" }: Icon
       {variant === "classic-light" && (
         <path d="M0 80c0-8.8 7.2-16 16-16l416 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L16 96C7.2 96 0 88.8 0 80zM64 256c0-8.8 7.2-16 16-16l416 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L80 272c-8.8 0-16-7.2-16-16zM448 432c0 8.8-7.2 16-16 16L16 448c-8.8 0-16-7.2-16-16s7.2-16 16-16l416 0c8.8 0 16 7.2 16 16z" />
       )}
+      {variant === "sharp-duotone-light" && (
+        <path d="M0 64l448 0 0 32-448 0 0-32zM64 240l448 0 0 32-448 0 0-32zM448 416l0 32-448 0 0-32 448 0z" />
+      )}
+      {variant === "sharp-light" && (
+        <path d="M0 64l448 0 0 32-448 0 0-32zM64 240l448 0 0 32-448 0 0-32zM448 416l0 32-448 0 0-32 448 0z" />
+      )}
     </svg>
   );
 }

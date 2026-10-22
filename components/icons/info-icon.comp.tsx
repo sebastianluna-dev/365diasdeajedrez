@@ -32,6 +32,12 @@ export function InfoIcon({ className, variant = "duotone-light" }: IconProps) {
       {variant === "classic-light" && (
         <path d="M72 56a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM0 176c0-8.8 7.2-16 16-16l64 0c17.7 0 32 14.3 32 32l0 256 64 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L16 480c-8.8 0-16-7.2-16-16s7.2-16 16-16l64 0 0-256-64 0c-8.8 0-16-7.2-16-16z" />
       )}
+      {variant === "sharp-duotone-light" && (
+        <path d="M116 32l0 40-40 0 0-40 40 0zM0 160l112 0 0 288 80 0 0 32-192 0 0-32 80 0 0-256-80 0 0-32z" />
+      )}
+      {variant === "sharp-light" && (
+        <path d="M116 32l0 40-40 0 0-40 40 0zM0 160l112 0 0 288 80 0 0 32-192 0 0-32 80 0 0-256-80 0 0-32z" />
+      )}
     </svg>
   );
 }

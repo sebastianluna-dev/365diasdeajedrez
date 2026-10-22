@@ -30,6 +30,15 @@ export function CircleIcon({ className, variant = "duotone-light" }: IconProps) 
       {variant === "classic-light" && (
         <path d="M480 256a224 224 0 1 0 -448 0 224 224 0 1 0 448 0zM0 256a256 256 0 1 1 512 0 256 256 0 1 1 -512 0z" />
       )}
+      {variant === "sharp-duotone-light" && (
+        <>
+          <path opacity=".4" d="M32 256a224 224 0 1 0 448 0 224 224 0 1 0 -448 0z" />
+          <path d="M480 256a224 224 0 1 0 -448 0 224 224 0 1 0 448 0zM0 256a256 256 0 1 1 512 0 256 256 0 1 1 -512 0z" />
+        </>
+      )}
+      {variant === "sharp-light" && (
+        <path d="M480 256a224 224 0 1 0 -448 0 224 224 0 1 0 448 0zM0 256a256 256 0 1 1 512 0 256 256 0 1 1 -512 0z" />
+      )}
     </svg>
   );
 }
