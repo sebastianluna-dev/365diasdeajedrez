@@ -38,6 +38,9 @@ import { useLingering } from "./use-lingering.hook";
 import { MoveTable } from "./move-table.comp";
 import { mdButton, mdIconButton } from "@/lib/material/material-classes";
 import { MoveTree } from "./move-tree.comp";
+import { MoveNotes } from "./move-notes.comp";
+import { TrophyIcon } from "@/components/icons/trophy-icon.comp";
+import { lineThrough } from "@/lib/chess/notation-line";
 import { playMoveSound } from "./move-sound";
 import { usePgnEditing } from "./use-pgn-editing.hook";
 import {
@@ -79,7 +82,9 @@ interface GameViewerProps {
   /** Dotted path to open the viewer at (TrainingExercise.path / ClassBlock.movePath). */
   initialPath?: string;
   title?: string;
-  /** Badge to the right of the title ("Prioridad"). */
+  /** A line above the title, beside the badge, in `notes` («Capítulo 2 · La Najdorf»). */
+  subtitle?: string;
+  /** Badge to the right of the title ("Prioritaria"); above it, beside the subtitle, in `notes`. */
   badge?: string;
   /**
    * What the bar under the board offers BESIDES the four arrows: turning the
@@ -146,8 +151,20 @@ interface GameViewerProps {
    * `table` (default): a no. · white · black grid, like Lichess.
    * `flow`: the usual running text, which is how lessons are read —
    * there the game is still read, not consulted move by move.
+   * `notes`: a lesson read one move at a time, in the new design system —
+   * the line as pills, the note on the move on the board, the way to the
+   * next one, and how far through the line one is under the title.
    */
-  moveList?: "table" | "flow";
+  moveList?: "table" | "flow" | "notes";
+  /**
+   * The lesson's exercises, at the foot of the panel in `notes`: what there
+   * is to practise, how it stands and the way in. Data, drawn by the viewer.
+   */
+  practice?: {
+    title: string;
+    detail: string;
+    action?: { href: string; label: string };
+  };
   /**
    * Where the four navigation buttons go. Under the board in lessons; inside
    * the moves panel in Mis estudios, which is where the game is traversed.
@@ -244,7 +261,9 @@ export function GameViewer({
   orientation = "white",
   initialPath,
   title,
+  subtitle,
   badge,
+  practice,
   boardTools = true,
   look,
   onwards,
@@ -751,11 +770,15 @@ export function GameViewer({
     </div>
   );
   const hasHead = Boolean(title || badge);
+  const notes = moveList === "notes";
+  // How far through the line being read: the move on the board of all of them.
+  const notesLine = notes && tree ? lineThrough(notationTree ?? tree, currentPath) : [];
+  const notesAt = notesLine.findIndex((step) => step.path === currentPath) + 1;
 
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- not a control: the click is only noted, so the viewer's keys answer once it has been used
     <div
-      className={`game-viewer${material ? " game-viewer_look_material" : ""}${isFullscreen ? " game-viewer_state_fullscreen" : ""}`}
+      className={`game-viewer${material ? " game-viewer_look_material" : ""}${moveList === "notes" ? " game-viewer_list_notes" : ""}${isFullscreen ? " game-viewer_state_fullscreen" : ""}`}
       ref={rootRef}
       onClick={() => (hasBeenClickedRef.current = true)}
     >
@@ -880,12 +903,39 @@ export function GameViewer({
               engine && engineOn && engineExpanded ? " game-viewer__panel_engine_expanded" : ""
             }`}
           >
-            {hasHead && (
+            {hasHead && !notes && (
               <div className="game-viewer__panel-head">
                 <div className="game-viewer__panel-heading">
                   {title && <p className="game-viewer__panel-title">{title}</p>}
                 </div>
                 {badge && <span className="game-viewer__panel-badge">{badge}</span>}
+              </div>
+            )}
+
+            {/* A lesson read one move at a time: the badge and where it is
+                above the title, and how far through the line under it. */}
+            {notes && (
+              <div className="game-viewer__panel-head game-viewer__panel-head_list_notes">
+                {(badge || subtitle) && (
+                  <p className="game-viewer__panel-kicker">
+                    {badge && <span className="game-viewer__panel-badge">{badge}</span>}
+                    {subtitle && <span className="game-viewer__panel-subtitle">{subtitle}</span>}
+                  </p>
+                )}
+                {title && <h1 className="game-viewer__panel-title">{title}</h1>}
+                {notesLine.length > 0 && (
+                  <div className="game-viewer__progress">
+                    <span className="game-viewer__progress-track" aria-hidden="true">
+                      <span
+                        className="game-viewer__progress-fill"
+                        style={{ width: `${(notesAt / notesLine.length) * 100}%` }}
+                      />
+                    </span>
+                    <span className="game-viewer__progress-text">
+                      Jugada {notesAt} de {notesLine.length}
+                    </span>
+                  </div>
+                )}
               </div>
             )}
 
@@ -903,8 +953,15 @@ export function GameViewer({
               />
             )}
 
-            <div className={`game-viewer__moves${moveList === "flow" ? " game-viewer__moves_list_flow" : ""}`}>
-              {moveList === "flow" ? (
+            <div className={`game-viewer__moves${moveList !== "table" ? ` game-viewer__moves_list_${moveList}` : ""}`}>
+              {notes ? (
+                <MoveNotes
+                  tree={notationTree ?? tree}
+                  currentPath={currentPath}
+                  onSelect={setCurrentPath}
+                  pinnedComment={pinnedComment}
+                />
+              ) : moveList === "flow" ? (
                 <MoveTree
                   tree={notationTree ?? tree}
                   currentPath={currentPath}
@@ -931,6 +988,25 @@ export function GameViewer({
                 </p>
               )}
             </div>
+
+            {/* The lesson's exercises, at the foot of the panel (D25). */}
+            {notes && practice && (
+              <aside className="game-viewer__practice" aria-label="Ejercicios de la lección">
+                <span className="game-viewer__practice-disc" aria-hidden="true">
+                  <TrophyIcon variant="classic-solid" className="game-viewer__practice-icon" />
+                </span>
+                <p className="game-viewer__practice-text">
+                  <span className="game-viewer__practice-title">{practice.title}</span>
+                  <span className="game-viewer__practice-detail">{practice.detail}</span>
+                </p>
+                {practice.action && (
+                  <Link href={practice.action.href} className={mdButton("tonal", "sm")}>
+                    <TrophyIcon variant="classic-solid" className="platform-md-icon" />
+                    {practice.action.label}
+                  </Link>
+                )}
+              </aside>
+            )}
 
             {/* While a game is on, its one action under the moves (P2). */}
             {isPlaying && play?.onAbandon && play.status !== "over" && (

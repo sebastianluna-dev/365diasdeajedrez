@@ -13,7 +13,7 @@
        height, a tall window would otherwise let it eat the whole row. Not
        more than that, because every px held back here is a px the board
        cannot use to fill the height it was given. */
-    grid-template-columns: minmax(0, var(--viewer-board-max, 600px)) minmax(320px, 1fr);
+    grid-template-columns: minmax(0, var(--viewer-board-max, 600px)) minmax(var(--viewer-panel-min, 320px), 1fr);
     grid-template-rows: auto auto;
     /* A screen that gives the board more air widens the gap
        (`--viewer-column-gap`); the rows keep theirs. */
@@ -33,7 +33,7 @@
      sizes its own. */
   @media (width >= 768px) {
     &:not(.game-viewer_state_fullscreen)
-      .game-viewer__layout:not(:has(.game-viewer__moves_list_flow))
+      .game-viewer__layout:not(:has(.game-viewer__moves_list_flow, .game-viewer__moves_list_notes))
       .game-viewer__panel-column {
       max-width: var(--viewer-panel-max, 400px);
     }
@@ -561,6 +561,27 @@
 
   /* In full screen the viewer paints its own background: underneath is the
      browser's black, not the page. */
+  /* A lesson read one move at a time (`moveList="notes"`): the viewer takes
+     the whole height its column gives it, and the column of notes runs down
+     to the foot of it — beside the board and its keys, and below them —,
+     where the practice card sits; the board stays at the top of its track. */
+  &.game-viewer_list_notes {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+
+    & .game-viewer__layout {
+      flex: 1;
+      min-height: 0;
+      grid-template-rows: minmax(0, 1fr) auto;
+    }
+
+    & .game-viewer__board-card {
+      align-self: start;
+    }
+  }
+
   /* The new design system (2026-10-22, `look="material"`), for a page
      already passed to it: the board rounded on the panel's white, Material's
      keys under it (drawn by its classes), and the notation loose on the
@@ -607,8 +628,121 @@
       font-weight: 600;
     }
 
-    & .game-viewer__moves.game-viewer__moves_list_flow {
+    & .game-viewer__moves.game-viewer__moves_list_flow,
+    & .game-viewer__moves.game-viewer__moves_list_notes {
       padding: 0 var(--platform-space-2) 0 0;
+    }
+
+    /* A lesson read one move at a time: the badge and where it is above the
+       title, the title, and a bar of how far through the line. */
+    & .game-viewer__panel-head_list_notes {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--platform-space-2);
+    }
+
+    & .game-viewer__panel-head_list_notes .game-viewer__panel-title {
+      font-size: var(--platform-type-2xl);
+      line-height: 1.3;
+    }
+
+    & .game-viewer__panel-kicker {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--platform-space-2);
+      margin: 0;
+    }
+
+    & .game-viewer__panel-subtitle {
+      font-size: var(--platform-type-xs);
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .game-viewer__progress {
+      display: flex;
+      align-items: center;
+      gap: var(--platform-space-3);
+      margin-top: var(--platform-space-1);
+    }
+
+    & .game-viewer__progress-track {
+      flex: 1;
+      height: 6px;
+      border-radius: 1000px;
+      background: var(--platform-m3-container-high);
+      overflow: hidden;
+    }
+
+    & .game-viewer__progress-fill {
+      display: block;
+      height: 100%;
+      border-radius: 1000px;
+      background: var(--platform-m3-primary);
+      transition: width 200ms ease-out;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      & .game-viewer__progress-fill {
+        transition: none;
+      }
+    }
+
+    & .game-viewer__progress-text {
+      flex: none;
+      font-size: var(--platform-type-xs);
+      color: var(--platform-m3-on-surface-variant);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* The lesson's exercises at the foot of the panel: the trophy on its
+       amber disc, what there is to practise and how it stands, the way in. */
+    & .game-viewer__practice {
+      flex: none;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--platform-space-4);
+      margin-top: var(--platform-space-4);
+      padding: var(--platform-space-4);
+      border: 1px solid var(--platform-m3-container-high);
+      border-radius: var(--md-sys-shape-corner-lg);
+    }
+
+    & .game-viewer__practice-disc {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--platform-m3-warning-container);
+      color: var(--platform-m3-on-warning-container);
+    }
+
+    & .game-viewer__practice-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* The text takes what the disc and the way in leave, and the way in only
+       drops under it when the column is too narrow for both on one row. */
+    & .game-viewer__practice-text {
+      flex: 1 1 0;
+      min-width: 120px;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      margin: 0;
+    }
+
+    & .game-viewer__practice-title {
+      font-weight: 700;
+    }
+
+    & .game-viewer__practice-detail {
+      font-size: var(--platform-type-xs);
+      color: var(--platform-m3-on-surface-variant);
     }
 
     & .game-viewer__toolbar {

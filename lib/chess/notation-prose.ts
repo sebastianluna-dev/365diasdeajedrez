@@ -52,7 +52,7 @@ export type ProseBlock =
  * line, or when a comment or a variation came just before it ("2… Cc6"),
  * which is the rule a printed book follows. Its NAGs are not in it.
  */
-function moveLabel(node: PgnTreeNode, needsNumber: boolean): string {
+export function moveLabel(node: PgnTreeNode, needsNumber: boolean): string {
   const isWhiteMove = node.ply % 2 === 1;
   const moveNumber = Math.ceil(node.ply / 2);
   const prefix = isWhiteMove ? `${moveNumber}. ` : needsNumber ? `${moveNumber}... ` : "";

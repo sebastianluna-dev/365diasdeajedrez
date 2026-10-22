@@ -11,19 +11,20 @@
      the card's gap above them. */
   --lesson-board-footer: calc(40px + var(--platform-space-4));
 
-  /* The «Ahora practica» row under the game (D25): its height and the gap
-     above it, taken off the board when the lesson has exercises, so the row
-     is seen whole without the panel scrolling. */
-  --lesson-practice-card: calc(72px + var(--platform-space-6));
-
   /* The board is measured by the HEIGHT that is left, not by the width: it
      takes all of its column's height save its footer, read off the column
      itself (`100cqh`, the main column being a size container). The floor
      keeps it from becoming a stamp. */
   --viewer-board-max: max(320px, calc(100cqh - var(--lesson-board-footer)));
 
-  /* The panel of text ends where the board ends. */
-  --viewer-panel-trim: var(--lesson-board-footer);
+  /* The column of notes is never narrower than 384px: it holds the line, a
+     note and the practice card, and the board gives way for them, as in the
+     design (2026-10-22). */
+  --viewer-panel-min: 384px;
+
+  /* The column of notes runs down beside the keys too, to the foot of the
+     board's card, where the practice card sits (the design, 2026-10-22). */
+  --viewer-panel-trim: 0px;
 
   /* The toolbar: back to the chapter and the trail at the left, the arrows
      to the lessons beside it at the right. */
@@ -103,10 +104,6 @@
     container-type: size;
   }
 
-  & .lesson-frame__main_with_practice {
-    --viewer-board-max: max(320px, calc(100cqh - var(--lesson-board-footer) - var(--lesson-practice-card)));
-  }
-
   /* A practice-only lesson has no board to measure: the list is as tall as
      what it holds, and the column scrolls. */
   & .lesson-frame__main_kind_practice {
@@ -119,8 +116,7 @@
   @media (width < 1280px), (max-height: 620px) {
     --viewer-board-max: 600px;
 
-    & .lesson-frame__main,
-    & .lesson-frame__main_with_practice {
+    & .lesson-frame__main {
       --viewer-board-max: 600px;
       container-type: normal;
     }

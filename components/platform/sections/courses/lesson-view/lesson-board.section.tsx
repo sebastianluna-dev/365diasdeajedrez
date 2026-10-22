@@ -8,7 +8,7 @@ import { studentErrorMessage } from "@/constants/platform/student-messages.const
 import { mdIconButton } from "@/lib/material/material-classes";
 import { completeLesson } from "@/services/courses/courses.actions";
 import type { LessonView } from "@/services/courses/courses.types";
-import { LessonPracticeCard } from "./lesson-practice-card.comp";
+import type { LessonPractice } from "@/services/exercises/lesson-practice.types";
 import { LessonPracticeList } from "./lesson-practice-list.comp";
 import { LessonTracker } from "./lesson-tracker.comp";
 
@@ -20,7 +20,7 @@ interface LessonBoardSectionProps {
 
 /**
  * The lesson itself: the board and what is said about the position, and,
- * after the game, its exercises («Ahora practica», D25). A lesson with no
+ * at the foot of the panel, its exercises («Ahora practica», D25). A lesson with no
  * game and exercises to solve shows their list where the board would be.
  * Where it falls in the course is the column's, which belongs to the
  * chapter's layout and outlives this — so this is what a move to another
@@ -46,7 +46,7 @@ export function LessonBoardSection({ lesson, errorCode }: LessonBoardSectionProp
           <LessonTracker lessonId={lesson.id} />
           <LessonPracticeList
             title={lesson.name}
-            badge={lesson.isPriority ? "Prioridad" : undefined}
+            badge={lesson.isPriority ? "Prioritaria" : undefined}
             description={lesson.description}
             practice={lesson.practice}
             onwards={onwards}
@@ -60,20 +60,23 @@ export function LessonBoardSection({ lesson, errorCode }: LessonBoardSectionProp
   return (
     <>
       {toolbar}
-      <div className={`lesson-frame__main${lesson.practice ? " lesson-frame__main_with_practice" : ""}`}>
+      <div className="lesson-frame__main">
         <LessonTracker lessonId={lesson.id} />
 
         <GameViewer
           pgn={lesson.pgn}
           orientation={lesson.orientation}
-          // The lesson is READ: the running text accompanies the narrative, whereas
-          // the table is for consulting a game move by move.
-          moveList="flow"
-          // The head carries the lesson's name and whether it is a priority,
-          // and nothing else: where it falls in the course is the column's
-          // job, and what it explains is written move by move below.
+          // Read one move at a time (the new design system, 2026-10-22): the
+          // line as pills, the note on the move on the board, the way on.
+          moveList="notes"
+          // The head: whether it is a priority and its chapter, its name,
+          // and how far through the line.
           title={lesson.name}
-          badge={lesson.isPriority ? "Prioridad" : undefined}
+          subtitle={`Capítulo ${lesson.chapterOrder} · ${lesson.chapterName}`}
+          badge={lesson.isPriority ? "Prioritaria" : undefined}
+          // The exercises are optional (D26): the panel's card invites, the
+          // board's button completes.
+          practice={lesson.practice ? practiceCard(lesson.practice) : undefined}
           // Under the board, the way through the lesson and nothing else:
           // no turning the board around, no settings menu.
           boardTools={false}
@@ -86,13 +89,34 @@ export function LessonBoardSection({ lesson, errorCode }: LessonBoardSectionProp
           onwards={onwards}
         />
 
-        {/* The exercises are optional (D26): the card invites, the board's button completes. */}
-        {lesson.practice && <LessonPracticeCard practice={lesson.practice} />}
-
         {errorMessage && <PlatformNotice message={errorMessage} />}
       </div>
     </>
   );
+}
+
+/**
+ * «Ahora practica» (D25, D26) for the viewer's panel: how many exercises the
+ * lesson has, how many the student solved — by solve key, so a copy of a
+ * library exercise solved elsewhere counts — and the way in: «Empezar» or
+ * «Continuar», or «Repasar» once nothing is left to start.
+ */
+function practiceCard(practice: LessonPractice) {
+  const count = `${practice.total} ${practice.total === 1 ? "ejercicio" : "ejercicios"}`;
+  const standing =
+    practice.solved === practice.total
+      ? practice.total === 1
+        ? "resuelto"
+        : "todos resueltos"
+      : `${practice.solved} de ${practice.total} ${practice.total === 1 ? "resuelto" : "resueltos"}`;
+  const first = practice.items[0];
+  return {
+    title: "Ahora practica",
+    detail: `${count} · ${standing}`,
+    action: practice.start
+      ? { href: practice.start.href, label: practice.start.label }
+      : first && { href: first.href, label: "Repasar" },
+  };
 }
 
 /**

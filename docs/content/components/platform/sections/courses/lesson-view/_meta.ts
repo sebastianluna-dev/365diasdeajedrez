@@ -8,7 +8,6 @@ const meta: MetaRecord = {
   "priority-lessons-filter": "PriorityLessonsFilter",
   "lesson-tracker": "LessonTracker",
   "lesson-skeleton": "LessonSkeleton",
-  "lesson-practice-card": "LessonPracticeCard",
   "lesson-practice-list": "LessonPracticeList",
 };
 

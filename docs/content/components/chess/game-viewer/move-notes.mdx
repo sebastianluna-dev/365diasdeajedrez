@@ -1,0 +1,50 @@
+---
+description: "A lesson read one move at a time, in the new design system: the line being followed as pills, a note on the move on the board with the other moves offered there, and «Siguiente»."
+---
+
+# `MoveNotes`
+
+|            |                                                                                                                                                                             |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/move-notes.comp.tsx`                                                                                                                          |
+| Kind       | Client Component                                                                                                                                                            |
+| Stylesheet | `move-notes.comp.css` → block `.move-notes`                                                                                                                                 |
+| Story      | `move-notes.stories.tsx` (`chess/game-viewer/MoveNotes`): a move of the main line with its note and an alternative, the start, a move inside a variation, and the last move |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="notes"`)                                                                                              |
+| Uses       | `lineThrough`, `alternativesAt` from `lib/chess/notation-line`<br />`moveLabel` from `lib/chess/notation-prose`<br />`mdButton` from `lib/material/material-classes`        |
+
+## Purpose
+
+The lesson's notation in the new design system (2026-10-22), after the owner's design of the lesson: what is read is **one move at a time**, not a page of prose. The line being followed is a row of pills; what the author says is the note on the move on the board, not every comment of the game at once; and the way on is a button.
+
+A variation is not printed after the main line, as [`MoveTree`](/components/chess/game-viewer/move-tree) does: it is **entered** from the move it branches at, offered in the note as «Otras jugadas», and from then on it is the line (`lineThrough` follows the path to the move on the board and then each move's main continuation). Going back to the main line is a pill of the moves played before the branch.
+
+## Props
+
+| Prop            | Type                     | Required | Meaning                                                                                    |
+| --------------- | ------------------------ | -------- | ------------------------------------------------------------------------------------------ |
+| `tree`          | `PgnTree`                | yes      | The parsed game from `parsePgnTree`.                                                       |
+| `currentPath`   | `string`                 | yes      | Dotted path of the move on the board; `""` is the initial position.                        |
+| `onSelect`      | `(path: string) => void` | yes      | A pill, an alternative or «Siguiente» was pressed: the move to put on the board.           |
+| `pinnedComment` | `string`                 | no       | The game owner's note, said before the first move together with the PGN's opening comment. |
+
+## Behaviour
+
+- **The line** (`aria-label="Jugadas"`): every move of it as a pill, White's with its number before it, and a line opening on Black's move with «N...». The moves played are the ink, the one on the board is the primary with `aria-current="step"`, and the ones to come are dimmed (`--platform-m3-outline`, which still reads at 4.5:1 on the white panel). A move's NAGs are drawn as their symbols and said in words to a screen reader.
+- **The note** (`<section aria-label="La jugada">`), on the container: the move on the board, numbered («6. Ae3»), its comment, and «Otras jugadas» — the variations that branch where the next move is played (`alternativesAt`), each numbered since it stands alone. Before the first move it is «Para empezar», with the owner's pinned note and the PGN's opening comment. A move with no comment and no alternatives has no note.
+- **«Siguiente: 6... e5»**, Material's filled button, puts the next move of the line on the board, with «o la flecha →» beside it; at the last move it is not drawn, and the bar under the board takes over («Continuar»).
+
+## Markup & styling
+
+Block `.move-notes` (132 lines), in the `--platform-m3-*` roles. The pills are 28px high and round; the note has the `lg` corner (`--md-sys-shape-corner-lg`).
+
+**Elements:** `.move-notes__line`, `.move-notes__step`, `.move-notes__number`, `.move-notes__move`, `.move-notes__sr`, `.move-notes__note`, `.move-notes__note-head`, `.move-notes__note-icon`, `.move-notes__comment`, `.move-notes__others`, `.move-notes__others-label`, `.move-notes__onwards`, `.move-notes__hint`
+
+**Modifiers and states:** `.move-notes__move_state_played`, `.move-notes__move_state_current`, `.move-notes__move_state_later`
+
+**Tokens:** `--platform-m3-container`, `--platform-m3-container-high`, `--platform-m3-on-primary`, `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-outline`, `--platform-m3-primary`
+
+## Related
+
+- [`GameViewer`](/components/chess/game-viewer/game-viewer), which draws it with `moveList="notes"`, with how far through the line under its title.
+- [`MoveTree`](/components/chess/game-viewer/move-tree), the running text the lesson read before.

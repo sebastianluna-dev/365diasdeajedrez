@@ -39,6 +39,7 @@ import { PlayedGamesTimeline } from "@/components/platform/sections/profile/play
 import { StudyStreakCard } from "@/components/platform/sections/profile/study-streak-card/study-streak-card.comp";
 import { PlayedGameCard } from "@/components/platform/shared/played-game-card/played-game-card.comp";
 import { MoveTree } from "@/components/chess/game-viewer/move-tree.comp";
+import { MoveNotes } from "@/components/chess/game-viewer/move-notes.comp";
 import { PlayerStrip } from "@/components/chess/game-viewer/player-strip.comp";
 import { StaticDiagram } from "@/components/chess/static-diagram.comp";
 import { ChevronLeftIcon } from "@/components/icons/chevron-left-icon.comp";
@@ -88,7 +89,6 @@ import { PaidClassesCard } from "@/components/platform/shared/paid-classes-card/
 import { PastClassCard } from "@/components/platform/shared/past-class-card/past-class-card.comp";
 import { CourseCard } from "@/components/platform/sections/courses/course-card.comp";
 import { LevelScale } from "@/components/platform/sections/courses/course-info/level-scale.comp";
-import { LessonPracticeCard } from "@/components/platform/sections/courses/lesson-view/lesson-practice-card.comp";
 import { LessonPracticeList } from "@/components/platform/sections/courses/lesson-view/lesson-practice-list.comp";
 import { LessonSkeleton } from "@/components/platform/sections/courses/lesson-view/lesson-skeleton.comp";
 import { OutlineList } from "@/components/platform/sections/courses/lesson-view/outline-list.comp";
@@ -1378,21 +1378,6 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               </div>
             </Tile>
             <Tile
-              name="LessonPracticeCard"
-              docs="platform-sections-courses-lesson-view-lessonpracticecard"
-              width={720}
-              height={120}
-            >
-              <LessonPracticeCard
-                practice={{
-                  total: 3,
-                  solved: 1,
-                  items: [],
-                  start: { href: "#", label: "Continuar" },
-                }}
-              />
-            </Tile>
-            <Tile
               name="LessonPracticeList"
               docs="platform-sections-courses-lesson-view-lessonpracticelist"
               width={960}
@@ -1400,7 +1385,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             >
               <LessonPracticeList
                 title="Finales de torre: práctica"
-                badge="Prioridad"
+                badge="Prioritaria"
                 description="Tres posiciones para fijar lo que viste en el capítulo."
                 practice={{
                   total: 2,
@@ -2806,6 +2791,11 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             <Tile name="MoveTree" docs="chess-game-viewer-movetree" surface width={400} height={456}>
               {OPERA_OPENING_TREE && (
                 <MoveTree tree={OPERA_OPENING_TREE} currentPath="0.0.0.0.0.0" onSelect={() => undefined} />
+              )}
+            </Tile>
+            <Tile name="MoveNotes" docs="chess-game-viewer-movenotes" surface width={400} height={320}>
+              {OPERA_OPENING_TREE && (
+                <MoveNotes tree={OPERA_OPENING_TREE} currentPath="0.0.0.0.0.0" onSelect={() => undefined} />
               )}
             </Tile>
             <Tile name="EnginePanel" docs="chess-game-viewer-enginepanel" surface width={400} height={280}>

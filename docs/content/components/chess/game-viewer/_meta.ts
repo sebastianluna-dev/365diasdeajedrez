@@ -4,6 +4,7 @@ const meta: MetaRecord = {
   "game-viewer": "GameViewer",
   "move-table": "MoveTable",
   "move-tree": "MoveTree",
+  "move-notes": "MoveNotes",
   "move-context-menu": "MoveContextMenu",
   "game-tools": "GameTools",
   "player-strip": "PlayerStrip",

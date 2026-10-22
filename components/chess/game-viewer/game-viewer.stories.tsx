@@ -169,12 +169,25 @@ export const LessonAtTheEnd: Story = {
 };
 
 /**
- * The lesson in the new design system (`look="material"`), midway through the game: the blue board with the «elegida» pieces,
- * Material's keys and «Saltar» under it, the title in the display font, «Prioridad» in amber and the move a pill.
+ * The lesson in the new design system (`look="material"`, `moveList="notes"`), midway through the game: the blue
+ * board with the «elegida» pieces and Material's keys, and beside it «Prioritaria» and the chapter, the title, how far
+ * through the line, the moves as pills, the note on the move on the board, «Siguiente» and the practice card.
  */
 export const LessonMaterial: Story = {
   name: "Lesson (Material)",
-  args: { ...Lesson.args, look: "material", initialPath: mainLinePath(21) },
+  args: {
+    ...Lesson.args,
+    look: "material",
+    moveList: "notes",
+    badge: "Prioritaria",
+    subtitle: "Capítulo 2 · Partidas clásicas",
+    practice: {
+      title: "Ahora practica",
+      detail: "3 ejercicios · 1 de 3 resueltos",
+      action: { href: "#", label: "Continuar" },
+    },
+    initialPath: mainLinePath(13),
+  },
   // On the workspace's white panel, where the lesson draws it: the notation has no card of its own.
   decorators: [
     (Story) => (
