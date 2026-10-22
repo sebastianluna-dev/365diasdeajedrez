@@ -7,9 +7,9 @@
   /* 24 between the board and the panel of text (`--viewer-column-gap`). */
   --viewer-column-gap: var(--platform-space-6);
 
-  /* What the board's footer takes under it: the 48px of its buttons and the
-     card's gap above them. */
-  --lesson-board-footer: calc(48px + var(--platform-space-4));
+  /* What the board's footer takes under it: the 40px of Material's keys and
+     the card's gap above them. */
+  --lesson-board-footer: calc(40px + var(--platform-space-4));
 
   /* The «Ahora practica» row under the game (D25): its height and the gap
      above it, taken off the board when the lesson has exercises, so the row

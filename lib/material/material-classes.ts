@@ -18,12 +18,16 @@ export function mdButton(color: MaterialButtonColor, size: MaterialSize = "sm"):
   return `btn btn-${color} btn-${size} ${PRESSABLE}`;
 }
 
-/** A button that is only an icon: `standard` with no box (a bar's), or on a fill. */
+/**
+ * A button that is only an icon: `standard` with no box (a bar's), or on a
+ * fill; `wide` stretches it into a pill, for keys pressed one after another.
+ */
 export function mdIconButton(
   color: "standard" | "tonal" | "filled" | "outlined" = "standard",
   size: MaterialSize = "sm",
+  width?: "narrow" | "wide",
 ): string {
-  return `icon-btn icon-btn-${color} icon-btn-${size} ${PRESSABLE}`;
+  return `icon-btn icon-btn-${color} icon-btn-${size}${width ? ` icon-btn-${width}` : ""} ${PRESSABLE}`;
 }
 
 /** A floating action button; `extended` when it carries a label. */

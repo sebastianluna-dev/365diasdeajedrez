@@ -3,6 +3,11 @@
    of the lesson are the same box and nothing moves when one replaces the
    other. */
 .lesson-skeleton {
+  /* The lesson's board is the new design system's: the skeleton's squares
+     are its blue, not the green. */
+  --board-light: var(--platform-m3-board-light);
+  --board-dark: var(--platform-m3-board-dark);
+
   /* The board and the panel of text, drawn ONE LEVEL IN from the frame's
      column and not on it, as the viewer draws its own (`.game-viewer__layout`).
      The board's ceiling is `100cqh` of that column, a size container, and a

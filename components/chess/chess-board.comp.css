@@ -210,6 +210,84 @@
     color: rgba(22, 17, 13, 0.55);
   }
 
+  /* The board of the new design system (2026-10-22, `look="material"`): the
+     blue squares, the coordinates in each square's own ink, the last move in
+     amber, and the «elegida» pieces (`public/pieces/elegida/`), the owner's
+     own drawing. Only the platform draws it, so its tokens need no fallback. */
+  &.chess-board_look_material {
+    --board-light: var(--platform-m3-board-light);
+    --board-dark: var(--platform-m3-board-dark);
+
+    /* The last move in amber, each square keeping its own lightness — the
+       design's pale amber on a light square and golden on a dark one —, which
+       is what the `color` blend does: the hue of the amber, the lightness of
+       the square under it. */
+    & cg-board square.last-move,
+    & cg-board square.selected {
+      background-color: var(--platform-m3-board-last-move);
+      mix-blend-mode: color;
+    }
+
+    /* Each coordinate in the ink of the square it sits on. White's board
+       starts from a dark corner, so its odd coordinates sit on dark squares;
+       Black's (`.black`) the other way round. */
+    & .cg-wrap coords {
+      opacity: 1;
+    }
+
+    /* Files in lower case, as they are written in the notation. */
+    & .cg-wrap coords.files {
+      text-transform: none;
+    }
+
+    & .cg-wrap coords coord:nth-child(odd),
+    & .cg-wrap coords.black coord:nth-child(even) {
+      color: var(--platform-m3-board-ink-dark);
+    }
+
+    & .cg-wrap coords coord:nth-child(even),
+    & .cg-wrap coords.black coord:nth-child(odd) {
+      color: var(--platform-m3-board-ink-light);
+    }
+
+    & .cg-wrap piece.pawn.white {
+      background-image: url("/pieces/elegida/w-pawn.svg");
+    }
+    & .cg-wrap piece.knight.white {
+      background-image: url("/pieces/elegida/w-knight.svg");
+    }
+    & .cg-wrap piece.bishop.white {
+      background-image: url("/pieces/elegida/w-bishop.svg");
+    }
+    & .cg-wrap piece.rook.white {
+      background-image: url("/pieces/elegida/w-rook.svg");
+    }
+    & .cg-wrap piece.queen.white {
+      background-image: url("/pieces/elegida/w-queen.svg");
+    }
+    & .cg-wrap piece.king.white {
+      background-image: url("/pieces/elegida/w-king.svg");
+    }
+    & .cg-wrap piece.pawn.black {
+      background-image: url("/pieces/elegida/b-pawn.svg");
+    }
+    & .cg-wrap piece.knight.black {
+      background-image: url("/pieces/elegida/b-knight.svg");
+    }
+    & .cg-wrap piece.bishop.black {
+      background-image: url("/pieces/elegida/b-bishop.svg");
+    }
+    & .cg-wrap piece.rook.black {
+      background-image: url("/pieces/elegida/b-rook.svg");
+    }
+    & .cg-wrap piece.queen.black {
+      background-image: url("/pieces/elegida/b-queen.svg");
+    }
+    & .cg-wrap piece.king.black {
+      background-image: url("/pieces/elegida/b-king.svg");
+    }
+  }
+
   /* --- move-list panel --- */
   & .chess-board__notation {
     flex: 1;

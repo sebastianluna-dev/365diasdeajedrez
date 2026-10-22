@@ -11,6 +11,8 @@ const TOP_MARGIN = 10;
 
 interface MoveTreeProps {
   tree: PgnTree;
+  /** The viewer's look: `material`, the new design system's — every move a pill, the one on the board in the primary. */
+  look?: "material";
   /** Dotted path of the active node ("" = initial position). */
   currentPath: string;
   onSelect: (path: string) => void;
@@ -37,6 +39,7 @@ export function MoveTree({
   onContextMenu,
   pinnedComment,
   highlightedPaths,
+  look,
 }: MoveTreeProps) {
   const activeRef = useRef<HTMLButtonElement>(null);
 
@@ -104,7 +107,7 @@ export function MoveTree({
   };
 
   return (
-    <div className="move-tree">
+    <div className={`move-tree${look ? ` move-tree_look_${look}` : ""}`}>
       {pinnedComment && <p className="move-tree__comment move-tree__comment_kind_pinned">{pinnedComment}</p>}
       {tree.initialComment && <p className="move-tree__comment">{tree.initialComment}</p>}
 

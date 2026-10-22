@@ -169,6 +169,23 @@ export const LessonAtTheEnd: Story = {
 };
 
 /**
+ * The lesson in the new design system (`look="material"`), midway through the game: the blue board with the «elegida» pieces,
+ * Material's keys and «Saltar» under it, the title in the display font, «Prioridad» in amber and the move a pill.
+ */
+export const LessonMaterial: Story = {
+  name: "Lesson (Material)",
+  args: { ...Lesson.args, look: "material", initialPath: mainLinePath(21) },
+  // On the workspace's white panel, where the lesson draws it: the notation has no card of its own.
+  decorators: [
+    (Story) => (
+      <div style={{ padding: 24, background: "var(--platform-m3-panel)" }}>
+        <Story />
+      </div>
+    ),
+  ],
+};
+
+/**
  * A study's game, editable: the arrows beside the notation, the engine on offer and switched off, and the tools
  * under the board on the move's comment. A move played on the board is added to the game.
  */

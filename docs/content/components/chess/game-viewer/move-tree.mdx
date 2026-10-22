@@ -35,6 +35,7 @@ The tree carries no editing logic. It reports a right click when asked to and no
 | `onContextMenu`    | `(path: string, event: MouseEvent) => void` | no       | Right click on a move. Optional on purpose: whoever only reads the game does not pass it and the list behaves exactly as before; an editor uses it to open the move's menu. |
 | `pinnedComment`    | `string`                                    | no       | The game owner's note, drawn as the text's first paragraph: before the PGN's own opening comment and the first move, keeping its line breaks.                               |
 | `highlightedPaths` | `ReadonlySet<string>`                       | no       | Moves painted in the selection's blue (`_line_played`): the line being played against the module.                                                                           |
+| `look`             | `"material"`                                | no       | The new design system's notation: every move a pill, the one on the board in the primary. The viewer passes its own `look`.                                                 |
 
 ## Behaviour
 
@@ -46,13 +47,13 @@ The tree carries no editing logic. It reports a right click when asked to and no
 
 ## Markup & styling
 
-Block `.move-tree` (130 lines).
+Block `.move-tree` (149 lines). `look="material"` (`.move-tree_look_material`, passed by the viewer in its material look, 2026-10-22) draws every move as a pill, `--platform-m3-container` under the pointer and the move on the board in `--platform-m3-primary`.
 
 **Elements:** `.move-tree__line` (a run of the main line), `.move-tree__comment` (a paragraph of the lesson), `.move-tree__variation` (a line that was not played), `.move-tree__bracket`, `.move-tree__aside` (what a variation is proposed for, inside its paragraph), `.move-tree__move`, `.move-tree__sr` (a move's NAGs in words, visually hidden)
 
 **The block is `position: relative`** (2026-10-06): it is the containing block of `.move-tree__sr`, the words read and not seen, which are `position: absolute`. Without it they were placed against the body, escaped the panel's own scroll and stretched the page by the length of the game — which is what gave the full-window lesson a scrollbar.
 
-**Modifiers and states:** `.move-tree__comment_kind_pinned` (the owner's note heading the text: keeps its line breaks), `.move-tree__move_active`
+**Modifiers and states:** `.move-tree__comment_kind_pinned` (the owner's note heading the text: keeps its line breaks), `.move-tree__move_active`, `.move-tree_look_material`
 
 **Tokens:** `--move-tree-font-size` (set by the viewer's panel so the list scales with it), `--platform-accent-ink`, `--platform-accent-soft`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-variation`, `--platform-variation-soft`
 

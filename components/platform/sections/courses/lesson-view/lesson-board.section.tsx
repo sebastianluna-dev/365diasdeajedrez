@@ -77,6 +77,8 @@ export function LessonBoardSection({ lesson, errorCode }: LessonBoardSectionProp
           // Under the board, the way through the lesson and nothing else:
           // no turning the board around, no settings menu.
           boardTools={false}
+          // The new design system's board, keys and notation (2026-10-22).
+          look="material"
           // And the way through is ONE button: it lets you out while there
           // are moves left, and at the last one it is what gives the lesson
           // for read and opens the next — which is why the screen needs no

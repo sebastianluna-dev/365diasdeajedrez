@@ -90,6 +90,12 @@ export interface ChessBoardProps {
    * the usual yellow.
    */
   lastMoveTone?: "error";
+  /**
+   * How the board is drawn. `material`: the new design system's (2026-10-22),
+   * a blue board with the «elegida» pieces; without it, the green board and
+   * chessground's cburnett pieces.
+   */
+  look?: "material";
 }
 
 export function ChessBoard({
@@ -104,6 +110,7 @@ export function ChessBoard({
   onShapesChange,
   hintSquare,
   lastMoveTone,
+  look,
 }: ChessBoardProps) {
   const positions = useMemo(() => replayGame(pgn ?? ""), [pgn]);
   const total = positions.length - 1;
@@ -450,7 +457,7 @@ export function ChessBoard({
     );
   };
 
-  const tone = lastMoveTone === "error" ? " chess-board_last-move_error" : "";
+  const tone = `${lastMoveTone === "error" ? " chess-board_last-move_error" : ""}${look ? ` chess-board_look_${look}` : ""}`;
 
   if (position) {
     return (

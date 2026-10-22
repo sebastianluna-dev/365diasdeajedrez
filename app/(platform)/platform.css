@@ -223,6 +223,9 @@
   --platform-m3-on-success-container: light-dark(#0d652d, #c4eed0);
   /* What takes something away for good: «Quitar de mis cursos». */
   --platform-m3-error: light-dark(#b3261e, #f2b8b5);
+  /* An amber tag («Prioridad») and its ink. */
+  --platform-m3-warning-container: light-dark(#feefc3, #4a3700);
+  --platform-m3-on-warning-container: light-dark(#5f4400, #feefc3);
   /* The streak's grid, the more done the deeper: Google's blue in four steps. */
   --platform-m3-heat-0: light-dark(#b5cdf5, #2d3f5c);
   --platform-m3-heat-1: light-dark(#7cacf8, #3d6bb3);
@@ -232,6 +235,15 @@
   --platform-m3-inverse-surface: light-dark(#303030, #e3e3e3);
   --platform-m3-inverse-on-surface: light-dark(#f2f2f2, #303030);
   --platform-m3-inverse-primary: light-dark(#a8c7fa, #0b57d0);
+  /* The board of the new design system (`ChessBoard look="material"`): its
+     two squares, the coordinates' ink on each, and the last move, whose hue
+     tints either square (`mix-blend-mode: color`). A little dimmer in the dark theme, so the board
+     does not glare on the dark canvas. */
+  --platform-m3-board-light: light-dark(#eef3fb, #c9d5e8);
+  --platform-m3-board-dark: light-dark(#9db7de, #7f9bc6);
+  --platform-m3-board-ink-light: light-dark(#4f6fa3, #3f5c8c);
+  --platform-m3-board-ink-dark: light-dark(#eef3fb, #eef3fb);
+  --platform-m3-board-last-move: light-dark(#f2c14e, #e0b043);
 
   /* MATERIAL'S OWN ROLES (`@material/web`, its Expressive components of
      `labs/gb`, 2026-10-22): its stylesheets read `--md-sys-*`, which it

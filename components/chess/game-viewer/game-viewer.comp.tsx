@@ -36,6 +36,7 @@ import { type PlayerInfo, PlayerStrip } from "./player-strip.comp";
 import { playerOutcomes } from "@/lib/chess/player-outcomes";
 import { useLingering } from "./use-lingering.hook";
 import { MoveTable } from "./move-table.comp";
+import { mdButton, mdIconButton } from "@/lib/material/material-classes";
 import { MoveTree } from "./move-tree.comp";
 import { playMoveSound } from "./move-sound";
 import { usePgnEditing } from "./use-pgn-editing.hook";
@@ -90,6 +91,13 @@ interface GameViewerProps {
    * through the lesson and nothing else.
    */
   boardTools?: boolean;
+  /**
+   * How the viewer is drawn. `material`: the new design system's
+   * (2026-10-22), for a page already passed to it — the blue board with the
+   * «elegida» pieces, Material's keys under it and the notation loose on the
+   * panel. Without it, the platform's own look.
+   */
+  look?: "material";
   /**
    * The button at the right end of the bar under the board: the way OUT while
    * there are moves left («Saltar»), and the way ON once the last one is
@@ -238,6 +246,7 @@ export function GameViewer({
   title,
   badge,
   boardTools = true,
+  look,
   onwards,
   players,
   result,
@@ -599,16 +608,21 @@ export function GameViewer({
   const exerciseHrefFor = (movePath: string) =>
     exerciseFromHereHref === undefined ? undefined : `${exerciseFromHereHref}&jugada=${encodeURIComponent(movePath)}`;
 
+  const material = look === "material";
+  // A key of the bar: the platform's square, or Material's wide pill — the
+  // way forward filled, the rest tonal.
+  const keyClass = (main = false) =>
+    material ? mdIconButton(main ? "filled" : "tonal", "sm", "wide") : "game-viewer__nav-button";
+  const keyIcon = material ? "platform-md-icon" : "game-viewer__nav-icon";
+  const onwardsClass = (finish: boolean) =>
+    material
+      ? `${mdButton(finish ? "filled" : "tonal", "sm")} game-viewer__onwards-button`
+      : "platform-button platform-button_size_lg game-viewer__onwards-button";
+
   const nav = (
     <div className="game-viewer__nav">
-      <button
-        type="button"
-        title="Primera jugada"
-        onClick={goToStart}
-        disabled={atStart}
-        className="game-viewer__nav-button"
-      >
-        <BackwardStepIcon variant="classic-solid" className="game-viewer__nav-icon" />
+      <button type="button" title="Primera jugada" onClick={goToStart} disabled={atStart} className={keyClass()}>
+        <BackwardStepIcon variant="classic-solid" className={keyIcon} />
       </button>
       <button
         type="button"
@@ -619,9 +633,9 @@ export function GameViewer({
         onPointerUp={stopRepeat}
         onPointerLeave={stopRepeat}
         onPointerCancel={stopRepeat}
-        className="game-viewer__nav-button"
+        className={keyClass()}
       >
-        <ChevronLeftIcon variant="classic-solid" className="game-viewer__nav-icon" />
+        <ChevronLeftIcon variant="classic-solid" className={keyIcon} />
       </button>
       <button
         type="button"
@@ -634,18 +648,12 @@ export function GameViewer({
         onPointerUp={stopRepeat}
         onPointerLeave={stopRepeat}
         onPointerCancel={stopRepeat}
-        className="game-viewer__nav-button"
+        className={keyClass(true)}
       >
-        <ChevronRightIcon variant="classic-solid" className="game-viewer__nav-icon" />
+        <ChevronRightIcon variant="classic-solid" className={keyIcon} />
       </button>
-      <button
-        type="button"
-        title="Última jugada"
-        onClick={goToEnd}
-        disabled={atEnd}
-        className="game-viewer__nav-button"
-      >
-        <ForwardStepIcon variant="classic-solid" className="game-viewer__nav-icon" />
+      <button type="button" title="Última jugada" onClick={goToEnd} disabled={atEnd} className={keyClass()}>
+        <ForwardStepIcon variant="classic-solid" className={keyIcon} />
       </button>
       {/* Flipping the board is an action on the game, not a viewer setting:
           it goes with the buttons the game is traversed with. */}
@@ -654,9 +662,9 @@ export function GameViewer({
           type="button"
           title="Girar el tablero"
           onClick={() => setFlipToggled((current) => !current)}
-          className="game-viewer__nav-button"
+          className={keyClass()}
         >
-          <ArrowRightArrowLeftIcon className="game-viewer__nav-icon" />
+          <ArrowRightArrowLeftIcon className={keyIcon} />
         </button>
       )}
 
@@ -671,10 +679,10 @@ export function GameViewer({
             aria-haspopup="menu"
             aria-expanded={optionsOpen}
             onClick={() => setOptionsOpen((open) => !open)}
-            className="game-viewer__nav-button"
+            className={keyClass()}
             ref={optionsButtonRef}
           >
-            <BarsIcon className="game-viewer__nav-icon" />
+            <BarsIcon className={keyIcon} />
           </button>
 
           {lingeringOptions.value && (
@@ -727,17 +735,13 @@ export function GameViewer({
         <div className="game-viewer__onwards">
           {atEnd ? (
             <form action={onwards.finish}>
-              <button type="submit" className="platform-button platform-button_size_lg game-viewer__onwards-button">
+              <button type="submit" className={onwardsClass(true)}>
                 {onwards.finishLabel}
               </button>
             </form>
           ) : (
             onwards.skipHref && (
-              <Link
-                href={onwards.skipHref}
-                title={onwards.skipTitle}
-                className="platform-button platform-button_size_lg game-viewer__onwards-button"
-              >
+              <Link href={onwards.skipHref} title={onwards.skipTitle} className={onwardsClass(false)}>
                 {onwards.skipLabel}
               </Link>
             )
@@ -751,7 +755,7 @@ export function GameViewer({
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- not a control: the click is only noted, so the viewer's keys answer once it has been used
     <div
-      className={`game-viewer${isFullscreen ? " game-viewer_state_fullscreen" : ""}`}
+      className={`game-viewer${material ? " game-viewer_look_material" : ""}${isFullscreen ? " game-viewer_state_fullscreen" : ""}`}
       ref={rootRef}
       onClick={() => (hasBeenClickedRef.current = true)}
     >
@@ -791,6 +795,7 @@ export function GameViewer({
                   shapes: node ? node.shapes : tree.initialShapes,
                 }}
                 flipBoard={flipBoard}
+                look={look}
                 interactive={isEditing || isPlaying}
                 onMove={(san) => (isPlaying ? play?.onMove?.(san) : editing.addMoveAt(currentPath, san))}
                 movableColor={
@@ -907,6 +912,7 @@ export function GameViewer({
                   onContextMenu={isEditing ? openMenu : undefined}
                   pinnedComment={pinnedComment}
                   highlightedPaths={playedLine}
+                  look={look}
                 />
               ) : (
                 <MoveTable

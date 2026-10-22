@@ -118,6 +118,25 @@
     color: var(--platform-accent-ink);
   }
 
+  /* The new design system's notation (2026-10-22, `look="material"`): every
+     move a pill, the container under the pointer and the move on the board
+     in the primary. */
+  &.move-tree_look_material {
+    & .move-tree__move {
+      padding-inline: var(--platform-space-2);
+      border-radius: 1000px;
+    }
+
+    & .move-tree__move:hover {
+      background: var(--platform-m3-container);
+    }
+
+    & .move-tree__move.move-tree__move_active {
+      background: var(--platform-m3-primary);
+      color: var(--platform-m3-on-primary);
+    }
+  }
+
   /* Read, not seen: a move's NAGs in words, which its symbols only draw. */
   & .move-tree__sr {
     position: absolute;

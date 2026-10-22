@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { StaticDiagram } from "@/components/chess/static-diagram.comp";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
+import { mdButton } from "@/lib/material/material-classes";
 import type { LessonPractice } from "@/services/exercises/lesson-practice.types";
 import "./lesson-practice-list.comp.css";
 
@@ -28,7 +29,8 @@ interface LessonPracticeListProps {
 /**
  * A practice-only lesson (D25): no game to read, so its exercises stand
  * where the board would be — the lesson's head, its description, the way in
- * as the one accent, and the exercises in order, each the start position
+ * as the one filled button (Material's, the new design system since
+ * 2026-10-22), and the exercises in order, each the start position
  * small, its title and facts, and «Resuelto» when any row of its family is.
  * Under them, the lesson's way through.
  */
@@ -39,19 +41,14 @@ export function LessonPracticeList({ title, badge, description, practice, onward
       <header className="lesson-practice-list__head">
         <h1 className="lesson-practice-list__title">
           {title}
-          {badge && (
-            <span className="platform-tag platform-tag_variant_accent lesson-practice-list__badge">{badge}</span>
-          )}
+          {badge && <span className="lesson-practice-list__badge">{badge}</span>}
         </h1>
         <p className="lesson-practice-list__standing">
           {practice.total} {practice.total === 1 ? "ejercicio" : "ejercicios"} · {standing}
         </p>
         {description && <p className="lesson-practice-list__description">{description}</p>}
         {practice.start && (
-          <Link
-            href={practice.start.href}
-            className="platform-button platform-button_variant_accent platform-button_size_lg lesson-practice-list__start"
-          >
+          <Link href={practice.start.href} className={`${mdButton("filled", "sm")} lesson-practice-list__start`}>
             {practice.start.label}
           </Link>
         )}
@@ -84,15 +81,12 @@ export function LessonPracticeList({ title, badge, description, practice, onward
       {/* The lesson's way through, as under a board: the exercises are optional (D26), so «Continuar» is always there. */}
       <div className="lesson-practice-list__onwards">
         {onwards.skipHref && (
-          <Link href={onwards.skipHref} title={onwards.skipTitle} className="platform-button platform-button_size_lg">
+          <Link href={onwards.skipHref} title={onwards.skipTitle} className={mdButton("tonal", "sm")}>
             {onwards.skipLabel}
           </Link>
         )}
         <form action={onwards.finish}>
-          <button
-            type="submit"
-            className={`platform-button platform-button_size_lg${practice.start ? "" : " platform-button_variant_accent"}`}
-          >
+          <button type="submit" className={mdButton(practice.start ? "tonal" : "filled", "sm")}>
             {onwards.finishLabel}
           </button>
         </form>

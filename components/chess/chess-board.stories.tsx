@@ -125,6 +125,12 @@ export const Position: Story = {
   decorators: [boardColumn],
 };
 
+/** The new design system's board (`look="material"`), as the lesson mounts it: the blue squares, the «elegida» pieces, the coordinates in each square's ink and the last move in amber. */
+export const Material: Story = {
+  args: { position: BEFORE_THE_MATE, look: "material" },
+  decorators: [boardColumn],
+};
+
 /** Standalone, as the site mounts it: the Opera game from its start, the notation in Spanish with its move qualities, and the toolbar. */
 export const Game: Story = {
   args: { pgn: OPERA_GAME, annotations: OPERA_ANNOTATIONS },
