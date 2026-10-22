@@ -24,7 +24,7 @@ const CHIP_WIDTHS = ["wide", "wide", "narrow", "wide"] as const;
  * right). The catalog: the heading — its title and the count; the level's
  * dot is left out, since «Todo el catálogo» has none —, the
  * row of filter chips, and two rows of its cards (cover, name, the line
- * about it, its length and «Agregar»).
+ * about it, its length, and «Agregar» alone in the foot).
  *
  * It is a `loading.tsx`'s, so it is markup and CSS only, with no Client
  * Component behind it. To a screen reader it is one status.
@@ -96,10 +96,10 @@ export function CoursesPanelSkeleton({ view }: CoursesPanelSkeletonProps) {
                 {view === "mine" && (
                   <span className="courses-panel-skeleton__shape courses-panel-skeleton__bar courses-panel-skeleton__bar_size_meter" />
                 )}
+                {view === "catalog" && (
+                  <span className="courses-panel-skeleton__shape courses-panel-skeleton__bar courses-panel-skeleton__bar_width_count" />
+                )}
                 <span className="courses-panel-skeleton__foot">
-                  {view === "catalog" && (
-                    <span className="courses-panel-skeleton__shape courses-panel-skeleton__bar courses-panel-skeleton__bar_width_count" />
-                  )}
                   <span
                     className={`courses-panel-skeleton__shape courses-panel-skeleton__pill ${view === "mine" ? "courses-panel-skeleton__pill_size_text" : "courses-panel-skeleton__pill_size_tonal"}`}
                   />

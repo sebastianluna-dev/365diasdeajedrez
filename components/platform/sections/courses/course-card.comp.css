@@ -69,21 +69,24 @@
     margin-top: auto;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--platform-space-2);
+    justify-content: flex-end;
     min-height: 40px;
   }
 
-  & .course-card__length {
-    font-size: var(--platform-type-xs);
-    color: var(--platform-m3-on-surface-variant);
-  }
-
   /* Above the stretched link, so what is pressed is the button. */
-  & .course-card__action,
-  & .course-card__owned {
+  & .course-card__action {
     position: relative;
     z-index: 1;
+  }
+
+  /* «Lo llevas», on the cover's top left corner, on the panel's white so it
+     reads over any picture. */
+  & .course-card__owned {
+    position: absolute;
+    top: var(--platform-space-2);
+    left: var(--platform-space-2);
+    background: var(--platform-m3-panel);
+    font-weight: 600;
   }
 
   & .course-card__action {

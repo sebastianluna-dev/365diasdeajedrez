@@ -29,15 +29,16 @@ What a course is, for whoever is choosing one, and the way to take it. Since 202
 ## Behaviour
 
 - **The whole card is the link**, through the title's: its `::after` covers the card. A course the student added leads to the course (`href`); one they have not, to its information page (`infoHref`), for whoever wants to read about it before adding it.
-- **Already the student's**: «Lo llevas», Material's assist chip with a check, and a text button with `ctaLabel` («Continuar», «Empezar», «Repasar») to the lesson that comes next (`continueHref`).
-- **Not yet**: its length («24 lecciones · 6 h») and «Agregar», Material's tonal button inside a form whose action is `addAction`; adding takes the student to the course. Its accessible name says which course («Agregar Planes en el medio juego»).
+- **Its length** («24 lecciones · 6 h») is a line under the one about it, so the foot holds only the button and fits the card's width (2026-10-22: beside «Lo llevas», the button was cut off).
+- **Already the student's**: «Lo llevas», Material's assist chip with a check, on the cover's top left corner on the panel's white (as Google Play marks what is installed), and a text button with `ctaLabel` («Continuar», «Empezar», «Repasar») to the lesson that comes next (`continueHref`).
+- **Not yet**: «Agregar», Material's tonal button inside a form whose action is `addAction`; adding takes the student to the course. Its accessible name says which course («Agregar Planes en el medio juego»).
 - The buttons are raised above the stretched link, so what is pressed is the button.
 
 ## Markup & styling
 
-Block `.course-card` (92 lines), on Material's `card card-outlined`, which draws the box, its outline and its corners.
+Block `.course-card` (95 lines), on Material's `card card-outlined`, which draws the box, its outline and its corners.
 
-**Elements:** `__cover`, `__cover-image`, `__body`, `__name`, `__link`, `__about`, `__foot`, `__length`, `__action`, `__owned`
+**Elements:** `__cover`, `__cover-image`, `__body`, `__name`, `__link`, `__about`, `__foot`, `__action`, `__owned`
 
 **Tokens:** `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-panel`, `--platform-m3-container-high`, `--platform-m3-primary`, the type and space scales.
 

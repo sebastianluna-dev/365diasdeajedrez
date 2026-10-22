@@ -101,6 +101,7 @@
   & .courses-panel-skeleton__pill_size_tonal {
     width: 104px;
     height: 40px;
+    margin-left: auto;
   }
 
   & .courses-panel-skeleton__pill_width_wide {

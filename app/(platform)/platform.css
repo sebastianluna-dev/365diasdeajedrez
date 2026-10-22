@@ -618,10 +618,20 @@ html body.platform-theme[data-scroll-locked] {
   align-items: flex-start;
   gap: var(--platform-space-2);
   min-height: calc(100vh - 70px);
-  padding: 0 var(--platform-space-4) var(--platform-space-4) var(--platform-space-2);
+  /* Below the panel, as much canvas as there is between the bar's controls
+     and the panel's top: the panel ends where the window does, less that. */
+  padding: 0 var(--platform-space-4) var(--platform-space-3) var(--platform-space-2);
   box-sizing: border-box;
   background: var(--platform-m3-canvas);
   color: var(--platform-m3-on-surface);
+
+  /* As the last child of a page that bleeds it would get `min-height: 0`
+     (`.platform-page_frame_bleed > :last-child`), and the panel would end
+     where its content does; the window's height is stated here again, with
+     the weight to win. */
+  .platform-page.platform-page_frame_bleed > & {
+    min-height: calc(100vh - 70px);
+  }
 
   & .platform-workspace__side {
     position: sticky;
