@@ -181,12 +181,6 @@
     justify-content: flex-start;
   }
 
-  & .courses-panel-skeleton__dot {
-    width: 16px;
-    height: 16px;
-    border-radius: 4px;
-  }
-
   /* The catalog's filter chips, in one row that wraps, with the divider. */
   & .courses-panel-skeleton__chips {
     display: flex;

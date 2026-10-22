@@ -21,7 +21,8 @@ const CHIP_WIDTHS = ["wide", "wide", "narrow", "wide"] as const;
  * the figures, the progress and «Continuar»), the streak's band (the flame,
  * two lines and the sixteen weeks), the heading with its count and a row of
  * the student's cards (cover, name, figures, progress, the button at the
- * right). The catalog: the heading with the level's dot and the count, the
+ * right). The catalog: the heading — its title and the count; the level's
+ * dot is left out, since «Todo el catálogo» has none —, the
  * row of filter chips, and two rows of its cards (cover, name, the line
  * about it, its length and «Agregar»).
  *
@@ -68,7 +69,6 @@ export function CoursesPanelSkeleton({ view }: CoursesPanelSkeletonProps) {
         ) : (
           <>
             <span className="courses-panel-skeleton__heading courses-panel-skeleton__heading_align_start">
-              <span className="courses-panel-skeleton__shape courses-panel-skeleton__dot" />
               <span className="courses-panel-skeleton__shape courses-panel-skeleton__bar courses-panel-skeleton__bar_size_title courses-panel-skeleton__bar_width_level" />
               <span className="courses-panel-skeleton__shape courses-panel-skeleton__bar courses-panel-skeleton__bar_width_count" />
             </span>
