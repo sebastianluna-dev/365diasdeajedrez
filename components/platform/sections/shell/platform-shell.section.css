@@ -37,11 +37,6 @@
     display: none;
   }
 
-  /* The three bars only where there is a side column to hide. */
-  &:not(:has(.platform-workspace__side)) .platform-side-toggle {
-    display: none;
-  }
-
   & .platform-shell__bar-inner {
     padding: 0 var(--platform-space-4) 0 var(--platform-space-4);
     height: 70px;

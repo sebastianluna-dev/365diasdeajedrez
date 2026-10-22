@@ -12,9 +12,11 @@ const ATTRIBUTE = "data-side-nav";
  * icon button): they hide and show the
  * side column of a page of the new design system (`.platform-workspace__side`,
  * hidden by `:root[data-side-nav="hidden"]` in platform.css), so the panel
- * takes the whole width. Drawn on every page but shown only where there is a
- * column to hide (platform-shell.section.css). It is not kept: a new visit
- * shows the column.
+ * takes the whole width. Drawn on every page, so the bar never changes its
+ * shape from one page to another or while a page loads (2026-10-22: shown
+ * only where a column existed, it came and went on a reload and the page's
+ * name jumped); where there is no column it has nothing to hide. It is not
+ * kept: a new visit shows the column.
  */
 export function PlatformSideToggle() {
   const [hidden, setHidden] = useState(false);

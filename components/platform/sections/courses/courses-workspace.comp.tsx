@@ -20,11 +20,7 @@ interface CoursesWorkspaceProps {
  *
  * It waits for nothing: the side column's data streams in behind
  * `CoursesSideSkeleton` and the page behind its own `loading.tsx`, so the
- * frame is on screen from the first paint — the canvas under the bar, and
- * the bar's three bars, which the shell shows only where there is a side
- * column (2026-10-22: while the whole layout waited, a reload showed the
- * platform's loading without a column, the bars were hidden and the page's
- * name jumped when they came).
+ * frame is on screen from the first paint, the canvas under the bar with it.
  */
 export function CoursesWorkspace({ children }: CoursesWorkspaceProps) {
   return (
