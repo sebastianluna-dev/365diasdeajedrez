@@ -21,12 +21,6 @@ interface ResetProgressProps {
    * what the course's own page offers.
    */
   chapterId?: string;
-  /**
-   * `link`, one more of the options card's links (the chapter's page); `side`,
-   * a row of the side column of the new design system, with its icon (the
-   * course's page, 2026-10-22).
-   */
-  look?: "link" | "side";
 }
 
 /**
@@ -42,7 +36,7 @@ interface ResetProgressProps {
  * not two: it is the same confirmation, the same box and the same red
  * button; what changes is which action it posts to and three lines of copy.
  */
-export function ResetProgress({ courseId, name, completedLessons, chapterId, look = "link" }: ResetProgressProps) {
+export function ResetProgress({ courseId, name, completedLessons, chapterId }: ResetProgressProps) {
   const confirmRef = useRef<PlatformConfirmPopupHandle>(null);
   const scope = chapterId ? "capítulo" : "curso";
   const label = chapterId ? "Eliminar mi progreso del capítulo" : "Eliminar mi progreso";
@@ -56,12 +50,8 @@ export function ResetProgress({ courseId, name, completedLessons, chapterId, loo
 
   return (
     <div className="reset-progress">
-      <button
-        type="button"
-        className={`reset-progress__open${look === "side" ? " reset-progress__open_look_side" : ""}`}
-        onClick={(event) => confirmRef.current?.open(event)}
-      >
-        {look === "side" && <ArrowRotateLeftIcon variant="duotone-light" className="reset-progress__icon" />}
+      <button type="button" className="reset-progress__open" onClick={(event) => confirmRef.current?.open(event)}>
+        <ArrowRotateLeftIcon variant="duotone-light" className="reset-progress__icon" />
         {label}
       </button>
 

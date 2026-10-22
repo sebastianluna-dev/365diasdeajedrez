@@ -4,13 +4,13 @@ description: "What of the course is learned: everything, or only what the staff 
 
 # `LearnMode`
 
-|            |                                                                                             |
-| ---------- | ------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/course-study/learn-mode.comp.tsx`                     |
-| Kind       | Server Component                                                                            |
-| Stylesheet | `learn-mode.comp.css` → block `.learn-mode`                                                 |
-| Used by    | [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame) |
-| Writes     | `setOnlyPriorityLessons()` · `services/courses/courses.actions.ts`                          |
+|            |                                                                                |
+| ---------- | ------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/courses/course-study/learn-mode.comp.tsx`        |
+| Kind       | Server Component                                                               |
+| Stylesheet | `learn-mode.comp.css` → block `.learn-mode`                                    |
+| Used by    | [`CourseSide`](/components/platform/sections/courses/course-study/course-side) |
+| Writes     | `setOnlyPriorityLessons()` · `services/courses/courses.actions.ts`             |
 
 ## Purpose
 
@@ -35,7 +35,7 @@ It is a **lens**: it writes the settings row and not a single progress row, so s
 
 ## Markup & styling
 
-Block `.learn-mode` (133 lines): a sunken track with two halves, the pressed one raised.
+Block `.learn-mode` (78 lines): a sunken track with two halves, the pressed one raised.
 
 **Elements:** `.learn-mode__label`, `.learn-mode__options`, `.learn-mode__form`, `.learn-mode__option`, `.learn-mode__note`
 
@@ -56,6 +56,6 @@ The transition is off under `prefers-reduced-motion`.
 />
 ```
 
-## Looks
+## In the new design system
 
-`look` (default `"segmented"`): the two buttons on a sunken track, «Todo» and «Prioridad», on the chapter's page (`CourseStudyFrame`); `"side"` (2026-10-22), on the course's page in the new design system, a group of [`CourseSide`](/components/platform/sections/courses/course-study/course-side) — «Qué aprender» as its title and «Todas las lecciones» / «Sólo las prioritarias» as rows with a radio's ring, filled in the primary's blue for the one chosen (`.learn-mode_look_side`, `.learn-mode__option_look_side`, `.learn-mode__ring`).
+Since 2026-10-22 it is drawn as a group of the course's side column ([`CourseSide`](/components/platform/sections/courses/course-study/course-side)): «Qué aprender» as its title and «Todas las lecciones» / «Sólo las prioritarias» as rows with a radio's ring, filled in the primary's blue for the one chosen (`.learn-mode__ring`); before, it was two buttons on a sunken track, «Todo» and «Prioridad». Where it comes back to (`returnTo`) is the page it sits on: the course, or the chapter.

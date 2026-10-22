@@ -26,6 +26,16 @@ export function mdIconButton(
   return `icon-btn icon-btn-${color} icon-btn-${size} ${PRESSABLE}`;
 }
 
+/** A row of tabs: the bar under them, the active one's indicator. */
+export function mdTabs(): string {
+  return "tabs";
+}
+
+/** One tab; the chosen one is `selected`, and carries `aria-current` or `aria-selected` as well. */
+export function mdTab(selected = false): string {
+  return `tab focus-ring-inner ripple${selected ? " selected" : ""}`;
+}
+
 /** A floating action button; `extended` when it carries a label. */
 export function mdFab(color: "primary-container" | "secondary-container" | "primary" = "primary-container"): string {
   return `fab fab-${color} ${PRESSABLE}`;

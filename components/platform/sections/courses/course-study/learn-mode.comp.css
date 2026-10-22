@@ -1,23 +1,22 @@
 .learn-mode {
+  /* A group of the side column of the new design system: its title as
+     `PlatformSideNav` writes it, and each option a row with a radio's ring,
+     filled for the one chosen. */
   display: flex;
   flex-direction: column;
-  gap: var(--platform-space-2);
+  gap: var(--platform-space-0-5);
 
   & .learn-mode__label {
     margin: 0;
+    padding: var(--platform-space-1) var(--platform-space-6);
     font-size: var(--platform-type-xs);
-    font-weight: 700;
-    color: var(--platform-text-subtle);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface-variant);
   }
 
-  /* A sunken track with the chosen option raised on it. */
   & .learn-mode__options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--platform-space-1);
-    padding: var(--platform-space-1);
-    border-radius: 8px;
-    background: var(--platform-surface-neutral);
+    display: flex;
+    flex-direction: column;
   }
 
   & .learn-mode__form {
@@ -26,84 +25,20 @@
 
   & .learn-mode__option {
     flex: 1;
-    height: 34px;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text);
-    font-family: inherit;
-    font-size: var(--platform-type-xs);
-    font-weight: 700;
-    cursor: pointer;
-    transition: 150ms;
-    transition-property: background-color, box-shadow;
-  }
-
-  & .learn-mode__option:hover {
-    background: var(--platform-surface-sunken);
-  }
-
-  & .learn-mode__option_state_on,
-  & .learn-mode__option_state_on:hover {
-    background: var(--platform-surface);
-    box-shadow: 0 1px 2px rgba(22, 17, 13, 0.12);
-  }
-
-  & .learn-mode__note {
-    margin: 0;
-    font-size: var(--platform-type-xs);
-    line-height: 1.45;
-    color: var(--platform-text-subtle);
-    text-wrap: pretty;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    & .learn-mode__option {
-      transition: none;
-    }
-  }
-
-  /* As two rows of the side column of the new design system (`look="side"`):
-     the group's title as `PlatformSideNav` writes it, and each option a row
-     with a radio's ring, filled for the one chosen. */
-  &.learn-mode_look_side {
-    gap: var(--platform-space-0-5);
-
-    & .learn-mode__label {
-      padding: var(--platform-space-1) var(--platform-space-6);
-      font-size: var(--platform-type-xs);
-      font-weight: 600;
-      color: var(--platform-m3-on-surface-variant);
-    }
-
-    & .learn-mode__options {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      padding: 0;
-      border-radius: 0;
-      background: transparent;
-    }
-
-    & .learn-mode__note {
-      padding: var(--platform-space-1) var(--platform-space-4) 0 var(--platform-space-6);
-      color: var(--platform-m3-on-surface-variant);
-    }
-  }
-
-  & .learn-mode__option.learn-mode__option_look_side {
     display: flex;
     align-items: center;
     gap: var(--platform-space-3);
     height: 36px;
     padding: 0 var(--platform-space-4) 0 var(--platform-space-6);
+    border: 0;
     border-radius: 0 1000px 1000px 0;
     background: transparent;
-    box-shadow: none;
     color: var(--platform-m3-on-surface);
+    font-family: inherit;
     font-size: var(--platform-type-sm);
-    font-weight: 400;
     text-align: left;
+    cursor: pointer;
+    transition: background-color 160ms ease-out;
 
     &:hover {
       background: var(--platform-m3-container-high);
@@ -129,5 +64,15 @@
   & .learn-mode__option_state_on .learn-mode__ring {
     border-color: var(--platform-m3-primary);
     background: radial-gradient(circle, var(--platform-m3-primary) 4px, transparent 4.5px);
+  }
+
+  /* What the filter hides, and what follows from it. */
+  & .learn-mode__note {
+    margin: 0;
+    padding: var(--platform-space-1) var(--platform-space-4) 0 var(--platform-space-6);
+    font-size: var(--platform-type-xs);
+    line-height: 1.45;
+    color: var(--platform-m3-on-surface-variant);
+    text-wrap: pretty;
   }
 }

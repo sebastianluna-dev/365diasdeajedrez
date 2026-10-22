@@ -9,7 +9,7 @@ description: "«Quitar de mis cursos»: the last of the course's options and the
 | File       | `components/platform/sections/courses/course-study/remove-course.comp.tsx`                                                                                                |
 | Kind       | Client Component (it opens the confirmation by its `ref`)                                                                                                                 |
 | Stylesheet | `remove-course.comp.css` → block `.remove-course` (the trigger alone; the confirmation draws itself)                                                                      |
-| Used by    | [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame)                                                                               |
+| Used by    | [`CourseSide`](/components/platform/sections/courses/course-study/course-side)                                                                                            |
 | Composes   | [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup) with `verb="Quitar"`, bound to `removeCourse` and with the box `confirm=on` the action reads |
 | Writes     | `removeCourse()` · `services/courses/courses.actions.ts`                                                                                                                  |
 
@@ -53,6 +53,6 @@ Block `.remove-course`, the twin of `.reset-progress`: the trigger alone.
 <RemoveCourse courseId={course.id} courseName={course.name} completedLessons={progress.completedLessons} />
 ```
 
-## Looks
+## In the new design system
 
-`look` (default `"link"`): one more link of the options card, on the chapter's page; `"side"` (2026-10-22), a row of [`CourseSide`](/components/platform/sections/courses/course-study/course-side) in the new design system, in the error's red (`--platform-m3-error`) with `CircleMinusIcon` (`.remove-course__open_look_side`, `.remove-course__icon`).
+Since 2026-10-22 it is drawn as a row of the course's side column ([`CourseSide`](/components/platform/sections/courses/course-study/course-side)), in the error's red (`--platform-m3-error`) with `CircleMinusIcon` (`.remove-course__icon`); before, a link of an options card.

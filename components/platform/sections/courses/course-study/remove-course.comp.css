@@ -1,43 +1,27 @@
 .remove-course {
-  /* The trigger is one more of the course's options: a link among links. The
-     block is the twin of `.reset-progress`, which is the other red entry of
-     the card. The confirmation it opens is `PlatformConfirmPopup`, which
-     draws itself. */
-  & .remove-course__open {
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: var(--platform-accent-ink);
-    font-family: inherit;
-    font-size: var(--platform-type-md);
-    font-weight: 600;
-    text-align: left;
-    cursor: pointer;
-  }
-
-  & .remove-course__open:hover {
-    color: var(--platform-accent-hover);
-  }
-
-  /* As a row of the side column of the new design system (`look="side"`):
+  /* A row of the course's side column (`CourseSide`, the new design system):
      the height, the indent and the round right end of `PlatformSideNav`'s
-     links, with its icon. */
-  & .remove-course__open_look_side {
+     links, with its icon. The confirmation it opens is
+     `PlatformConfirmPopup`, which draws itself. */
+  & .remove-course__open {
     display: flex;
     align-items: center;
     gap: var(--platform-space-3);
     width: 100%;
     height: 36px;
     padding: 0 var(--platform-space-4) 0 var(--platform-space-6);
+    border: 0;
     border-radius: 0 1000px 1000px 0;
+    background: transparent;
     color: var(--platform-m3-error);
+    font-family: inherit;
     font-size: var(--platform-type-sm);
-    font-weight: 400;
+    text-align: left;
+    cursor: pointer;
     transition: background-color 160ms ease-out;
 
     &:hover {
       background: var(--platform-m3-container-high);
-      color: var(--platform-m3-error);
     }
 
     &:focus-visible {

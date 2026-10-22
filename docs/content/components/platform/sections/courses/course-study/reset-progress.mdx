@@ -9,7 +9,7 @@ description: "«Eliminar mi progreso», of a course or of one chapter: the link 
 | File       | `components/platform/sections/courses/course-study/reset-progress.comp.tsx`                                                                                                                                  |
 | Kind       | Client Component (it opens the confirmation by its `ref`)                                                                                                                                                    |
 | Stylesheet | `reset-progress.comp.css` → block `.reset-progress` (the trigger alone; the confirmation draws itself)                                                                                                       |
-| Used by    | [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame)                                                                                                                  |
+| Used by    | [`CourseSide`](/components/platform/sections/courses/course-study/course-side)                                                                                                                               |
 | Composes   | [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup) with `verb="Eliminar"`, bound to `resetCourseProgress` or `resetChapterProgress` and with the box `confirm=on` the action reads |
 | Writes     | `resetCourseProgress()` or `resetChapterProgress()` · `services/courses/courses.actions.ts`                                                                                                                  |
 
@@ -39,7 +39,7 @@ Starting a course over — or just one of its chapters. It cannot be undone, so 
 
 ## Markup & styling
 
-Block `.reset-progress` (53 lines): the trigger alone.
+Block `.reset-progress` (39 lines): the trigger alone.
 
 **Elements:** `.reset-progress__open`
 
@@ -66,6 +66,6 @@ Block `.reset-progress` (53 lines): the trigger alone.
 />;
 ```
 
-## Looks
+## In the new design system
 
-`look` (default `"link"`): one more link of the options card, on the chapter's page; `"side"` (2026-10-22), a row of [`CourseSide`](/components/platform/sections/courses/course-study/course-side) in the new design system, with `ArrowRotateLeftIcon` (`.reset-progress__open_look_side`, `.reset-progress__icon`).
+Since 2026-10-22 it is drawn as a row of the course's side column ([`CourseSide`](/components/platform/sections/courses/course-study/course-side)), with `ArrowRotateLeftIcon` (`.reset-progress__icon`); before, a link of an options card. On a chapter's page there are two, the chapter's first.

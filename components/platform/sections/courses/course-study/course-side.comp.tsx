@@ -11,6 +11,11 @@ import "./course-side.comp.css";
 
 interface CourseSideProps {
   course: CourseDetail;
+  /**
+   * The chapter on screen, on a chapter's page: its link is lit, the
+   * settings come back to it, and its own progress can be erased.
+   */
+  chapter?: { id: string; name: string; completedLessons: number };
 }
 
 /**
@@ -20,9 +25,12 @@ interface CourseSideProps {
  * its chapters as the column's links, each with its number (a check once it
  * is learned) and its lessons, then what to learn — every lesson or only the
  * priority ones — and the course's options: its information, erasing the
- * progress, and leaving it.
+ * progress (on a chapter's page, the chapter's first: it is the page's own,
+ * and the course's is the bigger step), and leaving it. On a chapter's page
+ * that chapter is lit.
  */
-export function CourseSide({ course }: CourseSideProps) {
+export function CourseSide({ course, chapter }: CourseSideProps) {
+  const chapterHref = chapter && course.chapters.find((item) => item.id === chapter.id)?.href;
   const { progress } = course;
   const hasProgress = progress.completedLessons > 0 || course.ctaLabel !== "Empezar";
   const image = course.thumbnail ?? course.cover;
@@ -52,11 +60,12 @@ export function CourseSide({ course }: CourseSideProps) {
             : [
                 {
                   title: "Capítulos",
-                  links: course.chapters.map((chapter) => ({
-                    label: chapter.name,
-                    href: chapter.href,
-                    count: `${chapter.completedLessons}/${chapter.totalLessons}`,
-                    badge: { text: String(chapter.order), done: chapter.isCompleted },
+                  links: course.chapters.map((item) => ({
+                    label: item.name,
+                    href: item.href,
+                    count: `${item.completedLessons}/${item.totalLessons}`,
+                    badge: { text: String(item.order), done: item.isCompleted },
+                    current: item.id === chapter?.id,
                   })),
                 },
               ]
@@ -67,8 +76,7 @@ export function CourseSide({ course }: CourseSideProps) {
         courseId={course.id}
         onlyPriority={course.onlyPriorityLessons}
         hiddenLessons={course.hiddenLessons}
-        returnTo={course.studyHref}
-        look="side"
+        returnTo={chapterHref ?? course.studyHref}
       />
 
       <section className="course-side__group" aria-labelledby="course-side-options">
@@ -79,20 +87,18 @@ export function CourseSide({ course }: CourseSideProps) {
           <CircleInfoIcon variant="duotone-light" className="course-side__icon" />
           Información del curso
         </Link>
-        {hasProgress && (
+        {chapter && chapter.completedLessons > 0 && (
           <ResetProgress
             courseId={course.id}
-            name={course.name}
-            completedLessons={progress.completedLessons}
-            look="side"
+            chapterId={chapter.id}
+            name={chapter.name}
+            completedLessons={chapter.completedLessons}
           />
         )}
-        <RemoveCourse
-          courseId={course.id}
-          courseName={course.name}
-          completedLessons={progress.completedLessons}
-          look="side"
-        />
+        {hasProgress && (
+          <ResetProgress courseId={course.id} name={course.name} completedLessons={progress.completedLessons} />
+        )}
+        <RemoveCourse courseId={course.id} courseName={course.name} completedLessons={progress.completedLessons} />
       </section>
     </div>
   );
