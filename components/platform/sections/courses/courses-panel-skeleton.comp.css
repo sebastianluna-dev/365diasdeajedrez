@@ -10,28 +10,200 @@
     white-space: nowrap;
   }
 
+  /* The panel's own rhythm: the same gap between blocks as the pages. */
+  & .courses-panel-skeleton__shapes {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-6);
+  }
+
   /* Every shape is the container's grey, and they pulse together. */
-  & .courses-panel-skeleton__block,
-  & .courses-panel-skeleton__line,
-  & .courses-panel-skeleton__cover,
-  & .courses-panel-skeleton__text {
+  & .courses-panel-skeleton__shape {
     display: block;
+    flex: none;
     background: var(--platform-m3-container);
     animation: courses-panel-skeleton-pulse 1200ms ease-in-out infinite alternate;
   }
 
-  /* Where «Sigue donde ibas», or the catalog's heading and chips, will be. */
-  & .courses-panel-skeleton__block {
-    height: 200px;
-    border-radius: var(--md-sys-shape-corner-xl);
+  & .courses-panel-skeleton__stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    min-width: 0;
   }
 
-  & .courses-panel-skeleton__line {
-    width: 180px;
-    height: 24px;
+  & .courses-panel-skeleton__stack_grow {
+    flex: 1;
+  }
+
+  /* A line of text: 12px high, full width unless a modifier narrows it. */
+  & .courses-panel-skeleton__bar {
+    height: 12px;
     border-radius: 1000px;
   }
 
+  & .courses-panel-skeleton__bar_size_title {
+    height: 24px;
+    width: 70%;
+  }
+
+  & .courses-panel-skeleton__bar_size_heading {
+    height: 20px;
+    width: 140px;
+  }
+
+  & .courses-panel-skeleton__bar_size_meter {
+    height: 6px;
+    max-width: 460px;
+  }
+
+  & .courses-panel-skeleton__bar_width_eyebrow {
+    width: 130px;
+  }
+
+  & .courses-panel-skeleton__bar_width_half {
+    width: 50%;
+  }
+
+  & .courses-panel-skeleton__bar_width_third {
+    width: 35%;
+  }
+
+  & .courses-panel-skeleton__bar_width_wide {
+    width: 85%;
+  }
+
+  & .courses-panel-skeleton__bar_width_count {
+    width: 72px;
+  }
+
+  & .courses-panel-skeleton__bar_width_level {
+    width: 160px;
+  }
+
+  /* A button or a chip: a pill at its height. */
+  & .courses-panel-skeleton__pill {
+    height: 32px;
+    border-radius: 1000px;
+  }
+
+  & .courses-panel-skeleton__pill_size_cta {
+    width: 148px;
+    height: 56px;
+  }
+
+  & .courses-panel-skeleton__pill_size_text {
+    width: 92px;
+    height: 24px;
+    margin-left: auto;
+  }
+
+  & .courses-panel-skeleton__pill_size_tonal {
+    width: 104px;
+    height: 40px;
+  }
+
+  & .courses-panel-skeleton__pill_width_wide {
+    width: 104px;
+  }
+
+  & .courses-panel-skeleton__pill_width_narrow {
+    width: 72px;
+  }
+
+  & .courses-panel-skeleton__pill_width_wider {
+    width: 140px;
+  }
+
+  /* «Sigue donde ibas»: its block, the cover at the left and the text beside. */
+  & .courses-panel-skeleton__resume {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    align-items: center;
+    gap: var(--platform-space-6);
+    padding: var(--platform-space-4);
+    border-radius: var(--md-sys-shape-corner-xl);
+    background: var(--platform-m3-container);
+
+    & .courses-panel-skeleton__shape {
+      background: var(--platform-m3-container-high);
+    }
+
+    @media (width < 768px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  & .courses-panel-skeleton__resume-cover {
+    aspect-ratio: 16 / 10;
+    border-radius: var(--md-sys-shape-corner-lg);
+  }
+
+  /* The streak's band: the flame's disc, two lines and the sixteen weeks. */
+  & .courses-panel-skeleton__streak {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-5);
+    padding: var(--platform-space-4) var(--platform-space-6);
+    border-radius: var(--md-sys-shape-corner-xl);
+    background: var(--platform-m3-secondary-container);
+
+    & .courses-panel-skeleton__shape {
+      background: color-mix(in srgb, var(--platform-m3-on-secondary-container) 10%, transparent);
+    }
+
+    @media (width < 1280px) {
+      flex-wrap: wrap;
+    }
+  }
+
+  & .courses-panel-skeleton__flame {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+  }
+
+  /* Sixteen columns of seven 10px days, 2px apart. */
+  & .courses-panel-skeleton__weeks {
+    width: calc(16 * 10px + 15 * 2px);
+    height: calc(7 * 10px + 6 * 2px);
+    border-radius: 8px;
+  }
+
+  & .courses-panel-skeleton__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-3);
+  }
+
+  & .courses-panel-skeleton__heading_align_start {
+    justify-content: flex-start;
+  }
+
+  & .courses-panel-skeleton__dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+  }
+
+  /* The catalog's filter chips, in one row that wraps, with the divider. */
+  & .courses-panel-skeleton__chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-2);
+    margin-top: calc(-1 * var(--platform-space-2));
+  }
+
+  & .courses-panel-skeleton__divider {
+    width: 1px;
+    height: 24px;
+    margin: 0 var(--platform-space-1);
+    background: var(--platform-m3-outline-variant);
+  }
+
+  /* The cards, as the pages lay them out: as many as fit of at least 200px. */
   & .courses-panel-skeleton__grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -41,8 +213,6 @@
   & .courses-panel-skeleton__card {
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-2);
-    padding-bottom: var(--platform-space-4);
     border: 1px solid var(--platform-m3-outline-variant);
     border-radius: var(--md-sys-shape-corner-md);
     overflow: hidden;
@@ -50,24 +220,25 @@
 
   & .courses-panel-skeleton__cover {
     aspect-ratio: 21 / 9;
-    margin-bottom: var(--platform-space-2);
   }
 
-  & .courses-panel-skeleton__text {
-    height: 12px;
-    margin: 0 var(--platform-space-4);
-    border-radius: 1000px;
+  & .courses-panel-skeleton__card-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-3) var(--platform-space-4);
   }
 
-  & .courses-panel-skeleton__text_size_short {
-    width: 50%;
+  & .courses-panel-skeleton__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-2);
+    min-height: 40px;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    & .courses-panel-skeleton__block,
-    & .courses-panel-skeleton__line,
-    & .courses-panel-skeleton__cover,
-    & .courses-panel-skeleton__text {
+    & .courses-panel-skeleton__shape {
       animation: none;
     }
   }

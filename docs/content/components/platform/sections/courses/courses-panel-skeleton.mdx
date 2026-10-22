@@ -1,28 +1,39 @@
 ---
-description: "What the panel of «Cursos» shows while a view loads: the shape of what is coming, softly pulsing, while the layout keeps the side column and the search in place."
+description: "What the panel of «Cursos» shows while a view loads: the shape of the page that is coming — «Mis cursos» or the catalog —, softly pulsing, while the layout keeps the side column and the search in place."
 ---
 
 # `CoursesPanelSkeleton`
 
-|            |                                                                        |
-| ---------- | ---------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/courses-panel-skeleton.comp.tsx` |
-| Kind       | Server Component                                                       |
-| Stylesheet | `courses-panel-skeleton.comp.css` → block `.courses-panel-skeleton`    |
-| Used by    | `app/(platform)/cursos/(lista)/loading.tsx`                            |
+|            |                                                                                                                               |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/courses-panel-skeleton.comp.tsx`                                                        |
+| Kind       | Server Component                                                                                                              |
+| Stylesheet | `courses-panel-skeleton.comp.css` → block `.courses-panel-skeleton`                                                           |
+| Used by    | `app/(platform)/cursos/(lista)/(mis-cursos)/loading.tsx` (`view="mine"`), `…/(lista)/catalogo/loading.tsx` (`view="catalog"`) |
 
 ## Purpose
 
-The loading state of «Mis cursos» and the catalog (2026-10-22). Their layout keeps the side column and the bar's search on screen, so while a view loads only the panel waits: it draws, in the container's grey, a block where «Sigue donde ibas» or the catalog's heading goes, a line, and a row of four cards with their covers and two lines each, all pulsing softly together (`opacity`, 1.2s, still under `prefers-reduced-motion: reduce`). To a screen reader it is one status, «Cargando cursos…» (visually hidden).
+The loading state of «Mis cursos» and the catalog (2026-10-22). Their layout keeps the side column and the bar's search on screen, so while a view loads only the panel waits, and it draws the shape of **the page that is coming**, in the container's grey, so nothing jumps when it arrives (the owner asked for each page's own shape on 2026-10-22):
 
-It is a `loading.tsx`'s, so it is markup and CSS only: no Client Component behind it (`components/loading-boundaries.test.ts`). Arriving at `/cursos` from another screen, before the layout itself is ready, is the platform's other wait, `BoardLoading` (`app/(platform)/cursos/loading.tsx`).
+- **«Mis cursos»** (`view="mine"`): «Sigue donde ibas» in its block — the cover at the left, and beside it the eyebrow, the name, the figures, the progress and the 56px «Continuar» —; the streak's band in its blue — the flame's disc, two lines and the sixteen weeks —; the heading with its count at the right; and a row of four of the student's cards — cover, name, figures, progress and the text button at the right.
+- **The catalog** (`view="catalog"`): the heading with the level's dot and the count; the row of filter chips with the divider before «Que aún no llevas»; and two rows of its cards — cover, name, the line about it, its length and «Agregar».
+
+Every shape pulses softly together (`opacity`, 1.2s), and stands still under `prefers-reduced-motion: reduce`. To a screen reader it is one status, «Cargando tus cursos…» or «Cargando el catálogo…» (visually hidden).
+
+Each page has its own `loading.tsx` because each is its own segment: «Mis cursos» sits in the route group `(mis-cursos)` inside `(lista)`, so a loading file there wraps only its page and not the catalog's. It is a `loading.tsx`'s, so it is markup and CSS only: no Client Component behind it (`components/loading-boundaries.test.ts`). Arriving at `/cursos` from another screen, before the layout itself is ready, is the platform's other wait, `BoardLoading` (`app/(platform)/cursos/loading.tsx`).
+
+## Props
+
+| Prop   | Type                  | Required | Meaning                                    |
+| ------ | --------------------- | -------- | ------------------------------------------ |
+| `view` | `"mine" \| "catalog"` | yes      | Which page is loading, and so which shape. |
 
 ## Markup & styling
 
-Block `.courses-panel-skeleton` (81 lines), on `.platform-workspace__panel`.
+Block `.courses-panel-skeleton` (252 lines), on `.platform-workspace__panel`.
 
-**Elements:** `__label`, `__block`, `__line`, `__grid`, `__card`, `__cover`, `__text`
+**Elements:** `__label`, `__shapes`, `__shape`, `__stack`, `__bar`, `__pill`, `__resume`, `__resume-cover`, `__streak`, `__flame`, `__weeks`, `__heading`, `__dot`, `__chips`, `__divider`, `__grid`, `__card`, `__cover`, `__card-body`, `__foot`
 
-**Modifiers:** `__text_size_short`
+**Modifiers:** `__bar_size_{title,heading,meter}`, `__bar_width_{eyebrow,half,third,wide,count,level}`, `__pill_size_{cta,text,tonal}`, `__pill_width_{wide,narrow,wider}`, `__stack_grow`, `__heading_align_start`
 
 **Keyframes:** `courses-panel-skeleton-pulse`
