@@ -36,7 +36,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
   };
 
   return (
-    <div className="platform-page platform-page_frame_bleed courses-page">
+    <div className="platform-page platform-page_width_full platform-page_frame_bleed courses-page">
       <MyCoursesSection courses={courses} filter={myCoursesFilterOf(estado)} streak={streak} catalog={counts} />
     </div>
   );

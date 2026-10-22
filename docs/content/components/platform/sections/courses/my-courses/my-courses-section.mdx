@@ -9,7 +9,7 @@ description: "'Mis cursos' in the new design system (Material 3): a workspace wh
 | File       | `components/platform/sections/courses/my-courses/my-courses.section.tsx`                                                                                                                                                                                                                                                                                                       |
 | Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                               |
 | Stylesheet | `my-courses.section.css` → block `.my-courses`, on `.platform-workspace` (`platform.css`)                                                                                                                                                                                                                                                                                      |
-| Used by    | `/cursos` (a page that bleeds, `platform-page_frame_bleed`)                                                                                                                                                                                                                                                                                                                    |
+| Used by    | `/cursos` (the whole width, bleeding: `platform-page_width_full` + `_frame_bleed`)                                                                                                                                                                                                                                                                                             |
 | Composes   | [`PlatformSideNav`](/components/platform/shared/platform-side-nav), [`ResumeCourse`](/components/platform/sections/courses/my-courses/resume-course), [`StreakBand`](/components/platform/sections/courses/my-courses/streak-band), [`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card), [`EmptyState`](/components/platform/shared/empty-state) |
 | Reads      | Nothing: the page reads `getUserCourses()`, `getCourseCatalog()`, `listCourseLevels()` (`services/courses/courses.service.ts`) and `getStreakOverview()` (`services/study-goal/study-goal.service.ts`)                                                                                                                                                                         |
 | Uses       | `my-courses-filter.const.ts` (`MY_COURSES_FILTERS`, `courseStateOf`, `filterMyCourses`, `resumeCourseOf`); `platformRoutes.courses`, `platformRoutes.courseCatalog`                                                                                                                                                                                                            |
@@ -62,7 +62,7 @@ const [courses, streak, catalog, levels, { estado }] = await Promise.all([
   searchParams,
 ]);
 
-<div className="platform-page platform-page_frame_bleed courses-page">
+<div className="platform-page platform-page_width_full platform-page_frame_bleed courses-page">
   <MyCoursesSection courses={courses} filter={myCoursesFilterOf(estado)} streak={streak} catalog={counts} />
 </div>;
 ```
