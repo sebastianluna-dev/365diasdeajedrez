@@ -119,12 +119,12 @@ const meta = {
     docs: {
       description: {
         component: `
-The card of «Explorar cursos», compact: what a course is, for whoever is
-choosing one — its cover, its name, and under it its labels, the level or span
-of levels it is for and one per topic it teaches, and how long it is. No
-description and no progress: those are the course's page and «Mis cursos». The
-whole card is the title's link: to the course once added, to its information
-page before.
+The card of the catalog, as Material's outlined card: its cover, its name,
+who it is for and what it teaches in one line, and at the foot what can be
+done — «Lo llevas» and «Continuar» once added, its length and «Agregar»
+before. No description and no progress: those are the course's page and
+«Mis cursos». The whole card is the title's link: to the course once added,
+to its information page before.
 
 Invented data. The staff's covers are Cloudinary pictures; the story with a
 cover stands one of the board's pieces (\`public/pieces\`) in for it.
@@ -135,14 +135,15 @@ Reference page: [Components › CourseCard](/components/platform/sections/course
       },
     },
   },
-  args: { course: COURSE },
+  args: { course: COURSE, addAction: async () => {} },
   argTypes: {
     course: { control: "object", description: "The course as `mapCourseSummary` hands it over." },
+    addAction: { control: false, description: "`addCourse` bound to the course: «Agregar»." },
   },
-  // One card of the catalog's grid: three to a row beside the filters.
+  // One card of the catalog's grid: four to a row of the panel.
   decorators: [
     (Story) => (
-      <div style={{ maxWidth: 320 }}>
+      <div style={{ maxWidth: 280 }}>
         <Story />
       </div>
     ),
@@ -152,13 +153,13 @@ Reference page: [Components › CourseCard](/components/platform/sections/course
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** A course of two levels and two topics, without a cover: the frame stays, in the sunken grey. */
+/** Not added: two levels and two topics, its length and «Agregar»; without a cover the frame stays, in the container's grey. */
 export const Default: Story = {};
 
 /** With a cover, cropped to 21:9. */
 export const WithCover: Story = { args: { course: { ...COURSE, cover: "/pieces/w-knight.svg" } } };
 
-/** One level and many topics: the labels wrap, a line each as they need. */
+/** One level and many topics: the line wraps. */
 export const ManyTopics: Story = {
   args: {
     course: {
@@ -173,7 +174,7 @@ export const ManyTopics: Story = {
   },
 };
 
-/** A course with only a name and lessons: no labels and no minutes. */
+/** A course with only a name and lessons: no line about it and no minutes. */
 export const Minimal: Story = {
   args: {
     course: {
@@ -186,4 +187,9 @@ export const Minimal: Story = {
       progress: { ...COURSE.progress, totalLessons: 1, totalMinutes: 0 },
     },
   },
+};
+
+/** Already the student's: «Lo llevas» and the button that goes on. */
+export const Added: Story = {
+  args: { course: { ...COURSE, cover: "/pieces/w-knight.svg", isAdded: true, ctaLabel: "Continuar" } },
 };

@@ -1,23 +1,19 @@
-import type { Metadata } from "next";
-import { CourseCatalogSection } from "@/components/platform/sections/courses/course-catalog/course-catalog.section";
-import { getCourseCatalog, listCourseLevels } from "@/services/courses/courses.service";
+import { permanentRedirect } from "next/navigation";
+import { getCurrentUser } from "@/lib/platform-auth/current-user";
+import { platformRoutes } from "@/lib/platform-routes";
 
-export const metadata: Metadata = {
-  title: "Explorar cursos",
-};
-
-interface CourseCatalogPageProps {
-  /** `nivel`: the slug of the level the list is narrowed to. */
+interface OldCatalogPageProps {
   searchParams: Promise<{ nivel?: string }>;
 }
 
-export default async function CourseCatalogPage({ searchParams }: CourseCatalogPageProps) {
-  // Border of the private area: both reads go through getCurrentUser.
-  const [courses, levels, { nivel }] = await Promise.all([getCourseCatalog(), listCourseLevels(), searchParams]);
-
-  return (
-    <div className="platform-page platform-page_width_wide course-catalog-page">
-      <CourseCatalogSection courses={courses} levels={levels} levelSlug={nivel} />
-    </div>
-  );
+/**
+ * Where the catalog lived until 2026-10-22 («Explorar cursos»): it answers
+ * 308 to `/cursos/catalogo`, keeping the level, so an old link or bookmark
+ * still lands on it.
+ */
+export default async function OldCatalogPage({ searchParams }: OldCatalogPageProps) {
+  // Border of the private area, as on every page of the platform.
+  await getCurrentUser();
+  const { nivel } = await searchParams;
+  permanentRedirect(nivel ? platformRoutes.coursesOfLevel(nivel) : platformRoutes.courseCatalog);
 }

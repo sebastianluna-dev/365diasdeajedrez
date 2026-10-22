@@ -1,6 +1,79 @@
-/* The page's head and, under it, the catalog with its filters. */
 .course-catalog {
-  display: flex;
-  flex-direction: column;
-  gap: var(--platform-space-8);
+  & .course-catalog__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: var(--platform-space-3);
+    row-gap: var(--platform-space-1);
+  }
+
+  /* The level's dot, as the side column draws it, a size up. */
+  & .course-catalog__level {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+  }
+
+  & .course-catalog__level_tone_1 {
+    background: var(--platform-level-1);
+  }
+
+  & .course-catalog__level_tone_2 {
+    background: var(--platform-level-2);
+  }
+
+  & .course-catalog__level_tone_3 {
+    background: var(--platform-level-3);
+  }
+
+  & .course-catalog__level_tone_4 {
+    background: var(--platform-level-4);
+  }
+
+  & .course-catalog__level_tone_5 {
+    background: var(--platform-level-5);
+  }
+
+  & .course-catalog__level_tone_6 {
+    background: var(--platform-level-6);
+  }
+
+  & .course-catalog__title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-2xl);
+    font-weight: 500;
+  }
+
+  & .course-catalog__count {
+    margin: 0;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* Material's filter chips, in one row that wraps. */
+  & .course-catalog__chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-2);
+
+    & a {
+      text-decoration: none;
+    }
+  }
+
+  & .course-catalog__divider {
+    width: 1px;
+    height: 24px;
+    margin: 0 var(--platform-space-1);
+    background: var(--platform-m3-outline-variant);
+  }
+
+  /* Four to a row on a laptop, as many as fit of at least 200px. */
+  & .course-catalog__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--platform-space-4);
+  }
 }

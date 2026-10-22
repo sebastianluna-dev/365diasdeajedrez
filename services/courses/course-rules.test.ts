@@ -17,6 +17,7 @@ describe("isCourseId", () => {
 
 describe("isReservedCourseSlug", () => {
   it("refuses the slug a page of /cursos already answers to", () => {
+    expect(isReservedCourseSlug("catalogo")).toBe(true);
     expect(isReservedCourseSlug("explorar")).toBe(true);
   });
 

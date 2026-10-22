@@ -28,12 +28,13 @@ export const platformRoutes = {
   courses: "/cursos",
   /**
    * Every published course, to find the ones to add. Fixed segment, so it
-   * wins over `/cursos/[courseRef]`; no course can take "explorar" as its slug
+   * wins over `/cursos/[courseRef]`; no course can take "catalogo" (nor "explorar",
+   * the old address, which redirects here) as its slug
    * (`isReservedCourseSlug`).
    */
-  courseCatalog: "/cursos/explorar",
+  courseCatalog: "/cursos/catalogo",
   /** The catalog narrowed to the courses aimed at a level, by the level's slug. */
-  coursesOfLevel: (levelSlug: string) => `/cursos/explorar?nivel=${encodeURIComponent(levelSlug)}`,
+  coursesOfLevel: (levelSlug: string) => `/cursos/catalogo?nivel=${encodeURIComponent(levelSlug)}`,
   /**
    * What a course is, for whoever has not added it yet: addressed by its SLUG,
    * which is the one of the two that can be read and shared.

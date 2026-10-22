@@ -45,10 +45,10 @@ Reference page: [Components › PlatformSideNav](/components/platform/shared/pla
       {
         title: "Catálogo",
         links: [
-          { label: "Todo el catálogo", href: "/cursos/explorar", count: 10, icon: "book-open" },
-          { label: "Principiante", href: "/cursos/explorar?nivel=principiante", count: 3, level: 1 },
-          { label: "Intermedio", href: "/cursos/explorar?nivel=intermedio", count: 5, level: 3 },
-          { label: "Avanzado", href: "/cursos/explorar?nivel=avanzado", count: 2, level: 5 },
+          { label: "Todo el catálogo", href: "/cursos/catalogo", count: 10, icon: "book-open" },
+          { label: "Principiante", href: "/cursos/catalogo?nivel=principiante", count: 3, level: 1 },
+          { label: "Intermedio", href: "/cursos/catalogo?nivel=intermedio", count: 5, level: 3 },
+          { label: "Avanzado", href: "/cursos/catalogo?nivel=avanzado", count: 2, level: 5 },
         ],
       },
     ],

@@ -1,45 +1,45 @@
 ---
-description: "A course in the catalog, compact: its cover, its name, its labels — the level or span of levels it is for and one per topic it teaches — and how long it is; the whole card leads to the course or to its information page."
+description: "A course in the catalog as Material's outlined card: its cover, its name, who it is for and what it teaches in one line, and at the foot «Lo llevas» and «Continuar», or its length and «Agregar»."
 ---
 
 # `CourseCard`
 
 Also exports `levelSpan(levels)`: «Intermedio», or «Principiante – Intermedio» for a course aimed at several.
 
-|            |                                                                                                                                                                     |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/course-card.comp.tsx`                                                                                                         |
-| Kind       | Server Component                                                                                                                                                    |
-| Stylesheet | `course-card.comp.css` → block `.course-card`                                                                                                                       |
-| Story      | `course-card.stories.tsx` (`platform/sections/courses/CourseCard`): two levels and two topics without a cover, with a cover, many topics, and minimal               |
-| Used by    | [`CatalogBrowser`](/components/platform/sections/courses/course-catalog/catalog-browser)                                                                            |
-| Uses       | `CourseSummary`, `CourseLevelItem` from `services/courses/courses.types`; `countLessons`, `formatDuration`; `SignalIcon`, `BookOpenIcon`; `next/image`, `next/link` |
+|            |                                                                                                                                                                 |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-card.comp.tsx`                                                                                                     |
+| Kind       | Server Component                                                                                                                                                |
+| Stylesheet | `course-card.comp.css` → block `.course-card`                                                                                                                   |
+| Story      | `course-card.stories.tsx` (`platform/sections/courses/CourseCard`): not added without a cover, with a cover, many topics, minimal, and already added            |
+| Used by    | [`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section)                                                           |
+| Uses       | `mdCard`, `mdChip`, `mdButton` · `lib/material/material-classes.ts`; `countLessons`, `formatDuration`; `CircleCheckIcon`, `PlusIcon`; `next/image`, `next/link` |
 
 ## Purpose
 
-What a course is, for whoever is choosing one. Since 2026-10-07 it is compact («K2a», the owner's choice among two rounds of variants, with the level **and the topics** in its labels, which the owner asked for): the cover (21:9; the square picture cropped when there is none); the name, two lines at most; its labels — the level it is for with the signal (`levelSpan`: one name, or the span of a course aimed at several), and one per topic it teaches with the book, all in the same grey label —; and «24 lecciones · 6 h 15 min».
-
-It replaced a card with the description, the levels as dots with a tip of their own (`LevelDots`, removed) and, at the foot, the student's progress or the course's length with «Ver curso»: the catalog is for choosing, and «Mis cursos» is where the progress is. The description is the course's page.
+What a course is, for whoever is choosing one, and the way to take it. Since 2026-10-22 it is Material's outlined card (the new design system; before it, «K2a» of 2026-10-07, with the level and the topics as labels): the cover; the name, two lines at most; one line with who it is for and what it teaches («Intermedio · Estrategia · Estructuras»); and at the foot what can be done.
 
 ## Props
 
-| Prop     | Type            | Required | Meaning                                         |
-| -------- | --------------- | -------- | ----------------------------------------------- |
-| `course` | `CourseSummary` | yes      | The course as `mapCourseSummary` hands it over. |
+| Prop        | Type                  | Required | Meaning                                                                               |
+| ----------- | --------------------- | -------- | ------------------------------------------------------------------------------------- |
+| `course`    | `CourseSummary`       | yes      | The course as `mapCourseSummary` hands it over.                                       |
+| `addAction` | `() => Promise<void>` | no       | `addCourse` bound to the course, handed down by the section; no «Agregar» without it. |
 
 ## Behaviour
 
-- **The whole card is the link**, through the title's: its `::after` covers the card. A course the student added leads to the course (`href`); one they have not, to its information page (`infoHref`), which is where it is added. Its keyboard focus rings the card in the accent.
-- The labels are a list (`aria-label="Nivel y temas"`); a course with neither has none.
-- Under the pointer the shadow grows; nothing moves.
+- **The whole card is the link**, through the title's: its `::after` covers the card. A course the student added leads to the course (`href`); one they have not, to its information page (`infoHref`), for whoever wants to read about it before adding it.
+- **Already the student's**: «Lo llevas», Material's assist chip with a check, and a text button with `ctaLabel` («Continuar», «Empezar», «Repasar») to the lesson that comes next (`continueHref`).
+- **Not yet**: its length («24 lecciones · 6 h») and «Agregar», Material's tonal button inside a form whose action is `addAction`; adding takes the student to the course. Its accessible name says which course («Agregar Planes en el medio juego»).
+- The buttons are raised above the stretched link, so what is pressed is the button.
 
 ## Markup & styling
 
-Block `.course-card` (108 lines).
+Block `.course-card` (92 lines), on Material's `card card-outlined`, which draws the box, its outline and its corners.
 
-**Elements:** `.course-card__cover`, `.course-card__cover-image`, `.course-card__body`, `.course-card__name`, `.course-card__link`, `.course-card__labels`, `.course-card__label`, `.course-card__label-icon`, `.course-card__length`
+**Elements:** `__cover`, `__cover-image`, `__body`, `__name`, `__link`, `__about`, `__foot`, `__length`, `__action`, `__owned`
 
-**Tokens:** `--platform-surface`, `--platform-surface-sunken`, `--platform-surface-neutral`, `--platform-shadow-card`, `--platform-shadow-lift`, `--platform-accent-ink`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, the type and space scales.
+**Tokens:** `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-panel`, `--platform-m3-container-high`, `--platform-m3-primary`, the type and space scales.
 
 No media queries: the grid around it decides its width.
 

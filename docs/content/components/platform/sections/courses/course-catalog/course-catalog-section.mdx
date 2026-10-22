@@ -1,44 +1,46 @@
 ---
-description: "'Explorar cursos': the page's head with how many courses are published, and the catalog with its filters at the side; an empty state while the academy has published nothing."
+description: "The catalog at /cursos/catalogo, in the new design system: the panel of CoursesWorkspace with the level or the search, Material's filter chips and the courses as cards with «Agregar»."
 ---
 
 # `CourseCatalogSection`
 
-|            |                                                                                                                                                   |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/course-catalog/course-catalog.section.tsx`                                                                  |
-| Kind       | Server Component                                                                                                                                  |
-| Stylesheet | `course-catalog.section.css` → block `.course-catalog`                                                                                            |
-| Used by    | `/cursos/explorar` (in the wide page, `platform-page_width_wide`)                                                                                 |
-| Composes   | [`CatalogBrowser`](/components/platform/sections/courses/course-catalog/catalog-browser), [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads      | `getCourseCatalog()`, `listCourseLevels()` · `services/courses/courses.service.ts`                                                                |
+|            |                                                                                                                                                                                                           |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-catalog/course-catalog.section.tsx`                                                                                                                          |
+| Kind       | Server Component                                                                                                                                                                                          |
+| Stylesheet | `course-catalog.section.css` → block `.course-catalog`, on the workspace's panel                                                                                                                          |
+| Used by    | `/cursos/catalogo` (`platform-page_width_full` + `_frame_bleed`)                                                                                                                                          |
+| Composes   | [`CoursesWorkspace`](/components/platform/sections/courses/courses-workspace), [`CourseCard`](/components/platform/sections/courses/course-card), [`EmptyState`](/components/platform/shared/empty-state) |
+| Writes     | `addCourse` · `services/courses/courses.actions.ts`, bound to each course and handed to its card                                                                                                          |
+| Uses       | `catalog-filters.const.ts` (`catalogFiltersOf`, `catalogHref`, `filterCatalog`); `coursesNavGroups`; `resumeCourseOf`; `mdChip` · `lib/material/material-classes.ts`; `CheckIcon`                         |
 
 ## Purpose
 
-Every course the academy has published, to find the ones to add. The section is the page's head — the title and «4 cursos publicados» — and hands the catalog to [`CatalogBrowser`](/components/platform/sections/courses/course-catalog/catalog-browser), which filters it in the browser (2026-10-07). Until then the section filtered on the server by one level from the URL, with a row of chips (`LevelFilter`, removed).
+Every course the academy has published, to find the ones to add (2026-10-22). It replaced «Explorar cursos» (`/cursos/explorar`, which now answers 308 here, keeping `?nivel=`), its head and its column of filters (`CatalogBrowser`). It is the panel of [`CoursesWorkspace`](/components/platform/sections/courses/courses-workspace), so it shares the side column and the bar's search with «Mis cursos», and moving between them feels like one page, as Gmail's labels do; but it has its own address, because the catalog is another collection, not a filter of the student's.
 
-`?nivel=<slug>` still works: it is handed over as the level ticked on arrival, and one the catalog does not have is ignored.
+From top to bottom:
+
+1. **The heading**: the level chosen in the side column with its dot, or «Todo el catálogo», or «Resultados de «…»» for a search; beside it «N cursos · M que aún no llevas».
+2. **The filters**, Material's filter chips (`mdChip("filter", selected)`): the topics the catalog's courses have, one at a time, and after a divider «Que aún no llevas». A chosen one carries the check and `aria-current`; pressing it again takes it away. Each is a link (`catalogHref`).
+3. **The courses** ([`CourseCard`](/components/platform/sections/courses/course-card)), as many to a row as fit of at least 200px. One not added gets «Agregar» (`addCourse` bound to its id), which adds it and takes the student to it. With nothing left by the filters, an [`EmptyState`](/components/platform/shared/empty-state) leads to the whole catalog.
+
+The filters only narrow what is listed, on the server and from the address (`?nivel=`, `?tema=`, `?nuevos=1`, `?q=`): nothing is closed to anybody by their rating.
 
 ## Props
 
-| Prop        | Type                | Required | Meaning                                                 |
-| ----------- | ------------------- | -------- | ------------------------------------------------------- |
-| `courses`   | `CourseSummary[]`   | yes      | Every published course, the ones the student added too. |
-| `levels`    | `CourseLevelItem[]` | yes      | The catalog's levels, the easiest first.                |
-| `levelSlug` | `string`            | no       | What `?nivel=` brought, ticked on arrival.              |
+| Prop      | Type                | Required | Meaning                                                    |
+| --------- | ------------------- | -------- | ---------------------------------------------------------- |
+| `courses` | `CourseSummary[]`   | yes      | `getCourseCatalog()`: every published course.              |
+| `mine`    | `MyCourseItem[]`    | yes      | `getUserCourses()`: the side column's counts and «Seguir». |
+| `levels`  | `CourseLevelItem[]` | yes      | `listCourseLevels()`, the easiest first.                   |
+| `filters` | `CatalogFilters`    | yes      | `catalogFiltersOf(searchParams)`.                          |
 
 ## Markup & styling
 
-Block `.course-catalog` (6 lines): a column, the head over the catalog.
+Block `.course-catalog` (79 lines), set on `.platform-workspace__panel`.
 
-## Usage
+**Elements:** `__head`, `__level`, `__title`, `__count`, `__chips`, `__divider`, `__grid`
 
-From `app/(platform)/cursos/explorar/page.tsx`:
+**Modifiers:** `.course-catalog__level_tone_{1…6}`
 
-```tsx
-const [courses, levels, { nivel }] = await Promise.all([getCourseCatalog(), listCourseLevels(), searchParams]);
-
-<div className="platform-page platform-page_width_wide course-catalog-page">
-  <CourseCatalogSection courses={courses} levels={levels} levelSlug={nivel} />
-</div>;
-```
+**Other classes it renders:** Material's `chip chip-filter chip-outlined` (+ `chip-selected`).

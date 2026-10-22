@@ -1,0 +1,27 @@
+---
+description: "The frame «Mis cursos» and the catalog share in the new design system: the workspace, the side column with «Seguir donde iba» and the views, the catalog's search in the bar, and the panel it is given."
+---
+
+# `CoursesWorkspace`
+
+|          |                                                                                                                                                                                                                                   |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File     | `components/platform/sections/courses/courses-workspace.comp.tsx`                                                                                                                                                                 |
+| Kind     | Server Component                                                                                                                                                                                                                  |
+| Used by  | [`MyCoursesSection`](/components/platform/sections/courses/my-courses/my-courses-section), [`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section)                                  |
+| Composes | [`PlatformSideNav`](/components/platform/shared/platform-side-nav), [`PlatformHeaderContext`](/components/platform/sections/shell/platform-header-context), [`CourseSearch`](/components/platform/sections/courses/course-search) |
+
+## Purpose
+
+«Cursos» is one place with two collections (2026-10-22): the student's courses at `/cursos` and the catalog at `/cursos/catalogo`. Each has its own address — the catalog is not a filter of the student's courses —, and both are drawn in this frame, so moving between them feels like one page, as Gmail's labels do: the `.platform-workspace`, the side column with «Seguir donde iba» and the groups of `coursesNavGroups` (`courses-nav.const.ts`: «Tus cursos» by state, «Catálogo» whole and by level, each with its count, the view on screen lit), and the catalog's search in the bar. A container: its one job is to place the panel it is given (`children`, a `.platform-workspace__panel`).
+
+## Props
+
+| Prop         | Type                     | Required | Meaning                                                          |
+| ------------ | ------------------------ | -------- | ---------------------------------------------------------------- |
+| `groups`     | `PlatformSideNavGroup[]` | yes      | `coursesNavGroups(mine, catalog, levels, view)`.                 |
+| `resumeHref` | `string`                 | no       | The next lesson of the course to go on with: «Seguir donde iba». |
+| `query`      | `string`                 | no       | What the search already holds, on the catalog's results.         |
+| `children`   | `ReactNode`              | yes      | The panel.                                                       |
+
+No stylesheet of its own: the workspace's rules live in `platform.css`.

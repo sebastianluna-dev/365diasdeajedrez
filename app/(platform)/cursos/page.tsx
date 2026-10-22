@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import type { MyCoursesCatalog } from "@/components/platform/sections/courses/my-courses/my-courses.section";
 import { MyCoursesSection } from "@/components/platform/sections/courses/my-courses/my-courses.section";
 import { myCoursesFilterOf } from "@/components/platform/sections/courses/my-courses/my-courses-filter.const";
 import { getCourseCatalog, getUserCourses, listCourseLevels } from "@/services/courses/courses.service";
@@ -26,18 +25,15 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
     searchParams,
   ]);
 
-  const counts: MyCoursesCatalog = {
-    total: catalog.length,
-    levels: levels.map((level) => ({
-      slug: level.slug,
-      name: level.name,
-      count: catalog.filter((course) => course.levels.some((one) => one.slug === level.slug)).length,
-    })),
-  };
-
   return (
     <div className="platform-page platform-page_width_full platform-page_frame_bleed courses-page">
-      <MyCoursesSection courses={courses} filter={myCoursesFilterOf(estado)} streak={streak} catalog={counts} />
+      <MyCoursesSection
+        courses={courses}
+        filter={myCoursesFilterOf(estado)}
+        streak={streak}
+        catalog={catalog}
+        levels={levels}
+      />
     </div>
   );
 }

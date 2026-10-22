@@ -14,7 +14,7 @@ export function isCourseId(reference: string): boolean {
 }
 
 /** Segments of `/cursos/…` that are pages of their own and a slug cannot take. */
-const RESERVED_SLUGS: readonly string[] = ["explorar"];
+const RESERVED_SLUGS: readonly string[] = ["catalogo", "explorar"];
 
 /**
  * Whether a slug would never be reached. One that names a page of `/cursos`

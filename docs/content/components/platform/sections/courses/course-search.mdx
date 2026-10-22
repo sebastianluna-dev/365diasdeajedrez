@@ -1,0 +1,25 @@
+---
+description: "The catalog's search in the bar, as Material's search bar: a pill with the glass, a GET form to /cursos/catalogo?q= over the whole catalog."
+---
+
+# `CourseSearch`
+
+|            |                                                                               |
+| ---------- | ----------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-search.comp.tsx`                 |
+| Kind       | Server Component                                                              |
+| Stylesheet | `course-search.comp.css` → block `.course-search`                             |
+| Used by    | [`CoursesWorkspace`](/components/platform/sections/courses/courses-workspace) |
+| Uses       | `MagnifyingGlassIcon` in Classic Solid; `platformRoutes.courseCatalog`        |
+
+## Purpose
+
+«Buscar cursos, temas o autores», in the bar of both «Cursos» pages through `PlatformHeaderContext`, drawn as Material's search bar (the library has none, so it is ours): a 48px pill in `--platform-m3-container-high` that turns white with a shadow while it has the focus. It searches the **whole** catalog from any view, as Gmail searches every label: a GET form to `/cursos/catalogo` with `q`, so it works without JavaScript and its results have an address. The catalog matches the name, the description, the authors, the topics and the levels, without accents or case (`foldForSearch`).
+
+A search is not a form that validates — nothing to err —, so it is a bare `<form role="search">` and not a `PlatformForm`; the pill says where the focus is.
+
+## Props
+
+| Prop           | Type     | Required | Meaning                            |
+| -------------- | -------- | -------- | ---------------------------------- |
+| `defaultValue` | `string` | no       | What was searched, on the results. |

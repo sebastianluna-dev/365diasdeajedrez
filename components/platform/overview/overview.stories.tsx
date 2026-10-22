@@ -1842,8 +1842,8 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   {
                     title: "Catálogo",
                     links: [
-                      { label: "Todo el catálogo", href: "/cursos/explorar", count: 10, icon: "book-open" },
-                      { label: "Principiante", href: "/cursos/explorar?nivel=principiante", count: 3, level: 1 },
+                      { label: "Todo el catálogo", href: "/cursos/catalogo", count: 10, icon: "book-open" },
+                      { label: "Principiante", href: "/cursos/catalogo?nivel=principiante", count: 3, level: 1 },
                     ],
                   },
                 ]}

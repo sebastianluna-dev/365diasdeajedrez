@@ -1,29 +1,14 @@
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
-import {
-  PlatformSideNav,
-  type PlatformSideNavGroup,
-} from "@/components/platform/shared/platform-side-nav/platform-side-nav.comp";
 import { platformRoutes } from "@/lib/platform-routes";
-import type { MyCourseItem } from "@/services/courses/courses.types";
+import type { CourseLevelItem, CourseSummary, MyCourseItem } from "@/services/courses/courses.types";
 import type { StreakOverview } from "@/services/study-goal/study-goal.types";
-import {
-  MY_COURSES_FILTERS,
-  courseStateOf,
-  filterMyCourses,
-  resumeCourseOf,
-  type MyCoursesFilter,
-} from "./my-courses-filter.const";
+import { coursesNavGroups } from "../courses-nav.const";
+import { CoursesWorkspace } from "../courses-workspace.comp";
+import { filterMyCourses, resumeCourseOf, type MyCoursesFilter } from "./my-courses-filter.const";
 import { MyCourseCard } from "./my-course-card.comp";
 import { ResumeCourse } from "./resume-course.comp";
 import { StreakBand } from "./streak-band.comp";
 import "./my-courses.section.css";
-
-/** The catalog as the side column counts it: every published course, and by level. */
-export interface MyCoursesCatalog {
-  total: number;
-  /** The levels in use, the easiest first, each with the courses aimed at it. */
-  levels: { slug: string; name: string; count: number }[];
-}
 
 interface MyCoursesSectionProps {
   /** The courses the student added, in the list's order. */
@@ -32,7 +17,9 @@ interface MyCoursesSectionProps {
   filter: MyCoursesFilter;
   /** The streak and the last months of activity: the band across the panel. */
   streak: StreakOverview;
-  catalog: MyCoursesCatalog;
+  /** Every published course and the levels, which the side column counts. */
+  catalog: CourseSummary[];
+  levels: CourseLevelItem[];
 }
 
 /** What the heading says under each view, and what an empty view says. */
@@ -42,62 +29,25 @@ const VIEW_TEXT: Record<Exclude<MyCoursesFilter, undefined>, { title: string; em
   "sin-empezar": { title: "Sin empezar", empty: "Ya empezaste todos tus cursos." },
 };
 
-/** «Cursos» has six levels' colours; a seventh level would repeat the last. */
-const LEVEL_TONES = 6;
-
 /**
  * «Mis cursos» in the new design system (2026-10-22, «M4» of the owner's
- * canvas, Material 3 as Gmail and Drive draw it): a workspace whose side
+ * canvas, Material 3 Expressive): the panel of `CoursesWorkspace`, whose side
  * column holds «Seguir donde iba», the student's courses by state and the
- * catalog by level, and whose panel holds the course to go on with, the
+ * catalog by level; the panel holds the course to go on with, the
  * streak across, and the courses as cards.
  *
  * With no course added the panel says so and points to the catalog; the
  * streak is there all the same. The views are links (`?estado=`), so the
  * back button undoes them; «Sigue donde ibas» stays on top in every view.
  */
-export function MyCoursesSection({ courses, filter, streak, catalog }: MyCoursesSectionProps) {
+export function MyCoursesSection({ courses, filter, streak, catalog, levels }: MyCoursesSectionProps) {
   const resume = resumeCourseOf(courses);
   const shown = filterMyCourses(courses, filter);
-  const countOf = (value: MyCoursesFilter) =>
-    value === undefined ? courses.length : courses.filter((course) => courseStateOf(course) === value).length;
-
-  const groups: PlatformSideNavGroup[] = [
-    {
-      title: "Tus cursos",
-      links: MY_COURSES_FILTERS.map(({ value, label, icon }) => ({
-        label,
-        icon,
-        href: value === undefined ? platformRoutes.courses : `${platformRoutes.courses}?estado=${value}`,
-        count: countOf(value),
-        current: value === filter,
-      })),
-    },
-    {
-      title: "Catálogo",
-      links: [
-        { label: "Todo el catálogo", href: platformRoutes.courseCatalog, count: catalog.total, icon: "book-open" },
-        ...catalog.levels.map((level, index) => ({
-          label: level.name,
-          href: `${platformRoutes.courseCatalog}?nivel=${level.slug}`,
-          count: level.count,
-          level: Math.min(index + 1, LEVEL_TONES),
-        })),
-      ],
-    },
-  ];
+  const groups = coursesNavGroups(courses, catalog, levels, { kind: "mine", filter });
 
   return (
-    <div className="platform-workspace my-courses">
-      <div className="platform-workspace__side">
-        <PlatformSideNav
-          label="Cursos"
-          action={resume?.learnHref ? { label: "Seguir donde iba", href: resume.learnHref } : undefined}
-          groups={groups}
-        />
-      </div>
-
-      <section className="platform-workspace__panel" aria-labelledby="my-courses-title">
+    <CoursesWorkspace groups={groups} resumeHref={resume?.learnHref}>
+      <section className="platform-workspace__panel my-courses" aria-labelledby="my-courses-title">
         <h1 id="my-courses-title" className="my-courses__sr-title">
           Mis cursos
         </h1>
@@ -134,6 +84,6 @@ export function MyCoursesSection({ courses, filter, streak, catalog }: MyCourses
           </div>
         )}
       </section>
-    </div>
+    </CoursesWorkspace>
   );
 }

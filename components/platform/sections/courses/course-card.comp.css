@@ -1,26 +1,17 @@
 .course-card {
-  /* The name's pseudo-element is stretched over this box: the whole card is
-     the link. */
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: var(--platform-space-3);
-  padding: var(--platform-space-3) var(--platform-space-3) var(--platform-space-4);
-  border-radius: 8px;
-  /* White on the page's grey, over a light shadow that grows under the
-     pointer; nothing moves. */
-  background: var(--platform-surface);
-  box-shadow: var(--platform-shadow-card);
-  transition: box-shadow 160ms ease-out;
+  /* Material's outlined card (`card card-outlined`) draws the box, its
+     outline and its 12 corners; this block lays out what is inside. The
+     name's pseudo-element is stretched over it: the whole card is the link. */
+  color: var(--platform-m3-on-surface);
+  transition: background-color 160ms ease-out;
 
   &:hover {
-    box-shadow: var(--platform-shadow-lift);
+    background: color-mix(in srgb, var(--platform-m3-on-surface) 4%, var(--platform-m3-panel));
   }
 
-  /* The keyboard focus of the stretched link, on the card it covers: outside
-     a form, the accent's ring. */
+  /* The keyboard focus of the stretched link, on the card it covers. */
   &:has(.course-card__link:focus-visible) {
-    outline: 2px solid var(--platform-accent-ink);
+    outline: 2px solid var(--platform-m3-primary);
     outline-offset: 2px;
   }
 
@@ -28,9 +19,7 @@
   & .course-card__cover {
     position: relative;
     aspect-ratio: 21 / 9;
-    border-radius: 8px;
-    overflow: hidden;
-    background: var(--platform-surface-sunken);
+    background: var(--platform-m3-container-high);
   }
 
   & .course-card__cover-image {
@@ -38,18 +27,19 @@
   }
 
   & .course-card__body {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-2);
-    padding: 0 var(--platform-space-1);
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-3) var(--platform-space-4) var(--platform-space-3);
   }
 
   /* Two lines at most. */
   & .course-card__name {
     margin: 0;
-    font-size: var(--platform-type-md);
-    font-weight: 700;
-    line-height: 1.3;
+    font-size: var(--platform-type-sm);
+    font-weight: 600;
+    line-height: 1.35;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
@@ -58,7 +48,7 @@
   }
 
   & .course-card__link {
-    color: var(--platform-text);
+    color: inherit;
     text-decoration: none;
   }
 
@@ -69,40 +59,34 @@
     border-radius: inherit;
   }
 
-  /* Who it is for and what it teaches, one grey label each: the level with
-     the signal, a topic with the book. */
-  & .course-card__labels {
+  & .course-card__about {
+    margin: var(--platform-space-0-5) 0 0;
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .course-card__foot {
+    margin-top: auto;
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--platform-space-1);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  & .course-card__label {
-    display: inline-flex;
     align-items: center;
-    gap: var(--platform-space-1);
-    padding: var(--platform-space-0-5) var(--platform-space-2);
-    border-radius: 4px;
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text-muted);
-    font-size: var(--platform-type-2xs);
-    font-weight: 700;
-    line-height: 1.4;
-  }
-
-  & .course-card__label-icon {
-    flex: none;
-    width: 11px;
-    height: 11px;
+    justify-content: space-between;
+    gap: var(--platform-space-2);
+    min-height: 40px;
   }
 
   & .course-card__length {
-    margin: 0;
     font-size: var(--platform-type-xs);
-    color: var(--platform-text-subtle);
-    font-variant-numeric: tabular-nums;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* Above the stretched link, so what is pressed is the button. */
+  & .course-card__action,
+  & .course-card__owned {
+    position: relative;
+    z-index: 1;
+  }
+
+  & .course-card__action {
+    margin-left: auto;
   }
 }

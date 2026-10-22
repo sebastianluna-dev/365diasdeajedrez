@@ -1,0 +1,43 @@
+.course-search {
+  flex: 1;
+  max-width: 720px;
+  display: flex;
+  align-items: center;
+  gap: var(--platform-space-3);
+  height: 48px;
+  padding: 0 var(--platform-space-5);
+  border-radius: 1000px;
+  background: var(--platform-m3-container-high);
+  color: var(--platform-m3-on-surface-variant);
+
+  &:focus-within {
+    background: var(--platform-m3-panel);
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .course-search__icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+  }
+
+  & .course-search__input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    color: var(--platform-m3-on-surface);
+    font: inherit;
+    font-size: var(--platform-type-md);
+
+    &::placeholder {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    /* The pill itself says where the focus is (`:focus-within`). */
+    &:focus-visible {
+      outline: none;
+    }
+  }
+}
