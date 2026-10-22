@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRotateLeftIcon } from "@/components/icons/arrow-rotate-left-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { MOVE_TRAINER_ENABLED } from "@/constants/platform/features.const";
+import { mdButton } from "@/lib/material/material-classes";
 import { countLessons } from "@/services/courses/course-rules";
 import type { MyCourseItem } from "@/services/courses/courses.types";
 import { WavyProgress } from "./wavy-progress.comp";
@@ -16,7 +17,7 @@ interface ResumeCourseProps {
 /**
  * «Sigue donde ibas», at the head of «Mis cursos» (2026-10-22, the new design
  * system): the course to go on with, large — its cover, its name, how far it
- * is gone and the lesson that comes next behind «Continuar». «Repasar» is the
+ * is gone and the lesson that comes next behind «Continuar» (Material's filled button, 56px). «Repasar» is the
  * Move Trainer's and is drawn only while it is on and something is due.
  */
 export function ResumeCourse({ course }: ResumeCourseProps) {
@@ -51,20 +52,17 @@ export function ResumeCourse({ course }: ResumeCourseProps) {
         </div>
 
         <div className="resume-course__actions">
-          <Link
-            href={course.learnHref}
-            className="platform-button platform-button_variant_primary platform-button_size_lg"
-          >
-            <PlayIcon variant="classic-solid" className="platform-button__icon" />
+          <Link href={course.learnHref} className={mdButton("filled", "md")}>
+            <PlayIcon variant="classic-solid" className="platform-md-icon" />
             Continuar
           </Link>
           {review > 0 && (
             <Link
               href={course.reviewHref}
-              className="platform-button platform-button_variant_outlined platform-button_size_lg"
+              className={mdButton("outlined", "md")}
               aria-label={`Repasar ${review} ${exercises}`}
             >
-              <ArrowRotateLeftIcon variant="classic-solid" className="platform-button__icon" />
+              <ArrowRotateLeftIcon variant="classic-solid" className="platform-md-icon" />
               Repasar {review}
             </Link>
           )}

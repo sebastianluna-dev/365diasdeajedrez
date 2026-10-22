@@ -6,6 +6,7 @@ import { ClockIcon } from "@/components/icons/clock-icon.comp";
 import { GraduationCapIcon } from "@/components/icons/graduation-cap-icon.comp";
 import type { IconProps } from "@/components/icons/icon-variant.const";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
+import { mdFab } from "@/lib/material/material-classes";
 import "./platform-side-nav.comp.css";
 
 /** The drawings a link can carry, by their Font Awesome names. */
@@ -47,7 +48,7 @@ interface PlatformSideNavProps {
 
 /**
  * The side column of a page moved to the new design system (2026-10-22,
- * Material 3 as Gmail draws its labels): the page's main action on top, and
+ * Material 3 as Gmail draws its labels): the page's main action on top as Material's extended FAB (`mdFab`), and
  * under it its views in groups, each a link with its count, the one on
  * screen lit in the secondary container with its right end round. What it
  * holds is the page's — its filters, its catalog —, never the platform's
@@ -60,8 +61,8 @@ export function PlatformSideNav({ label, action, groups }: PlatformSideNavProps)
   return (
     <nav className="platform-side-nav" aria-label={label}>
       {action && (
-        <Link href={action.href} className="platform-side-nav__action">
-          <PlayIcon variant="classic-solid" className="platform-side-nav__action-icon" />
+        <Link href={action.href} className={`${mdFab("primary-container")} platform-side-nav__action`}>
+          <PlayIcon variant="classic-solid" className="platform-md-icon" />
           {action.label}
         </Link>
       )}

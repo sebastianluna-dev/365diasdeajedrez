@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { BarsIcon } from "@/components/icons/bars-icon.comp";
+import { mdIconButton } from "@/lib/material/material-classes";
 
 /** Where the choice is written: the root, so the page's side column hears it wherever it is. */
 const ATTRIBUTE = "data-side-nav";
 
 /**
- * The three bars at the left of the bar, as Gmail's: they hide and show the
+ * The three bars at the left of the bar, as Gmail's (Material's standard
+ * icon button): they hide and show the
  * side column of a page of the new design system (`.platform-workspace__side`,
  * hidden by `:root[data-side-nav="hidden"]` in platform.css), so the panel
  * takes the whole width. Drawn on every page but shown only where there is a
@@ -27,12 +29,12 @@ export function PlatformSideToggle() {
   return (
     <button
       type="button"
-      className="platform-button platform-button_variant_quiet platform-button_shape_square platform-side-toggle"
+      className={`${mdIconButton("standard", "sm")} platform-side-toggle`}
       aria-label={hidden ? "Mostrar la barra lateral" : "Ocultar la barra lateral"}
       aria-pressed={hidden}
       onClick={toggle}
     >
-      <BarsIcon variant="classic-solid" className="platform-button__icon" />
+      <BarsIcon variant="classic-solid" className="platform-md-icon" />
     </button>
   );
 }

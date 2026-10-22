@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChevronRightIcon } from "@/components/icons/chevron-right-icon.comp";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
 import { MOVE_TRAINER_ENABLED } from "@/constants/platform/features.const";
+import { mdButton, mdCard } from "@/lib/material/material-classes";
 import { countLessons } from "@/services/courses/course-rules";
 import type { MyCourseItem } from "@/services/courses/courses.types";
 import { WavyProgress } from "./wavy-progress.comp";
@@ -16,11 +17,11 @@ interface MyCourseCardProps {
 const COVER_SIZES = "(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 280px";
 
 /**
- * A course of the student's as a card of Material 3 (2026-10-22, the new
- * design system; before it, «M2a» of 2026-10-07): its cover across the top,
+ * A course of the student's as Material's outlined card (`mdCard`,
+ * 2026-10-22, the new design system; before it, «M2a» of 2026-10-07): its cover across the top,
  * so a course is recognised as it is in the catalog; under it the name, the
  * figures, a wave of how far they are, and at the foot the text button that
- * goes on.
+ * goes on (Material's text button).
  *
  * A finished course says so — the line straight and in the success green,
  * and «Completado» where the button was — and leads to its page like any
@@ -39,7 +40,9 @@ export function MyCourseCard({ course }: MyCourseCardProps) {
   const image = course.cover ?? course.thumbnail;
 
   return (
-    <article className={`my-course-card${course.isCompleted ? " my-course-card_state_done" : ""}`}>
+    <article
+      className={`${mdCard("outlined")} my-course-card${course.isCompleted ? " my-course-card_state_done" : ""}`}
+    >
       <div className="my-course-card__cover">
         {image && <Image src={image} alt="" fill sizes={COVER_SIZES} className="my-course-card__cover-image" />}
       </div>
@@ -66,7 +69,7 @@ export function MyCourseCard({ course }: MyCourseCardProps) {
           {MOVE_TRAINER_ENABLED && course.reviewCount > 0 && (
             <Link
               href={course.reviewHref}
-              className="platform-button platform-button_variant_text platform-button_size_sm"
+              className={mdButton("text", "sm")}
               aria-label={`Repasar ${course.reviewCount} ${course.reviewCount === 1 ? "ejercicio" : "ejercicios"}`}
             >
               Repasar {course.reviewCount}
@@ -80,12 +83,9 @@ export function MyCourseCard({ course }: MyCourseCardProps) {
             </span>
           ) : (
             course.learnHref && (
-              <Link
-                href={course.learnHref}
-                className="platform-button platform-button_variant_text platform-button_size_sm"
-              >
+              <Link href={course.learnHref} className={mdButton("text", "sm")}>
                 {progress.completedLessons === 0 ? "Empezar" : "Continuar"}
-                <ChevronRightIcon variant="classic-solid" className="platform-button__icon" />
+                <ChevronRightIcon variant="classic-solid" className="platform-md-icon" />
               </Link>
             )
           )}

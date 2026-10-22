@@ -1,4 +1,5 @@
 import { FireIcon } from "@/components/icons/fire-icon.comp";
+import { mdChip } from "@/lib/material/material-classes";
 import "./platform-streak-chip.comp.css";
 
 interface PlatformStreakChipProps {
@@ -8,13 +9,12 @@ interface PlatformStreakChipProps {
 
 /**
  * The streak in the bar, beside the tools (2026-10-22, the new design
- * system's header): the flame and the days, in a pill of Material 3's
- * container. It only says; the day's goal and the rest are behind the avatar.
+ * system's header): the flame and the days, in Material's assist chip. It only says; the day's goal and the rest are behind the avatar.
  */
 export function PlatformStreakChip({ days }: PlatformStreakChipProps) {
   const label = `${days} ${days === 1 ? "día" : "días"}`;
   return (
-    <p className="platform-streak-chip">
+    <p className={`${mdChip("assist")} platform-streak-chip`}>
       <FireIcon
         variant="duotone-solid"
         className="platform-streak-chip__flame"

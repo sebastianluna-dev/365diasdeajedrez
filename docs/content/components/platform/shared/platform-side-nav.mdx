@@ -4,14 +4,14 @@ description: "The side column of a page moved to the new design system (Material
 
 # `PlatformSideNav`
 
-|            |                                                                                                                                |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/shared/platform-side-nav/platform-side-nav.comp.tsx`                                                      |
-| Kind       | Server Component                                                                                                               |
-| Stylesheet | `platform-side-nav.comp.css` → block `.platform-side-nav`                                                                      |
-| Story      | `platform-side-nav.stories.tsx` (`platform/shared/PlatformSideNav`): «Cursos» with its action, another view current, no action |
-| Used by    | «Mis cursos» (`MyCoursesSection`), the first page moved to the new design system (2026-10-22)                                  |
-| Uses       | `next/link`; `PlayIcon`, `GraduationCapIcon`, `CircleCheckIcon`, `ClockIcon`, `BookOpenIcon`                                   |
+|            |                                                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/shared/platform-side-nav/platform-side-nav.comp.tsx`                                                                  |
+| Kind       | Server Component                                                                                                                           |
+| Stylesheet | `platform-side-nav.comp.css` → block `.platform-side-nav`                                                                                  |
+| Story      | `platform-side-nav.stories.tsx` (`platform/shared/PlatformSideNav`): «Cursos» with its action, another view current, no action             |
+| Used by    | «Mis cursos» (`MyCoursesSection`), the first page moved to the new design system (2026-10-22)                                              |
+| Uses       | `next/link`; `mdFab` · `lib/material/material-classes.ts`; `PlayIcon`, `GraduationCapIcon`, `CircleCheckIcon`, `ClockIcon`, `BookOpenIcon` |
 
 ## Purpose
 
@@ -35,7 +35,7 @@ A `<nav aria-label>` with the action on top and a list per group. The current li
 
 Block `.platform-side-nav`.
 
-**Elements:** `__action`, `__action-icon`, `__group`, `__title`, `__list`, `__link`, `__icon`, `__level`, `__label`, `__count`
+**Elements:** `__action` (on Material's `fab fab-primary-container`, only its place), `__group`, `__title`, `__list`, `__link`, `__icon`, `__level`, `__label`, `__count`
 
 **Modifiers and states:** `.platform-side-nav__link_state_current`, `.platform-side-nav__level_tone_{1…6}`
 

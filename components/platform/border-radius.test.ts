@@ -5,8 +5,7 @@ import { describe, expect, it } from "vitest";
 
 // The platform rounds a corner in one of a few fixed ways: 8px, 4px on a
 // control too small for 8, all the way, and — for the new design system,
-// Material 3 (2026-10-22) — 12px for a card, 16px for a panel or an extended
-// button and 24px for a block that stands out inside a panel. None of them
+// Material 3 Expressive (2026-10-22) — one of Material's shape tokens. None of them
 // decides a radius of its own, so a stylesheet never has to. This reads every
 // stylesheet of the platform and fails on the first value out of the list.
 
@@ -20,13 +19,12 @@ const ROOT = fileURLToPath(new URL("../../", import.meta.url));
 const PLATFORM_STYLES = ["app/(platform)", "app/(auth)", "components/platform", "components/auth", "components/chess"];
 
 /**
- * Material 3's three larger corners (2026-10-22), each for one kind of thing
- * on the pages moved to the new design system: 12px a card (`MyCourseCard`),
- * 16px the white panel of `.platform-workspace`, an extended button and a
- * picture inside a block, 24px a block that stands out inside the panel
- * («Sigue donde ibas», the streak's band).
+ * Material 3 Expressive's shapes (2026-10-22), on the pages moved to the new
+ * design system: a corner of one of our pieces there is written with
+ * Material's own token — `md` 12 a card, `lg` 16 the panel, `xl` 28 a block
+ * that stands out — and never as its number, so the shape is Material's.
  */
-const MATERIAL_3 = ["12px", "16px", "24px"];
+const MATERIAL_SHAPE = /^var\(--md-sys-shape-corner-(?:none|xs|sm|md|lg|lg-increased|xl|xl-increased|xxl|full)\)$/;
 
 /**
  * What a corner can be: 8px; 4px, and ONLY on a control of about 20px or
@@ -39,7 +37,7 @@ const MATERIAL_3 = ["12px", "16px", "24px"];
  * it: a stylesheet that reaches for it on anything of a normal size is
  * deciding a radius, which is what this rule is here to prevent.
  */
-const ALLOWED = new Set(["8px", "4px", "1000px", "50%", "0", "inherit", ...MATERIAL_3]);
+const ALLOWED = new Set(["8px", "4px", "1000px", "50%", "0", "inherit"]);
 
 const DECLARATION = /border(?:-[a-z]+)*-radius:\s*([^;]+);/g;
 
@@ -58,7 +56,7 @@ function offendersOf(directories: readonly string[]): string[] {
     .flatMap((path) =>
       [...readFileSync(path, "utf8").matchAll(DECLARATION)]
         .map((match) => match[1]?.trim() ?? "")
-        .filter((value) => value.split(/\s+/).some((corner) => !ALLOWED.has(corner)))
+        .filter((value) => !MATERIAL_SHAPE.test(value) && value.split(/\s+/).some((corner) => !ALLOWED.has(corner)))
         .map((value) => `${relative(ROOT, path)}: ${value}`),
     );
 }
@@ -69,7 +67,7 @@ describe("the platform's corners", () => {
     expect(PLATFORM_STYLES.flatMap((directory) => stylesheetsOf(join(ROOT, directory))).length).toBeGreaterThan(50);
   });
 
-  it("are 8px, 4px on a tiny control, all the way or one of Material 3's three — and nothing else", () => {
+  it("are 8px, 4px on a tiny control, all the way or one of Material's shapes — and nothing else", () => {
     expect(offendersOf(PLATFORM_STYLES)).toEqual([]);
   });
 });

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Popover } from "radix-ui";
 import { useId, useState } from "react";
+import { mdIconButton } from "@/lib/material/material-classes";
 import { GridIcon } from "@/components/icons/grid-icon.comp";
 import { activeApp, type PlatformApp, type PlatformApps } from "@/constants/platform/nav-items.const";
 import { NavArt } from "./nav-art.comp";
@@ -51,11 +52,8 @@ export function PlatformAppsMenu({ apps }: PlatformAppsMenuProps) {
 
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
-      <Popover.Trigger
-        className="platform-button platform-button_variant_quiet platform-button_shape_square"
-        aria-label="Herramientas"
-      >
-        <GridIcon variant="classic-solid" className="platform-button__icon" />
+      <Popover.Trigger className={mdIconButton("standard", "sm")} aria-label="Herramientas">
+        <GridIcon variant="classic-solid" className="platform-md-icon" />
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content

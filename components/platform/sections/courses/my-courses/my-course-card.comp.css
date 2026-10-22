@@ -1,13 +1,8 @@
 .my-course-card {
   /* The name's pseudo-element is stretched over this box: the whole card is
      the link. The buttons sit above it. */
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--platform-m3-outline-variant);
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--platform-m3-panel);
+  /* Material's outlined card (`card card-outlined`) draws the box, its
+     outline and its 12 corners; this block lays out what is inside. */
   color: var(--platform-m3-on-surface);
   transition: background-color 160ms ease-out;
 

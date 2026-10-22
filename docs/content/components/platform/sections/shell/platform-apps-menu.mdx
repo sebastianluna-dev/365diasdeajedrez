@@ -8,7 +8,7 @@ description: "The nine squares at the right of the bar and the panel they open: 
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | File       | `components/platform/sections/shell/platform-apps-menu.comp.tsx`                                                                                                                                                                      |
 | Kind       | Client Component                                                                                                                                                                                                                      |
-| Stylesheet | `platform-apps-menu.comp.css` → block `.platform-apps-menu` (the panel; the trigger is a quiet `.platform-button`)                                                                                                                    |
+| Stylesheet | `platform-apps-menu.comp.css` → block `.platform-apps-menu` (the panel; the trigger is Material's standard icon button)                                                                                                               |
 | Story      | `platform-apps-menu.stories.tsx` (`platform/sections/shell/PlatformAppsMenu`): the closed button, and the teacher's, the student's and the staff's tools open (`play`), each on one of their pages, and a student with everything off |
 | Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)                                                                                                                                                         |
 | Composes   | [`NavArt`](/components/platform/sections/shell/nav-art), Radix `Popover`                                                                                                                                                              |
@@ -26,7 +26,7 @@ The Google-style header (2026-10-19, option A1 of the calendar canvas): every pa
 
 ## Behaviour
 
-- **The button** is a quiet square `.platform-button` with the nine squares (`GridIcon`, Classic Solid), named «Herramientas»; open, it keeps the quiet button's pressed grey (`aria-expanded`).
+- **The button** is Material's standard icon button (`mdIconButton("standard", "sm")`, 40px, since 2026-10-22; before, a quiet square `.platform-button`) with the nine squares (`GridIcon`, Classic Solid), named «Herramientas».
 - **The panel** opens under it, aligned to its right edge, portalled to `<body>`: a grey tray (`--platform-bg`) with «Tus atajos» on a white card — the first `PLATFORM_SHORTCUTS` (six) tools of the role, two rows of three — and the rest under the card, three to a row. Each tool is a tile: its drawing at 48px and its name. «Tus atajos» cannot be edited yet: the six are the role's first six.
 - **The page's tile is marked** (`aria-current="page"`, the accent's wash and ink): `activeApp(apps, pathname)` gives the tool whose address is the longest that starts the page's, so `/profesor` and `/profesor/alumnos` never both light up, and the staff's «Revisión» wins over «Ejercicios» on the review queue.
 - **A tile closes the panel** as it leads away (the open state is the component's). Escape and a click outside close it too; the focus moves into the panel and back to the button, with the primitive.

@@ -7,6 +7,7 @@ import { chessGlyph, gramatika, suisseIntl } from "@/app/(frontend)/fonts";
 import { caveat, fraunces, kalam, plexMono, poppins, sfProDisplay } from "@/app/(platform)/fonts";
 import { PlatformShell } from "@/components/platform/sections/shell/platform-shell.section";
 import "./platform.css";
+import "./material-styles";
 
 export const metadata: Metadata = {
   title: {

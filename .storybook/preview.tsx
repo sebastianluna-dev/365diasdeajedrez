@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import type { Preview } from "@storybook/nextjs-vite";
 import "@/app/(frontend)/globals.css";
 import "@/app/(platform)/platform.css";
+import "@/app/(platform)/material-styles";
 import "./preview.css";
 
 type Theme = "site" | "platform";

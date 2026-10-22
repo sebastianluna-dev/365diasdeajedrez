@@ -5,38 +5,12 @@
   padding: var(--platform-space-1) 0 var(--platform-space-4);
   color: var(--platform-m3-on-surface);
 
-  /* Material 3's extended button: the primary's container, 56px high and
-     16 round, the one thing of the column that is pressed rather than chosen. */
+  /* Material's extended FAB (`fab fab-primary-container`) draws the button;
+     here it only takes its place at the top of the column. */
   & .platform-side-nav__action {
     align-self: flex-start;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--platform-space-3);
-    height: 56px;
     margin-left: var(--platform-space-2);
-    padding: 0 var(--platform-space-6) 0 var(--platform-space-4);
-    border-radius: 16px;
-    background: var(--platform-m3-primary-container);
-    color: var(--platform-m3-on-primary-container);
-    font-size: var(--platform-type-md);
-    font-weight: 600;
     text-decoration: none;
-    transition: background-color 160ms ease-out;
-
-    &:hover {
-      background: color-mix(in srgb, var(--platform-m3-on-primary-container) 8%, var(--platform-m3-primary-container));
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--platform-m3-primary);
-      outline-offset: 2px;
-    }
-  }
-
-  & .platform-side-nav__action-icon {
-    flex: none;
-    width: 16px;
-    height: 18px;
   }
 
   & .platform-side-nav__group {

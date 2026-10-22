@@ -221,6 +221,42 @@
   --platform-m3-heat-1: light-dark(#7cacf8, #3d6bb3);
   --platform-m3-heat-2: light-dark(#4285f4, #6f9be8);
   --platform-m3-heat-3: light-dark(#0b57d0, #a8c7fa);
+  /* The inverse roles: a snackbar, dark on the light theme and light on the dark. */
+  --platform-m3-inverse-surface: light-dark(#303030, #e3e3e3);
+  --platform-m3-inverse-on-surface: light-dark(#f2f2f2, #303030);
+  --platform-m3-inverse-primary: light-dark(#a8c7fa, #0b57d0);
+
+  /* MATERIAL'S OWN ROLES (`@material/web`, its Expressive components of
+     `labs/gb`, 2026-10-22): its stylesheets read `--md-sys-*`, which it
+     declares in a cascade layer with Material's purple; these, unlayered,
+     win, and point every role it reads at ours. Its secondary — the focus
+     ring, the selected chip — is our primary, and its type is ours. */
+  --md-sys-color-primary: var(--platform-m3-primary);
+  --md-sys-color-on-primary: var(--platform-m3-on-primary);
+  --md-sys-color-primary-container: var(--platform-m3-primary-container);
+  --md-sys-color-on-primary-container: var(--platform-m3-on-primary-container);
+  --md-sys-color-secondary: var(--platform-m3-primary);
+  --md-sys-color-on-secondary: var(--platform-m3-on-primary);
+  --md-sys-color-secondary-container: var(--platform-m3-secondary-container);
+  --md-sys-color-on-secondary-container: var(--platform-m3-on-secondary-container);
+  --md-sys-color-tertiary: var(--platform-m3-primary);
+  --md-sys-color-on-tertiary: var(--platform-m3-on-primary);
+  --md-sys-color-tertiary-container: var(--platform-m3-primary-container);
+  --md-sys-color-on-tertiary-container: var(--platform-m3-on-primary-container);
+  --md-sys-color-surface: var(--platform-m3-panel);
+  --md-sys-color-surface-container-low: var(--platform-m3-canvas);
+  --md-sys-color-surface-container: var(--platform-m3-container);
+  --md-sys-color-surface-container-high: var(--platform-m3-container-high);
+  --md-sys-color-surface-container-highest: var(--platform-m3-container-high);
+  --md-sys-color-on-surface: var(--platform-m3-on-surface);
+  --md-sys-color-on-surface-variant: var(--platform-m3-on-surface-variant);
+  --md-sys-color-outline: var(--platform-m3-outline);
+  --md-sys-color-outline-variant: var(--platform-m3-outline-variant);
+  --md-sys-color-inverse-surface: var(--platform-m3-inverse-surface);
+  --md-sys-color-inverse-on-surface: var(--platform-m3-inverse-on-surface);
+  --md-sys-color-inverse-primary: var(--platform-m3-inverse-primary);
+  --md-ref-typeface-plain: var(--platform-font);
+  --md-ref-typeface-brand: var(--platform-font-display);
 
   /* Typography. The whole platform uses SF Pro Display — display and text —;
      Gramatika and Suisse Intl stay on the public site. A single token so that
@@ -383,7 +419,9 @@
 /* The global focus of globals.css is an orange meant for a dark background;
    on the platform's light one the accent's ink is used, which does contrast:
    studying, moving around, reading one's progress, the focus is the brand's. */
-.platform-theme :focus-visible {
+/* Material's components draw their own ring (`.focus-ring-outer`/`-inner`),
+   which this one must not paint over. */
+.platform-theme :focus-visible:not(.focus-ring-outer, .focus-ring-inner) {
   outline: 2px solid var(--platform-accent-ink);
   outline-offset: 2px;
 }
@@ -394,7 +432,7 @@
    wherever it is (a search); and the pieces that hold a value draw it
    themselves, for the controls tied to a form from outside it. An invalid
    field still draws its own red ring (`PlatformForm`). */
-.platform-theme form :focus-visible,
+.platform-theme form :focus-visible:not(.focus-ring-outer, .focus-ring-inner),
 .platform-theme :is(input, textarea):focus-visible {
   outline-color: var(--platform-selection);
 }
@@ -455,6 +493,27 @@ html body.platform-theme[data-scroll-locked] {
 
 .platform-theme ::selection {
   background: color-mix(in srgb, var(--platform-accent) 30%, transparent);
+}
+
+/* A Font Awesome icon inside one of Material's buttons, FABs or chips: the
+   library sizes and colours its own icon font (`md-icon`), which the
+   platform does not use, through `--md-icon-size` and `--md-icon-color`;
+   this reads the same two, so an SVG sits where its icon would. */
+.platform-md-icon {
+  flex: none;
+  width: var(--md-icon-size, 20px);
+  height: var(--md-icon-size, 20px);
+  color: var(--md-icon-color, currentColor);
+}
+
+/* Material's ripple and focus ring animate, and its stylesheets do not ask
+   for less motion: under `reduce` they appear and go without moving. */
+@media (prefers-reduced-motion: reduce) {
+  .ripple,
+  .focus-ring-outer,
+  .focus-ring-inner {
+    animation: none;
+  }
 }
 
 /* Shared primitives of the platform pages (the equivalent of
@@ -584,7 +643,7 @@ html body.platform-theme[data-scroll-locked] {
     flex-direction: column;
     gap: var(--platform-space-6);
     padding: var(--platform-space-6);
-    border-radius: 16px;
+    border-radius: var(--md-sys-shape-corner-lg);
     background: var(--platform-m3-panel);
     box-sizing: border-box;
   }
@@ -1006,83 +1065,6 @@ html body.platform-theme[data-scroll-locked] {
   color: var(--platform-text-faint);
 }
 
-/* MATERIAL 3 (2026-10-22): the buttons of the pages moved to the new design
-   system (`.platform-workspace`), each a pill as Material 3 draws them, in the
-   same three heights. THE PRIMARY in Google's blue, the one reason of the
-   screen; THE TONAL in the primary's container, a step under it; THE OUTLINED
-   with only its outline, beside a primary; THE TEXT one with no box at all,
-   the action of a card or a row. On those pages they take the place of the
-   accent, soft and quiet ones; the pages not yet moved keep those. */
-.platform-button_variant_primary,
-.platform-button_variant_tonal,
-.platform-button_variant_outlined,
-.platform-button_variant_text {
-  border-radius: 1000px;
-  box-shadow: none;
-}
-
-.platform-button_variant_primary {
-  background: var(--platform-m3-primary);
-  color: var(--platform-m3-on-primary);
-}
-
-.platform-button_variant_primary:hover {
-  background: var(--platform-m3-primary-hover);
-  color: var(--platform-m3-on-primary);
-}
-
-.platform-button_variant_primary:active {
-  background: color-mix(in srgb, var(--platform-m3-on-primary) 12%, var(--platform-m3-primary));
-}
-
-.platform-button_variant_primary:disabled {
-  background: color-mix(in srgb, var(--platform-m3-primary) 40%, var(--platform-m3-panel));
-  color: var(--platform-m3-on-primary);
-}
-
-.platform-button_variant_tonal {
-  background: var(--platform-m3-primary-container);
-  color: var(--platform-m3-on-primary-container);
-}
-
-.platform-button_variant_tonal:hover {
-  background: color-mix(in srgb, var(--platform-m3-on-primary-container) 8%, var(--platform-m3-primary-container));
-  color: var(--platform-m3-on-primary-container);
-}
-
-.platform-button_variant_tonal:active {
-  background: color-mix(in srgb, var(--platform-m3-on-primary-container) 14%, var(--platform-m3-primary-container));
-}
-
-.platform-button_variant_outlined {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--platform-m3-outline);
-  color: var(--platform-m3-primary);
-}
-
-.platform-button_variant_text {
-  background: transparent;
-  color: var(--platform-m3-primary);
-}
-
-.platform-button_variant_outlined:hover,
-.platform-button_variant_text:hover {
-  background: color-mix(in srgb, var(--platform-m3-primary) 8%, transparent);
-  color: var(--platform-m3-primary);
-}
-
-.platform-button_variant_outlined:active,
-.platform-button_variant_text:active {
-  background: color-mix(in srgb, var(--platform-m3-primary) 14%, transparent);
-}
-
-.platform-button_variant_tonal:disabled,
-.platform-button_variant_outlined:disabled,
-.platform-button_variant_text:disabled {
-  background: transparent;
-  color: var(--platform-m3-outline);
-}
-
 /* THE ICON'S INK. A neutral icon on white is drawn in the muted grey, a step
    under its word: in the word's ink an icon, solid and compact, weighed more
    than the word beside it (2026-10-07, when the board's keys read black). It
@@ -1098,11 +1080,7 @@ html body.platform-theme[data-scroll-locked] {
 .platform-button_variant_soft > .platform-button__icon,
 .platform-button_variant_ink > .platform-button__icon,
 .platform-button_variant_danger > .platform-button__icon,
-.platform-button_variant_quiet > .platform-button__icon,
-.platform-button_variant_primary > .platform-button__icon,
-.platform-button_variant_tonal > .platform-button__icon,
-.platform-button_variant_outlined > .platform-button__icon,
-.platform-button_variant_text > .platform-button__icon {
+.platform-button_variant_quiet > .platform-button__icon {
   color: inherit;
 }
 

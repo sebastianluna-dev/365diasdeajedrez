@@ -4,12 +4,12 @@ description: "The three bars at the left of the bar, as Gmail's: they hide and s
 
 # `PlatformSideToggle`
 
-|         |                                                                                     |
-| ------- | ----------------------------------------------------------------------------------- |
-| File    | `components/platform/sections/shell/platform-side-toggle.comp.tsx`                  |
-| Kind    | Client Component                                                                    |
-| Used by | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)       |
-| Uses    | `BarsIcon` in Classic Solid; `.platform-button` (`_variant_quiet`, `_shape_square`) |
+|         |                                                                                  |
+| ------- | -------------------------------------------------------------------------------- |
+| File    | `components/platform/sections/shell/platform-side-toggle.comp.tsx`               |
+| Kind    | Client Component                                                                 |
+| Used by | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)    |
+| Uses    | `BarsIcon` in Classic Solid; `mdIconButton` · `lib/material/material-classes.ts` |
 
 ## Purpose
 
@@ -17,4 +17,4 @@ The header of the new design system (2026-10-22) opens with Gmail's three bars. 
 
 The shell draws it on every page and hides it where there is no side column (`platform-shell.section.css`). The choice is not kept: a new visit shows the column.
 
-No stylesheet of its own: it is the platform's quiet square button.
+No stylesheet of its own: it is Material's standard icon button (`icon-btn icon-btn-standard icon-btn-sm`, 40px).

@@ -4,13 +4,13 @@
   align-items: center;
   gap: var(--platform-space-6);
   padding: var(--platform-space-4);
-  border-radius: 24px;
+  border-radius: var(--md-sys-shape-corner-xl);
   background: var(--platform-m3-container);
 
   & .resume-course__cover {
     position: relative;
     aspect-ratio: 16 / 10;
-    border-radius: 16px;
+    border-radius: var(--md-sys-shape-corner-lg);
     overflow: hidden;
     background: var(--platform-m3-container-high);
   }
