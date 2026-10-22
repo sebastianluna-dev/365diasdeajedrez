@@ -16,4 +16,38 @@
   & .reset-progress__open:hover {
     color: var(--platform-accent-hover);
   }
+
+  /* As a row of the side column of the new design system (`look="side"`):
+     the height, the indent and the round right end of `PlatformSideNav`'s
+     links, with its icon. */
+  & .reset-progress__open_look_side {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    width: 100%;
+    height: 36px;
+    padding: 0 var(--platform-space-4) 0 var(--platform-space-6);
+    border-radius: 0 1000px 1000px 0;
+    color: var(--platform-m3-on-surface);
+    font-size: var(--platform-type-sm);
+    font-weight: 400;
+    transition: background-color 160ms ease-out;
+
+    &:hover {
+      background: var(--platform-m3-container-high);
+      color: var(--platform-m3-on-surface);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-m3-primary);
+      outline-offset: -2px;
+    }
+  }
+
+  & .reset-progress__icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    color: var(--platform-m3-on-surface-variant);
+  }
 }

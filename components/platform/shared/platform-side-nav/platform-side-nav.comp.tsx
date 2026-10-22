@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ComponentType } from "react";
 import { BookOpenIcon } from "@/components/icons/book-open-icon.comp";
+import { CheckIcon } from "@/components/icons/check-icon.comp";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
 import { ClockIcon } from "@/components/icons/clock-icon.comp";
 import { GraduationCapIcon } from "@/components/icons/graduation-cap-icon.comp";
@@ -31,14 +32,19 @@ const TIGHT_BOX: ReadonlySet<PlatformSideNavIcon> = new Set(["circle-check"]);
 export interface PlatformSideNavLink {
   label: string;
   href: string;
-  /** How many there are behind it, at the right end. */
-  count?: number;
+  /** How many there are behind it, at the right end: a number, or a ratio such as «1/3». */
+  count?: number | string;
   /** The view on screen: lit, and `aria-current`. */
   current?: boolean;
   /** A drawing before the label. */
   icon?: PlatformSideNavIcon;
   /** Instead of a drawing, a dot in a course level's colour (1 the easiest). */
   level?: number;
+  /**
+   * Instead of a drawing, a small round badge: a chapter's number, or a
+   * check once it is `done`.
+   */
+  badge?: { text: string; done?: boolean };
 }
 
 export interface PlatformSideNavGroup {
@@ -93,6 +99,18 @@ export function PlatformSideNav({ label, action, groups }: PlatformSideNavProps)
                         variant={link.current ? "classic-solid" : "duotone-light"}
                         className={`platform-side-nav__icon${link.icon && TIGHT_BOX.has(link.icon) ? " platform-side-nav__icon_box_tight" : ""}`}
                       />
+                    )}
+                    {link.badge && (
+                      <span
+                        className={`platform-side-nav__badge${link.badge.done ? " platform-side-nav__badge_state_done" : ""}`}
+                        aria-hidden="true"
+                      >
+                        {link.badge.done ? (
+                          <CheckIcon variant="classic-solid" className="platform-side-nav__badge-check" />
+                        ) : (
+                          link.badge.text
+                        )}
+                      </span>
                     )}
                     {link.level !== undefined && (
                       <span

@@ -88,3 +88,21 @@ export const WithoutAction: Story = {
   name: "Without action",
   args: { action: undefined },
 };
+
+/** A course's chapters: each with its number, or a check once learned, and its lessons as a ratio. */
+export const Chapters: Story = {
+  args: {
+    label: "El curso",
+    action: { label: "Aprender", href: "#aprender" },
+    groups: [
+      {
+        title: "Capítulos",
+        links: [
+          { label: "Ideas de la Siciliana", href: "#1", count: "1/1", badge: { text: "1", done: true } },
+          { label: "La Najdorf", href: "#2", count: "1/3", badge: { text: "2" } },
+          { label: "El Dragón", href: "#3", count: "0/1", badge: { text: "3" } },
+        ],
+      },
+    ],
+  },
+};

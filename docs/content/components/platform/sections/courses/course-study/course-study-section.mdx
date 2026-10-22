@@ -1,47 +1,53 @@
 ---
-description: "The course to study: its chapters as cards, each with how much of it the student has learned, inside the frame every page of the course shares."
+description: "The course to study, in the new design system: its side column (chapters, what to learn, options) and a panel with the course — picture, name, progress, «Aprender» and «Repasar» — and its chapters as Material's cards."
 ---
 
 # `CourseStudySection`
 
-|            |                                                                                                                                                      |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/course-study/course-study.section.tsx`                                                                         |
-| Kind       | Server Component                                                                                                                                     |
-| Stylesheet | `course-study.section.css` → block `.course-study`                                                                                                   |
-| Used by    | `/cursos/[courseRef]` when the segment is an **id**                                                                                                  |
-| Composes   | [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame), [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads      | `resolveCourseReference()` → `getCourseStudy(courseId)` · `services/courses/courses.service.ts`                                                      |
+|            |                                                                                                                                                                                                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/courses/course-study/course-study.section.tsx`                                                                                                                                                                                                               |
+| Kind       | Server Component                                                                                                                                                                                                                                                                           |
+| Stylesheet | `course-study.section.css` → block `.course-study`, on the workspace's panel                                                                                                                                                                                                               |
+| Used by    | `/cursos/[courseRef]` when the segment is an **id** (`platform-page_width_full` + `_frame_bleed`)                                                                                                                                                                                          |
+| Composes   | [`CourseSide`](/components/platform/sections/courses/course-study/course-side), [`WavyProgress`](/components/platform/sections/courses/my-courses/wavy-progress), [`PlatformNotice`](/components/platform/shared/platform-notice), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads      | `resolveCourseReference()` → `getCourseStudy(courseId)` · `services/courses/courses.service.ts` (the page)                                                                                                                                                                                 |
+| Uses       | `mdButton`, `mdCard`, `mdIconButton` · `lib/material/material-classes.ts`; `levelSpan`; `countLessons`; `studentErrorMessage`                                                                                                                                                              |
 
 ## Purpose
 
 `/cursos/10000004`: the course once it is the student's. Whoever opens it without having added the course is redirected by the page to its information page, which is where it is added.
 
+Since 2026-10-22 it is drawn in the new design system («M4» of the owner's canvas, Material 3 Expressive): the `.platform-workspace`, with the course's own side column ([`CourseSide`](/components/platform/sections/courses/course-study/course-side)) and the panel. Before, it was the chapters as cards inside [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame), which the chapter's page still uses until it moves too.
+
 ## Props
 
-| Prop        | Type           | Required | Meaning                                                          |
-| ----------- | -------------- | -------- | ---------------------------------------------------------------- |
-| `course`    | `CourseDetail` | yes      | The course with its chapters and the student's progress in each. |
-| `errorCode` | `string`       | no       | Passed on to the frame.                                          |
+| Prop        | Type           | Required | Meaning                                                            |
+| ----------- | -------------- | -------- | ------------------------------------------------------------------ |
+| `course`    | `CourseDetail` | yes      | The course with its chapters and the student's progress in each.   |
+| `errorCode` | `string`       | no       | What a setting bounced back with: a `PlatformNotice` on the panel. |
 
 ## Behaviour
 
-- One card per chapter, the whole card a link to it (`/cursos/<id>/<order>`): the chapter's name whole («Los años de aprendizaje (1957–1959)») and nothing above it — a chapter is not numbered —, the «Prioridad» tag when the staff marked the chapter (`chapter.isPriority`), and at the foot its progress as a count: «9/17 lecciones».
-- **A chapter has no percentage and no bar**, and **no page of the course shows its progress** either: the aside is the course's options and its setting. A finished chapter (`chapter.isCompleted`) gets an accent check in front of its count (`CircleCheckIcon` with `variant="duotone-solid"`, the filled one); an unfinished one gets nothing, which is what "not yet" looks like.
-- A chapter's count is of the lessons the student **sees**: with only the priority ones asked for, it is over those, which is the list that opens when the card is pressed.
-- A course without chapters shows an `EmptyState`.
+The panel, from top to bottom:
+
+1. **A toolbar**: Material's icon button and «Tus cursos» back to `/cursos`, and the course's name as the trail's current step.
+2. **The course**: its picture (the cover, or the square picture, at 16:10 with 16 corners), its name in the display font, a line with its authors, its levels (`levelSpan`), its topics and its chapters, its progress (`WavyProgress`, large, with the percentage), and its buttons — «Continuar», «Empezar» or «Repasar» (`ctaLabel`, Material's filled button, 56px) to `learnHref`; «Repasar N» (outlined) when the Move Trainer has something due, or switched off as «Repasar · Al día» when it is up to date. A course without lessons in view draws no progress and no «Aprender».
+3. **Its chapters**: a heading with «N de M lecciones aprendidas», and one card per chapter (Material's outlined card, the whole card the link): «Capítulo N», «Prioridad» when the staff marked it, its state — «Aprendido», «Siguiente» (the first not learned, where «Aprender» leads; it stands on the container, without outline), «En curso» or «Por empezar» —, its name, its description (two lines), its progress, and at the foot its count and what pressing it does («Repasar», «Seguir», «Empezar»).
+
+A chapter's count is of the lessons the student **sees**: with only the priority ones asked for, it is over those. A course without chapters shows an `EmptyState`.
 
 ## Markup & styling
 
-Block `.course-study` (117 lines): a grid of **three** columns (`repeat(3, minmax(0, 1fr))`), `--platform-space-6` (24px) apart, which in the page's 680px is about 211px a card.
+Block `.course-study` (249 lines), set on `.platform-workspace__panel`.
 
-**Elements:** `.course-study__item`, `.course-study__chapter`, `.course-study__title`, `.course-study__foot`, `.course-study__tag`, `.course-study__progress`, `.course-study__done`, `.course-study__done-icon`, `.course-study__ratio`, `.course-study__ratio-value`
+**Elements:** `__toolbar`, `__crumb`, `__crumb-step`, `__crumb-here`, `__hero`, `__cover`, `__cover-image`, `__heading`, `__name`, `__about`, `__meter`, `__percent`, `__actions`, `__list`, `__list-head`, `__list-title`, `__count`, `__chapters`, `__item`, `__chapter`, `__chapter-head`, `__eyebrow`, `__tag`, `__state`, `__chapter-name`, `__chapter-about`, `__chapter-meter`, `__chapter-foot`, `__chapter-action`, `__chapter-chevron`
 
-The «Prioridad» tag is 20px high with 4px corners, the small tag the lessons carry too (2026-10-07; it was 24px with 8px corners).
+**Modifiers:** `__chapter_state_{done,next,begun,later}`, `__state_{done,next,begun,later}`
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-surface`, `--platform-text`, `--platform-text-subtle`, `--platform-text-title`
+**Tokens:** the `--platform-m3-*` roles, `--md-sys-shape-corner-lg`.
 
-**Breakpoints:** `(width < 1024px)` two columns; `(width < 640px)` one, and a card no longer keeps its least height.
+**Breakpoints:** `(width < 768px)` puts the picture above the text. The chapters are as many to a row as fit of at least 260px.
 
 ## Usage
 
@@ -50,6 +56,10 @@ From `app/(platform)/cursos/[courseRef]/page.tsx`:
 ```tsx
 if (found.kind === "study") {
   if (!course.isAdded) redirect(course.infoHref);
-  return <CourseStudySection course={course} errorCode={error} />;
+  return (
+    <div className="platform-page platform-page_width_full platform-page_frame_bleed course-page">
+      <CourseStudySection course={course} errorCode={error} />
+    </div>
+  );
 }
 ```

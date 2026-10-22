@@ -90,6 +90,31 @@
     color: inherit;
   }
 
+  /* A chapter's number in a small disc of the container; done, the success
+     green with a check. */
+  & .platform-side-nav__badge {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--platform-m3-container-high);
+    color: var(--platform-m3-on-surface-variant);
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+  }
+
+  & .platform-side-nav__badge_state_done {
+    background: var(--platform-m3-success);
+    color: var(--platform-m3-on-success);
+  }
+
+  & .platform-side-nav__badge-check {
+    width: 10px;
+    height: 10px;
+  }
+
   & .platform-side-nav__level {
     flex: none;
     width: 12px;

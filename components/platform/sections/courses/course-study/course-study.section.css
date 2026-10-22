@@ -1,117 +1,249 @@
 .course-study {
-  display: grid;
-  /* Three to a row, not as many as fit: a chapter is a door and the page
-     reads as a wall of them, whatever the course's length. */
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--platform-space-6);
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  /* The toolbar: back to «Tus cursos», and the trail. */
+  & .course-study__toolbar {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    margin: calc(-1 * var(--platform-space-2)) 0 calc(-1 * var(--platform-space-2)) calc(-1 * var(--platform-space-2));
+    min-width: 0;
+  }
+
+  & .course-study__crumb {
+    color: var(--platform-m3-on-surface-variant);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  & .course-study__crumb-step {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    color: var(--platform-m3-outline);
+  }
+
+  & .course-study__crumb-here {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+
+  /* The course: its picture at the left, and beside it what it is. */
+  & .course-study__hero {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    align-items: center;
+    gap: var(--platform-space-8);
+
+    @media (width < 768px) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--platform-space-4);
+    }
+  }
+
+  & .course-study__cover {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--md-sys-shape-corner-lg);
+    overflow: hidden;
+    background: var(--platform-m3-container-high);
+  }
+
+  & .course-study__cover-image {
+    object-fit: cover;
+  }
+
+  & .course-study__heading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    min-width: 0;
+  }
+
+  & .course-study__name {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-3xl);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  & .course-study__about,
+  & .course-study__count {
+    margin: 0;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .course-study__meter {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    max-width: 420px;
+  }
+
+  & .course-study__percent {
+    flex: none;
+    font-weight: 700;
+  }
+
+  & .course-study__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-3);
+    margin-top: var(--platform-space-1);
+  }
+
+  & .course-study__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+  }
+
+  & .course-study__list-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--platform-space-4);
+  }
+
+  & .course-study__list-title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-xl);
+    font-weight: 500;
+  }
+
+  /* The chapters, as many to a row as fit of at least 260px. */
+  & .course-study__chapters {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: var(--platform-space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
 
   & .course-study__item {
     display: flex;
   }
 
-  /* The name on top and the progress at the foot, with air in between, so a
-     row of chapters reads as a row of doors. */
+  /* A chapter: Material's outlined card, the whole of it the link. The
+     next one stands on the secondary container, with no outline. */
   & .course-study__chapter {
     flex: 1;
-    min-height: 190px;
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-5);
-    padding: var(--platform-space-6);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    color: var(--platform-text);
-    transition: box-shadow 150ms;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-4);
+    color: var(--platform-m3-on-surface);
+    text-decoration: none;
+    transition: background-color 160ms ease-out;
+
+    &:hover {
+      background: color-mix(in srgb, var(--platform-m3-on-surface) 4%, var(--platform-m3-panel));
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-m3-primary);
+      outline-offset: 2px;
+    }
   }
 
-  & .course-study__chapter:hover {
-    box-shadow: 0 8px 24px rgba(22, 17, 13, 0.08);
-    color: var(--platform-text);
+  & .course-study__chapter_state_next,
+  & .course-study__chapter_state_next:hover {
+    border-color: transparent;
+    background: var(--platform-m3-container);
   }
 
-  & .course-study__title {
-    font-size: var(--platform-type-xl);
-    font-weight: 700;
-    color: var(--platform-text-title);
-    line-height: 1.3;
-    letter-spacing: -0.01em;
-    text-wrap: balance;
-  }
-
-  /* At the foot whatever the title's height, so the counts of a row line up. */
-  & .course-study__foot {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--platform-space-4);
-    margin-top: auto;
-  }
-
-  & .course-study__tag {
-    display: inline-flex;
-    align-items: center;
-    /* A small tag, as Chessable draws its own (2026-10-07): 20px high with
-       4px corners — the radius the corners' rule keeps for what measures 20px
-       or less. */
-    height: 20px;
-    padding: 0 var(--platform-space-2);
-    border-radius: 4px;
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
-    font-size: var(--platform-type-xs);
-    font-weight: 700;
-  }
-
-  & .course-study__progress {
+  & .course-study__chapter-head {
     display: flex;
     align-items: center;
     gap: var(--platform-space-2);
   }
 
-  /* Only a finished chapter has it: its absence is what "not yet" looks like. */
-  & .course-study__done {
-    flex: none;
-    display: flex;
-    color: var(--platform-accent);
-  }
-
-  & .course-study__done-icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  & .course-study__ratio {
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-subtle);
-  }
-
-  & .course-study__ratio-value {
-    font-size: var(--platform-type-lg);
+  & .course-study__eyebrow {
+    margin-right: auto;
+    font-size: var(--platform-type-2xs);
     font-weight: 700;
-    color: var(--platform-text-title);
-    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--platform-m3-on-surface-variant);
   }
 
-  /* Two to a row once three would be narrower than the name they carry, and
-     one when the page itself is a column. */
-  @media (width < 1024px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* The state, and «Prioridad», as small labels. */
+  & .course-study__state,
+  & .course-study__tag {
+    padding: var(--platform-space-0-5) var(--platform-space-2);
+    border-radius: 1000px;
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
   }
 
-  @media (width < 640px) {
-    grid-template-columns: minmax(0, 1fr);
-
-    & .course-study__chapter {
-      min-height: 0;
-    }
+  & .course-study__tag {
+    background: var(--platform-m3-container-high);
+    color: var(--platform-m3-on-surface-variant);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    & .course-study__chapter {
-      transition: none;
-    }
+  & .course-study__state_done {
+    background: var(--platform-m3-success-container);
+    color: var(--platform-m3-on-success-container);
+  }
+
+  & .course-study__state_next {
+    background: var(--platform-m3-secondary-container);
+    color: var(--platform-m3-on-secondary-container);
+  }
+
+  & .course-study__state_begun,
+  & .course-study__state_later {
+    background: var(--platform-m3-container-high);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .course-study__chapter-name {
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-lg);
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  /* Two lines at most. */
+  & .course-study__chapter-about {
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+
+  & .course-study__chapter-meter {
+    margin-top: auto;
+    padding-top: var(--platform-space-2);
+  }
+
+  & .course-study__chapter-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-2);
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .course-study__chapter-action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+    color: var(--platform-m3-primary);
+    font-weight: 600;
+  }
+
+  & .course-study__chapter-chevron {
+    width: 10px;
+    height: 10px;
   }
 }

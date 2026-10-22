@@ -39,7 +39,7 @@ Starting a course over — or just one of its chapters. It cannot be undone, so 
 
 ## Markup & styling
 
-Block `.reset-progress` (19 lines): the trigger alone.
+Block `.reset-progress` (53 lines): the trigger alone.
 
 **Elements:** `.reset-progress__open`
 
@@ -65,3 +65,7 @@ Block `.reset-progress` (19 lines): the trigger alone.
   completedLessons={chapter.completedLessons}
 />;
 ```
+
+## Looks
+
+`look` (default `"link"`): one more link of the options card, on the chapter's page; `"side"` (2026-10-22), a row of [`CourseSide`](/components/platform/sections/courses/course-study/course-side) in the new design system, with `ArrowRotateLeftIcon` (`.reset-progress__open_look_side`, `.reset-progress__icon`).

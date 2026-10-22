@@ -264,6 +264,10 @@ export const TEXT_PAIRS: readonly (readonly [text: string, background: string])[
   ["m3-on-primary", "m3-primary-hover"],
   ["m3-on-primary-container", "m3-primary-container"],
   ["m3-on-secondary-container", "m3-secondary-container"],
+  ["m3-on-success", "m3-success"],
+  ["m3-on-success-container", "m3-success-container"],
+  ["m3-error", "m3-canvas"],
+  ["m3-error", "m3-container-high"],
 ];
 
 /**

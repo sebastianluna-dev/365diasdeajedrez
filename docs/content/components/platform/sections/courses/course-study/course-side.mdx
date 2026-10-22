@@ -1,0 +1,37 @@
+---
+description: "The side column of a course being studied: the course, «Aprender» as the extended FAB, its chapters with their numbers and lessons, what to learn and the course's options."
+---
+
+# `CourseSide`
+
+|            |                                                                                                                                                                                                                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-study/course-side.comp.tsx`                                                                                                                                                                                                                                                   |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                           |
+| Stylesheet | `course-side.comp.css` → block `.course-side`                                                                                                                                                                                                                                                                              |
+| Used by    | [`CourseStudySection`](/components/platform/sections/courses/course-study/course-study-section)                                                                                                                                                                                                                            |
+| Composes   | [`PlatformSideNav`](/components/platform/shared/platform-side-nav), [`LearnMode`](/components/platform/sections/courses/course-study/learn-mode), [`ResetProgress`](/components/platform/sections/courses/course-study/reset-progress), [`RemoveCourse`](/components/platform/sections/courses/course-study/remove-course) |
+
+## Purpose
+
+The course's own column in the new design system (2026-10-22), from top to bottom:
+
+1. **The course**: its square picture (40px), its name and «40 % · 2 de 5 lecciones».
+2. **«Aprender»**, the extended FAB of `PlatformSideNav`, to `learnHref`; none without lessons in view.
+3. **«Capítulos»**, the column's links: each chapter's name, a badge with its number (the success green with a check once it is learned) and its count, «1/3».
+4. **«Qué aprender»**: `LearnMode` with `look="side"` — «Todas las lecciones» and «Sólo las prioritarias» as rows with a radio's ring —, and what the filter hides.
+5. **«Opciones»**: «Información del curso», «Eliminar mi progreso» (only with something to erase) and «Quitar de mis cursos», in the error's red, both with `look="side"`.
+
+Under 1024px the parts sit side by side above the panel.
+
+## Props
+
+| Prop     | Type           | Required | Meaning                           |
+| -------- | -------------- | -------- | --------------------------------- |
+| `course` | `CourseDetail` | yes      | The course, as the page reads it. |
+
+## Markup & styling
+
+Block `.course-side` (103 lines).
+
+**Elements:** `__course`, `__thumb`, `__thumb-image`, `__about`, `__name`, `__figures`, `__group`, `__title`, `__link`, `__icon`

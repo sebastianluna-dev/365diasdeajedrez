@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { CircleMinusIcon } from "@/components/icons/circle-minus-icon.comp";
 import {
   PlatformConfirmPopup,
   type PlatformConfirmPopupHandle,
@@ -14,6 +15,8 @@ interface RemoveCourseProps {
   courseName: string;
   /** Lessons the student has finished in it: what going out costs, by its figure. */
   completedLessons: number;
+  /** `link`, one of the options card's links; `side`, a row of the side column of the new design system. */
+  look?: "link" | "side";
 }
 
 /**
@@ -26,7 +29,7 @@ interface RemoveCourseProps {
  * component: the copy is almost entirely different and what it does is not
  * the same thing at one more scope, it is leaving.
  */
-export function RemoveCourse({ courseId, courseName, completedLessons }: RemoveCourseProps) {
+export function RemoveCourse({ courseId, courseName, completedLessons, look = "link" }: RemoveCourseProps) {
   const confirmRef = useRef<PlatformConfirmPopupHandle>(null);
   const progress =
     completedLessons > 0
@@ -35,7 +38,12 @@ export function RemoveCourse({ courseId, courseName, completedLessons }: RemoveC
 
   return (
     <div className="remove-course">
-      <button type="button" className="remove-course__open" onClick={(event) => confirmRef.current?.open(event)}>
+      <button
+        type="button"
+        className={`remove-course__open${look === "side" ? " remove-course__open_look_side" : ""}`}
+        onClick={(event) => confirmRef.current?.open(event)}
+      >
+        {look === "side" && <CircleMinusIcon variant="duotone-light" className="remove-course__icon" />}
         Quitar de mis cursos
       </button>
 

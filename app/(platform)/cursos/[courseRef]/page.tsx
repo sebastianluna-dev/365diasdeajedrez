@@ -32,8 +32,10 @@ export default async function CoursePage({ params, searchParams }: CoursePagePro
     // information page: whoever arrives here without it is taken there.
     if (!course.isAdded) redirect(course.infoHref);
 
+    // The new design system (2026-10-22): the page takes the window and
+    // bleeds onto the canvas; the section draws the workspace.
     return (
-      <div className="platform-page course-page">
+      <div className="platform-page platform-page_width_full platform-page_frame_bleed course-page">
         <CourseStudySection course={course} errorCode={error} />
       </div>
     );

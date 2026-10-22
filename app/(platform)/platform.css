@@ -216,6 +216,13 @@
   --platform-m3-secondary-container: light-dark(#d3e3fd, #0842a0);
   --platform-m3-on-secondary-container: light-dark(#041e49, #d3e3fd);
   --platform-m3-success: light-dark(#188038, #6dd58c);
+  /* On the success green (a learned chapter's check), and its container (a
+     learned chapter's state). */
+  --platform-m3-on-success: light-dark(#ffffff, #0a3818);
+  --platform-m3-success-container: light-dark(#e6f4ea, #0f3d1f);
+  --platform-m3-on-success-container: light-dark(#0d652d, #c4eed0);
+  /* What takes something away for good: «Quitar de mis cursos». */
+  --platform-m3-error: light-dark(#b3261e, #f2b8b5);
   /* The streak's grid, the more done the deeper: Google's blue in four steps. */
   --platform-m3-heat-0: light-dark(#b5cdf5, #2d3f5c);
   --platform-m3-heat-1: light-dark(#7cacf8, #3d6bb3);

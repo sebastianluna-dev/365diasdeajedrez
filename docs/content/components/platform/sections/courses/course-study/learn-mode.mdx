@@ -35,7 +35,7 @@ It is a **lens**: it writes the settings row and not a single progress row, so s
 
 ## Markup & styling
 
-Block `.learn-mode` (65 lines): a sunken track with two halves, the pressed one raised.
+Block `.learn-mode` (133 lines): a sunken track with two halves, the pressed one raised.
 
 **Elements:** `.learn-mode__label`, `.learn-mode__options`, `.learn-mode__form`, `.learn-mode__option`, `.learn-mode__note`
 
@@ -55,3 +55,7 @@ The transition is off under `prefers-reduced-motion`.
   returnTo={returnTo}
 />
 ```
+
+## Looks
+
+`look` (default `"segmented"`): the two buttons on a sunken track, «Todo» and «Prioridad», on the chapter's page (`CourseStudyFrame`); `"side"` (2026-10-22), on the course's page in the new design system, a group of [`CourseSide`](/components/platform/sections/courses/course-study/course-side) — «Qué aprender» as its title and «Todas las lecciones» / «Sólo las prioritarias» as rows with a radio's ring, filled in the primary's blue for the one chosen (`.learn-mode_look_side`, `.learn-mode__option_look_side`, `.learn-mode__ring`).
