@@ -4,19 +4,19 @@ description: "The catalog at /cursos/catalogo, in the new design system: the pan
 
 # `CourseCatalogSection`
 
-|            |                                                                                                                                                                                                           |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/course-catalog/course-catalog.section.tsx`                                                                                                                          |
-| Kind       | Server Component                                                                                                                                                                                          |
-| Stylesheet | `course-catalog.section.css` → block `.course-catalog`, on the workspace's panel                                                                                                                          |
-| Used by    | `/cursos/catalogo` (`platform-page_width_full` + `_frame_bleed`)                                                                                                                                          |
-| Composes   | [`CoursesWorkspace`](/components/platform/sections/courses/courses-workspace), [`CourseCard`](/components/platform/sections/courses/course-card), [`EmptyState`](/components/platform/shared/empty-state) |
-| Writes     | `addCourse` · `services/courses/courses.actions.ts`, bound to each course and handed to its card                                                                                                          |
-| Uses       | `catalog-filters.const.ts` (`catalogFiltersOf`, `catalogHref`, `filterCatalog`); `coursesNavGroups`; `resumeCourseOf`; `mdChip` · `lib/material/material-classes.ts`; `CheckIcon`                         |
+|            |                                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-catalog/course-catalog.section.tsx`                                                            |
+| Kind       | Server Component                                                                                                                            |
+| Stylesheet | `course-catalog.section.css` → block `.course-catalog`, on the workspace's panel                                                            |
+| Used by    | `/cursos/catalogo`, under the layout it shares with «Mis cursos»                                                                            |
+| Composes   | [`CourseCard`](/components/platform/sections/courses/course-card), [`EmptyState`](/components/platform/shared/empty-state)                  |
+| Writes     | `addCourse` · `services/courses/courses.actions.ts`, bound to each course and handed to its card                                            |
+| Uses       | `catalog-filters.const.ts` (`catalogFiltersOf`, `catalogHref`, `filterCatalog`); `mdChip` · `lib/material/material-classes.ts`; `CheckIcon` |
 
 ## Purpose
 
-Every course the academy has published, to find the ones to add (2026-10-22). It replaced «Explorar cursos» (`/cursos/explorar`, which now answers 308 here, keeping `?nivel=`), its head and its column of filters (`CatalogBrowser`). It is the panel of [`CoursesWorkspace`](/components/platform/sections/courses/courses-workspace), so it shares the side column and the bar's search with «Mis cursos», and moving between them feels like one page, as Gmail's labels do; but it has its own address, because the catalog is another collection, not a filter of the student's.
+Every course the academy has published, to find the ones to add (2026-10-22). It replaced «Explorar cursos» (`/cursos/explorar`, which now answers 308 here, keeping `?nivel=`), its head and its column of filters (`CatalogBrowser`). It is the panel of the layout it shares with «Mis cursos» ([`CoursesWorkspace`](/components/platform/sections/courses/courses-workspace)), so the side column and the bar's search stay while only this panel changes, as Gmail's labels do; but it has its own address, because the catalog is another collection, not a filter of the student's.
 
 From top to bottom:
 
@@ -28,12 +28,11 @@ The filters only narrow what is listed, on the server and from the address (`?ni
 
 ## Props
 
-| Prop      | Type                | Required | Meaning                                                    |
-| --------- | ------------------- | -------- | ---------------------------------------------------------- |
-| `courses` | `CourseSummary[]`   | yes      | `getCourseCatalog()`: every published course.              |
-| `mine`    | `MyCourseItem[]`    | yes      | `getUserCourses()`: the side column's counts and «Seguir». |
-| `levels`  | `CourseLevelItem[]` | yes      | `listCourseLevels()`, the easiest first.                   |
-| `filters` | `CatalogFilters`    | yes      | `catalogFiltersOf(searchParams)`.                          |
+| Prop      | Type                | Required | Meaning                                       |
+| --------- | ------------------- | -------- | --------------------------------------------- |
+| `courses` | `CourseSummary[]`   | yes      | `getCourseCatalog()`: every published course. |
+| `levels`  | `CourseLevelItem[]` | yes      | `listCourseLevels()`, the easiest first.      |
+| `filters` | `CatalogFilters`    | yes      | `catalogFiltersOf(searchParams)`.             |
 
 ## Markup & styling
 

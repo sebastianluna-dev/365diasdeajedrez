@@ -1,0 +1,26 @@
+---
+description: "The side column of «Cursos» in the layout /cursos and /cursos/catalogo share: counted on the server, the view on screen lit by the browser from the address."
+---
+
+# `CoursesSideNav`
+
+Also, in `courses-nav.const.ts`: `coursesNavGroups(mine, catalog, levels)`, the groups with their counts, and `isCurrentView(href, pathname, params)`.
+
+|          |                                                                               |
+| -------- | ----------------------------------------------------------------------------- |
+| File     | `components/platform/sections/courses/courses-side-nav.comp.tsx`              |
+| Kind     | Client Component                                                              |
+| Used by  | [`CoursesWorkspace`](/components/platform/sections/courses/courses-workspace) |
+| Composes | [`PlatformSideNav`](/components/platform/shared/platform-side-nav)            |
+| Uses     | `usePathname`, `useSearchParams` from `next/navigation`; `isCurrentView`      |
+
+## Purpose
+
+The column lives in the layout both pages share (2026-10-22), which is drawn once and not again when the view changes, so it cannot be told on the server which link is lit. The server counts it (`coursesNavGroups`: «Tus cursos» by state, «Catálogo» whole and by level), and this leaf lights the view on screen from the address: a link is current when it is the same page and carries the same value of that page's view parameter — `estado` on «Mis cursos», `nivel` on the catalog —, so the catalog's topic and search narrow a view without unlighting it.
+
+## Props
+
+| Prop         | Type                     | Required | Meaning                                                   |
+| ------------ | ------------------------ | -------- | --------------------------------------------------------- |
+| `groups`     | `PlatformSideNavGroup[]` | yes      | `coursesNavGroups`: the links and their counts, none lit. |
+| `resumeHref` | `string`                 | no       | Where «Seguir donde iba» leads.                           |

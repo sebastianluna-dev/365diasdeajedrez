@@ -4,16 +4,18 @@ description: "The frame «Mis cursos» and the catalog share in the new design s
 
 # `CoursesWorkspace`
 
-|          |                                                                                                                                                                                                                                   |
-| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File     | `components/platform/sections/courses/courses-workspace.comp.tsx`                                                                                                                                                                 |
-| Kind     | Server Component                                                                                                                                                                                                                  |
-| Used by  | [`MyCoursesSection`](/components/platform/sections/courses/my-courses/my-courses-section), [`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section)                                  |
-| Composes | [`PlatformSideNav`](/components/platform/shared/platform-side-nav), [`PlatformHeaderContext`](/components/platform/sections/shell/platform-header-context), [`CourseSearch`](/components/platform/sections/courses/course-search) |
+|          |                                                                                                                                                                                                                                           |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File     | `components/platform/sections/courses/courses-workspace.comp.tsx`                                                                                                                                                                         |
+| Kind     | Server Component                                                                                                                                                                                                                          |
+| Used by  | [`MyCoursesSection`](/components/platform/sections/courses/my-courses/my-courses-section), [`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section)                                          |
+| Composes | [`CoursesSideNav`](/components/platform/sections/courses/courses-side-nav), [`PlatformHeaderContext`](/components/platform/sections/shell/platform-header-context), [`CourseSearch`](/components/platform/sections/courses/course-search) |
 
 ## Purpose
 
-«Cursos» is one place with two collections (2026-10-22): the student's courses at `/cursos` and the catalog at `/cursos/catalogo`. Each has its own address — the catalog is not a filter of the student's courses —, and both are drawn in this frame, so moving between them feels like one page, as Gmail's labels do: the `.platform-workspace`, the side column with «Seguir donde iba» and the groups of `coursesNavGroups` (`courses-nav.const.ts`: «Tus cursos» by state, «Catálogo» whole and by level, each with its count, the view on screen lit), and the catalog's search in the bar. A container: its one job is to place the panel it is given (`children`, a `.platform-workspace__panel`).
+«Cursos» is one place with two collections (2026-10-22): the student's courses at `/cursos` and the catalog at `/cursos/catalogo`. Each has its own address — the catalog is not a filter of the student's courses —, and both live under one layout, `app/(platform)/cursos/(lista)/layout.tsx`, which draws this frame **once**: the `.platform-workspace`, the side column ([`CoursesSideNav`](/components/platform/sections/courses/courses-side-nav): «Seguir donde iba» and the groups of `coursesNavGroups`, counted on the server, the view on screen lit by the browser) and the catalog's search in the bar. Moving between views keeps all of it in place and draws only the panel again, as Gmail's labels do; meanwhile the group's `loading.tsx` puts [`CoursesPanelSkeleton`](/components/platform/sections/courses/courses-panel-skeleton) where the panel goes. A container: its one job is to place the panel it is given (`children`).
+
+The layout reads the student's courses, the catalog and the levels (cached per request, so the page under it reads them again for free), builds the groups and finds the course to go on with (`resumeCourseOf`).
 
 ## Props
 

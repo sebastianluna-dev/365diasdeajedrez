@@ -1,0 +1,28 @@
+---
+description: "What the panel of «Cursos» shows while a view loads: the shape of what is coming, softly pulsing, while the layout keeps the side column and the search in place."
+---
+
+# `CoursesPanelSkeleton`
+
+|            |                                                                        |
+| ---------- | ---------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/courses-panel-skeleton.comp.tsx` |
+| Kind       | Server Component                                                       |
+| Stylesheet | `courses-panel-skeleton.comp.css` → block `.courses-panel-skeleton`    |
+| Used by    | `app/(platform)/cursos/(lista)/loading.tsx`                            |
+
+## Purpose
+
+The loading state of «Mis cursos» and the catalog (2026-10-22). Their layout keeps the side column and the bar's search on screen, so while a view loads only the panel waits: it draws, in the container's grey, a block where «Sigue donde ibas» or the catalog's heading goes, a line, and a row of four cards with their covers and two lines each, all pulsing softly together (`opacity`, 1.2s, still under `prefers-reduced-motion: reduce`). To a screen reader it is one status, «Cargando cursos…» (visually hidden).
+
+It is a `loading.tsx`'s, so it is markup and CSS only: no Client Component behind it (`components/loading-boundaries.test.ts`). Arriving at `/cursos` from another screen, before the layout itself is ready, is the platform's other wait, `BoardLoading` (`app/(platform)/cursos/loading.tsx`).
+
+## Markup & styling
+
+Block `.courses-panel-skeleton` (81 lines), on `.platform-workspace__panel`.
+
+**Elements:** `__label`, `__block`, `__line`, `__grid`, `__card`, `__cover`, `__text`
+
+**Modifiers:** `__text_size_short`
+
+**Keyframes:** `courses-panel-skeleton-pulse`

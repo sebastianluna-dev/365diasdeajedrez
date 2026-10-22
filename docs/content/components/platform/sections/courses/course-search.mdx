@@ -7,7 +7,7 @@ description: "The catalog's search in the bar, as Material's search bar: a pill 
 |            |                                                                               |
 | ---------- | ----------------------------------------------------------------------------- |
 | File       | `components/platform/sections/courses/course-search.comp.tsx`                 |
-| Kind       | Server Component                                                              |
+| Kind       | Client Component                                                              |
 | Stylesheet | `course-search.comp.css` → block `.course-search`                             |
 | Used by    | [`CoursesWorkspace`](/components/platform/sections/courses/courses-workspace) |
 | Uses       | `MagnifyingGlassIcon` in Classic Solid; `platformRoutes.courseCatalog`        |
@@ -18,8 +18,6 @@ description: "The catalog's search in the bar, as Material's search bar: a pill 
 
 A search is not a form that validates — nothing to err —, so it is a bare `<form role="search">` and not a `PlatformForm`; the pill says where the focus is.
 
-## Props
+It is a Client Component because it lives in the layout both pages share, which does not render again when the address changes, and it still has to show what was searched on the catalog's results: it reads `q` from the address (on the catalog only) and remounts the field when it changes.
 
-| Prop           | Type     | Required | Meaning                            |
-| -------------- | -------- | -------- | ---------------------------------- |
-| `defaultValue` | `string` | no       | What was searched, on the results. |
+No props.

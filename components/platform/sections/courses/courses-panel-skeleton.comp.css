@@ -1,0 +1,81 @@
+.courses-panel-skeleton {
+  /* Said to a screen reader only: on screen the shapes say it. */
+  & .courses-panel-skeleton__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Every shape is the container's grey, and they pulse together. */
+  & .courses-panel-skeleton__block,
+  & .courses-panel-skeleton__line,
+  & .courses-panel-skeleton__cover,
+  & .courses-panel-skeleton__text {
+    display: block;
+    background: var(--platform-m3-container);
+    animation: courses-panel-skeleton-pulse 1200ms ease-in-out infinite alternate;
+  }
+
+  /* Where «Sigue donde ibas», or the catalog's heading and chips, will be. */
+  & .courses-panel-skeleton__block {
+    height: 200px;
+    border-radius: var(--md-sys-shape-corner-xl);
+  }
+
+  & .courses-panel-skeleton__line {
+    width: 180px;
+    height: 24px;
+    border-radius: 1000px;
+  }
+
+  & .courses-panel-skeleton__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--platform-space-4);
+  }
+
+  & .courses-panel-skeleton__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    padding-bottom: var(--platform-space-4);
+    border: 1px solid var(--platform-m3-outline-variant);
+    border-radius: var(--md-sys-shape-corner-md);
+    overflow: hidden;
+  }
+
+  & .courses-panel-skeleton__cover {
+    aspect-ratio: 21 / 9;
+    margin-bottom: var(--platform-space-2);
+  }
+
+  & .courses-panel-skeleton__text {
+    height: 12px;
+    margin: 0 var(--platform-space-4);
+    border-radius: 1000px;
+  }
+
+  & .courses-panel-skeleton__text_size_short {
+    width: 50%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .courses-panel-skeleton__block,
+    & .courses-panel-skeleton__line,
+    & .courses-panel-skeleton__cover,
+    & .courses-panel-skeleton__text {
+      animation: none;
+    }
+  }
+}
+
+/* `@keyframes` cannot be nested inside a style rule. */
+@keyframes courses-panel-skeleton-pulse {
+  to {
+    opacity: 0.45;
+  }
+}
