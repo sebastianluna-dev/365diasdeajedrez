@@ -2,8 +2,10 @@ import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
   "my-courses-section": "MyCoursesSection",
+  "resume-course": "ResumeCourse",
+  "streak-band": "StreakBand",
   "my-course-card": "MyCourseCard",
-  "streak-panel": "StreakPanel",
+  "wavy-progress": "WavyProgress",
 };
 
 export default meta;

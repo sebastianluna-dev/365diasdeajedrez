@@ -1,0 +1,88 @@
+.resume-course {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--platform-space-6);
+  padding: var(--platform-space-4);
+  border-radius: 24px;
+  background: var(--platform-m3-container);
+
+  & .resume-course__cover {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--platform-m3-container-high);
+  }
+
+  & .resume-course__image {
+    object-fit: cover;
+  }
+
+  & .resume-course__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    min-width: 0;
+  }
+
+  & .resume-course__eyebrow {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--platform-m3-primary);
+  }
+
+  & .resume-course__name {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-2xl);
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  & .resume-course__link {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-m3-primary);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+  }
+
+  & .resume-course__figures {
+    margin: 0;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .resume-course__meter {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    max-width: 460px;
+  }
+
+  & .resume-course__percent {
+    flex: none;
+    font-weight: 700;
+  }
+
+  & .resume-course__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-3);
+    margin-top: var(--platform-space-1);
+  }
+
+  @media (width < 768px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

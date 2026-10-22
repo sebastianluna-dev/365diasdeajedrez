@@ -1,23 +1,23 @@
 ---
-description: "A course of the student's as a cover of 'Mis cursos': the cover across the top, the name, a bar of how far they are, and at the foot the percentage with the lessons and «Continuar» — or «Completado» once it is done. Nothing of what the course is: that is the catalog's card."
+description: "A course of the student's as a Material 3 card of 'Mis cursos': the cover across the top, the name with the percentage and the lessons, a wave of how far they are, and at the foot the text button «Continuar» — or «Completado» once it is done. Nothing of what the course is: that is the catalog's card."
 ---
 
 # `MyCourseCard`
 
-|            |                                                                                                                                                                                           |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/my-courses/my-course-card.comp.tsx`                                                                                                                 |
-| Kind       | Server Component                                                                                                                                                                          |
-| Stylesheet | `my-course-card.comp.css` → block `.my-course-card`                                                                                                                                       |
-| Story      | `my-course-card.stories.tsx` (`platform/sections/courses/my-courses/MyCourseCard`): under way, not started, finished, without minutes, without lessons (no button), and without a picture |
-| Used by    | [`MyCoursesSection`](/components/platform/sections/courses/my-courses/my-courses-section)                                                                                                 |
-| Uses       | `MyCourseItem` from `services/courses/courses.types`; `countLessons`; `MOVE_TRAINER_ENABLED`; `CircleCheckIcon`; `next/image`, `next/link`                                                |
+|            |                                                                                                                                                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/courses/my-courses/my-course-card.comp.tsx`                                                                                                                                                                        |
+| Kind       | Server Component                                                                                                                                                                                                                                 |
+| Stylesheet | `my-course-card.comp.css` → block `.my-course-card`                                                                                                                                                                                              |
+| Story      | `my-course-card.stories.tsx` (`platform/sections/courses/my-courses/MyCourseCard`): under way, not started, finished, without minutes, without lessons (no button), and without a picture                                                        |
+| Used by    | [`MyCoursesSection`](/components/platform/sections/courses/my-courses/my-courses-section)                                                                                                                                                        |
+| Uses       | `MyCourseItem` from `services/courses/courses.types`; [`WavyProgress`](/components/platform/sections/courses/my-courses/wavy-progress); `countLessons`; `MOVE_TRAINER_ENABLED`; `CircleCheckIcon`, `ChevronRightIcon`; `next/image`, `next/link` |
 
 ## Purpose
 
-The card of a course the student **already chose**: how far they are, and going on. Since 2026-10-07 it is a cover («M2a», the owner's choice among two rounds of variants), so a course is recognised as it is in the catalog; until then it was a row with a square picture, the progress as a sentence and a ring, and «Aprender».
+The card of a course the student **already chose**: how far they are, and going on. Since 2026-10-22 it is a card of the new design system (Material 3: an outlined card, 12px corners, on the white panel); from 2026-10-07 it was a cover on a shadow («M2a»), and before that a row with a square picture and a ring.
 
-From top to bottom: the cover (21:9, `cover`, or the square `thumbnail` cropped to the frame; the frame stays, in the sunken grey, without either); the name, two lines at most; a bar of how far they are (`--platform-accent-bright`, the progress bars' fill; the success green once finished); and at the foot «40% · 2 de 5 lecciones» and the button.
+From top to bottom: the cover (21:9, `cover`, or the square `thumbnail` cropped to the frame; the frame stays, in the container's grey, without either); the name, two lines at most, and under it «40 % · 2 de 5 lecciones»; the [`WavyProgress`](/components/platform/sections/courses/my-courses/wavy-progress) (a straight green line once finished); and at the foot, at the right, the button.
 
 ## Props
 
@@ -27,22 +27,22 @@ From top to bottom: the cover (21:9, `cover`, or the square `thumbnail` cropped 
 
 ## Behaviour
 
-- **The whole card leads to the course**, through its name: the link's `::after` covers the card, so there is one link to announce. Its keyboard focus rings the card in the accent.
-- **The button** is the platform's soft button, small, raised above the stretched link: «Empezar» when nothing is done, «Continuar» after, and it leads to the lesson that comes next (`learnHref`). A course without lessons in view has none, and says «Sin lecciones todavía».
-- **A finished course** (`isCompleted`) says so: the bar in the success green, the foot «2 de 2 lecciones», and «Completado» — a green label with its check — where the button was.
-- **«Repasar»** is the Move Trainer's: while it is off (`MOVE_TRAINER_ENABLED`) nothing is drawn; on, a small ink button «Repasar N» goes before the other when something is due.
+- **The whole card leads to the course**, through its name: the link's `::after` covers the card, so there is one link to announce. Its keyboard focus rings the card in the primary's blue.
+- **The button** is Material 3's text button (`_variant_text`, small, with a chevron), raised above the stretched link: «Empezar» when nothing is done, «Continuar» after, and it leads to the lesson that comes next (`learnHref`). A course without lessons in view has none, and says «Sin lecciones todavía».
+- **A finished course** (`isCompleted`) says so: the line straight and in the success green, «Completado · 2 de 2 lecciones», and «Completado» — a green label with its check — where the button was.
+- **«Repasar»** is the Move Trainer's: while it is off (`MOVE_TRAINER_ENABLED`) nothing is drawn; on, a small text button «Repasar N» goes before the other when something is due.
 
 ## Markup & styling
 
-Block `.my-course-card` (137 lines).
+Block `.my-course-card`.
 
-**Elements:** `.my-course-card__cover`, `.my-course-card__cover-image`, `.my-course-card__body`, `.my-course-card__name`, `.my-course-card__link`, `.my-course-card__meter`, `.my-course-card__meter-fill`, `.my-course-card__foot`, `.my-course-card__figures`, `.my-course-card__actions`, `.my-course-card__done`, `.my-course-card__done-icon`
+**Elements:** `.my-course-card__cover`, `.my-course-card__cover-image`, `.my-course-card__body`, `.my-course-card__name`, `.my-course-card__link`, `.my-course-card__figures`, `.my-course-card__actions`, `.my-course-card__done`, `.my-course-card__done-icon`
 
 **Modifiers and states:** `.my-course-card_state_done`
 
-**Other classes it renders:** `.platform-button` with `_variant_soft` / `_variant_ink` and `_size_sm`.
+**Other classes it renders:** `.platform-button` with `_variant_text` and `_size_sm`.
 
-**Tokens:** `--platform-surface`, `--platform-surface-sunken`, `--platform-shadow-card`, `--platform-shadow-lift`, `--platform-accent-ink`, `--platform-accent-bright`, `--platform-track`, `--platform-success-soft`, `--platform-success-ink`, `--platform-text`, `--platform-text-subtle`, the type and space scales.
+**Tokens:** `--platform-m3-panel`, `--platform-m3-outline-variant`, `--platform-m3-container-high`, `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-primary`, `--platform-m3-success`, the type and space scales.
 
 No media queries: the grid around it decides its width.
 

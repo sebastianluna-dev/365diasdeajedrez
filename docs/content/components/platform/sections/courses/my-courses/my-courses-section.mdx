@@ -1,59 +1,73 @@
 ---
-description: "'Mis cursos': the page's head with the way to the catalog, the courses the student added as covers in two columns, and beside them the streak's column — the streak, sixteen weeks of activity and four figures."
+description: "'Mis cursos' in the new design system (Material 3): a workspace whose side column holds «Seguir donde iba», the student's courses by state and the catalog by level, and whose panel holds «Sigue donde ibas», the streak's band and the courses as cards."
 ---
 
 # `MyCoursesSection`
 
-|            |                                                                                                                                                                                                                            |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/my-courses/my-courses.section.tsx`                                                                                                                                                   |
-| Kind       | Server Component                                                                                                                                                                                                           |
-| Stylesheet | `my-courses.section.css` → block `.my-courses`                                                                                                                                                                             |
-| Used by    | `/cursos` (in the wide page, `platform-page_width_wide`)                                                                                                                                                                   |
-| Composes   | [`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card), [`StreakPanel`](/components/platform/sections/courses/my-courses/streak-panel), [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads      | `getUserCourses()` · `services/courses/courses.service.ts`; `getStreakOverview()` · `services/study-goal/study-goal.service.ts`                                                                                            |
-| Uses       | `platformRoutes.courseCatalog`; `MyCourseItem`; `StreakOverview`; `MagnifyingGlassIcon`                                                                                                                                    |
+|            |                                                                                                                                                                                                                                                                                                                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/courses/my-courses/my-courses.section.tsx`                                                                                                                                                                                                                                                                                                       |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                               |
+| Stylesheet | `my-courses.section.css` → block `.my-courses`, on `.platform-workspace` (`platform.css`)                                                                                                                                                                                                                                                                                      |
+| Used by    | `/cursos` (a page that bleeds, `platform-page_frame_bleed`)                                                                                                                                                                                                                                                                                                                    |
+| Composes   | [`PlatformSideNav`](/components/platform/shared/platform-side-nav), [`ResumeCourse`](/components/platform/sections/courses/my-courses/resume-course), [`StreakBand`](/components/platform/sections/courses/my-courses/streak-band), [`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads      | Nothing: the page reads `getUserCourses()`, `getCourseCatalog()`, `listCourseLevels()` (`services/courses/courses.service.ts`) and `getStreakOverview()` (`services/study-goal/study-goal.service.ts`)                                                                                                                                                                         |
+| Uses       | `my-courses-filter.const.ts` (`MY_COURSES_FILTERS`, `courseStateOf`, `filterMyCourses`, `resumeCourseOf`); `platformRoutes.courses`, `platformRoutes.courseCatalog`                                                                                                                                                                                                            |
 
 ## Purpose
 
-The student's courses and, beside them, how constant their study is. Redesigned on 2026-10-07 from two rounds of variants the owner chose from (page «P1», card «M2a», streak «S4»): until then each course was a row with a square picture and a ring of progress, «Explorar cursos» was a dashed row at the end of the list, and the streak was a small card.
+The student's courses, and how constant their study is. Since 2026-10-22 it is the first page of the new design system ([Material 3](/ui/styling#the-new-design-system-material-3), «M4» of the owner's design canvas); before it, «P1» of 2026-10-07: a head with «Explorar cursos», the courses as covers in two columns and the streak as a column at the right.
 
-From top to bottom:
+**The side column** ([`PlatformSideNav`](/components/platform/shared/platform-side-nav)):
 
-1. **The head**: the platform's title and a line under it, and «Explorar cursos» at the right — the platform's secondary button with the glass — which leads to the catalog. On a phone the button goes under the title.
-2. **The courses**, as covers ([`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card)), two to a row, one on a phone. With none added, an [`EmptyState`](/components/platform/shared/empty-state) says so and leads to the catalog.
-3. **The streak's column**, 300px at the right ([`StreakPanel`](/components/platform/sections/courses/my-courses/streak-panel)): its own height, sticky under the shell's bar while a long list scrolls past it (`top: calc(70px + space-6)`). Stretched to the list's height it left a blank in the middle of the card. Under the courses below 1024px.
+1. «Seguir donde iba», the extended button, to the next lesson of the course «Sigue donde ibas» shows; absent when there is none.
+2. «Tus cursos»: Todos, En curso, Completados and Sin empezar, each with its count, as links to `?estado=` (`en-curso`, `completados`, `sin-empezar`; anything else is «Todos»). A course is «completado» when every lesson is learned, «en curso» with at least one, «sin empezar» with none (`courseStateOf`).
+3. «Catálogo»: «Todo el catálogo» and each level in use with the published courses aimed at it, as links to `/cursos/explorar?nivel=`. A level's dot is the level's colour, in order (`--platform-level-1` … `-6`).
+
+**The panel**, from top to bottom:
+
+1. [`ResumeCourse`](/components/platform/sections/courses/my-courses/resume-course): the first course begun and not finished with a lesson to open (`resumeCourseOf`, in the list's order). It stays in every view.
+2. [`StreakBand`](/components/platform/sections/courses/my-courses/streak-band), the streak across.
+3. The courses of the view: a heading («Tus cursos», or the view's name) with the count, and the cards ([`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card)), as many to a row as fit of at least 200px — four on a laptop. A view without courses says so in a line; with no course added at all, an [`EmptyState`](/components/platform/shared/empty-state) leads to the catalog.
+
+The page's `<h1>` («Mis cursos») is for screen readers: on screen the page is named by the bar and by the lit view.
 
 ## Props
 
-| Prop      | Type             | Required | Meaning                                                               |
-| --------- | ---------------- | -------- | --------------------------------------------------------------------- |
-| `courses` | `MyCourseItem[]` | yes      | `getUserCourses()`: the courses the student added.                    |
-| `streak`  | `StreakOverview` | yes      | `getStreakOverview()`: the streak, its sixteen weeks and its figures. |
+| Prop      | Type               | Required | Meaning                                                                            |
+| --------- | ------------------ | -------- | ---------------------------------------------------------------------------------- |
+| `courses` | `MyCourseItem[]`   | yes      | `getUserCourses()`: the courses the student added.                                 |
+| `filter`  | `MyCoursesFilter`  | yes      | The view (`myCoursesFilterOf(estado)`); `undefined` is «Todos».                    |
+| `streak`  | `StreakOverview`   | yes      | `getStreakOverview()`: the streak, its sixteen weeks and its figures.              |
+| `catalog` | `MyCoursesCatalog` | yes      | `{ total, levels: { slug, name, count }[] }`: the catalog as the column counts it. |
 
 ## Markup & styling
 
-Block `.my-courses` (61 lines).
+Block `.my-courses`, set on the `.platform-workspace`.
 
-**Elements:** `.my-courses__head`, `.my-courses__explore`, `.my-courses__layout`, `.my-courses__grid`
+**Elements:** `.my-courses__sr-title`, `.my-courses__list`, `.my-courses__head`, `.my-courses__title`, `.my-courses__count`, `.my-courses__empty`, `.my-courses__grid`
 
-**Other selectors it styles:** `.streak-panel` (sticky in the column).
-
-**Breakpoints:** `(width < 1024px)` puts the streak under the courses and unsticks it; `(width < 640px)` stacks the head and takes the grid to one column.
+**Tokens:** `--platform-m3-on-surface-variant`; the workspace's in `platform.css`.
 
 ## Usage
 
 From `app/(platform)/cursos/page.tsx`:
 
 ```tsx
-const [courses, streak] = await Promise.all([getUserCourses(), getStreakOverview()]);
+const [courses, streak, catalog, levels, { estado }] = await Promise.all([
+  getUserCourses(),
+  getStreakOverview(),
+  getCourseCatalog(),
+  listCourseLevels(),
+  searchParams,
+]);
 
-<div className="platform-page platform-page_width_wide courses-page">
-  <MyCoursesSection courses={courses} streak={streak} />
+<div className="platform-page platform-page_frame_bleed courses-page">
+  <MyCoursesSection courses={courses} filter={myCoursesFilterOf(estado)} streak={streak} catalog={counts} />
 </div>;
 ```
 
 ## Related
 
-- [`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section), where «Explorar cursos» leads.
+- [`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section), where the catalog's links lead (not yet moved to the new design system).
 - [`StudyStreak`](/components/platform/shared/study-streak), the small streak card the dashboard keeps.

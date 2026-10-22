@@ -1,0 +1,34 @@
+.wavy-progress {
+  display: block;
+  width: 100%;
+  height: 10px;
+  overflow: visible;
+
+  & path {
+    fill: none;
+    stroke-width: 4px;
+    stroke-linecap: round;
+    /* The drawing stretches to its box; the line keeps its weight. */
+    vector-effect: non-scaling-stroke;
+  }
+
+  & .wavy-progress__done {
+    stroke: var(--platform-m3-primary);
+  }
+
+  & .wavy-progress__track {
+    stroke: var(--platform-m3-container-high);
+  }
+}
+
+.wavy-progress.wavy-progress_size_lg {
+  height: 12px;
+
+  & .wavy-progress__track {
+    stroke: var(--platform-m3-secondary-container);
+  }
+}
+
+.wavy-progress.wavy-progress_state_done .wavy-progress__done {
+  stroke: var(--platform-m3-success);
+}

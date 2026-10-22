@@ -1,0 +1,90 @@
+.streak-band {
+  display: flex;
+  align-items: center;
+  gap: var(--platform-space-5);
+  padding: var(--platform-space-4) var(--platform-space-6);
+  border-radius: 24px;
+  background: var(--platform-m3-secondary-container);
+  color: var(--platform-m3-on-secondary-container);
+
+  & .streak-band__flame {
+    flex: none;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--platform-m3-canvas);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  & .streak-band__flame-icon {
+    width: 26px;
+    height: 26px;
+    color: var(--platform-flame);
+  }
+
+  & .streak-band__flame-core {
+    color: var(--platform-flame-core);
+  }
+
+  & .streak-band__text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & .streak-band__title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-2xl);
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  & .streak-band__line {
+    margin: var(--platform-space-1) 0 0;
+  }
+
+  /* Sixteen weeks as columns, Monday on top. */
+  & .streak-band__grid {
+    flex: none;
+    display: grid;
+    grid-template-rows: repeat(7, 10px);
+    grid-auto-flow: column;
+    grid-auto-columns: 10px;
+    gap: var(--platform-space-0-5);
+  }
+
+  & .streak-band__day {
+    border-radius: 4px;
+    background: var(--platform-m3-heat-0);
+  }
+
+  & .streak-band__day_level_1 {
+    background: var(--platform-m3-heat-1);
+  }
+
+  & .streak-band__day_level_2 {
+    background: var(--platform-m3-heat-2);
+  }
+
+  & .streak-band__day_level_3 {
+    background: var(--platform-m3-heat-3);
+  }
+
+  & .streak-band__day_state_future {
+    background: transparent;
+  }
+
+  & .streak-band__day_state_today {
+    outline: 1px solid var(--platform-m3-on-secondary-container);
+  }
+
+  @media (width < 1280px) {
+    flex-wrap: wrap;
+
+    & .streak-band__text {
+      flex-basis: calc(100% - 80px);
+    }
+  }
+}

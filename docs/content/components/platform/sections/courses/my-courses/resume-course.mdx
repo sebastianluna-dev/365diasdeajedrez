@@ -1,0 +1,27 @@
+---
+description: "«Sigue donde ibas» at the head of 'Mis cursos': the course to go on with, large — cover, name, lessons, a wave of how far it is gone, «Continuar» and, with the trainer on, «Repasar»."
+---
+
+# `ResumeCourse`
+
+|            |                                                                                                                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/my-courses/resume-course.comp.tsx`                                                                                                               |
+| Kind       | Server Component                                                                                                                                                                       |
+| Stylesheet | `resume-course.comp.css` → block `.resume-course`                                                                                                                                      |
+| Used by    | [`MyCoursesSection`](/components/platform/sections/courses/my-courses/my-courses-section)                                                                                              |
+| Uses       | [`WavyProgress`](/components/platform/sections/courses/my-courses/wavy-progress); `countLessons`; `MOVE_TRAINER_ENABLED`; `PlayIcon`, `ArrowRotateLeftIcon`; `next/image`, `next/link` |
+
+## Purpose
+
+The one course to go on with, as the design canvas draws it (2026-10-22): its cover at the left (16:10, 280px), «Sigue donde ibas» in the primary's blue, the name linking to the course, «2 de 5 lecciones», the wave with its percentage, and «Continuar» (`_variant_primary`, large) to the next lesson. «Repasar N» (`_variant_outlined`) goes beside it only while the Move Trainer is on and something is due, and the line says how many exercises.
+
+## Props
+
+| Prop     | Type                                   | Required | Meaning                                           |
+| -------- | -------------------------------------- | -------- | ------------------------------------------------- |
+| `course` | `MyCourseItem & { learnHref: string }` | yes      | What `resumeCourseOf` found: begun, not finished. |
+
+## Markup & styling
+
+Block `.resume-course`: a block on `--platform-m3-container`, 24px corners. **Elements:** `__cover`, `__image`, `__body`, `__eyebrow`, `__name`, `__link`, `__figures`, `__meter`, `__percent`, `__actions`. Under 768px the cover goes above the text.

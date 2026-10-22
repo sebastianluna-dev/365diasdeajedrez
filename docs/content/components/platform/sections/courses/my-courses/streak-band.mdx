@@ -1,0 +1,29 @@
+---
+description: "The streak across 'Mis cursos': the flame and the days in a row, what to do today with the days studied and the best streak, and the last sixteen weeks day by day."
+---
+
+# `StreakBand`
+
+|            |                                                                                           |
+| ---------- | ----------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/my-courses/streak-band.comp.tsx`                    |
+| Kind       | Server Component                                                                          |
+| Stylesheet | `streak-band.comp.css` → block `.streak-band`                                             |
+| Used by    | [`MyCoursesSection`](/components/platform/sections/courses/my-courses/my-courses-section) |
+| Uses       | `StreakOverview`; `FireIcon` in Duotone Solid; `MONTHS_ES`                                |
+
+## Purpose
+
+How constant the study is, in one band of the panel (2026-10-22; it replaced `StreakPanel`, the column at the right): the flame on a disc of the canvas, «N días seguidos», a line that says what to do today («Hoy ya estudiaste.», «Estudia hoy para mantener tu racha.», «Estudia hoy para empezar tu racha.») with the days studied in the last four months and the best streak, and at the right sixteen weeks as columns, Monday on top, each day a square deeper the more was done (`--platform-m3-heat-0` … `-3`); today ringed, the days to come empty.
+
+All of it derived (`getStreakOverview`). The grid is one image to a screen reader, named by its count; its days say themselves under the pointer.
+
+## Props
+
+| Prop       | Type             | Required | Meaning                                        |
+| ---------- | ---------------- | -------- | ---------------------------------------------- |
+| `overview` | `StreakOverview` | yes      | The streak, its sixteen weeks and its figures. |
+
+## Markup & styling
+
+Block `.streak-band`, on `--platform-m3-secondary-container`, 24px corners. **Elements:** `__flame`, `__flame-icon`, `__flame-core`, `__text`, `__title`, `__line`, `__grid`, `__day`. **Modifiers:** `__day_level_{0…3}`, `__day_state_future`, `__day_state_today`. Under 1280px the grid wraps under the text.

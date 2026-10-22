@@ -1,0 +1,24 @@
+---
+description: "How far a course is gone, as Material 3 draws its progress: a wave in the primary's blue for what is done, a straight track for what is left; a straight green line once finished."
+---
+
+# `WavyProgress`
+
+|            |                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/my-courses/wavy-progress.comp.tsx`                                                                                            |
+| Kind       | Server Component                                                                                                                                                    |
+| Stylesheet | `wavy-progress.comp.css` → block `.wavy-progress`                                                                                                                   |
+| Used by    | [`ResumeCourse`](/components/platform/sections/courses/my-courses/resume-course), [`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card) |
+
+## Purpose
+
+The progress of the new design system: an SVG 200 units wide stretched to its box (`preserveAspectRatio="none"`, the stroke kept at 4px by `vector-effect`), the done part a sine wave, a 6-unit gap, and the track. It is always read beside a figure that says the same in words, so it is `aria-hidden`. It does not move.
+
+## Props
+
+| Prop      | Type      | Required | Meaning                                                 |
+| --------- | --------- | -------- | ------------------------------------------------------- |
+| `percent` | `number`  | yes      | 0–100.                                                  |
+| `isDone`  | `boolean` | no       | Finished: one straight line in `--platform-m3-success`. |
+| `size`    | `"lg"`    | no       | 12px high, its track in the secondary container.        |

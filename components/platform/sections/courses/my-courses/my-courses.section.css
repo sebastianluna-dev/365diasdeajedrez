@@ -1,61 +1,46 @@
 .my-courses {
-  display: flex;
-  flex-direction: column;
-  gap: var(--platform-space-8);
+  /* The page's title is the bar's «Cursos» and the lit view of the side
+     column; this one is for a screen reader, which lands on the panel. */
+  & .my-courses__sr-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
 
-  /* The title and its line on the left, the way to the catalog on the right;
-     on a phone the button goes under them. */
+  & .my-courses__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+  }
+
   & .my-courses__head {
     display: flex;
-    align-items: flex-end;
+    align-items: baseline;
     justify-content: space-between;
-    gap: var(--platform-space-6);
-
-    @media (width < 640px) {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--platform-space-4);
-    }
+    gap: var(--platform-space-4);
   }
 
-  & .my-courses__explore {
-    flex: none;
+  & .my-courses__title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-xl);
+    font-weight: 500;
   }
 
-  /* The courses and, beside them, the streak's column, which keeps its width
-     and its own height, and stays in view while a long list scrolls past it;
-     under the courses below 1024px. Stretched to the list's height it left a
-     blank in the middle of the card. */
-  & .my-courses__layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 300px;
-    align-items: start;
-    gap: var(--platform-space-6);
-
-    @media (width < 1024px) {
-      grid-template-columns: minmax(0, 1fr);
-    }
+  & .my-courses__count,
+  & .my-courses__empty {
+    margin: 0;
+    color: var(--platform-m3-on-surface-variant);
   }
 
-  /* Under the shell's bar (70px, as `scroll-padding-top` counts it), with air. */
-  & .streak-panel {
-    position: sticky;
-    top: calc(70px + var(--platform-space-6));
-
-    @media (width < 1024px) {
-      position: static;
-    }
-  }
-
-  /* Two covers to a row; one on a phone. */
+  /* Four to a row on a laptop, as many as fit of at least 200px. */
   & .my-courses__grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: var(--platform-space-4);
-
-    @media (width < 640px) {
-      grid-template-columns: minmax(0, 1fr);
-      gap: var(--platform-space-3);
-    }
   }
 }
