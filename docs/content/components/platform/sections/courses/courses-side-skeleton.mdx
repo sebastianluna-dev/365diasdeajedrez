@@ -1,0 +1,24 @@
+---
+description: "The side column of «Cursos» while its counts load: «Seguir donde iba»'s place and the two groups of rows, softly pulsing."
+---
+
+# `CoursesSideSkeleton`
+
+|            |                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/courses-side-skeleton.comp.tsx`                                                            |
+| Kind       | Server Component                                                                                                                 |
+| Stylesheet | `courses-side-skeleton.comp.css` → block `.courses-side-skeleton`                                                                |
+| Used by    | [`CoursesWorkspace`](/components/platform/sections/courses/courses-workspace), as the fallback of the side column's `<Suspense>` |
+
+## Purpose
+
+What the side column shows while [`CoursesSideSection`](/components/platform/sections/courses/courses-side-section) reads its data (2026-10-22): the extended FAB's place (56px, `--md-sys-shape-corner-lg`) and two groups — a title and four or five rows of an icon, a label and a count — at the rhythm of `PlatformSideNav`, so the links land where these are. The shapes are `--platform-m3-container-high` and pulse softly together (`opacity`, 1.2s), standing still under `prefers-reduced-motion: reduce`. To a screen reader it is one status, «Cargando tus cursos…». Markup and CSS only.
+
+## Markup & styling
+
+Block `.courses-side-skeleton` (87 lines).
+
+**Elements:** `__label`, `__shape`, `__action`, `__group`, `__title`, `__row`, `__icon`, `__text`, `__count`
+
+**Keyframes:** `courses-side-skeleton-pulse`

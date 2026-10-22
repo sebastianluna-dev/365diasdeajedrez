@@ -1,0 +1,87 @@
+.courses-side-skeleton {
+  /* The same rhythm as `PlatformSideNav`, so the links land where these are. */
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-4);
+  padding: var(--platform-space-1) 0 var(--platform-space-4);
+
+  /* Said to a screen reader only. */
+  & .courses-side-skeleton__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  & .courses-side-skeleton__shape {
+    display: block;
+    flex: none;
+    background: var(--platform-m3-container-high);
+    animation: courses-side-skeleton-pulse 1200ms ease-in-out infinite alternate;
+  }
+
+  /* «Seguir donde iba»: the extended FAB's size. */
+  & .courses-side-skeleton__action {
+    width: 172px;
+    height: 56px;
+    margin-left: var(--platform-space-2);
+    border-radius: var(--md-sys-shape-corner-lg);
+  }
+
+  & .courses-side-skeleton__group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+  }
+
+  & .courses-side-skeleton__title {
+    width: 80px;
+    height: 12px;
+    margin: var(--platform-space-1) var(--platform-space-6);
+    border-radius: 1000px;
+  }
+
+  & .courses-side-skeleton__row {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    height: 36px;
+    padding: 0 var(--platform-space-4) 0 var(--platform-space-6);
+  }
+
+  & .courses-side-skeleton__icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+  }
+
+  & .courses-side-skeleton__text {
+    flex: 1;
+    max-width: 120px;
+    height: 12px;
+    border-radius: 1000px;
+  }
+
+  & .courses-side-skeleton__count {
+    width: 14px;
+    height: 12px;
+    margin-left: auto;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .courses-side-skeleton__shape {
+      animation: none;
+    }
+  }
+}
+
+/* `@keyframes` cannot be nested inside a style rule. */
+@keyframes courses-side-skeleton-pulse {
+  to {
+    opacity: 0.45;
+  }
+}

@@ -1,0 +1,20 @@
+---
+description: "The data of «Cursos»'s side column: reads the student's courses, the catalog and the levels, counts the groups and finds the course to go on with, streamed behind its skeleton."
+---
+
+# `CoursesSideSection`
+
+|          |                                                                                                                                       |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| File     | `components/platform/sections/courses/courses-side.section.tsx`                                                                       |
+| Kind     | Server Component (async)                                                                                                              |
+| Used by  | [`CoursesWorkspace`](/components/platform/sections/courses/courses-workspace), inside `<Suspense fallback={<CoursesSideSkeleton />}>` |
+| Composes | [`CoursesSideNav`](/components/platform/sections/courses/courses-side-nav)                                                            |
+| Reads    | `getUserCourses()`, `getCourseCatalog()`, `listCourseLevels()` · `services/courses/courses.service.ts`                                |
+| Uses     | `coursesNavGroups`, `resumeCourseOf`                                                                                                  |
+
+## Purpose
+
+The one part of the frame of «Cursos» that waits for the database (2026-10-22): the reads the side column counts — cached per request, so the page under it reads them again for free —, the groups (`coursesNavGroups`) and the next lesson of the course to go on with («Seguir donde iba», `resumeCourseOf`). Being its own async component, it streams in behind [`CoursesSideSkeleton`](/components/platform/sections/courses/courses-side-skeleton) while the rest of the frame is already on screen.
+
+No props.
