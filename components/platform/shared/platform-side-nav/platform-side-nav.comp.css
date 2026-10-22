@@ -81,6 +81,11 @@
     color: var(--platform-m3-on-surface-variant);
   }
 
+  /* An icon on Font Awesome's bare box, at the size the padded ones read. */
+  & .platform-side-nav__icon_box_tight {
+    transform: scale(0.75);
+  }
+
   & .platform-side-nav__link_state_current .platform-side-nav__icon {
     color: inherit;
   }

@@ -20,6 +20,14 @@ const ICONS = {
 
 export type PlatformSideNavIcon = keyof typeof ICONS;
 
+/**
+ * The drawings pasted on Font Awesome's bare 512 box instead of the padded
+ * one the rest use (682.67, with the drawing a quarter smaller inside): at
+ * the same 18px they would read a size up, so they are drawn at three
+ * quarters (2026-10-22, the owner saw «Completados» larger than the rest).
+ */
+const TIGHT_BOX: ReadonlySet<PlatformSideNavIcon> = new Set(["circle-check"]);
+
 export interface PlatformSideNavLink {
   label: string;
   href: string;
@@ -83,7 +91,7 @@ export function PlatformSideNav({ label, action, groups }: PlatformSideNavProps)
                     {Icon && (
                       <Icon
                         variant={link.current ? "classic-solid" : "duotone-light"}
-                        className="platform-side-nav__icon"
+                        className={`platform-side-nav__icon${link.icon && TIGHT_BOX.has(link.icon) ? " platform-side-nav__icon_box_tight" : ""}`}
                       />
                     )}
                     {link.level !== undefined && (
