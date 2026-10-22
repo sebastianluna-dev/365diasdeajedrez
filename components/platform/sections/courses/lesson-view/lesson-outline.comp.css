@@ -1,286 +1,138 @@
 .lesson-outline {
-  /* The course and the chapter at the size of a heading, the lessons a step
-     under it and each on one line, cut with an ellipsis: a column of names
-     that reads at a glance, as in the design it was drawn after (2026-10-06).
-     The whole name of a cut one is its `title`. */
-  font-size: var(--platform-type-lg);
-
-  /* Where the centre of every mark falls, counted from the right edge: the
-     chapter's ring is 48px wide inside 16 of padding, so its centre sits
-     here, and the lessons' marks line up under it instead of drifting in by
-     the difference between a 48px ring and an 18px mark. */
-  --mark-center: 40px;
-
-  /* Pinned to the window, not laid out in the page: it starts right under the
-     bar, touches the left edge and goes down to the bottom one, so the
-     lessons are a panel of the screen and not a card floating on it. The page
-     only reserves its width (`lesson-frame.comp.css`).
-
-     `top` is the bar's height, in the same px the bar is drawn with, so the
-     two meet exactly. */
-  position: fixed;
-  top: 70px;
-  left: 0;
-  bottom: 0;
-  width: var(--outline-width, 360px);
-  z-index: 10;
+  /* The lesson's side column, with the rhythm of `PlatformSideNav`: the
+     course at the top, the switch, and the chapters as its links. */
   display: flex;
   flex-direction: column;
-  background: var(--platform-surface);
-  /* Its hairline, and a shadow falling to the right: the panel sits ON the
-     page rather than beside it, which is what says the board is behind it
-     and not next to it. No rounding — it is an edge of the window. */
-  box-shadow:
-    inset -1px 0 0 var(--platform-border),
-    4px 0 16px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
+  gap: var(--platform-space-4);
+  padding-bottom: var(--platform-space-4);
+  color: var(--platform-m3-on-surface);
 
-  /* The course, which never scrolls away: where one is should stay put. Its
-     hairline is on the filter below, so the two read as one head. */
   & .lesson-outline__course {
-    flex: none;
     display: flex;
     align-items: center;
-    gap: var(--platform-space-4);
-    padding: var(--platform-space-4);
-    box-shadow: inset 0 -1px 0 var(--platform-border);
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-2) var(--platform-space-4) 0;
   }
 
-  & .lesson-outline__cover {
+  & .lesson-outline__thumb {
+    position: relative;
     flex: none;
-    display: block;
-    width: 72px;
-    height: 72px;
+    width: 40px;
+    height: 40px;
     border-radius: 8px;
+    overflow: hidden;
+    background: var(--platform-m3-container-high);
+  }
+
+  & .lesson-outline__thumb-image {
     object-fit: cover;
   }
 
-  /* The name over the filter, both beside the image. */
-  & .lesson-outline__course-text {
-    flex: 1;
-    min-width: 0;
+  & .lesson-outline__about {
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-3);
+    min-width: 0;
   }
 
   & .lesson-outline__course-name {
-    color: var(--platform-text-title);
-    /* 18px from 1536px wide, 17px under it (Sebastian's call, 2026-10-07):
-       the large-screen step of `--platform-type-lg`, which this page does
-       not take (`platform-page_scale_base`), written by hand — the one size
-       off the scale in this sheet, listed in type-and-space.test.ts. */
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 1.25;
-
-    @media (width < 1536px) {
-      font-size: var(--platform-type-lg);
-    }
-  }
-
-  /* The head's one link: under the pointer it is underlined and keeps its
-     colour, as a link in running text. */
-  & .lesson-outline__course-name:hover {
-    text-decoration: underline;
-    text-underline-offset: 0.15em;
-  }
-
-  /* What of the course is learned, under the course's name: the same
-     per-course setting the chapter's page offers, as a small switch. */
-  & .lesson-outline__filter {
-    margin: 0;
-  }
-
-  /* Everything under the course scrolls, and only this. */
-  & .lesson-outline__body {
-    flex: 1;
-    min-height: 0;
-    overflow: auto;
-    /* The chapter's name is stuck to the top of this scroller, which is not the
-       page's: a lesson reached with the keyboard is scrolled to below it. 80px
-       is that head (16 + 48 + 16), plus air. */
-    scroll-padding-top: 88px;
-    scrollbar-width: thin;
-    /* No elastic overscroll: at either end of the list the bounce dragged the
-       sticky chapter with it, and there is nothing behind this panel for the
-       scroll to carry on into anyway — the page itself does not move. */
-    overscroll-behavior: none;
-  }
-
-  /* The chapter heads the list it names and stays at the top of it while the
-     lessons run under it, so a long chapter never leaves one wondering which
-     it is. Its own background and its hairline are what cover them. */
-  & .lesson-outline__chapter {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    gap: var(--platform-space-3);
-    padding: var(--platform-space-4);
-    background: var(--platform-surface);
-    box-shadow: inset 0 -1px 0 var(--platform-border);
-  }
-
-  & .lesson-outline__chapter-name {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    color: var(--platform-text-title);
-    /* As the course's name: 18px from 1536px wide, 17px under it. */
-    font-size: 18px;
+    font-size: var(--platform-type-xs);
     font-weight: 700;
     line-height: 1.3;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    color: inherit;
+    text-decoration: none;
 
-    @media (width < 1536px) {
-      font-size: var(--platform-type-lg);
+    &:hover {
+      text-decoration: underline;
     }
   }
 
-  /* How much of the chapter is done, on a ring: a number alone is read as a
-     figure, and a ring is read at a glance. */
-  & .lesson-outline__gauge {
-    flex: none;
-    position: relative;
-    /* 48 and not 40: «100%» has to fit inside the ring. */
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  & .lesson-outline__gauge-ring {
-    position: absolute;
-    inset: 0;
-    /* The arc starts at twelve o'clock and runs clockwise, which is how a
-       ring is read; drawn as it comes it would start at three. */
-    transform: rotate(-90deg);
-    fill: none;
-  }
-
-  & .lesson-outline__gauge-track {
-    stroke: var(--platform-track);
-    stroke-width: 3;
-  }
-
-  /* The accent and NOT `--platform-progress`, which every other bar of a
-     course is filled with: this ring sits in a column that is already the
-     accent's — the lesson being read, its marks, its thread — and a blue arc
-     in the middle of it read as something else's. */
-  & .lesson-outline__gauge-fill {
-    stroke: var(--platform-accent);
-    stroke-width: 3;
-    stroke-linecap: round;
-  }
-
-  /* Small, a weight under bold and a hair tighter, so that «100%» fits
-     inside the ring with air on both sides. */
-  & .lesson-outline__gauge-value {
-    position: relative;
+  & .lesson-outline__figures {
     font-size: var(--platform-type-2xs);
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    color: var(--platform-text-muted);
-    font-variant-numeric: tabular-nums;
+    color: var(--platform-m3-on-surface-variant);
   }
 
-  & .lesson-outline__list {
-    position: relative;
+  /* The priority switch, under the course. */
+  & .lesson-outline__filter {
+    padding: 0 var(--platform-space-4) 0 var(--platform-space-6);
+  }
+
+  & .lesson-outline__chapters {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+  }
+
+  & .lesson-outline__title {
     margin: 0;
-    padding: 0;
-    list-style: none;
+    padding: var(--platform-space-1) var(--platform-space-6);
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface-variant);
   }
 
-  & .lesson-outline__lesson {
-    position: relative;
+  /* A chapter: a row as `PlatformSideNav` draws its links, which opens and
+     closes its lessons. */
+  & .lesson-outline__chapter {
     display: flex;
     align-items: center;
     gap: var(--platform-space-3);
-    /* The right padding puts the mark's centre on `--mark-center`: half of
-       the 18px mark short of it. */
-    padding: var(--platform-space-4) calc(var(--mark-center) - 9px) var(--platform-space-4) var(--platform-space-4);
-    /* The pale rose of a whole list of rows (see the token). */
-    background: var(--platform-accent-mist);
-    color: var(--platform-text);
-    /* 16px from 1536px wide, 15px under it (Sebastian's call, 2026-10-06).
-       Written as the lesson's own sizes and not left to the scale's step at
-       1536px, which this page does not take (`platform-page_scale_base`). */
-    font-size: var(--platform-type-md);
-    line-height: 1.35;
+    width: 100%;
+    height: 36px;
+    padding: 0 var(--platform-space-3) 0 var(--platform-space-6);
+    border: 0;
+    border-radius: 0 1000px 1000px 0;
+    background: transparent;
+    color: inherit;
+    font-family: inherit;
+    font-size: var(--platform-type-sm);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 160ms ease-out;
 
-    @media (width < 1536px) {
-      font-size: var(--platform-type-sm);
+    &:hover {
+      background: var(--platform-m3-container-high);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-m3-primary);
+      outline-offset: -2px;
     }
   }
 
-  /* The thread that strings the marks together: the lessons of a chapter are
-     one thread and each mark is a stop on it. A tract per row and not one
-     line behind the list, because the rows are filled in now and a line
-     drawn behind them would be covered by every one of them. */
-  & .lesson-outline__lesson::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    /* Centred on the marks' column: half of the 4px the dots are drawn in. */
-    right: calc(var(--mark-center) - 2px);
-    width: 4px;
-    /* The dots are drawn, not left to `dotted`, which packs them tight
-       against one another: what a thread wants is air between its stops. A
-       3.5px dot every 12px, which leaves four of them between two marks. */
-    background-image: radial-gradient(circle, var(--platform-accent-faint) 1.75px, transparent 1.85px);
-    background-size: 4px 12px;
-    background-repeat: repeat-y;
-  }
-
-  /* Not under the row being read: there the mark is the only thing on the
-     accent, and a grey thread across it reads as a scratch. */
-  & .lesson-outline__lesson.lesson-outline__lesson_state_current::before {
-    display: none;
-  }
-
-  /* The hairline between rows stops short of the marks' column: what runs
-     down there is the thread, and a rule crossing it would cut it into
-     pieces. */
-  & .lesson-outline__lesson::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    /* Clear of the marks' column: the centre, the mark's half and air. */
-    right: calc(var(--mark-center) + 9px + 12px);
-    bottom: 0;
-    height: 1px;
-    /* The marks' own grey, at half strength: one family of lines down the
-       whole column — a neutral grey beside them read as a different idea —
-       but a rule between two rows says less than a stop on the thread. */
-    background: color-mix(in srgb, var(--platform-accent-faint) 50%, transparent);
-  }
-
-  /* The row being read draws none: its background is what tells it apart,
-     and a line across it would only box it in. */
-  & .lesson-outline__lesson.lesson-outline__lesson_state_current::after {
-    display: none;
-  }
-
-  & .lesson-outline__lesson:hover {
-    background: var(--platform-accent-soft);
-    color: var(--platform-text);
-  }
-
-  /* The one being read: the only row that is not a link, and the only one
-     with a background. */
-  & .lesson-outline__lesson.lesson-outline__lesson_state_current {
-    background: var(--platform-accent);
-    color: var(--platform-on-accent);
+  & .lesson-outline__chapter_state_current {
     font-weight: 700;
   }
 
-  /* One line: what does not fit is cut with an ellipsis, and the whole name
-     is the row's `title`. */
+  & .lesson-outline__badge {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--platform-m3-container-high);
+    color: var(--platform-m3-on-surface-variant);
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+  }
+
+  & .lesson-outline__chapter_state_current .lesson-outline__badge {
+    background: var(--platform-m3-primary);
+    color: var(--platform-m3-on-primary);
+  }
+
+  & .lesson-outline__badge_state_done,
+  & .lesson-outline__chapter_state_current .lesson-outline__badge_state_done {
+    background: var(--platform-m3-success);
+    color: var(--platform-m3-on-success);
+  }
+
+  & .lesson-outline__badge-check {
+    width: 10px;
+    height: 10px;
+  }
+
+  & .lesson-outline__chapter-name,
   & .lesson-outline__name {
     flex: 1;
     min-width: 0;
@@ -289,64 +141,79 @@
     white-space: nowrap;
   }
 
-  /* The mark of each lesson, on the thread: an empty ring while it is
-     pending, the filled check once it is done. Both carry their row's
-     background, so the dotted line stops at them instead of crossing. */
-  /* Each mark carries ITS ROW's background: that is what cuts the dotted
-     thread at every stop instead of letting it run through them. */
-  & .lesson-outline__done,
-  & .lesson-outline__pending {
+  & .lesson-outline__count {
     flex: none;
-    /* Positioned so it is painted OVER the thread, which is the row's own
-       `::before`: in one box, a positioned descendant beats a plain one. */
-    position: relative;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--platform-accent-mist);
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
   }
 
-  & .lesson-outline__done {
-    color: var(--platform-accent);
+  /* The fold's chevron, turned up while the lessons show. */
+  & .lesson-outline__fold {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    color: var(--platform-m3-on-surface-variant);
+    transition: transform 160ms ease-out;
   }
 
-  /* The ring and the dots are drawn in the accent's own grey: a neutral one
-     disappears over the mist, and a grey that leans on the colour of the list
-     belongs to it. */
-  & .lesson-outline__pending {
-    box-sizing: border-box;
-    border: 2px solid var(--platform-accent-faint);
+  & .lesson-outline__chapter[aria-expanded="true"] .lesson-outline__fold {
+    transform: rotate(180deg);
   }
 
-  /* Not on the row being read: there the mark is already on the accent, and
-     hovering what one is on has nothing to say. */
-  & .lesson-outline__lesson:hover:not(.lesson-outline__lesson_state_current) .lesson-outline__done,
-  & .lesson-outline__lesson:hover:not(.lesson-outline__lesson_state_current) .lesson-outline__pending {
-    background: var(--platform-accent-soft);
+  & .lesson-outline__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
-  & .lesson-outline__lesson_state_current .lesson-outline__done {
-    background: var(--platform-accent);
-    color: var(--platform-on-accent);
+  /* A lesson: a row indented under its chapter. */
+  & .lesson-outline__lesson {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    height: 32px;
+    padding: 0 var(--platform-space-4) 0 calc(var(--platform-space-6) + 32px);
+    border-radius: 0 1000px 1000px 0;
+    color: var(--platform-m3-on-surface);
+    font-size: var(--platform-type-xs);
+    text-decoration: none;
+    transition: background-color 160ms ease-out;
   }
 
-  & .lesson-outline__lesson_state_current .lesson-outline__pending {
-    background: var(--platform-accent);
-    border-color: var(--platform-on-accent);
+  & a.lesson-outline__lesson:hover {
+    background: var(--platform-m3-container-high);
   }
 
-  /* Piled up in one column the panel stops being an edge of the window: it
-     goes back into the flow under the lesson, a card like any other, at
-     whatever height its lessons need. */
-  @media (width < 1280px), (max-height: 620px) {
-    position: static;
-    width: auto;
-    border-radius: 8px;
-    box-shadow: var(--platform-shadow-card);
-    overflow: visible;
+  & a.lesson-outline__lesson:focus-visible {
+    outline: 2px solid var(--platform-m3-primary);
+    outline-offset: -2px;
+  }
 
-    & .lesson-outline__body {
-      overflow: visible;
+  & .lesson-outline__lesson_state_current {
+    background: var(--platform-m3-secondary-container);
+    color: var(--platform-m3-on-secondary-container);
+    font-weight: 700;
+  }
+
+  & .lesson-outline__mark {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .lesson-outline__lesson_state_current .lesson-outline__mark {
+    color: inherit;
+  }
+
+  & .lesson-outline__mark_state_done,
+  & .lesson-outline__lesson_state_current .lesson-outline__mark_state_done {
+    color: var(--platform-m3-success);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .lesson-outline__fold {
+      transition: none;
     }
   }
 }

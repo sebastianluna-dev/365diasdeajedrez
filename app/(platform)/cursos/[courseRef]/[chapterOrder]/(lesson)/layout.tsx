@@ -31,7 +31,9 @@ export default async function LessonLayout({ params, children }: LessonLayoutPro
   if (!outline) notFound();
 
   return (
-    <div className="platform-page lesson-page platform-page_width_full platform-page_height_screen platform-page_scale_base">
+    // The new design system (2026-10-22): the page takes the window, bleeds
+    // onto the canvas and fills it; the frame draws the workspace.
+    <div className="platform-page lesson-page platform-page_width_full platform-page_frame_bleed platform-page_height_screen platform-page_scale_base">
       <LessonFrame outline={outline}>{children}</LessonFrame>
     </div>
   );

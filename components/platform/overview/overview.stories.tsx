@@ -1684,9 +1684,8 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               </PlatformTabs>
             </Tile>
             <Tile name="OutlineList" docs="platform-sections-courses-lesson-view-outlinelist" width={400} height={304}>
-              {/* `position: static`: from 1280px the column's sheet pins .lesson-outline to the window. */}
               <nav className="lesson-outline overview__outline" aria-label="Lecciones del capítulo">
-                <div className="lesson-outline__body">
+                <div>
                   <OutlineList
                     chapters={[
                       {

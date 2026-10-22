@@ -27,11 +27,6 @@ const TYPE_EXCEPTIONS: Record<string, { value: string; reason: string }> = {
     value: "9px",
     reason: "the coordinates of the placement board, drawn inside a square as on ChessBoard",
   },
-  "components/platform/sections/courses/lesson-view/lesson-outline.comp.css": {
-    value: "18px",
-    reason:
-      "the course's and the chapters' names beside a lesson from 1536px: the large-screen step of --platform-type-lg, which the lesson's page does not take (platform-page_scale_base)",
-  },
 };
 
 /** Fonts named instead of read from a `--platform-font*` token, by file, with the value they keep and why. */

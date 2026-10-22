@@ -292,7 +292,6 @@
   /* The lesson's column, in the flow of the tile: from 1280px its own sheet
      pins it to the window. */
   & .overview__outline {
-    position: static;
     width: 100%;
   }
 

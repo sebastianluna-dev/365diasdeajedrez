@@ -35,8 +35,7 @@
        then hands it the row, less what the buttons take. */
     height: 0;
     min-height: calc(100% - var(--viewer-panel-trim, 0px));
-    border-radius: 8px;
-    background: var(--platform-surface);
-    box-shadow: var(--platform-shadow-card);
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--platform-m3-container);
   }
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PuzzlePieceIcon } from "@/components/icons/puzzle-piece-icon.comp";
+import { mdButton, mdCard } from "@/lib/material/material-classes";
 import type { LessonPractice } from "@/services/exercises/lesson-practice.types";
 import "./lesson-practice-card.comp.css";
 
@@ -25,19 +26,21 @@ export function LessonPracticeCard({ practice }: LessonPracticeCardProps) {
       : `${practice.solved} de ${practice.total} ${practice.total === 1 ? "resuelto" : "resueltos"}`;
 
   return (
-    <aside className="lesson-practice-card" aria-label="Ejercicios de la lección">
-      <PuzzlePieceIcon className="lesson-practice-card__icon" />
+    <aside className={`${mdCard("outlined")} lesson-practice-card`} aria-label="Ejercicios de la lección">
+      <span className="lesson-practice-card__disc" aria-hidden="true">
+        <PuzzlePieceIcon variant="duotone-solid" className="lesson-practice-card__icon" />
+      </span>
       <p className="lesson-practice-card__text">
         <span className="lesson-practice-card__title">Ahora practica: {count}</span>
         <span className="lesson-practice-card__standing">{standing}</span>
       </p>
       {practice.start ? (
-        <Link href={practice.start.href} className="platform-button platform-button_variant_accent">
+        <Link href={practice.start.href} className={mdButton("tonal", "sm")}>
           {practice.start.label}
         </Link>
       ) : (
         practice.items[0] && (
-          <Link href={practice.items[0].href} className="platform-button">
+          <Link href={practice.items[0].href} className={mdButton("text", "sm")}>
             Repasar
           </Link>
         )

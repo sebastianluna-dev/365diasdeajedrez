@@ -1,6 +1,11 @@
+import Link from "next/link";
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
+import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
+import { ChevronLeftIcon } from "@/components/icons/chevron-left-icon.comp";
+import { ChevronRightIcon } from "@/components/icons/chevron-right-icon.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
+import { mdIconButton } from "@/lib/material/material-classes";
 import { completeLesson } from "@/services/courses/courses.actions";
 import type { LessonView } from "@/services/courses/courses.types";
 import { LessonPracticeCard } from "./lesson-practice-card.comp";
@@ -31,51 +36,108 @@ export function LessonBoardSection({ lesson, errorCode }: LessonBoardSectionProp
     finish: completeLesson.bind(null, lesson.id),
   };
 
+  const toolbar = <LessonToolbar lesson={lesson} />;
+
   if (lesson.isPracticeOnly && lesson.practice) {
     return (
-      <div className="lesson-frame__main lesson-frame__main_kind_practice">
-        <LessonTracker lessonId={lesson.id} />
-        <LessonPracticeList
-          title={lesson.name}
-          badge={lesson.isPriority ? "Prioridad" : undefined}
-          description={lesson.description}
-          practice={lesson.practice}
-          onwards={onwards}
-        />
-        {errorMessage && <PlatformNotice message={errorMessage} />}
-      </div>
+      <>
+        {toolbar}
+        <div className="lesson-frame__main lesson-frame__main_kind_practice">
+          <LessonTracker lessonId={lesson.id} />
+          <LessonPracticeList
+            title={lesson.name}
+            badge={lesson.isPriority ? "Prioridad" : undefined}
+            description={lesson.description}
+            practice={lesson.practice}
+            onwards={onwards}
+          />
+          {errorMessage && <PlatformNotice message={errorMessage} />}
+        </div>
+      </>
     );
   }
 
   return (
-    <div className={`lesson-frame__main${lesson.practice ? " lesson-frame__main_with_practice" : ""}`}>
-      <LessonTracker lessonId={lesson.id} />
+    <>
+      {toolbar}
+      <div className={`lesson-frame__main${lesson.practice ? " lesson-frame__main_with_practice" : ""}`}>
+        <LessonTracker lessonId={lesson.id} />
 
-      <GameViewer
-        pgn={lesson.pgn}
-        orientation={lesson.orientation}
-        // The lesson is READ: the running text accompanies the narrative, whereas
-        // the table is for consulting a game move by move.
-        moveList="flow"
-        // The head carries the lesson's name and whether it is a priority,
-        // and nothing else: where it falls in the course is the column's
-        // job, and what it explains is written move by move below.
-        title={lesson.name}
-        badge={lesson.isPriority ? "Prioridad" : undefined}
-        // Under the board, the way through the lesson and nothing else:
-        // no turning the board around, no settings menu.
-        boardTools={false}
-        // And the way through is ONE button: it lets you out while there
-        // are moves left, and at the last one it is what gives the lesson
-        // for read and opens the next — which is why the screen needs no
-        // row of buttons under the board.
-        onwards={onwards}
-      />
+        <GameViewer
+          pgn={lesson.pgn}
+          orientation={lesson.orientation}
+          // The lesson is READ: the running text accompanies the narrative, whereas
+          // the table is for consulting a game move by move.
+          moveList="flow"
+          // The head carries the lesson's name and whether it is a priority,
+          // and nothing else: where it falls in the course is the column's
+          // job, and what it explains is written move by move below.
+          title={lesson.name}
+          badge={lesson.isPriority ? "Prioridad" : undefined}
+          // Under the board, the way through the lesson and nothing else:
+          // no turning the board around, no settings menu.
+          boardTools={false}
+          // And the way through is ONE button: it lets you out while there
+          // are moves left, and at the last one it is what gives the lesson
+          // for read and opens the next — which is why the screen needs no
+          // row of buttons under the board.
+          onwards={onwards}
+        />
 
-      {/* The exercises are optional (D26): the card invites, the board's button completes. */}
-      {lesson.practice && <LessonPracticeCard practice={lesson.practice} />}
+        {/* The exercises are optional (D26): the card invites, the board's button completes. */}
+        {lesson.practice && <LessonPracticeCard practice={lesson.practice} />}
 
-      {errorMessage && <PlatformNotice message={errorMessage} />}
+        {errorMessage && <PlatformNotice message={errorMessage} />}
+      </div>
+    </>
+  );
+}
+
+/**
+ * The panel's toolbar (2026-10-22, the new design system): back to the
+ * chapter, the trail — the course, the chapter, the lesson —, and at the
+ * right the arrows to the lessons before and after, switched off at either
+ * end of the course.
+ */
+function LessonToolbar({ lesson }: { lesson: LessonView }) {
+  return (
+    <div className="lesson-frame__toolbar">
+      <nav className="lesson-frame__trail" aria-label="Dónde estás">
+        <Link href={lesson.chapterHref} className={mdIconButton("standard", "sm")} aria-label="Volver al capítulo">
+          <ArrowLeftIcon variant="classic-solid" className="platform-md-icon" />
+        </Link>
+        <span className="lesson-frame__crumb lesson-frame__crumb_kind_course">{lesson.courseName}</span>
+        <ChevronRightIcon variant="classic-solid" className="lesson-frame__crumb-step" />
+        <Link href={lesson.chapterHref} className="lesson-frame__crumb">
+          {lesson.chapterName}
+        </Link>
+        <ChevronRightIcon variant="classic-solid" className="lesson-frame__crumb-step" />
+        <span className="lesson-frame__crumb-here" aria-current="page">
+          {lesson.name}
+        </span>
+      </nav>
+
+      <nav className="lesson-frame__steps" aria-label="Lecciones vecinas">
+        <Step href={lesson.prevLessonHref} label="Lección anterior" direction="previous" />
+        <Step href={lesson.nextLessonHref} label="Lección siguiente" direction="next" />
+      </nav>
     </div>
+  );
+}
+
+/** An arrow to the lesson before or after; switched off at either end. */
+function Step({ href, label, direction }: { href?: string; label: string; direction: "previous" | "next" }) {
+  const Icon = direction === "previous" ? ChevronLeftIcon : ChevronRightIcon;
+  if (!href) {
+    return (
+      <span className={`${mdIconButton("standard", "sm")} lesson-frame__step_state_off`} aria-hidden="true">
+        <Icon variant="classic-solid" className="platform-md-icon" />
+      </span>
+    );
+  }
+  return (
+    <Link href={href} className={mdIconButton("standard", "sm")} aria-label={label}>
+      <Icon variant="classic-solid" className="platform-md-icon" />
+    </Link>
   );
 }

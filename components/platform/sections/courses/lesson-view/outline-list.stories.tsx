@@ -71,22 +71,19 @@ const meta = {
     docs: {
       description: {
         component: `
-The course's table of contents beside a lesson — every chapter, its head
-with a ring of how much of it is done, and its lessons — and the only client
-piece of the column. Each chapter is a section, and its head stays stuck to
-the top of the column while its lessons run under it, until the next
-chapter's head pushes it away. It marks the lesson being read from the pathname — that row is not a link, it
-carries \`aria-current="page"\` and is painted in the accent — and every
-lesson carries its stop on the dotted thread, the filled check once it is
-done and an empty ring while it is not (in progress counts as not done). On
-every change of pathname it brings the lesson being read back into view when
-the column's scroll leaves it cut off, under its chapter's sticky head.
+The course's chapters in the lesson's side column (the new design system):
+each a row with its number — the success green with a check once every
+lesson of it is learned —, its name and how many of its lessons are learned,
+which opens and closes its lessons. The chapter of the lesson being read is
+open on arrival and its lesson lit: that row is not a link, it carries
+\`aria-current="page"\` and a play; a lesson learned carries the check, the
+rest a clock. On every change of pathname the lesson being read is brought
+into view when the column's scroll leaves it cut off.
 
 The list has no stylesheet of its own: it imports the column's
-(\`lesson-outline.comp.css\`), and the story mounts it where \`LessonOutline\`
-does, in the column's scroller, which the decorator draws as plain markup,
-since \`LessonOutline\` imports a server action. Storybook's
-router reports the lesson's path.
+(\`lesson-outline.comp.css\`), and the story mounts it in the column's
+markup, which the decorator draws as plain markup, since \`LessonOutline\`
+imports a server action. Storybook's router reports the lesson's path.
 
 Source: \`components/platform/sections/courses/lesson-view/outline-list.comp.tsx\`.
 Reference page: [Components › OutlineList](/components/platform/sections/courses/lesson-view/outline-list) in the docs site.
@@ -106,19 +103,14 @@ Reference page: [Components › OutlineList](/components/platform/sections/cours
   },
   decorators: [
     (Story, { parameters }) => {
-      // A height turns the column into what it is on a wide window: a panel
-      // whose list scrolls under the chapter. Without one it grows with its
-      // lessons, as it does once it drops under the lesson.
+      // A height turns the column into what it is on a wide window: the
+      // workspace's side, which scrolls on its own. Without one it grows with
+      // its lessons, as it does once the page scrolls.
       const height = parameters.columnHeight as number | undefined;
       return (
-        // In the app the column is pinned to the window's left edge; here it
-        // is put back in the flow, at its own width.
-        <nav
-          className="lesson-outline"
-          aria-label="Lecciones del capítulo"
-          style={{ position: "static", width: "100%", maxWidth: 360, height }}
-        >
-          <div className="lesson-outline__body" style={height ? { overflow: "auto" } : undefined}>
+        // The workspace's side is 256px wide.
+        <nav className="lesson-outline" aria-label="Lecciones del capítulo" style={{ width: 256 }}>
+          <div data-scroller style={height ? { height, overflow: "auto" } : undefined}>
             <Story />
           </div>
         </nav>
@@ -130,15 +122,15 @@ Reference page: [Components › OutlineList](/components/platform/sections/cours
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** The whole course, three chapters each under its head with its ring: in the second, two lessons done, the third being read (still in progress, so its ring is empty), and one done ahead of its turn. */
+/** The whole course, three chapters: the first all learned (its number a check), the second open with two lessons done, the third being read, and one done ahead of its turn; the third closed. */
 export const MidChapter: Story = {};
 
-/** Going back to a lesson already done: the row being read carries its check, drawn on the accent. */
+/** Going back to a lesson already done: the row being read carries its check, lit. */
 export const RereadingADoneLesson: Story = {
   parameters: { nextjs: { navigation: { pathname: href("philidor") } } },
 };
 
-/** A long course in a column that scrolls: the lesson being read, thirteenth of the long second chapter, is brought into view on mount and lands next to last, under its chapter's head stuck to the top. */
+/** A long course in a column that scrolls: the lesson being read, thirteenth of the long second chapter, is brought into view on mount and is scrolled to the nearest edge of the column. */
 export const LongChapter: Story = {
   args: { chapters: [FIRST_CHAPTER, chapter(2, "Finales que hay que saber", LONG_CHAPTER), LAST_CHAPTER] },
   parameters: {
@@ -148,7 +140,7 @@ export const LongChapter: Story = {
   play: async ({ canvasElement }) => {
     const current = await within(canvasElement).findByText("Alfil y peón de torre: el color equivocado");
     await expect(current.closest("[aria-current]")).toHaveAttribute("aria-current", "page");
-    const scroller = canvasElement.querySelector(".lesson-outline__body");
+    const scroller = canvasElement.querySelector("[data-scroller]");
     await waitFor(() => expect(scroller?.scrollTop).toBeGreaterThan(0));
   },
 };

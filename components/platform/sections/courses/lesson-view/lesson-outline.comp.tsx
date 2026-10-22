@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { setOnlyPriorityLessons } from "@/services/courses/courses.actions";
+import type { CourseOutline } from "@/services/courses/courses.types";
 import { OutlineList } from "./outline-list.comp";
 import { PriorityLessonsFilter } from "./priority-lessons-filter.comp";
-import type { CourseOutline } from "@/services/courses/courses.types";
 import "./lesson-outline.comp.css";
 
 interface LessonOutlineProps {
@@ -11,59 +12,47 @@ interface LessonOutlineProps {
   outline: CourseOutline;
 }
 
-/** The square image is drawn at 72px, at twice that for a dense screen. */
-const THUMBNAIL_SIZES = "144px";
-
 /**
- * Where the lesson stands: the course and every chapter of it with its
- * lessons, the one open marked — a table of contents one scrolls through, so
- * moving to the next lesson, or the next chapter, does not mean going back.
+ * The lesson's side column in the new design system (2026-10-22): the course
+ * at the top — its picture, its name (the way back to it) and how far it is
+ * —, the switch for the priority lessons, and its chapters, the lesson's open
+ * with its lessons (`OutlineList`).
  *
  * It belongs to the chapter's layout and not to the lesson's page: that is
  * what keeps it from being fetched and drawn again on every move, and it is
  * also why it does not know which lesson is open — the list does, in the
- * browser (see `OutlineList`).
+ * browser.
  */
 export function LessonOutline({ outline }: LessonOutlineProps) {
   const { courseId, courseName, courseHref, courseThumbnail, onlyPriorityLessons, chapters } = outline;
+  const lessons = chapters.flatMap((chapter) => chapter.lessons);
+  const done = lessons.filter((lesson) => lesson.statusCode === PROGRESS_STATUS.COMPLETED).length;
+  const percent = lessons.length > 0 ? Math.round((done / lessons.length) * 100) : 0;
 
   return (
     <nav className="lesson-outline" aria-label="Lecciones del curso">
-      {/* The course's head: its image, its name and what of it is being
-          learned. The name is the head's one link, to the course; the filter
-          is a form, so it cannot live inside that link. */}
       <div className="lesson-outline__course">
-        {/* The image is not a link: the title beside it is the head's one. */}
-        {courseThumbnail && (
-          <Image
-            src={courseThumbnail}
-            alt=""
-            width={144}
-            height={144}
-            sizes={THUMBNAIL_SIZES}
-            className="lesson-outline__cover"
-          />
-        )}
-
-        <div className="lesson-outline__course-text">
+        <span className="lesson-outline__thumb">
+          {courseThumbnail && (
+            <Image src={courseThumbnail} alt="" fill sizes="40px" className="lesson-outline__thumb-image" />
+          )}
+        </span>
+        <span className="lesson-outline__about">
           <Link href={courseHref} className="lesson-outline__course-name">
             {courseName}
           </Link>
-
-          {/* Under the name, beside the image, as a small switch: a setting
-              of the column, not one more thing to read. */}
-          <PriorityLessonsFilter
-            action={setOnlyPriorityLessons.bind(null, courseId, !onlyPriorityLessons)}
-            enabled={onlyPriorityLessons}
-          />
-        </div>
+          <span className="lesson-outline__figures">
+            {percent} % · {done} de {lessons.length} {lessons.length === 1 ? "lección" : "lecciones"}
+          </span>
+        </span>
       </div>
 
-      {/* What scrolls: the chapters and their lessons. The course's head stays
-          out of it, because where one is should not scroll away. */}
-      <div className="lesson-outline__body">
-        <OutlineList chapters={chapters} />
-      </div>
+      <PriorityLessonsFilter
+        action={setOnlyPriorityLessons.bind(null, courseId, !onlyPriorityLessons)}
+        enabled={onlyPriorityLessons}
+      />
+
+      <OutlineList chapters={chapters} />
     </nav>
   );
 }

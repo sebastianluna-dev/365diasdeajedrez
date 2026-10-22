@@ -1,28 +1,38 @@
-/* One row under the lesson's game: the icon, what there is to practise and how
-   it stands, and the way in at the right edge. It is given a fixed height by
-   the frame (`--lesson-practice-card`), which takes it off the board. */
+/* One row under the lesson's game, Material's outlined card (2026-10-22, the
+   new design system): the puzzle on its disc, what there is to practise and
+   how it stands, and the way in at the right edge. It is given a fixed
+   height by the frame (`--lesson-practice-card`), which takes it off the
+   board. */
 .lesson-practice-card {
-  display: flex;
+  flex: none;
+  flex-direction: row;
   align-items: center;
   gap: var(--platform-space-4);
   min-height: 72px;
   padding: var(--platform-space-3) var(--platform-space-5);
-  border-radius: 8px;
-  background: var(--platform-surface);
-  box-shadow: var(--platform-shadow-card);
+  color: var(--platform-m3-on-surface);
+
+  & .lesson-practice-card__disc {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--platform-m3-primary-container);
+  }
 
   & .lesson-practice-card__icon {
-    flex: none;
-    width: 24px;
-    height: 24px;
-    color: var(--platform-accent-ink);
+    width: 20px;
+    height: 20px;
+    color: var(--platform-m3-on-primary-container);
   }
 
   & .lesson-practice-card__text {
     display: flex;
     flex: 1;
     flex-direction: column;
-    gap: var(--platform-space-1);
+    gap: var(--platform-space-0-5);
     min-width: 0;
     margin: 0;
   }
@@ -30,22 +40,16 @@
   & .lesson-practice-card__title {
     font-size: var(--platform-type-md);
     font-weight: 700;
-    color: var(--platform-text);
   }
 
   & .lesson-practice-card__standing {
     font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
+    color: var(--platform-m3-on-surface-variant);
     font-variant-numeric: tabular-nums;
   }
 
   @media (width < 640px) {
     flex-wrap: wrap;
     padding: var(--platform-space-3) var(--platform-space-4);
-
-    /* The button takes the second row, the full width. */
-    & .platform-button {
-      flex: 1 0 100%;
-    }
   }
 }
