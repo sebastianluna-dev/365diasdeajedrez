@@ -29,7 +29,7 @@ A `PlatformSideNavLink` is `{ label, href, count?, current?, icon?, level? }`. `
 
 ## Behaviour
 
-A `<nav aria-label>` with the action on top and a list per group. The current link carries `aria-current="page"`, is lit in the secondary container and draws its icon solid; the rest draw it in Duotone Light. Under 1024px the column sits above the panel and its groups go side by side.
+A `<nav aria-label>` with the action on top and a list per group. The action behaves as Gmail's «Redactar»: flat at rest (`--container-elevation: none` over the FAB's own shadow), on `--md-sys-elevation-shadow-3` under the pointer, and its colour never darkens (the library's hover tint, `--ripple-hover-opacity`, is set to 0; the press still ripples). The current link carries `aria-current="page"`, is lit in the secondary container and draws its icon solid; the rest draw it in Duotone Light. Under 1024px the column sits above the panel and its groups go side by side.
 
 ## Markup & styling
 

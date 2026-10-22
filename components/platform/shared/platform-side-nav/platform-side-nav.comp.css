@@ -6,11 +6,21 @@
   color: var(--platform-m3-on-surface);
 
   /* Material's extended FAB (`fab fab-primary-container`) draws the button;
-     here it only takes its place at the top of the column. */
+     here it takes its place at the top of the column and behaves as Gmail's
+     «Redactar» (the owner's reference, 2026-10-22): flat at rest, it rises
+     onto a shadow under the pointer, and its colour never darkens — the
+     library's hover tint is switched off; the press still ripples. */
   & .platform-side-nav__action {
+    --container-elevation: none;
+
     align-self: flex-start;
     margin-left: var(--platform-space-2);
     text-decoration: none;
+
+    &:hover {
+      --container-elevation: var(--md-sys-elevation-shadow-3);
+      --ripple-hover-opacity: 0%;
+    }
   }
 
   & .platform-side-nav__group {
