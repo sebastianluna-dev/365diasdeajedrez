@@ -52,10 +52,7 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
         <PlatformSettingsToggle />
       </PlatformHeaderContext>
       <div className="platform-workspace__side">
-        <CourseSide
-          course={course}
-          chapter={{ id: chapter.id, name: chapter.name, completedLessons: chapter.completedLessons }}
-        />
+        <CourseSide course={course} chapterId={chapter.id} />
       </div>
 
       <section className="platform-workspace__panel chapter-study" aria-labelledby="chapter-study-name">

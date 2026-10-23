@@ -65,7 +65,7 @@ function chapterStates(chapters: CourseChapterItem[]): Map<string, ChapterState>
 /**
  * The course to study, in the new design system (2026-10-22, «M4» of the
  * owner's canvas): a workspace whose side column is the course's
- * (`CourseSide`: its chapters, what to learn, its options) and whose panel
+ * (`CourseSide`: «Aprender» and its chapters) and whose panel
  * holds, under a toolbar back to «Tus cursos», the course — its picture, its
  * name, who wrote it and what it is about, how far it is, «Aprender» and
  * «Repasar» — and its chapters as cards: their number and state, their

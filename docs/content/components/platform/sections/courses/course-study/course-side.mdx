@@ -1,5 +1,5 @@
 ---
-description: "The side column of a course being studied: the course, «Aprender» as the extended FAB, its chapters with their numbers and lessons, what to learn and the course's options."
+description: "The side column of a course being studied: «Aprender» as the extended FAB and its chapters with their numbers and lessons."
 ---
 
 # `CourseSide`
@@ -8,30 +8,23 @@ description: "The side column of a course being studied: the course, «Aprender�
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | File       | `components/platform/sections/courses/course-study/course-side.comp.tsx`                                                                                                                           |
 | Kind       | Server Component                                                                                                                                                                                   |
-| Stylesheet | `course-side.comp.css` → block `.course-side`                                                                                                                                                      |
+| Stylesheet | none of its own: it is a [`PlatformSideNav`](/components/platform/shared/platform-side-nav)                                                                                                        |
 | Used by    | [`CourseStudySection`](/components/platform/sections/courses/course-study/course-study-section), [`ChapterStudySection`](/components/platform/sections/courses/course-study/chapter-study-section) |
 | Composes   | [`PlatformSideNav`](/components/platform/shared/platform-side-nav)                                                                                                                                 |
 
 ## Purpose
 
-The course's own column in the new design system (2026-10-22), from top to bottom:
+The course's own column in the new design system (2026-10-22): «Aprender», the extended FAB of `PlatformSideNav`, to `learnHref` (none without lessons in view), and «Capítulos», the column's links: each chapter's name, a badge with its number (the success green with a check once it is learned) and its count, «1/3». On a chapter's page (`chapterId`) that chapter's link is lit.
 
-1. **The course**: its square picture (40px), its name and «40 % · 2 de 5 lecciones».
-2. **«Aprender»**, the extended FAB of `PlatformSideNav`, to `learnHref`; none without lessons in view.
-3. **«Capítulos»**, the column's links: each chapter's name, a badge with its number (the success green with a check once it is learned) and its count, «1/3».
-   What to learn and the course's options («Qué aprender», «Información del curso», «Eliminar mi progreso», «Quitar de mis cursos») moved on 2026-10-23 to the course's settings panel, [`CourseSettings`](/components/platform/sections/courses/course-study/course-settings), opened by the gear in the bar.
-
-On a chapter's page (`chapter`) that chapter's link is lit. Under 1024px the parts sit side by side above the panel.
+**The course itself is no longer at the top** (2026-10-23, the owner's call): its picture, name and «40 % · 2 de 5 lecciones» repeated what the page already says — the course's page in its trail, title and hero; the chapter's page in its trail. What to learn and the course's options («Qué aprender», «Información del curso», «Eliminar mi progreso», «Quitar de mis cursos») moved the same day to the course's settings panel, [`CourseSettings`](/components/platform/sections/courses/course-study/course-settings), opened by the gear in the bar.
 
 ## Props
 
-| Prop      | Type                             | Required | Meaning                                     |
-| --------- | -------------------------------- | -------- | ------------------------------------------- |
-| `course`  | `CourseDetail`                   | yes      | The course, as the page reads it.           |
-| `chapter` | `{ id, name, completedLessons }` | no       | The chapter on screen, on a chapter's page. |
+| Prop        | Type           | Required | Meaning                                                      |
+| ----------- | -------------- | -------- | ------------------------------------------------------------ |
+| `course`    | `CourseDetail` | yes      | The course, as the page reads it.                            |
+| `chapterId` | `string`       | no       | The chapter on screen, on a chapter's page: its link is lit. |
 
 ## Markup & styling
 
-Block `.course-side` (59 lines).
-
-**Elements:** `__course`, `__thumb`, `__thumb-image`, `__about`, `__name`, `__figures`
+No block of its own: it renders a [`PlatformSideNav`](/components/platform/shared/platform-side-nav), which draws itself.
