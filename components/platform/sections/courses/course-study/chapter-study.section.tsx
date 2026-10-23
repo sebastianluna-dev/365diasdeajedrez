@@ -43,7 +43,6 @@ const isLearned = (lesson: ChapterLessonItem) => lesson.statusCode === PROGRESS_
 export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionProps) {
   const { course } = chapter;
   const errorMessage = studentErrorMessage(errorCode);
-  const item = course.chapters.find((one) => one.id === chapter.id);
   return (
     <div className="platform-workspace">
       {/* The gear in the bar, which opens the course's settings at the right. */}
@@ -64,9 +63,12 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
               {course.name}
             </Link>
             <ChevronRightIcon variant="classic-solid" className="chapter-study__crumb-step" />
-            <span className="chapter-study__crumb-here" aria-current="page">
+            {/* The page's heading: the chapter, where the trail ends (its big
+                name and description above the lessons went on 2026-10-23,
+                since the trail already says it). */}
+            <h1 id="chapter-study-name" className="chapter-study__crumb-here" aria-current="page">
               Capítulo {chapter.order} · {chapter.name}
-            </span>
+            </h1>
           </nav>
 
           <nav className="chapter-study__steps" aria-label="Capítulos vecinos">
@@ -79,13 +81,6 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
         </div>
 
         {errorMessage && <PlatformNotice message={errorMessage} />}
-
-        <header className="chapter-study__head">
-          <h1 id="chapter-study-name" className="chapter-study__name">
-            {chapter.name}
-          </h1>
-          {item?.description && <p className="chapter-study__about">{item.description}</p>}
-        </header>
 
         {chapter.lessons.length === 0 ? (
           <p className="chapter-study__empty">

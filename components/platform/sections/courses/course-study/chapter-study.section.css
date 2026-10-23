@@ -76,7 +76,10 @@
     color: var(--platform-m3-outline);
   }
 
+  /* The page's heading, at the end of the trail: the trail's own size. */
   & .chapter-study__crumb-here {
+    margin: 0;
+    font-size: inherit;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -97,20 +100,6 @@
     pointer-events: none;
   }
 
-  & .chapter-study__head {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-1);
-  }
-
-  & .chapter-study__name {
-    margin: 0;
-    font-family: var(--platform-font-display);
-    font-size: var(--platform-type-2xl);
-    font-weight: 500;
-  }
-
-  & .chapter-study__about,
   & .chapter-study__empty {
     margin: 0;
     color: var(--platform-m3-on-surface-variant);
