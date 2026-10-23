@@ -56,6 +56,12 @@ interface GameListProps {
    * and the grip showing under the pointer. Without it, the platform's own look.
    */
   look?: "material";
+  /**
+   * What a row is called where it is read out — the grip and the reorder's
+   * announcements: «partida» by default, «capítulo» in a study, whose games
+   * are its chapters (2026-10-23).
+   */
+  noun?: "partida" | "capítulo";
 }
 
 /** The game as its settings take it: a side is always said there. */
@@ -99,6 +105,7 @@ interface RowProps {
   isCurrent: boolean;
   settings?: GameSettingsActions;
   look?: "material";
+  noun: "partida" | "capítulo";
 }
 
 /** The row's class: the current game's row is the card that says so, grip included. */
@@ -113,7 +120,7 @@ function rowClassName(isCurrent: boolean, isDragging = false): string {
 }
 
 /** A game that can be moved: dnd-kit gives it its place and the grip, inside the row's card, picks it up. */
-function SortableRow({ game, isCurrent, settings, look }: RowProps) {
+function SortableRow({ game, isCurrent, settings, look, noun }: RowProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: game.id,
     data: { name: game.name },
@@ -130,7 +137,7 @@ function SortableRow({ game, isCurrent, settings, look }: RowProps) {
       <button
         type="button"
         className="game-list__grip"
-        aria-label={`Mover la partida «${game.name}»`}
+        aria-label={`Mover ${noun === "capítulo" ? "el capítulo" : "la partida"} «${game.name}»`}
         {...attributes}
         {...listeners}
       >
@@ -150,10 +157,11 @@ interface SortableRowsProps {
   listRef: RefObject<HTMLUListElement | null>;
   className: string;
   look?: "material";
+  noun: "partida" | "capítulo";
 }
 
 /** The list whoever may reorder sees: the order applied at once and saved in a transition. */
-function SortableRows({ games, currentId, onReorder, settings, listRef, className, look }: SortableRowsProps) {
+function SortableRows({ games, currentId, onReorder, settings, listRef, className, look, noun }: SortableRowsProps) {
   const { rows, moveById } = useSortableRows({
     items: games,
     // Every game of a study or a collection is moved: none has a fixed place.
@@ -162,10 +170,17 @@ function SortableRows({ games, currentId, onReorder, settings, listRef, classNam
   });
 
   return (
-    <SortableDnd items={rows.map((game) => ({ id: game.id, name: game.name }))} noun="partida" onMove={moveById}>
+    <SortableDnd items={rows.map((game) => ({ id: game.id, name: game.name }))} noun={noun} onMove={moveById}>
       <ul className={className} ref={listRef}>
         {rows.map((game) => (
-          <SortableRow key={game.id} game={game} isCurrent={game.id === currentId} settings={settings} look={look} />
+          <SortableRow
+            key={game.id}
+            game={game}
+            isCurrent={game.id === currentId}
+            settings={settings}
+            look={look}
+            noun={noun}
+          />
         ))}
       </ul>
     </SortableDnd>
@@ -193,7 +208,7 @@ function SortableRows({ games, currentId, onReorder, settings, listRef, classNam
  * Component for that order and for the scroll: the aside around it stays on
  * the server.
  */
-export function GameList({ games, currentId, onReorder, settings, look }: GameListProps) {
+export function GameList({ games, currentId, onReorder, settings, look, noun = "partida" }: GameListProps) {
   const listRef = useRef<HTMLUListElement>(null);
   const className = `game-list${look === "material" ? " game-list_look_material" : ""}`;
 
@@ -217,6 +232,7 @@ export function GameList({ games, currentId, onReorder, settings, look }: GameLi
         listRef={listRef}
         className={className}
         look={look}
+        noun={noun}
       />
     );
   }

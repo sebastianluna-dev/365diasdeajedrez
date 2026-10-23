@@ -1,5 +1,5 @@
 ---
-description: "The study's side column in the new design system, a Server Component mounted by the layout of the game pages so that it holds still from one game to the next: «Nueva partida» as the extended FAB at the top, the study's name heading its games with the sliders that open its form, its games as a numbered index of one line each with the open game and «Configurar» at its foot, and a collection's sharing card."
+description: "The study's side column in the new design system, a Server Component mounted by the layout of the game pages so that it holds still from one game to the next: «Nuevo capítulo» as the extended FAB at the top, the study's name heading its games with the sliders that open its form, its games as a numbered index of one line each with the open game and «Configurar» at its foot, and a collection's sharing card."
 ---
 
 # `StudyAside`
@@ -17,9 +17,9 @@ description: "The study's side column in the new design system, a Server Compone
 
 A study has no page of its own — its URL redirects to a game — so this column is where the study lives. Since 2026-10-23 it is the side column of the new design system's workspace («M4» of the owner's canvas, `MaterialM4Estudio`), on the canvas, with `PlatformSideNav`'s rhythm:
 
-1. **«Nueva partida»**, Material's extended FAB ([`NewGame`](/components/platform/sections/studies/study-detail/new-game)), for whoever may write, at the very top (2026-10-23, the owner's choice «B» of three drawn on the canvas, `MaterialM4EstudioLateralB`).
-2. **The study, heading its games** where «Partidas» used to be: its name in the display font, and under it where it comes from or its kind and how many games, «Torneo · 9 partidas» (the chip went the same day); for its owner, at the right, the sliders that open its form ([`StudySettings`](/components/platform/sections/studies/game-view/study-settings); «Eliminar estudio» is at the form's foot).
-3. **The games, a numbered index** ([`StudyGames`](/components/platform/sections/studies/game-view/study-games) over [`GameList`](/components/platform/shared/game-list) with `look="material"`): one line each — its number in the study, its name, its result —, the one on the board lit in the secondary container, the grip showing under the pointer for the owner. **No gear on the rows**: a game is configured once it is open, from the card at the foot of the list, «Partida abierta», with its name and result and «Configurar», which opens «Ajustes de la partida» at the right ([`StudyGameSettings`](/components/platform/sections/studies/game-view/study-game-settings), mounted by the layout beside the panel).
+1. **«Nuevo capítulo»**, Material's extended FAB ([`NewGame`](/components/platform/sections/studies/study-detail/new-game)), for whoever may write, at the very top (2026-10-23, the owner's choice «B» of three drawn on the canvas, `MaterialM4EstudioLateralB`).
+2. **The study, heading its games** where «Partidas» used to be: its name in the display font, and under it where it comes from or its kind and how many chapters, «Torneo · 9 capítulos» (the chip went the same day); for its owner, at the right, the sliders that open its form ([`StudySettings`](/components/platform/sections/studies/game-view/study-settings); «Eliminar estudio» is at the form's foot).
+3. **The games, a numbered index** ([`StudyGames`](/components/platform/sections/studies/game-view/study-games) over [`GameList`](/components/platform/shared/game-list) with `look="material"`): one line each — its number in the study, its name, its result —, the one on the board lit in the secondary container, the grip showing under the pointer for the owner. **No gear on the rows**: the chapter on the board is configured from the gear in the bar, which opens «Ajustes del capítulo» at the right ([`StudyGameSettings`](/components/platform/sections/studies/game-view/study-game-settings), mounted by the layout beside the panel), as a course's. A study's games are its **chapters** (2026-10-23, the owner's nomenclature): the column, its counts and its actions say «capítulo»; «partida» is said only of the game's own data («Datos de la partida»).
 4. For a collection's owner, **who it is shared with** (`StudentSharePanel`, compact), on a panel of its own at the foot. The canvas has a share button in the panel's toolbar instead; the sharing card stays here, where it was, so nothing about it changes.
 
 It receives **data**, never components, and decides for itself what to show with the same permission table the server actions apply (`services/studies/study-rules`): the layout only loads and hands over.
@@ -31,7 +31,7 @@ It receives **data**, never components, and decides for itself what to show with
 | Prop         | Type                | Required | Meaning                                                                       |
 | ------------ | ------------------- | -------- | ----------------------------------------------------------------------------- |
 | `study`      | `StudyDetail`       | yes      | The study with **every** game (`getStudyWithGames`), `permissions`, `shares`. |
-| `results`    | `StudyKindOption[]` | yes      | The results catalog, for "Nueva partida". Empty when nobody here can write.   |
+| `results`    | `StudyKindOption[]` | yes      | The results catalog, for «Nuevo capítulo». Empty when nobody here can write.  |
 | `classGames` | `ClassGameItem[]`   | yes      | Games seen in class that can be copied; empty hides that tab of `NewGame`.    |
 | `kinds`      | `StudyKindOption[]` | yes      | Kinds the study can change to; empty when it is not the viewer's.             |
 | `students`   | `StudentOption[]`   | yes      | Students to hand a collection to; empty unless the viewer owns a collection.  |

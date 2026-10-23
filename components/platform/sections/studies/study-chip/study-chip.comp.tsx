@@ -42,12 +42,12 @@ export function studyChipOf(study: Pick<StudySummary, "kindCode" | "kindLabel" |
   return { ...look, label: study.origin?.label ?? study.kindLabel };
 }
 
-/** «9 partidas». */
-export const gameCountLabel = (count: number) => `${count} ${count === 1 ? "partida" : "partidas"}`;
+/** «9 capítulos»: a study's games are its chapters (2026-10-23). */
+export const chapterCountLabel = (count: number) => `${count} ${count === 1 ? "capítulo" : "capítulos"}`;
 
 interface StudyChipProps {
   study: Pick<StudySummary, "kindCode" | "kindLabel" | "origin">;
-  /** Said after the kind, in the same chip: «Torneo · 9 partidas». */
+  /** Said after the kind, in the same chip: «Torneo · 9 capítulos». */
   suffix?: string;
 }
 

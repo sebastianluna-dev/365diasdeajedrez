@@ -15,7 +15,7 @@ description: "The study without games, in the new design system: the game pages'
 
 ## Purpose
 
-A study is read on its game page: `/estudios/[studyId]` redirects to the game it was left on, or its first. This section only ever renders when there is no game to go to. Since 2026-10-23 it is the game pages' workspace with nothing on the board: the same side column ([`StudyAside`](/components/platform/sections/studies/game-view/study-aside): «Nueva partida» as the FAB, the study's name and kind, the sliders that open its form — where it is edited and, but «Mis partidas», deleted —, and for a collection's owner who it is shared with), no search in the bar (2026-10-23), and in the panel the empty state (the toolbar above it went on 2026-10-23). Until then it was a page of its own with a head, its tags and a row of buttons («Eliminar estudio», «Editar», «Nueva partida»): each of those is now in the column, once.
+A study is read on its game page: `/estudios/[studyId]` redirects to the game it was left on, or its first. This section only ever renders when there is no game to go to. Since 2026-10-23 it is the game pages' workspace with nothing on the board: the same side column ([`StudyAside`](/components/platform/sections/studies/game-view/study-aside): «Nuevo capítulo» as the FAB, the study's name and kind, the sliders that open its form — where it is edited and, but «Mis partidas», deleted —, and for a collection's owner who it is shared with), no search in the bar (2026-10-23), and in the panel the empty state (the toolbar above it went on 2026-10-23). Until then it was a page of its own with a head, its tags and a row of buttons («Eliminar estudio», «Editar», «Nuevo capítulo»): each of those is now in the column, once.
 
 ## Props
 
@@ -31,7 +31,7 @@ A study is read on its game page: `/estudios/[studyId]` redirects to the game it
 ## Behaviour
 
 - What is offered is the column's, which asks `services/studies/study-rules`, the same table the server actions apply.
-- The empty state has different copy for writable («Agrega una con «Nueva partida».») and read-only studies.
+- The empty state has different copy for writable («Agrega uno con «Nuevo capítulo».») and read-only studies.
 - Errors render through [`PlatformNotice`](/components/platform/shared/platform-notice) with a fallback message for unknown codes.
 
 ## Markup & styling

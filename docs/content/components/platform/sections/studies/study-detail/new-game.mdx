@@ -1,5 +1,5 @@
 ---
-description: "The 'Nueva partida' popup with four ways in: paste a PGN, start from a FEN, create a blank game with its data, or copy games seen in class; each tab posts its own action."
+description: "The «Nuevo capítulo» popup with four ways in: paste a PGN, start from a FEN, create a blank game with its data, or copy games seen in class; each tab posts its own action."
 ---
 
 # `NewGame`
@@ -37,7 +37,7 @@ Adding a game to a study, from wherever the student has it. Four tabs, each a fo
 ## Behaviour
 
 - **The three tabs that write are `PlatformForm`s** (2026-10-05; they were hand-made `<label>`s): a field the browser rejects shows its own message — «Pega el PGN de la partida.», «Pega el FEN de la posición.» — and the popup stays open, and an optional field says «Opcional» by itself. The PGN's textarea got a label, «PGN», which it lacked. The PGN and the FEN carry their explanation as the field's `hint`. The blank tab's fields sit in `OptionalFields`, which replaced the hint «Puedes dejarlo casi vacío y jugar las jugadas después en el editor.». The result and the date are a `PlatformSelect` and a `PlatformDatePicker` inside `PlatformFormField`s, which give them their `name`.
-- **On the shell** (2026-10-06): a [`PlatformPopup`](/components/platform/shared/platform-popup) named «Nueva partida» (size `md`, 600px), which gave it the cross it lacked; «Se agregará a «…».» is the content's first paragraph, under the strip. The trigger opens it with the click, so the focus comes back to it on closing, and the popup focuses the first tab. `tab` and the `picked` ids are local state, both reset in `onClose`, so the next opening starts on «Pegar PGN» with nothing ticked (until then only the ticks were reset, and the popup reopened on the last tab).
+- **On the shell** (2026-10-06): a [`PlatformPopup`](/components/platform/shared/platform-popup) named «Nuevo capítulo» (size `md`, 600px), which gave it the cross it lacked; «Se agregará a «…».» is the content's first paragraph, under the strip. The trigger opens it with the click, so the focus comes back to it on closing, and the popup focuses the first tab. `tab` and the `picked` ids are local state, both reset in `onClose`, so the next opening starts on «Pegar PGN» with nothing ticked (until then only the ticks were reset, and the popup reopened on the last tab).
 - A badly written FEN bounces to the study's URL with `?error=fen` (`createStudyGame` always goes back to `studyDetail`), which forwards it to the first game or renders the empty study; the message shows over the board.
 - The class tab is not a form: the footer button is `type="button"` and calls the action inside a transition with the picked ids, then closes.
 - The internal `Footer` renders the note, cancel and the confirm button: a `SubmitButton` that says «Agregando…» while the form is on its way; with `onConfirm` it is a plain button instead, so it does not submit an enclosing form.

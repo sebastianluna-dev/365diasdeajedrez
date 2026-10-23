@@ -55,15 +55,15 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
 
   const description =
     gameCount > 0
-      ? `Se elimina el estudio con sus ${gameCount} ${gameCount === 1 ? "partida" : "partidas"}, y con ellas sus variantes, comentarios y flechas.`
-      : "Se elimina el estudio. No tiene partidas dentro.";
+      ? `Se elimina el estudio con sus ${gameCount} ${gameCount === 1 ? "capítulo" : "capítulos"}, y con ellos sus variantes, comentarios y flechas.`
+      : "Se elimina el estudio. No tiene capítulos dentro.";
 
   const warning =
     citedGameCount > 0
       ? `Entiendo que se eliminará todo, y que ${citedGameCount} ${
           citedGameCount === 1
-            ? "partida citada en clases dejará ese bloque vacío"
-            : "partidas citadas en clases dejarán esos bloques vacíos"
+            ? "capítulo citado en clases dejará ese bloque vacío"
+            : "capítulos citados en clases dejarán esos bloques vacíos"
         }.`
       : "Entiendo que se eliminará todo y que no se puede deshacer.";
 

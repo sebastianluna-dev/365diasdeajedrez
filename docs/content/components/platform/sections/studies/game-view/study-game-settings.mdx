@@ -1,5 +1,5 @@
 ---
-description: "«Ajustes de la partida»: a study's game settings at the right of the workspace, as «Ajustes del curso» — which side the board opens from and how a reader goes through it, saved at once, and what clears the game, each behind its confirmation."
+description: "«Ajustes del capítulo»: a study's game settings at the right of the workspace, as «Ajustes del curso» — which side the board opens from and how a reader goes through it, saved at once, and what clears the game, each behind its confirmation."
 ---
 
 # `StudyGameSettings`
@@ -10,17 +10,17 @@ description: "«Ajustes de la partida»: a study's game settings at the right of
 | Kind     | Client Component                                                                                                                                                                                                                                                                            |
 | Used by  | The layout of `/estudios/[studyId]/partidas/[gameId]` (`app/(platform)/estudios/[studyId]/partidas/layout.tsx`), as the workspace's third column, for whoever may edit the games                                                                                                            |
 | Composes | [`PlatformSettingsPanel`](/components/platform/shared/platform-settings-panel) and `PlatformSettingsGroup`, [`StudyGameSettingsArt`](/components/platform/sections/studies/game-view/study-game-settings-art), [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup) |
-| Uses     | `useParams` from `next/navigation`; `GAME_DESTRUCTIVE_CONFIRMATIONS`, `CLASS_BLOCKS_ACKNOWLEDGEMENT` from [`GameSettings`](/components/platform/shared/game-settings)                                                                                                                       |
+| Uses     | `useParams` from `next/navigation`; `GAME_DESTRUCTIVE_CONFIRMATIONS` (the annotations' and variations' words) from [`GameSettings`](/components/platform/shared/game-settings)                                                                                                              |
 
 ## Purpose
 
-A study's game is configured at the right of the workspace, as a course is (2026-10-23, the owner's design `MaterialM4EstudioAjustes` on the canvas, its drawings the owner's choice «C + B, Azul del tablero»). It took the place of the popup each row's gear opened ([`GameSettings`](/components/platform/shared/game-settings), which the staff's chapter collections keep). It is opened and closed by «Configurar» on the open game's card under the list ([`StudyGames`](/components/platform/sections/studies/game-view/study-games)), and by its own ✕.
+A study's chapter is configured at the right of the workspace, as a course is (2026-10-23, the owner's design `MaterialM4EstudioAjustes` on the canvas, its drawings the owner's choice «C + B, Azul del tablero»). It took the place of the popup each row's gear opened ([`GameSettings`](/components/platform/shared/game-settings), which the staff's chapter collections keep). It is opened and closed by the gear in the bar ([`PlatformSettingsToggle`](/components/platform/shared/platform-settings-toggle), which the layout puts there through `PlatformHeaderContext`), as a course's, and by its own ✕. A study's games are its **chapters** (2026-10-23, the owner's nomenclature): the column, its counts and its actions say «capítulo»; «partida» is said only of the game's own data («Datos de la partida»).
 
 Three groups:
 
 1. **«El tablero, desde»**: «Las blancas» or «Las negras».
-2. **«Quien la lee»**: «Análisis normal» or «Ocultar los siguientes movimientos».
-3. **«Limpiar la partida»**: «Eliminar las anotaciones», «Eliminar las variantes» and «Eliminar la partida» (the danger tone).
+2. **«Quien lo lee»**: «Análisis normal» or «Ocultar los siguientes movimientos».
+3. **«Limpiar el capítulo»**: «Eliminar las anotaciones», «Eliminar las variantes» and «Eliminar el capítulo» (the danger tone, its own confirmation: «¿Eliminar el capítulo?»).
 
 The name is not here: it is the game's record's, «Datos de la partida» ([`EditGame`](/components/platform/shared/edit-game)). Nor is the pinned comment, which the owner does not use: it is no longer edited on a study's game.
 
@@ -35,7 +35,7 @@ The name is not here: it is the game's record's, «Datos de la partida» ([`Edit
 
 - **It is the layout's**, as the study's column is: it holds still from game to game and reads the game on the board from the address (`useParams`). With no game on the board (an empty study) it draws nothing.
 - **Each choice saves at once**: a `<form>` whose button is the whole row — the ring, the words and the drawing —, as «Qué aprender» does in the course's settings. `setGameView` writes that one setting and nothing else; the page is rendered again, and the board turns (the viewer derives its side from `orientation` on every render).
-- **Each clean-up asks first**, in one `PlatformConfirmPopup` mounted as a sibling and opened over the panel with the words of the row pressed; a game some class shows asks for the box that says its block will be left empty (`confirmClassBlocks`). After clearing annotations or variations the page is loaded again, since the server rewrote the PGN the page holds; deleting sends the browser on.
+- **Each clean-up asks first**, in one `PlatformConfirmPopup` mounted as a sibling and opened over the panel with the words of the row pressed; a chapter some class shows asks for the box that says its block will be left empty (`confirmClassBlocks`). After clearing annotations or variations the page is loaded again, since the server rewrote the PGN the page holds; deleting sends the browser on.
 
 ## Markup & styling
 
@@ -43,5 +43,5 @@ No stylesheet of its own: the rows are the panel's (`.platform-settings__option`
 
 ## Related
 
-- [`StudyGames`](/components/platform/sections/studies/game-view/study-games), whose «Configurar» opens it.
+- [`PlatformSettingsToggle`](/components/platform/shared/platform-settings-toggle), the gear that opens it.
 - [`CourseSettings`](/components/platform/sections/courses/course-study/course-settings), the course's own.

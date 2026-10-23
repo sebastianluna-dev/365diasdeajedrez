@@ -3,12 +3,6 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { GameList, type GameListItem } from "@/components/platform/shared/game-list/game-list.comp";
-import { GearIcon } from "@/components/icons/gear-icon.comp";
-import {
-  SETTINGS_PANEL_ID,
-  setSettingsOpen,
-  useSettingsOpen,
-} from "@/components/platform/shared/platform-settings-panel/settings-panel-state";
 import { mdButton } from "@/lib/material/material-classes";
 import { gamesOfPage, pageCountOf, pageOfGame } from "./study-games-page";
 import "./study-games.comp.css";
@@ -20,12 +14,6 @@ interface StudyGamesProps {
   pageSize: number;
   /** Saves a new order; only for a study that fits on one page (see `StudyAside`). */
   onReorder?: (orderedIds: string[]) => Promise<void>;
-  /**
-   * Whether the viewer may configure the games: the card of the open game
-   * then has «Configurar», which opens «Ajustes de la partida» at the right
-   * (`StudyGameSettings`, the layout's). The rows carry no gear.
-   */
-  configurable?: boolean;
 }
 
 /**
@@ -37,14 +25,8 @@ interface StudyGamesProps {
  * For the same reason the list carries every game and its pages are turned
  * here, with no trip to the server. It opens on the page the current game
  * falls on, and goes back to it when one moves to another game.
- *
- * Under it, the game on the board: «Partida abierta», its name and result,
- * and «Configurar» for whoever may (2026-10-23, the owner's choice «B»),
- * which opens and closes «Ajustes de la partida» at the right, lit while it
- * is open. A game is configured only once it is open, so the rows stay one
- * line each.
  */
-export function StudyGames({ games, pageSize, onReorder, configurable = false }: StudyGamesProps) {
+export function StudyGames({ games, pageSize, onReorder }: StudyGamesProps) {
   const { gameId = "" } = useParams<{ gameId?: string }>();
   const pageCount = pageCountOf(games.length, pageSize);
   const ownPage = pageOfGame(games, gameId, pageSize);
@@ -53,8 +35,6 @@ export function StudyGames({ games, pageSize, onReorder, configurable = false }:
   const [turned, setTurned] = useState({ gameId, page: ownPage });
   const page = turned.gameId === gameId ? Math.min(turned.page, pageCount) : ownPage;
   const turnTo = (target: number) => setTurned({ gameId, page: target });
-  const open = games.find((game) => game.id === gameId);
-  const settingsOpen = useSettingsOpen();
 
   return (
     <div className="study-games">
@@ -66,10 +46,12 @@ export function StudyGames({ games, pageSize, onReorder, configurable = false }:
         onReorder={onReorder}
         // The study's side column, in the new design system (2026-10-23).
         look="material"
+        // A study's games are its chapters.
+        noun="capítulo"
       />
 
       {pageCount > 1 && (
-        <nav className="study-games__pages" aria-label="Páginas de partidas">
+        <nav className="study-games__pages" aria-label="Páginas de capítulos">
           <button
             type="button"
             className={mdButton("text", "xs")}
@@ -90,30 +72,6 @@ export function StudyGames({ games, pageSize, onReorder, configurable = false }:
             Siguientes →
           </button>
         </nav>
-      )}
-
-      {open && (
-        <section className="study-games__open" aria-label="Partida abierta">
-          <p className="study-games__open-text">
-            <span className="study-games__open-label">Partida abierta</span>
-            <span className="study-games__open-name" title={open.name}>
-              {open.name}
-              {open.resultLabel !== "*" && ` · ${open.resultLabel}`}
-            </span>
-          </p>
-          {configurable && (
-            <button
-              type="button"
-              className={`${mdButton(settingsOpen ? "filled" : "tonal", "sm")} study-games__configure`}
-              aria-pressed={settingsOpen}
-              aria-controls={SETTINGS_PANEL_ID}
-              onClick={() => setSettingsOpen(!settingsOpen)}
-            >
-              <GearIcon variant="classic-solid" className="platform-md-icon" />
-              Configurar
-            </button>
-          )}
-        </section>
       )}
     </div>
   );

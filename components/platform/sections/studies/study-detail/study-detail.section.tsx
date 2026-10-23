@@ -24,7 +24,7 @@ interface StudyDetailSectionProps {
  * section only ever renders when there is no game to go to. It is the game
  * pages' workspace with nothing on the board: the study's side column
  * (`StudyAside`: its name and kind, the sliders that open its form — where
- * it is edited and deleted —, «Nueva partida» as the FAB and, for a
+ * it is edited and deleted —, «Nuevo capítulo» as the FAB and, for a
  * collection's owner, who it is shared with), and in the panel the trail
  * and the empty state.
  */
@@ -48,9 +48,11 @@ export function StudyDetailSection({
         {errorCode && <PlatformNotice message={STUDY_ERROR_MESSAGES[errorCode] ?? "No se pudo completar la acción."} />}
 
         <EmptyState
-          title="Sin partidas todavía"
+          title="Sin capítulos todavía"
           description={
-            canWrite ? "Este estudio no tiene partidas. Agrega una con «Nueva partida»." : "Todavía no tiene partidas."
+            canWrite
+              ? "Este estudio no tiene capítulos. Agrega uno con «Nuevo capítulo»."
+              : "Todavía no tiene capítulos."
           }
         />
       </section>

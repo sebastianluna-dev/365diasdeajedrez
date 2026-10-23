@@ -16,6 +16,8 @@ import {
   getStudyWithGames,
 } from "@/services/studies/studies.service";
 import { canShareStudy } from "@/services/studies/study-rules";
+import { PlatformSettingsToggle } from "@/components/platform/shared/platform-settings-toggle/platform-settings-toggle.comp";
+import { PlatformHeaderContext } from "@/components/platform/sections/shell/platform-header-context.comp";
 import "./game-page.css";
 
 interface StudyGamesLayoutProps {
@@ -26,7 +28,7 @@ interface StudyGamesLayoutProps {
 /**
  * What every game page of a study shares, in the new design system
  * (2026-10-23, «M4» of the owner's canvas): the workspace, the bar's search,
- * the study's side column — its name, «Nueva partida», its games to jump
+ * the study's side column — its name, «Nuevo capítulo», its chapters to jump
  * between. It is a layout so that going from one game to
  * another leaves all of that as it is: Next renders the page again, not
  * this, and the list keeps its scroll and does not blink. The page under it
@@ -61,6 +63,11 @@ export default async function StudyGamesLayout({ children, params }: StudyGamesL
   return (
     <div className="platform-page platform-page_width_full platform-page_frame_bleed game-page">
       <div className="platform-workspace">
+        {canWrite && (
+          <PlatformHeaderContext>
+            <PlatformSettingsToggle />
+          </PlatformHeaderContext>
+        )}
         <div className="platform-workspace__side">
           <StudyAside study={study} results={results} classGames={classGames} kinds={kinds} students={students} />
         </div>
@@ -70,8 +77,8 @@ export default async function StudyGamesLayout({ children, params }: StudyGamesL
           {children}
         </section>
 
-        {/* «Ajustes de la partida», at the right, for whoever may edit the games:
-            opened by «Configurar» on the open game's card. */}
+        {/* «Ajustes del capítulo», at the right, for whoever may edit the
+            chapters: opened by the gear in the bar, as a course's. */}
         {canWrite && (
           <StudyGameSettings
             games={study.games.map(studyGameListItem)}

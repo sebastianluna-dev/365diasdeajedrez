@@ -10,7 +10,7 @@ import type {
   StudyKindOption,
 } from "@/services/studies/studies.types";
 import { canReorderStudyGames, canShareStudy, STUDY_GAMES_PAGE_SIZE } from "@/services/studies/study-rules";
-import { gameCountLabel } from "../study-chip/study-chip.comp";
+import { chapterCountLabel } from "../study-chip/study-chip.comp";
 import { StudyGames } from "./study-games.comp";
 import { StudySettings } from "./study-settings.comp";
 import "./study-aside.comp.css";
@@ -18,9 +18,9 @@ import "./study-aside.comp.css";
 interface StudyAsideProps {
   /** The study, with every one of its games. */
   study: StudyDetail;
-  /** Results from the catalog, for "Nueva partida". Empty when nobody here can write. */
+  /** Results from the catalog, for «Nuevo capítulo». Empty when nobody here can write. */
   results: StudyKindOption[];
-  /** Games seen in class that can be copied. Empty = that tab of "Nueva partida" does not appear. */
+  /** Games seen in class that can be copied. Empty = that tab of «Nuevo capítulo» does not appear. */
   classGames: ClassGameItem[];
   /** Kinds the study can change to. Empty when it is not the viewer's. */
   kinds: StudyKindOption[];
@@ -52,17 +52,17 @@ export function studyGameListItem(game: StudyGameItem, index: number): GameListI
 /** Under the study's name: where it comes from or its kind, and how many games. */
 function metaOf(study: StudyDetail): string {
   const source = study.courseName ?? study.sharedByName ?? study.kindLabel;
-  return `${source} · ${gameCountLabel(study.gameCount)}`;
+  return `${source} · ${chapterCountLabel(study.gameCount)}`;
 }
 
 /**
  * The study's side column, in the new design system (2026-10-23, «M4» of
- * the owner's canvas, then its choice «B» the same day): «Nueva partida» as
+ * the owner's canvas, then its choice «B» the same day): «Nuevo capítulo» as
  * the extended FAB at the top; the study's name heading its games, with
- * where it comes from or its kind and how many games under it, and the
+ * where it comes from or its kind and how many chapters under it, and the
  * sliders that open its form for its owner; its games as a numbered index,
- * one line each, and the game on the board at its foot with «Configurar»,
- * which opens «Ajustes de la partida» (`StudyGameSettings`, the layout's);
+ * one line each — a study's games are its chapters (2026-10-23), configured
+ * from the gear in the bar (`StudyGameSettings`, the layout's);
  * and, for a collection's owner, who it is shared with. A study has no page of its own — its URL
  * redirects to a game — so this is where it lives.
  *
@@ -99,7 +99,6 @@ export function StudyAside({ study, results, classGames, kinds, students }: Stud
           games={study.games.map(studyGameListItem)}
           pageSize={STUDY_GAMES_PAGE_SIZE}
           onReorder={canReorder ? reorderStudyGames.bind(null, study.id) : undefined}
-          configurable={canWrite}
         />
       )}
 

@@ -7,7 +7,6 @@ import { CodeBranchIcon } from "@/components/icons/code-branch-icon.comp";
 import { CommentXmarkIcon } from "@/components/icons/comment-xmark-icon.comp";
 import { TrashCanIcon } from "@/components/icons/trash-can-icon.comp";
 import {
-  CLASS_BLOCKS_ACKNOWLEDGEMENT,
   GAME_DESTRUCTIVE_CONFIRMATIONS,
   type GameDestructiveStep,
 } from "@/components/platform/shared/game-settings/game-settings.comp";
@@ -24,7 +23,25 @@ import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
 import { GAME_ANALYSIS_MODE, type GameAnalysisModeCode } from "@/constants/platform/study-codes.const";
 import { StudyGameSettingsArt, type StudyGameSettingsArtKind } from "./study-game-settings-art.comp";
 
-/** What «Ajustes de la partida» can do, each a server action already bound to the study. */
+/**
+ * What each clean-up asks before it is done, in the study's words: its games
+ * are its chapters. The annotations' and the variations' are the game
+ * settings' own.
+ */
+const CONFIRMATIONS: Record<GameDestructiveStep, { question: string; detail: string; submit: string }> = {
+  ...GAME_DESTRUCTIVE_CONFIRMATIONS,
+  game: {
+    question: "¿Eliminar el capítulo?",
+    detail: "Se elimina el capítulo entero, con su partida, sus variantes, comentarios y flechas.",
+    submit: "Eliminar capítulo",
+  },
+};
+
+/** What deleting a chapter a class shows takes with it, to be agreed to before the button works. */
+const CLASS_BLOCKS_ACKNOWLEDGEMENT =
+  "Este capítulo se usa en el contenido de alguna clase. Entiendo que esos bloques se quedarán vacíos.";
+
+/** What «Ajustes del capítulo» can do, each a server action already bound to the study. */
 export interface StudyGameSettingsActions {
   /** Saves one setting the moment it is chosen: the board's side, or the reading mode (`null`, the plain analysis). */
   setView: (
@@ -77,7 +94,7 @@ function Choice({ label, hint, art, isOn, onChoose }: ChoiceProps) {
   );
 }
 
-/** What each step of «Limpiar la partida» says on its row, and the icon at its lead. */
+/** What each step of «Limpiar el capítulo» says on its row, and the icon at its lead. */
 const CLEAN_STEPS: { step: GameDestructiveStep; label: string; hint: string; Icon: typeof TrashCanIcon }[] = [
   {
     step: "annotations",
@@ -86,24 +103,30 @@ const CLEAN_STEPS: { step: GameDestructiveStep; label: string; hint: string; Ico
     Icon: CommentXmarkIcon,
   },
   { step: "variations", label: "Eliminar las variantes", hint: "Queda sólo la línea principal", Icon: CodeBranchIcon },
-  { step: "game", label: "Eliminar la partida", hint: "Con sus variantes y comentarios", Icon: TrashCanIcon },
+  {
+    step: "game",
+    label: "Eliminar el capítulo",
+    hint: "Con su partida, sus variantes y comentarios",
+    Icon: TrashCanIcon,
+  },
 ];
 
 /**
- * «Ajustes de la partida» (2026-10-23, the owner's design on the canvas,
- * `MaterialM4EstudioAjustes`): a study's game settings at the right of the
- * workspace, as «Ajustes del curso», opened by «Configurar» on the open
- * game's card (`StudyGames`). It took the place of the popup the rows' gears
- * opened. Which side the board opens from and how a reader goes through it,
- * each saved the moment it is chosen; and what clears the game — its
- * annotations, its variations, the game itself —, each behind its
- * confirmation, since none can be undone. The name is not here: it is the
- * game's record's («Datos de la partida»); nor the pinned comment, which the
- * owner does not use.
+ * «Ajustes del capítulo» (2026-10-23, the owner's design on the canvas,
+ * `MaterialM4EstudioAjustes`): the settings of the study's chapter on the
+ * board — a study's games are its chapters — at the right of the workspace,
+ * as «Ajustes del curso», opened by the gear in the bar
+ * (`PlatformSettingsToggle`, which the layout puts there). It took the place
+ * of the popup the rows' gears opened. Which side the board opens from and
+ * how a reader goes through it, each saved the moment it is chosen; and what
+ * clears the chapter — its annotations, its variations, the chapter itself —,
+ * each behind its confirmation, since none can be undone. «Partida» is said
+ * only of the game's own data, «Datos de la partida», where its name is
+ * edited; the pinned comment, which the owner does not use, is not here.
  *
- * It belongs to the layout, as the study's column does, so it reads the game
- * on the board from the address; without one (an empty study) there is no
- * panel.
+ * It belongs to the layout, as the study's column does, so it reads the
+ * chapter on the board from the address; without one (an empty study) there
+ * is no panel.
  */
 export function StudyGameSettings({ games, actions }: StudyGameSettingsProps) {
   const { gameId = "" } = useParams<{ gameId?: string }>();
@@ -119,7 +142,7 @@ export function StudyGameSettings({ games, actions }: StudyGameSettingsProps) {
   // The same condition as the server: only a game some class shows needs the
   // box ticked. Sent without it, the action would bounce instead of deleting.
   const needsClassConfirmation = pending === "game" && game.citedInClass === true;
-  const confirmation = GAME_DESTRUCTIVE_CONFIRMATIONS[pending];
+  const confirmation = CONFIRMATIONS[pending];
 
   /** The words first, then the popup: it is named by them, and read as it opens. */
   const ask = (step: GameDestructiveStep) => {
@@ -145,7 +168,7 @@ export function StudyGameSettings({ games, actions }: StudyGameSettingsProps) {
 
   return (
     <>
-      <PlatformSettingsPanel title="Ajustes de la partida">
+      <PlatformSettingsPanel title="Ajustes del capítulo">
         <PlatformSettingsGroup title="El tablero, desde">
           <Choice
             label="Las blancas"
@@ -163,7 +186,7 @@ export function StudyGameSettings({ games, actions }: StudyGameSettingsProps) {
           />
         </PlatformSettingsGroup>
 
-        <PlatformSettingsGroup title="Quien la lee">
+        <PlatformSettingsGroup title="Quien lo lee">
           <Choice
             label="Análisis normal"
             hint="Ve todas las jugadas"
@@ -180,7 +203,7 @@ export function StudyGameSettings({ games, actions }: StudyGameSettingsProps) {
           />
         </PlatformSettingsGroup>
 
-        <PlatformSettingsGroup title="Limpiar la partida">
+        <PlatformSettingsGroup title="Limpiar el capítulo">
           {CLEAN_STEPS.map(({ step, label, hint, Icon }) => (
             <button
               key={step}

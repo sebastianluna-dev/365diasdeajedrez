@@ -11,37 +11,4 @@
     font-size: var(--platform-type-2xs);
     color: var(--platform-m3-on-surface-variant);
   }
-
-  /* The game on the board, at the foot of the list: what it is and the way to
-     its settings, on the panel's white as a card of the canvas. */
-  & .study-games__open {
-    display: flex;
-    align-items: center;
-    gap: var(--platform-space-3);
-    margin: var(--platform-space-3) 0 0 var(--platform-space-2);
-    padding: var(--platform-space-3) var(--platform-space-3) var(--platform-space-3) var(--platform-space-4);
-    border-radius: var(--md-sys-shape-corner-lg);
-    background: var(--platform-m3-panel);
-  }
-
-  & .study-games__open-text {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-  }
-
-  & .study-games__open-label {
-    font-size: var(--platform-type-2xs);
-    color: var(--platform-m3-on-surface-variant);
-  }
-
-  & .study-games__open-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-weight: 700;
-    color: var(--platform-m3-on-surface);
-  }
 }

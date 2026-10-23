@@ -27,7 +27,7 @@ export type StudyView = (typeof STUDY_VIEWS)[number]["value"];
 export const STUDY_SORTS = [
   { value: undefined, label: "Recientes" },
   { value: "nombre", label: "Nombre" },
-  { value: "partidas", label: "Más partidas" },
+  { value: "partidas", label: "Más capítulos" },
 ] as const;
 
 export type StudySort = (typeof STUDY_SORTS)[number]["value"];

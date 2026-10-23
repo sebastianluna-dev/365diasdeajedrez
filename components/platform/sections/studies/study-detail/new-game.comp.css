@@ -153,7 +153,7 @@
     color: var(--platform-text-subtle);
   }
 
-  /* The note gives way, not the buttons: «Agregar partida» stays on a line. */
+  /* The note gives way, not the buttons: «Agregar capítulo» stays on a line. */
   & .new-game__actions .platform-button {
     flex: none;
     white-space: nowrap;

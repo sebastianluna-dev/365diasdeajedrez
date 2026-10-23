@@ -4,7 +4,7 @@ description: "A study's kind as a low pill in the kind's own colour, with its ic
 
 # `StudyChip`
 
-Also `studyChipOf` and `gameCountLabel`, in the same file.
+Also `studyChipOf` and `chapterCountLabel`, in the same file.
 
 |            |                                                                                                                                                                                                          |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -32,12 +32,12 @@ A study that is not theirs says where it comes from (`origin`) instead of its ki
 
 ## Props
 
-| Prop     | Type                                                        | Required | Meaning                                                      |
-| -------- | ----------------------------------------------------------- | -------- | ------------------------------------------------------------ |
-| `study`  | `Pick<StudySummary, "kindCode" \| "kindLabel" \| "origin">` | yes      | The kind and, when it is not theirs, where it comes from.    |
-| `suffix` | `string`                                                    | no       | Said after the kind in the same chip: «Torneo · 9 partidas». |
+| Prop     | Type                                                        | Required | Meaning                                                       |
+| -------- | ----------------------------------------------------------- | -------- | ------------------------------------------------------------- |
+| `study`  | `Pick<StudySummary, "kindCode" \| "kindLabel" \| "origin">` | yes      | The kind and, when it is not theirs, where it comes from.     |
+| `suffix` | `string`                                                    | no       | Said after the kind in the same chip: «Torneo · 9 capítulos». |
 
-`gameCountLabel(count)` writes «1 partida» or «9 partidas», for the chip's suffix and the cards' meta.
+`chapterCountLabel(count)` writes «1 capítulo» or «9 capítulos» (a study's games are its chapters, 2026-10-23), for the chip's suffix and the cards' meta.
 
 ## Markup & styling
 
@@ -53,5 +53,5 @@ Block `.study-chip` (54 lines).
 
 ```tsx
 <StudyChip study={study} />
-<StudyChip study={study} suffix={gameCountLabel(study.gameCount)} />
+<StudyChip study={study} suffix={chapterCountLabel(study.gameCount)} />
 ```

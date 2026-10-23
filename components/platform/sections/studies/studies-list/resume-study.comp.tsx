@@ -3,7 +3,7 @@ import { StaticDiagram } from "@/components/chess/static-diagram.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { mdButton } from "@/lib/material/material-classes";
 import type { StudyResume, StudySummary } from "@/services/studies/studies.types";
-import { gameCountLabel, StudyChip } from "../study-chip/study-chip.comp";
+import { chapterCountLabel, StudyChip } from "../study-chip/study-chip.comp";
 import "./resume-study.comp.css";
 
 interface ResumeStudyProps {
@@ -37,7 +37,7 @@ export function ResumeStudy({ study }: ResumeStudyProps) {
         <div className="resume-study__meta">
           <StudyChip study={study} />
           <span className="resume-study__detail">
-            {gameCountLabel(study.gameCount)} · abierto {study.resume.openedAgoLabel}
+            {chapterCountLabel(study.gameCount)} · abierto {study.resume.openedAgoLabel}
           </span>
         </div>
       </div>

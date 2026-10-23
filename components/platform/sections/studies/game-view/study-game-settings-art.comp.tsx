@@ -1,6 +1,6 @@
 import "./study-game-settings-art.comp.css";
 
-/** What a drawing shows: one per option of a study's «Ajustes de la partida». */
+/** What a drawing shows: one per option of a study's «Ajustes del capítulo». */
 export type StudyGameSettingsArtKind = "white" | "black" | "normal" | "conceal" | "annotations" | "variations" | "game";
 
 interface StudyGameSettingsArtProps {

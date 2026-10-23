@@ -560,12 +560,12 @@ export async function updateGameSettings(studyId: string, gameId: string, formDa
   revalidatePath(platformRoutes.gameDetail(studyId, gameId));
 }
 
-/** What «Ajustes de la partida» changes with one press: which side the board opens from, or how a reader goes through it. */
+/** What «Ajustes del capítulo» changes with one press: which side the board opens from, or how a reader goes through it. */
 export type GameViewSetting =
   { orientationCode: "WHITE" | "BLACK" } | { analysisModeCode: GameAnalysisModeCode | null };
 
 /**
- * One option of a study's «Ajustes de la partida» (2026-10-23): the side the
+ * One option of a study's «Ajustes del capítulo» (2026-10-23): the side the
  * board opens from, or the reading mode (`null` is the plain analysis),
  * saved the moment it is chosen. Only that setting: the name is the game's
  * record's («Datos de la partida»), and nothing else is touched.

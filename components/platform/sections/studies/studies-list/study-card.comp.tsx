@@ -2,7 +2,7 @@ import Link from "next/link";
 import { StaticDiagram } from "@/components/chess/static-diagram.comp";
 import { mdCard } from "@/lib/material/material-classes";
 import type { StudySummary } from "@/services/studies/studies.types";
-import { gameCountLabel, StudyChip } from "../study-chip/study-chip.comp";
+import { chapterCountLabel, StudyChip } from "../study-chip/study-chip.comp";
 import { DeleteStudy } from "./delete-study.comp";
 import "./study-card.comp.css";
 
@@ -38,7 +38,7 @@ export function StudyCard({ study }: StudyCardProps) {
         </Link>
 
         <span className="study-card__meta">
-          {gameCountLabel(study.gameCount)} ·{" "}
+          {chapterCountLabel(study.gameCount)} ·{" "}
           {isOwn ? (
             <span title={`Actualizado el ${study.updatedAtLabel}`}>{study.updatedAgoLabel}</span>
           ) : (

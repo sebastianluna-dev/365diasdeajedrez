@@ -62,13 +62,13 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
         onClick={(event) => popup.current?.open(event)}
       >
         <PlusIcon variant="classic-solid" className="platform-md-icon" />
-        Nueva partida
+        Nuevo capítulo
       </button>
 
-      <PlatformPopup ref={popup} title="Nueva partida" size="md" onClose={reset}>
+      <PlatformPopup ref={popup} title="Nuevo capítulo" size="md" onClose={reset}>
         <p className="new-game__subtitle">Se agregará a «{studyName}».</p>
 
-        <div className="new-game__tabs" role="tablist" aria-label="Cómo agregar la partida">
+        <div className="new-game__tabs" role="tablist" aria-label="Cómo agregar el capítulo">
           {tabs.map((option) => (
             <button
               key={option.key}
@@ -96,7 +96,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
             >
               <textarea required className="new-game__textarea" placeholder={'[Event "…"]\n1. e4 e5 2. Nf3 …'} />
             </PlatformFormField>
-            <Footer onCancel={close} label="Agregar partida" />
+            <Footer onCancel={close} label="Agregar capítulo" />
           </PlatformForm>
         )}
 
@@ -120,11 +120,11 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
               />
             </PlatformFormField>
 
-            <PlatformFormField name="title" label="Nombre de la partida">
+            <PlatformFormField name="title" label="Nombre del capítulo">
               <input type="text" maxLength={120} placeholder="Final de torres, ronda 4…" />
             </PlatformFormField>
 
-            <Footer onCancel={close} label="Agregar partida" />
+            <Footer onCancel={close} label="Agregar capítulo" />
           </PlatformForm>
         )}
 
@@ -135,7 +135,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
           <PlatformForm action={createStudyGame.bind(null, studyId)} onSubmit={close} className="new-game__panel">
             <OptionalFields>
               <div className="new-game__grid">
-                <PlatformFormField name="title" label="Nombre de la partida">
+                <PlatformFormField name="title" label="Nombre del capítulo">
                   <input type="text" maxLength={120} placeholder="Ronda 1, Modelo A…" />
                 </PlatformFormField>
 
@@ -165,7 +165,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
               </div>
             </OptionalFields>
 
-            <Footer onCancel={close} label="Agregar partida" />
+            <Footer onCancel={close} label="Agregar capítulo" />
           </PlatformForm>
         )}
 
@@ -191,7 +191,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
 
             <Footer
               onCancel={close}
-              label={picked.length > 1 ? `Agregar ${picked.length} partidas` : "Agregar partida"}
+              label={picked.length > 1 ? `Agregar ${picked.length} capítulos` : "Agregar capítulo"}
               disabled={picked.length === 0}
               onConfirm={() => {
                 const ids = picked;

@@ -97,8 +97,8 @@ export function GameViewSection({
 
       {game.canEdit && mode && (
         <p className="game-view__mode">
-          {asReader ? "Estás viendo la partida como la ve quien la lee" : "Quien lea esta partida la verá en el modo"} «
-          {GAME_ANALYSIS_MODE_LABELS[mode]}».{" "}
+          {asReader ? "Estás viendo el capítulo como lo ve quien lo lee" : "Quien lea este capítulo lo verá en el modo"}{" "}
+          «{GAME_ANALYSIS_MODE_LABELS[mode]}».{" "}
           <Link href={asReader ? gamePath : `${gamePath}?vista=lector`} className="game-view__mode-link">
             {asReader ? "Volver a editar" : "Ver como lector"}
           </Link>
