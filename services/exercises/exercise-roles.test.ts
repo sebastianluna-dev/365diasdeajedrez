@@ -17,7 +17,7 @@ const STUDENT_SIDE = [
   "services/classes",
   "components/platform/sections/exercises",
   "components/platform/sections/classes",
-  "app/(platform)/ejercicios",
+  "app/(platform)/(exercises)",
   "app/(platform)/clases",
 ];
 const AUTHOR_ONLY = [
@@ -44,7 +44,7 @@ describe("the student's side of the exercises", () => {
     const found = files.map((file) => relative(PROJECT_ROOT, file));
     expect(found.length).toBeGreaterThan(15);
     expect(found).toContain("services/exercises/exercises.actions.ts");
-    expect(found).toContain("app/(platform)/ejercicios/series/[seriesId]/[n]/page.tsx");
+    expect(found).toContain("app/(platform)/(exercises)/ejercicios/series/[seriesId]/[n]/page.tsx");
     expect(found).toContain("app/(platform)/clases/[classId]/ejercicios/[blockId]/[n]/page.tsx");
     expect(found).toContain("services/exercises/class-practice.service.ts");
   });

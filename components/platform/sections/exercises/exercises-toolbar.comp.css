@@ -1,0 +1,85 @@
+/* The toolbar on top of a panel of «Ejercicios» (exercises-toolbar.comp.tsx):
+   on a hairline across the panel's top, as the canvas draws it — the panel's
+   padding is undone on three sides so the line runs edge to edge. */
+.exercises-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--platform-space-2) var(--platform-space-4);
+  min-height: 56px;
+  box-sizing: border-box;
+  margin: calc(-1 * var(--platform-space-6)) calc(-1 * var(--platform-space-6)) 0;
+  padding: var(--platform-space-2) var(--platform-space-4) var(--platform-space-2) var(--platform-space-6);
+  border-bottom: 1px solid var(--platform-m3-divider);
+  color: var(--platform-m3-on-surface);
+  font-size: var(--platform-type-xs);
+
+  & .exercises-toolbar__trail {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-1) var(--platform-space-2);
+    min-width: 0;
+  }
+
+  & .exercises-toolbar__crumb {
+    color: var(--platform-m3-on-surface-variant);
+    text-decoration: none;
+  }
+
+  & a.exercises-toolbar__crumb:hover {
+    color: var(--platform-m3-on-surface);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  & .exercises-toolbar__separator {
+    color: var(--platform-m3-outline);
+  }
+
+  /* The page's heading, in the trail's own size: the panel is the page. */
+  & .exercises-toolbar__title {
+    margin: 0;
+    font-family: inherit;
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+    line-height: inherit;
+  }
+
+  & .exercises-toolbar__end {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-2) var(--platform-space-3);
+  }
+
+  & .exercises-toolbar__summary {
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* The level: a small outlined button of Material's look over our select. */
+  & .exercises-toolbar__level.platform-select__trigger {
+    height: 32px;
+    padding: 0 var(--platform-space-3);
+    border-color: var(--platform-m3-outline);
+    background: var(--platform-m3-panel);
+    color: var(--platform-m3-on-surface);
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-m3-primary);
+      outline-offset: 2px;
+      border-color: var(--platform-m3-outline);
+    }
+  }
+
+  @media (width < 640px) {
+    margin: calc(-1 * var(--platform-space-4)) calc(-1 * var(--platform-space-4)) 0;
+    padding-left: var(--platform-space-4);
+  }
+}

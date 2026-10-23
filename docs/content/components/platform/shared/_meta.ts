@@ -26,6 +26,7 @@ const meta: MetaRecord = {
   "exercise-card": "ExerciseCard",
   "exercise-picker": "ExercisePicker",
   "exercise-solver": "ExerciseSolver",
+  "exercise-solver-page": "ExerciseSolverPage",
   "filter-pills": "FilterPills",
   "finalize-class-popup": "FinalizeClassPopup",
   "game-fields": "GameFields",

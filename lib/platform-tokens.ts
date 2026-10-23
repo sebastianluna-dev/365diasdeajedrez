@@ -275,6 +275,13 @@ export const TEXT_PAIRS: readonly (readonly [text: string, background: string])[
   ["m3-error", "m3-canvas"],
   ["m3-error", "m3-panel"],
   ["m3-error", "m3-container-high"],
+  // The solve page's status card, tinted by how it stands: its text on each tint.
+  ...["m3-info-container", "m3-success-container", "m3-warning-container", "m3-error-container"].map(
+    (background) => ["m3-on-surface", background] as const,
+  ),
+  ["m3-on-surface-variant", "m3-info-container"],
+  ["m3-on-error-container", "m3-error-container"],
+  ["m3-on-error", "m3-error"],
 ];
 
 /**

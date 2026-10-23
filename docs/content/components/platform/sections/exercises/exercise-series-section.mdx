@@ -1,40 +1,39 @@
 ---
-description: "A series given to the student: who gave it and what they solved, the page's accent to the first exercise left, and its exercises in order with the student's mark in that series."
+description: "A series given to the student, on the panel of «Ejercicios»: the trail, what they solved, the toolbar's way on to the first exercise left, and its exercises as rows with the student's mark in that series."
 ---
 
 # `ExerciseSeriesSection`
 
-|            |                                                                                                                                                       |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/exercises/exercise-series.section.tsx`                                                                                  |
-| Kind       | Server Component                                                                                                                                      |
-| Stylesheet | `exercise-series.section.css` → block `.exercise-series`                                                                                              |
-| Used by    | `/ejercicios/series/[seriesId]` (behind `EXERCISES_ENABLED`)                                                                                          |
-| Composes   | [`StaticDiagram`](/components/chess/static-diagram), [`EmptyState`](/components/platform/shared/empty-state)                                          |
-| Reads      | `StudentSeriesView` from `getStudentSeries(id)` · `services/exercises/exercises.service.ts`, mapped by `mapStudentSeriesView` (`exercises.mapper.ts`) |
+|            |                                                                                                                                                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/exercises/exercise-series.section.tsx`                                                                                                                                              |
+| Kind       | Server Component                                                                                                                                                                                                  |
+| Stylesheet | `exercise-series.section.css` → block `.exercise-series`                                                                                                                                                          |
+| Used by    | `/ejercicios/series/[seriesId]` (behind `EXERCISES_ENABLED`)                                                                                                                                                      |
+| Composes   | [`ExercisesToolbar`](/components/platform/sections/exercises/exercises-toolbar), [`StaticDiagram`](/components/chess/static-diagram) (`look="material"`), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads      | `StudentSeriesView` from `getStudentSeries(id)` · `services/exercises/exercises.service.ts`, mapped by `mapStudentSeriesView` (`exercises.mapper.ts`)                                                             |
 
 ## Props
 
-| Prop     | Type                | Required | Meaning                                                                                              |
-| -------- | ------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
-| `series` | `StudentSeriesView` | yes      | The series, its teacher, the exercises the student may solve in it with their marks, and the way on. |
+| Prop      | Type                | Required | Meaning                                                                                                                                                      |
+| --------- | ------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `series`  | `StudentSeriesView` | yes      | The series, its teacher, the exercises the student may solve in it with their marks, and the way on.                                                         |
+| `academy` | `boolean`           | yes      | Whose it is, for the trail: the academy's («Series de la academia») or the teacher's («De tu profesor»). The page reads it from `getStudentExercisesHome()`. |
 
 ## Behaviour
 
-A series (D18, D31; PLAN.md §5.2). The section draws the page's head: the way back to «Ejercicios», the title, «De Profesor Demo · 2 de 5 resueltos» and, when an exercise is left, the page's accent, «Empezar» (nothing tried yet) or «Continuar», to the first one not solved and not tried this study day (`triedTodayOf`): one tried today would open unscored, so the accent skips it, and with nothing left that can count today there is no accent until tomorrow. Under it the description and the exercises in order, each a row that opens it: the start drawn small (from the side that plays), «3. Título», «Mate en 2 · 1400 · Intermedio», and the student's mark **in this series** — «Resuelto» with `CircleCheckIcon` in the success ink (a pass there), «Fallado» with `CircleXmarkIcon` in the danger colour (attempts, none passed), or nothing. The word is always written beside the icon.
+A series (D18, D31; PLAN.md §5.2), as a panel of the new design system (2026-10-23). The toolbar carries the trail — «Ejercicios › De tu profesor › Táctica 1», the series' name its `h1` —, «2 de 5 resueltos» and, when an exercise is left, the page's one filled button, «Empezar» (nothing tried yet) or «Continuar», to the first one not solved and not tried this study day (`triedTodayOf`): one tried today would open unscored, so the button skips it, and with nothing left that can count today there is none until tomorrow. Under it «De Profesor Demo · » and the description, and the exercises in order, as Gmail lists mail: each a row that opens it, the start drawn small on the blue board (from the side that plays), «3. Título», «Mate en 2 · 1400 · Intermedio», and the student's mark **in this series** — «Resuelto» with `CircleCheckIcon` in the success container (a pass there), «Fallado» with `CircleXmarkIcon` in the error container (attempts, none passed), or nothing. The word is always written beside the icon.
 
 Only the exercises the student may solve through this series are listed, numbered and counted: the series owner's usable ones and the library's (`seriesItemAvailability`); a draft or an archived one is not there. A series the student may not open — another student's, or a former teacher's — never reaches here: the page answers 404.
 
 ## Markup & styling
 
-Block `.exercise-series` (104 lines): the description and a list of cards, each a grid of the diagram (72px; 56px under 640px, with the mark under the title), the body and the mark.
+Block `.exercise-series` (111 lines), on the workspace's panel: the description, and the rows across the panel, a light hairline between them (`--platform-m3-divider`), each a grid of the diagram (64px; 48px under 640px), the body and the mark; under the pointer a row lifts over its neighbours (`--platform-m3-row-edge`, `--platform-m3-row-shadow`) and keeps its colour.
 
-**Elements:** `.exercise-series__description`, `.exercise-series__list`, `.exercise-series__item`, `.exercise-series__link`, `.exercise-series__diagram`, `.exercise-series__body`, `.exercise-series__title`, `.exercise-series__facts`, `.exercise-series__mark`, `.exercise-series__mark-icon`
+**Elements:** `.exercise-series__description`, `.exercise-series__list`, `.exercise-series__link`, `.exercise-series__diagram`, `.exercise-series__body`, `.exercise-series__title`, `.exercise-series__facts`, `.exercise-series__mark`, `.exercise-series__mark-icon`
 
 **Modifiers:** `.exercise-series__mark_state_solved`, `.exercise-series__mark_state_failed`.
 
-**Other classes it renders:** `.platform-page__head` and its parts, `.platform-button_variant_accent`.
-
-**Tokens:** `--platform-accent-ink`, `--platform-danger`, `--platform-shadow-card`, `--platform-success-ink`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+**Tokens:** `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-divider`, `--platform-m3-row-edge`, `--platform-m3-row-shadow`, `--platform-m3-primary`, `--platform-m3-success-container`, `--platform-m3-on-success-container`, `--platform-m3-error-container`, `--platform-m3-on-error-container`
 
 **Breakpoints:** `(width < 640px)`.

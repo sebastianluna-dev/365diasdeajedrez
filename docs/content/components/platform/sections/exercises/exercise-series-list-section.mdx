@@ -1,0 +1,35 @@
+---
+description: "«De tu profesor» or «Series de la academia», on the panel of «Ejercicios»: the series as rows with what the student solved of each and its row's word, and the toolbar's way on."
+---
+
+# `ExerciseSeriesListSection`
+
+|            |                                                                                                                                          |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/exercises/exercise-series-list.section.tsx`                                                                |
+| Kind       | Server Component                                                                                                                         |
+| Stylesheet | `exercise-series-list.section.css` → block `.exercise-series-list`                                                                       |
+| Used by    | `/ejercicios/series` and `/ejercicios/series?de=academia` (behind `EXERCISES_ENABLED`)                                                   |
+| Composes   | [`ExercisesToolbar`](/components/platform/sections/exercises/exercises-toolbar), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads      | `StudentExercisesHome` from `getStudentExercisesHome()` (cached per request) · `services/exercises/exercises.service.ts`                 |
+
+## Props
+
+| Prop   | Type                     | Required | Meaning                                                                                                          |
+| ------ | ------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------- |
+| `home` | `StudentExercisesHome`   | yes      | The series given to the student and the academy's published ones, with what they solved of each, and the way on. |
+| `view` | `"teacher" \| "academy"` | yes      | «De tu profesor», or, with `?de=academia`, «Series de la academia».                                              |
+
+## Behaviour
+
+What «Series y más» was before «Ejercicios» moved to the new design system (2026-10-23; PLAN.md §5.1): its two lists, each a view of the side column's «Tuyo», and nothing else — the practice, the contrarreloj and the history are the side column's now. «De tu profesor»: each series given to the student by the teacher they are assigned to now, newest first; «Series de la academia» (D32): the academy's published series (`academySeriesWhere`: `teacherId` null and `publishedAt` set), the last published first. Each is a row as Gmail lists mail: the title (the row is its link, to `/ejercicios/series/[seriesId]`), the teacher, «4 de 10» — the exercises solved **in that series**: a pass of the same exercise in a lesson, a class or the practice does not count here — and its row's word, «Empezar» or «Continuar» (Material's text button), to the first exercise not solved and not tried today. The toolbar's one filled button is «Continuar con «…»», for the newest series with an exercise left that can count today (the teacher's before the academy's), when it is in this view. Empty, «De tu profesor» says «Tu profesor aún no te ha dado ejercicios.», or, for a student with no teacher, «Todavía no tienes ejercicios de un profesor. Cuando uno te dé una serie, aparecerá aquí.»
+
+## Markup & styling
+
+Block `.exercise-series-list` (97 lines): the rows across the panel, a light hairline between them; the title's link stretched over the row (`::after`), its word above it; under the pointer a row lifts over its neighbours and keeps its colour. Under 640px the count is not shown.
+
+**Elements:** `__rows`, `__row`, `__link`, `__title`, `__meta`, `__count`, `__go`
+
+**Tokens:** `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-divider`, `--platform-m3-row-edge`, `--platform-m3-row-shadow`, `--platform-m3-primary`
+
+**Breakpoints:** `(width < 640px)`.

@@ -134,3 +134,57 @@ export const Choices: Story = {
     ],
   },
 };
+
+/** «Ejercicios»: «Puzzle Rush» as the action, and «Táctica» opened onto its subtopics, «Clavada» on screen, with the row that shows the rest. */
+export const SubLinks: Story = {
+  name: "Sub-links",
+  args: {
+    label: "Qué practicar",
+    action: { label: "Puzzle Rush", href: "/puzzle-rush", icon: "stopwatch" },
+    groups: [
+      {
+        title: "Temas",
+        links: [
+          { label: "Todos los temas", href: "/ejercicios", icon: "shuffle" },
+          {
+            label: "Táctica",
+            href: "/ejercicios?tema=TACTICS",
+            icon: "tag",
+            subLinks: [
+              { label: "Ataque doble", href: "/ejercicios?tema=FORK" },
+              { label: "Clavada", href: "/ejercicios?tema=PIN", current: true },
+              { label: "Enfilada", href: "/ejercicios?tema=SKEWER" },
+            ],
+            subMore: { label: "Ver los 14 subtemas", onSelect: () => undefined },
+          },
+          { label: "Finales", href: "/ejercicios?tema=ENDGAME", icon: "tag" },
+        ],
+      },
+      {
+        title: "Tuyo",
+        links: [
+          { label: "De tu profesor", href: "/ejercicios/series", icon: "chalkboard-user", count: 2 },
+          { label: "Historial", href: "/ejercicios/historial", icon: "rotate-left" },
+        ],
+      },
+    ],
+  },
+};
+
+/** The action's own view on screen: «Puzzle Rush» filled with the primary, nothing else lit. */
+export const ActionCurrent: Story = {
+  name: "Action current",
+  args: {
+    label: "Qué practicar",
+    action: { label: "Puzzle Rush", href: "/puzzle-rush", icon: "stopwatch", current: true },
+    groups: [
+      {
+        title: "Temas",
+        links: [
+          { label: "Todos los temas", href: "/ejercicios", icon: "shuffle" },
+          { label: "Táctica", href: "/ejercicios?tema=TACTICS", icon: "tag" },
+        ],
+      },
+    ],
+  },
+};

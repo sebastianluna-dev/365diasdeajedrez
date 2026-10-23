@@ -1,0 +1,41 @@
+---
+description: "«Puzzle Rush», the contrarreloj, on the panel of «Ejercicios»: the modes, the marks and the rules before a run; the material board, the score, the clock, the mistakes and the run's grid during it; the burst and the summary at its end."
+---
+
+# `StormRunner`
+
+|            |                                                                                                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/exercises/storm-runner/storm-runner.comp.tsx`                                                                                                                |
+| Kind       | Client Component (the run, its clock and the browser's scores)                                                                                                                             |
+| Stylesheet | `storm-runner.comp.css` → block `.storm-runner`                                                                                                                                            |
+| Story      | `storm-runner.stories.tsx` (`platform/sections/exercises/StormRunner`): before a run, a run started in «Supervivencia» by its `play`, and an empty deck                                    |
+| Used by    | `/puzzle-rush` (behind `EXERCISES_ENABLED`), in the route group of «Ejercicios» (`app/(platform)/(exercises)/`), so the side column of «Ejercicios» stays beside it with «Puzzle Rush» lit |
+| Composes   | [`ExercisesToolbar`](/components/platform/sections/exercises/exercises-toolbar), [`ChessBoard`](/components/chess/chess-board) (`look="material"`), `NavArt` (the rush's drawing)          |
+| Uses       | `useExerciseSolver` in `preview` (nothing is submitted), `buildStormDeck` and `STORM_MAX_MISTAKES` (`lib/exercises/storm-deck.ts`), `mdButton`, `mdIconButton`                             |
+
+## Props
+
+| Prop   | Type                       | Required | Meaning                                                                                             |
+| ------ | -------------------------- | -------- | --------------------------------------------------------------------------------------------------- |
+| `deck` | `ExerciseSolverExercise[]` | yes      | The run's exercises in the order they are dealt; while nothing persists, from the sample exercises. |
+
+## Behaviour
+
+The contrarreloj (D21, D34; PLAN.md §5.6), moved to the new design system on 2026-10-23 from the owner's «M4» canvas; its rules did not change.
+
+- **Before a run**: the rush's drawing (the tools menu's, `NavArt art="rush"`), «Puzzle Rush» and what it is; «El mejor de hoy» and «Mejor puntuación» of the mode chosen; the three modes as cards with a radio's ring (`role="radiogroup"`): «3 min — Contra el reloj», «5 min — Con más tiempo», «Supervivencia — Sin reloj, hasta el tercer error»; «Jugar» (filled, 56px), off with an empty deck; at the right «Tus marcas», the best and today's best of every mode, and «Cómo se juega». (The canvas said «Del tema que tengas elegido, o de todos» under «Jugar»; the deck is not dealt by topic, so the line is left out.)
+- **During it**: the toolbar says «Puzzle Rush · 3 min» and offers «Salir»; the board — the exercise dealt, over the solver's hook in `preview`: the first wrong move decides it failed, the last correct one passed — and beside it the score, the clock («Quedan 2:41», or in «Supervivencia» «Llevas 12:08») and the three mistakes' slots, dashed until spent and the error's red with an X after; who plays and «Ejercicio 45 · Mate en 1 · 2140» (and the author's prompt when there is one); «Ejercicios del rush · 44 hechos», a grid of five to a row, green a pass and red a miss with the difficulty, the one on the board ringed in the primary; and «Tu mejor en 3 min», with «Vas por un récord» once the score beats it.
+- **At its end** (0:00, the third mistake, the deck run out, or «Salir»): the score bursts on the board for 1.4 s, then a card sums it up — the title («¡Nueva mejor puntuación!», «¡Lo mejor de hoy!», «Se acabó el tiempo»…), the score, today's best, the best, the mistakes, the longest streak, the hardest exercise solved and the average time — and the toolbar offers «Nuevo Rush» and «Jugar otra vez». The scores live in this browser (`localStorage`) while `EXERCISES_PERSISTENCE_ENABLED` is off.
+
+## Markup & styling
+
+Block `.storm-runner` (727 lines), on the workspace's panel: before a run a grid of the intro and a 320px column; during it the board's track (`max(320px, min(100vh - 202px, 600px))`) and the column, as the solve page; under 1024px everything stacks.
+
+**Elements:** `__label`, `__ready`, `__intro`, `__hero`, `__art`, `__hero-text`, `__title`, `__lead`, `__tiles`, `__tile`, `__choose`, `__modes`, `__mode`, `__ring`, `__mode-name`, `__mode-line`, `__go`, `__play`, `__note`, `__aside`, `__card`, `__marks`, `__mark`, `__mark-today`, `__rules`, `__play-area`, `__stage`, `__board`, `__column`, `__scoreboard`, `__figure`, `__score`, `__clock`, `__clock-icon`, `__slots`, `__slot`, `__slot-icon`, `__status`, `__turn`, `__side`, `__line`, `__runs`, `__run`, `__run-icon`, `__best`, `__record`, `__burst`, `__burst-score`, `__summary` and its parts, `__visually-hidden`
+
+**Modifiers:** `.storm-runner_phase_{ready,running,over}`, `__mode_state_chosen`, `__board_state_wrong`, `__slot_state_used`, `__side_color_{white,black}`, `__run_result_{pass,miss,now}`, `__card_kind_{runs,best}`
+
+**Tokens:** the `--platform-m3-*` roles (`on-surface`, `on-surface-variant`, `panel`, `container`, `outline`, `outline-variant`, `row-edge`, `divider`, `primary`, `on-primary`, `primary-wash`, `secondary-container`, `on-secondary-container`, `success-container`, `on-success-container`, `error`, `on-error`, `error-container`, `on-error-container`, `piece-white`, `piece-black`), Material's shape and elevation tokens.
+
+**Motion:** the wrong move's ring, the burst and the card's entrance, all off under `prefers-reduced-motion: reduce`.

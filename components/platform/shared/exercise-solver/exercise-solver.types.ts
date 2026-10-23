@@ -68,26 +68,18 @@ export type ExerciseAttemptReply =
 export type SubmitExerciseAttempt = (input: ExerciseAttemptSubmission) => Promise<ExerciseAttemptReply>;
 
 /**
- * The full solve page (the Lichess-like screen): the column at the left with
- * the rating, the exercise, its series or topic and the settings, and the
- * visit's history under the board. Without it, the solver is the board and its
- * panel alone (a lesson, a class block, the editor's «Probar»).
+ * The full solve page of «Ejercicios» (the Lichess-like screen, in the new
+ * design system): beside the material board, the status card, the moves, the
+ * visit's history («Esta sesión») and the two switches of the rating. Without
+ * it, the solver is the board and its panel alone (a lesson, a class block,
+ * the editor's «Probar»). The page's toolbar — its trail, the series' place,
+ * the level — is the section's, around it.
  */
 export interface ExerciseSolverAside {
   /** The visit the history belongs to: «practice», or a series by id. */
   scope: string;
   /** This exercise's own page, for its pill in the history; null when it has none. */
   href: string | null;
-  /** The series it is solved in, for the ring: its 1-based place and the count. */
-  series?: { title: string; href: string; position: number; total: number };
-  /** «Ejercicios» itself, any topic: the way to choose one, and to the series and the other modes. */
-  general?: { topicsHref: string; overviewHref: string };
-  /** The topic chosen in «Ejercicios por tema», and the way to another. */
-  topic?: {
-    code: string;
-    label: string;
-    changeHref: string;
-    /** A line under it: every exercise of the choice was solved already. */
-    note?: string | null;
-  };
+  /** The topic it was served by, for its chip and the topic's tally; none on «Todos los temas» and in a series. */
+  topic?: { code: string; label: string };
 }

@@ -1,0 +1,34 @@
+---
+description: "The panel of «Ejercicios» while a page loads: the toolbar's line and either the blue board with its keys and the column's cards, or a list's rows, softly pulsing."
+---
+
+# `ExercisesPanelSkeleton`
+
+|            |                                                                                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/exercises/exercises-panel-skeleton.comp.tsx`                                                                                                      |
+| Kind       | Server Component (markup and CSS only: a `loading.tsx` reaches no Client Component)                                                                                             |
+| Stylesheet | `exercises-panel-skeleton.comp.css` → block `.exercises-panel-skeleton`                                                                                                         |
+| Used by    | the `loading.tsx` of `/ejercicios` (`board`), `/ejercicios/series` (`list`), `/ejercicios/series/[seriesId]` (`list`) and its `[n]` (`board`), `/ejercicios/historial` (`list`) |
+| Composes   | [`BoardSkeleton`](/components/platform/shared/board-skeleton)                                                                                                                   |
+
+## Props
+
+| Prop    | Type                | Required | Meaning                                                                  |
+| ------- | ------------------- | -------- | ------------------------------------------------------------------------ |
+| `view`  | `"board" \| "list"` | yes      | An exercise on the board, or a list (the series, a series, the history). |
+| `label` | `string`            | yes      | Said to a screen reader: «Cargando el ejercicio…», «Cargando la serie…». |
+
+## Behaviour
+
+The layout keeps the side column in place (2026-10-23), so only the panel waits, in the shape of the page that is coming: the toolbar's line, then the board — the new design system's blue, with a ring turning on it — with its keys' place and the column's three cards beside it, at the solve page's own sizes; or six rows of a list on their hairlines. Nothing jumps when the page arrives.
+
+## Markup & styling
+
+Block `.exercises-panel-skeleton` (140 lines), on `.platform-workspace__panel`; its pulse is off under `prefers-reduced-motion: reduce`.
+
+**Elements:** `__shape`, `__toolbar`, `__crumbs`, `__body`, `__stage`, `__keys`, `__column`, `__card` (`_size_tall`), `__list`, `__label`, `__row`, `__text`, `__meta`
+
+**Tokens:** `--platform-m3-container-high`, `--platform-m3-divider`, `--platform-m3-board-light`, `--platform-m3-board-dark`, `--md-sys-shape-corner-lg`
+
+**Breakpoints:** `(width < 1280px)`, `(width < 1024px)`, `(width < 640px)`.

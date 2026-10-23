@@ -1,0 +1,80 @@
+.exercises-side-skeleton {
+  /* The same rhythm as `PlatformSideNav`, so the links land where these are. */
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-4);
+  padding: var(--platform-space-1) 0 var(--platform-space-4);
+
+  /* Said to a screen reader only. */
+  & .exercises-side-skeleton__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  & .exercises-side-skeleton__shape {
+    display: block;
+    flex: none;
+    background: var(--platform-m3-container-high);
+    animation: exercises-side-skeleton-pulse 1200ms ease-in-out infinite alternate;
+  }
+
+  /* «Puzzle Rush»: the extended FAB's size. */
+  & .exercises-side-skeleton__action {
+    width: 152px;
+    height: 56px;
+    margin-left: var(--platform-space-2);
+    border-radius: var(--md-sys-shape-corner-lg);
+  }
+
+  & .exercises-side-skeleton__group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+  }
+
+  & .exercises-side-skeleton__title {
+    width: 64px;
+    height: 12px;
+    margin: var(--platform-space-1) var(--platform-space-6);
+    border-radius: 1000px;
+  }
+
+  & .exercises-side-skeleton__row {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    height: 36px;
+    padding: 0 var(--platform-space-4) 0 var(--platform-space-6);
+  }
+
+  & .exercises-side-skeleton__icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+  }
+
+  & .exercises-side-skeleton__text {
+    flex: 1;
+    max-width: 136px;
+    height: 12px;
+    border-radius: 1000px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .exercises-side-skeleton__shape {
+      animation: none;
+    }
+  }
+}
+
+/* `@keyframes` cannot be nested inside a style rule. */
+@keyframes exercises-side-skeleton-pulse {
+  to {
+    opacity: 0.45;
+  }
+}

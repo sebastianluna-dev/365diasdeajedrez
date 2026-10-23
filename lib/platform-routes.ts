@@ -122,8 +122,9 @@ export const platformRoutes = {
   exerciseStorm: "/puzzle-rush",
   /**
    * «Ejercicios» itself, the board (the Lichess-like trainer): a random library
-   * exercise of any topic, or of `tema`/`nivel` when given; `tras` is the one
-   * just solved, which «Siguiente» skips.
+   * exercise of any topic and level, or of the topic `tema` (a Topic code, its
+   * subtopics included) and the level `nivel` (a Level slug) when given;
+   * `tras` is the one just solved, which «Siguiente» skips.
    */
   exerciseTrainer: (query: { tema?: string; nivel?: string; tras?: string } = {}) => {
     const params = new URLSearchParams();
@@ -135,12 +136,15 @@ export const platformRoutes = {
   },
   /** A library exercise by its id, to solve again: where a pill of «Esta sesión» goes. */
   exerciseLibraryItem: (exerciseId: string) => `/ejercicios/biblioteca/${exerciseId}`,
-  /** What «Ejercicios» was before it opened on the board: the series given to the student and the other modes. */
+  /** «De tu profesor»: the series the student's teacher gave them. */
   exerciseOverview: "/ejercicios/series",
+  /** «Series de la academia»: the academy's published series, the same page in another view. */
+  exerciseAcademySeries: "/ejercicios/series?de=academia",
   /**
-   * «Ejercicios por tema» (D18, D32, phase 4): a random library exercise of a
-   * topic (`tema`, a Topic code) at a level (`nivel`, a Level slug); `tras` is
-   * the exercise just solved, which «Siguiente» skips.
+   * «Ejercicios por tema» (D18, D32, phase 4), the menu's tile: since the page
+   * moved to the new design system (2026-10-23) the topic is chosen in the
+   * side column of «Ejercicios» itself, and this address redirects there
+   * (`exerciseTrainer`) with the same `tema`, `nivel` and `tras`.
    */
   exercisePractice: (query: { tema?: string; nivel?: string; tras?: string } = {}) => {
     const params = new URLSearchParams();

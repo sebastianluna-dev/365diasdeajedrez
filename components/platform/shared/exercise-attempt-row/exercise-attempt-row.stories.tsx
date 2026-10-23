@@ -119,3 +119,13 @@ export const SolutionShown: Story = {
     },
   },
 };
+
+/** The material look, as the student's «Historial» draws it: a row of a list, not a card, opened on its mistake by its `play`. */
+export const Material: Story = {
+  args: { look: "material" },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "Ver el error" }));
+    await expect(canvas.getByText("Td8#")).toBeVisible();
+  },
+};

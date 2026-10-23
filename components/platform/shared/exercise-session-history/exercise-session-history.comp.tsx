@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
 import { EllipsisIcon } from "@/components/icons/ellipsis-icon.comp";
-import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
+import { EyeIcon } from "@/components/icons/eye-icon.comp";
 import { useSolveHistory, type SolveHistoryEntry, type SolveHistoryTone } from "./exercise-solve-history.store";
 import "./exercise-session-history.comp.css";
 
@@ -26,21 +26,25 @@ function deltaOf(delta: number | null): string {
 }
 
 function PillBody({ entry }: { entry: SolveHistoryEntry }) {
-  const Icon = entry.tone === "shown" ? XmarkIcon : CheckIcon;
   return (
     <>
-      <Icon variant="classic-solid" className="exercise-session-history__icon" />
-      {deltaOf(entry.delta)}
+      {entry.tone === "clean" && <CheckIcon variant="classic-solid" className="exercise-session-history__icon" />}
+      {entry.tone === "shown" && <EyeIcon variant="classic-solid" className="exercise-session-history__icon" />}
+      <span className="exercise-session-history__name">{entry.title}</span>
+      {entry.tone === "late" && <span className="exercise-session-history__after">· tras fallar</span>}
     </>
   );
 }
 
 /**
- * «Esta sesión»: a pill per exercise finished in this visit, coloured by how
- * it went and with its rating change, going back to its exercise; the one on
- * the board ringed at the end. It explains itself: no note, no legend.
- * It lives in memory (exercise-solve-history.store.ts): leaving the page and
- * coming back starts it again.
+ * «Esta sesión» (the new design system's card, 2026-10-23): a pill per
+ * exercise finished in this visit, named and coloured by how it went — green
+ * right first time, amber solved after a wrong move, grey with the solution
+ * seen — going back to its exercise, and the one on the board ringed at the
+ * end; a line under them says what the colours mean. The rating change of
+ * each is in its accessible name. It lives in memory
+ * (exercise-solve-history.store.ts): leaving the page and coming back starts
+ * it again.
  */
 export function ExerciseSessionHistory({ scope, current }: ExerciseSessionHistoryProps) {
   const entries = useSolveHistory(scope);
@@ -80,6 +84,13 @@ export function ExerciseSessionHistory({ scope, current }: ExerciseSessionHistor
           </li>
         )}
       </ol>
+      {entries.length > 0 && (
+        <p className="exercise-session-history__legend">
+          <span>Verde: a la primera</span>
+          <span>Ámbar: resuelto tras fallar</span>
+          <span>Gris: con la solución</span>
+        </p>
+      )}
     </section>
   );
 }

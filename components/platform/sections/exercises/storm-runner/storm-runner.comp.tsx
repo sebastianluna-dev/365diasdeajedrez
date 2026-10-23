@@ -1,29 +1,25 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { ChessBoard } from "@/components/chess/chess-board.comp";
-import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
-import { BoltIcon } from "@/components/icons/bolt-icon.comp";
 import { CalendarDayIcon } from "@/components/icons/calendar-day-icon.comp";
-import { ChartSimpleIcon } from "@/components/icons/chart-simple-icon.comp";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
 import { ClockIcon } from "@/components/icons/clock-icon.comp";
 import { FireFlameCurvedIcon } from "@/components/icons/fire-flame-curved-icon.comp";
-import { FlagIcon } from "@/components/icons/flag-icon.comp";
 import { InfinityIcon } from "@/components/icons/infinity-icon.comp";
-import { PlusIcon } from "@/components/icons/plus-icon.comp";
-import { PuzzlePieceIcon } from "@/components/icons/puzzle-piece-icon.comp";
-import { RotateRightIcon } from "@/components/icons/rotate-right-icon.comp";
+import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { StopwatchIcon } from "@/components/icons/stopwatch-icon.comp";
 import { TrophyIcon } from "@/components/icons/trophy-icon.comp";
 import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
+import { NavArt } from "@/components/platform/sections/shell/nav-art.comp";
 import { useExerciseSolver } from "@/components/platform/shared/exercise-solver/use-exercise-solver.hook";
 import { canMove, isSessionOver } from "@/components/platform/shared/exercise-solver/exercise-solver-session";
 import type { ExerciseSolverExercise } from "@/components/platform/shared/exercise-solver/exercise-solver.types";
-import { defaultExercisePrompt } from "@/lib/chess/exercise-labels";
+import { exerciseKindLabel } from "@/lib/chess/exercise-labels";
 import { STORM_MAX_MISTAKES } from "@/lib/exercises/storm-deck";
+import { mdButton, mdIconButton } from "@/lib/material/material-classes";
 import { platformRoutes } from "@/lib/platform-routes";
+import { ExercisesToolbar, type ExercisesToolbarAction } from "../exercises-toolbar.comp";
 import "./storm-runner.comp.css";
 
 export interface StormRunnerProps {
@@ -36,10 +32,10 @@ const START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 type ModeKey = "three" | "five" | "survival";
 
 /** The three ways to play: against three or five minutes, or with no clock until the third mistake. */
-const MODES: Record<ModeKey, { label: string; ms: number | null; Icon: typeof BoltIcon }> = {
-  three: { label: "3 min", ms: 3 * 60 * 1000, Icon: BoltIcon },
-  five: { label: "5 min", ms: 5 * 60 * 1000, Icon: StopwatchIcon },
-  survival: { label: "Supervivencia", ms: null, Icon: InfinityIcon },
+const MODES: Record<ModeKey, { label: string; line: string; ms: number | null }> = {
+  three: { label: "3 min", line: "Contra el reloj", ms: 3 * 60 * 1000 },
+  five: { label: "5 min", line: "Con más tiempo", ms: 5 * 60 * 1000 },
+  survival: { label: "Supervivencia", line: "Sin reloj, hasta el tercer error", ms: null },
 };
 
 const MODE_KEYS = Object.keys(MODES) as ModeKey[];
@@ -143,72 +139,27 @@ function longestStreak(outcomes: readonly Outcome[]): number {
   return best;
 }
 
-/** How long a chip takes to slide to its new place, or to come in. */
-const CHIP_MOVE_MS = 240;
-
-/**
- * The chips glide instead of jumping (FLIP): before the browser paints a
- * longer list, each chip that was already there starts from where it was
- * and slides to its new place, and the new one grows in. The rows are
- * centred, so a new chip moves all the others. Skipped under reduced motion.
- */
-function useGlidingChips(count: number) {
-  const listRef = useRef<HTMLOListElement>(null);
-  const places = useRef(new Map<string, DOMRect>());
-
-  useLayoutEffect(() => {
-    const list = listRef.current;
-    if (!list) return;
-    const chips = Array.from(list.querySelectorAll<HTMLElement>("[data-chip]"));
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const next = new Map<string, DOMRect>();
-    for (const chip of chips) {
-      const key = chip.dataset.chip ?? "";
-      const place = chip.getBoundingClientRect();
-      next.set(key, place);
-      if (reduced || typeof chip.animate !== "function") continue;
-      const before = places.current.get(key);
-      if (!before) {
-        chip.animate(
-          [
-            { opacity: 0, transform: "scale(0.6)" },
-            { opacity: 1, transform: "none" },
-          ],
-          { duration: CHIP_MOVE_MS, easing: "ease-out" },
-        );
-        continue;
-      }
-      const dx = before.left - place.left;
-      const dy = before.top - place.top;
-      if (dx === 0 && dy === 0) continue;
-      chip.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }], {
-        duration: CHIP_MOVE_MS,
-        easing: "ease-out",
-      });
-    }
-    places.current = next;
-  }, [count]);
-
-  return listRef;
-}
-
 /** How long the score shows big on the board before the summary card. */
 const BURST_MS = 1400;
 
 /**
- * «Puzzle Rush» (D21, D34; PLAN.md §5.6), drawn like a rush: the board on the
- * left and a panel on the right. Before a run the panel shows today's best
- * and the best ever, the three modes (3 min, 5 min, Supervivencia) and
- * «Jugar»; during it, the mistakes in its top band, the score, the clock and
- * a chip per exercise with its difficulty, green or red; at its end the score
- * bursts on the board and a card sums it up, and the panel offers «Jugar
- * otra vez» and «Nuevo Rush». A pass adds one, a wrong move costs a mistake,
- * and the run ends at 0:00, at the third mistake, when the deck runs out or
- * at «Salir». While nothing persists the scores are the browser's.
+ * «Puzzle Rush» (D21, D34; PLAN.md §5.6), on the panel of «Ejercicios» in the
+ * new design system (2026-10-23, the owner's «M4»). Before a run: the rush's
+ * drawing and what it is, today's best and the best ever of the mode chosen,
+ * the three modes as cards (3 min, 5 min, Supervivencia), «Jugar», and at the
+ * right the marks of every mode and how it is played. During it, the material
+ * board and beside it the score, the clock and the three mistakes' slots,
+ * who plays and which exercise it is, the grid of the run's exercises — each
+ * with its difficulty, green or red, the one on the board ringed — and the
+ * best of the mode, «Vas por un récord» once it is beaten; «Salir» in the
+ * toolbar. At its end the score bursts on the board and a card sums it up,
+ * and the toolbar offers «Nuevo Rush» and «Jugar otra vez». A pass adds one,
+ * a wrong move costs a mistake, and the run ends at 0:00, at the third
+ * mistake, when the deck runs out or at «Salir». While nothing persists the
+ * scores are the browser's.
  */
 export function StormRunner({ deck }: StormRunnerProps) {
   const [mode, setMode] = useState<ModeKey>("three");
-  const [tab, setTab] = useState<"play" | "scores">("play");
   const [phase, setPhase] = useState<Phase>("ready");
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [now, setNow] = useState(0);
@@ -218,15 +169,13 @@ export function StormRunner({ deck }: StormRunnerProps) {
   const [end, setEnd] = useState<End | null>(null);
   const [record, setRecord] = useState<"best" | "today" | null>(null);
   const [view, setView] = useState<BoardView>({ fen: START_FEN, flip: false });
-  const [prompt, setPrompt] = useState<string | null>(null);
+  const [player, setPlayer] = useState<"white" | "black">("white");
   const [overlay, setOverlay] = useState<"burst" | "card" | null>(null);
   const [round, setRound] = useState(0);
   const scores = parseScores(useSyncExternalStore(subscribeScores, readScoresText, () => "{}"));
-  const titleId = useId();
   const cardTitleId = useId();
   // The board of the exercise on screen, so «Salir» leaves it in place.
   const liveView = useRef<BoardView | null>(null);
-  const chipsRef = useGlidingChips(outcomes.length);
 
   const limit = MODES[mode].ms;
   const score = outcomes.filter((outcome) => outcome.passed).length;
@@ -283,7 +232,6 @@ export function StormRunner({ deck }: StormRunnerProps) {
     setEnd(null);
     setRecord(null);
     setOverlay(null);
-    setPrompt(null);
     const at = Date.now();
     setStartedAt(at);
     setNow(at);
@@ -332,308 +280,311 @@ export function StormRunner({ deck }: StormRunnerProps) {
             : end === "deck"
               ? "Se acabaron los ejercicios"
               : "Fin del rush";
+  const beating = score > 0 && (bests.best === null || score > bests.best);
+
+  const actions: ExercisesToolbarAction[] =
+    phase === "running"
+      ? [{ label: "Salir", tone: "outlined", onClick: () => finish("quit", score, liveView.current ?? undefined) }]
+      : phase === "over"
+        ? [
+            { label: "Nuevo Rush", tone: "outlined", onClick: reset },
+            { label: "Jugar otra vez", tone: "filled", onClick: start },
+          ]
+        : [];
 
   return (
-    <section className={`storm-runner storm-runner_phase_${phase}`} aria-labelledby={titleId}>
-      <div className="storm-runner__stage">
-        {phase === "running" && current ? (
-          <StormExercise
-            key={`${round}:${current.id}`}
-            exercise={current}
-            onPrompt={setPrompt}
-            viewRef={liveView}
-            onDone={(passed, lastView) => onDone(current, passed, lastView)}
-          />
-        ) : (
-          <div className="storm-runner__board">
-            <ChessBoard position={{ fen: view.fen }} flipBoard={view.flip} />
-          </div>
-        )}
+    <section className={`platform-workspace__panel storm-runner storm-runner_phase_${phase}`} aria-label="Puzzle Rush">
+      <ExercisesToolbar
+        trail={[
+          { label: "Ejercicios", href: platformRoutes.exercises },
+          { label: phase === "ready" ? "Puzzle Rush" : `Puzzle Rush · ${MODES[mode].label}` },
+        ]}
+        actions={actions}
+      />
 
-        {phase === "over" && overlay === "burst" && (
-          <div className="storm-runner__burst" aria-hidden="true">
-            <PuzzlePieceIcon variant="duotone-solid" className="storm-runner__burst-piece" />
-            <span className="storm-runner__burst-score">{score}</span>
-          </div>
-        )}
-
-        {phase === "over" && overlay === "card" && (
-          <div className="storm-runner__card" role="group" aria-labelledby={cardTitleId}>
-            <button
-              type="button"
-              className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square storm-runner__card-close"
-              aria-label="Cerrar el resumen"
-              onClick={() => setOverlay(null)}
-            >
-              <XmarkIcon variant="classic-solid" className="platform-button__icon" />
-            </button>
-            <div className="storm-runner__card-head">
-              <p id={cardTitleId} className="storm-runner__card-title">
-                {endTitle}
-              </p>
-              <span className="storm-runner__card-badge" aria-hidden="true">
-                <PuzzlePieceIcon variant="duotone-solid" />
-              </span>
+      {phase === "ready" ? (
+        <div className="storm-runner__ready">
+          <div className="storm-runner__intro">
+            <div className="storm-runner__hero">
+              <NavArt art="rush" className="storm-runner__art" />
+              <div className="storm-runner__hero-text">
+                <h2 className="storm-runner__title">Puzzle Rush</h2>
+                <p className="storm-runner__lead">
+                  Ejercicios cada vez más difíciles: un acierto suma un punto y al tercer error se acaba.
+                </p>
+              </div>
             </div>
-            <p className="storm-runner__card-score">{score}</p>
-            <dl className="storm-runner__card-tiles">
-              <div className="storm-runner__card-tile">
-                <dt>
-                  <CalendarDayIcon variant="classic-solid" className="storm-runner__card-tile-icon" />
-                  Hoy
-                </dt>
-                <dd>{bests.today ?? score}</dd>
-              </div>
-              <div className="storm-runner__card-tile">
-                <dt>
-                  <TrophyIcon variant="classic-solid" className="storm-runner__card-tile-icon" />
-                  Mejor
-                </dt>
-                <dd>{bests.best ?? score}</dd>
-              </div>
-              <div className="storm-runner__card-tile">
-                <dt>
-                  <XmarkIcon variant="classic-solid" className="storm-runner__card-tile-icon" />
-                  Errores
-                </dt>
-                <dd>
-                  {mistakes}/{STORM_MAX_MISTAKES}
-                </dd>
-              </div>
-            </dl>
-            <dl className="storm-runner__card-stats">
-              <div className="storm-runner__card-stat">
-                <dt>
-                  <FireFlameCurvedIcon variant="classic-solid" className="storm-runner__card-stat-icon" />
-                  Racha más larga
-                </dt>
-                <dd>{longestStreak(outcomes)}</dd>
-              </div>
-              <div className="storm-runner__card-stat">
-                <dt>
-                  <CheckIcon variant="classic-solid" className="storm-runner__card-stat-icon" />
-                  Ejercicio más difícil resuelto
-                </dt>
-                <dd>{hardest ?? "–"}</dd>
-              </div>
-              <div className="storm-runner__card-stat">
-                <dt>
-                  <ClockIcon variant="classic-solid" className="storm-runner__card-stat-icon" />
-                  Tiempo medio por ejercicio
-                </dt>
-                <dd>{average}</dd>
-              </div>
-            </dl>
-          </div>
-        )}
-      </div>
 
-      <div className="storm-runner__panel">
-        {phase === "ready" ? (
-          <>
-            <header className="storm-runner__head">
-              <Link
-                href={platformRoutes.exercises}
-                className="platform-button platform-button_variant_quiet platform-button_shape_square storm-runner__back"
-                aria-label="Volver a Ejercicios"
-              >
-                <ArrowLeftIcon variant="classic-solid" className="platform-button__icon" />
-              </Link>
-              <h1 id={titleId} className="storm-runner__title">
-                <PuzzlePieceIcon variant="duotone-solid" className="storm-runner__title-icon" />
-                Puzzle Rush
-              </h1>
-            </header>
-
-            <dl className="storm-runner__bests">
-              <div className="storm-runner__best">
+            <dl className="storm-runner__tiles">
+              <div className="storm-runner__tile">
                 <dt>El mejor de hoy</dt>
-                <dd>
-                  <CalendarDayIcon variant="classic-solid" className="storm-runner__best-icon" />
-                  {bests.today ?? "--"}
-                </dd>
+                <dd>{bests.today ?? "--"}</dd>
               </div>
-              <div className="storm-runner__best">
+              <div className="storm-runner__tile">
                 <dt>Mejor puntuación</dt>
-                <dd>
-                  <ChartSimpleIcon variant="classic-solid" className="storm-runner__best-icon" />
-                  {bests.best ?? "--"}
-                </dd>
+                <dd>{bests.best ?? "--"}</dd>
               </div>
             </dl>
 
-            <div className="storm-runner__tabs" role="tablist" aria-label="Puzzle Rush">
-              {(
-                [
-                  ["play", "Jugar"],
-                  ["scores", "Tus marcas"],
-                ] as const
-              ).map(([key, label]) => (
-                <button
-                  key={key}
-                  type="button"
-                  role="tab"
-                  aria-selected={tab === key}
-                  className={`storm-runner__tab${tab === key ? " storm-runner__tab_state_current" : ""}`}
-                  onClick={() => setTab(key)}
-                >
-                  {label}
-                </button>
-              ))}
+            <div className="storm-runner__choose">
+              <p className="storm-runner__label" id={`${cardTitleId}-modo`}>
+                Modo
+              </p>
+              <div className="storm-runner__modes" role="radiogroup" aria-labelledby={`${cardTitleId}-modo`}>
+                {MODE_KEYS.map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    role="radio"
+                    aria-checked={mode === key}
+                    className={`storm-runner__mode${mode === key ? " storm-runner__mode_state_chosen" : ""}`}
+                    onClick={() => setMode(key)}
+                  >
+                    <span className="storm-runner__ring" aria-hidden="true" />
+                    <span className="storm-runner__mode-name">{MODES[key].label}</span>
+                    <span className="storm-runner__mode-line">{MODES[key].line}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {tab === "play" ? (
-              <div className="storm-runner__modes" role="radiogroup" aria-label="Modo">
-                {MODE_KEYS.map((key) => {
-                  const { label, Icon } = MODES[key];
-                  return (
-                    <button
-                      key={key}
-                      type="button"
-                      role="radio"
-                      aria-checked={mode === key}
-                      className={`storm-runner__mode${mode === key ? " storm-runner__mode_state_chosen" : ""}`}
-                      onClick={() => setMode(key)}
-                    >
-                      <Icon variant="classic-solid" className="storm-runner__mode-icon" />
-                      {label}
-                    </button>
-                  );
-                })}
-              </div>
-            ) : (
-              <dl className="storm-runner__marks">
-                {MODE_KEYS.map((key) => {
-                  const { label, Icon } = MODES[key];
-                  const mark = bestsOf(scores, key);
-                  return (
-                    <div key={key} className="storm-runner__mark">
-                      <dt>
-                        <Icon variant="classic-solid" className="storm-runner__mode-icon" />
-                        {label}
-                      </dt>
-                      <dd>
-                        <span className="storm-runner__mark-best">{mark.best ?? "--"}</span>
-                        <span className="storm-runner__mark-today">Hoy: {mark.today ?? "--"}</span>
-                      </dd>
-                    </div>
-                  );
-                })}
-              </dl>
-            )}
-
-            <div className="storm-runner__foot">
+            <div className="storm-runner__go">
               <button
                 type="button"
-                className="platform-button platform-button_variant_accent platform-button_size_lg storm-runner__play"
+                className={`${mdButton("filled", "md")} storm-runner__play`}
                 onClick={start}
                 disabled={deck.length === 0}
               >
+                <PlayIcon variant="classic-solid" className="platform-md-icon" />
                 Jugar
               </button>
               {deck.length === 0 && <p className="storm-runner__note">Todavía no hay ejercicios en la biblioteca.</p>}
             </div>
-          </>
-        ) : (
-          <>
-            <div
-              className={`storm-runner__band${mistakes > 0 ? " storm-runner__band_state_missed" : ""}`}
-              role="img"
-              aria-label={`Errores: ${mistakes} de ${STORM_MAX_MISTAKES}`}
-            >
-              {Array.from({ length: STORM_MAX_MISTAKES }, (_, slot) => (
-                <span
-                  key={slot}
-                  className={`storm-runner__slot${slot < mistakes ? " storm-runner__slot_state_used" : ""}`}
-                >
-                  {slot < mistakes && <XmarkIcon variant="classic-solid" className="storm-runner__slot-icon" />}
-                </span>
-              ))}
-            </div>
+          </div>
 
-            <div className="storm-runner__scoreboard">
-              <h1 id={titleId} className="storm-runner__visually-hidden">
-                Puzzle Rush
-              </h1>
-              <span className="storm-runner__badge" aria-hidden="true">
-                <PuzzlePieceIcon variant="duotone-solid" />
-              </span>
-              <p className="storm-runner__score" aria-label={`Puntos: ${score}`}>
-                {score}
-              </p>
-              <p
-                className="storm-runner__clock"
-                role="timer"
-                aria-label={limit === null ? `Tiempo: ${clock}` : `Quedan ${clock}`}
-              >
-                {limit === null ? (
-                  <InfinityIcon variant="classic-solid" className="storm-runner__clock-icon" />
-                ) : (
-                  <StopwatchIcon variant="classic-solid" className="storm-runner__clock-icon" />
-                )}
-                {clock}
-              </p>
-              {phase === "running" && prompt && <p className="storm-runner__prompt">{prompt}</p>}
-            </div>
+          <div className="storm-runner__aside">
+            <section className="storm-runner__card" aria-labelledby={`${cardTitleId}-marcas`}>
+              <h2 className="storm-runner__label" id={`${cardTitleId}-marcas`}>
+                Tus marcas
+              </h2>
+              <dl className="storm-runner__marks">
+                {MODE_KEYS.map((key) => {
+                  const mark = bestsOf(scores, key);
+                  return (
+                    <div key={key} className="storm-runner__mark">
+                      <dt>
+                        {MODES[key].label}
+                        <span className="storm-runner__mark-today">Hoy: {mark.today ?? "--"}</span>
+                      </dt>
+                      <dd>{mark.best ?? "--"}</dd>
+                    </div>
+                  );
+                })}
+              </dl>
+            </section>
+            <section className="storm-runner__card" aria-labelledby={`${cardTitleId}-reglas`}>
+              <h2 className="storm-runner__label" id={`${cardTitleId}-reglas`}>
+                Cómo se juega
+              </h2>
+              <ul className="storm-runner__rules">
+                <li>La primera jugada equivocada falla el ejercicio.</li>
+                <li>Cada acierto suma un punto; al tercer error se acaba.</li>
+                <li>También termina si se acaba el tiempo o los ejercicios.</li>
+              </ul>
+            </section>
+          </div>
+        </div>
+      ) : (
+        <div className="storm-runner__play-area">
+          <div className="storm-runner__stage">
+            {phase === "running" && current ? (
+              <StormExercise
+                key={`${round}:${current.id}`}
+                exercise={current}
+                onPlayer={setPlayer}
+                viewRef={liveView}
+                onDone={(passed, lastView) => onDone(current, passed, lastView)}
+              />
+            ) : (
+              <div className="storm-runner__board">
+                <ChessBoard position={{ fen: view.fen }} flipBoard={view.flip} look="material" />
+              </div>
+            )}
 
-            <ol ref={chipsRef} className="storm-runner__chips" aria-label="Ejercicios del rush">
-              {outcomes.map((outcome, slot) => (
-                <li
-                  key={`${outcome.exercise.id}-${slot}`}
-                  data-chip={`${outcome.exercise.id}-${slot}`}
-                  className={`storm-runner__chip storm-runner__chip_result_${outcome.passed ? "pass" : "miss"}`}
-                >
-                  <span className="storm-runner__chip-mark">
-                    {outcome.passed ? (
-                      <CheckIcon variant="classic-solid" className="storm-runner__chip-icon" />
-                    ) : (
-                      <XmarkIcon variant="classic-solid" className="storm-runner__chip-icon" />
-                    )}
-                  </span>
-                  <span className="storm-runner__chip-difficulty">{outcome.exercise.difficulty}</span>
-                  <span className="storm-runner__visually-hidden">{outcome.passed ? "resuelto" : "fallado"}</span>
-                </li>
-              ))}
-            </ol>
+            {phase === "over" && overlay === "burst" && (
+              <div className="storm-runner__burst" aria-hidden="true">
+                <span className="storm-runner__burst-score">{score}</span>
+              </div>
+            )}
 
-            <div className="storm-runner__foot">
-              {phase === "running" ? (
+            {phase === "over" && overlay === "card" && (
+              <div className="storm-runner__summary" role="group" aria-labelledby={cardTitleId}>
                 <button
                   type="button"
-                  className="platform-button platform-button_variant_quiet storm-runner__quit"
-                  onClick={() => finish("quit", score, liveView.current ?? undefined)}
+                  className={`${mdIconButton("standard", "sm")} storm-runner__summary-close`}
+                  aria-label="Cerrar el resumen"
+                  onClick={() => setOverlay(null)}
                 >
-                  <FlagIcon variant="classic-solid" className="platform-button__icon" />
-                  Salir
+                  <XmarkIcon variant="classic-solid" className="platform-md-icon" />
                 </button>
-              ) : (
-                <div className="storm-runner__again">
-                  <button
-                    type="button"
-                    className="platform-button platform-button_variant_accent platform-button_size_lg"
-                    onClick={start}
-                  >
-                    <RotateRightIcon variant="classic-solid" className="platform-button__icon" />
-                    Jugar otra vez
-                  </button>
-                  <button type="button" className="platform-button platform-button_size_lg" onClick={reset}>
-                    <PlusIcon variant="classic-solid" className="platform-button__icon" />
-                    Nuevo Rush
-                  </button>
-                </div>
-              )}
+                <p id={cardTitleId} className="storm-runner__summary-title">
+                  {endTitle}
+                </p>
+                <p className="storm-runner__summary-score">{score}</p>
+                <dl className="storm-runner__summary-tiles">
+                  <div className="storm-runner__summary-tile">
+                    <dt>
+                      <CalendarDayIcon variant="classic-solid" className="storm-runner__summary-icon" />
+                      Hoy
+                    </dt>
+                    <dd>{bests.today ?? score}</dd>
+                  </div>
+                  <div className="storm-runner__summary-tile">
+                    <dt>
+                      <TrophyIcon variant="classic-solid" className="storm-runner__summary-icon" />
+                      Mejor
+                    </dt>
+                    <dd>{bests.best ?? score}</dd>
+                  </div>
+                  <div className="storm-runner__summary-tile">
+                    <dt>
+                      <XmarkIcon variant="classic-solid" className="storm-runner__summary-icon" />
+                      Errores
+                    </dt>
+                    <dd>
+                      {mistakes}/{STORM_MAX_MISTAKES}
+                    </dd>
+                  </div>
+                </dl>
+                <dl className="storm-runner__summary-stats">
+                  <div className="storm-runner__summary-stat">
+                    <dt>
+                      <FireFlameCurvedIcon variant="classic-solid" className="storm-runner__summary-icon" />
+                      Racha más larga
+                    </dt>
+                    <dd>{longestStreak(outcomes)}</dd>
+                  </div>
+                  <div className="storm-runner__summary-stat">
+                    <dt>
+                      <CheckIcon variant="classic-solid" className="storm-runner__summary-icon" />
+                      Ejercicio más difícil resuelto
+                    </dt>
+                    <dd>{hardest ?? "–"}</dd>
+                  </div>
+                  <div className="storm-runner__summary-stat">
+                    <dt>
+                      <ClockIcon variant="classic-solid" className="storm-runner__summary-icon" />
+                      Tiempo medio por ejercicio
+                    </dt>
+                    <dd>{average}</dd>
+                  </div>
+                </dl>
+              </div>
+            )}
+          </div>
+
+          <div className="storm-runner__column">
+            <div className="storm-runner__scoreboard" role="group" aria-label="Marcador">
+              <div className="storm-runner__figure">
+                <p className="storm-runner__label">Puntos</p>
+                <p className="storm-runner__score">{score}</p>
+              </div>
+              <div className="storm-runner__figure">
+                <p className="storm-runner__label">Tiempo</p>
+                <p
+                  className="storm-runner__clock"
+                  role="timer"
+                  aria-label={limit === null ? `Llevas ${clock}` : `Quedan ${clock}`}
+                >
+                  {limit === null ? (
+                    <InfinityIcon variant="classic-solid" className="storm-runner__clock-icon" />
+                  ) : (
+                    <StopwatchIcon variant="classic-solid" className="storm-runner__clock-icon" />
+                  )}
+                  {clock}
+                </p>
+              </div>
+              <div className="storm-runner__figure">
+                <p className="storm-runner__label">Errores</p>
+                <p
+                  className="storm-runner__slots"
+                  role="img"
+                  aria-label={`Errores: ${mistakes} de ${STORM_MAX_MISTAKES}`}
+                >
+                  {Array.from({ length: STORM_MAX_MISTAKES }, (_, slot) => (
+                    <span
+                      key={slot}
+                      className={`storm-runner__slot${slot < mistakes ? " storm-runner__slot_state_used" : ""}`}
+                    >
+                      {slot < mistakes && <XmarkIcon variant="classic-solid" className="storm-runner__slot-icon" />}
+                    </span>
+                  ))}
+                </p>
+              </div>
             </div>
-          </>
-        )}
-      </div>
+
+            {phase === "running" && current && (
+              <div className="storm-runner__status" aria-live="polite">
+                <p className="storm-runner__turn">
+                  <span className={`storm-runner__side storm-runner__side_color_${player}`} aria-hidden="true" />
+                  {player === "white" ? "Juegan blancas" : "Juegan negras"}
+                </p>
+                <p className="storm-runner__line">
+                  Ejercicio {index + 1} · {exerciseKindLabel(current.kind, current.mateIn)} · {current.difficulty}
+                </p>
+                {current.prompt?.trim() && <p className="storm-runner__line">{current.prompt.trim()}</p>}
+              </div>
+            )}
+
+            <section
+              className="storm-runner__card storm-runner__card_kind_runs"
+              aria-labelledby={`${cardTitleId}-runs`}
+            >
+              <h2 className="storm-runner__label" id={`${cardTitleId}-runs`}>
+                Ejercicios del rush · {outcomes.length} {outcomes.length === 1 ? "hecho" : "hechos"}
+              </h2>
+              <ol className="storm-runner__runs">
+                {outcomes.map((outcome, slot) => (
+                  <li
+                    key={`${outcome.exercise.id}-${slot}`}
+                    className={`storm-runner__run storm-runner__run_result_${outcome.passed ? "pass" : "miss"}`}
+                  >
+                    {outcome.passed ? (
+                      <CheckIcon variant="classic-solid" className="storm-runner__run-icon" />
+                    ) : (
+                      <XmarkIcon variant="classic-solid" className="storm-runner__run-icon" />
+                    )}
+                    {outcome.exercise.difficulty}
+                    <span className="storm-runner__visually-hidden">{outcome.passed ? "resuelto" : "fallado"}</span>
+                  </li>
+                ))}
+                {phase === "running" && current && (
+                  <li className="storm-runner__run storm-runner__run_result_now">
+                    {current.difficulty}
+                    <span className="storm-runner__visually-hidden">en curso</span>
+                  </li>
+                )}
+              </ol>
+            </section>
+
+            <div className="storm-runner__card storm-runner__card_kind_best">
+              <div>
+                <p className="storm-runner__label">Tu mejor en {MODES[mode].label}</p>
+                <p className="storm-runner__best">{bests.best ?? "--"}</p>
+              </div>
+              {beating && <span className="storm-runner__record">Vas por un récord</span>}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
 
 interface StormExerciseProps {
   exercise: ExerciseSolverExercise;
-  /** The side to move and the task, for the panel. */
-  onPrompt: (prompt: string) => void;
+  /** The side to move, for the status card. */
+  onPlayer: (player: "white" | "black") => void;
   /** Where the board stands, for a run ended mid-exercise. */
   viewRef: { current: BoardView | null };
   onDone: (passed: boolean, lastView: BoardView) => void;
@@ -645,24 +596,23 @@ interface StormExerciseProps {
  * failed and, once the flash is over, the run moves on; the last correct move
  * decides it passed, after the reply if there is one.
  */
-function StormExercise({ exercise, onPrompt, viewRef, onDone }: StormExerciseProps) {
+function StormExercise({ exercise, onPlayer, viewRef, onDone }: StormExerciseProps) {
   const controls = useExerciseSolver({ exercise, mode: "preview" });
   const session = controls.session;
   const decided = session ? session.solve.failed || (isSessionOver(session) && session.waiting === null) : true;
   const passed = session ? isSessionOver(session) && !session.solve.failed : false;
   const settled = session ? decided && session.waiting === null : true;
   const player = session?.solution.player ?? "white";
-  const prompt = exercise.prompt?.trim() || defaultExercisePrompt(player, exercise.kind, exercise.mateIn);
 
   useEffect(() => {
     if (session) viewRef.current = { fen: session.board.fen, flip: player === "black" };
   });
 
   useEffect(() => {
-    if (session) onPrompt(prompt);
+    if (session) onPlayer(player);
     // Once per exercise: the key remounts this on each deal.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Boolean(session), prompt]);
+  }, [Boolean(session), player]);
 
   useEffect(() => {
     if (!settled) return;
@@ -689,6 +639,7 @@ function StormExercise({ exercise, onPrompt, viewRef, onDone }: StormExercisePro
         onMove={controls.move}
         flipBoard={player === "black"}
         lastMoveTone={session.board.tone ?? undefined}
+        look="material"
       />
     </div>
   );

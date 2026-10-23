@@ -1,4 +1,5 @@
-/* «Esta sesión» under the board (exercise-session-history.comp.tsx). */
+/* «Esta sesión», a card of the solve page's column (exercise-session-history.comp.tsx),
+   in the new design system's roles. */
 .exercise-session-history {
   display: flex;
   flex-direction: column;
@@ -7,15 +8,15 @@
 
   & .exercise-session-history__title {
     margin: 0;
-    font-size: var(--platform-type-sm);
+    font-size: var(--platform-type-2xs);
     font-weight: 600;
-    color: var(--platform-text);
+    color: var(--platform-m3-on-surface-variant);
   }
 
   & .exercise-session-history__pills {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--platform-space-2);
+    gap: var(--platform-space-1);
     margin: 0;
     padding: var(--platform-space-1);
     list-style: none;
@@ -25,43 +26,72 @@
     display: inline-flex;
     align-items: center;
     gap: var(--platform-space-1);
-    height: 32px;
+    max-width: 220px;
+    height: 28px;
+    box-sizing: border-box;
     padding: 0 var(--platform-space-3);
-    border-radius: 8px;
-    font-size: var(--platform-type-sm);
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
+    border-radius: 1000px;
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
     text-decoration: none;
   }
 
   & .exercise-session-history__icon {
-    width: 12px;
-    height: 12px;
+    flex: none;
+    width: 11px;
+    height: 11px;
+  }
+
+  & .exercise-session-history__name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .exercise-session-history__after {
+    flex: none;
   }
 
   & .exercise-session-history__pill_tone_clean {
-    background: var(--platform-success-soft);
-    color: var(--platform-success-ink);
+    background: var(--platform-m3-success-container);
+    color: var(--platform-m3-on-success-container);
   }
 
   & .exercise-session-history__pill_tone_late {
-    background: var(--platform-warning-soft);
-    color: var(--platform-warning-ink);
+    background: var(--platform-m3-warning-container);
+    color: var(--platform-m3-on-warning-container);
   }
 
   & .exercise-session-history__pill_tone_shown {
-    background: var(--platform-danger-soft);
-    color: var(--platform-danger);
+    background: var(--platform-m3-container);
+    color: var(--platform-m3-on-surface-variant);
   }
 
+  /* The exercise on the board, still open: an empty pill on the panel. */
   & .exercise-session-history__pill_tone_open {
-    background: var(--platform-surface);
-    color: var(--platform-text-muted);
+    border: 1px solid var(--platform-m3-outline-variant);
+    background: var(--platform-m3-panel);
+    color: var(--platform-m3-on-surface-variant);
   }
 
   & .exercise-session-history__pill_state_current {
     box-shadow:
-      0 0 0 2px var(--platform-bg),
-      0 0 0 4px var(--platform-accent-ink);
+      0 0 0 2px var(--platform-m3-panel),
+      0 0 0 4px var(--platform-m3-primary);
+  }
+
+  & .exercise-session-history__pill:focus-visible {
+    outline: 2px solid var(--platform-m3-primary);
+    outline-offset: 2px;
+  }
+
+  & .exercise-session-history__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-1) var(--platform-space-3);
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
   }
 }

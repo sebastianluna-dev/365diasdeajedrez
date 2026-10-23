@@ -104,9 +104,10 @@ export const getStudentExerciseAccess = cache(async (): Promise<boolean> => {
 /**
  * The home: the series given to the student, newest first, and the
  * academy's published series, the last published first, with what they
- * solved of each.
+ * solved of each. Memoised per request: the side column of «Ejercicios» and
+ * the page under it read it both.
  */
-export async function getStudentExercisesHome(): Promise<StudentExercisesHome> {
+export const getStudentExercisesHome = cache(async (): Promise<StudentExercisesHome> => {
   const viewer = await getExerciseViewer();
   const db = getPlatformDb();
   const [rows, academyRows] = await Promise.all([
@@ -140,7 +141,7 @@ export async function getStudentExercisesHome(): Promise<StudentExercisesHome> {
     academySeries,
     continueWith: continueWithOf([...series, ...academySeries]),
   };
-}
+});
 
 /** A series the student may open — given to them, or the academy's published — or null: one they may not see is not found. */
 export async function getStudentSeries(seriesId: string): Promise<StudentSeriesView | null> {

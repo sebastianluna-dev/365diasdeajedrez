@@ -1,0 +1,38 @@
+---
+description: "The frame of «Ejercicios» and «Puzzle Rush» in the new design system: the canvas and the side column — «Puzzle Rush» as the FAB, the topics with the open one unfolded, and «Tuyo» — drawn once by the layout they share."
+---
+
+# `ExercisesWorkspace`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                 |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/platform/sections/exercises/`: `exercises-workspace.comp.tsx` (the frame), `exercises-side.section.tsx` (the column's data), `exercises-side-nav.comp.tsx` (the column, lit from the address), `exercises-nav.const.ts` (the groups, pure; tested in `exercises-nav.const.test.ts`), `exercises-side-skeleton.comp.tsx` (the column while it loads) |
+| Kind       | Server Component; `ExercisesSideNav` is a Client Component (it follows the address and holds «Ver los N subtemas»)                                                                                                                                                                                                                                              |
+| Stylesheet | `exercises-side-skeleton.comp.css` → block `.exercises-side-skeleton`; the frame is `.platform-workspace` (`platform.css`) and the column [`PlatformSideNav`](/components/platform/shared/platform-side-nav)'s                                                                                                                                                  |
+| Used by    | `app/(platform)/(exercises)/layout.tsx`, the layout `/ejercicios*` and `/puzzle-rush` share                                                                                                                                                                                                                                                                     |
+| Composes   | [`PlatformSideNav`](/components/platform/shared/platform-side-nav) (with `subLinks`, `subMore` and the action's `icon` and `current`)                                                                                                                                                                                                                           |
+| Reads      | `getPracticeFilters()` (the topics with a library exercise) and `getStudentExercisesHome()` (the series), both cached per request                                                                                                                                                                                                                               |
+
+## Purpose
+
+«Ejercicios» moved to the new design system on 2026-10-23, from the owner's «M4» canvas, and «Puzzle Rush» with it. The two route folders live in one route group, `app/(platform)/(exercises)/`, whose layout draws this frame once, so moving between a topic, a series, the history and the rush keeps the column in place and only the panel changes, as Gmail's labels do. The URLs did not change. The bar carries no search: the canvas drew «Buscar un tema o una serie», but the column already lists every topic and series, so a search would find nothing more (the owner took such searches out of other pages).
+
+## Props
+
+`children`: the page, its `.platform-workspace__panel`, or the loading skeleton of one. A container: its one job is to place the panel.
+
+## Behaviour
+
+- **«Puzzle Rush»** is the column's action, Material's extended FAB with the stopwatch; it is filled with the primary (`current`) while the rush is the page on screen.
+- **«Temas»**: «Todos los temas» (`/ejercicios`, lit too on `/ejercicios/biblioteca/[id]`), then each first-level topic that has a library exercise (a parent through its children). The topic of the address (`?tema=`), or the parent of the subtopic of the address, is open: its first five subtopics under it (`SUBTOPIC_LIMIT`; the one on screen always among them), and «Ver los N subtemas» shows the rest. A topic's link keeps the level chosen (`?nivel=`).
+- **«Tuyo»**: «De tu profesor» with the count of the series given, «Series de la academia» when the academy has published any, and «Historial». A series' page and its exercises light the view the series belongs to.
+- Which link is lit is the browser's to say (`exercisesNavGroups(data, location, expanded)`): the layout does not render again when the address changes.
+- It waits for nothing: the column's data streams in behind `ExercisesSideSkeleton` (the FAB's place and the two groups of rows, pulsing in the container grey; markup and CSS only), and the page behind its own `loading.tsx` ([`ExercisesPanelSkeleton`](/components/platform/sections/exercises/exercises-panel-skeleton)).
+
+## Markup & styling
+
+Block `.exercises-side-skeleton` (80 lines): the same rhythm as `PlatformSideNav`, so the links land where its shapes are; its pulse is off under `prefers-reduced-motion: reduce`.
+
+**Elements:** `__label` (for a screen reader), `__shape`, `__action`, `__group`, `__title`, `__row`, `__icon`, `__text`
+
+**Tokens:** `--platform-m3-container-high`, `--md-sys-shape-corner-lg`.

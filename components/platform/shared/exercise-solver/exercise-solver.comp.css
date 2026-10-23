@@ -1,9 +1,8 @@
 /* The solve screen. From 1024px the board is on the left and a panel as tall
    as the board on the right: the notation on top, scrolling on its own, and
    «Tu turno», the error or the result at its foot, with the ‹ › under it.
-   The full page (`_layout_page`) adds the column of the exercise's data at the
-   left and the visit's history under the board, from 1280px; below that the
-   column goes under the board. Under 1024px everything stacks, the board at
+   The full page of «Ejercicios» is another view (`exercise-solver-page.comp.css`).
+   Under 1024px everything stacks, the board at
    the width of the screen (or of what is left of its height, so a short
    screen keeps a board to play on), and a phone on its side puts the panel
    beside the board again. */
@@ -389,90 +388,15 @@
     min-width: 0;
   }
 
-  /* The full page: the data's column at the left, the history under the board. */
-  &.exercise-solver_layout_page {
-    grid-template-columns: minmax(220px, 280px) minmax(0, 600px) minmax(280px, 340px);
-    grid-template-areas:
-      "aside board panel"
-      "aside history nav"
-      "full full full";
-    grid-template-rows: auto auto auto;
-  }
-
-  /* Where the page is the window (`platform-page_height_screen`: from 1280px
-     wide and over 620px tall), nothing scrolls the page: the board takes all
-     the height that is left — the window less the bar (70px), the shell's
-     padding above and below and the room kept for the history — or all the
-     width the two columns and the shell's sides leave, whichever is less, as
-     the study's board does. The columns at its sides are as tall as it and
-     scroll inside; the history takes what is left under it. */
-  @media (width >= 1280px) and (height > 620px) {
-    &.exercise-solver_layout_page {
-      --solve-history: 72px;
-      --solve-board: max(
-        320px,
-        min(
-          calc(100vh - 70px - 2 * var(--platform-space-6) - var(--solve-history) - var(--platform-space-4)),
-          calc(100vw - 2 * var(--platform-space-12) - 280px - 340px - 2 * var(--platform-space-6))
-        )
-      );
-      height: 100%;
-      grid-template-columns: 280px var(--solve-board) 340px;
-      grid-template-rows: var(--solve-board) minmax(0, 1fr);
-      grid-template-areas:
-        "aside board panel"
-        "aside history nav";
-    }
-
-    &.exercise-solver_layout_page .exercise-solve-aside {
-      align-self: stretch;
-      contain: size;
-      overflow-y: auto;
-    }
-
-    &.exercise-solver_layout_page .exercise-session-history {
-      min-height: 0;
-      overflow: hidden;
-    }
-
-    /* One row of pills, scrolling sideways, so a long visit never grows it. */
-    &.exercise-solver_layout_page .exercise-session-history__pills {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-    }
-  }
-
-  & .exercise-session-history {
-    grid-area: history;
-  }
-
-  & .exercise-solve-aside {
-    grid-area: aside;
-  }
-
-  @media (width < 1280px) {
-    &.exercise-solver_layout_page {
-      grid-template-columns: minmax(0, 600px) minmax(280px, 360px);
-      grid-template-areas:
-        "board panel"
-        "history nav"
-        "aside aside"
-        "full full";
-    }
-  }
-
   /* Tablets and phones: one column, the board as wide as the screen allows
      while leaving the panel's foot in sight; the panel takes its own height. */
   @media (width < 1024px) {
-    &,
-    &.exercise-solver_layout_page {
+    & {
       grid-template-columns: minmax(0, 1fr);
       grid-template-areas:
         "board"
         "nav"
         "panel"
-        "history"
-        "aside"
         "full";
       row-gap: var(--platform-space-3);
     }
@@ -496,14 +420,11 @@
   /* A phone on its side: the board on the left, the rest beside it. An
      orientation is not a width, so it is no breakpoint of its own. */
   @media (width < 1024px) and (orientation: landscape) {
-    &,
-    &.exercise-solver_layout_page {
+    & {
       grid-template-columns: auto minmax(0, 1fr);
       grid-template-areas:
         "board panel"
         "nav panel"
-        "history history"
-        "aside aside"
         "full full";
       column-gap: var(--platform-space-5);
     }

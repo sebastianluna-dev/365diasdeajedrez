@@ -1,0 +1,43 @@
+---
+description: "The full solve page of «Ejercicios» in the new design system: the material board with Material's keys, and beside it the status card, the moves, «Esta sesión» and the rating's two switches."
+---
+
+# `ExerciseSolverPage`
+
+|            |                                                                                                                                                                                                                                                                                                                             |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/exercise-solver-page/exercise-solver-page.comp.tsx`                                                                                                                                                                                                                                             |
+| Kind       | Client Component (the move the board was taken back to, and the rating's store)                                                                                                                                                                                                                                             |
+| Stylesheet | `exercise-solver-page.comp.css` → block `.exercise-solver-page`                                                                                                                                                                                                                                                             |
+| Story      | `exercise-solver-page.stories.tsx` (`platform/shared/ExerciseSolverPage`): playing with three pills of «Esta sesión», a wrong move, a text hint, solved clean, failed and finished, the solution shown with its autoplay, an unscored retry, a submit that did not get through, and a phone at 390 px                       |
+| Used by    | [`ExerciseSolver`](/components/platform/shared/exercise-solver), when it is given an `aside`: «Ejercicios» ([`ExerciseTrainerSection`](/components/platform/sections/exercises/exercise-trainer-section)) and a series' exercise ([`ExerciseSolveSection`](/components/platform/sections/exercises/exercise-solve-section)) |
+| Composes   | [`ChessBoard`](/components/chess/chess-board) (`look="material"`), `ExerciseSessionHistory`, [`PlatformSwitch`](/components/platform/shared/platform-switch) (`layout="inline"`)                                                                                                                                            |
+| Uses       | `mdButton`, `mdIconButton` · `lib/material/material-classes.ts`; from `exercise-solver/`: the session (`exercise-solver-session.ts`), the notation (`exercise-solver-notation.ts`), the result's words (`exercise-solver-result.ts`), the sample rating (`exercise-rating.store.ts`)                                        |
+
+## Purpose
+
+The Lichess-like screen of «Ejercicios» as the owner drew it in «M4» (2026-10-23), in Material 3 Expressive. It is a view of the solver and not a solver of its own: it receives the same `ExerciseSolverViewProps` as `ExerciseSolverView` — the exercise, the session, the save state and the handlers — and tells the result in the same words (`resultTextOf`, `resultModeOf`, `saveNoteOf`, `BLOCK_NOTE`), so the scoring rules — the first wrong move fails the attempt, «Ver la solución» too, one scored attempt per exercise and study day — are the hook's and the server's, never this drawing's. The page's toolbar (its trail, the series' place, the level) is the section's, around it.
+
+## Props
+
+`ExerciseSolverViewProps` (see [`ExerciseSolver`](/components/platform/shared/exercise-solver)); it reads `aside` for the history's scope and the topic's chip. `context` is not drawn: the series' place is in the toolbar.
+
+## Behaviour
+
+- **The board**: `ChessBoard look="material"`, seen from the player's side, with the piece of a hint circled and the wrong move in red for a moment (a ring that comes and goes, still under reduced motion). Under it, Material's wide keys as the explorer's — «Al principio», «Jugada anterior», «Reproducir la solución» (only while the solution is walked; «Pausar» while it plays), «Jugada siguiente» (filled), «Al final» —, in Sharp Light. Once it is over they, and the moves, take the board back along the line.
+- **The status card**, tinted by how it stands: «Tu turno» in the pale blue of `--platform-m3-info-container`, with the side to move as a dot, the prompt, the chips (the topic, «Secuencia · 1250», «Fallado» once the first move was wrong), the feedback, the author's hints and «Pista» (tonal) and «Ver la solución» (outlined); «Ésa no es la jugada» in the error container; and the result — «¡Resuelto!» in the success container, «Resuelto, después de un error» in the warning container, «Viste la solución» in the error container — with «Jugaste …; la jugada era …», the explanation, «Siguiente ejercicio» (filled), the way back (filled when nothing comes after) and «Reintentar» (text). The notes of a retry, a class block and the preview, and the save's, are lines on the panel's white at its foot.
+- **«Jugadas»**: the line on the board, loose, each move a pill and the one on the board in the primary; the student's wrong tries crossed on a line of their own, the first «tu intento».
+- **«Esta sesión»** (`ExerciseSessionHistory`, only with `aside`): a pill per exercise of the visit, named and coloured by how it went, and a line saying what the colours mean.
+- **The two switches** at the column's foot: «Cuenta para tu puntuación» with the sample rating and its last change, and «Pasar al siguiente al resolver» (`exercise-rating.store.ts`: this browser's storage, nothing reaches the server).
+
+## Markup & styling
+
+Block `.exercise-solver-page` (492 lines): a grid of the board's track and the column. On a laptop or wider the board is `max(320px, min(100vh - 254px, 600px))` — the window less the bar, the panel's toolbar and the keys —, so the page fits the window; under 1280px it takes up to 480px, and under 1024px the two stack, the board as wide as the screen allows while leaving the status in sight (`max(min(100vw - 32px, 100svh - 240px), 280px)`). The column's cards have a hairline of `--platform-m3-row-edge` and `--md-sys-shape-corner-lg` corners.
+
+**Elements:** `__stage`, `__board`, `__keys`, `__key`, `__column`, `__status`, `__head`, `__text`, `__title`, `__line`, `__comment`, `__explanation`, `__side`, `__mark`, `__chips`, `__chip`, `__chip-icon`, `__feedback`, `__hints`, `__hint`, `__hint-icon`, `__hint-number`, `__actions`, `__result`, `__note`, `__card`, `__switch`, `__rating`, `__delta`, `__delta-icon`, `__label`, `__empty`, `__notation`, `__row`, `__number`, `__move`, `__move-mark`, `__miss`, `__miss-mark`, `__miss-note`
+
+**Modifiers:** `.exercise-solver-page_mode_{solve,block,unscored,preview}`, `__board_state_wrong`, `__key_tone_grey`, `__status_tone_{turn,wrong,ok,late,error}`, `__side_color_{white,black}`, `__mark_tone_{ok,late,error}`, `__chip_tone_failed`, `__note_tone_error`, `__card_kind_setting`, `__card_place_foot`, `__delta_tone_{up,down}`, `__move_state_{current,empty}`
+
+**Tokens:** the `--platform-m3-*` roles — `on-surface`, `on-surface-variant`, `panel`, `container`, `container-high`, `outline-variant`, `row-edge`, `primary`, `on-primary`, `info-container`, `success`, `success-container`, `warning`, `warning-container`, `error`, `error-container`, `on-error-container`, `piece-white`, `piece-black` —, `--md-sys-shape-corner-lg`, the type and space scales.
+
+**Motion:** the wrong move's ring (600 ms) and the result's entrance (160 ms, `ease-out`), both off under `prefers-reduced-motion: reduce`.
