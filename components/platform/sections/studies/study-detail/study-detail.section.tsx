@@ -53,7 +53,7 @@ export function StudyDetailSection({
       </div>
 
       <section className="platform-workspace__panel study-detail" aria-label={study.name}>
-        <StudyTrail studyName={study.name} games={[]} />
+        <StudyTrail games={[]} />
 
         {errorCode && <PlatformNotice message={STUDY_ERROR_MESSAGES[errorCode] ?? "No se pudo completar la acción."} />}
 

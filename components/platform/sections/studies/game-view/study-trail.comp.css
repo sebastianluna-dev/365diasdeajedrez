@@ -12,38 +12,6 @@
   font-size: var(--platform-type-xs);
   color: var(--platform-m3-on-surface);
 
-  & .study-trail__crumb {
-    flex: none;
-    color: var(--platform-m3-on-surface-variant);
-    text-decoration: none;
-  }
-
-  & a.study-trail__crumb:hover {
-    text-decoration: underline;
-  }
-
-  /* The study and the game give way when the row is short: their names are
-     cut, never the way back. */
-  & span.study-trail__crumb {
-    flex: 0 1 auto;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  & .study-trail__crumb.study-trail__crumb_state_here {
-    font-weight: 600;
-    color: var(--platform-m3-on-surface);
-  }
-
-  & .study-trail__step {
-    flex: none;
-    width: 10px;
-    height: 10px;
-    color: var(--platform-m3-outline);
-  }
-
   /* Which game of how many, and the arrows, at the right end. */
   & .study-trail__games {
     flex: none;

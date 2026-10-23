@@ -69,10 +69,9 @@ export default async function StudyGamesLayout({ children, params }: StudyGamesL
 
         <section className="platform-workspace__panel game-page__panel" aria-label={study.name}>
           <StudyTrail
-            studyName={study.name}
             games={study.games.map((game) => ({ id: game.id, name: game.title ?? game.label, href: game.href }))}
           />
-          {/* The page: the game's record, then the board. */}
+          {/* The page: the board, the game's record heading its moves' column. */}
           {children}
         </section>
       </div>

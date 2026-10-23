@@ -17,22 +17,22 @@ export interface StudyTrailGame {
 }
 
 interface StudyTrailProps {
-  studyName: string;
   /** Every game of the study, in its order. */
   games: StudyTrailGame[];
 }
 
 /**
  * The panel's toolbar on a study's game, in the new design system
- * (2026-10-23, «M4» of the owner's canvas): back to «Mis estudios», where one
- * is — «Estudios › the study › the game» —, and at its right which game of
- * how many it is, with the arrows to the one before and the one after.
+ * (2026-10-23, «M4» of the owner's canvas): back to «Mis estudios», and at
+ * its right which game of how many it is, with the arrows to the one before
+ * and the one after. No crumbs since the same day: the side column already
+ * names the study and lights the game.
  *
  * It is the layout's, which is not rendered again from one game to the next,
  * so which game is on the board is read here from the address, as the list
  * of the side column reads it (`StudyGames`).
  */
-export function StudyTrail({ studyName, games }: StudyTrailProps) {
+export function StudyTrail({ games }: StudyTrailProps) {
   const { gameId = "" } = useParams<{ gameId?: string }>();
   const index = games.findIndex((game) => game.id === gameId);
   const current = games[index];
@@ -40,23 +40,10 @@ export function StudyTrail({ studyName, games }: StudyTrailProps) {
   const next = index >= 0 ? games[index + 1] : undefined;
 
   return (
-    <nav className="study-trail" aria-label="Dónde estás">
+    <nav className="study-trail" aria-label="Partidas del estudio">
       <Link href={platformRoutes.studies} className={mdIconButton("standard", "sm")} aria-label="Volver a tus estudios">
         <ArrowLeftIcon variant="classic-solid" className="platform-md-icon" />
       </Link>
-      <Link href={platformRoutes.studies} className="study-trail__crumb">
-        Estudios
-      </Link>
-      <ChevronRightIcon variant="classic-solid" className="study-trail__step" />
-      <span className={`study-trail__crumb${current ? "" : " study-trail__crumb_state_here"}`}>{studyName}</span>
-      {current && (
-        <>
-          <ChevronRightIcon variant="classic-solid" className="study-trail__step" />
-          <span className="study-trail__crumb study-trail__crumb_state_here" aria-current="page">
-            {current.name}
-          </span>
-        </>
-      )}
 
       {current && games.length > 1 && (
         <span className="study-trail__games">
