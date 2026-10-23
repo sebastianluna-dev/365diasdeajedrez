@@ -1,0 +1,41 @@
+---
+description: "What /explorador shows while it arrives: the explorer's own workspace, empty, with the blue board and a ring turning on it."
+---
+
+# `ExplorerSkeleton`
+
+|            |                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/explorer/explorer-skeleton.comp.tsx`                                                         |
+| Kind       | Server Component                                                                                                           |
+| Stylesheet | `explorer-skeleton.comp.css` → block `.explorer-skeleton`; it also imports `game-explorer.comp.css`, whose places it takes |
+| Used by    | `app/(platform)/explorador/loading.tsx`                                                                                    |
+| Composes   | [`BoardSkeleton`](/components/platform/shared/board-skeleton)                                                              |
+
+## Purpose
+
+The explorer's loading boundary in the new design system (2026-10-23), in place of the hopping knight of `BoardLoading`: the same `.platform-workspace` the explorer draws, empty, so what lands are the figures and not a new page. In the side column, the place of «Jugadas» (a title and the white box) and of «Buscar en» (a title and four rows); in the panel, the toolbar's hairline, the board — [`BoardSkeleton`](/components/platform/shared/board-skeleton) in the material board's blue (`--board-light`/`--board-dark` set to `--platform-m3-board-*`) with its ring and its status «Cargando el explorador» — and the two cards beside it. The shapes are `--platform-m3-container-high` and pulse softly together (`opacity`, 1.2s), standing still under `prefers-reduced-motion: reduce`.
+
+Markup and CSS only: a `loading.tsx` reaches no Client Component (`components/loading-boundaries.test.ts`).
+
+## Markup & styling
+
+Block `.explorer-skeleton` (72 lines), on the element that is also `.platform-workspace` and `.game-explorer`.
+
+**Elements:** `__shape`, `__title`, `__line`, `__row`, `__icon`, `__text`, `__card`
+
+**Modifiers:** `.explorer-skeleton__card_size_tall`
+
+**Keyframes:** `explorer-skeleton-pulse`
+
+**Tokens:** `--platform-m3-board-light`, `--platform-m3-board-dark`, `--platform-m3-container-high`, `--md-sys-shape-corner-lg`
+
+## Usage
+
+From `app/(platform)/explorador/loading.tsx`:
+
+```tsx
+<div className="platform-page platform-page_width_full platform-page_frame_bleed">
+  <ExplorerSkeleton />
+</div>
+```

@@ -1,5 +1,5 @@
 ---
-description: "The frame of /explorador: resolves the identity on the server (the border of the private area), renders the heading and mounts the client explorer with nothing preloaded."
+description: "The frame of /explorador: resolves the identity on the server (the border of the private area) and mounts the client explorer on the view of ?origen=, with nothing preloaded."
 ---
 
 # `GameExplorerSection`
@@ -8,39 +8,44 @@ description: "The frame of /explorador: resolves the identity on the server (the
 | ---------- | ---------------------------------------------------------------------- |
 | File       | `components/platform/sections/explorer/game-explorer.section.tsx`      |
 | Kind       | Server Component (async)                                               |
-| Stylesheet | none: uses the page-level classes                                      |
+| Stylesheet | none: the explorer draws the workspace                                 |
 | Used by    | `/explorador`                                                          |
 | Composes   | [`GameExplorer`](/components/platform/sections/explorer/game-explorer) |
 | Reads      | `getCurrentUser()` · `lib/platform-auth/current-user.ts`               |
 
 ## Purpose
 
-The explorer is interactive from the first move, so the work belongs to the Client Component. What this section does is the one thing a client cannot: resolve the identity through the DAL before rendering, which is what makes `/explorador` a private page. It also renders the title and the explanatory subtitle.
+The explorer is interactive from the first move, so the work belongs to the Client Component, which draws the whole workspace of the new design system: its side column holds the line and the counts of the search, which are the board's state too. What this section does is the one thing a client cannot: resolve the identity through the DAL before rendering, which is what makes `/explorador` a private page.
 
 No result is preloaded on the server on purpose. The first query (the initial position) is made by the client through the same path as all the others, so the explorer's own cache serves it just the same when the user returns to the start.
 
 ## Props
 
-This component takes no props.
+| Prop     | Type             | Required | Meaning                                                                                       |
+| -------- | ---------------- | -------- | --------------------------------------------------------------------------------------------- |
+| `origin` | `GameOriginCode` | no       | Where the search looks, from `?origen=` (`explorerOriginOf`); none for every game it may see. |
 
 ## Behaviour
 
-`await getCurrentUser()` then static markup plus `<GameExplorer />`.
+`await getCurrentUser()` then `<GameExplorer origin={origin} />`.
 
 ## Markup & styling
 
-No stylesheet. Renders `.platform-page`, `.platform-page__head`, `.platform-page__title`, `.platform-page__subtitle` from `platform.css`.
+No stylesheet and no markup of its own. The page around it (`app/(platform)/explorador/page.tsx`) is `.platform-page_width_full` + `.platform-page_frame_bleed`, so the workspace takes the window and bleeds onto the canvas.
 
 ## Usage
 
 From `app/(platform)/explorador/page.tsx`:
 
 ```tsx
+import { explorerOriginOf } from "@/components/platform/sections/explorer/explorer-views.const";
 import { GameExplorerSection } from "@/components/platform/sections/explorer/game-explorer.section";
 
-export default function ExplorerPage() {
-  return <GameExplorerSection />;
-}
+const { origen } = await searchParams;
+
+<div className="platform-page platform-page_width_full platform-page_frame_bleed">
+  <GameExplorerSection origin={explorerOriginOf(origen)} />
+</div>;
 ```
 
 ## Related

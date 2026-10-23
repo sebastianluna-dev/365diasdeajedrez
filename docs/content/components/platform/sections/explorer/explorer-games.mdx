@@ -1,5 +1,5 @@
 ---
-description: "The games that reached the current position, newest first, each with players and Elos, result, event, date, its origin tag and a 'Vista en clase' mark, linked when the viewer can open it."
+description: "The games that reached the current position, newest first, in an outlined card: a row each with players and Elos, event and date, its origin's tag in its colour, a 'Vista en clase' mark and the result in a pill, linked when the viewer can open it."
 ---
 
 # `ExplorerGames`
@@ -11,11 +11,11 @@ description: "The games that reached the current position, newest first, each wi
 | Stylesheet | `explorer-games.comp.css` → block `.explorer-games`                                                                                                                                                    |
 | Story      | `explorer-games.stories.tsx` (`platform/sections/explorer/ExplorerGames`): an invented student's game and public historic ones after 1.e4 e5 2.Nf3 (one without a link), one game, searching and empty |
 | Used by    | [`GameExplorer`](/components/platform/sections/explorer/game-explorer)                                                                                                                                 |
-| Uses       | `ExplorerGame` from `services/game-explorer/game-explorer.types`                                                                                                                                       |
+| Uses       | `mdCard` from `lib/material/material-classes`; `ExplorerGame` from `services/game-explorer/game-explorer.types`; `GAME_ORIGIN` from `services/shared/game-origin`                                      |
 
 ## Purpose
 
-The "Partidas" panel. The list is capped by the service and the total is not: the heading counts every game found even when fewer are listed, and a footer line says "Se muestran las n más recientes de N".
+The "Partidas" card. The list is capped by the service and the total is not: the explorer's toolbar says how many games went through the position, and when fewer are listed the heading says of how many these are the most recent («Las 20 más recientes de 88»).
 
 Each game carries its **origin** (a student's study, a course, the teaching staff) because a continuation played by twenty students does not mean the same as seeing it in twenty master games from the course material. Games seen in one of the student's classes are also marked.
 
@@ -29,17 +29,21 @@ Each game carries its **origin** (a student's study, a course, the teaching staf
 
 ## Behaviour
 
-None beyond rendering. A game without `href` (no screen the viewer could open it in) renders as a static row rather than a link to a 404, a grey lighter than a row that opens: the names and the result in `--platform-text-muted`, the Elo, the event, the date and the origin tag in `--platform-text-subtle` (on the row's white, where it reads), «Vista en clase» still in the accent. It is not an `opacity`: the 0.75 it had took the event and the tag under 4.5:1. An Elo is shown whenever the game has one (`!== undefined`), not whenever it is truthy: with `&&`, an Elo of 0 would have printed a bare "0" outside its span.
+None beyond rendering. In the new design system (2026-10-23) it is Material's outlined card (`mdCard("outlined")`, corners `--md-sys-shape-corner-lg`), and each game is a row as Gmail lists mail, over a `--platform-m3-divider` hairline: the players with their Elos (`—` between them, cut with an ellipsis), under them the event and the date, the origin's tag and «Vista en clase», and at the right the result in a pill of the container (`1/2-1/2` written `½-½`). Under the pointer a row that opens lifts over its neighbours as the chapter's lessons do: `--platform-m3-row-edge` at its sides and a shadow of `--platform-m3-row-shadow`, its colour unchanged.
+
+**The tags' colours**, all `--platform-m3-*` pairs `TEXT_PAIRS` holds: a student's study in the success green (`success-container`), a course in the secondary container, the teaching staff in amber (`warning-container`), and «Vista en clase», which is a mark over the origin and not one, in a violet of its own (`--platform-m3-class-container` and `--platform-m3-on-class-container`, added 2026-10-23: Material's own purple is never drawn).
+
+A game without `href` (no screen the viewer could open it in) renders as a static row rather than a link to a 404, in the lighter ink (`--platform-m3-on-surface-variant`) and without the lift. An Elo is shown whenever the game has one (`!== undefined`), not whenever it is truthy: with `&&`, an Elo of 0 would have printed a bare "0" outside its span.
 
 ## Markup & styling
 
-Block `.explorer-games` (113 lines).
+Block `.explorer-games` (163 lines), on the same element as Material's `card card-outlined`.
 
-**Elements:** `.explorer-games__title`, `.explorer-games__empty`, `.explorer-games__list`, `.explorer-games__item`, `.explorer-games__link`, `.explorer-games__players`, `.explorer-games__player`, `.explorer-games__elo`, `.explorer-games__separator`, `.explorer-games__meta`, `.explorer-games__result`, `.explorer-games__event`, `.explorer-games__tags`, `.explorer-games__tag`, `.explorer-games__more`
+**Elements:** `.explorer-games__head`, `.explorer-games__title`, `.explorer-games__more`, `.explorer-games__empty`, `.explorer-games__list`, `.explorer-games__item`, `.explorer-games__row`, `.explorer-games__main`, `.explorer-games__players`, `.explorer-games__elo`, `.explorer-games__separator`, `.explorer-games__meta`, `.explorer-games__when`, `.explorer-games__tag`, `.explorer-games__result`
 
-**Modifiers and states:** `.explorer-games__link_kind_static`, `.explorer-games__tag_variant_class`
+**Modifiers and states:** `.explorer-games__row_kind_static`, `.explorer-games__tag_origin_{student,course,staff}`, `.explorer-games__tag_mark_class`
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+**Tokens:** `--platform-m3-class-container`, `--platform-m3-container`, `--platform-m3-divider`, `--platform-m3-on-class-container`, `--platform-m3-on-secondary-container`, `--platform-m3-on-success-container`, `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-on-warning-container`, `--platform-m3-primary`, `--platform-m3-row-edge`, `--platform-m3-row-shadow`, `--platform-m3-secondary-container`, `--platform-m3-success-container`, `--platform-m3-warning-container`, `--md-sys-shape-corner-lg`
 
 No media queries.
 

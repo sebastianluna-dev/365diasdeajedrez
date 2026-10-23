@@ -1,21 +1,21 @@
 ---
-description: "The continuations from the current position, most played first, each a playable button with the count and a percentage bar drawn behind the text."
+description: "The continuations from the current position, most played first, in an outlined card: each a playable row with the count and its share drawn as a bar behind the text."
 ---
 
 # `ExplorerNextMoves`
 
-|            |                                                                                                                                                                                                          |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/explorer/explorer-next-moves.comp.tsx`                                                                                                                                     |
-| Kind       | Client Component                                                                                                                                                                                         |
-| Stylesheet | `explorer-next-moves.comp.css` → block `.explorer-next-moves`                                                                                                                                            |
-| Story      | `explorer-next-moves.stories.tsx` (`platform/sections/explorer/ExplorerNextMoves`): five continuations after 1.e4 e5 2.Nf3, one game, searching and empty; `onPlay` is a spy listed in the Actions panel |
-| Used by    | [`GameExplorer`](/components/platform/sections/explorer/game-explorer)                                                                                                                                   |
-| Uses       | `sanToSpanish` from `lib/chess/notation`; `formatSpanishPercent` from `lib/format-spanish-percent`; `ExplorerNextMove` from `services/game-explorer/game-explorer.types`                                 |
+|            |                                                                                                                                                                                                                         |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/explorer/explorer-next-moves.comp.tsx`                                                                                                                                                    |
+| Kind       | Client Component                                                                                                                                                                                                        |
+| Stylesheet | `explorer-next-moves.comp.css` → block `.explorer-next-moves`                                                                                                                                                           |
+| Story      | `explorer-next-moves.stories.tsx` (`platform/sections/explorer/ExplorerNextMoves`): five continuations after 1.e4 e5 2.Nf3, one game, searching and empty; `onPlay` is a spy listed in the Actions panel                |
+| Used by    | [`GameExplorer`](/components/platform/sections/explorer/game-explorer)                                                                                                                                                  |
+| Uses       | `sanToSpanish` from `lib/chess/notation`; `formatSpanishPercent` from `lib/format-spanish-percent`; `mdCard` from `lib/material/material-classes`; `ExplorerNextMove` from `services/game-explorer/game-explorer.types` |
 
 ## Purpose
 
-The "Continuaciones" panel: what was played from this position and how often. Each row is a button that plays the move, which is the natural way to walk the tree of the games in the database. The percentages are over the total of continuations, so they add up to 100, and are written as Spanish writes them, with `formatSpanishPercent`: "69,5 %", the sign after a non-breaking space, not "69.5%".
+The "Continuaciones" card: what was played from this position and how often. Each row is a button that plays the move, which is the natural way to walk the tree of the games in the database. The percentages are over the total of continuations, so they add up to 100, and are written as Spanish writes them, with `formatSpanishPercent`: "69,5 %", the sign after a non-breaking space, not "69.5%".
 
 ## Props
 
@@ -29,15 +29,17 @@ The "Continuaciones" panel: what was played from this position and how often. Ea
 
 None beyond rendering. The frequency bar is an `aria-hidden` span whose width is the percentage, placed behind the text so it reads at a glance without depending on the number.
 
+In the new design system (2026-10-23) it is Material's outlined card (`mdCard("outlined")`, its corners `--md-sys-shape-corner-lg` through the card's own `--container-shape`), and each row is a grid of three columns — the move (72px), the count, the share (64px, at the right) — on a `--md-sys-shape-corner-md` button that takes the container's grey under the pointer.
+
 ## Markup & styling
 
-Block `.explorer-next-moves` (85 lines). The bar is filled with `--platform-accent-soft`, so the count and the percentage written on it in `--platform-text-muted` are a pair `TEXT_PAIRS` holds at 4.5:1 in both themes; the accent at 16% opacity it had before left them at 4.3:1 in the light theme.
+Block `.explorer-next-moves` (94 lines), on the same element as Material's `card card-outlined`. The bar is filled with `--platform-m3-primary-wash`, the primary's palest wash (2026-10-23), so the move and the share in `--platform-m3-on-surface` and the count in `--platform-m3-on-surface-variant` written on it are pairs `TEXT_PAIRS` holds at 4.5:1 in both themes.
 
 **Elements:** `.explorer-next-moves__title`, `.explorer-next-moves__empty`, `.explorer-next-moves__list`, `.explorer-next-moves__item`, `.explorer-next-moves__button`, `.explorer-next-moves__bar`, `.explorer-next-moves__san`, `.explorer-next-moves__count`, `.explorer-next-moves__percentage`
 
 No modifiers.
 
-**Tokens:** `--platform-accent`, `--platform-accent-soft`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+**Tokens:** `--platform-m3-container`, `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-primary`, `--platform-m3-primary-wash`, `--md-sys-shape-corner-lg`, `--md-sys-shape-corner-md`
 
 No media queries.
 

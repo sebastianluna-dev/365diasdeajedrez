@@ -1,48 +1,56 @@
 ---
-description: "The position explorer: a playable board whose line is a list of SAN replayed with replayGame, a per-FEN search through searchPosition with a client cache, and the three result panels."
+description: "The position explorer in the new design system: the workspace with the line and «Buscar en» in the side column, and in the panel a toolbar with the position, the material board with Material's keys, the continuations and the games."
 ---
 
 # `GameExplorer`
 
-|            |                                                                                                                                                                                                                                                                                             |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/explorer/game-explorer.comp.tsx`                                                                                                                                                                                                                              |
-| Kind       | Client Component                                                                                                                                                                                                                                                                            |
-| Stylesheet | `game-explorer.comp.css` → block `.game-explorer`                                                                                                                                                                                                                                           |
-| Used by    | [`GameExplorerSection`](/components/platform/sections/explorer/game-explorer-section)                                                                                                                                                                                                       |
-| Composes   | [`ChessBoard`](/components/chess/chess-board), [`ExplorerMoveList`](/components/platform/sections/explorer/explorer-move-list), [`ExplorerNextMoves`](/components/platform/sections/explorer/explorer-next-moves), [`ExplorerGames`](/components/platform/sections/explorer/explorer-games) |
-| Writes     | `searchPosition()` · `services/game-explorer/game-explorer.actions.ts` (a read behind a server action)                                                                                                                                                                                      |
-| Uses       | `replayGame` from `lib/chess/replay`; `PositionSearchResult` from `services/game-explorer/game-explorer.types`; `ArrowsRotateIcon` from `components/icons/`                                                                                                                                 |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/explorer/game-explorer.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                   |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Stylesheet | `game-explorer.comp.css` → block `.game-explorer`                                                                                                                                                                                                                                                                                                                                                                                |
+| Used by    | [`GameExplorerSection`](/components/platform/sections/explorer/game-explorer-section)                                                                                                                                                                                                                                                                                                                                            |
+| Composes   | [`ChessBoard`](/components/chess/chess-board) (`look="material"`), [`PlatformSideNav`](/components/platform/shared/platform-side-nav), [`ExplorerMoveList`](/components/platform/sections/explorer/explorer-move-list), [`ExplorerNextMoves`](/components/platform/sections/explorer/explorer-next-moves), [`ExplorerGames`](/components/platform/sections/explorer/explorer-games)                                              |
+| Writes     | `searchPosition()` · `services/game-explorer/game-explorer.actions.ts` (a read behind a server action)                                                                                                                                                                                                                                                                                                                           |
+| Uses       | `replayGame` from `lib/chess/replay`; `sanToSpanish` from `lib/chess/notation`; `mdButton`, `mdIconButton` from `lib/material/material-classes`; `EXPLORER_VIEWS`, `explorerViewHref` from `explorer-views.const.ts`; `PositionSearchResult` from `services/game-explorer/game-explorer.types`; `BackwardStepIcon`, `ChevronLeftIcon`, `ChevronRightIcon`, `ForwardStepIcon`, `ArrowRightArrowLeftIcon` from `components/icons/` |
 
 ## Purpose
 
-Move the pieces and see which games the student may see reached that position and how they continued. The search is by **position**, so it also finds games that arrived by another move order.
+Move the pieces and see which games the viewer may see reached that position and how they continued. The search is by **position**, so it also finds games that arrived by another move order.
+
+Since 2026-10-23 it is drawn in the new design system («M4» of the owner's canvas, see [Styling › The new design system](/ui/styling#the-new-design-system-material-3-expressive)), and it draws the whole `.platform-workspace`, because both columns are the board's state:
+
+- **The side column** (`.platform-workspace__side`): «Jugadas», the line played so far ([`ExplorerMoveList`](/components/platform/sections/explorer/explorer-move-list)), and «Buscar en», a [`PlatformSideNav`](/components/platform/shared/platform-side-nav) with the views of `EXPLORER_VIEWS` — «Todas las partidas», «Estudios de alumnos», «Cursos», «Profesorado» — each with how many games of it went through the position on the board (`originCounts`; the first, their sum), the one on screen lit.
+- **The panel**: a toolbar on a hairline (`--platform-m3-divider`) with the position's name («Posición inicial», «Después de 5.Cc3», «Después de 5…a6»), who moves («juegan negras») and how many games of the view went through («88 partidas pasaron por aquí»), and «Reiniciar» at its end (`mdButton("text")`); under it the board (`look="material"`, up to 480px) with Material's wide keys under it — the way forward filled, the rest on the container's grey, in Sharp Light, and «Girar el tablero» apart — and at its right the continuations and the games, each an outlined card.
 
 The line lives as a list of SAN and the positions are derived with `replayGame`, the same replayer the rest of the platform uses: the board, the position index and the panels cannot disagree. The search fires with the position already changed, never while a piece is being dragged, because [`ChessBoard`](/components/chess/chess-board) only notifies legal, completed moves.
 
 ## Props
 
-This component takes no props.
+| Prop     | Type             | Required | Meaning                                                                                     |
+| -------- | ---------------- | -------- | ------------------------------------------------------------------------------------------- |
+| `origin` | `GameOriginCode` | no       | The view on screen, from `?origen=` (`explorerOriginOf`); none searches every visible game. |
 
 ## Behaviour
 
-- **State:** `sans` (the line), `index` (current ply), `flipped`, `result`, `isSearching`, `hasError`, plus a `Map<string, PositionSearchResult>` cache in a ref.
-- **Search effect (keyed on the current FEN):** a cached result is used immediately; otherwise `searchPosition(fen)` runs with a `cancelled` flag so the response of a position that is no longer current is discarded, and the result is cached either way. Going back and forth along the line, the explorer's most common gesture, costs no query. The cache is local because the project has no client data library and one screen does not justify adding one.
-- **Playing** a move (from the board or from the continuations panel) truncates the line at the current index and appends; navigation buttons move the index; "Reiniciar" clears the line.
-- The board is controlled with the current position and `interactive`; the panel dims with `_state_loading` (and says `aria-busy`) while searching but the board stays playable, since waiting to be able to move would be worse than a stale figure for an instant.
-- A failed search shows a `role="status"` message instead of the two result panels.
+- **State:** `sans` (the line), `index` (current ply), `flipped`, `result`, `isSearching`, `hasError`, plus a `Map<string, PositionSearchResult>` cache in a ref, keyed by the view and the FEN.
+- **The view lives in the address.** The side column's links go to `/explorador?origen=<alumnos|cursos|profesorado>` (`explorerViewHref`); the page renders again with another `origin` and this component stays mounted — the router keys a page by its segment without the search parameters — so the line, the board's side and the cache survive the change.
+- **Search effect (keyed on the current FEN and the view):** a cached result is used immediately; otherwise `searchPosition(fen, { origins: [origin] })` runs with a `cancelled` flag so the response of a position that is no longer current is discarded. A refused answer (`throttled`) is not cached. Going back and forth along the line, the explorer's most common gesture, costs no query. The cache is local because the project has no client data library and one screen does not justify adding one.
+- **Playing** a move (from the board or from the continuations card) truncates the line at the current index and appends; the keys and the pills of the line move the index; «Reiniciar» clears the line.
+- The board is controlled with the current position and `interactive`; the results dim with `_state_loading` (and say `aria-busy`) while searching but the board stays playable, since waiting to be able to move would be worse than a stale figure for an instant. The toolbar leaves the count out until the answer arrives, and so do the side column's counts and the toolbar after a failed or refused search: «0» would be a false fact about the position.
+- A failed search, or one refused by the rate limit, shows a `role="status"` line in `--platform-m3-error` instead of the two cards.
 
 ## Markup & styling
 
-Block `.game-explorer` (49 lines).
+Block `.game-explorer` (124 lines), on the same element as `.platform-workspace`, whose `__side` and `__panel` it shares.
 
-**Elements:** `.game-explorer__board`, `.game-explorer__controls`, `.game-explorer__control`, `.game-explorer__panel`, `.game-explorer__error`
+**Elements:** `.game-explorer__side`, `.game-explorer__panel`, `.game-explorer__toolbar`, `.game-explorer__position` (the page's `<h1>`), `.game-explorer__summary`, `.game-explorer__reset`, `.game-explorer__body`, `.game-explorer__board`, `.game-explorer__keys`, `.game-explorer__key`, `.game-explorer__flip`, `.game-explorer__results`, `.game-explorer__error`
 
-**Modifiers and states:** `.game-explorer__control_align_end`, `.game-explorer__panel_state_loading`
+**Modifiers and states:** `.game-explorer__key_tone_grey` (a key but the way forward: `--container-color` and `--icon-color` of Material's tonal button set to the container and the ink), `.game-explorer__results_state_loading`
 
-**Tokens:** `--platform-accent`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-text`
+**Tokens:** `--platform-m3-container`, `--platform-m3-divider`, `--platform-m3-error`, `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`
 
-**Breakpoints:** `(width < 1024px)` stacks the panel under the board.
+**Breakpoints:** `(width < 1280px)` puts the results under the board (one column up to 560px); `(width < 640px)` lets the five keys share the width and fits the toolbar to the panel's smaller padding. Under 1024px the workspace itself puts the side column above the panel.
 
 ## Usage
 
@@ -51,10 +59,10 @@ From `components/platform/sections/explorer/game-explorer.section.tsx`:
 ```tsx
 import { GameExplorer } from "./game-explorer.comp";
 
-<GameExplorer />;
+<GameExplorer origin={origin} />;
 ```
 
 ## Related
 
-- [`ExplorerMoveList`](/components/platform/sections/explorer/explorer-move-list), [`ExplorerNextMoves`](/components/platform/sections/explorer/explorer-next-moves), [`ExplorerGames`](/components/platform/sections/explorer/explorer-games).
-- [Student features › Explorer](/platform/student) for what "games the student may see" means.
+- [`ExplorerSkeleton`](/components/platform/sections/explorer/explorer-skeleton), the same workspace while the page arrives.
+- [Student features › Explorer](/platform/student) for what "games the viewer may see" means.

@@ -79,11 +79,13 @@ const meta = {
     docs: {
       description: {
         component: `
-The «Partidas» panel of the explorer: the games that went through the position
-on the board, most recent first, each with its players and Elos, result, event,
-date, where it comes from and whether the student saw it in class. The list is
-capped and the heading's total is not. A game the viewer has no screen for is
-listed without a link. Here the games are an invented student's and public
+The «Partidas» card of the explorer (the new design system): the games that
+went through the position on the board, most recent first, a row each as Gmail
+lists mail — the players and their Elos, the event and the date, the origin's
+tag in its colour, «Vista en clase» in violet, and the result in a pill. The
+list is capped and the total is not: the heading says of how many these are
+the most recent. A game the viewer has no screen for is listed without a link,
+in the lighter ink. Here the games are an invented student's and public
 historic ones.
 
 Source: \`components/platform/sections/explorer/explorer-games.comp.tsx\`.
@@ -100,9 +102,9 @@ Reference page: [Components › ExplorerGames](/components/platform/sections/exp
     isSearching: { control: "boolean", description: "With no game, «Buscando…» instead of the empty line." },
   },
   decorators: [
-    // The explorer's panel: the right half of the page, beside the board.
+    // The explorer's results: the panel's column beside the board.
     (Story) => (
-      <div style={{ maxWidth: 560 }}>
+      <div style={{ maxWidth: 480 }}>
         <Story />
       </div>
     ),
@@ -112,13 +114,13 @@ Reference page: [Components › ExplorerGames](/components/platform/sections/exp
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Five of the 213 games after 1.e4 e5 2.Nf3: origin tags, «Vista en clase», a row without a link and the footer line. */
+/** Five of the 213 games after 1.e4 e5 2.Nf3: the three origins' tags, «Vista en clase», a row without a link and «Las 5 más recientes de 213». */
 export const Games: Story = {};
 
-/** A position only the «Opera Game» reached: «1 partida encontrada», and no footer since nothing is left out. */
+/** A position only the «Opera Game» reached: one row, and nothing beside the heading since nothing is left out. */
 export const OneGame: Story = { name: "One game", args: { games: [OPERA_GAME], totalGames: 1 } };
 
-/** The first query still on its way: the heading says «Partidas» and the list «Buscando…». */
+/** The first query still on its way: «Buscando…» under the heading. */
 export const Searching: Story = { args: { games: [], totalGames: 0, isSearching: true } };
 
 /** A position none of the games the viewer can see went through. */

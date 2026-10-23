@@ -32,8 +32,17 @@ export interface ExplorerGame {
 export interface PositionSearchResult {
   /** The search was refused by the rate limit: the figures below are empty, not zero. */
   throttled?: boolean;
-  /** Visible games that went through the position. It can exceed `games`. */
+  /**
+   * Visible games that went through the position, among the origins asked
+   * for (all of them without a filter). It can exceed `games`.
+   */
   totalGames: number;
+  /**
+   * The same count by origin, whatever the filter: every game has exactly one
+   * origin, so together they are the total without one. The explorer's side
+   * column says with them how many games each view holds.
+   */
+  originCounts: Record<GameOriginCode, number>;
   nextMoves: ExplorerNextMove[];
   /** Capped sample of games, most recent first. */
   games: ExplorerGame[];

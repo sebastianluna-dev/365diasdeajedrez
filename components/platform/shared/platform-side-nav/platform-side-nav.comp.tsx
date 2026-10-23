@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ComponentType } from "react";
 import { BookOpenIcon } from "@/components/icons/book-open-icon.comp";
 import { BooksIcon } from "@/components/icons/books-icon.comp";
+import { ChalkboardUserIcon } from "@/components/icons/chalkboard-user-icon.comp";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
 import { ChessBoardIcon } from "@/components/icons/chess-board-icon.comp";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
@@ -11,6 +12,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 import { LayerGroupIcon } from "@/components/icons/layer-group-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { TrophyIcon } from "@/components/icons/trophy-icon.comp";
+import { UserGraduateIcon } from "@/components/icons/user-graduate-icon.comp";
 import { UserIcon } from "@/components/icons/user-icon.comp";
 import { mdFab } from "@/lib/material/material-classes";
 import "./platform-side-nav.comp.css";
@@ -19,6 +21,7 @@ import "./platform-side-nav.comp.css";
 const ICONS = {
   "book-open": BookOpenIcon,
   books: BooksIcon,
+  "chalkboard-user": ChalkboardUserIcon,
   "chess-board": ChessBoardIcon,
   "circle-check": CircleCheckIcon,
   clock: ClockIcon,
@@ -27,6 +30,7 @@ const ICONS = {
   play: PlayIcon,
   trophy: TrophyIcon,
   user: UserIcon,
+  "user-graduate": UserGraduateIcon,
 } satisfies Record<string, ComponentType<IconProps>>;
 
 export type PlatformSideNavIcon = keyof typeof ICONS;

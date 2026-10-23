@@ -5,6 +5,7 @@ const meta: MetaRecord = {
   "explorer-games": "ExplorerGames",
   "explorer-move-list": "ExplorerMoveList",
   "explorer-next-moves": "ExplorerNextMoves",
+  "explorer-skeleton": "ExplorerSkeleton",
   "game-explorer": "GameExplorer",
 };
 

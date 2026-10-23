@@ -1,0 +1,72 @@
+/* The explorer while it arrives, on the explorer's own places (`.game-explorer`):
+   shapes in the container's grey, softly pulsing. */
+.explorer-skeleton {
+  /* The explorer's board is the new design system's: the skeleton's squares
+     are its blue, not the green. */
+  --board-light: var(--platform-m3-board-light);
+  --board-dark: var(--platform-m3-board-dark);
+
+  & .explorer-skeleton__shape {
+    display: block;
+    flex: none;
+    background: var(--platform-m3-container-high);
+    animation: explorer-skeleton-pulse 1200ms ease-in-out infinite alternate;
+  }
+
+  /* A group's title, as `PlatformSideNav` sets its own. */
+  & .explorer-skeleton__title {
+    width: 72px;
+    height: 12px;
+    margin: var(--platform-space-2) var(--platform-space-6) var(--platform-space-1);
+    border-radius: 1000px;
+  }
+
+  /* The white box of the line. */
+  & .explorer-skeleton__line {
+    height: 64px;
+    margin-left: var(--platform-space-2);
+    border-radius: var(--md-sys-shape-corner-lg);
+  }
+
+  & .explorer-skeleton__row {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    height: 36px;
+    padding: 0 var(--platform-space-4) 0 var(--platform-space-6);
+  }
+
+  & .explorer-skeleton__icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+  }
+
+  & .explorer-skeleton__text {
+    width: 160px;
+    height: 12px;
+    border-radius: 1000px;
+  }
+
+  & .explorer-skeleton__card {
+    height: 200px;
+    border-radius: var(--md-sys-shape-corner-lg);
+  }
+
+  & .explorer-skeleton__card_size_tall {
+    height: 320px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .explorer-skeleton__shape {
+      animation: none;
+    }
+  }
+}
+
+/* `@keyframes` cannot be nested inside a style rule. */
+@keyframes explorer-skeleton-pulse {
+  to {
+    opacity: 0.45;
+  }
+}

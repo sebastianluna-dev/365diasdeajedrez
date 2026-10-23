@@ -97,6 +97,7 @@ import { OutlineList } from "@/components/platform/sections/courses/lesson-view/
 import { MyCourseCard } from "@/components/platform/sections/courses/my-courses/my-course-card.comp";
 import { StatsCards } from "@/components/platform/sections/dashboard/activity-stats/stats-cards.comp";
 import { ExplorerGames } from "@/components/platform/sections/explorer/explorer-games.comp";
+import { ExplorerMoveList } from "@/components/platform/sections/explorer/explorer-move-list.comp";
 import { ExplorerNextMoves } from "@/components/platform/sections/explorer/explorer-next-moves.comp";
 import { PlatformAppsMenu } from "@/components/platform/sections/shell/platform-apps-menu.comp";
 import { SaveToStudyPopup } from "@/components/platform/shared/save-to-study-popup/save-to-study-popup.comp";
@@ -1502,6 +1503,9 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 <AuthorAvatar name="Tomás Herrera" shape="circle" />
                 <AuthorAvatar name="Fernanda Ríos" size="small" />
               </div>
+            </Tile>
+            <Tile name="ExplorerMoveList" docs="platform-sections-explorer-explorermovelist" width={280} height={160}>
+              <ExplorerMoveList sans={["e4", "c5", "Nf3", "d6", "d4", "cxd4", "Nxd4"]} index={7} onSelect={() => {}} />
             </Tile>
             <Tile name="ExplorerNextMoves" docs="platform-sections-explorer-explorernextmoves" width={400} height={248}>
               <ExplorerNextMoves

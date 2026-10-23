@@ -4,14 +4,14 @@ description: "The side column of a page moved to the new design system (Material
 
 # `PlatformSideNav`
 
-|            |                                                                                                                                                                                                                 |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/platform-side-nav/platform-side-nav.comp.tsx`                                                                                                                                       |
-| Kind       | Server Component                                                                                                                                                                                                |
-| Stylesheet | `platform-side-nav.comp.css` → block `.platform-side-nav`                                                                                                                                                       |
-| Story      | `platform-side-nav.stories.tsx` (`platform/shared/PlatformSideNav`): «Cursos» with its action, another view current, no action, a course's chapters with badges, and «Mis estudios»' kinds and order (`choice`) |
-| Used by    | «Mis cursos» (`MyCoursesSection`), the first page moved to the new design system (2026-10-22)                                                                                                                   |
-| Uses       | `next/link`; `mdFab` · `lib/material/material-classes.ts`; `PlayIcon`, `GraduationCapIcon`, `CircleCheckIcon`, `ClockIcon`, `BookOpenIcon`                                                                      |
+|            |                                                                                                                                                                                                                                                                 |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-side-nav/platform-side-nav.comp.tsx`                                                                                                                                                                                       |
+| Kind       | Server Component                                                                                                                                                                                                                                                |
+| Stylesheet | `platform-side-nav.comp.css` → block `.platform-side-nav`                                                                                                                                                                                                       |
+| Story      | `platform-side-nav.stories.tsx` (`platform/shared/PlatformSideNav`): «Cursos» with its action, another view current, no action, a course's chapters with badges, and «Mis estudios»' kinds and order (`choice`)                                                 |
+| Used by    | «Mis cursos» (`MyCoursesSection`), the first page moved to the new design system (2026-10-22); the explorer's «Buscar en» ([`GameExplorer`](/components/platform/sections/explorer/game-explorer), 2026-10-23)                                                  |
+| Uses       | `next/link`; `mdFab` · `lib/material/material-classes.ts`; `PlayIcon`, `GraduationCapIcon`, `CircleCheckIcon`, `ClockIcon`, `BookOpenIcon`, `ChessBoardIcon`, `UserIcon`, `TrophyIcon`, `LayerGroupIcon`, `BooksIcon`, `UserGraduateIcon`, `ChalkboardUserIcon` |
 
 ## Purpose
 
@@ -25,7 +25,7 @@ The left column of a `.platform-workspace` page, as Gmail draws its labels: what
 | `action` | `{ label: string; href: string }`                   | no       | The page's main action, drawn as Material 3's extended button. |
 | `groups` | `{ title: string; links: PlatformSideNavLink[] }[]` | yes      | The views, in groups.                                          |
 
-A `PlatformSideNavLink` is `{ label, href, count?, current?, icon?, level?, badge?, choice? }`; `count` is a number or a ratio such as «1/3». `icon` is a name (`"play"`, `"graduation-cap"`, `"circle-check"`, `"clock"`, `"book-open"`, and for «Mis estudios», 2026-10-23, `"chess-board"`, `"user"`, `"trophy"`, `"layer-group"`, `"books"`), never a component: the component receives data and draws the icon itself. `level` replaces the icon with a dot in a course level's colour (`--platform-level-1` … `-6`), and `badge` (`{ text, done? }`) with a small round badge: a chapter's number, or a check in the success green once it is done (the course's page, 2026-10-22). `choice` (2026-10-23, «Ordenar» on «Mis estudios») draws a radio's ring before the label, filled with the primary on the `current` one: a group of which exactly one is on. They are still links, each to its address.
+A `PlatformSideNavLink` is `{ label, href, count?, current?, icon?, level?, badge?, choice? }`; `count` is a number or a ratio such as «1/3». `icon` is a name (`"play"`, `"graduation-cap"`, `"circle-check"`, `"clock"`, `"book-open"`, and for «Mis estudios», 2026-10-23, `"chess-board"`, `"user"`, `"trophy"`, `"layer-group"`, `"books"`; for the explorer, `"user-graduate"` and `"chalkboard-user"`), never a component: the component receives data and draws the icon itself. `level` replaces the icon with a dot in a course level's colour (`--platform-level-1` … `-6`), and `badge` (`{ text, done? }`) with a small round badge: a chapter's number, or a check in the success green once it is done (the course's page, 2026-10-22). `choice` (2026-10-23, «Ordenar» on «Mis estudios») draws a radio's ring before the label, filled with the primary on the `current` one: a group of which exactly one is on. They are still links, each to its address.
 
 ## Behaviour
 

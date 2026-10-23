@@ -1,81 +1,97 @@
+/* «Jugadas» at the top of the explorer's side column (the new design
+   system): the group's title as `PlatformSideNav` writes its own, and the
+   line in a white box, as move pills that wrap. */
 .explorer-move-list {
   display: flex;
   flex-direction: column;
-  gap: var(--platform-space-3);
+  gap: var(--platform-space-0-5);
+  padding-top: var(--platform-space-1);
 
   & .explorer-move-list__title {
-    font-size: var(--platform-type-sm);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--platform-text-muted);
     margin: 0;
+    padding: var(--platform-space-1) var(--platform-space-6);
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* Bounded height: the line can grow a lot and must not push «Buscar en»
+     out of the column. */
+  & .explorer-move-list__box {
+    max-height: 220px;
+    margin-left: var(--platform-space-2);
+    padding: var(--platform-space-3);
+    overflow-y: auto;
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--platform-m3-panel);
   }
 
   & .explorer-move-list__hint {
     margin: 0;
-    font-size: var(--platform-type-lg);
-    color: var(--platform-text-muted);
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
   }
 
-  /* Bounded height: the line can grow a lot and must not push down the
-     continuations and the games, which are the result of the search. */
-  & .explorer-move-list__rows {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    max-height: 168px;
-    overflow-y: auto;
-  }
-
-  & .explorer-move-list__row {
-    display: grid;
-    grid-template-columns: 34px 1fr 1fr;
+  & .explorer-move-list__moves {
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--platform-space-1);
-  }
-
-  & .explorer-move-list__number {
-    font-size: var(--platform-type-md);
-    color: var(--platform-text-muted);
+    margin: 0;
+    padding: 0;
+    list-style: none;
     font-variant-numeric: tabular-nums;
   }
 
+  & .explorer-move-list__row {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  & .explorer-move-list__number {
+    padding-left: var(--platform-space-1);
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
   & .explorer-move-list__move {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: var(--platform-space-0-5);
-    background: none;
+    height: 26px;
+    padding: 0 var(--platform-space-2);
     border: 0;
-    border-radius: 8px;
-    padding: var(--platform-space-1) var(--platform-space-2);
+    border-radius: 1000px;
+    background: none;
     font: inherit;
-    font-size: var(--platform-type-lg);
-    color: var(--platform-text);
-    cursor: pointer;
-    text-align: left;
-  }
-
-  & .explorer-move-list__move:hover {
-    background: var(--platform-surface-neutral);
-  }
-
-  & .explorer-move-list__move_current {
-    background: var(--platform-accent);
-    color: var(--platform-on-accent);
+    font-size: var(--platform-type-2xs);
     font-weight: 600;
+    color: var(--platform-m3-on-surface);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--platform-m3-container);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-m3-primary);
+      outline-offset: 1px;
+    }
   }
 
-  & .explorer-move-list__empty {
-    display: block;
+  /* The move on the board: a pill of the primary, as the viewer's notation. */
+  & .explorer-move-list__move_state_current,
+  & .explorer-move-list__move_state_current:hover {
+    background: var(--platform-m3-primary);
+    color: var(--platform-m3-on-primary);
   }
 
   /* Same technique as the board notation: the piece SVG as a mask, so the
      glyph inherits the text colour and works on any background. */
   & .explorer-move-list__glyph {
     display: inline-block;
-    width: 17px;
-    height: 17px;
+    width: 14px;
+    height: 14px;
     vertical-align: -3px;
     background-color: currentColor;
     mask-size: contain;

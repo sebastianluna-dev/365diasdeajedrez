@@ -2,6 +2,7 @@
 
 import { sanToSpanish } from "@/lib/chess/notation";
 import { formatSpanishPercent } from "@/lib/format-spanish-percent";
+import { mdCard } from "@/lib/material/material-classes";
 import type { ExplorerNextMove } from "@/services/game-explorer/game-explorer.types";
 import "./explorer-next-moves.comp.css";
 
@@ -17,11 +18,13 @@ interface ExplorerNextMovesProps {
  * games in the database.
  *
  * The percentages are over the total of continuations, so they add up to 100,
- * and are written as Spanish writes them: "69,5 %".
+ * and are written as Spanish writes them: "69,5 %". In the new design system
+ * (2026-10-23) it is an outlined card of Material's, each row with its share
+ * drawn as a bar of the primary's wash behind it.
  */
 export function ExplorerNextMoves({ moves, onPlay, isSearching }: ExplorerNextMovesProps) {
   return (
-    <section className="explorer-next-moves">
+    <section className={`${mdCard("outlined")} explorer-next-moves`}>
       <h2 className="explorer-next-moves__title">Continuaciones</h2>
 
       {moves.length === 0 ? (

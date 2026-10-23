@@ -37,9 +37,10 @@ const meta = {
     docs: {
       description: {
         component: `
-The «Continuaciones» panel of the explorer: what was played from the position
-on the board and how often, most played first. Each row is a button that plays
-its move, with the frequency drawn as a bar behind the text. Here the counts
+The «Continuaciones» card of the explorer (the new design system): what was
+played from the position on the board and how often, most played first. Each
+row is a button that plays its move, with its share drawn as a bar of the
+primary's wash behind the text. Here the counts
 are made up and \`onPlay\` is a spy listed in the Actions panel.
 
 Source: \`components/platform/sections/explorer/explorer-next-moves.comp.tsx\`.
@@ -55,9 +56,9 @@ Reference page: [Components › ExplorerNextMoves](/components/platform/sections
     isSearching: { control: "boolean", description: "With no move, «Buscando…» instead of the empty line." },
   },
   decorators: [
-    // The explorer's panel: the right half of the page, beside the board.
+    // The explorer's results: the panel's column beside the board.
     (Story) => (
-      <div style={{ maxWidth: 560 }}>
+      <div style={{ maxWidth: 480 }}>
         <Story />
       </div>
     ),
@@ -70,7 +71,7 @@ type Story = StoryObj<typeof meta>;
 /** Five continuations after 1.e4 e5 2.Nf3, in Spanish notation, the bar as wide as each one's share. */
 export const Continuations: Story = {};
 
-/** A position only one game went through: a single row, «1 partida», the bar across the whole button. */
+/** A position only one game went through: a single row, «1 partida», the bar across the whole row. */
 export const OneGame: Story = {
   name: "One game",
   args: { moves: continuations([["Nxb8", "d7b8", 1]]) },

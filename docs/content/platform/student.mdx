@@ -118,8 +118,9 @@ The pages: `/clases` (`ClassesListSection`: the tabs «Próximas» and «Pasadas
 
 Shared by students and teachers. The client board sends a FEN to `searchPosition(fen, filters)` (`services/game-explorer`), which validates legality, hashes it with `createPositionHash` and reads `GamePosition`:
 
-- `totalGames` (distinct games that reached the position), `nextMoves` (continuations by UCI with counts and percentages), and up to 20 games, newest first, each with its **origin** (`services/shared/game-origin.ts`: student study, course, teacher/editor), whether it was seen in class, and an `href` if the viewer can open it.
-- Visibility comes from `getVisibleGamesWhere()`; teachers additionally see games of actively assigned students. Filters by origin exist; the signature leaves room for player, colour, Elo and date.
+- `totalGames` (distinct games of the origins asked for that reached the position), `originCounts` (the same count for each origin, whatever the filter: one count query per origin, since the origin is not a column; every game has exactly one, so the total is their sum), `nextMoves` (continuations by UCI with counts and percentages), and up to 20 games, newest first, each with its **origin** (`services/shared/game-origin.ts`: student study, course, teacher/editor), whether it was seen in class, and an `href` if the viewer can open it.
+- Visibility comes from `getVisibleGamesWhere()`; teachers additionally see games of actively assigned students. The origin is the one filter (`searchPosition` keeps only the origins that exist, whatever was posted); the signature leaves room for player, colour, Elo and date.
+- The page is in the new design system (2026-10-23). Its side column holds the line played and «Buscar en», the views by origin — «Todas las partidas», «Estudios de alumnos», «Cursos», «Profesorado» — each with its `originCounts` for the position on the board. The view lives in the address, `?origen=alumnos|cursos|profesorado` (`explorer-views.const.ts`), and changing it keeps the line: the page renders again but the explorer stays mounted.
 - A search refused by the rate limit comes back with `throttled: true` and empty figures; the explorer shows a notice instead of "0 partidas" and does not cache that answer.
 
 ## Tools — `/herramientas`

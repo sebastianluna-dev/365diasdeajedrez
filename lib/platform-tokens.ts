@@ -268,7 +268,12 @@ export const TEXT_PAIRS: readonly (readonly [text: string, background: string])[
   ["m3-on-success-container", "m3-success-container"],
   ["m3-on-warning-container", "m3-warning-container"],
   ["m3-on-info-container", "m3-info-container"],
+  ["m3-on-class-container", "m3-class-container"],
+  // A continuation's move, count and share, written over its bar.
+  ["m3-on-surface", "m3-primary-wash"],
+  ["m3-on-surface-variant", "m3-primary-wash"],
   ["m3-error", "m3-canvas"],
+  ["m3-error", "m3-panel"],
   ["m3-error", "m3-container-high"],
 ];
 

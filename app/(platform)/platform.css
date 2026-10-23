@@ -240,6 +240,14 @@
      came from their classes. */
   --platform-m3-info-container: light-dark(#e8f0fe, #0b3270);
   --platform-m3-on-info-container: light-dark(#174ea6, #d3e3fd);
+  /* A violet tag and its ink: the explorer's «Vista en clase», a mark over
+     the game's origin. Ours, named for what it marks: Material's own purple
+     is never drawn. */
+  --platform-m3-class-container: light-dark(#f3e8fd, #3f2a5c);
+  --platform-m3-on-class-container: light-dark(#681da8, #ead8ff);
+  /* The palest wash of the primary: a share drawn behind a row (the
+     explorer's continuations), with the text still on it. */
+  --platform-m3-primary-wash: light-dark(#e8f0fe, #1c2b44);
   /* The streak's grid, the more done the deeper: Google's blue in four steps. */
   --platform-m3-heat-0: light-dark(#b5cdf5, #2d3f5c);
   --platform-m3-heat-1: light-dark(#7cacf8, #3d6bb3);

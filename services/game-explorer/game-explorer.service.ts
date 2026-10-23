@@ -20,7 +20,15 @@ import type { ExplorerNextMove, PositionSearchFilters, PositionSearchResult } fr
 /** Games listed per search; the total goes separately and is complete. */
 const GAME_LIMIT = 20;
 
-const EMPTY_RESULT: PositionSearchResult = { totalGames: 0, nextMoves: [], games: [] };
+/** Every origin, in the order the explorer offers them. */
+const ORIGINS: readonly GameOriginCode[] = Object.values(GAME_ORIGIN);
+
+const EMPTY_RESULT: PositionSearchResult = {
+  totalGames: 0,
+  originCounts: { STUDENT_STUDY: 0, COURSE: 0, EDITOR: 0 },
+  nextMoves: [],
+  games: [],
+};
 
 /**
  * The FEN comes from the client, so it is validated before touching the
@@ -61,30 +69,30 @@ const getExplorerViewer = cache(async (): Promise<ExplorerViewer> => {
  * origin is not a column: it is deduced from who the owner is and from their
  * roles (see services/shared/game-origin), so the filter replicates that same rule.
  */
-function originWhere(origins: GameOriginCode[] | undefined): Prisma.GameWhereInput | null {
-  if (!origins || origins.length === 0) return null;
-
-  const clauses = origins.map((origin): Prisma.GameWhereInput => {
-    if (origin === GAME_ORIGIN.COURSE) {
-      return { database: { ownerType: { code: OWNER_TYPE.COURSE } } };
-    }
-    if (origin === GAME_ORIGIN.EDITOR) {
-      return {
-        database: {
-          ownerType: { code: OWNER_TYPE.USER },
-          user: { OR: [{ teacher: { isNot: null } }, { staff: { isNot: null } }] },
-        },
-      };
-    }
+function originClause(origin: GameOriginCode): Prisma.GameWhereInput {
+  if (origin === GAME_ORIGIN.COURSE) {
+    return { database: { ownerType: { code: OWNER_TYPE.COURSE } } };
+  }
+  if (origin === GAME_ORIGIN.EDITOR) {
     return {
       database: {
         ownerType: { code: OWNER_TYPE.USER },
-        user: { teacher: { is: null }, staff: { is: null } },
+        user: { OR: [{ teacher: { isNot: null } }, { staff: { isNot: null } }] },
       },
     };
-  });
+  }
+  return {
+    database: {
+      ownerType: { code: OWNER_TYPE.USER },
+      user: { teacher: { is: null }, staff: { is: null } },
+    },
+  };
+}
 
-  return { OR: clauses };
+/** The origin filter as one condition: any of the origins asked for; null without a filter. */
+function originWhere(origins: GameOriginCode[] | undefined): Prisma.GameWhereInput | null {
+  if (!origins || origins.length === 0) return null;
+  return { OR: origins.map(originClause) };
 }
 
 function toNextMoves(
@@ -126,27 +134,37 @@ export async function searchGamesByPosition(
   const origin = originWhere(filters.origins);
   const gameConditions: Prisma.GameWhereInput[] = origin ? [visibleGames, origin] : [visibleGames];
 
-  const [totalGames, moveGroups, gameRows] = await Promise.all([
+  const reached: Prisma.GameWhereInput = { positions: { some: { positionHash } } };
+
+  const [originTotals, moveGroups, gameRows] = await Promise.all([
     // It counts GAMES, not index rows: a position repeated within the same game
-    // gives several rows and counting them would double it.
-    db.game.count({
-      where: { AND: [...gameConditions, { positions: { some: { positionHash } } }] },
-    }),
+    // gives several rows and counting them would double it. One count per
+    // origin, whatever the filter (the side column shows them all), since the
+    // origin is not a column to group by; every game has exactly one, so the
+    // total is the sum of the origins asked for.
+    Promise.all(ORIGINS.map((code) => db.game.count({ where: { AND: [visibleGames, originClause(code), reached] } }))),
     db.gamePosition.groupBy({
       by: ["nextMoveSan", "nextMoveUci"],
       where: { positionHash, game: { AND: gameConditions } },
       _count: { _all: true },
     }),
     db.game.findMany({
-      where: { AND: [...gameConditions, { positions: { some: { positionHash } } }] },
+      where: { AND: [...gameConditions, reached] },
       include: explorerGameInclude(viewer.userId, new Date()),
       orderBy: [{ playedAt: { sort: "desc", nulls: "last" } }, { createdAt: "desc" }],
       take: GAME_LIMIT,
     }),
   ]);
 
+  const originCounts = Object.fromEntries(ORIGINS.map((code, at) => [code, originTotals[at] ?? 0])) as Record<
+    GameOriginCode,
+    number
+  >;
+  const asked = filters.origins && filters.origins.length > 0 ? filters.origins : ORIGINS;
+
   return {
-    totalGames,
+    totalGames: asked.reduce((sum, code) => sum + originCounts[code], 0),
+    originCounts,
     nextMoves: toNextMoves(moveGroups),
     games: gameRows.map((row) => mapExplorerGame(row, viewer)),
   };

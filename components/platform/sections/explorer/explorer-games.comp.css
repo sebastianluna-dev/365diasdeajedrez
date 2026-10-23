@@ -1,113 +1,163 @@
+/* Material's outlined card (`card card-outlined`) draws the box and its
+   outline; this block lays out the heading and the rows inside it. */
 .explorer-games {
-  display: flex;
-  flex-direction: column;
-  gap: var(--platform-space-3);
+  --container-shape: var(--md-sys-shape-corner-lg);
+
+  /* `card` hides what overflows: the row lifted under the pointer draws its
+     shadow inside the card, so it is not cut. */
+  padding: var(--platform-space-3) var(--platform-space-3) var(--platform-space-1);
+  color: var(--platform-m3-on-surface);
+
+  & .explorer-games__head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--platform-space-2);
+    padding: 0 var(--platform-space-1) var(--platform-space-1);
+  }
 
   & .explorer-games__title {
-    font-size: var(--platform-type-sm);
+    margin: 0;
+    font-size: var(--platform-type-2xs);
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--platform-text-muted);
-    margin: 0;
+    color: var(--platform-m3-on-surface-variant);
   }
 
-  & .explorer-games__empty,
   & .explorer-games__more {
-    margin: 0;
-    font-size: var(--platform-type-md);
-    color: var(--platform-text-muted);
+    margin: 0 0 0 auto;
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
   }
 
+  & .explorer-games__empty {
+    margin: 0;
+    padding: 0 var(--platform-space-1) var(--platform-space-2);
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* The games, as Gmail lists mail: a light hairline between the rows. */
   & .explorer-games__list {
-    list-style: none;
     margin: 0;
     padding: 0;
+    list-style: none;
+
+    & .explorer-games__item + .explorer-games__item {
+      border-top: 1px solid var(--platform-m3-divider);
+    }
+  }
+
+  & .explorer-games__row {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 56px;
+    align-items: center;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-2) var(--platform-space-1);
+    color: var(--platform-m3-on-surface);
+    text-decoration: none;
+    transition: box-shadow 160ms ease-out;
+  }
+
+  /* Under the pointer the row lifts over its neighbours, as Gmail's and the
+     chapter's lessons, and keeps its colour. */
+  & a.explorer-games__row {
+    &:hover {
+      z-index: 1;
+      box-shadow:
+        inset 1px 0 0 var(--platform-m3-row-edge),
+        inset -1px 0 0 var(--platform-m3-row-edge),
+        0 1px 2px 0 color-mix(in srgb, var(--platform-m3-row-shadow) 30%, transparent),
+        0 1px 3px 1px color-mix(in srgb, var(--platform-m3-row-shadow) 15%, transparent);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-m3-primary);
+      outline-offset: -2px;
+    }
+  }
+
+  /* A game with no screen to open it in: listed, in the lighter ink. */
+  & .explorer-games__row_kind_static {
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .explorer-games__main {
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-1);
-  }
-
-  & .explorer-games__link {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-1);
-    padding: var(--platform-space-3);
-    /* Transparent at rest, for the hover to colour it without moving anything. */
-    border: 1px solid transparent;
-    border-radius: 8px;
-    background: var(--platform-surface);
-    color: var(--platform-text);
-  }
-
-  & a.explorer-games__link:hover {
-    border-color: var(--platform-accent);
+    min-width: 0;
   }
 
   & .explorer-games__players {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--platform-space-2);
-    font-size: var(--platform-type-lg);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--platform-type-xs);
     font-weight: 600;
   }
 
   & .explorer-games__elo {
-    font-weight: 400;
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
+    font-weight: 500;
+    color: var(--platform-m3-on-surface-variant);
   }
 
   & .explorer-games__separator {
-    color: var(--platform-text-muted);
+    font-weight: 400;
   }
 
   & .explorer-games__meta {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--platform-space-3);
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
+    align-items: center;
+    gap: var(--platform-space-1) var(--platform-space-2);
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .explorer-games__when {
+    min-width: 0;
+  }
+
+  /* Where the game comes from, a pill coloured by its origin. */
+  & .explorer-games__tag {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--platform-space-0-5) var(--platform-space-2);
+    border-radius: 1000px;
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  & .explorer-games__tag_origin_student {
+    background: var(--platform-m3-success-container);
+    color: var(--platform-m3-on-success-container);
+  }
+
+  & .explorer-games__tag_origin_course {
+    background: var(--platform-m3-secondary-container);
+    color: var(--platform-m3-on-secondary-container);
+  }
+
+  & .explorer-games__tag_origin_staff {
+    background: var(--platform-m3-warning-container);
+    color: var(--platform-m3-on-warning-container);
+  }
+
+  /* Not an origin: a mark over it, in a violet of its own. */
+  & .explorer-games__tag_mark_class {
+    background: var(--platform-m3-class-container);
+    color: var(--platform-m3-on-class-container);
   }
 
   & .explorer-games__result {
+    padding: var(--platform-space-1) 0;
+    border-radius: 8px;
+    background: var(--platform-m3-container);
+    color: var(--platform-m3-on-surface);
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
     font-variant-numeric: tabular-nums;
-    color: var(--platform-text);
-  }
-
-  & .explorer-games__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--platform-space-2);
-  }
-
-  & .explorer-games__tag {
-    font-size: var(--platform-type-sm);
-    padding: var(--platform-space-0-5) var(--platform-space-2);
-    border-radius: 1000px;
-    border: 1px solid var(--platform-border);
-    color: var(--platform-text-muted);
-  }
-
-  & .explorer-games__tag_variant_class {
-    border-color: var(--platform-accent);
-    color: var(--platform-accent-ink);
-  }
-
-  /* A game with no view to open it in steps back a grey, not an opacity: an
-     opacity took its event and its tag under the 4.5:1 a text needs. What is
-     in ink goes to the muted grey and what is muted to the subtle one, which
-     reads on the row's white; «Vista en clase» keeps its accent. */
-  & .explorer-games__link_kind_static,
-  & .explorer-games__link_kind_static .explorer-games__result {
-    color: var(--platform-text-muted);
-  }
-
-  & .explorer-games__link_kind_static .explorer-games__elo,
-  & .explorer-games__link_kind_static .explorer-games__separator,
-  & .explorer-games__link_kind_static .explorer-games__meta,
-  & .explorer-games__link_kind_static .explorer-games__tag:not(.explorer-games__tag_variant_class) {
-    color: var(--platform-text-subtle);
+    text-align: center;
   }
 }

@@ -1,9 +1,51 @@
+/* The explorer on the workspace of the new design system: `.platform-workspace`
+   (platform.css) places the side column and the panel; this block lays out
+   what is in them. */
 .game-explorer {
-  display: grid;
-  /* Desktop: board on the left, panel on the right. */
-  grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr);
-  gap: var(--platform-space-6);
-  align-items: start;
+  /* The line played so far, and «Buscar en» under it. */
+  & .game-explorer__side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+  }
+
+  /* The position's name and what goes with it, on a hairline across the
+     panel's top, as the canvas draws it. */
+  & .game-explorer__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: var(--platform-space-2);
+    margin: calc(-1 * var(--platform-space-6)) calc(-1 * var(--platform-space-6)) 0;
+    padding: var(--platform-space-2) var(--platform-space-3) var(--platform-space-2) var(--platform-space-6);
+    min-height: 56px;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--platform-m3-divider);
+  }
+
+  & .game-explorer__position {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+  }
+
+  & .game-explorer__summary {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .game-explorer__reset {
+    margin-left: auto;
+  }
+
+  /* The board at the left, as wide as 480px; the results take the rest. */
+  & .game-explorer__body {
+    display: grid;
+    grid-template-columns: minmax(280px, 480px) minmax(0, 1fr);
+    gap: var(--platform-space-6);
+    align-items: start;
+  }
 
   & .game-explorer__board {
     display: flex;
@@ -12,38 +54,71 @@
     min-width: 0;
   }
 
-  & .game-explorer__controls {
+  & .game-explorer__keys {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--platform-space-2);
+    justify-content: center;
+    gap: var(--platform-space-1);
   }
 
-  & .game-explorer__control_align_end {
-    margin-left: auto;
+  /* The keys but the way forward: the container's grey with the ink, as the
+     viewer's, not Material's tonal blue (which it reads through these two
+     properties of its own). */
+  & .game-explorer__key_tone_grey {
+    --container-color: var(--platform-m3-container);
+    --icon-color: var(--platform-m3-on-surface);
   }
 
-  & .game-explorer__panel {
+  & .game-explorer__flip {
+    margin-left: var(--platform-space-3);
+  }
+
+  & .game-explorer__results {
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-6);
+    gap: var(--platform-space-3);
     min-width: 0;
   }
 
-  /* While querying, the panel dims but the board does NOT: one can keep
+  /* While querying, the results dim but the board does NOT: one can keep
      playing and navigating without waiting for the response. */
-  & .game-explorer__panel_state_loading {
+  & .game-explorer__results_state_loading {
     opacity: 0.55;
     transition: opacity 120ms ease-out;
   }
 
   & .game-explorer__error {
     margin: 0;
-    font-size: var(--platform-type-lg);
-    color: var(--platform-danger);
+    font-size: var(--platform-type-sm);
+    color: var(--platform-m3-error);
   }
 
-  /* Below 1024px the panel goes under the board. */
-  @media (width < 1024px) {
-    grid-template-columns: 1fr;
+  /* Below 1280px the panel is too narrow for both: the results go under the
+     board. */
+  @media (width < 1280px) {
+    & .game-explorer__body {
+      grid-template-columns: minmax(0, 560px);
+    }
+  }
+
+  @media (width < 640px) {
+    & .game-explorer__toolbar {
+      margin: calc(-1 * var(--platform-space-4)) calc(-1 * var(--platform-space-4)) 0;
+      padding-left: var(--platform-space-4);
+    }
+
+    & .game-explorer__body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* Five keys and their gaps ask for more than a phone's width: there
+       they share it. */
+    & .game-explorer__key {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    & .game-explorer__flip {
+      margin-left: var(--platform-space-1);
+    }
   }
 }
