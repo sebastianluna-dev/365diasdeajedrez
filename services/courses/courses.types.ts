@@ -248,19 +248,15 @@ export interface ChapterView {
 }
 
 /**
- * What the column beside a lesson shows: the course, and every chapter of it
- * with its lessons, as a table of contents one scrolls through (2026-10-06;
- * it used to be the open chapter alone). It is read by the CHAPTER's layout
+ * What the column beside a lesson shows: the chapter the lesson is in, with
+ * its lessons (2026-10-23: no longer the course's head too, the panel's trail
+ * names the course). It is read by the CHAPTER's layout
  * and not by the lesson's page, so moving from one lesson to the next of the
  * chapter does not fetch it again — and it carries no PGN, which is the
  * weight the lesson's own page goes for.
  */
 export interface CourseOutline {
   courseId: string;
-  courseName: string;
-  courseHref: string;
-  /** The course's square image, for the head of the column. */
-  courseThumbnail?: string;
   /**
    * The chapter the lesson is in, and only that one (2026-10-23): its lessons
    * already filtered by the student's preferences — the same list

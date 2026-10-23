@@ -107,16 +107,10 @@ function LessonTrail({ lesson }: { lesson: LessonView }) {
       <Link href={lesson.chapterHref} className={mdIconButton("standard", "sm")} aria-label="Volver al capítulo">
         <ArrowLeftIcon variant="classic-solid" className="platform-md-icon" />
       </Link>
-      <Link
-        href={platformRoutes.courseDetail(lesson.courseId)}
-        className="lesson-frame__crumb lesson-frame__crumb_kind_course"
-      >
+      <Link href={platformRoutes.courseDetail(lesson.courseId)} className="lesson-frame__crumb">
         {lesson.courseName}
       </Link>
-      <ChevronRightIcon
-        variant="classic-solid"
-        className="lesson-frame__crumb-step lesson-frame__crumb-step_kind_course"
-      />
+      <ChevronRightIcon variant="classic-solid" className="lesson-frame__crumb-step" />
       <Link href={lesson.chapterHref} className="lesson-frame__crumb">
         {lesson.chapterName}
       </Link>

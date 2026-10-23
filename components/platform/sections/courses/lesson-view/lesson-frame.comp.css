@@ -27,7 +27,8 @@
   --viewer-panel-trim: 0px;
 
   /* The trail above the lesson: back to the chapter, and the course, the
-     chapter and the lesson. */
+     chapter and the lesson — the course at every width, since the side
+     column no longer names it (2026-10-23); each crumb is cut short rather. */
   & .lesson-frame__toolbar {
     flex: none;
     min-height: 40px;
@@ -68,14 +69,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     font-weight: 600;
-  }
-
-  /* On a narrow panel the course's name goes: the chapter leads back. */
-  @media (width < 1280px) {
-    & .lesson-frame__crumb_kind_course,
-    & .lesson-frame__crumb-step_kind_course {
-      display: none;
-    }
   }
 
   & .lesson-frame__main {

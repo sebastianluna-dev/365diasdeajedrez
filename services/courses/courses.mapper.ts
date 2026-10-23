@@ -513,9 +513,6 @@ export function mapCourseOutline(
 
   return {
     courseId: course.id,
-    courseName: course.name,
-    courseHref: platformRoutes.courseDetail(course.id),
-    courseThumbnail: thumbnailOf(course),
     chapter: {
       id: chapter.id,
       order: chapter.order,

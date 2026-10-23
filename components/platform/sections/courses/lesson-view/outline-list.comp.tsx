@@ -21,8 +21,9 @@ const isDone = (statusCode: string) => statusCode === PROGRESS_STATUS.COMPLETED;
 
 /**
  * The chapter in the lesson's side column (2026-10-23: that chapter alone,
- * no longer every chapter of the course): its number and name — a link to
- * its page — and «learned/total», then its lessons. A lesson learned carries
+ * no longer every chapter of the course): a small head with how many of its
+ * lessons are learned («Lecciones · 3 de 17»; its name and the way to its
+ * page are the panel's trail's), then its lessons. A lesson learned carries
  * the blue check, the one being read a play, the rest an empty ring, as on
  * the chapter's page.
  *
@@ -47,17 +48,9 @@ export function OutlineList({ chapter }: OutlineListProps) {
 
   return (
     <section className="lesson-outline__chapters" aria-label={chapter.name}>
-      <Link href={chapter.href} className="lesson-outline__chapter">
-        <span className="lesson-outline__chapter-text">
-          <span className="lesson-outline__title">Capítulo {chapter.order}</span>
-          <span className="lesson-outline__chapter-name" title={chapter.name}>
-            {chapter.name}
-          </span>
-        </span>
-        <span className="lesson-outline__count">
-          {learned}/{chapter.lessons.length}
-        </span>
-      </Link>
+      <p className="lesson-outline__head">
+        Lecciones · {learned} de {chapter.lessons.length}
+      </p>
 
       <ol ref={listRef} className="lesson-outline__list">
         {chapter.lessons.map((lesson) => {
