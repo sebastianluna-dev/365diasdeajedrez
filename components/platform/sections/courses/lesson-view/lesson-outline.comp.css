@@ -206,9 +206,11 @@
     color: inherit;
   }
 
+  /* A learned lesson: the filled check in the primary's blue, as on the
+     chapter's page (2026-10-23). */
   & .lesson-outline__mark_state_done,
   & .lesson-outline__lesson_state_current .lesson-outline__mark_state_done {
-    color: var(--platform-m3-success);
+    color: var(--platform-m3-primary);
   }
 
   @media (prefers-reduced-motion: reduce) {

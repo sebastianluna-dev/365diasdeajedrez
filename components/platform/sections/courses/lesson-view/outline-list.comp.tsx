@@ -104,7 +104,7 @@ export function OutlineList({ chapters }: OutlineListProps) {
                   const isCurrent = lesson.href === pathname;
                   const icon = isDone(lesson.statusCode) ? (
                     <CircleCheckIcon
-                      variant="duotone-solid"
+                      variant="classic-solid"
                       className="lesson-outline__mark lesson-outline__mark_state_done"
                     />
                   ) : isCurrent ? (
