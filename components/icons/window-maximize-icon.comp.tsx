@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `window-maximize`, in Duotone Light (the default), Duotone
- * Solid, Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `window-maximize`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -46,6 +45,29 @@ export function WindowMaximizeIcon({ className, variant = "duotone-light" }: Ico
       )}
       {variant === "sharp-light" && (
         <path d="M32 96l0 96 448 0 0-96-448 0zm0 128l0 192 448 0 0-192-448 0zM0 64l512 0 0 384-512 0 0-384z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M48 224l0 160c0 8.8 7.2 16 16 16l384 0c8.8 0 16-7.2 16-16l0-160-416 0zM0 128C0 92.7 28.7 64 64 64l384 0c35.3 0 64 28.7 64 64l0 256c0 35.3-28.7 64-64 64L64 448c-35.3 0-64-28.7-64-64L0 128z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path opacity=".4" d="M48 224l416 0 0 160c0 8.8-7.2 16-16 16L64 400c-8.8 0-16-7.2-16-16l0-160z" />
+          <path d="M48 224l0 160c0 8.8 7.2 16 16 16l384 0c8.8 0 16-7.2 16-16l0-160-416 0zM0 128C0 92.7 28.7 64 64 64l384 0c35.3 0 64 28.7 64 64l0 256c0 35.3-28.7 64-64 64L64 448c-35.3 0-64-28.7-64-64L0 128z" />
+        </>
+      )}
+      {variant === "sharp-solid" && <path d="M512 64l-512 0 0 384 512 0 0-384zM88 128l360 0 0 48-384 0 0-48 24 0z" />}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M64 128l0 48 384 0 0-48-384 0z" />
+          <path d="M512 64l-512 0 0 384 512 0 0-384zM88 128l360 0 0 48-384 0 0-48 24 0z" />
+        </>
+      )}
+      {variant === "sharp-regular" && <path d="M48 224l0 176 416 0 0-176-416 0zM0 64l512 0 0 384-512 0 0-384z" />}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path opacity=".4" d="M48 224l416 0 0 176-416 0 0-176z" />
+          <path d="M48 224l0 176 416 0 0-176-416 0zM0 64l512 0 0 384-512 0 0-384z" />
+        </>
       )}
     </svg>
   );

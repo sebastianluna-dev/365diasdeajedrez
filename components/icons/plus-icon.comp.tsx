@@ -21,6 +21,12 @@ export function PlusIcon({ className, variant = "duotone-light" }: IconProps) {
           "classic-light": "0 0 448 512",
           "sharp-duotone-light": "-117.33 -85.33 682.67 682.67",
           "sharp-light": "-117.33 -85.33 682.67 682.67",
+          "classic-regular": "-117.33 -85.33 682.67 682.67",
+          "duotone-regular": "-117.33 -85.33 682.67 682.67",
+          "sharp-solid": "-117.33 -85.33 682.67 682.67",
+          "sharp-duotone-solid": "-117.33 -85.33 682.67 682.67",
+          "sharp-regular": "-117.33 -85.33 682.67 682.67",
+          "sharp-duotone-regular": "-117.33 -85.33 682.67 682.67",
         }[variant]
       }
       width="16"
@@ -45,6 +51,24 @@ export function PlusIcon({ className, variant = "duotone-light" }: IconProps) {
       )}
       {variant === "sharp-light" && (
         <path d="M240 48l0-16-32 0 0 208-208 0 0 32 208 0 0 208 32 0 0-208 208 0 0-32-208 0 0-192z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M248 56c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 176-176 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l176 0 0 176c0 13.3 10.7 24 24 24s24-10.7 24-24l0-176 176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0 0-176z" />
+      )}
+      {variant === "duotone-regular" && (
+        <path d="M248 56c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 176-176 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l176 0 0 176c0 13.3 10.7 24 24 24s24-10.7 24-24l0-176 176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0 0-176z" />
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M256 64l0-32-64 0 0 192-192 0 0 64 192 0 0 192 64 0 0-192 192 0 0-64-192 0 0-160z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <path opacity=".4" d="M256 64l0-32-64 0 0 192-192 0 0 64 192 0 0 192 64 0 0-192 192 0 0-64-192 0 0-160z" />
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M248 56l0-24-48 0 0 200-200 0 0 48 200 0 0 200 48 0 0-200 200 0 0-48-200 0 0-176z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <path d="M248 56l0-24-48 0 0 200-200 0 0 48 200 0 0 200 48 0 0-200 200 0 0-48-200 0 0-176z" />
       )}
     </svg>
   );

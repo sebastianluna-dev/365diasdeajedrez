@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `tag`, in Duotone Light (the default), Duotone Solid, Classic
- * Solid or Classic Light, as `variant` says. Its Duotone Solid drawing is a
+ * Font Awesome's `tag`, in twelve styles (Duotone Light is the default), as `variant` says. Its Duotone Solid drawing is a
  * single layer, drawn at full strength: at 40 % it would read as switched off.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
@@ -12,7 +11,22 @@ export function TagIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
-      viewBox="-85.33 -85.33 682.67 682.67"
+      viewBox={
+        {
+          "duotone-light": "-85.33 -85.33 682.67 682.67",
+          "duotone-solid": "-85.33 -85.33 682.67 682.67",
+          "classic-solid": "-85.33 -85.33 682.67 682.67",
+          "classic-light": "-85.33 -85.33 682.67 682.67",
+          "sharp-duotone-light": "-85.33 -85.33 682.67 682.67",
+          "sharp-light": "-85.33 -85.33 682.67 682.67",
+          "classic-regular": "-53.33 -85.33 682.67 682.67",
+          "duotone-regular": "-53.33 -85.33 682.67 682.67",
+          "sharp-solid": "-85.33 -85.33 682.67 682.67",
+          "sharp-duotone-solid": "-85.33 -85.33 682.67 682.67",
+          "sharp-regular": "-53.33 -85.33 682.67 682.67",
+          "sharp-duotone-regular": "-53.33 -85.33 682.67 682.67",
+        }[variant]
+      }
       width="24"
       height="24"
       fill="currentColor"
@@ -47,6 +61,36 @@ export function TagIcon({ className, variant = "duotone-light" }: IconProps) {
       )}
       {variant === "sharp-light" && (
         <path d="M48.1 32l-16 0 0 246.6 4.7 4.7 224 224 11.3 11.3 11.3-11.3 235.3-235.3-11.3-11.3-224-224-4.7-4.7-230.6 0zm16 233.4l0-201.4 201.4 0 208 208-201.4 201.4-208-208zm80-97.4a24 24 0 1 0 0-48 24 24 0 1 0 0 48z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M96.1 88c0-13.3 10.7-24 24-24l156.1 0c6.4 0 12.5 2.5 17 7l208 208c9.4 9.4 9.4 24.6 0 33.9L345.1 469.1c-9.4 9.4-24.6 9.4-33.9 0l-208-208c-4.5-4.5-7-10.6-7-17L96.1 88zm24-72c-39.8 0-72 32.2-72 72l0 156.1c0 19.1 7.6 37.4 21.1 50.9l208 208c28.1 28.1 73.7 28.1 101.8 0L535.1 346.9c28.1-28.1 28.1-73.7 0-101.8l-208-208C313.6 23.6 295.3 16 276.2 16L120.1 16zm56 160a32 32 0 1 0 0-64 32 32 0 1 0 0 64z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M96.1 88c0-13.3 10.7-24 24-24l156.1 0c6.4 0 12.5 2.5 17 7l208 208c5.9 5.9 8.1 14.1 6.6 21.7-1.5 4.1-3.9 8-7.2 11.3l-79.7 81.2-75.9 75.9c-9.4 9.4-24.6 9.4-33.9 0l-208-208c-4.5-4.5-7-10.6-7-17L96.1 88zm48 56a32 32 0 1 0 64 0 32 32 0 1 0 -64 0z"
+          />
+          <path d="M96.1 88c0-13.3 10.7-24 24-24l156.1 0c6.4 0 12.5 2.5 17 7l208 208c9.4 9.4 9.4 24.6 0 33.9L345.1 469.1c-9.4 9.4-24.6 9.4-33.9 0l-208-208c-4.5-4.5-7-10.6-7-17L96.1 88zm24-72c-39.8 0-72 32.2-72 72l0 156.1c0 19.1 7.6 37.4 21.1 50.9l208 208c28.1 28.1 73.7 28.1 101.8 0L535.1 346.9c28.1-28.1 28.1-73.7 0-101.8l-208-208C313.6 23.6 295.3 16 276.2 16L120.1 16zm56 160a32 32 0 1 0 0-64 32 32 0 1 0 0 64z" />
+        </>
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M32 32L32 272 272 512 512 272 272 32 32 32zm112 80a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <path opacity=".4" d="M32 32L32 272 272 512 512 272 272 32 32 32zm112 80a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M72.4 16l-24 0 0 257.9 7 7 224 224 17 17 17-17 224-224 17-17-17-17-224-224-7-7-233.9 0zm24 238.1l0-190.1 190.1 0 200 200-190.1 190.1-200-200zm80-78.1a32 32 0 1 0 0-64 32 32 0 1 0 0 64z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M96.4 64l0 190.1 200 200 190.1-190.1-200-200-190.1 0zm112 80a32 32 0 1 1 -64 0 32 32 0 1 1 64 0z"
+          />
+          <path d="M72.4 16l-24 0 0 257.9 7 7 224 224 17 17 17-17 224-224 17-17-17-17-224-224-7-7-233.9 0zm24 238.1l0-190.1 190.1 0 200 200-190.1 190.1-200-200zm80-78.1a32 32 0 1 0 0-64 32 32 0 1 0 0 64z" />
+        </>
       )}
     </svg>
   );

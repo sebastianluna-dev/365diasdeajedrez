@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `signal-bars`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `signal-bars`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -34,6 +33,24 @@ export function SignalBarsIcon({ className, variant = "duotone-light" }: IconPro
       )}
       {variant === "sharp-light" && (
         <path d="M448 48l0-16-32 0 0 448 32 0 0-432zM309.3 128l-32 0 0 352 32 0 0-352zM170.7 272l0-16-32 0 0 224 32 0 0-208zM32 400l0-16-32 0 0 96 32 0 0-80z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M440 56c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 400c0 13.3 10.7 24 24 24s24-10.7 24-24l0-400zM288 128c-13.3 0-24 10.7-24 24l0 304c0 13.3 10.7 24 24 24s24-10.7 24-24l0-304c0-13.3-10.7-24-24-24zM184 280c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 176c0 13.3 10.7 24 24 24s24-10.7 24-24l0-176zM56 408c0-13.3-10.7-24-24-24S8 394.7 8 408l0 48c0 13.3 10.7 24 24 24s24-10.7 24-24l0-48z" />
+      )}
+      {variant === "duotone-regular" && (
+        <path d="M440 56c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 400c0 13.3 10.7 24 24 24s24-10.7 24-24l0-400zM288 128c-13.3 0-24 10.7-24 24l0 304c0 13.3 10.7 24 24 24s24-10.7 24-24l0-304c0-13.3-10.7-24-24-24zM184 280c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 176c0 13.3 10.7 24 24 24s24-10.7 24-24l0-176zM56 408c0-13.3-10.7-24-24-24S8 394.7 8 408l0 48c0 13.3 10.7 24 24 24s24-10.7 24-24l0-48z" />
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M448 64l0-32-64 0 0 448 64 0 0-416zM320 128l-64 0 0 352 64 0 0-352zM192 288l0-32-64 0 0 224 64 0 0-192zM64 416l0-32-64 0 0 96 64 0 0-64z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <path d="M448 64l0-32-64 0 0 448 64 0 0-416zM320 128l-64 0 0 352 64 0 0-352zM192 288l0-32-64 0 0 224 64 0 0-192zM64 416l0-32-64 0 0 96 64 0 0-64z" />
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M440 56l0-24-48 0 0 448 48 0 0-424zM312 128l-48 0 0 352 48 0 0-352zM184 280l0-24-48 0 0 224 48 0 0-200zM56 408l0-24-48 0 0 96 48 0 0-72z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <path d="M440 56l0-24-48 0 0 448 48 0 0-424zM312 128l-48 0 0 352 48 0 0-352zM184 280l0-24-48 0 0 224 48 0 0-200zM56 408l0-24-48 0 0 96 48 0 0-72z" />
       )}
     </svg>
   );

@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `volume-off`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says. Its Duotone Solid drawing
+ * Font Awesome's `volume-off`, in twelve styles (Duotone Light is the default), as `variant` says. Its Duotone Solid drawing
  * is a single layer, drawn at full strength: at 40 % it would read as switched
  * off.
  *
@@ -45,6 +44,29 @@ export function VolumeOffIcon({ className, variant = "duotone-light" }: IconProp
       )}
       {variant === "sharp-light" && (
         <path d="M123.9 320l9 7.8 123.1 106.3 0-356.2-123.1 106.3-9 7.8-91.9 0 0 128 91.9 0zM32 352l-32 0 0-192 112 0C226.7 61 285.3 10.3 288 8l0 496c-2.7-2.3-61.3-53-176-152l-80 0z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M227.7 42.3c6.6-6.6 15.6-10.3 25-10.3 19.5 0 35.3 15.8 35.3 35.3l0 377.4c0 19.5-15.8 35.3-35.3 35.3-9.4 0-18.3-3.7-25-10.3L110.1 352 48 352c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48l62.1 0 117.7-117.7zM240 97.9L137 201c-4.5 4.5-10.6 7-17 7l-72 0 0 96 72 0c6.4 0 12.5 2.5 17 7l103 103 0-316.1z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M48 208l0 96 72 0c6.4 0 12.5 2.5 17 7l103 103 0-316.1-103 103c-4.5 4.5-10.6 7-17 7l-72 0z"
+          />
+          <path d="M227.7 42.3c6.6-6.6 15.6-10.3 25-10.3 19.5 0 35.3 15.8 35.3 35.3l0 377.4c0 19.5-15.8 35.3-35.3 35.3-9.4 0-18.3-3.7-25-10.3L110.1 352 48 352c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48l62.1 0 117.7-117.7zM240 97.9L137 201c-4.5 4.5-10.6 7-17 7l-72 0 0 96 72 0c6.4 0 12.5 2.5 17 7l103 103 0-316.1z" />
+        </>
+      )}
+      {variant === "sharp-solid" && <path d="M96 352l-96 0 0-192 96 0 192-152 0 496-192-152z" />}
+      {variant === "sharp-duotone-solid" && <path opacity=".4" d="M96 352l-96 0 0-192 96 0 192-152 0 496-192-152z" />}
+      {variant === "sharp-regular" && (
+        <path d="M129.9 304l13.5 11.7 96.6 83.4 0-286.2-96.6 83.4-13.5 11.7-81.9 0 0 96 81.9 0zM48 352l-48 0 0-192 112 0C210.7 74.8 269.3 24.1 288 8l0 496c-18.7-16.1-77.3-66.8-176-152l-64 0z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path opacity=".4" d="M48 208l0 96 81.9 0 13.5 11.7 96.6 83.4 0-286.2-96.6 83.4-13.5 11.7-81.9 0z" />
+          <path d="M129.9 304l13.5 11.7 96.6 83.4 0-286.2-96.6 83.4-13.5 11.7-81.9 0 0 96 81.9 0zM48 352l-48 0 0-192 112 0C210.7 74.8 269.3 24.1 288 8l0 496c-18.7-16.1-77.3-66.8-176-152l-64 0z" />
+        </>
       )}
     </svg>
   );

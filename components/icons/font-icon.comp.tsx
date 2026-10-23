@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `font`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says. Its Duotone Solid drawing
+ * Font Awesome's `font`, in twelve styles (Duotone Light is the default), as `variant` says. Its Duotone Solid drawing
  * is a single layer, drawn at full strength: at 40 % it would read as switched
  * off.
  *
@@ -36,6 +35,27 @@ export function FontIcon({ className, variant = "duotone-light" }: IconProps) {
       )}
       {variant === "sharp-light" && (
         <path d="M256 6.9l14.7 34.8 171.9 406.2 53.4 0 0 32-144 0 0-32 55.9 0-40.6-96-222.5 0-40.6 96 55.9 0 0 32-144 0 0-32 53.4 0 171.9-406.2 14.7-34.8zM158.3 320L353.7 320 256 89.1 158.3 320z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M256 32c9.5 0 18 5.5 21.9 14.2L451.1 432 472 432c13.3 0 24 10.7 24 24s-10.7 24-24 24l-96 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l22.5 0-35.9-80-213.2 0-35.9 80 22.5 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-96 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l20.9 0 173.2-385.8C238 37.5 246.5 32 256 32zm0 82.6L171 304 341 304 256 114.6z" />
+      )}
+      {variant === "duotone-regular" && (
+        <path d="M256 32c9.5 0 18 5.5 21.9 14.2L451.1 432 472 432c13.3 0 24 10.7 24 24s-10.7 24-24 24l-96 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l22.5 0-35.9-80-213.2 0-35.9 80 22.5 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-96 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l20.9 0 173.2-385.8C238 37.5 246.5 32 256 32zm0 82.6L171 304 341 304 256 114.6z" />
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M284.9 66.2l-28.9-60.4-28.9 60.4-167.3 349.8-43.8 0 0 64 152 0 0-64-37.2 0 23-48 204.5 0 23 48-37.2 0 0 64 152 0 0-64-43.8 0-167.3-349.8zM327.7 304L184.3 304 256 154.2 327.7 304z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <path
+          opacity=".4"
+          d="M284.9 66.2l-28.9-60.4-28.9 60.4-167.3 349.8-43.8 0 0 64 152 0 0-64-37.2 0 23-48 204.5 0 23 48-37.2 0 0 64 152 0 0-64-43.8 0-167.3-349.8zM327.7 304L184.3 304 256 154.2 327.7 304z"
+        />
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M256-2.6l21.9 48.8 173.2 385.8 44.9 0 0 48-144 0 0-48 46.5 0-35.9-80-213.2 0-35.9 80 46.5 0 0 48-144 0 0-48 44.9 0 173.2-385.8 21.9-48.8zm0 117.2L171 304 341 304 256 114.6z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <path d="M256-2.6l21.9 48.8 173.2 385.8 44.9 0 0 48-144 0 0-48 46.5 0-35.9-80-213.2 0-35.9 80 46.5 0 0 48-144 0 0-48 44.9 0 173.2-385.8 21.9-48.8zm0 117.2L171 304 341 304 256 114.6z" />
       )}
     </svg>
   );

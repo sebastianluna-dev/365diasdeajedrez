@@ -3,8 +3,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 /**
  * The step of the trail that says where one is in a course, which draws it in
  * Duotone Solid. `AngleRightIcon` is the open chevron, for what opens and
- * closes. Font Awesome's `caret-right`, in Duotone Light (the default),
- * Duotone Solid, Classic Solid or Classic Light, as `variant` says. Its
+ * closes. Font Awesome's `caret-right`, in twelve styles (Duotone Light is the default), as `variant` says. Its
  * Duotone Solid drawing is a single layer, drawn at full strength: at 40 % it
  * would read as switched off.
  *
@@ -23,6 +22,12 @@ export function CaretRightIcon({ className, variant = "duotone-light" }: IconPro
           "classic-light": "0 0 256 512",
           "sharp-duotone-light": "-181.33 -85.33 682.67 682.67",
           "sharp-light": "-181.33 -85.33 682.67 682.67",
+          "classic-regular": "-213.33 -85.33 682.67 682.67",
+          "duotone-regular": "-213.33 -85.33 682.67 682.67",
+          "sharp-solid": "-181.33 -85.33 682.67 682.67",
+          "sharp-duotone-solid": "-181.33 -85.33 682.67 682.67",
+          "sharp-regular": "-181.33 -85.33 682.67 682.67",
+          "sharp-duotone-regular": "-181.33 -85.33 682.67 682.67",
         }[variant]
       }
       width="8"
@@ -55,6 +60,24 @@ export function CaretRightIcon({ className, variant = "duotone-light" }: IconPro
         </>
       )}
       {variant === "sharp-light" && <path d="M96 432L96 80 296 256 96 432zm32-281.2L128 361.2 247.6 256 128 150.8z" />}
+      {variant === "classic-regular" && (
+        <path d="M246.9 233.4c11.6 12.9 12.8 32.4 0 45.2l-128 128c-9.1 9.2-22.9 11.9-34.9 6.9l-4.3-2.2c-9.5-5.7-15.5-16.1-15.5-27.4l0-256 .3-4.8c1.4-9.4 7-17.7 15.1-22.6l4.3-2.2c12-4.9 25.7-2.2 34.9 6.9l128 128zM112.3 166.6l0 178.8 89.4-89.4-89.4-89.4z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path opacity=".4" d="M112.3 166.6l89.4 89.4-89.4 89.4 0-178.8z" />
+          <path d="M246.9 233.4c11.6 12.9 12.8 32.4 0 45.2l-128 128c-9.1 9.2-22.9 11.9-34.9 6.9l-4.3-2.2c-9.5-5.7-15.5-16.1-15.5-27.4l0-256 .3-4.8c1.4-9.4 7-17.7 15.1-22.6l4.3-2.2c12-4.9 25.7-2.2 34.9 6.9l128 128zM112.3 166.6l0 178.8 89.4-89.4-89.4-89.4z" />
+        </>
+      )}
+      {variant === "sharp-solid" && <path d="M96 80L296 256 96 432 96 80z" />}
+      {variant === "sharp-duotone-solid" && <path opacity=".4" d="M96 80L296 256 96 432 96 80z" />}
+      {variant === "sharp-regular" && <path d="M96 432L96 80 296 256 96 432zm48-245.8l0 139.6 79.3-69.8-79.3-69.8z" />}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path opacity=".4" d="M144 186.2l79.3 69.8-79.3 69.8 0-139.6z" />
+          <path d="M96 432L96 80 296 256 96 432zm48-245.8l0 139.6 79.3-69.8-79.3-69.8z" />
+        </>
+      )}
     </svg>
   );
 }

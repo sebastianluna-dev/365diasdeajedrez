@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `circle-minus`, in Duotone Light (the default), Duotone
- * Solid, Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `circle-minus`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -49,6 +48,36 @@ export function CircleMinusIcon({ className, variant = "duotone-light" }: IconPr
       )}
       {variant === "sharp-light" && (
         <path d="M256 32a224 224 0 1 1 0 448 224 224 0 1 1 0-448zm0 480a256 256 0 1 0 0-512 256 256 0 1 0 0 512zM160 240l-16 0 0 32 224 0 0-32-208 0z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464a256 256 0 1 0 0-512 256 256 0 1 0 0 512zM168 232c-13.3 0-24 10.7-24 24s10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M48 256a208 208 0 1 0 416 0 208 208 0 1 0 -416 0zm96 0c0-13.3 10.7-24 24-24l176 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-176 0c-13.3 0-24-10.7-24-24z"
+          />
+          <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464a256 256 0 1 0 0-512 256 256 0 1 0 0 512zM168 232c-13.3 0-24 10.7-24 24s10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-176 0z" />
+        </>
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zM168 232l200 0 0 48-224 0 0-48 24 0z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M0 256a256 256 0 1 0 512 0 256 256 0 1 0 -512 0zm144-24l224 0 0 48-224 0 0-48z" />
+          <path d="M144 232l224 0 0 48-224 0 0-48z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464a256 256 0 1 0 0-512 256 256 0 1 0 0 512zM168 232l-24 0 0 48 224 0 0-48-200 0z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path opacity=".4" d="M48 256a208 208 0 1 0 416 0 208 208 0 1 0 -416 0zm96-24l224 0 0 48-224 0 0-48z" />
+          <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464a256 256 0 1 0 0-512 256 256 0 1 0 0 512zM168 232l-24 0 0 48 224 0 0-48-200 0z" />
+        </>
       )}
     </svg>
   );

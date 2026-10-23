@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `toggle-large-on`, in Duotone Light (the default), Duotone
- * Solid, Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `toggle-large-on`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -49,6 +48,29 @@ export function ToggleLargeOnIcon({ className, variant = "duotone-light" }: Icon
       )}
       {variant === "sharp-light" && (
         <path d="M544 128l-256 0 0 256 256 0 0-256zM288 416l-288 0 0-320 576 0 0 320-288 0zm-32-32l0-256-224 0 0 256 224 0zm96-192l0 128 128 0 0-128-128 0zm-32-32l192 0 0 192-192 0 0-192z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M192 64C86 64 0 150 0 256S86 448 192 448l192 0c106 0 192-86 192-192S490 64 384 64L192 64zm192 48a144 144 0 1 1 0 288 144 144 0 1 1 0-288z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path opacity=".4" d="M240 256a144 144 0 1 0 288 0 144 144 0 1 0 -288 0z" />
+          <path d="M192 64C86 64 0 150 0 256S86 448 192 448l192 0c106 0 192-86 192-192S490 64 384 64L192 64zm192 48a144 144 0 1 1 0 288 144 144 0 1 1 0-288z" />
+        </>
+      )}
+      {variant === "sharp-solid" && <path d="M576 64l-576 0 0 384 576 0 0-384zm-64 64l0 256-256 0 0-256 256 0z" />}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M0 64l0 384 576 0 0-384-576 0zm256 64l256 0 0 256-256 0 0-256z" />
+          <path d="M256 128l256 0 0 256-256 0z" />
+        </>
+      )}
+      {variant === "sharp-regular" && <path d="M576 64l-576 0 0 384 576 0 0-384zm-48 48l0 288-288 0 0-288 288 0z" />}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path opacity=".4" d="M240 112l0 288 288 0 0-288-288 0z" />
+          <path d="M576 64l-576 0 0 384 576 0 0-384zm-48 48l0 288-288 0 0-288 288 0z" />
+        </>
       )}
     </svg>
   );

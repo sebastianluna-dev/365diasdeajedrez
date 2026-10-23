@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `arrow-trend-up`, in Duotone Light (the default), Duotone
- * Solid, Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `arrow-trend-up`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -11,7 +10,22 @@ export function ArrowTrendUpIcon({ className, variant = "duotone-light" }: IconP
   return (
     <svg
       className={className}
-      viewBox="-53.33 -85.33 682.67 682.67"
+      viewBox={
+        {
+          "duotone-light": "-53.33 -85.33 682.67 682.67",
+          "duotone-solid": "-53.33 -85.33 682.67 682.67",
+          "classic-solid": "-53.33 -85.33 682.67 682.67",
+          "classic-light": "-53.33 -85.33 682.67 682.67",
+          "sharp-duotone-light": "-53.33 -85.33 682.67 682.67",
+          "sharp-light": "-53.33 -85.33 682.67 682.67",
+          "classic-regular": "-53.33 -85.33 682.67 682.67",
+          "duotone-regular": "-53.33 -85.33 682.67 682.67",
+          "sharp-solid": "-21.33 -85.33 682.67 682.67",
+          "sharp-duotone-solid": "-21.33 -85.33 682.67 682.67",
+          "sharp-regular": "-53.33 -85.33 682.67 682.67",
+          "sharp-duotone-regular": "-53.33 -85.33 682.67 682.67",
+        }[variant]
+      }
       width="24"
       height="24"
       fill="currentColor"
@@ -52,6 +66,42 @@ export function ArrowTrendUpIcon({ className, variant = "duotone-light" }: IconP
       )}
       {variant === "sharp-light" && (
         <path d="M368 96l208 0 0 208-32 0 0-153.4-212.7 212.7-11.3 11.3-11.3-11.3-116.7-116.7-164.7 164.7-22.6-22.6 176-176 11.3-11.3 11.3 11.3 116.7 116.7 201.4-201.4-153.4 0 0-32z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M352 120c0-13.3 10.7-24 24-24l176 0c13.3 0 24 10.7 24 24l0 176c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-118.1-191 191c-9.4 9.4-24.6 9.4-33.9 0L192 257.9 41 409c-9.4 9.4-24.6 9.4-33.9 0S-2.3 384.4 7 375L175 207c9.4-9.4 24.6-9.4 33.9 0L320 318.1 494.1 144 376 144c-13.3 0-24-10.7-24-24z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M0 392c0 6.1 2.3 12.3 7 17 9.4 9.4 24.6 9.4 33.9 0l151-151 111 111c9.4 9.4 24.6 9.4 33.9 0l191-191 0 118.1c0 13.3 10.7 24 24 24s24-10.7 24-24l0 152c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64l0-56z"
+          />
+          <path d="M352 120c0-13.3 10.7-24 24-24l176 0c13.3 0 24 10.7 24 24l0 176c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-118.1-191 191c-9.4 9.4-24.6 9.4-33.9 0L192 257.9 41 409c-9.4 9.4-24.6 9.4-33.9 0S-2.3 384.4 7 375L175 207c9.4-9.4 24.6-9.4 33.9 0L320 318.1 494.1 144 376 144c-13.3 0-24-10.7-24-24z" />
+        </>
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M384.3 96l224 0 0 224-64 0 0-114.7-169.4 169.4-22.6 22.6c-1.3-1.3-44-44-128-128l-137.4 137.4-22.6 22.6-45.3-45.3 22.6-22.6 160-160 22.6-22.6c1.3 1.3 44 44 128 128l146.7-146.7-114.7 0 0-64z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M19 384l45.3 45.3 22.6-22.6 137.4-137.4 128 128 22.6-22.6 169.4-169.4 0-45.3-45.3 0-146.7 146.7c-84-84-126.7-126.7-128-128l-22.6 22.6-160 160-22.6 22.6z"
+          />
+          <path d="M384.3 96l224 0 0 224-64 0 0-160-160 0 0-64z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M352 96l224 0 0 224-48 0 0-142.1-191 191-17 17-17-17-111-111-139.8 139.8-17 17-33.9-33.9 17-17 156.8-156.8 17-17 17 17 111 111 174.1-174.1-142.1 0 0-48z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M1.3 380.8l33.9 33.9 17-17 139.8-139.8 111 111 17 17 17-17 191-191 0 142.1 48 0 0 192-574.7 0c-.1-43.7-.1-87.4 0-131.2z"
+          />
+          <path d="M352 96l224 0 0 224-48 0 0-142.1-191 191-17 17-17-17-111-111-139.8 139.8-17 17-33.9-33.9 17-17 156.8-156.8 17-17 17 17 111 111 174.1-174.1-142.1 0 0-48z" />
+        </>
       )}
     </svg>
   );

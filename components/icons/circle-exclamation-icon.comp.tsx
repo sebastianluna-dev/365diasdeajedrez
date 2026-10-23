@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `circle-exclamation`, in Duotone Light (the default), Duotone
- * Solid, Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `circle-exclamation`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -52,6 +51,42 @@ export function CircleExclamationIcon({ className, variant = "duotone-light" }: 
       )}
       {variant === "sharp-light" && (
         <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zm0-480a224 224 0 1 0 0 448 224 224 0 1 0 0-448zm20 348l-40 0 0-40 40 0 0 40zm-8.8-76l-22.4 0-12.8-176 48 0-12.8 176z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zm0-464a208 208 0 1 0 0 416 208 208 0 1 0 0-416zm0 336a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm0-256c18.2 0 32.7 15.5 31.4 33.7l-7.4 104c-.9 12.6-11.4 22.3-23.9 22.3-12.6 0-23-9.7-23.9-22.3l-7.4-104C223.3 143.5 237.8 128 256 128z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M48 256a208 208 0 1 0 416 0 208 208 0 1 0 -416 0zm240 96a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM224.6 161.7c-1.3-18.2 13.1-33.7 31.4-33.7 18.2 0 32.7 15.5 31.4 33.7l-7.4 104c-.9 12.6-11.4 22.3-23.9 22.3-12.6 0-23-9.7-23.9-22.3l-7.4-104z"
+          />
+          <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zm0-464a208 208 0 1 0 0 416 208 208 0 1 0 0-416zm0 336a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm0-256c18.2 0 32.7 15.5 31.4 33.7l-7.4 104c-.9 12.6-11.4 22.3-23.9 22.3-12.6 0-23-9.7-23.9-22.3l-7.4-104C223.3 143.5 237.8 128 256 128z" />
+        </>
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM228 324l0 56 56 0 0-56-56 0zm-4-196l12.8 160 38.4 0 12.8-160-64 0z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M0 256a256 256 0 1 0 512 0 256 256 0 1 0 -512 0zM224 128l64 0c-4.3 53.3-8.5 106.7-12.8 160l-38.4 0-12.8-160zm4 196l56 0c0 18.7 0 37.3 0 56l-56 0c0-18.7 0-37.3 0-56z"
+          />
+          <path d="M284 380l-56 0 0-56 56 0 0 56zm-8.8-92l-38.4 0-12.8-160 64 0-12.8 160z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zm0-464a208 208 0 1 0 0 416 208 208 0 1 0 0-416zm28 332l-56 0 0-56 56 0 0 56zm-8.8-92l-38.4 0-12.8-160 64 0-12.8 160z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M48 256a208 208 0 1 0 416 0 208 208 0 1 0 -416 0zM224 128l64 0-12.8 160-38.4 0-12.8-160zm4 196l56 0 0 56-56 0 0-56z"
+          />
+          <path d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zm0-464a208 208 0 1 0 0 416 208 208 0 1 0 0-416zm28 332l-56 0 0-56 56 0 0 56zm-8.8-92l-38.4 0-12.8-160 64 0-12.8 160z" />
+        </>
       )}
     </svg>
   );

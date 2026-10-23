@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `outdent`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `outdent`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -11,7 +10,22 @@ export function OutdentIcon({ className, variant = "duotone-light" }: IconProps)
   return (
     <svg
       className={className}
-      viewBox="-117.33 -85.33 682.67 682.67"
+      viewBox={
+        {
+          "duotone-light": "-117.33 -85.33 682.67 682.67",
+          "duotone-solid": "-117.33 -85.33 682.67 682.67",
+          "classic-solid": "-117.33 -85.33 682.67 682.67",
+          "classic-light": "-117.33 -85.33 682.67 682.67",
+          "sharp-duotone-light": "-117.33 -85.33 682.67 682.67",
+          "sharp-light": "-117.33 -85.33 682.67 682.67",
+          "classic-regular": "-117.33 -85.33 682.67 682.67",
+          "duotone-regular": "-117.33 -85.33 682.67 682.67",
+          "sharp-solid": "-85.33 -85.33 682.67 682.67",
+          "sharp-duotone-solid": "-85.33 -85.33 682.67 682.67",
+          "sharp-regular": "-117.33 -85.33 682.67 682.67",
+          "sharp-duotone-regular": "-117.33 -85.33 682.67 682.67",
+        }[variant]
+      }
       width="24"
       height="24"
       fill="currentColor"
@@ -46,6 +60,30 @@ export function OutdentIcon({ className, variant = "duotone-light" }: IconProps)
       )}
       {variant === "sharp-light" && (
         <path d="M0 48l0 32 448 0 0-32-448 0zM192 176l0 32 256 0 0-32-256 0zm16 128l-16 0 0 32 256 0 0-32-240 0zM0 432l0 32 448 0 0-32-448 0zM27.3 236.3L0 256c8.7 6.3 46 33.2 112 80.9l32 23.1 0-208c-12.6 9.1-51.5 37.2-116.7 84.3zM112 214.6l0 82.8-57.3-41.4 57.3-41.4z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M0 64C0 50.7 10.7 40 24 40l400 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 88C10.7 88 0 77.3 0 64zM192 192c0-13.3 10.7-24 24-24l208 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-208 0c-13.3 0-24-10.7-24-24zm24 104l208 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-208 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zM0 448c0-13.3 10.7-24 24-24l400 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 472c-13.3 0-24-10.7-24-24zM7 268.4C-.8 262-.8 250 7 243.6l94.8-78.1c10.4-8.6 26.2-1.2 26.2 12.4l0 156.2c0 13.5-15.7 20.9-26.2 12.4L7 268.4z" />
+      )}
+      {variant === "duotone-regular" && (
+        <path d="M0 64C0 50.7 10.7 40 24 40l400 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 88C10.7 88 0 77.3 0 64zM192 192c0-13.3 10.7-24 24-24l208 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-208 0c-13.3 0-24-10.7-24-24zm24 104l208 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-208 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zM0 448c0-13.3 10.7-24 24-24l400 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 472c-13.3 0-24-10.7-24-24zM7 268.4C-.8 262-.8 250 7 243.6l94.8-78.1c10.4-8.6 26.2-1.2 26.2 12.4l0 156.2c0 13.5-15.7 20.9-26.2 12.4L7 268.4z" />
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M32 32l448 0 0 64-448 0 0-64zM224 160l256 0 0 64-256 0 0-64zM480 288l0 64-256 0 0-64 256 0zM32 416l448 0 0 64-448 0 0-64zm128-48L16 256 160 144 160 368z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M32 32l0 64 448 0 0-64-448 0zm0 384l0 64 448 0 0-64-448 0zM224 160l0 64 256 0 0-64-256 0zm0 128l0 64 256 0 0-64-256 0z"
+          />
+          <path d="M16 256l144 112 0-224-144 112z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M0 40l448 0 0 48-448 0 0-48zM192 168l256 0 0 48-256 0 0-48zm24 128l232 0 0 48-256 0 0-48 24 0zM0 424l448 0 0 48-448 0 0-48zm128-72l-128-96 128-96 0 192z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <path d="M0 40l448 0 0 48-448 0 0-48zM192 168l256 0 0 48-256 0 0-48zm24 128l232 0 0 48-256 0 0-48 24 0zM0 424l448 0 0 48-448 0 0-48zm128-72l-128-96 128-96 0 192z" />
       )}
     </svg>
   );

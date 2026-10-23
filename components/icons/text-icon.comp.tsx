@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `text`, in Duotone Light (the default), Duotone Solid, Classic
- * Solid or Classic Light, as `variant` says. Its Duotone Solid drawing is a
+ * Font Awesome's `text`, in twelve styles (Duotone Light is the default), as `variant` says. Its Duotone Solid drawing is a
  * single layer, drawn at full strength: at 40 % it would read as switched off.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
@@ -35,6 +34,27 @@ export function TextIcon({ className, variant = "duotone-light" }: IconProps) {
       )}
       {variant === "sharp-light" && (
         <path d="M16 32l-16 0 0 128 32 0 0-96 144 0 0 384-96 0 0 32 224 0 0-32-96 0 0-384 144 0 0 96 32 0 0-128-368 0z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M48 136l0-56 120 0 0 352-64 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-64 0 0-352 120 0 0 56c0 13.3 10.7 24 24 24s24-10.7 24-24l0-64c0-22.1-17.9-40-40-40L40 32C17.9 32 0 49.9 0 72l0 64c0 13.3 10.7 24 24 24s24-10.7 24-24z" />
+      )}
+      {variant === "duotone-regular" && (
+        <path d="M48 136l0-56 120 0 0 352-64 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l176 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-64 0 0-352 120 0 0 56c0 13.3 10.7 24 24 24s24-10.7 24-24l0-64c0-22.1-17.9-40-40-40L40 32C17.9 32 0 49.9 0 72l0 64c0 13.3 10.7 24 24 24s24-10.7 24-24z" />
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M0 32l384 0 0 128-64 0 0-64-96 0 0 320 80 0 0 64-224 0 0-64 80 0 0-320-96 0 0 64-64 0 0-128z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <path
+          opacity=".4"
+          d="M0 32l384 0 0 128-64 0 0-64-96 0 0 320 80 0 0 64-224 0 0-64 80 0 0-320-96 0 0 64-64 0 0-128z"
+        />
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M24 32l-24 0 0 128 48 0 0-80 120 0 0 352-88 0 0 48 224 0 0-48-88 0 0-352 120 0 0 80 48 0 0-128-360 0z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <path d="M24 32l-24 0 0 128 48 0 0-80 120 0 0 352-88 0 0 48 224 0 0-48-88 0 0-352 120 0 0 80 48 0 0-128-360 0z" />
       )}
     </svg>
   );

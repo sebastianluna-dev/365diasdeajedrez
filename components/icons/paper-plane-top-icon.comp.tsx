@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `paper-plane-top`, in Duotone Light (the default), Duotone
- * Solid, Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `paper-plane-top`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -19,6 +18,12 @@ export function PaperPlaneTopIcon({ className, variant = "duotone-light" }: Icon
           "classic-light": "-53.33 -85.33 682.67 682.67",
           "sharp-duotone-light": "-21.33 -85.33 682.67 682.67",
           "sharp-light": "-21.33 -85.33 682.67 682.67",
+          "classic-regular": "-53.33 -85.33 682.67 682.67",
+          "duotone-regular": "-53.33 -85.33 682.67 682.67",
+          "sharp-solid": "-21.33 -85.33 682.67 682.67",
+          "sharp-duotone-solid": "-21.33 -85.33 682.67 682.67",
+          "sharp-regular": "-21.33 -85.33 682.67 682.67",
+          "sharp-duotone-regular": "-21.33 -85.33 682.67 682.67",
         }[variant]
       }
       width="24"
@@ -55,6 +60,31 @@ export function PaperPlaneTopIcon({ className, variant = "duotone-light" }: Icon
       )}
       {variant === "sharp-light" && (
         <path d="M188 272l340.5 0-420 193 79.5-193zm340.5-32l-340.5 0-79.5-193 420 193zM48-16L65.9 27.4 160 256 65.9 484.6 48 528 90.7 508.4 601.7 273.6 640 256 601.7 238.4 90.7 3.6 48-16z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M169.9 280L94.9 448.6 461.2 280 169.9 280zm291.3-48L94.9 63.4 169.9 232 461.2 232zM34.8 465.6L128 256 34.8 46.4C33 42.2 32 37.6 32 33 32 14.8 46.7 0 64.8 0 69.5 0 74.2 1 78.5 3L554.2 222c13.3 6.1 21.8 19.4 21.8 34s-8.5 27.9-21.8 34L78.5 509c-4.3 2-9 3-13.7 3-18.1 0-32.8-14.8-32.8-33 0-4.6 1-9.2 2.8-13.4z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path opacity=".4" d="M94.9 63.4L169.9 232 461.2 232 94.9 63.4zm0 385.2L461.2 280 169.9 280 94.9 448.6z" />
+          <path d="M169.9 280L94.9 448.6 461.2 280 169.9 280zm291.3-48L94.9 63.4 169.9 232 461.2 232zM34.8 465.6L128 256 34.8 46.4C33 42.2 32 37.6 32 33 32 14.8 46.7 0 64.8 0 69.5 0 74.2 1 78.5 3L554.2 222c13.3 6.1 21.8 19.4 21.8 34s-8.5 27.9-21.8 34L78.5 509c-4.3 2-9 3-13.7 3-18.1 0-32.8-14.8-32.8-33 0-4.6 1-9.2 2.8-13.4z" />
+        </>
+      )}
+      {variant === "sharp-solid" && <path d="M148 226.9L48-16 640 256 48 528 148 285.1 352 256 148 226.9z" />}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M48 528l112-272 480 0-592 272z" />
+          <path d="M48-16L160 256 640 256 48-16z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M202 280L472.8 280 138.8 433.4 202 280zm270.8-48L202 232 138.8 78.6 472.8 232zM48-16C56.2 3.8 93.5 94.5 160 256 93.5 417.5 56.2 508.2 48 528L112 498.6 582.5 282.4 640 256 582.5 229.6 112 13.4 48-16z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path opacity=".4" d="M138.8 78.6L202 232 472.8 232 138.8 78.6zm0 354.9L472.8 280 202 280 138.8 433.4z" />
+          <path d="M202 280L472.8 280 138.8 433.4 202 280zm270.8-48L202 232 138.8 78.6 472.8 232zM48-16C56.2 3.8 93.5 94.5 160 256 93.5 417.5 56.2 508.2 48 528L112 498.6 582.5 282.4 640 256 582.5 229.6 112 13.4 48-16z" />
+        </>
       )}
     </svg>
   );

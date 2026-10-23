@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `calendar-day`, in Duotone Light (the default), Duotone
- * Solid, Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `calendar-day`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -49,6 +48,36 @@ export function CalendarDayIcon({ className, variant = "duotone-light" }: IconPr
       )}
       {variant === "sharp-light" && (
         <path d="M128 0l0 64 192 0 0-64 32 0 0 64 96 0 0 416-448 0 0-416 96 0 0-64 32 0zM416 96l-384 0 0 352 384 0 0-352zM128 256l0 96 96 0 0-96-96 0zM96 224l160 0 0 160-160 0 0-160z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M120 0c13.3 0 24 10.7 24 24l0 40 160 0 0-40c0-13.3 10.7-24 24-24s24 10.7 24 24l0 40 32 0c35.3 0 64 28.7 64 64l0 288c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 128C0 92.7 28.7 64 64 64l32 0 0-40c0-13.3 10.7-24 24-24zm0 112l-56 0c-8.8 0-16 7.2-16 16l0 288c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-288c0-8.8-7.2-16-16-16l-264 0zm24 144l0 80 80 0 0-80-80 0zm-48 0c0-26.5 21.5-48 48-48l80 0c26.5 0 48 21.5 48 48l0 80c0 26.5-21.5 48-48 48l-80 0c-26.5 0-48-21.5-48-48l0-80z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M48 128l0 288c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-288c0-8.8-7.2-16-16-16L64 112c-8.8 0-16 7.2-16 16zM96 256c0-26.5 21.5-48 48-48l80 0c26.5 0 48 21.5 48 48l0 80c0 26.5-21.5 48-48 48l-80 0c-26.5 0-48-21.5-48-48l0-80z"
+          />
+          <path d="M120 0c13.3 0 24 10.7 24 24l0 40 160 0 0-40c0-13.3 10.7-24 24-24s24 10.7 24 24l0 40 32 0c35.3 0 64 28.7 64 64l0 288c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 128C0 92.7 28.7 64 64 64l32 0 0-40c0-13.3 10.7-24 24-24zm0 112l-56 0c-8.8 0-16 7.2-16 16l0 288c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-288c0-8.8-7.2-16-16-16l-264 0zm24 144l0 80 80 0 0-80-80 0zm-48 0c0-26.5 21.5-48 48-48l80 0c26.5 0 48 21.5 48 48l0 80c0 26.5-21.5 48-48 48l-80 0c-26.5 0-48-21.5-48-48l0-80z" />
+        </>
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M160 0l0 64 128 0 0-64 64 0 0 64 96 0 0 416-448 0 0-416 96 0 0-64 64 0zm64 384l0-128-128 0 0 128 128 0z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M0 160l0 320 448 0 0-320-448 0zm96 96l128 0 0 128-128 0 0-128z" />
+          <path d="M96 0l64 0 0 64 128 0 0-64 64 0 0 64 96 0 0 96-448 0 0-96 96 0 0-64z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M144 0l0 64 160 0 0-64 48 0 0 64 96 0 0 416-448 0 0-416 96 0 0-64 48 0zm0 112l-96 0 0 320 352 0 0-320-256 0zm0 144l0 80 80 0 0-80-80 0zM96 208l176 0 0 176-176 0 0-176z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path opacity=".4" d="M48 112l0 320 352 0 0-320-352 0zm48 96l176 0 0 176-176 0 0-176z" />
+          <path d="M144 0l0 64 160 0 0-64 48 0 0 64 96 0 0 416-448 0 0-416 96 0 0-64 48 0zm0 112l-96 0 0 320 352 0 0-320-256 0zm0 144l0 80 80 0 0-80-80 0zM96 208l176 0 0 176-176 0 0-176z" />
+        </>
       )}
     </svg>
   );

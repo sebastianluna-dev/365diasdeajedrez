@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `percent`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `percent`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -11,7 +10,22 @@ export function PercentIcon({ className, variant = "duotone-light" }: IconProps)
   return (
     <svg
       className={className}
-      viewBox="-117.33 -85.33 682.67 682.67"
+      viewBox={
+        {
+          "duotone-light": "-117.33 -85.33 682.67 682.67",
+          "duotone-solid": "-117.33 -85.33 682.67 682.67",
+          "classic-solid": "-117.33 -85.33 682.67 682.67",
+          "classic-light": "-117.33 -85.33 682.67 682.67",
+          "sharp-duotone-light": "-117.33 -85.33 682.67 682.67",
+          "sharp-light": "-117.33 -85.33 682.67 682.67",
+          "classic-regular": "-117.33 -85.33 682.67 682.67",
+          "duotone-regular": "-117.33 -85.33 682.67 682.67",
+          "sharp-solid": "-85.33 -85.33 682.67 682.67",
+          "sharp-duotone-solid": "-85.33 -85.33 682.67 682.67",
+          "sharp-regular": "-85.33 -85.33 682.67 682.67",
+          "sharp-duotone-regular": "-85.33 -85.33 682.67 682.67",
+        }[variant]
+      }
       width="24"
       height="24"
       fill="currentColor"
@@ -49,6 +63,36 @@ export function PercentIcon({ className, variant = "duotone-light" }: IconProps)
       )}
       {variant === "sharp-light" && (
         <path d="M454.8 48l-11.3 11.3-416 416-11.3 11.3-22.6-22.6 11.3-11.3 416-416 11.3-11.3 22.6 22.6zM128.1 64l-96 0 0 96 96 0 0-96zm-96-32l128 0 0 160-160 0 0-160 32 0zm288 320l0 96 96 0 0-96-96 0zm-32-32l160 0 0 160-160 0 0-160z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M96 80a48 48 0 1 1 0 96 48 48 0 1 1 0-96zm0 144a96 96 0 1 0 0-192 96 96 0 1 0 0 192zM352 336a48 48 0 1 1 0 96 48 48 0 1 1 0-96zm0 144a96 96 0 1 0 0-192 96 96 0 1 0 0 192zM441 73c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0L7 439c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0L441 73z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M48 128a48 48 0 1 0 96 0 48 48 0 1 0 -96 0zM304 384a48 48 0 1 0 96 0 48 48 0 1 0 -96 0z"
+          />
+          <path d="M96 80a48 48 0 1 1 0 96 48 48 0 1 1 0-96zm0 144a96 96 0 1 0 0-192 96 96 0 1 0 0 192zM352 336a48 48 0 1 1 0 96 48 48 0 1 1 0-96zm0 144a96 96 0 1 0 0-192 96 96 0 1 0 0 192zM441 73c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0L7 439c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0L441 73z" />
+        </>
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M470.9 86.6l22.6-22.6-45.3-45.3-22.6 22.6-384 384-22.6 22.6 45.3 45.3 22.6-22.6 384-384zM32.3 32l0 160 160 0 0-160-160 0zm288 288l0 160 160 0 0-160-160 0z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M32.3 32l0 160 160 0 0-160-160 0zm288 288l0 160 160 0 0-160-160 0z" />
+          <path d="M493.5 64l-22.6 22.6-384 384-22.6 22.6-45.3-45.3 22.6-22.6 384-384 22.6-22.6 45.3 45.3z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M490.4 56l-17 17-400 400-17 17-33.9-33.9 17-17 400-400 17-17 33.9 33.9zM144.4 80l-64 0 0 64 64 0 0-64zm-64-48l112 0 0 160-160 0 0-160 48 0zm288 336l0 64 64 0 0-64-64 0zm-48-48l160 0 0 160-160 0 0-160z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path opacity=".4" d="M80.4 80l0 64 64 0 0-64-64 0zm288 288l0 64 64 0 0-64-64 0z" />
+          <path d="M490.4 56l-17 17-400 400-17 17-33.9-33.9 17-17 400-400 17-17 33.9 33.9zM144.4 80l-64 0 0 64 64 0 0-64zm-64-48l112 0 0 160-160 0 0-160 48 0zm288 336l0 64 64 0 0-64-64 0zm-48-48l160 0 0 160-160 0 0-160z" />
+        </>
       )}
     </svg>
   );

@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `barcode`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `barcode`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -40,6 +39,27 @@ export function BarcodeIcon({ className, variant = "duotone-light" }: IconProps)
       )}
       {variant === "sharp-light" && (
         <path d="M32 32l-32 0 0 448 32 0 0-448zm64 0l-32 0 0 448 32 0 0-448zm64 0l0 448 32 0 0-448-32 0zm96 0l-32 0 0 448 32 0 0-448zm64 0l0 448 32 0 0-448-32 0zm128 0l-32 0 0 448 32 0 0-448z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M32 32C14.3 32 0 46.3 0 64L0 448c0 17.7 14.3 32 32 32s32-14.3 32-32L64 64c0-17.7-14.3-32-32-32zm88 0c-13.3 0-24 10.7-24 24l0 400c0 13.3 10.7 24 24 24s24-10.7 24-24l0-400c0-13.3-10.7-24-24-24zm72 32l0 384c0 17.7 14.3 32 32 32s32-14.3 32-32l0-384c0-17.7-14.3-32-32-32s-32 14.3-32 32zm208-8l0 400c0 13.3 10.7 24 24 24s24-10.7 24-24l0-400c0-13.3-10.7-24-24-24s-24 10.7-24 24zm-96 0l0 400c0 13.3 10.7 24 24 24s24-10.7 24-24l0-400c0-13.3-10.7-24-24-24s-24 10.7-24 24z" />
+      )}
+      {variant === "duotone-regular" && (
+        <path d="M32 32C14.3 32 0 46.3 0 64L0 448c0 17.7 14.3 32 32 32s32-14.3 32-32L64 64c0-17.7-14.3-32-32-32zm88 0c-13.3 0-24 10.7-24 24l0 400c0 13.3 10.7 24 24 24s24-10.7 24-24l0-400c0-13.3-10.7-24-24-24zm72 32l0 384c0 17.7 14.3 32 32 32s32-14.3 32-32l0-384c0-17.7-14.3-32-32-32s-32 14.3-32 32zm208-8l0 400c0 13.3 10.7 24 24 24s24-10.7 24-24l0-400c0-13.3-10.7-24-24-24s-24 10.7-24 24zm-96 0l0 400c0 13.3 10.7 24 24 24s24-10.7 24-24l0-400c0-13.3-10.7-24-24-24s-24 10.7-24 24z" />
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M64 32l-64 0 0 448 64 0 0-448zm80 0l-48 0 0 448 48 0 0-448zm48 0l0 448 64 0 0-448-64 0zm208 0l0 448 48 0 0-448-48 0zm-96 0l0 448 48 0 0-448-48 0z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M96 32l0 448 48 0 0-448-48 0zm304 0l0 448 48 0 0-448-48 0z" />
+          <path d="M64 32l-64 0 0 448 64 0 0-448zm128 0l0 448 64 0 0-448-64 0zm112 0l0 448 48 0 0-448-48 0z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M64 32l-64 0 0 448 64 0 0-448zm80 0l-48 0 0 448 48 0 0-448zm48 0l0 448 64 0 0-448-64 0zm208 0l0 448 48 0 0-448-48 0zm-96 0l0 448 48 0 0-448-48 0z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <path d="M64 32l-64 0 0 448 64 0 0-448zm80 0l-48 0 0 448 48 0 0-448zm48 0l0 448 64 0 0-448-64 0zm208 0l0 448 48 0 0-448-48 0zm-96 0l0 448 48 0 0-448-48 0z" />
       )}
     </svg>
   );

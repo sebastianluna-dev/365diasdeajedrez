@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `italic`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says. Its Duotone Solid drawing
+ * Font Awesome's `italic`, in twelve styles (Duotone Light is the default), as `variant` says. Its Duotone Solid drawing
  * is a single layer, drawn at full strength: at 40 % it would read as switched
  * off.
  *
@@ -36,6 +35,24 @@ export function ItalicIcon({ className, variant = "duotone-light" }: IconProps) 
       )}
       {variant === "sharp-light" && (
         <path d="M128 32l256 0 0 32-108.6 0-132.9 384 113.5 0 0 32-256 0 0-32 108.6 0 132.9-384-113.5 0 0-32z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M128 56c0-13.3 10.7-24 24-24l208 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-76.4 0-132 352 80.4 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 480c-13.3 0-24-10.7-24-24s10.7-24 24-24l76.4 0 132-352-80.4 0c-13.3 0-24-10.7-24-24z" />
+      )}
+      {variant === "duotone-regular" && (
+        <path d="M128 56c0-13.3 10.7-24 24-24l208 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-76.4 0-132 352 80.4 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 480c-13.3 0-24-10.7-24-24s10.7-24 24-24l76.4 0 132-352-80.4 0c-13.3 0-24-10.7-24-24z" />
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M128 32l256 0 0 64-90.7 0-133.3 320 96 0 0 64-256 0 0-64 90.7 0 133.3-320-96 0 0-64z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <path opacity=".4" d="M128 32l256 0 0 64-90.7 0-133.3 320 96 0 0 64-256 0 0-64 90.7 0 133.3-320-96 0 0-64z" />
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M128 32l256 0 0 48-100.4 0-132 352 104.4 0 0 48-256 0 0-48 100.4 0 132-352-104.4 0 0-48z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <path d="M128 32l256 0 0 48-100.4 0-132 352 104.4 0 0 48-256 0 0-48 100.4 0 132-352-104.4 0 0-48z" />
       )}
     </svg>
   );

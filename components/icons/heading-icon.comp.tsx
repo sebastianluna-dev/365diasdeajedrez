@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `heading`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says. Its Duotone Solid drawing
+ * Font Awesome's `heading`, in twelve styles (Duotone Light is the default), as `variant` says. Its Duotone Solid drawing
  * is a single layer, drawn at full strength: at 40 % it would read as switched
  * off.
  *
@@ -36,6 +35,27 @@ export function HeadingIcon({ className, variant = "duotone-light" }: IconProps)
       )}
       {variant === "sharp-light" && (
         <path d="M0 32l160 0 0 32-64 0 0 160 256 0 0-160-64 0 0-32 160 0 0 32-64 0 0 384 64 0 0 32-160 0 0-32 64 0 0-192-256 0 0 192 64 0 0 32-160 0 0-32 64 0 0-384-64 0 0-32z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M0 56C0 42.7 10.7 32 24 32l112 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0 0 144 240 0 0-144-32 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l112 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0 0 352 32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-112 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l32 0 0-160-240 0 0 160 32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 480c-13.3 0-24-10.7-24-24s10.7-24 24-24l32 0 0-352-32 0C10.7 80 0 69.3 0 56z" />
+      )}
+      {variant === "duotone-regular" && (
+        <path d="M0 56C0 42.7 10.7 32 24 32l112 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0 0 144 240 0 0-144-32 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l112 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0 0 352 32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-112 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l32 0 0-160-240 0 0 160 32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 480c-13.3 0-24-10.7-24-24s10.7-24 24-24l32 0 0-352-32 0C10.7 80 0 69.3 0 56z" />
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M0 32l160 0 0 64-48 0 0 112 224 0 0-112-48 0 0-64 160 0 0 64-48 0 0 320 48 0 0 64-160 0 0-64 48 0 0-144-224 0 0 144 48 0 0 64-160 0 0-64 48 0 0-320-48 0 0-64z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <path
+          opacity=".4"
+          d="M0 32l160 0 0 64-48 0 0 112 224 0 0-112-48 0 0-64 160 0 0 64-48 0 0 320 48 0 0 64-160 0 0-64 48 0 0-144-224 0 0 144 48 0 0 64-160 0 0-64 48 0 0-320-48 0 0-64z"
+        />
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M0 32l160 0 0 48-56 0 0 144 240 0 0-144-56 0 0-48 160 0 0 48-56 0 0 352 56 0 0 48-160 0 0-48 56 0 0-160-240 0 0 160 56 0 0 48-160 0 0-48 56 0 0-352-56 0 0-48z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <path d="M0 32l160 0 0 48-56 0 0 144 240 0 0-144-56 0 0-48 160 0 0 48-56 0 0 352 56 0 0 48-160 0 0-48 56 0 0-160-240 0 0 160 56 0 0 48-160 0 0-48 56 0 0-352-56 0 0-48z" />
       )}
     </svg>
   );

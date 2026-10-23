@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `folder`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says. Its Duotone Solid drawing
+ * Font Awesome's `folder`, in twelve styles (Duotone Light is the default), as `variant` says. Its Duotone Solid drawing
  * is a single layer, drawn at full strength: at 40 % it would read as switched
  * off.
  *
@@ -45,6 +44,29 @@ export function FolderIcon({ className, variant = "duotone-light" }: IconProps) 
       )}
       {variant === "sharp-light" && (
         <path d="M288 80l-64-48-224 0 0 416 512 0 0-368-224 0zm192 32l0 304-448 0 0-352 181.3 0 55.5 41.6 8.5 6.4 202.7 0z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M64 400l384 0c8.8 0 16-7.2 16-16l0-240c0-8.8-7.2-16-16-16l-149.3 0c-17.3 0-34.2-5.6-48-16L212.3 83.2c-2.8-2.1-6.1-3.2-9.6-3.2L64 80c-8.8 0-16 7.2-16 16l0 288c0 8.8 7.2 16 16 16zm384 48L64 448c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l138.7 0c13.8 0 27.3 4.5 38.4 12.8l38.4 28.8c5.5 4.2 12.3 6.4 19.2 6.4L448 80c35.3 0 64 28.7 64 64l0 240c0 35.3-28.7 64-64 64z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M48 96l0 288c0 8.8 7.2 16 16 16l384 0c8.8 0 16-7.2 16-16l0-240c0-8.8-7.2-16-16-16l-149.3 0c-17.3 0-34.2-5.6-48-16L212.3 83.2c-2.8-2.1-6.1-3.2-9.6-3.2L64 80c-8.8 0-16 7.2-16 16z"
+          />
+          <path d="M64 400l384 0c8.8 0 16-7.2 16-16l0-240c0-8.8-7.2-16-16-16l-149.3 0c-17.3 0-34.2-5.6-48-16L212.3 83.2c-2.8-2.1-6.1-3.2-9.6-3.2L64 80c-8.8 0-16 7.2-16 16l0 288c0 8.8 7.2 16 16 16zm384 48L64 448c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l138.7 0c13.8 0 27.3 4.5 38.4 12.8l38.4 28.8c5.5 4.2 12.3 6.4 19.2 6.4L448 80c35.3 0 64 28.7 64 64l0 240c0 35.3-28.7 64-64 64z" />
+        </>
+      )}
+      {variant === "sharp-solid" && <path d="M0 448l512 0 0-368-224 0-64-48-224 0 0 416z" />}
+      {variant === "sharp-duotone-solid" && <path opacity=".4" d="M0 448l512 0 0-368-224 0-64-48-224 0 0 416z" />}
+      {variant === "sharp-regular" && (
+        <path d="M288 80l-64-48-224 0 0 416 512 0 0-368-224 0zm176 48l0 272-416 0 0-320 160 0c40.5 30.4 61.9 46.4 64 48l192 0z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path opacity=".4" d="M48 80l0 320 416 0 0-272-192 0c-2.1-1.6-23.5-17.6-64-48L48 80z" />
+          <path d="M288 80l-64-48-224 0 0 416 512 0 0-368-224 0zm176 48l0 272-416 0 0-320 160 0c40.5 30.4 61.9 46.4 64 48l192 0z" />
+        </>
       )}
     </svg>
   );

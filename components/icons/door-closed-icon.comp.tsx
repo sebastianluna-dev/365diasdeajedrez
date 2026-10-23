@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `door-closed`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `door-closed`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -49,6 +48,36 @@ export function DoorClosedIcon({ className, variant = "duotone-light" }: IconPro
       )}
       {variant === "sharp-light" && (
         <path d="M384 32l0 448-320 0 0-448 320 0zm32 448l0-480-384 0 0 480-32 0 0 32 448 0 0-32-32 0zM320 224a24 24 0 1 0 0 48 24 24 0 1 0 0-48z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M352 48c8.8 0 16 7.2 16 16l0 400-288 0 0-400c0-8.8 7.2-16 16-16l256 0zm64 416l0-400c0-35.3-28.7-64-64-64L96 0C60.7 0 32 28.7 32 64l0 400-8 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l400 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-8 0zM304 224a32 32 0 1 0 0 64 32 32 0 1 0 0-64z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M80 64l0 400 288 0 0-400c0-8.8-7.2-16-16-16L96 48c-8.8 0-16 7.2-16 16zM336 256a32 32 0 1 1 -64 0 32 32 0 1 1 64 0z"
+          />
+          <path d="M352 48c8.8 0 16 7.2 16 16l0 400-288 0 0-400c0-8.8 7.2-16 16-16l256 0zm64 416l0-400c0-35.3-28.7-64-64-64L96 0C60.7 0 32 28.7 32 64l0 400-8 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l400 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-8 0zM304 224a32 32 0 1 0 0 64 32 32 0 1 0 0-64z" />
+        </>
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M32 0l384 0 0 448 32 0 0 64-448 0 0-64 32 0 0-448zM320 288a32 32 0 1 0 0-64 32 32 0 1 0 0 64z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M32 0l0 448 384 0 0-448-384 0zM352 256a32 32 0 1 1 -64 0 32 32 0 1 1 64 0z" />
+          <path d="M320 288a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM32 448l-32 0 0 64 448 0 0-64-416 0z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M368 48l0 416-288 0 0-416 288 0zm48 416l0-464-384 0 0 464-32 0 0 48 448 0 0-48-32 0zM304 224a32 32 0 1 0 0 64 32 32 0 1 0 0-64z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path opacity=".4" d="M80 48l0 416 288 0 0-416-288 0zM336 256a32 32 0 1 1 -64 0 32 32 0 1 1 64 0z" />
+          <path d="M368 48l0 416-288 0 0-416 288 0zm48 416l0-464-384 0 0 464-32 0 0 48 448 0 0-48-32 0zM304 224a32 32 0 1 0 0 64 32 32 0 1 0 0-64z" />
+        </>
       )}
     </svg>
   );

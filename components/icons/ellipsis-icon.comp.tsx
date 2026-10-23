@@ -22,6 +22,12 @@ export function EllipsisIcon({ className, variant = "duotone-light" }: IconProps
           "classic-light": "0 200 448 112",
           "sharp-duotone-light": "-117.33 -85.33 682.67 682.67",
           "sharp-light": "-117.33 -85.33 682.67 682.67",
+          "classic-regular": "-117.33 -85.33 682.67 682.67",
+          "duotone-regular": "-117.33 -85.33 682.67 682.67",
+          "sharp-solid": "-117.33 -85.33 682.67 682.67",
+          "sharp-duotone-solid": "-117.33 -85.33 682.67 682.67",
+          "sharp-regular": "-117.33 -85.33 682.67 682.67",
+          "sharp-duotone-regular": "-117.33 -85.33 682.67 682.67",
         }[variant]
       }
       width="16"
@@ -49,6 +55,27 @@ export function EllipsisIcon({ className, variant = "duotone-light" }: IconProps
       )}
       {variant === "sharp-light" && (
         <path d="M0 288l0-64 64 0 0 64-64 0zm192 0l0-64 64 0 0 64-64 0zm192-64l64 0 0 64-64 0 0-64z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M448 256a48 48 0 1 1 -96 0 48 48 0 1 1 96 0zm-176 0a48 48 0 1 1 -96 0 48 48 0 1 1 96 0zM48 304a48 48 0 1 1 0-96 48 48 0 1 1 0 96z" />
+      )}
+      {variant === "duotone-regular" && (
+        <path d="M448 256a48 48 0 1 1 -96 0 48 48 0 1 1 96 0zm-176 0a48 48 0 1 1 -96 0 48 48 0 1 1 96 0zM48 304a48 48 0 1 1 0-96 48 48 0 1 1 0 96z" />
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M112 200l0 112-112 0 0-112 112 0zm168 0l0 112-112 0 0-112 112 0zM448 312l-112 0 0-112 112 0 0 112z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M168 200l0 112 112 0 0-112-112 0z" />
+          <path d="M112 312l0-112-112 0 0 112 112 0zm336 0l0-112-112 0 0 112 112 0z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M0 304l0-96 96 0 0 96-96 0zm176 0l0-96 96 0 0 96-96 0zm176-96l96 0 0 96-96 0 0-96z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <path d="M0 304l0-96 96 0 0 96-96 0zm176 0l0-96 96 0 0 96-96 0zm176-96l96 0 0 96-96 0 0-96z" />
       )}
     </svg>
   );

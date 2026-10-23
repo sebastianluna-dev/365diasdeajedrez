@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `clapperboard`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `clapperboard`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -43,6 +42,33 @@ export function ClapperboardIcon({ className, variant = "duotone-light" }: IconP
       )}
       {variant === "sharp-light" && (
         <path d="M334.6 96l-96 96 114.7 0 96-96-114.7 0zM193.4 192l96-96-114.7 0-96 96 114.7 0zM0 224l0-160 512 0 0 384-512 0 0-224zm480 0l-448 0 0 192 448 0 0-192zm0-32l0-81.4-81.4 81.4 81.4 0zM33.4 192l96-96-97.4 0 0 96 1.4 0z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M448 64l-70.1 0-1 1-127 127 92.1 0 1-1 124.1-124.1C461.1 65 454.7 64 448 64zM182.1 192l1-1 127-127-92.1 0-1 1-127 127 92.1 0zM48 192L48 166.1 150.1 64 64 64C28.7 64 0 92.7 0 128L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-256c0-11-2.8-21.4-7.7-30.4l-94.4 94.4 54.1 0 0 192c0 8.8-7.2 16-16 16L64 400c-8.8 0-16-7.2-16-16l0-192z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path opacity=".4" d="M48 192l0 192c0 8.8 7.2 16 16 16l384 0c8.8 0 16-7.2 16-16l0-192-416 0z" />
+          <path d="M448 64l-70.1 0-1 1-127 127 92.1 0 1-1 124.1-124.1C461.1 65 454.7 64 448 64zM182.1 192l1-1 127-127-92.1 0-1 1-127 127 92.1 0zM48 192L48 166.1 150.1 64 64 64C28.7 64 0 92.7 0 128L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-256c0-11-2.8-21.4-7.7-30.4l-94.4 94.4 54.1 0 0 192c0 8.8-7.2 16-16 16L64 400c-8.8 0-16-7.2-16-16l0-192z" />
+        </>
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M361.9 64l92.1 0-96 96 67.9 0 86.1-86.1 0 374.1-512 0 0-384 134.1 0-96 96 67.9 0 95-95 1-1 92.1 0-96 96 67.9 0 95-95 1-1z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M0 160l512 0 0 288-512 0 0-288z" />
+          <path d="M454.1 64l-96 96-92.1 0 95-95 1-1 92.1 0zm-28.1 96l86.1-86.1 0 86.1-86.1 0zm-224-96l92.1 0-96 96-92.1 0 95-95 1-1zm-67.9 0l-96 96-38.1 0 0-96 134.1 0z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M377.9 64l-1 1-127 127 92.1 0 1-1 127-127-92.1 0zM182.1 192l1-1 127-127-92.1 0-1 1-127 127 92.1 0zM48 192l0-25.9 102.1-102.1-150.1 0 0 384 512 0 0-358.1-102.1 102.1 54.1 0 0 208-416 0 0-208z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path opacity=".4" d="M48 192l0 208 416 0 0-208-416 0z" />
+          <path d="M377.9 64l-1 1-127 127 92.1 0 1-1 127-127-92.1 0zM182.1 192l1-1 127-127-92.1 0-1 1-127 127 92.1 0zM48 192l0-25.9 102.1-102.1-150.1 0 0 384 512 0 0-358.1-102.1 102.1 54.1 0 0 208-416 0 0-208z" />
+        </>
       )}
     </svg>
   );

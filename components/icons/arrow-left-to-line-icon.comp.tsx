@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `arrow-left-to-line`, in Duotone Light (the default), Duotone
- * Solid, Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `arrow-left-to-line`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -40,6 +39,27 @@ export function ArrowLeftToLineIcon({ className, variant = "duotone-light" }: Ic
       )}
       {variant === "sharp-light" && (
         <path d="M0 80l0-16 32 0 0 384-32 0 0-368zM132.7 267.3l-11.3-11.3 11.3-11.3 144-144 11.3-11.3 22.6 22.6-11.3 11.3-116.7 116.7 329.4 0 0 32-329.4 0 116.7 116.7 11.3 11.3-22.6 22.6-11.3-11.3-144-144z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M0 88C0 74.7 10.7 64 24 64S48 74.7 48 88l0 336c0 13.3-10.7 24-24 24S0 437.3 0 424L0 88zM135 273c-9.4-9.4-9.4-24.6 0-33.9L271 103c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-95 95 278.1 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-278.1 0 95 95c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L135 273z" />
+      )}
+      {variant === "duotone-regular" && (
+        <path d="M0 88C0 74.7 10.7 64 24 64S48 74.7 48 88l0 336c0 13.3-10.7 24-24 24S0 437.3 0 424L0 88zM135 273c-9.4-9.4-9.4-24.6 0-33.9L271 103c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-95 95 278.1 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-278.1 0 95 95c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L135 273z" />
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M0 416l0 32 64 0 0-384-64 0 0 352zM137.4 233.4l-22.6 22.6 22.6 22.6 128 128 22.6 22.6 45.3-45.3c-6.6-6.6-38.6-38.6-96-96l274.7 0 0-64-274.7 0c57.4-57.4 89.4-89.4 96-96l-45.3-45.3-22.6 22.6-128 128z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M0 64l0 384 64 0 0-384-64 0z" />
+          <path d="M114.7 256l22.6-22.6 128-128 22.6-22.6 45.3 45.3c-6.6 6.6-38.6 38.6-96 96l274.7 0 0 64-274.7 0c57.4 57.4 89.4 89.4 96 96l-45.3 45.3-22.6-22.6-128-128-22.6-22.6z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M0 88l0-24 48 0 0 384-48 0 0-360zM135 273l-17-17 17-17 136-136 17-17 33.9 33.9-17 17-95 95 302.1 0 0 48-302.1 0 95 95 17 17-33.9 33.9-17-17-136-136z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <path d="M0 88l0-24 48 0 0 384-48 0 0-360zM135 273l-17-17 17-17 136-136 17-17 33.9 33.9-17 17-95 95 302.1 0 0 48-302.1 0 95 95 17 17-33.9 33.9-17-17-136-136z" />
       )}
     </svg>
   );

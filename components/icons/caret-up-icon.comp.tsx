@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `caret-up`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says. Its Duotone Solid drawing
+ * Font Awesome's `caret-up`, in twelve styles (Duotone Light is the default), as `variant` says. Its Duotone Solid drawing
  * is a single layer, drawn at full strength: at 40 % it would read as switched
  * off.
  *
@@ -21,6 +20,12 @@ export function CaretUpIcon({ className, variant = "duotone-light" }: IconProps)
           "classic-light": "-181.33 -85.33 682.67 682.67",
           "sharp-duotone-light": "-149.33 -85.33 682.67 682.67",
           "sharp-light": "-149.33 -85.33 682.67 682.67",
+          "classic-regular": "-181.33 -85.33 682.67 682.67",
+          "duotone-regular": "-181.33 -85.33 682.67 682.67",
+          "sharp-solid": "-149.33 -85.33 682.67 682.67",
+          "sharp-duotone-solid": "-149.33 -85.33 682.67 682.67",
+          "sharp-regular": "-149.33 -85.33 682.67 682.67",
+          "sharp-duotone-regular": "-149.33 -85.33 682.67 682.67",
         }[variant]
       }
       width="24"
@@ -54,6 +59,26 @@ export function CaretUpIcon({ className, variant = "duotone-light" }: IconProps)
       )}
       {variant === "sharp-light" && (
         <path d="M368 320L16 320 192 120 368 320zM86.8 288L297.2 288 192 168.4 86.8 288z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M137.9 137.4c12.9-11.6 32.4-12.8 45.2 0l128 128c9.2 9.2 11.9 22.9 6.9 34.9l-2.2 4.3c-5.7 9.5-16.1 15.5-27.4 15.5l-256 0-4.8-.3c-9.4-1.4-17.7-7-22.6-15.1l-2.2-4.3c-4.9-12-2.2-25.7 6.9-34.9l128-128zM71.1 272l178.8 0-89.4-89.4-89.4 89.4z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path opacity=".4" d="M71.1 272l89.4-89.4 89.4 89.4-178.8 0z" />
+          <path d="M137.9 137.4c12.9-11.6 32.4-12.8 45.2 0l128 128c9.2 9.2 11.9 22.9 6.9 34.9l-2.2 4.3c-5.7 9.5-16.1 15.5-27.4 15.5l-256 0-4.8-.3c-9.4-1.4-17.7-7-22.6-15.1l-2.2-4.3c-4.9-12-2.2-25.7 6.9-34.9l128-128zM71.1 272l178.8 0-89.4-89.4-89.4 89.4z" />
+        </>
+      )}
+      {variant === "sharp-solid" && <path d="M16 320l176-200 176 200-352 0z" />}
+      {variant === "sharp-duotone-solid" && <path opacity=".4" d="M16 320l176-200 176 200-352 0z" />}
+      {variant === "sharp-regular" && (
+        <path d="M368 320L16 320 192 120 368 320zM122.2 272l139.6 0-69.8-79.3-69.8 79.3z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path opacity=".4" d="M122.2 272l69.8-79.3 69.8 79.3-139.6 0z" />
+          <path d="M368 320L16 320 192 120 368 320zM122.2 272l139.6 0-69.8-79.3-69.8 79.3z" />
+        </>
       )}
     </svg>
   );

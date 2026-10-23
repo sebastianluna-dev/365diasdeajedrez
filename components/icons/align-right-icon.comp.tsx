@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `align-right`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `align-right`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -40,6 +39,27 @@ export function AlignRightIcon({ className, variant = "duotone-light" }: IconPro
       )}
       {variant === "sharp-light" && (
         <path d="M432 48l16 0 0 32-288 0 0-32 272 0zm0 128l16 0 0 32-448 0 0-32 432 0zm16 128l0 32-288 0 0-32 288 0zM432 432l16 0 0 32-448 0 0-32 432 0z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M424 40c13.3 0 24 10.7 24 24s-10.7 24-24 24L184 88c-13.3 0-24-10.7-24-24s10.7-24 24-24l240 0zm0 128c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 216c-13.3 0-24-10.7-24-24s10.7-24 24-24l400 0zm24 152c0 13.3-10.7 24-24 24l-240 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l240 0c13.3 0 24 10.7 24 24zM424 424c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 472c-13.3 0-24-10.7-24-24s10.7-24 24-24l400 0z" />
+      )}
+      {variant === "duotone-regular" && (
+        <path d="M424 40c13.3 0 24 10.7 24 24s-10.7 24-24 24L184 88c-13.3 0-24-10.7-24-24s10.7-24 24-24l240 0zm0 128c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 216c-13.3 0-24-10.7-24-24s10.7-24 24-24l400 0zm24 152c0 13.3-10.7 24-24 24l-240 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l240 0c13.3 0 24 10.7 24 24zM424 424c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 472c-13.3 0-24-10.7-24-24s10.7-24 24-24l400 0z" />
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M448 32l0 64-288 0 0-64 288 0zm0 256l0 64-288 0 0-64 288 0zM0 160l448 0 0 64-448 0 0-64zM448 416l0 64-448 0 0-64 448 0z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M160 32l0 64 288 0 0-64-288 0zm0 256l0 64 288 0 0-64-288 0z" />
+          <path d="M448 480l-448 0 0-64 448 0 0 64zm0-256l-448 0 0-64 448 0 0 64z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M424 40l24 0 0 48-288 0 0-48 264 0zm0 128l24 0 0 48-448 0 0-48 424 0zm24 128l0 48-288 0 0-48 288 0zM424 424l24 0 0 48-448 0 0-48 424 0z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <path d="M424 40l24 0 0 48-288 0 0-48 264 0zm0 128l24 0 0 48-448 0 0-48 424 0zm24 128l0 48-288 0 0-48 288 0zM424 424l24 0 0 48-448 0 0-48 424 0z" />
       )}
     </svg>
   );

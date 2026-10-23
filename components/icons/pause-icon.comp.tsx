@@ -2,8 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Pausing the board's autoplay and the site's reviews, which draw it in
- * Duotone Solid. Font Awesome's `pause`, in Duotone Light (the default),
- * Duotone Solid, Classic Solid or Classic Light, as `variant` says. Its
+ * Duotone Solid. Font Awesome's `pause`, in twelve styles (Duotone Light is the default), as `variant` says. Its
  * Duotone Solid drawing is a single layer, drawn at full strength: at 40 % it
  * would read as switched off.
  *
@@ -46,6 +45,28 @@ export function PauseIcon({ className, variant = "duotone-light" }: IconProps) {
       )}
       {variant === "sharp-light" && (
         <path d="M32 64l0 384 96 0 0-384-96 0zM0 32l160 0 0 448-160 0 0-448zM256 64l0 384 96 0 0-384-96 0zM224 32l160 0 0 448-160 0 0-448z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M48 80l0 352 64 0 0-352-64 0zM0 80C0 53.5 21.5 32 48 32l64 0c26.5 0 48 21.5 48 48l0 352c0 26.5-21.5 48-48 48l-64 0c-26.5 0-48-21.5-48-48L0 80zm272 0l0 352 64 0 0-352-64 0zm-48 0c0-26.5 21.5-48 48-48l64 0c26.5 0 48 21.5 48 48l0 352c0 26.5-21.5 48-48 48l-64 0c-26.5 0-48-21.5-48-48l0-352z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path opacity=".4" d="M48 80l64 0 0 352-64 0 0-352zm224 0l64 0 0 352-64 0 0-352z" />
+          <path d="M48 80l0 352 64 0 0-352-64 0zM0 80C0 53.5 21.5 32 48 32l64 0c26.5 0 48 21.5 48 48l0 352c0 26.5-21.5 48-48 48l-64 0c-26.5 0-48-21.5-48-48L0 80zm272 0l0 352 64 0 0-352-64 0zm-48 0c0-26.5 21.5-48 48-48l64 0c26.5 0 48 21.5 48 48l0 352c0 26.5-21.5 48-48 48l-64 0c-26.5 0-48-21.5-48-48l0-352z" />
+        </>
+      )}
+      {variant === "sharp-solid" && <path d="M160 32l-160 0 0 448 160 0 0-448zm224 0l-160 0 0 448 160 0 0-448z" />}
+      {variant === "sharp-duotone-solid" && (
+        <path opacity=".4" d="M160 32l-160 0 0 448 160 0 0-448zm224 0l-160 0 0 448 160 0 0-448z" />
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M48 80l0 352 64 0 0-352-64 0zM0 32l160 0 0 448-160 0 0-448zM272 80l0 352 64 0 0-352-64 0zM224 32l160 0 0 448-160 0 0-448z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path opacity=".4" d="M48 80l64 0 0 352-64 0 0-352zm224 0l64 0 0 352-64 0 0-352z" />
+          <path d="M48 80l0 352 64 0 0-352-64 0zM0 32l160 0 0 448-160 0 0-448zM272 80l0 352 64 0 0-352-64 0zM224 32l160 0 0 448-160 0 0-448z" />
+        </>
       )}
     </svg>
   );

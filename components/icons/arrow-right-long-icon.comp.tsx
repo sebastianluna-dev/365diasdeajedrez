@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `arrow-right-long`, in Duotone Light (the default), Duotone
- * Solid, Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `arrow-right-long`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -11,7 +10,22 @@ export function ArrowRightLongIcon({ className, variant = "duotone-light" }: Ico
   return (
     <svg
       className={className}
-      viewBox="-53.33 -85.33 682.67 682.67"
+      viewBox={
+        {
+          "duotone-light": "-53.33 -85.33 682.67 682.67",
+          "duotone-solid": "-53.33 -85.33 682.67 682.67",
+          "classic-solid": "-53.33 -85.33 682.67 682.67",
+          "classic-light": "-53.33 -85.33 682.67 682.67",
+          "sharp-duotone-light": "-53.33 -85.33 682.67 682.67",
+          "sharp-light": "-53.33 -85.33 682.67 682.67",
+          "classic-regular": "-53.33 -85.33 682.67 682.67",
+          "duotone-regular": "-53.33 -85.33 682.67 682.67",
+          "sharp-solid": "-21.33 -85.33 682.67 682.67",
+          "sharp-duotone-solid": "-21.33 -85.33 682.67 682.67",
+          "sharp-regular": "-21.33 -85.33 682.67 682.67",
+          "sharp-duotone-regular": "-21.33 -85.33 682.67 682.67",
+        }[variant]
+      }
       width="24"
       height="24"
       fill="currentColor"
@@ -37,6 +51,27 @@ export function ArrowRightLongIcon({ className, variant = "duotone-light" }: Ico
       )}
       {variant === "sharp-light" && (
         <path d="M571.4 267.3l11.3-11.3-11.3-11.3-144-144-11.3-11.3-22.6 22.6 11.3 11.3 116.7 116.7-521.4 0 0 32 521.4 0-128 128 22.6 22.6 155.3-155.3z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M569 273c9.4-9.4 9.4-24.6 0-33.9L433 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l95 95-470.1 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l470.1 0-95 95c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0L569 273z" />
+      )}
+      {variant === "duotone-regular" && (
+        <path d="M569 273c9.4-9.4 9.4-24.6 0-33.9L433 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l95 95-470.1 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l470.1 0-95 95c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0L569 273z" />
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M598.9 278.6L621.5 256 598.9 233.4 448.3 82.7 403 128c6.6 6.6 38.6 38.6 96 96l-466.7 0 0 64 466.7 0-96 96 45.3 45.3 150.6-150.6z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M32.3 224l0 64 466.7 0 32-32-32-32-466.7 0z" />
+          <path d="M621.5 256L448.3 429.3 403 384 531 256c-84-84-126.7-126.7-128-128l45.3-45.3 150.6 150.6 22.6 22.6z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M601.4 273l17-17-17-17-136-136-17-17-33.9 33.9 17 17 95 95-494.1 0 0 48 494.1 0-95 95-17 17 33.9 33.9 17-17 136-136z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <path d="M601.4 273l17-17-17-17-136-136-17-17-33.9 33.9 17 17 95 95-494.1 0 0 48 494.1 0-95 95-17 17 33.9 33.9 17-17 136-136z" />
       )}
     </svg>
   );

@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `lock`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `lock`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -49,6 +48,42 @@ export function LockIcon({ className, variant = "duotone-light" }: IconProps) {
       )}
       {variant === "sharp-light" && (
         <path d="M96 96l0 64 192 0 0-64c0-53-43-96-96-96S96 43 96 96zM64 160l0-64C64 25.3 121.3-32 192-32S320 25.3 320 96l0 64 64 0 0 352-384 0 0-352 64 0zM32 480l320 0 0-288-320 0 0 288z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M112 96l0 64 160 0 0-64c0-44.2-35.8-80-80-80s-80 35.8-80 80zM64 160l0-64C64 25.3 121.3-32 192-32S320 25.3 320 96l0 64c35.3 0 64 28.7 64 64l0 224c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 224c0-35.3 28.7-64 64-64zm208 48l-160 0 0 0-48 0 0 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16l256 0c8.8 0 16-7.2 16-16l0-224c0-8.8-7.2-16-16-16l0 0-48 0 0 0z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M48 224l0 224c0 8.8 7.2 16 16 16l256 0c8.8 0 16-7.2 16-16l0-224c0-8.8-7.2-16-16-16-16 0-32 0-48 0-125.3 0-194.7 0-208 0-8.8 0-16 7.1-16 16z"
+          />
+          <path d="M112 96l0 64 160 0 0-64c0-44.2-35.8-80-80-80s-80 35.8-80 80zM64 160l0-64C64 25.3 121.3-32 192-32S320 25.3 320 96l0 64c35.3 0 64 28.7 64 64l0 224c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 224c0-35.3 28.7-64 64-64zm208 48l-160 0 0 0-48 0 0 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16l256 0c8.8 0 16-7.2 16-16l0-224c0-8.8-7.2-16-16-16l0 0-48 0 0 0z" />
+        </>
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M128 96l0 64 128 0 0-64c0-35.3-28.7-64-64-64s-64 28.7-64 64zM64 160l0-64C64 25.3 121.3-32 192-32S320 25.3 320 96l0 64 64 0 0 352-384 0 0-352 64 0z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M64 96l0 64 64 0 0-64c0-35.3 28.7-64 64-64s64 28.7 64 64l0 64 64 0 0-64c0-70.7-57.3-128-128-128S64 25.3 64 96z"
+          />
+          <path d="M0 160l384 0 0 352-384 0z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M112 96l0 64 160 0 0-64c0-44.2-35.8-80-80-80s-80 35.8-80 80zM64 208l-16 0 0 256 288 0 0-256-16 0 0 0-48 0 0 0-160 0 0 0-48 0 0 0zm0-48l0-64C64 25.3 121.3-32 192-32S320 25.3 320 96l0 64 64 0 0 352-384 0 0-352 64 0z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M48 208l0 256 288 0 0-256-16 0c-16 0-32 0-48 0-53.3 0-106.7 0-160 0-16 0-32 0-48 0l-16 0z"
+          />
+          <path d="M112 96l0 64 160 0 0-64c0-44.2-35.8-80-80-80s-80 35.8-80 80zM64 208l-16 0 0 256 288 0 0-256-16 0 0 0-48 0 0 0-160 0 0 0-48 0 0 0zm0-48l0-64C64 25.3 121.3-32 192-32S320 25.3 320 96l0 64 64 0 0 352-384 0 0-352 64 0z" />
+        </>
       )}
     </svg>
   );

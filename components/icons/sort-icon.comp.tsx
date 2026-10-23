@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `sort`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `sort`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -19,6 +18,12 @@ export function SortIcon({ className, variant = "duotone-light" }: IconProps) {
           "classic-light": "-149.33 -85.33 682.67 682.67",
           "sharp-duotone-light": "-117.33 -85.33 682.67 682.67",
           "sharp-light": "-117.33 -85.33 682.67 682.67",
+          "classic-regular": "-149.33 -85.33 682.67 682.67",
+          "duotone-regular": "-149.33 -85.33 682.67 682.67",
+          "sharp-solid": "-117.33 -85.33 682.67 682.67",
+          "sharp-duotone-solid": "-117.33 -85.33 682.67 682.67",
+          "sharp-regular": "-117.33 -85.33 682.67 682.67",
+          "sharp-duotone-regular": "-117.33 -85.33 682.67 682.67",
         }[variant]
       }
       width="24"
@@ -55,6 +60,34 @@ export function SortIcon({ className, variant = "duotone-light" }: IconProps) {
       )}
       {variant === "sharp-light" && (
         <path d="M8 224L37.8 192 202.1 15.5 224-8 245.9 15.5 410.2 192 440 224 8 224zM224 39L81.5 192 366.5 192 224 39zM8 288L440 288 410.2 320 245.9 496.5 224 520 202.1 496.5 37.8 320 8 288zM224 473l142.5-153-285 0 142.5 153z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M192 54.6L70.6 176 313.4 176 192 54.6zM32 224c-12.9 0-24.6-7.8-29.6-19.8S.2 178.5 9.4 169.4l160-160c12.5-12.5 32.8-12.5 45.3 0l160 160c9.2 9.2 11.9 22.9 6.9 34.9S364.9 224 352 224L32 224zM192 457.4L313.4 336 70.6 336 192 457.4zM32 288l320 0c12.9 0 24.6 7.8 29.6 19.8s2.2 25.7-6.9 34.9l-160 160c-12.5 12.5-32.8 12.5-45.3 0l-160-160c-9.2-9.2-11.9-22.9-6.9-34.9S19.1 288 32 288z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M70.6 176L313.4 176 192 54.6C151.5 95.1 111.1 135.5 70.6 176zm0 160L191.9 457.3c40.6-40.4 81-80.9 121.4-121.3L70.6 336z"
+          />
+          <path d="M192 54.6L70.6 176 313.4 176 192 54.6zM32 224c-12.9 0-24.6-7.8-29.6-19.8S.2 178.5 9.4 169.4l160-160c12.5-12.5 32.8-12.5 45.3 0l160 160c9.2 9.2 11.9 22.9 6.9 34.9S364.9 224 352 224L32 224zM192 457.4L313.4 336 70.6 336 192 457.4zM32 288l320 0c12.9 0 24.6 7.8 29.6 19.8s2.2 25.7-6.9 34.9l-160 160c-12.5 12.5-32.8 12.5-45.3 0l-160-160c-9.2-9.2-11.9-22.9-6.9-34.9S19.1 288 32 288z" />
+        </>
+      )}
+      {variant === "sharp-solid" && <path d="M224-8L8 224 440 224 224-8zm0 528L440 288 8 288 224 520z" />}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M8 288L440 288 224 520 8 288z" />
+          <path d="M8 224L224-8 440 224 8 224z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M8 224l432 0c-14.2-15.2-75.2-80.8-183.2-196.8L224-8c-4.2 4.6-61.3 65.9-171.3 184L8 224zM224 62.4L329.7 176 118.3 176 224 62.4zM8 288c14.2 15.2 75.2 80.8 183.2 196.8L224 520c4.2-4.6 61.4-65.9 171.3-184L440 288 8 288zM224 449.6L118.3 336 329.7 336 224 449.6z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path opacity=".4" d="M118.3 176L329.7 176 224 62.4 118.3 176zm0 160L224 449.6 329.7 336 118.3 336z" />
+          <path d="M8 224c14.2-15.2 75.2-80.8 183.2-196.8L224-8c4.2 4.5 61.4 65.9 171.3 184L440 224 8 224zM224 62.4L118.3 176 329.7 176 224 62.4zM8 288l432 0c-14.2 15.2-75.2 80.8-183.2 196.8L224 520c-4.2-4.6-61.3-65.9-171.3-184L8 288zM224 449.6L329.7 336 118.3 336 224 449.6z" />
+        </>
       )}
     </svg>
   );

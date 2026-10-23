@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `minus`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says. Its Duotone Solid drawing
+ * Font Awesome's `minus`, in twelve styles (Duotone Light is the default), as `variant` says. Its Duotone Solid drawing
  * is a single layer, drawn at full strength: at 40 % it would read as switched
  * off.
  *
@@ -33,6 +32,16 @@ export function MinusIcon({ className, variant = "duotone-light" }: IconProps) {
       )}
       {variant === "sharp-duotone-light" && <path d="M0 240l448 0 0 32-448 0 0-32z" />}
       {variant === "sharp-light" && <path d="M0 240l448 0 0 32-448 0 0-32z" />}
+      {variant === "classic-regular" && (
+        <path d="M0 256c0-13.3 10.7-24 24-24l400 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 280c-13.3 0-24-10.7-24-24z" />
+      )}
+      {variant === "duotone-regular" && (
+        <path d="M0 256c0-13.3 10.7-24 24-24l400 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 280c-13.3 0-24-10.7-24-24z" />
+      )}
+      {variant === "sharp-solid" && <path d="M0 224l448 0 0 64-448 0 0-64z" />}
+      {variant === "sharp-duotone-solid" && <path opacity=".4" d="M0 224l448 0 0 64-448 0 0-64z" />}
+      {variant === "sharp-regular" && <path d="M0 232l448 0 0 48-448 0 0-48z" />}
+      {variant === "sharp-duotone-regular" && <path d="M0 232l448 0 0 48-448 0 0-48z" />}
     </svg>
   );
 }

@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `chart-simple`, in Duotone Light (the default), Duotone
- * Solid, Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `chart-simple`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -11,7 +10,22 @@ export function ChartSimpleIcon({ className, variant = "duotone-light" }: IconPr
   return (
     <svg
       className={className}
-      viewBox="-85.33 -85.33 682.67 682.67"
+      viewBox={
+        {
+          "duotone-light": "-85.33 -85.33 682.67 682.67",
+          "duotone-solid": "-85.33 -85.33 682.67 682.67",
+          "classic-solid": "-85.33 -85.33 682.67 682.67",
+          "classic-light": "-85.33 -85.33 682.67 682.67",
+          "sharp-duotone-light": "-85.33 -85.33 682.67 682.67",
+          "sharp-light": "-85.33 -85.33 682.67 682.67",
+          "classic-regular": "-53.33 -85.33 682.67 682.67",
+          "duotone-regular": "-53.33 -85.33 682.67 682.67",
+          "sharp-solid": "-85.33 -85.33 682.67 682.67",
+          "sharp-duotone-solid": "-85.33 -85.33 682.67 682.67",
+          "sharp-regular": "-53.33 -85.33 682.67 682.67",
+          "sharp-duotone-regular": "-53.33 -85.33 682.67 682.67",
+        }[variant]
+      }
       width="24"
       height="24"
       fill="currentColor"
@@ -49,6 +63,33 @@ export function ChartSimpleIcon({ className, variant = "duotone-light" }: IconPr
       )}
       {variant === "sharp-light" && (
         <path d="M288 64l0 384-64 0 0-384 64 0zM224 32l-32 0 0 448 128 0 0-448-96 0zM96 256l0 192-64 0 0-192 64 0zM32 224l-32 0 0 256 128 0 0-256-96 0zm384-96l64 0 0 320-64 0 0-320zM384 96l0 384 128 0 0-384-128 0z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M304 80l0 352-48 0 0-352 48 0zM256 32c-26.5 0-48 21.5-48 48l0 352c0 26.5 21.5 48 48 48l48 0c26.5 0 48-21.5 48-48l0-352c0-26.5-21.5-48-48-48l-48 0zM112 272l0 160-48 0 0-160 48 0zM64 224c-26.5 0-48 21.5-48 48l0 160c0 26.5 21.5 48 48 48l48 0c26.5 0 48-21.5 48-48l0-160c0-26.5-21.5-48-48-48l-48 0zm384-80l48 0 0 288-48 0 0-288zm-48 0l0 288c0 26.5 21.5 48 48 48l48 0c26.5 0 48-21.5 48-48l0-288c0-26.5-21.5-48-48-48l-48 0c-26.5 0-48 21.5-48 48z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path opacity=".4" d="M64 272l48 0 0 160-48 0 0-160zM448 144l48 0 0 288-48 0 0-288z" />
+          <path d="M304 80l0 352-48 0 0-352 48 0zM256 32c-26.5 0-48 21.5-48 48l0 352c0 26.5 21.5 48 48 48l48 0c26.5 0 48-21.5 48-48l0-352c0-26.5-21.5-48-48-48l-48 0zM112 272l0 160-48 0 0-160 48 0zM64 224c-26.5 0-48 21.5-48 48l0 160c0 26.5 21.5 48 48 48l48 0c26.5 0 48-21.5 48-48l0-160c0-26.5-21.5-48-48-48l-48 0zm384-80l48 0 0 288-48 0 0-288zm-48 0l0 288c0 26.5 21.5 48 48 48l48 0c26.5 0 48-21.5 48-48l0-288c0-26.5-21.5-48-48-48l-48 0c-26.5 0-48 21.5-48 48z" />
+        </>
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M192 32l128 0 0 448-128 0 0-448zM0 224l128 0 0 256-128 0 0-256zM512 96l0 384-128 0 0-384 128 0z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M192 32l128 0 0 448-128 0 0-448z" />
+          <path d="M512 96l-128 0 0 384 128 0 0-384zM128 224l-128 0 0 256 128 0 0-256z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M304 80l0 352-48 0 0-352 48 0zM256 32l-48 0 0 448 144 0 0-448-96 0zM112 272l0 160-48 0 0-160 48 0zM64 224l-48 0 0 256 144 0 0-256-96 0zm384-80l48 0 0 288-48 0 0-288zM400 96l0 384 144 0 0-384-144 0z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path opacity=".4" d="M64 272l48 0 0 160-48 0 0-160zM448 144l48 0 0 288-48 0 0-288z" />
+          <path d="M304 80l0 352-48 0 0-352 48 0zM256 32l-48 0 0 448 144 0 0-448-96 0zM112 272l0 160-48 0 0-160 48 0zM64 224l-48 0 0 256 144 0 0-256-96 0zm384-80l48 0 0 288-48 0 0-288zM400 96l0 384 144 0 0-384-144 0z" />
+        </>
       )}
     </svg>
   );

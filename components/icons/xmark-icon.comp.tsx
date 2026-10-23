@@ -2,8 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Closing: the staff's dialogs, the new study's, and the site's mobile menu
- * while it is open. Font Awesome's `xmark`, in Duotone Light (the default),
- * Duotone Solid, Classic Solid or Classic Light, as `variant` says. Its
+ * while it is open. Font Awesome's `xmark`, in twelve styles (Duotone Light is the default), as `variant` says. Its
  * Duotone Solid drawing is a single layer, drawn at full strength: at 40 % it
  * would read as switched off.
  *
@@ -14,7 +13,22 @@ export function XmarkIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
-      viewBox="-149.33 -85.33 682.67 682.67"
+      viewBox={
+        {
+          "duotone-light": "-149.33 -85.33 682.67 682.67",
+          "duotone-solid": "-149.33 -85.33 682.67 682.67",
+          "classic-solid": "-149.33 -85.33 682.67 682.67",
+          "classic-light": "-149.33 -85.33 682.67 682.67",
+          "sharp-duotone-light": "-149.33 -85.33 682.67 682.67",
+          "sharp-light": "-149.33 -85.33 682.67 682.67",
+          "classic-regular": "-149.33 -85.33 682.67 682.67",
+          "duotone-regular": "-149.33 -85.33 682.67 682.67",
+          "sharp-solid": "-117.33 -85.33 682.67 682.67",
+          "sharp-duotone-solid": "-117.33 -85.33 682.67 682.67",
+          "sharp-regular": "-117.33 -85.33 682.67 682.67",
+          "sharp-duotone-regular": "-117.33 -85.33 682.67 682.67",
+        }[variant]
+      }
       width="20"
       height="20"
       fill="currentColor"
@@ -37,6 +51,27 @@ export function XmarkIcon({ className, variant = "duotone-light" }: IconProps) {
       )}
       {variant === "sharp-light" && (
         <path d="M379.4 91.3L390.8 80 368.1 57.4 356.8 68.7 192.1 233.4 27.4 68.7 16.1 57.4-6.5 80 4.8 91.3 169.5 256 4.8 420.7-6.5 432 16.1 454.6 27.4 443.3 192.1 278.6 356.8 443.3 368.1 454.6 390.8 432 379.4 420.7 214.8 256 379.4 91.3z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M7.5 105c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l151 151 151-151c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-151 151 151 151c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-151-151-151 151c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l151-151-151-151z" />
+      )}
+      {variant === "duotone-regular" && (
+        <path d="M7.5 105c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l151 151 151-151c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-151 151 151 151c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-151-151-151 151c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l151-151-151-151z" />
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M86.9 73.4L64.3 50.7 19 96 41.6 118.6 179 256 41.6 393.4 19 416 64.3 461.3 86.9 438.6 224.3 301.3 361.6 438.6 384.3 461.3 429.5 416 406.9 393.4 269.5 256 406.9 118.6 429.5 96 384.3 50.7 361.6 73.4 224.3 210.7 86.9 73.4z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <path
+          opacity=".4"
+          d="M86.9 73.4L64.3 50.7 19 96 41.6 118.6 179 256 41.6 393.4 19 416 64.3 461.3 224.3 301.3 361.6 438.6 384.3 461.3 429.5 416 406.9 393.4 269.5 256 406.9 118.6 429.5 96 384.3 50.7 361.6 73.4 224.3 210.7 86.9 73.4z"
+        />
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M39.5 105l-17-17 33.9-33.9 17 17 151 151 151-151 17-17 33.9 33.9-17 17-151 151 151 151 17 17-33.9 33.9-17-17-151-151-151 151-17 17-33.9-33.9 17-17 151-151-151-151z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <path d="M39.5 105l-17-17 33.9-33.9 17 17 151 151 151-151 17-17 33.9 33.9-17 17-151 151 151 151 17 17-33.9 33.9-17-17-151-151-151 151-17 17-33.9-33.9 17-17 151-151-151-151z" />
       )}
     </svg>
   );

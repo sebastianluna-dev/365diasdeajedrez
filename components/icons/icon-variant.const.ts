@@ -6,6 +6,12 @@ export const ICON_VARIANTS = [
   "classic-light",
   "sharp-duotone-light",
   "sharp-light",
+  "classic-regular",
+  "duotone-regular",
+  "sharp-solid",
+  "sharp-duotone-solid",
+  "sharp-regular",
+  "sharp-duotone-regular",
 ] as const;
 
 export type IconVariant = (typeof ICON_VARIANTS)[number];
@@ -14,6 +20,6 @@ export type IconVariant = (typeof ICON_VARIANTS)[number];
 export interface IconProps {
   /** Its size and its colour are its caller's stylesheet's. */
   className?: string;
-  /** Duotone Light (the default), Duotone Solid, Classic Solid, Classic Light, Sharp Duotone Light or Sharp Light. */
+  /** Duotone Light (the default) or any of the other eleven styles, by their Font Awesome names. */
   variant?: IconVariant;
 }

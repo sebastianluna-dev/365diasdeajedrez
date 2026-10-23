@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `triangle-exclamation`, in Duotone Light (the default),
- * Duotone Solid, Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `triangle-exclamation`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -19,6 +18,12 @@ export function TriangleExclamationIcon({ className, variant = "duotone-light" }
           "classic-light": "-85.33 -85.33 682.67 682.67",
           "sharp-duotone-light": "-53.33 -85.33 682.67 682.67",
           "sharp-light": "-53.33 -85.33 682.67 682.67",
+          "classic-regular": "-85.33 -85.33 682.67 682.67",
+          "duotone-regular": "-85.33 -85.33 682.67 682.67",
+          "sharp-solid": "-53.33 -85.33 682.67 682.67",
+          "sharp-duotone-solid": "-53.33 -85.33 682.67 682.67",
+          "sharp-regular": "-53.33 -85.33 682.67 682.67",
+          "sharp-duotone-regular": "-53.33 -85.33 682.67 682.67",
         }[variant]
       }
       width="24"
@@ -61,6 +66,42 @@ export function TriangleExclamationIcon({ className, variant = "duotone-light" }
       )}
       {variant === "sharp-light" && (
         <path d="M306.2 17.3L542.4 448 560 480 16 480 33.6 448 269.8 17.3 288-16 306.2 17.3zM70 448L506 448 288 50.6 70 448zm238-52l-40 0 0-40 40 0 0 40zm-8.8-76l-22.4 0-12.8-144 48 0-12.8 144z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M256.5 0c14.7 0 28.2 8.1 35.2 21l216 400c6.7 12.4 6.4 27.4-.8 39.5S486.6 480 472.5 480l-432 0c-14.1 0-27.1-7.4-34.3-19.5s-7.5-27.1-.8-39.5l216-400c7-12.9 20.5-21 35.2-21zM53.9 432L459.1 432 256.5 56.8 53.9 432zm202.6-40a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm0-208c18.6 0 33 16.1 31 34.6l-7.1 64.1C279 294.8 268.7 304 256.5 304s-22.5-9.2-23.8-21.3l-7.1-64.1c-2-18.5 12.4-34.6 31-34.6z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M53.9 432L256.5 56.9 459.1 432 53.9 432zm170.6-72a32 32 0 1 0 64 0 32 32 0 1 0 -64 0zm1-141.4l7.1 64.1c1.4 12.2 11.6 21.3 23.8 21.3s22.5-9.2 23.8-21.3l7.1-64.1c2-18.5-12.4-34.6-31-34.6s-33 16.1-31 34.6z"
+          />
+          <path d="M256.5 0c14.7 0 28.2 8.1 35.2 21l216 400c6.7 12.4 6.4 27.4-.8 39.5S486.6 480 472.5 480l-432 0c-14.1 0-27.1-7.4-34.3-19.5s-7.5-27.1-.8-39.5l216-400 2.9-4.6C231.7 6.2 243.7 0 256.5 0zM53.9 432L459.1 432 256.5 56.9 53.9 432zm202.6-40a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm0-208c18.6 0 33 16.1 31 34.6l-7.1 64.1C279 294.8 268.7 304 256.5 304s-22.5-9.2-23.8-21.3l-7.1-64.1c-2-18.5 12.4-34.6 31-34.6z" />
+        </>
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M560 480L16 480 288-16 560 480zM260 356l0 56 56 0 0-56-56 0zm-4-196l12.8 160 38.4 0 12.8-160-64 0z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M16 480L288-16 560 480 16 480zM256 160l12.8 160 38.4 0 12.8-160-64 0zm4 196l0 56 56 0 0-56-56 0z"
+          />
+          <path d="M316 412l-56 0 0-56 56 0 0 56zm-8.8-92l-38.4 0-12.8-160 64 0-12.8 160z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M315.4 33.9L533.7 432 560 480 16 480 42.3 432 260.6 33.9 288-16 315.4 33.9zM97.1 432L478.9 432 288 83.8 97.1 432zM316 396l-56 0 0-56 56 0 0 56zm-8.8-84l-38.4 0-12.8-120 64 0-12.8 120z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M97.1 432L288 83.8 478.9 432 97.1 432zM256 192l12.8 120 38.4 0 12.8-120-64 0zm4 148l0 56 56 0 0-56-56 0z"
+          />
+          <path d="M560 480L16 480 288-16 560 480zM97.1 432L478.9 432 288 83.8 97.1 432zM316 396l-56 0 0-56 56 0 0 56zm-8.8-84l-38.4 0-12.8-120 64 0-12.8 120z" />
+        </>
       )}
     </svg>
   );

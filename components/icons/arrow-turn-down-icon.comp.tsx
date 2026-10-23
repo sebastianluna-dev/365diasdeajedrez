@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `arrow-turn-down`, in Duotone Light (the default), Duotone
- * Solid, Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `arrow-turn-down`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -40,6 +39,27 @@ export function ArrowTurnDownIcon({ className, variant = "duotone-light" }: Icon
       )}
       {variant === "sharp-light" && (
         <path d="M16 32l-16 0 0-32 208 0 0 457.4 116.7-116.7 11.3-11.3 22.6 22.6-11.3 11.3-144 144-11.3 11.3-11.3-11.3-144-144-11.3-11.3 22.6-22.6 11.3 11.3 116.7 116.7 0-425.4-160 0z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M24 48C10.7 48 0 37.3 0 24S10.7 0 24 0l96 0c53 0 96 43 96 96l0 334.1 95-95c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9L209 505c-4.5 4.5-10.6 7-17 7s-12.5-2.5-17-7L39 369c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l95 95 0-334.1c0-26.5-21.5-48-48-48L24 48z" />
+      )}
+      {variant === "duotone-regular" && (
+        <path d="M24 48C10.7 48 0 37.3 0 24S10.7 0 24 0l96 0c53 0 96 43 96 96l0 334.1 95-95c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9L209 505c-4.5 4.5-10.6 7-17 7s-12.5-2.5-17-7L39 369c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l95 95 0-334.1c0-26.5-21.5-48-48-48L24 48z" />
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M32 64l-32 0 0-64 224 0 0 402.7 96-96 45.3 45.3-173.3 173.3-22.6-22.6-128-128-22.6-22.6 45.3-45.3c6.6 6.6 38.6 38.6 96 96L160 64 32 64z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M0 0l0 64 160 0 0 338.7 32 32 32-32 0-402.7-224 0z" />
+          <path d="M18.7 352L169.4 502.6 192 525.3 365.3 352 320 306.7 192 434.7c-84-84-126.7-126.7-128-128L18.7 352z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M24 48l-24 0 0-48 216 0 0 430.1 95-95 17-17 33.9 33.9-17 17-136 136-17 17-17-17-136-136-17-17 33.9-33.9 17 17 95 95 0-382.1-144 0z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <path d="M24 48l-24 0 0-48 216 0 0 430.1 95-95 17-17 33.9 33.9-17 17-136 136-17 17-17-17-136-136-17-17 33.9-33.9 17 17 95 95 0-382.1-144 0z" />
       )}
     </svg>
   );

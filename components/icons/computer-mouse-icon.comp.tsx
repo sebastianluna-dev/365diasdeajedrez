@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `computer-mouse`, in Duotone Light (the default), Duotone
- * Solid, Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `computer-mouse`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -52,6 +51,42 @@ export function ComputerMouseIcon({ className, variant = "duotone-light" }: Icon
       )}
       {variant === "sharp-light" && (
         <path d="M192 224l-160 0 0 128c0 70.7 57.3 128 128 128l64 0c70.7 0 128-57.3 128-128l0-128-160 0zm192-32l0 160c0 88.4-71.6 160-160 160l-64 0C71.6 512 0 440.4 0 352L0 0 384 0 384 192zM352 32l-144 0 0 160 144 0 0-160zM176 32l-144 0 0 160 144 0 0-160z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M192 224l-144 0 0 128c0 61.9 50.1 112 112 112l64 0c61.9 0 112-50.1 112-112l0-128-144 0zm192-48l0 176c0 88.4-71.6 160-160 160l-64 0C71.6 512 0 440.4 0 352L0 160C0 71.6 71.6 0 160 0l64 0c88.4 0 160 71.6 160 160l0 16zM216 48l0 128 120 0 0-16c0-61.9-50.1-112-112-112l-8 0zm-48 0l-8 0C98.1 48 48 98.1 48 160l0 16 120 0 0-128z" />
+      )}
+      {variant === "duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M48 160l0 16 120 0 0-128-8 0C98.1 48 48 98.1 48 160zm0 64l0 128c0 61.9 50.1 112 112 112l64 0c61.9 0 112-50.1 112-112l0-128-288 0zM216 48l0 128 120 0 0-16c0-61.9-50.1-112-112-112l-8 0z"
+          />
+          <path d="M192 224l-144 0 0 128c0 61.9 50.1 112 112 112l64 0c61.9 0 112-50.1 112-112l0-128-144 0zm192-48l0 176c0 88.4-71.6 160-160 160l-64 0C71.6 512 0 440.4 0 352L0 160C0 71.6 71.6 0 160 0l64 0c88.4 0 160 71.6 160 160l0 16zM216 48l0 128 120 0 0-16c0-61.9-50.1-112-112-112l-8 0zm-48 0l-8 0C98.1 48 48 98.1 48 160l0 16 120 0 0-128z" />
+        </>
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M0 192L168 192 168 0 0 0 0 192zm0 48L0 352c0 88.4 71.6 160 160 160l64 0c88.4 0 160-71.6 160-160l0-112-384 0zm384-48l0-192-168 0 0 192 168 0z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M0 0L168 0 168 192 0 192 0 0zM0 240l384 0 0 112c0 88.4-71.6 160-160 160l-64 0C71.6 512 0 440.4 0 352L0 240zM216 0l168 0 0 192-168 0 0-192z"
+          />
+          <path d="M168 192l-168 0 0 48 384 0 0-48-168 0 0-192-48 0 0 192z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M192 224l-144 0 0 128c0 61.9 50.1 112 112 112l64 0c61.9 0 112-50.1 112-112l0-128-144 0zm192-48l0 176c0 88.4-71.6 160-160 160l-64 0C71.6 512 0 440.4 0 352L0 0 384 0 384 176zM336 48l-120 0 0 128 120 0 0-128zM168 48l-120 0 0 128 120 0 0-128z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <>
+          <path
+            opacity=".4"
+            d="M48 48l0 128 120 0 0-128-120 0zm0 176l0 128c0 61.9 50.1 112 112 112l64 0c61.9 0 112-50.1 112-112l0-128-288 0zM216 48l0 128 120 0 0-128-120 0z"
+          />
+          <path d="M192 224l-144 0 0 128c0 61.9 50.1 112 112 112l64 0c61.9 0 112-50.1 112-112l0-128-144 0zm192-48l0 176c0 88.4-71.6 160-160 160l-64 0C71.6 512 0 440.4 0 352L0 0 384 0 384 176zM336 48l-120 0 0 128 120 0 0-128zM168 48l-120 0 0 128 120 0 0-128z" />
+        </>
       )}
     </svg>
   );

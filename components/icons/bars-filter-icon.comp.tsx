@@ -1,8 +1,7 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `bars-filter`, in Duotone Light (the default), Duotone Solid,
- * Classic Solid or Classic Light, as `variant` says.
+ * Font Awesome's `bars-filter`, in twelve styles (Duotone Light is the default), as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -40,6 +39,27 @@ export function BarsFilterIcon({ className, variant = "duotone-light" }: IconPro
       )}
       {variant === "sharp-light" && (
         <path d="M0 64l512 0 0 32-512 0 0-32zM96 240l320 0 0 32-320 0 0-32zM320 416l0 32-128 0 0-32 128 0z" />
+      )}
+      {variant === "classic-regular" && (
+        <path d="M0 88C0 74.7 10.7 64 24 64l464 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 112C10.7 112 0 101.3 0 88zM96 256c0-13.3 10.7-24 24-24l272 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-272 0c-13.3 0-24-10.7-24-24zM320 424c0 13.3-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l80 0c13.3 0 24 10.7 24 24z" />
+      )}
+      {variant === "duotone-regular" && (
+        <path d="M0 88C0 74.7 10.7 64 24 64l464 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 112C10.7 112 0 101.3 0 88zM96 256c0-13.3 10.7-24 24-24l272 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-272 0c-13.3 0-24-10.7-24-24zM320 424c0 13.3-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l80 0c13.3 0 24 10.7 24 24z" />
+      )}
+      {variant === "sharp-solid" && (
+        <path d="M0 64l512 0 0 64-512 0 0-64zM96 224l320 0 0 64-320 0 0-64zM320 384l0 64-128 0 0-64 128 0z" />
+      )}
+      {variant === "sharp-duotone-solid" && (
+        <>
+          <path opacity=".4" d="M96 224l0 64 320 0 0-64-320 0z" />
+          <path d="M512 64l-512 0 0 64 512 0 0-64zM320 384l-128 0 0 64 128 0 0-64z" />
+        </>
+      )}
+      {variant === "sharp-regular" && (
+        <path d="M0 64l512 0 0 48-512 0 0-48zM96 232l320 0 0 48-320 0 0-48zM320 400l0 48-128 0 0-48 128 0z" />
+      )}
+      {variant === "sharp-duotone-regular" && (
+        <path d="M0 64l512 0 0 48-512 0 0-48zM96 232l320 0 0 48-320 0 0-48zM320 400l0 48-128 0 0-48 128 0z" />
       )}
     </svg>
   );
