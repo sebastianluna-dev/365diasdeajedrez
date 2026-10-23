@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
-import { ClockIcon } from "@/components/icons/clock-icon.comp";
+import { CircleIcon } from "@/components/icons/circle-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import type { OutlineChapter } from "@/services/courses/courses.types";
@@ -23,7 +23,8 @@ const isDone = (statusCode: string) => statusCode === PROGRESS_STATUS.COMPLETED;
  * The chapter in the lesson's side column (2026-10-23: that chapter alone,
  * no longer every chapter of the course): its number and name — a link to
  * its page — and «learned/total», then its lessons. A lesson learned carries
- * the blue check, the one being read a play, the rest a clock.
+ * the blue check, the one being read a play, the rest an empty ring, as on
+ * the chapter's page.
  *
  * Client because of one thing: which lesson is open. The column lives in the
  * chapter's layout, which is not rendered again when one moves within it —
@@ -66,7 +67,7 @@ export function OutlineList({ chapter }: OutlineListProps) {
           ) : isCurrent ? (
             <PlayIcon variant="classic-solid" className="lesson-outline__mark" />
           ) : (
-            <ClockIcon variant="duotone-light" className="lesson-outline__mark" />
+            <CircleIcon variant="classic-light" className="lesson-outline__mark" />
           );
 
           return (

@@ -27,7 +27,7 @@ Client because of one thing: **which lesson is open**. The column lives in the c
 ## Behaviour
 
 - **The chapter's head** is a link to its page: «Capítulo 2» over its name (one line, cut with an ellipsis, the whole name its `title`) and «learned/total».
-- The row whose `href` is the current pathname is not a link — it leads where one already is — and carries `aria-current="page"`, which is what says so to a screen reader and what the stylesheet lights. A lesson learned carries `CircleCheckIcon` (Classic Solid) in the primary's blue, the one being read a play (when not learned), the rest a clock.
+- The row whose `href` is the current pathname is not a link — it leads where one already is — and carries `aria-current="page"`, which is what says so to a screen reader and what the stylesheet lights. A lesson learned carries `CircleCheckIcon` (Classic Solid) in the primary's blue, the one being read a play (when not learned), the rest an empty ring (`CircleIcon`, Classic Light), as on the chapter's page (2026-10-23; it was a clock).
 - **On each change of pathname it brings the lesson being read into view** when the column leaves it cut off (`scrollIntoView({ block: "nearest" })`), smoothly unless `prefers-reduced-motion: reduce` says otherwise.
 
 ## Related

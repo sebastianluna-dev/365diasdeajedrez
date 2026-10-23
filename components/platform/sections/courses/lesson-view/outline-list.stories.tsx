@@ -64,7 +64,7 @@ const meta = {
 The chapter in the lesson's side column (the new design system): its number
 and name — a link to its page — and how many of its lessons are learned,
 then its lessons. A lesson learned carries the blue check, the one being
-read (not a link, \`aria-current="page"\`) a play, the rest a clock. On
+read (not a link, \`aria-current="page"\`) a play, the rest an empty ring. On
 every change of pathname the lesson being read is brought into view when
 the column's scroll leaves it cut off.
 
