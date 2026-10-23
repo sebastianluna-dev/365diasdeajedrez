@@ -560,6 +560,51 @@ export async function updateGameSettings(studyId: string, gameId: string, formDa
   revalidatePath(platformRoutes.gameDetail(studyId, gameId));
 }
 
+/** What «Ajustes de la partida» changes with one press: which side the board opens from, or how a reader goes through it. */
+export type GameViewSetting =
+  { orientationCode: "WHITE" | "BLACK" } | { analysisModeCode: GameAnalysisModeCode | null };
+
+/**
+ * One option of a study's «Ajustes de la partida» (2026-10-23): the side the
+ * board opens from, or the reading mode (`null` is the plain analysis),
+ * saved the moment it is chosen. Only that setting: the name is the game's
+ * record's («Datos de la partida»), and nothing else is touched.
+ */
+export async function setGameView(studyId: string, gameId: string, setting: GameViewSetting): Promise<void> {
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+  if (!(await allowAction(`${user.id}:game-details`, 60, 60_000))) return;
+
+  const game = await db.game.findFirst({
+    where: { id: gameId, databaseId: studyId, database: { userId: user.id } },
+    select: { id: true },
+  });
+  if (!game) return;
+
+  if ("orientationCode" in setting) {
+    await db.game.update({
+      where: { id: game.id },
+      data: {
+        orientation:
+          setting.orientationCode === BOARD_ORIENTATION.BLACK
+            ? { connect: { code: BOARD_ORIENTATION.BLACK } }
+            : { disconnect: true },
+      },
+    });
+  } else {
+    const code = setting.analysisModeCode;
+    await db.game.update({
+      where: { id: game.id },
+      data: {
+        analysisMode: code && isGameAnalysisModeCode(code) ? { connect: { code } } : { disconnect: true },
+      },
+    });
+  }
+
+  revalidatePath(platformRoutes.studyDetail(studyId));
+  revalidatePath(platformRoutes.gameDetail(studyId, gameId));
+}
+
 /**
  * Rewrites an own game's PGN with one of the two clean-ups the list's
  * settings offer, and indexes its positions again: taking out the variations

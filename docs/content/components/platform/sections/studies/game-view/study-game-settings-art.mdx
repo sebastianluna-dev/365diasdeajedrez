@@ -1,0 +1,40 @@
+---
+description: "The drawings of a study's «Ajustes de la partida»: the board turning over, the mark walking the moves and veiling what follows, the arrow and circle fading, the variation drawing back and the board shrinking away."
+---
+
+# `StudyGameSettingsArt`
+
+|            |                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/studies/game-view/study-game-settings-art.comp.tsx`          |
+| Kind       | Server Component                                                                           |
+| Stylesheet | `study-game-settings-art.comp.css` → block `.study-game-settings-art`                      |
+| Used by    | [`StudyGameSettings`](/components/platform/sections/studies/game-view/study-game-settings) |
+
+## Purpose
+
+The drawing at the right of each option of a study's «Ajustes de la partida» (2026-10-23), as [`CourseSettingsArt`](/components/platform/sections/courses/course-study/course-settings-art) draws the course's: a loop of a few seconds that shows what the option does before it is chosen. The owner chose them on the canvas from five styles: the first four from «C · Cálido» (the board in its frame, the sheet of moves), the last three from «B · Con el tablero», all in the board's blues («2 · Azul del tablero»). An **illustration, not an icon**: drawn here by hand in the platform's Material roles, `aria-hidden`, since the option's words say the same.
+
+## Props
+
+| Prop   | Type                       | Required | Meaning                                                                                            |
+| ------ | -------------------------- | -------- | -------------------------------------------------------------------------------------------------- |
+| `kind` | `StudyGameSettingsArtKind` | yes      | Which option it shows: `white`, `black`, `normal`, `conceal`, `annotations`, `variations`, `game`. |
+
+## Behaviour
+
+- `white`: the board in its frame, White's pawns below; `black`: the same board turning over and back.
+- `normal`: a sheet of moves with the mark walking it; `conceal`: the mark walking with a veil over what follows it.
+- `annotations`: the board with an arrow and a circle that fade, its moves staying; `variations`: a branch drawing back into the main line; `game`: the board, in the error's tints, shrinking away under a blinking cross.
+
+## Markup & styling
+
+Block `.study-game-settings-art` (241 lines), an SVG of 96×56.
+
+**Elements:** `__light`, `__dark`, `__frame`, `__pawn`, `__sheet`, `__word`, `__mark`, `__veil`, `__arrow`, `__arrow-head`, `__circle`, `__branch`, `__twig`, `__cross`, and the moving groups `__flip`, `__walk`, `__fade`, `__prune`, `__shrink`.
+
+**Modifiers:** `__board_tone_danger` (the board in the error's tints, mixed with the panel), `__pawn_side_{white,black}`.
+
+**Tokens:** `--platform-m3-board-light`, `--platform-m3-board-dark`, `--platform-m3-board-ink-light`, `--platform-m3-piece-white`, `--platform-m3-piece-black`, `--platform-m3-canvas`, `--platform-m3-on-surface-variant`, `--platform-m3-primary`, `--platform-m3-warning`, `--platform-m3-error`, `--platform-m3-panel`.
+
+Every loop is off under `prefers-reduced-motion: reduce`; the keyframes are named after the block.

@@ -1,6 +1,13 @@
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
-import { StudyAside } from "@/components/platform/sections/studies/game-view/study-aside.comp";
+import { StudyAside, studyGameListItem } from "@/components/platform/sections/studies/game-view/study-aside.comp";
+import { StudyGameSettings } from "@/components/platform/sections/studies/game-view/study-game-settings.comp";
+import {
+  clearGameAnnotations,
+  clearGameVariations,
+  deleteStudyGame,
+  setGameView,
+} from "@/services/studies/studies.actions";
 import {
   getClassGames,
   getGameResultOptions,
@@ -62,6 +69,20 @@ export default async function StudyGamesLayout({ children, params }: StudyGamesL
           {/* The page: the board, the game's record heading its moves' column. */}
           {children}
         </section>
+
+        {/* «Ajustes de la partida», at the right, for whoever may edit the games:
+            opened by «Configurar» on the open game's card. */}
+        {canWrite && (
+          <StudyGameSettings
+            games={study.games.map(studyGameListItem)}
+            actions={{
+              setView: setGameView.bind(null, study.id),
+              clearAnnotations: clearGameAnnotations.bind(null, study.id),
+              clearVariations: clearGameVariations.bind(null, study.id),
+              remove: deleteStudyGame.bind(null, study.id),
+            }}
+          />
+        )}
       </div>
     </div>
   );

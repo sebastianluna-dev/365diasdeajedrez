@@ -90,30 +90,33 @@ interface GameSettingsProps {
   trigger?: "gear" | "button";
 }
 
-type Destructive = "annotations" | "variations" | "game";
+/** The three things a game's settings destroy. */
+export type GameDestructiveStep = "annotations" | "variations" | "game";
+type Destructive = GameDestructiveStep;
 
 /** What each destructive step says before it is taken, and on the button that takes it. */
-const CONFIRMATIONS: Record<Destructive, { question: string; detail: string; submit: string }> = {
-  annotations: {
-    question: "¿Eliminar las anotaciones?",
-    detail:
-      "Se eliminan los comentarios, las flechas, los signos y las evaluaciones. Las jugadas y las variantes se quedan.",
-    submit: "Eliminar anotaciones",
-  },
-  variations: {
-    question: "¿Eliminar las variantes?",
-    detail: "Se eliminan todas las variantes, con lo que tengan escrito. Queda sólo la línea principal.",
-    submit: "Eliminar variantes",
-  },
-  game: {
-    question: "¿Eliminar la partida?",
-    detail: "Se elimina la partida entera, con sus variantes, comentarios y flechas.",
-    submit: "Eliminar partida",
-  },
-};
+export const GAME_DESTRUCTIVE_CONFIRMATIONS: Record<Destructive, { question: string; detail: string; submit: string }> =
+  {
+    annotations: {
+      question: "¿Eliminar las anotaciones?",
+      detail:
+        "Se eliminan los comentarios, las flechas, los signos y las evaluaciones. Las jugadas y las variantes se quedan.",
+      submit: "Eliminar anotaciones",
+    },
+    variations: {
+      question: "¿Eliminar las variantes?",
+      detail: "Se eliminan todas las variantes, con lo que tengan escrito. Queda sólo la línea principal.",
+      submit: "Eliminar variantes",
+    },
+    game: {
+      question: "¿Eliminar la partida?",
+      detail: "Se elimina la partida entera, con sus variantes, comentarios y flechas.",
+      submit: "Eliminar partida",
+    },
+  };
 
 /** What deleting a game a class shows takes with it, to be agreed to before the button works. */
-const CLASS_BLOCKS_ACKNOWLEDGEMENT =
+export const CLASS_BLOCKS_ACKNOWLEDGEMENT =
   "Esta partida se usa en el contenido de alguna clase. Entiendo que esos bloques se quedarán vacíos.";
 
 /**
@@ -159,7 +162,7 @@ export function GameSettings({ game, isCurrent, actions, look, trigger = "gear" 
     else popup.current?.close();
   };
 
-  const confirmation = CONFIRMATIONS[pending];
+  const confirmation = GAME_DESTRUCTIVE_CONFIRMATIONS[pending];
 
   return (
     <div className="game-settings">

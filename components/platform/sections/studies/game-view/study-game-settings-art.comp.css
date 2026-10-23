@@ -1,0 +1,241 @@
+/* The drawings of a study's «Ajustes de la partida», in the board's blues
+   and the platform's Material roles. Each loops slowly; every loop is still
+   under `prefers-reduced-motion`. */
+.study-game-settings-art {
+  display: block;
+
+  & * {
+    transform-box: fill-box;
+  }
+
+  & .study-game-settings-art__light {
+    fill: var(--platform-m3-board-light);
+  }
+
+  & .study-game-settings-art__dark {
+    fill: var(--platform-m3-board-dark);
+  }
+
+  /* The game being deleted: the board in the error's tints. */
+  & .study-game-settings-art__board_tone_danger {
+    & .study-game-settings-art__light {
+      fill: color-mix(in srgb, var(--platform-m3-error) 12%, var(--platform-m3-panel));
+    }
+
+    & .study-game-settings-art__dark {
+      fill: color-mix(in srgb, var(--platform-m3-error) 32%, var(--platform-m3-panel));
+    }
+  }
+
+  & .study-game-settings-art__frame {
+    fill: var(--platform-m3-board-ink-light);
+  }
+
+  & .study-game-settings-art__pawn_side_white {
+    fill: var(--platform-m3-piece-white);
+    stroke: var(--platform-m3-piece-black);
+    stroke-width: 1.2;
+  }
+
+  & .study-game-settings-art__pawn_side_black {
+    fill: var(--platform-m3-piece-black);
+  }
+
+  & .study-game-settings-art__sheet {
+    fill: var(--platform-m3-canvas);
+    stroke: var(--platform-m3-board-light);
+  }
+
+  & .study-game-settings-art__word {
+    fill: var(--platform-m3-on-surface-variant);
+  }
+
+  & .study-game-settings-art__mark {
+    fill: none;
+    stroke: var(--platform-m3-primary);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+
+  & .study-game-settings-art__veil {
+    fill: var(--platform-m3-board-dark);
+  }
+
+  & .study-game-settings-art__arrow {
+    fill: none;
+    stroke: var(--platform-m3-primary);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+
+  & .study-game-settings-art__arrow-head {
+    fill: var(--platform-m3-primary);
+  }
+
+  & .study-game-settings-art__circle {
+    fill: none;
+    stroke: var(--platform-m3-warning);
+    stroke-width: 2;
+  }
+
+  & .study-game-settings-art__branch {
+    fill: none;
+    stroke: var(--platform-m3-board-ink-light);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  & .study-game-settings-art__twig {
+    fill: var(--platform-m3-board-dark);
+  }
+
+  & .study-game-settings-art__cross {
+    fill: none;
+    stroke: var(--platform-m3-error);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+
+  /* «Las negras»: the board turns over, and back. */
+  & .study-game-settings-art__flip {
+    transform-origin: center;
+    animation: study-game-settings-art-flip 4s ease-in-out infinite;
+  }
+
+  /* The mark walks the moves; with «Ocultar», the veil walks with it. */
+  & .study-game-settings-art__walk {
+    animation: study-game-settings-art-walk 3.2s steps(1, end) infinite;
+  }
+
+  /* The arrow and the circle go; the moves stay. */
+  & .study-game-settings-art__fade {
+    animation: study-game-settings-art-fade 3.6s ease-in-out infinite;
+  }
+
+  /* The variation draws back into the main line. */
+  & .study-game-settings-art__prune {
+    transform-origin: left top;
+    animation: study-game-settings-art-prune 3.6s ease-in-out infinite;
+  }
+
+  /* The game shrinks away, its cross blinking. */
+  & .study-game-settings-art__shrink {
+    transform-origin: center;
+    animation: study-game-settings-art-shrink 3.6s ease-in-out infinite;
+  }
+
+  & .study-game-settings-art__cross {
+    animation: study-game-settings-art-blink 2.4s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .study-game-settings-art__flip,
+    & .study-game-settings-art__walk,
+    & .study-game-settings-art__fade,
+    & .study-game-settings-art__prune,
+    & .study-game-settings-art__shrink,
+    & .study-game-settings-art__cross {
+      animation: none;
+    }
+  }
+}
+
+@keyframes study-game-settings-art-flip {
+  0%,
+  30% {
+    transform: rotate(0deg);
+  }
+
+  50%,
+  80% {
+    transform: rotate(180deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes study-game-settings-art-walk {
+  0% {
+    transform: translateX(0);
+  }
+
+  33% {
+    transform: translateX(20px);
+  }
+
+  66% {
+    transform: translateX(40px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes study-game-settings-art-fade {
+  0%,
+  25% {
+    opacity: 1;
+  }
+
+  45%,
+  80% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes study-game-settings-art-prune {
+  0%,
+  25% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  45%,
+  80% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes study-game-settings-art-shrink {
+  0%,
+  25% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50%,
+  80% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes study-game-settings-art-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.25;
+  }
+}

@@ -4,14 +4,14 @@ description: "The list of a study's games inside the layout of its game pages: a
 
 # `StudyGames`
 
-|            |                                                                                                                                                          |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/game-view/study-games.comp.tsx`; the page arithmetic in `study-games-page.ts`, with its test                       |
-| Kind       | Client Component                                                                                                                                         |
-| Stylesheet | `study-games.comp.css` → block `.study-games`                                                                                                            |
-| Used by    | [`StudyAside`](/components/platform/sections/studies/game-view/study-aside)                                                                              |
-| Composes   | [`GameList`](/components/platform/shared/game-list), [`GameSettings`](/components/platform/shared/game-settings) (`trigger="button"`, for the open game) |
-| Uses       | `useParams` from `next/navigation`; `pageCountOf`, `pageOfGame`, `gamesOfPage` from `study-games-page.ts`                                                |
+|            |                                                                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/study-games.comp.tsx`; the page arithmetic in `study-games-page.ts`, with its test                                         |
+| Kind       | Client Component                                                                                                                                                           |
+| Stylesheet | `study-games.comp.css` → block `.study-games`                                                                                                                              |
+| Used by    | [`StudyAside`](/components/platform/sections/studies/game-view/study-aside)                                                                                                |
+| Composes   | [`GameList`](/components/platform/shared/game-list), the «Configurar» toggle of [`StudyGameSettings`](/components/platform/sections/studies/game-view/study-game-settings) |
+| Uses       | `useParams` from `next/navigation`; `pageCountOf`, `pageOfGame`, `gamesOfPage` from `study-games-page.ts`                                                                  |
 
 ## Purpose
 
@@ -21,12 +21,12 @@ For the same reason the paging is here. A study's list shows a hundred games at 
 
 ## Props
 
-| Prop        | Type                                      | Required | Meaning                                                                                                                                      |
-| ----------- | ----------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `games`     | `GameListItem[]`                          | yes      | Every game of the study, in its order.                                                                                                       |
-| `pageSize`  | `number`                                  | yes      | How many of them the list shows at once.                                                                                                     |
-| `onReorder` | `(orderedIds: string[]) => Promise<void>` | no       | Saves a new order; `StudyAside` only passes it for a study that fits on one page.                                                            |
-| `settings`  | `GameSettingsActions`                     | no       | What a game's settings do. The rows carry no gear: the open game's card has «Configurar»; without them, for whoever only reads, it does not. |
+| Prop           | Type                                      | Required | Meaning                                                                                                         |
+| -------------- | ----------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------- |
+| `games`        | `GameListItem[]`                          | yes      | Every game of the study, in its order.                                                                          |
+| `pageSize`     | `number`                                  | yes      | How many of them the list shows at once.                                                                        |
+| `onReorder`    | `(orderedIds: string[]) => Promise<void>` | no       | Saves a new order; `StudyAside` only passes it for a study that fits on one page.                               |
+| `configurable` | `boolean`                                 | no       | Whether the viewer may configure the games: the open game's card then has «Configurar». The rows carry no gear. |
 
 ## Behaviour
 
@@ -34,7 +34,7 @@ For the same reason the paging is here. A study's list shows a hundred games at 
 - The nav «← Anteriores · Página n de m · Siguientes →» only exists with more than one page; its two controls are buttons — Material's text buttons (`mdButton("text", "xs")`) since 2026-10-23 —, disabled at the ends, since they go nowhere.
 - The list is [`GameList`](/components/platform/shared/game-list) in its material look (`look="material"`), the study's side column being on the new design system's canvas.
 - `GameList` is keyed by the page: each page is a list of its own, whose scroll starts at the top.
-- **The open game, under the list** (2026-10-23, the owner's choice «B»): «Partida abierta», its name and its result, on the panel's white, and for whoever may write «Configurar», which opens its settings ([`GameSettings`](/components/platform/shared/game-settings) with `trigger="button"`). A game is configured only once it is open, so the rows stay one line each. Read from the address like the current row, so it follows the board from game to game.
+- **The open game, under the list** (2026-10-23, the owner's choice «B»): «Partida abierta», its name and its result, on the panel's white, and for whoever may write «Configurar», which opens and closes «Ajustes de la partida» at the right ([`StudyGameSettings`](/components/platform/sections/studies/game-view/study-game-settings); `aria-controls` the panel, `aria-pressed` and filled while it is open). A game is configured only once it is open, so the rows stay one line each. Read from the address like the current row, so it follows the board from game to game.
 
 ## Markup & styling
 

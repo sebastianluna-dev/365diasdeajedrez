@@ -1,15 +1,7 @@
 import { NewGame } from "@/components/platform/sections/studies/study-detail/new-game.comp";
 import type { GameListItem } from "@/components/platform/shared/game-list/game-list.comp";
 import { StudentSharePanel } from "@/components/platform/shared/student-share-panel/student-share-panel.comp";
-import {
-  clearGameAnnotations,
-  clearGameVariations,
-  deleteStudyGame,
-  reorderStudyGames,
-  shareStudyWithStudent,
-  unshareStudyWithStudent,
-  updateGameSettings,
-} from "@/services/studies/studies.actions";
+import { reorderStudyGames, shareStudyWithStudent, unshareStudyWithStudent } from "@/services/studies/studies.actions";
 import type {
   ClassGameItem,
   StudentOption,
@@ -41,7 +33,7 @@ interface StudyAsideProps {
  * `label` already falls back to the round, the event or its position within
  * the study —, its number in the study and its result, on one line.
  */
-function listItem(game: StudyGameItem, index: number): GameListItem {
+export function studyGameListItem(game: StudyGameItem, index: number): GameListItem {
   return {
     id: game.id,
     number: index + 1,
@@ -69,7 +61,8 @@ function metaOf(study: StudyDetail): string {
  * the extended FAB at the top; the study's name heading its games, with
  * where it comes from or its kind and how many games under it, and the
  * sliders that open its form for its owner; its games as a numbered index,
- * one line each, and the game on the board at its foot with «Configurar»;
+ * one line each, and the game on the board at its foot with «Configurar»,
+ * which opens «Ajustes de la partida» (`StudyGameSettings`, the layout's);
  * and, for a collection's owner, who it is shared with. A study has no page of its own — its URL
  * redirects to a game — so this is where it lives.
  *
@@ -103,19 +96,10 @@ export function StudyAside({ study, results, classGames, kinds, students }: Stud
 
       {study.games.length > 0 && (
         <StudyGames
-          games={study.games.map(listItem)}
+          games={study.games.map(studyGameListItem)}
           pageSize={STUDY_GAMES_PAGE_SIZE}
           onReorder={canReorder ? reorderStudyGames.bind(null, study.id) : undefined}
-          settings={
-            canWrite
-              ? {
-                  save: updateGameSettings.bind(null, study.id),
-                  clearAnnotations: clearGameAnnotations.bind(null, study.id),
-                  clearVariations: clearGameVariations.bind(null, study.id),
-                  remove: deleteStudyGame.bind(null, study.id),
-                }
-              : undefined
-          }
+          configurable={canWrite}
         />
       )}
 

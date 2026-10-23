@@ -3,7 +3,12 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { GameList, type GameListItem } from "@/components/platform/shared/game-list/game-list.comp";
-import { GameSettings, type GameSettingsActions } from "@/components/platform/shared/game-settings/game-settings.comp";
+import { GearIcon } from "@/components/icons/gear-icon.comp";
+import {
+  SETTINGS_PANEL_ID,
+  setSettingsOpen,
+  useSettingsOpen,
+} from "@/components/platform/shared/platform-settings-panel/settings-panel-state";
 import { mdButton } from "@/lib/material/material-classes";
 import { gamesOfPage, pageCountOf, pageOfGame } from "./study-games-page";
 import "./study-games.comp.css";
@@ -16,11 +21,11 @@ interface StudyGamesProps {
   /** Saves a new order; only for a study that fits on one page (see `StudyAside`). */
   onReorder?: (orderedIds: string[]) => Promise<void>;
   /**
-   * What a game's settings do. The rows carry no gear (2026-10-23): the game
-   * on the board is configured from the card at the foot of the list, and
-   * without them, for whoever only reads, there is none.
+   * Whether the viewer may configure the games: the card of the open game
+   * then has «Configurar», which opens «Ajustes de la partida» at the right
+   * (`StudyGameSettings`, the layout's). The rows carry no gear.
    */
-  settings?: GameSettingsActions;
+  configurable?: boolean;
 }
 
 /**
@@ -34,10 +39,12 @@ interface StudyGamesProps {
  * falls on, and goes back to it when one moves to another game.
  *
  * Under it, the game on the board: «Partida abierta», its name and result,
- * and «Configurar» for whoever may (2026-10-23, the owner's choice «B»). A
- * game is configured only once it is open, so the rows stay one line each.
+ * and «Configurar» for whoever may (2026-10-23, the owner's choice «B»),
+ * which opens and closes «Ajustes de la partida» at the right, lit while it
+ * is open. A game is configured only once it is open, so the rows stay one
+ * line each.
  */
-export function StudyGames({ games, pageSize, onReorder, settings }: StudyGamesProps) {
+export function StudyGames({ games, pageSize, onReorder, configurable = false }: StudyGamesProps) {
   const { gameId = "" } = useParams<{ gameId?: string }>();
   const pageCount = pageCountOf(games.length, pageSize);
   const ownPage = pageOfGame(games, gameId, pageSize);
@@ -47,6 +54,7 @@ export function StudyGames({ games, pageSize, onReorder, settings }: StudyGamesP
   const page = turned.gameId === gameId ? Math.min(turned.page, pageCount) : ownPage;
   const turnTo = (target: number) => setTurned({ gameId, page: target });
   const open = games.find((game) => game.id === gameId);
+  const settingsOpen = useSettingsOpen();
 
   return (
     <div className="study-games">
@@ -93,14 +101,17 @@ export function StudyGames({ games, pageSize, onReorder, settings }: StudyGamesP
               {open.resultLabel !== "*" && ` · ${open.resultLabel}`}
             </span>
           </p>
-          {settings && (
-            <GameSettings
-              game={{ ...open, orientationCode: open.orientationCode ?? "WHITE" }}
-              isCurrent
-              actions={settings}
-              look="material"
-              trigger="button"
-            />
+          {configurable && (
+            <button
+              type="button"
+              className={`${mdButton(settingsOpen ? "filled" : "tonal", "sm")} study-games__configure`}
+              aria-pressed={settingsOpen}
+              aria-controls={SETTINGS_PANEL_ID}
+              onClick={() => setSettingsOpen(!settingsOpen)}
+            >
+              <GearIcon variant="classic-solid" className="platform-md-icon" />
+              Configurar
+            </button>
           )}
         </section>
       )}
