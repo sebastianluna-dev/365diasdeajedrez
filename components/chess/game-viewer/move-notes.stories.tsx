@@ -36,7 +36,7 @@ function treeOf(pgn: string): PgnTree {
 /** The dotted path of the main line's move `ply` (1 is White's first): one `0` per move, the first child each time. */
 const mainLinePath = (ply: number) => Array.from({ length: ply }, () => "0").join(".");
 
-/** The viewer's part: it keeps the move on the board, so a click on a pill or on «Siguiente» moves it. */
+/** The viewer's part: it keeps the move on the board, so a click on a pill moves it. */
 function SelectableMoveNotes({ currentPath, onSelect, ...props }: ComponentProps<typeof MoveNotes>) {
   const [path, setPath] = useState(currentPath);
   return (
@@ -61,12 +61,12 @@ const meta = {
 A lesson read one move at a time, in the new design system: the line being
 followed as pills — the moves played, the one on the board in the primary,
 the ones to come dimmed —, under it a note with what the author says about
-the move on the board and the other moves offered there, and «Siguiente».
+the move on the board and the other moves offered there.
 A variation is entered from its move in «Otras jugadas», and from then on it
 is the line. The viewer draws it with \`moveList="notes"\`.
 
 Here it sits on the workspace's white panel, as in the lesson. Clicking a
-pill, an alternative or «Siguiente» moves the board, as the viewer would.
+pill or an alternative moves the board, as the viewer would.
 
 Source: \`components/chess/game-viewer/move-notes.comp.tsx\`.
 Reference page: [Components › MoveNotes](/components/chess/game-viewer/move-notes) in the docs site.
@@ -99,7 +99,7 @@ type Story = StoryObj<typeof meta>;
 /** At 3... Ag4: the moves played, the one on the board, the rest dimmed; its note, and 3... exd4 offered instead. */
 export const Default: Story = {};
 
-/** Before the first move: the PGN's opening comment as the note, «Para empezar», and «Siguiente: 1. e4». */
+/** Before the first move: the PGN's opening comment as the note, «Para empezar». */
 export const AtTheStart: Story = {
   name: "At the start",
   args: { currentPath: "" },
@@ -111,7 +111,7 @@ export const InVariation: Story = {
   args: { currentPath: "0.0.0.0.0.1.1" },
 };
 
-/** At the last move: the mate's note, and no «Siguiente». */
+/** At the last move: the mate's note, every pill of the line played. */
 export const AtTheEnd: Story = {
   name: "At the end",
   args: { tree: treeOf(ANNOTATED_GAME), currentPath: mainLinePath(33) },

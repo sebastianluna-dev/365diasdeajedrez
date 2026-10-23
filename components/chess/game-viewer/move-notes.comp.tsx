@@ -1,12 +1,10 @@
 "use client";
 
 import { BookOpenIcon } from "@/components/icons/book-open-icon.comp";
-import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { sanToSpanish } from "@/lib/chess/notation";
 import { alternativesAt, lineThrough } from "@/lib/chess/notation-line";
 import { moveLabel } from "@/lib/chess/notation-prose";
 import { nagGlyph, nagLabel, nodeAtPath, type PgnTree, type PgnTreeNode } from "@/lib/chess/pgn-tree";
-import { mdButton } from "@/lib/material/material-classes";
 import "./move-notes.comp.css";
 
 interface MoveNotesProps {
@@ -23,15 +21,14 @@ interface MoveNotesProps {
  * design system, 2026-10-22): the line being followed as a row of pills —
  * the moves played, the one on the board in the primary, the ones to come
  * dimmed —, under it a note with what the author says about the move on the
- * board and the other moves offered at that point, and the way to the next
- * move. A variation is entered from the move it branches at, and from then on
+ * board and the other moves offered at that point. The way on is the
+ * board's: its keys and the arrow keys. A variation is entered from the move it branches at, and from then on
  * it is the line (`lineThrough`).
  */
 export function MoveNotes({ tree, currentPath, onSelect, pinnedComment }: MoveNotesProps) {
   const line = lineThrough(tree, currentPath);
   const currentIndex = line.findIndex((node) => node.path === currentPath);
   const current = nodeAtPath(tree, currentPath);
-  const next = line[currentIndex + 1];
   const alternatives = alternativesAt(tree, currentPath);
   const comment = current
     ? current.comment
@@ -75,7 +72,8 @@ export function MoveNotes({ tree, currentPath, onSelect, pinnedComment }: MoveNo
       </p>
 
       {(comment || alternatives.length > 0) && (
-        <section className="move-notes__note" aria-label="La jugada">
+        // Keyed by the move, so the note fades in again with every move.
+        <section key={currentPath} className="move-notes__note" aria-label="La jugada">
           <p className="move-notes__note-head">
             <BookOpenIcon className="move-notes__note-icon" />
             {current ? moveLabel(current, true) : "Para empezar"}
@@ -92,16 +90,6 @@ export function MoveNotes({ tree, currentPath, onSelect, pinnedComment }: MoveNo
             </p>
           )}
         </section>
-      )}
-
-      {next && (
-        <p className="move-notes__onwards">
-          <button type="button" onClick={() => onSelect(next.path)} className={mdButton("filled", "sm")}>
-            <PlayIcon variant="classic-solid" className="platform-md-icon" />
-            Siguiente: {moveLabel(next, true)}
-          </button>
-          <span className="move-notes__hint">o la flecha →</span>
-        </p>
       )}
     </div>
   );

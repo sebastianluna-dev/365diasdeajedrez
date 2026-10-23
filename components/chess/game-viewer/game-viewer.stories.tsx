@@ -171,7 +171,7 @@ export const LessonAtTheEnd: Story = {
 /**
  * The lesson in the new design system (`look="material"`, `moveList="notes"`), midway through the game: the blue
  * board with the «elegida» pieces and Material's keys, and beside it «Prioritaria» and the chapter, the title, how far
- * through the line, the moves as pills, the note on the move on the board, «Siguiente» and the practice card.
+ * through the line, the moves as pills, the note on the move on the board and the practice card.
  */
 export const LessonMaterial: Story = {
   name: "Lesson (Material)",

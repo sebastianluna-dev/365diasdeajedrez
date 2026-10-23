@@ -1,5 +1,5 @@
 /* A lesson read one move at a time, in the new design system's roles
-   (2026-10-22): the line as pills, the note on a container, the way on. */
+   (2026-10-22): the line as pills, the note on a container. */
 .move-notes {
   display: flex;
   flex-direction: column;
@@ -82,6 +82,16 @@
     padding: var(--platform-space-4) var(--platform-space-5);
     border-radius: var(--md-sys-shape-corner-lg);
     background: var(--platform-m3-container);
+    /* It comes in with every move: a fade and a rise of a few px, the time
+       of a menu (160 ms, `ease-out`), so it reads as the next thing said and
+       not as the panel being redrawn. */
+    animation: move-notes-note-in 160ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .move-notes__note {
+      animation: none;
+    }
   }
 
   & .move-notes__note-head {
@@ -116,17 +126,11 @@
   & .move-notes__others .move-notes__move:hover {
     background: var(--platform-m3-container-high);
   }
+}
 
-  & .move-notes__onwards {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--platform-space-3);
-    margin: 0;
-  }
-
-  & .move-notes__hint {
-    font-size: var(--platform-type-xs);
-    color: var(--platform-m3-outline);
+@keyframes move-notes-note-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--platform-space-1));
   }
 }

@@ -629,10 +629,17 @@ export function GameViewer({
 
   const material = look === "material";
   // A key of the bar: the platform's square, or Material's wide pill — the
-  // way forward filled, the rest tonal.
+  // way forward filled, the rest on the container's grey (`__key`).
   const keyClass = (main = false) =>
-    material ? mdIconButton(main ? "filled" : "tonal", "sm", "wide") : "game-viewer__nav-button";
+    material
+      ? main
+        ? mdIconButton("filled", "sm", "wide")
+        : `${mdIconButton("tonal", "sm", "wide")} game-viewer__key`
+      : "game-viewer__nav-button";
   const keyIcon = material ? "platform-md-icon" : "game-viewer__nav-icon";
+  // The keys' icons: Font Awesome's Sharp Light on Material's pills (the
+  // owner's choice, 2026-10-23), Classic Solid on the platform's squares.
+  const keyVariant = material ? "sharp-light" : "classic-solid";
   const onwardsClass = (finish: boolean) =>
     material
       ? `${mdButton(finish ? "filled" : "tonal", "sm")} game-viewer__onwards-button`
@@ -641,7 +648,7 @@ export function GameViewer({
   const nav = (
     <div className="game-viewer__nav">
       <button type="button" title="Primera jugada" onClick={goToStart} disabled={atStart} className={keyClass()}>
-        <BackwardStepIcon variant="classic-solid" className={keyIcon} />
+        <BackwardStepIcon variant={keyVariant} className={keyIcon} />
       </button>
       <button
         type="button"
@@ -654,7 +661,7 @@ export function GameViewer({
         onPointerCancel={stopRepeat}
         className={keyClass()}
       >
-        <ChevronLeftIcon variant="classic-solid" className={keyIcon} />
+        <ChevronLeftIcon variant={keyVariant} className={keyIcon} />
       </button>
       <button
         type="button"
@@ -669,10 +676,10 @@ export function GameViewer({
         onPointerCancel={stopRepeat}
         className={keyClass(true)}
       >
-        <ChevronRightIcon variant="classic-solid" className={keyIcon} />
+        <ChevronRightIcon variant={keyVariant} className={keyIcon} />
       </button>
       <button type="button" title="Última jugada" onClick={goToEnd} disabled={atEnd} className={keyClass()}>
-        <ForwardStepIcon variant="classic-solid" className={keyIcon} />
+        <ForwardStepIcon variant={keyVariant} className={keyIcon} />
       </button>
       {/* Flipping the board is an action on the game, not a viewer setting:
           it goes with the buttons the game is traversed with. */}
@@ -683,7 +690,7 @@ export function GameViewer({
           onClick={() => setFlipToggled((current) => !current)}
           className={keyClass()}
         >
-          <ArrowRightArrowLeftIcon className={keyIcon} />
+          <ArrowRightArrowLeftIcon variant={material ? "sharp-light" : undefined} className={keyIcon} />
         </button>
       )}
 
@@ -701,7 +708,7 @@ export function GameViewer({
             className={keyClass()}
             ref={optionsButtonRef}
           >
-            <BarsIcon className={keyIcon} />
+            <BarsIcon variant={material ? "sharp-light" : undefined} className={keyIcon} />
           </button>
 
           {lingeringOptions.value && (

@@ -599,6 +599,14 @@
       gap: var(--platform-space-1);
     }
 
+    /* The keys but the way forward: the container's grey with the ink, as in
+       the design, not Material's tonal blue (which it reads through these
+       two properties of its own). */
+    & .game-viewer__key {
+      --container-color: var(--platform-m3-container);
+      --icon-color: var(--platform-m3-on-surface);
+    }
+
     & .game-viewer__panel {
       background: transparent;
       border-radius: 0;
