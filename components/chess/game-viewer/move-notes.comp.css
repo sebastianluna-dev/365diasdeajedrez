@@ -52,10 +52,10 @@
     }
   }
 
-  /* The moves to come, dimmed: they are there to be looked ahead at, not
-     read yet. */
+  /* The moves to come, dimmed by their colour alone: every move keeps the
+     same weight, so a move's width does not change as it is played and the
+     line never reflows under the reader (2026-10-23). */
   & .move-notes__move_state_later {
-    font-weight: 500;
     color: var(--platform-m3-outline);
   }
 
