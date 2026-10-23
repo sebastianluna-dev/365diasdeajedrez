@@ -15,7 +15,10 @@ export const metadata: Metadata = {
  * difficulty against three or five minutes or until the third mistake, the
  * best scores kept. While `EXERCISES_PERSISTENCE_ENABLED` is off the deck is
  * dealt from the sample exercises and nothing is recorded (the browser keeps
- * the scores); the run's table and its service come with it. Behind `EXERCISES_ENABLED`.
+ * the scores); the run's table and its service come with it. Behind
+ * `EXERCISES_ENABLED`. Since 2026-10-23 it lives in the route group of
+ * «Ejercicios» (`app/(platform)/(exercises)/`): its address is the same, and
+ * the side column of «Ejercicios» stays beside it, its button lit.
  */
 export default async function ExerciseStormPage() {
   if (!EXERCISES_ENABLED) notFound();
@@ -27,9 +30,5 @@ export default async function ExerciseStormPage() {
     return exercise ? [exercise] : [];
   });
 
-  return (
-    <div className="platform-page platform-page_width_full platform-page_height_screen">
-      <StormRunner deck={deck} />
-    </div>
-  );
+  return <StormRunner deck={deck} />;
 }

@@ -9,6 +9,7 @@ const meta: MetaRecord = {
   "exercise-series-section": "ExerciseSeriesSection",
   "exercise-solve-section": "ExerciseSolveSection",
   "exercise-history": "ExerciseHistory",
+  "storm-runner": "StormRunner",
 };
 
 export default meta;

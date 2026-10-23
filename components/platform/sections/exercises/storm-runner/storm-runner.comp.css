@@ -1,46 +1,268 @@
-/* «Puzzle Rush»: the board on the left (its stage, which also holds the
-   end's burst and summary card) and the panel on the right. Where the page
-   is the window, the board takes all the height left and the panel is as
-   tall as it; below 1024px they stack. */
+/* «Puzzle Rush» on the panel of «Ejercicios» (storm-runner.comp.tsx), in the
+   new design system. Before a run: the intro and the modes at the left, the
+   marks and the rules at the right. During it: the material board (its stage
+   also holds the end's burst and summary card) and the column at its right,
+   the board as tall as the window lets it be, as on the solve page. Under
+   1024px everything stacks. */
 .storm-runner {
-  --rush-panel: 380px;
-  display: grid;
-  grid-template-columns: minmax(0, 640px) minmax(300px, var(--rush-panel));
-  justify-content: center;
-  align-items: start;
-  gap: var(--platform-space-6);
+  --rush-board: max(320px, min(100vh - 202px, 600px));
 
-  @media (width >= 1280px) and (height > 620px) {
-    --rush-board: max(
-      320px,
-      min(
-        calc(100vh - 70px - 2 * var(--platform-space-6)),
-        calc(100vw - 2 * var(--platform-space-12) - var(--rush-panel) - var(--platform-space-6))
-      )
-    );
-    height: 100%;
-    grid-template-columns: var(--rush-board) var(--rush-panel);
-    grid-template-rows: var(--rush-board);
+  color: var(--platform-m3-on-surface);
 
-    & .storm-runner__panel {
-      align-self: stretch;
-      contain: size;
+  & .storm-runner__label {
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* Before a run. */
+  & .storm-runner__ready {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: var(--platform-space-8);
+    padding: var(--platform-space-1) var(--platform-space-2);
+  }
+
+  & .storm-runner__intro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-6);
+    min-width: 0;
+  }
+
+  & .storm-runner__hero {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-6);
+  }
+
+  & .storm-runner__art {
+    flex: none;
+    width: 92px;
+    height: 106px;
+  }
+
+  & .storm-runner__hero-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    min-width: 0;
+  }
+
+  & .storm-runner__title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-3xl);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  & .storm-runner__lead {
+    max-width: 420px;
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    line-height: 1.5;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .storm-runner__tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--platform-space-3);
+    margin: 0;
+  }
+
+  & .storm-runner__tile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-4);
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--platform-m3-container);
+
+    & dt {
+      font-size: var(--platform-type-2xs);
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & dd {
+      margin: 0;
+      font-family: var(--platform-font-display);
+      font-size: var(--platform-type-3xl);
+      font-weight: 600;
+      line-height: 1.25;
+      font-variant-numeric: tabular-nums;
     }
   }
 
-  @media (width < 1024px) {
-    grid-template-columns: minmax(0, 1fr);
-    justify-items: center;
+  & .storm-runner__choose {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+  }
 
-    & .storm-runner__stage {
-      width: max(min(100vw - 32px, 100svh - 240px), 280px);
-      max-width: 100%;
+  & .storm-runner__modes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--platform-space-3);
+  }
+
+  /* A mode: a card with a radio's ring, of which one is chosen. */
+  & .storm-runner__mode {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-4);
+    border: 1px solid var(--platform-m3-outline-variant);
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--platform-m3-panel);
+    color: var(--platform-m3-on-surface);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 160ms ease-out;
+
+    &:hover {
+      background: var(--platform-m3-container);
     }
 
-    & .storm-runner__panel {
-      width: 100%;
-      max-width: 640px;
+    &:focus-visible {
+      outline: 2px solid var(--platform-m3-primary);
+      outline-offset: 2px;
     }
+  }
+
+  & .storm-runner__mode.storm-runner__mode_state_chosen {
+    border-color: var(--platform-m3-primary);
+    background: var(--platform-m3-primary-wash);
+    box-shadow: inset 0 0 0 1px var(--platform-m3-primary);
+  }
+
+  & .storm-runner__ring {
+    box-sizing: border-box;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--platform-m3-on-surface-variant);
+    border-radius: 50%;
+  }
+
+  & .storm-runner__mode_state_chosen .storm-runner__ring {
+    border-color: var(--platform-m3-primary);
+    background: var(--platform-m3-primary);
+    box-shadow: inset 0 0 0 3px var(--platform-m3-primary-wash);
+  }
+
+  & .storm-runner__mode-name {
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-lg);
+    font-weight: 600;
+  }
+
+  & .storm-runner__mode-line {
+    font-size: var(--platform-type-2xs);
+    line-height: 1.4;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .storm-runner__go {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-4);
+  }
+
+  & .storm-runner__note {
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .storm-runner__aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+  }
+
+  & .storm-runner__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-4);
+    border: 1px solid var(--platform-m3-row-edge);
+    border-radius: var(--md-sys-shape-corner-lg);
+  }
+
+  & .storm-runner__marks {
+    margin: 0;
+  }
+
+  & .storm-runner__mark {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-3) 0;
+    border-bottom: 1px solid var(--platform-m3-divider);
+
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    & dt {
+      display: flex;
+      flex-direction: column;
+      font-size: var(--platform-type-xs);
+    }
+
+    & dd {
+      margin: 0;
+      font-family: var(--platform-font-display);
+      font-size: var(--platform-type-xl);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  & .storm-runner__mark-today {
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .storm-runner__rules {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--platform-type-xs);
+    line-height: 1.45;
+
+    & li {
+      display: flex;
+      align-items: baseline;
+      gap: var(--platform-space-2);
+    }
+
+    & li::before {
+      content: "";
+      flex: none;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--platform-m3-primary);
+      transform: translateY(-2px);
+    }
+  }
+
+  /* During and after a run. */
+  & .storm-runner__play-area {
+    display: grid;
+    grid-template-columns: minmax(280px, var(--rush-board)) minmax(300px, 1fr);
+    gap: var(--platform-space-6);
+    align-items: start;
   }
 
   & .storm-runner__stage {
@@ -61,494 +283,294 @@
     animation: storm-runner-wrong 600ms ease-out both;
   }
 
-  /* The panel: a card whose foot (the big button, or «Salir») stays at its bottom. */
-  & .storm-runner__panel {
+  & .storm-runner__column {
     display: flex;
     flex-direction: column;
-    min-height: 0;
-    overflow: hidden;
-    border: 1px solid var(--platform-border);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    box-shadow: var(--platform-shadow-card);
-  }
-
-  & .storm-runner__head {
-    display: grid;
-    grid-template-columns: 40px 1fr 40px;
-    align-items: center;
-    padding: var(--platform-space-4);
-    border-bottom: 1px solid var(--platform-border);
-  }
-
-  & .storm-runner__title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--platform-space-2);
-    margin: 0;
-    font-family: var(--platform-font-display);
-    font-size: var(--platform-type-2xl);
-    font-weight: 700;
-    color: var(--platform-text-title);
-  }
-
-  & .storm-runner__title-icon {
-    width: 28px;
-    height: 28px;
-    color: var(--platform-accent);
-  }
-
-  & .storm-runner__bests {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--platform-space-3);
-    margin: 0;
-    padding: var(--platform-space-4) var(--platform-space-4) 0;
-  }
-
-  & .storm-runner__best {
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: center;
-    gap: var(--platform-space-1);
-    padding: var(--platform-space-3);
-    border-radius: 8px;
-    background: var(--platform-surface-neutral);
-    text-align: center;
-
-    & dt {
-      font-size: var(--platform-type-xs);
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--platform-text-muted);
-    }
-
-    & dd {
-      display: flex;
-      align-items: center;
-      gap: var(--platform-space-2);
-      margin: 0;
-      font-size: var(--platform-type-2xl);
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      color: var(--platform-text-title);
-    }
-  }
-
-  & .storm-runner__best-icon {
-    width: 22px;
-    height: 22px;
-    color: var(--platform-accent-ink);
-  }
-
-  & .storm-runner__tabs {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    margin-top: var(--platform-space-3);
-    border-bottom: 1px solid var(--platform-border);
-  }
-
-  & .storm-runner__tab {
-    padding: var(--platform-space-3);
-    border: 0;
-    border-bottom: 2px solid transparent;
-    background: transparent;
-    font: inherit;
-    font-weight: 600;
-    color: var(--platform-text-muted);
-    cursor: pointer;
-
-    &:hover {
-      color: var(--platform-text);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--platform-accent-ink);
-      outline-offset: -2px;
-    }
-  }
-
-  & .storm-runner__tab_state_current {
-    border-bottom-color: var(--platform-accent);
-    color: var(--platform-text-title);
-  }
-
-  & .storm-runner__modes,
-  & .storm-runner__marks {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-2);
-    margin: 0;
-    padding: var(--platform-space-4);
-    overflow-y: auto;
-  }
-
-  & .storm-runner__mode {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--platform-space-2);
-    padding: var(--platform-space-4);
-    border: 2px solid transparent;
-    border-radius: 8px;
-    background: var(--platform-surface-neutral);
-    font: inherit;
-    font-size: var(--platform-type-md);
-    font-weight: 700;
-    color: var(--platform-text);
-    cursor: pointer;
-
-    &:hover {
-      background: var(--platform-surface-sunken);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--platform-accent-ink);
-      outline-offset: 2px;
-    }
-  }
-
-  & .storm-runner__mode_state_chosen {
-    border-color: var(--platform-accent);
-    background: var(--platform-accent-wash);
-    color: var(--platform-accent-ink);
-  }
-
-  & .storm-runner__mode-icon {
-    width: 18px;
-    height: 18px;
-  }
-
-  & .storm-runner__mark {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--platform-space-3) var(--platform-space-4);
-    border-radius: 8px;
-    background: var(--platform-surface-neutral);
-
-    & dt {
-      display: flex;
-      align-items: center;
-      gap: var(--platform-space-2);
-      font-weight: 600;
-      color: var(--platform-text);
-    }
-
-    & dd {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      margin: 0;
-    }
-  }
-
-  & .storm-runner__mark-best {
-    font-size: var(--platform-type-xl);
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    color: var(--platform-text-title);
-  }
-
-  & .storm-runner__mark-today {
-    font-size: var(--platform-type-xs);
-    color: var(--platform-text-muted);
-  }
-
-  & .storm-runner__foot {
-    margin-top: auto;
-    padding: var(--platform-space-4);
-    border-top: 1px solid var(--platform-border);
-  }
-
-  & .storm-runner__play {
-    width: 100%;
-  }
-
-  & .storm-runner__note {
-    margin: var(--platform-space-2) 0 0;
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
-  }
-
-  & .storm-runner__again {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--platform-space-3);
-  }
-
-  /* The run's top band: three slots, an X in each mistake; red from the first. */
-  & .storm-runner__band {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--platform-space-2);
-    padding: var(--platform-space-4);
-    background: var(--platform-surface-neutral);
-    transition: background-color 200ms ease-out;
-  }
-
-  & .storm-runner__band_state_missed {
-    background: var(--platform-danger);
-  }
-
-  & .storm-runner__slot {
-    display: grid;
-    place-items: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: var(--platform-surface-sunken);
-  }
-
-  & .storm-runner__band_state_missed .storm-runner__slot {
-    background: color-mix(in srgb, var(--platform-surface) 25%, transparent);
-  }
-
-  & .storm-runner__slot_state_used,
-  & .storm-runner__band_state_missed .storm-runner__slot_state_used {
-    background: var(--platform-surface);
-  }
-
-  & .storm-runner__slot-icon {
-    width: 18px;
-    height: 18px;
-    color: var(--platform-danger);
+    min-width: 0;
   }
 
   & .storm-runner__scoreboard {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--platform-space-2);
-    padding: var(--platform-space-8) var(--platform-space-4) var(--platform-space-4);
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-4);
+    border: 1px solid var(--platform-m3-row-edge);
+    border-radius: var(--md-sys-shape-corner-lg);
   }
 
-  & .storm-runner__badge {
-    display: grid;
-    place-items: center;
-    width: 64px;
-    height: 64px;
-    border-radius: 8px;
-    background: var(--platform-accent-wash);
-    color: var(--platform-accent-ink);
-
-    & svg {
-      width: 36px;
-      height: 36px;
-    }
+  & .storm-runner__figure {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
   }
 
   & .storm-runner__score {
-    margin: var(--platform-space-2) 0 0;
+    margin: 0;
     font-family: var(--platform-font-display);
-    font-size: var(--platform-type-5xl);
-    font-weight: 700;
+    font-size: var(--platform-type-4xl);
+    font-weight: 600;
     line-height: 1;
     font-variant-numeric: tabular-nums;
-    color: var(--platform-text-title);
   }
 
   & .storm-runner__clock {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: var(--platform-space-2);
+    height: 40px;
     margin: 0;
-    font-size: var(--platform-type-2xl);
-    font-weight: 700;
+    padding: 0 var(--platform-space-4) 0 var(--platform-space-3);
+    border-radius: 1000px;
+    background: var(--platform-m3-secondary-container);
+    color: var(--platform-m3-on-secondary-container);
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-xl);
+    font-weight: 600;
     font-variant-numeric: tabular-nums;
-    color: var(--platform-text);
   }
 
   & .storm-runner__clock-icon {
-    width: 22px;
-    height: 22px;
-    color: var(--platform-text-muted);
+    width: 18px;
+    height: 18px;
   }
 
-  & .storm-runner__prompt {
-    margin: 0;
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
-  }
-
-  /* One chip per exercise: the mark over its difficulty, green or red. */
-  & .storm-runner__chips {
+  & .storm-runner__slots {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--platform-space-2);
-    margin: 0;
-    padding: var(--platform-space-2) var(--platform-space-4) var(--platform-space-4);
-    list-style: none;
-    overflow-y: auto;
+    gap: var(--platform-space-1);
+    margin: var(--platform-space-1) 0 0;
   }
 
-  & .storm-runner__chip {
+  /* A mistake's slot: dashed while it is still to spend, the error's red with an X once spent. */
+  & .storm-runner__slot {
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    width: 28px;
+    height: 28px;
+    border: 2px dashed var(--platform-m3-outline);
+    border-radius: 50%;
+  }
+
+  & .storm-runner__slot.storm-runner__slot_state_used {
+    border: 0;
+    background: var(--platform-m3-error);
+    color: var(--platform-m3-on-error);
+  }
+
+  & .storm-runner__slot-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  & .storm-runner__status {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: var(--platform-space-1);
-    min-width: 36px;
+    padding: var(--platform-space-4) var(--platform-space-5);
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--platform-m3-container);
+  }
+
+  & .storm-runner__turn {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-xl);
+    font-weight: 500;
+  }
+
+  & .storm-runner__side {
+    flex: none;
+    box-sizing: border-box;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  & .storm-runner__side_color_white {
+    border: 1px solid var(--platform-m3-piece-black);
+    background: var(--platform-m3-piece-white);
+  }
+
+  & .storm-runner__side_color_black {
+    background: var(--platform-m3-piece-black);
+  }
+
+  & .storm-runner__line {
+    margin: 0;
     font-size: var(--platform-type-xs);
-    font-weight: 700;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* The run's exercises, five to a row: green a pass, red a miss, the one on the board ringed. */
+  & .storm-runner__runs {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--platform-space-1);
+    max-height: 200px;
+    margin: var(--platform-space-1) 0 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+  }
+
+  & .storm-runner__run {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--platform-space-1);
+    height: 28px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
     font-variant-numeric: tabular-nums;
   }
 
-  & .storm-runner__chip-mark {
-    display: grid;
-    place-items: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 4px;
+  & .storm-runner__run_result_pass {
+    background: var(--platform-m3-success-container);
+    color: var(--platform-m3-on-success-container);
   }
 
-  & .storm-runner__chip-icon {
-    width: 14px;
-    height: 14px;
+  & .storm-runner__run_result_miss {
+    background: var(--platform-m3-error-container);
+    color: var(--platform-m3-on-error-container);
   }
 
-  & .storm-runner__chip_result_pass {
-    color: var(--platform-success-ink);
-
-    & .storm-runner__chip-mark {
-      background: var(--platform-success-soft);
-    }
+  & .storm-runner__run_result_now {
+    border: 2px solid var(--platform-m3-primary);
+    background: var(--platform-m3-panel);
+    color: var(--platform-m3-primary);
   }
 
-  & .storm-runner__chip_result_miss {
-    color: var(--platform-danger);
-
-    & .storm-runner__chip-mark {
-      background: var(--platform-danger-soft);
-    }
+  & .storm-runner__run-icon {
+    width: 10px;
+    height: 10px;
   }
 
-  & .storm-runner__quit {
-    color: var(--platform-text-muted);
+  & .storm-runner__card_kind_best {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-4);
+  }
+
+  & .storm-runner__best {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-xl);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .storm-runner__record {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 var(--platform-space-3);
+    border-radius: 1000px;
+    background: var(--platform-m3-success-container);
+    color: var(--platform-m3-on-success-container);
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
   }
 
   /* The end: the score bursts on the board, then the card sums the run up. */
   & .storm-runner__burst {
     position: absolute;
+    z-index: 1;
     inset: 0;
     display: grid;
-    z-index: 1;
     place-items: center;
     pointer-events: none;
     animation: storm-runner-burst 1400ms ease-out both;
   }
 
-  & .storm-runner__burst-piece {
-    grid-area: 1 / 1;
-    width: 55%;
-    height: 55%;
-    color: var(--platform-accent);
-    filter: drop-shadow(0 8px 24px rgb(0 0 0 / 0.3));
-  }
-
   & .storm-runner__burst-score {
-    position: relative;
-    z-index: 1;
-    grid-area: 1 / 1;
+    display: grid;
+    place-items: center;
+    min-width: 45%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--platform-m3-primary);
+    color: var(--platform-m3-on-primary);
     font-family: var(--platform-font-display);
-    font-size: calc(var(--platform-type-5xl) * 3);
-    font-weight: 800;
+    font-size: calc(var(--platform-type-5xl) * 2.5);
+    font-weight: 700;
     line-height: 1;
-    color: var(--platform-on-accent);
-    text-shadow: 0 4px 16px rgb(0 0 0 / 0.35);
+    box-shadow: var(--md-sys-elevation-shadow-3);
   }
 
-  & .storm-runner__card {
+  & .storm-runner__summary {
     position: absolute;
     z-index: 1;
     top: 50%;
     left: 50%;
-    width: min(380px, 90%);
-    overflow: hidden;
-    border-radius: 8px;
-    background: var(--platform-surface);
-    box-shadow: var(--platform-shadow-popup);
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    width: min(360px, 90%);
+    box-sizing: border-box;
+    padding: var(--platform-space-6) var(--platform-space-5) var(--platform-space-5);
+    border-radius: var(--md-sys-shape-corner-xl);
+    background: var(--platform-m3-panel);
+    box-shadow: var(--md-sys-elevation-shadow-3);
     transform: translate(-50%, -50%);
     animation: storm-runner-card 200ms ease-out both;
   }
 
-  & .storm-runner__card-close {
+  & .storm-runner__summary-close {
     position: absolute;
     top: var(--platform-space-2);
     right: var(--platform-space-2);
-    z-index: 1;
   }
 
-  & .storm-runner__card-head {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--platform-space-3);
-    padding: var(--platform-space-6) var(--platform-space-6) var(--platform-space-4);
-    background: var(--platform-accent-soft);
-  }
-
-  & .storm-runner__card-title {
+  & .storm-runner__summary-title {
     margin: 0;
     font-family: var(--platform-font-display);
     font-size: var(--platform-type-xl);
-    font-weight: 700;
+    font-weight: 600;
     text-align: center;
-    color: var(--platform-accent-ink);
   }
 
-  & .storm-runner__card-badge {
-    display: grid;
-    place-items: center;
-    width: 56px;
-    height: 56px;
-    border-radius: 8px;
-    background: var(--platform-surface);
-    color: var(--platform-accent);
-
-    & svg {
-      width: 32px;
-      height: 32px;
-    }
-  }
-
-  & .storm-runner__card-score {
-    margin: var(--platform-space-3) 0 0;
+  & .storm-runner__summary-score {
+    margin: 0;
     font-family: var(--platform-font-display);
-    font-size: var(--platform-type-4xl);
+    font-size: var(--platform-type-5xl);
     font-weight: 700;
     line-height: 1;
     text-align: center;
+    color: var(--platform-m3-primary);
     font-variant-numeric: tabular-nums;
-    color: var(--platform-text-title);
   }
 
-  & .storm-runner__card-tiles {
+  & .storm-runner__summary-tiles {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    margin: var(--platform-space-4) 0 0;
-    padding: 0 var(--platform-space-4);
-    text-align: center;
+    gap: var(--platform-space-2);
+    margin: 0;
   }
 
-  & .storm-runner__card-tile {
+  & .storm-runner__summary-tile {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: var(--platform-space-1);
+    padding: var(--platform-space-2);
+    border-radius: var(--md-sys-shape-corner-md);
+    background: var(--platform-m3-container);
 
     & dt {
       display: flex;
-      flex-direction: column;
       align-items: center;
       gap: var(--platform-space-1);
-      font-size: var(--platform-type-xs);
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--platform-text-muted);
+      font-size: var(--platform-type-2xs);
+      color: var(--platform-m3-on-surface-variant);
     }
 
     & dd {
@@ -556,51 +578,39 @@
       font-size: var(--platform-type-xl);
       font-weight: 700;
       font-variant-numeric: tabular-nums;
-      color: var(--platform-text-title);
     }
   }
 
-  & .storm-runner__card-tile-icon {
-    width: 16px;
-    height: 16px;
+  & .storm-runner__summary-stats {
+    margin: 0;
   }
 
-  & .storm-runner__card-stats {
-    margin: var(--platform-space-4) 0 0;
-    padding: 0 var(--platform-space-5) var(--platform-space-4);
-  }
-
-  & .storm-runner__card-stat {
+  & .storm-runner__summary-stat {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--platform-space-3);
-    padding: var(--platform-space-3) 0;
-    font-size: var(--platform-type-sm);
-
-    & + .storm-runner__card-stat {
-      border-top: 1px solid var(--platform-border);
-    }
+    padding: var(--platform-space-2) 0;
+    border-top: 1px solid var(--platform-m3-divider);
+    font-size: var(--platform-type-2xs);
 
     & dt {
       display: flex;
       align-items: center;
       gap: var(--platform-space-2);
-      color: var(--platform-text);
+      color: var(--platform-m3-on-surface-variant);
     }
 
     & dd {
       margin: 0;
       font-weight: 700;
       font-variant-numeric: tabular-nums;
-      color: var(--platform-text-title);
     }
   }
 
-  & .storm-runner__card-stat-icon {
-    width: 14px;
-    height: 14px;
-    color: var(--platform-text-muted);
+  & .storm-runner__summary-icon {
+    width: 12px;
+    height: 12px;
   }
 
   & .storm-runner__visually-hidden {
@@ -612,19 +622,66 @@
     white-space: nowrap;
   }
 
+  @media (width < 1280px) {
+    & .storm-runner__ready {
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: var(--platform-space-6);
+    }
+
+    & .storm-runner__play-area {
+      grid-template-columns: minmax(260px, 480px) minmax(280px, 1fr);
+    }
+  }
+
+  @media (width < 1024px) {
+    & .storm-runner__ready,
+    & .storm-runner__play-area {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    & .storm-runner__stage {
+      justify-self: center;
+      width: max(min(100vw - 32px, 100svh - 240px), 280px);
+      max-width: 100%;
+    }
+  }
+
+  @media (width < 640px) {
+    & .storm-runner__ready {
+      padding: 0;
+    }
+
+    & .storm-runner__hero {
+      gap: var(--platform-space-4);
+    }
+
+    & .storm-runner__art {
+      width: 64px;
+      height: 74px;
+    }
+
+    & .storm-runner__modes {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    & .storm-runner__runs {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     & .storm-runner__board_state_wrong,
     & .storm-runner__burst,
-    & .storm-runner__card {
+    & .storm-runner__summary {
       animation: none;
     }
   }
 }
 
-/* The wrong move's ring, the solve screen's own. */
+/* The wrong move's ring, the solve page's own. */
 @keyframes storm-runner-wrong {
   from {
-    box-shadow: 0 0 0 4px var(--platform-danger);
+    box-shadow: 0 0 0 4px var(--platform-m3-error);
   }
 
   to {

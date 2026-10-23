@@ -99,6 +99,8 @@ import { StatsCards } from "@/components/platform/sections/dashboard/activity-st
 import { ExplorerGames } from "@/components/platform/sections/explorer/explorer-games.comp";
 import { ExplorerMoveList } from "@/components/platform/sections/explorer/explorer-move-list.comp";
 import { ExplorerNextMoves } from "@/components/platform/sections/explorer/explorer-next-moves.comp";
+import { StormRunner } from "@/components/platform/sections/exercises/storm-runner/storm-runner.comp";
+import { SAMPLE_EXERCISES } from "@/constants/platform/exercise-samples.const";
 import { PlatformAppsMenu } from "@/components/platform/sections/shell/platform-apps-menu.comp";
 import { SaveToStudyPopup } from "@/components/platform/shared/save-to-study-popup/save-to-study-popup.comp";
 import { PlayVsEngine } from "@/components/platform/sections/tools/analysis-board/play-vs-engine/play-vs-engine.comp";
@@ -2593,6 +2595,11 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                     aside={{ scope: "overview", href: null, topic: { code: "SKEWER", label: "Enfilada" } }}
                   />
                 </section>
+              </div>
+            </Tile>
+            <Tile name="StormRunner" docs="platform-sections-exercises-stormrunner" width={1040} height={560}>
+              <div className="platform-workspace" style={{ minHeight: 0 }}>
+                <StormRunner deck={SAMPLE_EXERCISES.slice(0, 4)} />
               </div>
             </Tile>
             <Tile name="ExerciseAttemptRow" docs="platform-shared-exerciseattemptrow" width={640} height={120}>
