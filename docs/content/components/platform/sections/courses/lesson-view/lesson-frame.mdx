@@ -30,7 +30,7 @@ It takes `children` because it is a container and nothing else — the exception
 
 ## Markup & styling
 
-Since 2026-10-22 the lesson is drawn in the new design system (Material 3 Expressive; see [Styling](/ui/styling#the-new-design-system-material-3-expressive)), as the course and the chapter are. The frame draws the **workspace** (`.platform-workspace`, in `platform.css`): the outline in `.platform-workspace__side` on the canvas, and the lesson in `.platform-workspace__panel`, the white panel, which is also the `<section>` of block `.lesson-frame` (`aria-label="Lección"`). The panel is a column holding `.lesson-frame__main` alone, which takes all of it. It had a toolbar above the lesson — back to the chapter, the trail course › chapter › lesson and the arrows to the lessons beside it — until 2026-10-23, when the owner took it out: the column of lessons beside the panel already says where one is and moves on, and the toolbar only took height from the board. The way back to the chapter is now the chapter's line above the lesson's title («Capítulo 2 · La Najdorf», a link).
+Since 2026-10-22 the lesson is drawn in the new design system (Material 3 Expressive; see [Styling](/ui/styling#the-new-design-system-material-3-expressive)), as the course and the chapter are. The frame draws the **workspace** (`.platform-workspace`, in `platform.css`): the outline in `.platform-workspace__side` on the canvas, and the lesson in `.platform-workspace__panel`, the white panel, which is also the `<section>` of block `.lesson-frame` (`aria-label="Lección"`). The panel is a column: the lesson's trail (`.lesson-frame__toolbar`: back to the chapter, and the course › chapter › lesson, drawn by [`LessonBoardSection`](/components/platform/sections/courses/lesson-view/lesson-board-section)) and, under it, `.lesson-frame__main`, which takes the rest. The trail was taken out on 2026-10-23 and brought back the same day without the arrows to the lessons beside it, which stood at its right: the column of the chapter and the board's «Saltar»/«Continuar» lead there.
 
 **The page is the window.** The layout's own `<div>` carries `.platform-page`, `.lesson-page`, `.platform-page_width_full`, `.platform-page_frame_bleed`, `.platform-page_height_screen` and `.platform-page_scale_base` (the lesson keeps the base type and space scale from 1536px too, where every other page takes a step up: see [Styling](/ui/styling#type-and-space)), and the workspace takes the modifier `.platform-workspace_height_screen`: exactly the height under the bar, the side scrolling on its own and the panel not at all. Nothing here scrolls the page — the outline and the panel of text each move on their own — because what is looked at is a board, and a board that falls below the fold is a board nobody sees whole.
 
@@ -40,9 +40,9 @@ The column of notes beside the board runs down to the foot of the panel (`--view
 
 The board and its panel of text are the [`GameViewer`](/components/chess/game-viewer/game-viewer)'s in its material look (`look="material"`): the blue board with the «elegida» pieces, Material's keys under it, and the notation loose on the panel.
 
-**Elements:** `.lesson-frame__main`
+**Elements:** `.lesson-frame__toolbar`, `.lesson-frame__trail`, `.lesson-frame__crumb`, `.lesson-frame__crumb-step`, `.lesson-frame__crumb-here`, `.lesson-frame__main`
 
-**Modifiers:** `.lesson-frame__main_kind_practice`.
+**Modifiers:** `.lesson-frame__crumb_kind_course` and `.lesson-frame__crumb-step_kind_course` (the course's name and its step, hidden under 1280px: the chapter leads back), `.lesson-frame__main_kind_practice`.
 
 **Variables it hands down:** `--lesson-board-footer` (its own), `--viewer-board-max`, `--viewer-column-gap`, `--viewer-panel-min`, `--viewer-panel-trim`.
 
