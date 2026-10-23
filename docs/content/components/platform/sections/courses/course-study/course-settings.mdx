@@ -1,0 +1,47 @@
+---
+description: "«Ajustes del curso»: the course's settings panel at the right of the workspace — what to learn, its information, erasing the progress and leaving the course —, each option with a drawing of what it does."
+---
+
+# `CourseSettings`
+
+|          |                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File     | `components/platform/sections/courses/course-study/course-settings.comp.tsx`                                                                                                                                                                                                                                                                                                                                                          |
+| Kind     | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Used by  | [`CourseStudySection`](/components/platform/sections/courses/course-study/course-study-section), [`ChapterStudySection`](/components/platform/sections/courses/course-study/chapter-study-section)                                                                                                                                                                                                                                    |
+| Composes | [`PlatformSettingsPanel`](/components/platform/shared/platform-settings-panel), [`LearnMode`](/components/platform/sections/courses/course-study/learn-mode), [`ResetProgress`](/components/platform/sections/courses/course-study/reset-progress), [`RemoveCourse`](/components/platform/sections/courses/course-study/remove-course), [`CourseSettingsArt`](/components/platform/sections/courses/course-study/course-settings-art) |
+
+## Purpose
+
+The course's settings (2026-10-23, after the owner's design, «M4 · /cursos/[curso] con «Ajustes del curso»» on the canvas): a panel at the right of the workspace, as Gmail's «Configuración rápida», opened by the gear the course's and the chapter's pages put in the bar ([`PlatformSettingsToggle`](/components/platform/shared/platform-settings-toggle)). Until then these options were the bottom of the side column ([`CourseSide`](/components/platform/sections/courses/course-study/course-side)).
+
+## Props
+
+| Prop      | Type                             | Required | Meaning                                                                                                   |
+| --------- | -------------------------------- | -------- | --------------------------------------------------------------------------------------------------------- |
+| `course`  | `CourseDetail`                   | yes      | The course.                                                                                               |
+| `chapter` | `{ id, name, completedLessons }` | no       | The chapter on screen, on a chapter's page: the settings come back to it, and its progress can be erased. |
+
+## Behaviour
+
+Three groups, each option a row with its words and the drawing of what it does:
+
+1. **Qué aprender**: [`LearnMode`](/components/platform/sections/courses/course-study/learn-mode) — «Todas las lecciones» and «Sólo las prioritarias», with a radio's ring —, and what the filter hides. It comes back to the chapter on a chapter's page, else to the course.
+2. **El curso**: «Información del curso», a link to `infoHref`.
+3. **Tu progreso**: on a chapter's page with something to erase, «Eliminar mi progreso del capítulo» first — it is the page's own, and the course's is the bigger step —; «Eliminar mi progreso» when the course has been started ([`ResetProgress`](/components/platform/sections/courses/course-study/reset-progress)); and «Quitar de mis cursos», in the error's red ([`RemoveCourse`](/components/platform/sections/courses/course-study/remove-course)). Each opens its confirmation, as before.
+
+## Markup & styling
+
+No block of its own: the panel and its rows are [`PlatformSettingsPanel`](/components/platform/shared/platform-settings-panel)'s.
+
+## Usage
+
+From `course-study.section.tsx`, as the last column of the workspace, with the gear in the bar:
+
+```tsx
+<PlatformHeaderContext>
+  <PlatformSettingsToggle />
+</PlatformHeaderContext>
+…
+<CourseSettings course={course} />
+```

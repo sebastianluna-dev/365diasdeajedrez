@@ -7,6 +7,8 @@ const meta: MetaRecord = {
   "learn-mode": "LearnMode",
   "reset-progress": "ResetProgress",
   "remove-course": "RemoveCourse",
+  "course-settings": "CourseSettings",
+  "course-settings-art": "CourseSettingsArt",
 };
 
 export default meta;

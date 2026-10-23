@@ -1,0 +1,32 @@
+---
+description: "The gear in the bar, as Gmail's: opens and closes the page's settings panel, lit while it is open."
+---
+
+# `PlatformSettingsToggle`
+
+|            |                                                                                                                                                                                                                                                                                                    |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-settings-toggle/platform-settings-toggle.comp.tsx`                                                                                                                                                                                                            |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                   |
+| Stylesheet | `platform-settings-toggle.comp.css` → block `.platform-settings-toggle`                                                                                                                                                                                                                            |
+| Story      | `platform-settings-toggle.stories.tsx` (`platform/shared/PlatformSettingsToggle`): closed, and opened by its `play` function                                                                                                                                                                       |
+| Used by    | [`CourseStudySection`](/components/platform/sections/courses/course-study/course-study-section), [`ChapterStudySection`](/components/platform/sections/courses/course-study/chapter-study-section), through [`PlatformHeaderContext`](/components/platform/sections/shell/platform-header-context) |
+| Uses       | `useSettingsOpen`, `setSettingsOpen`, `SETTINGS_PANEL_ID` from `platform-settings-panel/settings-panel-state.ts`; `mdIconButton`; `GearIcon`                                                                                                                                                       |
+
+## Purpose
+
+The gear of Gmail's bar (2026-10-23): a page with settings puts it in the bar, through [`PlatformHeaderContext`](/components/platform/sections/shell/platform-header-context), and it opens and closes that page's [`PlatformSettingsPanel`](/components/platform/shared/platform-settings-panel). It takes no props: the panel it opens is the page's one, `#platform-settings`.
+
+## Behaviour
+
+- Material's standard icon button with the gear (Classic Solid). It carries `aria-controls="platform-settings"` and `aria-pressed`, and its name says what pressing it does: «Ajustes», or «Cerrar los ajustes» while the panel is open.
+- It sets and removes the root's `data-settings="open"` and follows it, so the panel's ✕ closing the panel unlights it too.
+
+## Markup & styling
+
+Block `.platform-settings-toggle` (10 lines): `margin-left: auto`, so it sits at the right of the bar's middle, against the tools; open, `.platform-settings-toggle_state_on` lights it in the secondary container (Material's `--container-color` and `--icon-color`), as Gmail lights its own.
+
+## Related
+
+- [`PlatformSettingsPanel`](/components/platform/shared/platform-settings-panel), what it opens.
+- [`PlatformSideToggle`](/components/platform/sections/shell/platform-side-toggle), the three bars at the other end of the bar.

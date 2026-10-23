@@ -8,7 +8,7 @@ import {
 } from "@/components/platform/shared/platform-confirm-popup/platform-confirm-popup.comp";
 import { MOVE_TRAINER_ENABLED } from "@/constants/platform/features.const";
 import { resetChapterProgress, resetCourseProgress } from "@/services/courses/courses.actions";
-import "./reset-progress.comp.css";
+import { CourseSettingsArt } from "./course-settings-art.comp";
 
 interface ResetProgressProps {
   courseId: string;
@@ -24,7 +24,9 @@ interface ResetProgressProps {
 }
 
 /**
- * «Eliminar mi progreso»: the link of the course's options and the
+ * «Eliminar mi progreso»: an option of the course's settings panel
+ * (`CourseSettings`, 2026-10-23: a row with its words and the drawing of the
+ * bars emptying) and the
  * confirmation that asks before doing it. It cannot be undone, so it takes
  * two things to go through — opening the confirmation and ticking its box —
  * and the button that does it is the red one.
@@ -49,10 +51,22 @@ export function ResetProgress({ courseId, name, completedLessons, chapterId }: R
       : "";
 
   return (
-    <div className="reset-progress">
-      <button type="button" className="reset-progress__open" onClick={(event) => confirmRef.current?.open(event)}>
-        <ArrowRotateLeftIcon variant="duotone-light" className="reset-progress__icon" />
-        {label}
+    <>
+      <button type="button" className="platform-settings__option" onClick={(event) => confirmRef.current?.open(event)}>
+        <span className="platform-settings__lead">
+          <ArrowRotateLeftIcon variant="duotone-light" className="platform-settings__lead-icon" />
+        </span>
+        <span className="platform-settings__option-text">
+          <span className="platform-settings__option-label">{label}</span>
+          <span className="platform-settings__option-hint">
+            {chapterId
+              ? "Las lecciones de este capítulo vuelven a «Por empezar»"
+              : "Las lecciones vuelven a «Por empezar»; tu racha no cambia"}
+          </span>
+        </span>
+        <span className="platform-settings__option-art">
+          <CourseSettingsArt kind={chapterId ? "reset-chapter" : "reset-course"} />
+        </span>
       </button>
 
       {/* The box's `name`/`value` are what `RESET_SCHEMA` reads (`confirm=on`). */}
@@ -74,6 +88,6 @@ export function ResetProgress({ courseId, name, completedLessons, chapterId }: R
         action={action}
         confirmLabel={label}
       />
-    </div>
+    </>
   );
 }

@@ -1,0 +1,55 @@
+---
+description: "A page's settings at the right of the workspace, as Gmail's quick settings: a white panel with its title and its ✕, opened by the gear in the bar; each option a row with its words and a drawing of what it does."
+---
+
+# `PlatformSettingsPanel`
+
+|            |                                                                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-settings-panel/platform-settings-panel.comp.tsx`                                                  |
+| Kind       | Client Component (for its ✕; what it is given is drawn by the server)                                                                  |
+| Stylesheet | `platform-settings-panel.comp.css` → block `.platform-settings`                                                                        |
+| Story      | `platform-settings-panel.stories.tsx` (`platform/shared/PlatformSettingsPanel`): two groups, one option chosen, one in the error's red |
+| Used by    | [`CourseSettings`](/components/platform/sections/courses/course-study/course-settings)                                                 |
+| Uses       | `settings-panel-state.ts` (its own); `mdIconButton` · `lib/material/material-classes.ts`; `XmarkIcon`                                  |
+
+## Purpose
+
+A page's settings, as Gmail's «Configuración rápida» (2026-10-23, after the owner's design): a white panel at the right of the [workspace](/ui/styling#the-new-design-system-material-3-expressive), beside the page's own panel, opened and closed by the gear in the bar ([`PlatformSettingsToggle`](/components/platform/shared/platform-settings-toggle)) and by its own ✕. What a page lets the student set about it lives here, and no longer in the side column, which is left to what the page shows.
+
+## Exports
+
+| Export                  | Props                                  | Meaning                                                                                    |
+| ----------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `PlatformSettingsPanel` | `title: string`, `children: ReactNode` | The panel: its name at the top, its ✕, and its groups. A container.                        |
+| `PlatformSettingsGroup` | `title: string`, `children: ReactNode` | A group: its name, and its options under it, set apart from the group above by a hairline. |
+
+## Behaviour
+
+- **Whether it is open lives on the root**, `:root[data-settings="open"]` (`settings-panel-state.ts`: `SETTINGS_ATTRIBUTE`, `useSettingsOpen`, `setSettingsOpen`), as the side column's `data-side-nav` does: the gear and the ✕, two leaves far apart, hear the same thing, and the panel is shown by the stylesheet alone, with no flash on a reload. It is not kept: a new visit starts with it closed. `useSettingsOpen` follows the attribute with a `MutationObserver` (`useSyncExternalStore`), closed on the server.
+- The ✕ closes it and gives the focus back to the gear (the button with `aria-controls="platform-settings"` and `aria-pressed`).
+- It is the `<aside id="platform-settings">` the gear names in `aria-controls`, labelled by its title.
+- **Each option is a row the page draws** with the block's elements, since what an option is — a form, a link, the trigger of a confirmation — is the page's: the control's mark at the left (`__ring` for one of several, `__lead` with an icon for an action), its words (`__option-label`, `__option-hint`), and at the right the drawing of what it does (`__option-art`, a 96×60 white frame, the primary's once the option is chosen). The whole row is the control.
+
+## Markup & styling
+
+Block `.platform-settings` (195 lines). Closed, `display: none`; open, a third column of the workspace, 344px wide, stuck under the bar (`top: 70px`) like the side column and scrolling on its own when it is taller than the window, its head stuck to its top. It comes in with a fade and a slide of 16px in 200 ms (`platform-settings-in`), off under `prefers-reduced-motion`. Under 1024px, where the workspace is one column, it takes the column's width after the page.
+
+**Elements:** `.platform-settings__head`, `.platform-settings__title`, `.platform-settings__body`, `.platform-settings__group`, `.platform-settings__group-title`, `.platform-settings__option`, `.platform-settings__lead`, `.platform-settings__lead-icon`, `.platform-settings__ring`, `.platform-settings__option-text`, `.platform-settings__option-label`, `.platform-settings__option-hint`, `.platform-settings__option-art`, `.platform-settings__note`
+
+**Modifiers and states:** `.platform-settings__option_state_on` (the option chosen: its ring filled and its frame in the primary), `.platform-settings__option_tone_danger` (what destroys, in `--platform-m3-error`)
+
+**Keyframes:** `platform-settings-in`, at the top level because `@keyframes` cannot be nested.
+
+## Usage
+
+```tsx
+<PlatformSettingsPanel title="Ajustes del curso">
+  <PlatformSettingsGroup title="Qué aprender">…</PlatformSettingsGroup>
+</PlatformSettingsPanel>
+```
+
+## Related
+
+- [`PlatformSettingsToggle`](/components/platform/shared/platform-settings-toggle), the gear that opens it.
+- [`CourseSettings`](/components/platform/sections/courses/course-study/course-settings), the course's.

@@ -1,16 +1,16 @@
 ---
-description: "What of the course is learned: everything, or only what the staff marked as priority. Two buttons, one pressed, each a form with its value bound."
+description: "What of the course is learned: everything, or only what the staff marked as priority. Two options of the course's settings panel, each a form with its value bound and the drawing of what it does."
 ---
 
 # `LearnMode`
 
-|            |                                                                                |
-| ---------- | ------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/courses/course-study/learn-mode.comp.tsx`        |
-| Kind       | Server Component                                                               |
-| Stylesheet | `learn-mode.comp.css` → block `.learn-mode`                                    |
-| Used by    | [`CourseSide`](/components/platform/sections/courses/course-study/course-side) |
-| Writes     | `setOnlyPriorityLessons()` · `services/courses/courses.actions.ts`             |
+|            |                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-study/learn-mode.comp.tsx`                                                                                 |
+| Kind       | Server Component                                                                                                                                        |
+| Stylesheet | none of its own: its rows are [`PlatformSettingsPanel`](/components/platform/shared/platform-settings-panel)'s elements (`.platform-settings__option`…) |
+| Used by    | [`CourseSettings`](/components/platform/sections/courses/course-study/course-settings)                                                                  |
+| Writes     | `setOnlyPriorityLessons()` · `services/courses/courses.actions.ts`                                                                                      |
 
 ## Purpose
 
@@ -30,20 +30,12 @@ It is a **lens**: it writes the settings row and not a single progress row, so s
 ## Behaviour
 
 - Each option is a `<form action={setOnlyPriorityLessons.bind(null, courseId, value)}>` with a hidden `returnTo`, and not one form with two radios: a preference is saved and the page is drawn again, so there is no state to keep and nothing to hydrate. The value is bound because a checkbox cannot transmit "false".
-- The pressed one carries `aria-pressed="true"`; the two are a `role="group"` labelled by «Aprender».
+- The chosen one carries `aria-pressed="true"`; the two sit in the panel's group «Qué aprender».
 - With the filter on, a note says what it hides and what follows from it: «56 lecciones ocultas. El progreso cuenta sólo las de prioridad.»
 
 ## Markup & styling
 
-Block `.learn-mode` (78 lines): a sunken track with two halves, the pressed one raised.
-
-**Elements:** `.learn-mode__label`, `.learn-mode__options`, `.learn-mode__form`, `.learn-mode__option`, `.learn-mode__note`
-
-**Modifiers and states:** `.learn-mode__option_state_on`
-
-**Tokens:** `--platform-surface`, `--platform-surface-neutral`, `--platform-surface-sunken`, `--platform-text`, `--platform-text-subtle`
-
-The transition is off under `prefers-reduced-motion`.
+No block of its own (2026-10-23): each option is a `.platform-settings__option` of the panel, with a radio's ring (`__ring`, filled for the one chosen, `_state_on`), its words (`__option-label`, `__option-hint`: «Cada lección del curso, en orden», «Las que el curso marca como prioritarias; las demás se ocultan») and its drawing in `__option-art` ([`CourseSettingsArt`](/components/platform/sections/courses/course-study/course-settings-art), `all-lessons` and `priority-lessons`). The note is `.platform-settings__note`.
 
 ## Usage
 
@@ -58,4 +50,4 @@ The transition is off under `prefers-reduced-motion`.
 
 ## In the new design system
 
-Since 2026-10-22 it is drawn as a group of the course's side column ([`CourseSide`](/components/platform/sections/courses/course-study/course-side)): «Qué aprender» as its title and «Todas las lecciones» / «Sólo las prioritarias» as rows with a radio's ring, filled in the primary's blue for the one chosen (`.learn-mode__ring`); before, it was two buttons on a sunken track, «Todo» and «Prioridad». Where it comes back to (`returnTo`) is the page it sits on: the course, or the chapter.
+Since 2026-10-23 its two options live in the course's settings panel ([`CourseSettings`](/components/platform/sections/courses/course-study/course-settings)), opened by the gear in the bar, each with a drawing of what it does; from 2026-10-22 they were a group of the course's side column, and before, two buttons on a sunken track, «Todo» and «Prioridad». Where it comes back to (`returnTo`) is the page it sits on: the course, or the chapter.

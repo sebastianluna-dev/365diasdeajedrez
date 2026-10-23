@@ -8,7 +8,7 @@ import {
 } from "@/components/platform/shared/platform-confirm-popup/platform-confirm-popup.comp";
 import { MOVE_TRAINER_ENABLED } from "@/constants/platform/features.const";
 import { removeCourse } from "@/services/courses/courses.actions";
-import "./remove-course.comp.css";
+import { CourseSettingsArt } from "./course-settings-art.comp";
 
 interface RemoveCourseProps {
   courseId: string;
@@ -18,7 +18,9 @@ interface RemoveCourseProps {
 }
 
 /**
- * «Quitar de mis cursos»: the last of the course's options and the
+ * «Quitar de mis cursos»: the last option of the course's settings panel
+ * (`CourseSettings`, 2026-10-23: a row in the error's red, with the drawing
+ * of a course leaving the shelf) and the
  * confirmation that asks before doing it. It is the heavier of the two red
  * entries — the other one erases the progress and leaves the course — so it
  * is the one at the bottom, and it says in words what it takes along.
@@ -35,10 +37,22 @@ export function RemoveCourse({ courseId, courseName, completedLessons }: RemoveC
       : "";
 
   return (
-    <div className="remove-course">
-      <button type="button" className="remove-course__open" onClick={(event) => confirmRef.current?.open(event)}>
-        <CircleMinusIcon variant="duotone-light" className="remove-course__icon" />
-        Quitar de mis cursos
+    <>
+      <button
+        type="button"
+        className="platform-settings__option platform-settings__option_tone_danger"
+        onClick={(event) => confirmRef.current?.open(event)}
+      >
+        <span className="platform-settings__lead">
+          <CircleMinusIcon variant="duotone-light" className="platform-settings__lead-icon" />
+        </span>
+        <span className="platform-settings__option-text">
+          <span className="platform-settings__option-label">Quitar de mis cursos</span>
+          <span className="platform-settings__option-hint">Sale de tus cursos con su progreso</span>
+        </span>
+        <span className="platform-settings__option-art">
+          <CourseSettingsArt kind="remove-course" />
+        </span>
       </button>
 
       {/* The box's `name`/`value` are what `RESET_SCHEMA` reads (`confirm=on`):
@@ -60,6 +74,6 @@ export function RemoveCourse({ courseId, courseName, completedLessons }: RemoveC
         action={removeCourse.bind(null, courseId)}
         confirmLabel="Quitar de mis cursos"
       />
-    </div>
+    </>
   );
 }

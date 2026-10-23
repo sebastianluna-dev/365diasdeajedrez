@@ -1,0 +1,195 @@
+/* A page's settings at the right of the workspace (the new design system,
+   2026-10-23, after Gmail's «Configuración rápida»): closed, it is not
+   drawn; open, it is a third column beside the page's panel, stuck under
+   the bar like the side column, scrolling on its own when it is taller
+   than the window. */
+.platform-settings {
+  display: none;
+  position: sticky;
+  top: 70px;
+  flex: none;
+  flex-direction: column;
+  width: 344px;
+  max-height: calc(100vh - 70px - var(--platform-space-3));
+  border-radius: var(--md-sys-shape-corner-lg);
+  background: var(--platform-m3-panel);
+  color: var(--platform-m3-on-surface);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  :root[data-settings="open"] & {
+    display: flex;
+    animation: platform-settings-in 200ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root[data-settings="open"] & {
+      animation: none;
+    }
+  }
+
+  & .platform-settings__head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 64px;
+    padding: 0 var(--platform-space-2) 0 var(--platform-space-6);
+    background: var(--platform-m3-panel);
+  }
+
+  & .platform-settings__title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-xl);
+    font-weight: 400;
+  }
+
+  & .platform-settings__body {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: var(--platform-space-4);
+  }
+
+  & .platform-settings__group {
+    display: flex;
+    flex-direction: column;
+    padding: var(--platform-space-4) 0 var(--platform-space-2);
+    border-top: 1px solid var(--platform-m3-container-high);
+  }
+
+  & .platform-settings__group-title {
+    margin: 0 0 var(--platform-space-1);
+    padding: 0 var(--platform-space-6);
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* An option: the control's mark at the left, its words, and at the right
+     the drawing that shows what it does. The whole row is the control. */
+  & .platform-settings__option {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    width: 100%;
+    min-height: 72px;
+    padding: var(--platform-space-2) var(--platform-space-6);
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-family: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 160ms ease-out;
+
+    &:hover {
+      background: var(--platform-m3-container);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-m3-primary);
+      outline-offset: -2px;
+    }
+  }
+
+  & .platform-settings__lead {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .platform-settings__lead-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* A radio's ring, for an option that is one of several: the primary's
+     with a dot inside for the one chosen. */
+  & .platform-settings__ring {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--platform-m3-on-surface-variant);
+    border-radius: 50%;
+  }
+
+  & .platform-settings__option_state_on .platform-settings__ring {
+    border-color: var(--platform-m3-primary);
+    background: radial-gradient(circle, var(--platform-m3-primary) 4px, transparent 4.5px);
+  }
+
+  & .platform-settings__option-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+    min-width: 0;
+  }
+
+  & .platform-settings__option-label {
+    font-size: var(--platform-type-sm);
+  }
+
+  & .platform-settings__option-hint {
+    font-size: var(--platform-type-2xs);
+    line-height: 1.35;
+    color: var(--platform-m3-on-surface-variant);
+    text-wrap: pretty;
+  }
+
+  /* The drawing: a small white frame, the primary's once the option is the
+     one chosen, as Gmail frames its own. */
+  & .platform-settings__option-art {
+    flex: none;
+    width: 96px;
+    height: 60px;
+    border: 1px solid var(--platform-m3-outline-variant);
+    border-radius: 8px;
+    background: var(--platform-m3-panel);
+    overflow: hidden;
+  }
+
+  & .platform-settings__option_state_on .platform-settings__option-art {
+    border-color: var(--platform-m3-primary);
+    box-shadow: inset 0 0 0 1px var(--platform-m3-primary);
+  }
+
+  /* What destroys, in the error's red. */
+  & .platform-settings__option_tone_danger {
+    & .platform-settings__option-label,
+    & .platform-settings__lead {
+      color: var(--platform-m3-error);
+    }
+  }
+
+  /* A line under an option: what it hides, what follows from it. */
+  & .platform-settings__note {
+    margin: 0;
+    padding: 0 var(--platform-space-6) var(--platform-space-2) calc(var(--platform-space-6) + 32px);
+    font-size: var(--platform-type-2xs);
+    line-height: 1.45;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* Under the panel, the workspace is one column: the settings take its
+     width, after the page. */
+  @media (width < 1024px) {
+    position: static;
+    width: auto;
+    max-height: none;
+  }
+}
+
+@keyframes platform-settings-in {
+  from {
+    opacity: 0;
+    transform: translateX(var(--platform-space-4));
+  }
+}

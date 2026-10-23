@@ -1,20 +1,12 @@
 import Image from "next/image";
-import Link from "next/link";
-import { CircleInfoIcon } from "@/components/icons/circle-info-icon.comp";
 import { PlatformSideNav } from "@/components/platform/shared/platform-side-nav/platform-side-nav.comp";
 import { countLessons } from "@/services/courses/course-rules";
 import type { CourseDetail } from "@/services/courses/courses.types";
-import { LearnMode } from "./learn-mode.comp";
-import { RemoveCourse } from "./remove-course.comp";
-import { ResetProgress } from "./reset-progress.comp";
 import "./course-side.comp.css";
 
 interface CourseSideProps {
   course: CourseDetail;
-  /**
-   * The chapter on screen, on a chapter's page: its link is lit, the
-   * settings come back to it, and its own progress can be erased.
-   */
+  /** The chapter on screen, on a chapter's page: its link is lit. */
   chapter?: { id: string; name: string; completedLessons: number };
 }
 
@@ -23,16 +15,12 @@ interface CourseSideProps {
  * (2026-10-22, «M4» of the owner's canvas): the course itself at the top —
  * its picture, its name and how far it is —, «Aprender» as the extended FAB,
  * its chapters as the column's links, each with its number (a check once it
- * is learned) and its lessons, then what to learn — every lesson or only the
- * priority ones — and the course's options: its information, erasing the
- * progress (on a chapter's page, the chapter's first: it is the page's own,
- * and the course's is the bigger step), and leaving it. On a chapter's page
- * that chapter is lit.
+ * is learned) and its lessons. On a chapter's page that chapter is lit.
+ * What to learn and the course's options moved to its settings panel
+ * (`CourseSettings`) on 2026-10-23.
  */
 export function CourseSide({ course, chapter }: CourseSideProps) {
-  const chapterHref = chapter && course.chapters.find((item) => item.id === chapter.id)?.href;
   const { progress } = course;
-  const hasProgress = progress.completedLessons > 0 || course.ctaLabel !== "Empezar";
   const image = course.thumbnail ?? course.cover;
 
   return (
@@ -71,35 +59,6 @@ export function CourseSide({ course, chapter }: CourseSideProps) {
               ]
         }
       />
-
-      <LearnMode
-        courseId={course.id}
-        onlyPriority={course.onlyPriorityLessons}
-        hiddenLessons={course.hiddenLessons}
-        returnTo={chapterHref ?? course.studyHref}
-      />
-
-      <section className="course-side__group" aria-labelledby="course-side-options">
-        <h2 id="course-side-options" className="course-side__title">
-          Opciones
-        </h2>
-        <Link href={course.infoHref} className="course-side__link">
-          <CircleInfoIcon variant="duotone-light" className="course-side__icon" />
-          Información del curso
-        </Link>
-        {chapter && chapter.completedLessons > 0 && (
-          <ResetProgress
-            courseId={course.id}
-            chapterId={chapter.id}
-            name={chapter.name}
-            completedLessons={chapter.completedLessons}
-          />
-        )}
-        {hasProgress && (
-          <ResetProgress courseId={course.id} name={course.name} completedLessons={progress.completedLessons} />
-        )}
-        <RemoveCourse courseId={course.id} courseName={course.name} completedLessons={progress.completedLessons} />
-      </section>
     </div>
   );
 }

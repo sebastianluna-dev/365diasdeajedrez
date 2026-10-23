@@ -1,0 +1,229 @@
+/* The drawings of the course's settings (2026-10-23): shapes in the
+   platform's Material roles, and each a loop of a few seconds that shows
+   what its option does. Every animated shape transforms about its own box. */
+.course-settings-art {
+  display: block;
+
+  & * {
+    transform-box: fill-box;
+  }
+
+  & .course-settings-art__mark {
+    fill: var(--platform-m3-secondary-container);
+  }
+
+  & .course-settings-art__mark_tone_star {
+    fill: var(--platform-m3-warning-container);
+  }
+
+  & .course-settings-art__dot {
+    fill: var(--platform-m3-primary);
+  }
+
+  & .course-settings-art__dot_tone_muted {
+    fill: var(--platform-m3-outline);
+  }
+
+  & .course-settings-art__line {
+    fill: var(--platform-m3-outline);
+  }
+
+  & .course-settings-art__line_tone_ink {
+    fill: var(--platform-m3-on-surface-variant);
+  }
+
+  & .course-settings-art__line_tone_faint {
+    fill: var(--platform-m3-outline-variant);
+  }
+
+  & .course-settings-art__star {
+    fill: var(--platform-m3-warning);
+  }
+
+  & .course-settings-art__cover {
+    fill: var(--platform-m3-inverse-surface);
+  }
+
+  & .course-settings-art__track {
+    fill: var(--platform-m3-container-high);
+  }
+
+  & .course-settings-art__bar {
+    fill: var(--platform-m3-primary);
+  }
+
+  & .course-settings-art__bar_tone_done {
+    fill: var(--platform-m3-success);
+  }
+
+  & .course-settings-art__card {
+    fill: var(--platform-m3-primary-container);
+  }
+
+  & .course-settings-art__card_tone_plain {
+    fill: var(--platform-m3-container-high);
+  }
+
+  & .course-settings-art__card_tone_leaving {
+    fill: var(--platform-m3-panel);
+    stroke: var(--platform-m3-error);
+    stroke-width: 1.5;
+  }
+
+  /* Todas las lecciones: the reader's mark walks every lesson. */
+  & .course-settings-art__walk {
+    animation: course-settings-art-walk 3.2s steps(1, end) infinite;
+  }
+
+  /* Sólo las prioritarias: the others fade, the mark hops between the starred. */
+  & .course-settings-art__fade {
+    animation: course-settings-art-fade 3.2s ease-in-out infinite;
+  }
+
+  & .course-settings-art__hop {
+    animation: course-settings-art-hop 3.2s steps(1, end) infinite;
+  }
+
+  /* Información del curso: the page writes itself, line by line. */
+  & .course-settings-art__write {
+    transform-origin: left center;
+    animation: course-settings-art-write 3.6s ease-out infinite;
+  }
+
+  & .course-settings-art__write_step_2 {
+    animation-delay: 250ms;
+  }
+
+  & .course-settings-art__write_step_3 {
+    animation-delay: 500ms;
+  }
+
+  /* Eliminar mi progreso: the bars empty, and fill again. */
+  & .course-settings-art__empty {
+    transform-origin: left center;
+    animation: course-settings-art-empty 3.6s ease-in-out infinite;
+  }
+
+  /* Quitar de mis cursos: one card leaves the shelf, the next closes the gap. */
+  & .course-settings-art__leave {
+    animation: course-settings-art-leave 3.6s ease-in-out infinite;
+  }
+
+  & .course-settings-art__close {
+    animation: course-settings-art-close 3.6s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .course-settings-art__walk,
+    & .course-settings-art__fade,
+    & .course-settings-art__hop,
+    & .course-settings-art__write,
+    & .course-settings-art__empty,
+    & .course-settings-art__leave,
+    & .course-settings-art__close {
+      animation: none;
+    }
+  }
+}
+
+@keyframes course-settings-art-walk {
+  0% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(12px);
+  }
+  50% {
+    transform: translateY(24px);
+  }
+  75% {
+    transform: translateY(36px);
+  }
+}
+
+@keyframes course-settings-art-fade {
+  0%,
+  15% {
+    opacity: 1;
+  }
+  35%,
+  85% {
+    opacity: 0.12;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes course-settings-art-hop {
+  0%,
+  40% {
+    transform: translateY(0);
+  }
+  41%,
+  80% {
+    transform: translateY(24px);
+  }
+  81%,
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes course-settings-art-write {
+  0% {
+    transform: scaleX(0);
+  }
+  25%,
+  85% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes course-settings-art-empty {
+  0%,
+  20% {
+    transform: scaleX(1);
+  }
+  45%,
+  70% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes course-settings-art-leave {
+  0%,
+  20% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  45%,
+  80% {
+    transform: translateY(22px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes course-settings-art-close {
+  0%,
+  30% {
+    transform: translateX(0);
+  }
+  50%,
+  80% {
+    transform: translateX(-28px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

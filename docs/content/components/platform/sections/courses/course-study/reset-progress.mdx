@@ -1,5 +1,5 @@
 ---
-description: "«Eliminar mi progreso», of a course or of one chapter: the link of the course's options and the confirmation, on PlatformConfirmPopup, that asks with a box to tick before erasing it."
+description: "«Eliminar mi progreso», of a course or of one chapter: an option of the course's settings and the confirmation, on PlatformConfirmPopup, that asks with a box to tick before erasing it."
 ---
 
 # `ResetProgress`
@@ -8,8 +8,8 @@ description: "«Eliminar mi progreso», of a course or of one chapter: the link 
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | File       | `components/platform/sections/courses/course-study/reset-progress.comp.tsx`                                                                                                                                  |
 | Kind       | Client Component (it opens the confirmation by its `ref`)                                                                                                                                                    |
-| Stylesheet | `reset-progress.comp.css` → block `.reset-progress` (the trigger alone; the confirmation draws itself)                                                                                                       |
-| Used by    | [`CourseSide`](/components/platform/sections/courses/course-study/course-side)                                                                                                                               |
+| Stylesheet | none of its own: its rows are [`PlatformSettingsPanel`](/components/platform/shared/platform-settings-panel)'s elements (`.platform-settings__option`…); the confirmation draws itself                       |
+| Used by    | [`CourseSettings`](/components/platform/sections/courses/course-study/course-settings)                                                                                                                       |
 | Composes   | [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup) with `verb="Eliminar"`, bound to `resetCourseProgress` or `resetChapterProgress` and with the box `confirm=on` the action reads |
 | Writes     | `resetCourseProgress()` or `resetChapterProgress()` · `services/courses/courses.actions.ts`                                                                                                                  |
 
@@ -39,13 +39,7 @@ Starting a course over — or just one of its chapters. It cannot be undone, so 
 
 ## Markup & styling
 
-Block `.reset-progress` (39 lines): the trigger alone.
-
-**Elements:** `.reset-progress__open`
-
-**Other classes it renders:** the popup's, `.platform-confirm-popup` on `.platform-dialog`, with its `platform-button` and `platform-button_variant_danger`.
-
-**Tokens:** `--platform-accent-hover`, `--platform-accent-ink`
+No block of its own (2026-10-23): the trigger is a `.platform-settings__option` of the course's settings panel, with its icon (`__lead`), its words («Las lecciones vuelven a «Por empezar»; tu racha no cambia», or for a chapter «Las lecciones de este capítulo vuelven a «Por empezar»») and its drawing in `__option-art` ([`CourseSettingsArt`](/components/platform/sections/courses/course-study/course-settings-art), `reset-course` and `reset-chapter`). The confirmation is [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup), which draws itself.
 
 ## Usage
 
@@ -68,4 +62,4 @@ Block `.reset-progress` (39 lines): the trigger alone.
 
 ## In the new design system
 
-Since 2026-10-22 it is drawn as a row of the course's side column ([`CourseSide`](/components/platform/sections/courses/course-study/course-side)), with `ArrowRotateLeftIcon` (`.reset-progress__icon`); before, a link of an options card. On a chapter's page there are two, the chapter's first.
+Since 2026-10-23 it is an option of the course's settings panel ([`CourseSettings`](/components/platform/sections/courses/course-study/course-settings)), opened by the gear in the bar, with a drawing of what it does; from 2026-10-22 it was a row of the course's side column.

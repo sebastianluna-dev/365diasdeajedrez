@@ -4,14 +4,14 @@ description: "«Quitar de mis cursos»: the last of the course's options and the
 
 # `RemoveCourse`
 
-|            |                                                                                                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/course-study/remove-course.comp.tsx`                                                                                                |
-| Kind       | Client Component (it opens the confirmation by its `ref`)                                                                                                                 |
-| Stylesheet | `remove-course.comp.css` → block `.remove-course` (the trigger alone; the confirmation draws itself)                                                                      |
-| Used by    | [`CourseSide`](/components/platform/sections/courses/course-study/course-side)                                                                                            |
-| Composes   | [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup) with `verb="Quitar"`, bound to `removeCourse` and with the box `confirm=on` the action reads |
-| Writes     | `removeCourse()` · `services/courses/courses.actions.ts`                                                                                                                  |
+|            |                                                                                                                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-study/remove-course.comp.tsx`                                                                                                             |
+| Kind       | Client Component (it opens the confirmation by its `ref`)                                                                                                                              |
+| Stylesheet | none of its own: its rows are [`PlatformSettingsPanel`](/components/platform/shared/platform-settings-panel)'s elements (`.platform-settings__option`…); the confirmation draws itself |
+| Used by    | [`CourseSettings`](/components/platform/sections/courses/course-study/course-settings)                                                                                                 |
+| Composes   | [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup) with `verb="Quitar"`, bound to `removeCourse` and with the box `confirm=on` the action reads              |
+| Writes     | `removeCourse()` · `services/courses/courses.actions.ts`                                                                                                                               |
 
 ## Purpose
 
@@ -39,13 +39,7 @@ It is the heaviest of the card's three entries and therefore the last one. It sh
 
 ## Markup & styling
 
-Block `.remove-course`, the twin of `.reset-progress`: the trigger alone.
-
-**Elements:** `.remove-course__open`
-
-**Other classes it renders:** the popup's, `.platform-confirm-popup` on `.platform-dialog`, with its `platform-button` and `platform-button_variant_danger`.
-
-**Tokens:** `--platform-accent-ink`, `--platform-accent-hover`.
+No block of its own (2026-10-23): the trigger is a `.platform-settings__option` of the course's settings panel, with its icon (`__lead`), its words («Sale de tus cursos con su progreso», in the error's red (`.platform-settings__option_tone_danger`)) and its drawing in `__option-art` ([`CourseSettingsArt`](/components/platform/sections/courses/course-study/course-settings-art), `remove-course`). The confirmation is [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup), which draws itself.
 
 ## Usage
 
@@ -55,4 +49,4 @@ Block `.remove-course`, the twin of `.reset-progress`: the trigger alone.
 
 ## In the new design system
 
-Since 2026-10-22 it is drawn as a row of the course's side column ([`CourseSide`](/components/platform/sections/courses/course-study/course-side)), in the error's red (`--platform-m3-error`) with `CircleMinusIcon` (`.remove-course__icon`); before, a link of an options card.
+Since 2026-10-23 it is an option of the course's settings panel ([`CourseSettings`](/components/platform/sections/courses/course-study/course-settings)), opened by the gear in the bar, with a drawing of what it does; from 2026-10-22 it was a row of the course's side column.

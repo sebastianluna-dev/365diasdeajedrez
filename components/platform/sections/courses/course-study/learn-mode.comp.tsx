@@ -1,5 +1,5 @@
 import { setOnlyPriorityLessons } from "@/services/courses/courses.actions";
-import "./learn-mode.comp.css";
+import { CourseSettingsArt } from "./course-settings-art.comp";
 
 interface LearnModeProps {
   courseId: string;
@@ -13,9 +13,9 @@ interface LearnModeProps {
 
 /**
  * What of the course is learned: everything, or only what the staff marked
- * as priority — a lesson, or a whole chapter. Since 2026-10-22 a group of
- * the course's side column (`CourseSide`): «Qué aprender», and the two
- * options as rows with a radio's ring, the chosen one filled.
+ * as priority — a lesson, or a whole chapter. Since 2026-10-23 the options of
+ * «Qué aprender» in the course's settings panel (`CourseSettings`): each a
+ * row with a radio's ring, its words and the drawing of what it does.
  *
  * Each is a `<form action>` with its value bound, and not one form with two
  * radios: a preference is saved and the page is drawn again, so there is no
@@ -23,39 +23,39 @@ interface LearnModeProps {
  * why it shows on every page of the course.
  */
 export function LearnMode({ courseId, onlyPriority, hiddenLessons, returnTo }: LearnModeProps) {
-  const option = (label: string, value: boolean) => (
-    <form action={setOnlyPriorityLessons.bind(null, courseId, value)} className="learn-mode__form">
+  const option = (label: string, hint: string, value: boolean) => (
+    <form action={setOnlyPriorityLessons.bind(null, courseId, value)}>
       <input type="hidden" name="returnTo" value={returnTo} />
       <button
         type="submit"
         aria-pressed={onlyPriority === value}
-        className={`learn-mode__option${onlyPriority === value ? " learn-mode__option_state_on" : ""}`}
+        className={`platform-settings__option${onlyPriority === value ? " platform-settings__option_state_on" : ""}`}
       >
-        <span className="learn-mode__ring" aria-hidden="true" />
-        {label}
+        <span className="platform-settings__ring" aria-hidden="true" />
+        <span className="platform-settings__option-text">
+          <span className="platform-settings__option-label">{label}</span>
+          <span className="platform-settings__option-hint">{hint}</span>
+        </span>
+        <span className="platform-settings__option-art">
+          <CourseSettingsArt kind={value ? "priority-lessons" : "all-lessons"} />
+        </span>
       </button>
     </form>
   );
 
   return (
-    <div className="learn-mode">
-      <p className="learn-mode__label" id="learn-mode-label">
-        Qué aprender
-      </p>
-
-      <div className="learn-mode__options" role="group" aria-labelledby="learn-mode-label">
-        {option("Todas las lecciones", false)}
-        {option("Sólo las prioritarias", true)}
-      </div>
+    <>
+      {option("Todas las lecciones", "Cada lección del curso, en orden", false)}
+      {option("Sólo las prioritarias", "Las que el curso marca como prioritarias; las demás se ocultan", true)}
 
       {onlyPriority && hiddenLessons > 0 && (
-        <p className="learn-mode__note">
+        <p className="platform-settings__note">
           {/* What the filter hides, and what follows from it: with it on, the
               course's progress counts the priority lessons only. */}
           {hiddenLessons} {hiddenLessons === 1 ? "lección oculta" : "lecciones ocultas"}. El progreso cuenta sólo las de
           prioridad.
         </p>
       )}
-    </div>
+    </>
   );
 }

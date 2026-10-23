@@ -1,0 +1,45 @@
+---
+description: "The drawings of the course's settings: a small loop for each option that shows what it does — every lesson walked, only the starred ones left, the course's page writing itself, the bars emptying, a course leaving the shelf."
+---
+
+# `CourseSettingsArt`
+
+|            |                                                                                                                                                                                                                                                                                                                                                |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-study/course-settings-art.comp.tsx`                                                                                                                                                                                                                                                               |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                               |
+| Stylesheet | `course-settings-art.comp.css` → block `.course-settings-art`                                                                                                                                                                                                                                                                                  |
+| Used by    | [`LearnMode`](/components/platform/sections/courses/course-study/learn-mode), [`ResetProgress`](/components/platform/sections/courses/course-study/reset-progress), [`RemoveCourse`](/components/platform/sections/courses/course-study/remove-course), [`CourseSettings`](/components/platform/sections/courses/course-study/course-settings) |
+
+## Purpose
+
+The drawing at the right of each option of the course's settings (2026-10-23), as Gmail draws a thumbnail beside each of its own: a loop of a few seconds that shows what the option does before it is chosen. An **illustration, not an icon** (see [Components › Icons](/components)): drawn here by hand as an SVG of 96×60, in the platform's Material roles, and `aria-hidden`, since the option's words say the same.
+
+## Props
+
+| Prop   | Type                    | Required | Meaning                                                                                                                    |
+| ------ | ----------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `kind` | `CourseSettingsArtKind` | yes      | Which option it shows: `all-lessons`, `priority-lessons`, `course-info`, `reset-course`, `reset-chapter`, `remove-course`. |
+
+## Behaviour
+
+| `kind`             | What it shows                                                                             |
+| ------------------ | ----------------------------------------------------------------------------------------- |
+| `all-lessons`      | Four lessons; the reader's mark walks every one of them in turn.                          |
+| `priority-lessons` | The lessons without a star fade away, and the amber mark hops between the starred ones.   |
+| `course-info`      | The course's cover, and the lines of its page writing themselves one after another.       |
+| `reset-course`     | The chapters' bars — one learned, one begun — empty, and fill again.                      |
+| `reset-chapter`    | Of three chapters, only the one begun empties.                                            |
+| `remove-course`    | Of three courses on a shelf, the one in red drops and fades, and the next closes the gap. |
+
+Every loop is still under `prefers-reduced-motion`.
+
+## Markup & styling
+
+Block `.course-settings-art` (229 lines). Each shape is coloured by its class, in the `--platform-m3-*` roles (the marks in the secondary and warning containers, the dots and bars in the primary, a learned bar in the success green, the star in `--platform-m3-warning`, the leaving card outlined in the error's red), so the drawings follow the two themes. Every shape transforms about its own box (`transform-box: fill-box`).
+
+**Elements:** `__mark`, `__dot`, `__line`, `__star`, `__cover`, `__track`, `__bar`, `__card`, and the moving ones `__walk`, `__fade`, `__hop`, `__write`, `__empty`, `__leave`, `__close`
+
+**Modifiers:** `__mark_tone_star`, `__dot_tone_muted`, `__line_tone_ink`, `__line_tone_faint`, `__bar_tone_done`, `__card_tone_plain`, `__card_tone_leaving`, `__write_step_2`, `__write_step_3`
+
+**Keyframes:** `course-settings-art-walk`, `-fade`, `-hop`, `-write`, `-empty`, `-leave`, `-close`, at the top level because `@keyframes` cannot be nested.

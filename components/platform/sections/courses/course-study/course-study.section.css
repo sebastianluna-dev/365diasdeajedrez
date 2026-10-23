@@ -1,4 +1,8 @@
 .course-study {
+  /* The panel is narrower while the settings are open beside it: the hero
+     reads its own width, not the window's. */
+  container: course-study / inline-size;
+
   /* The toolbar stays under the bar while the page scrolls, as Gmail's: it
      spans the panel, on the panel's white, its top corners the panel's.
      Under 1024px the bar is no longer one row of 70px, and it scrolls away
@@ -76,6 +80,13 @@
       grid-template-columns: minmax(0, 1fr);
       gap: var(--platform-space-4);
     }
+
+    /* A narrow panel (the settings open beside it): the cover above the
+       words, at its own width. */
+    @container course-study (width < 640px) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--platform-space-4);
+    }
   }
 
   & .course-study__cover {
@@ -84,6 +95,10 @@
     border-radius: var(--md-sys-shape-corner-lg);
     overflow: hidden;
     background: var(--platform-m3-container-high);
+
+    @container course-study (width < 640px) {
+      max-width: 280px;
+    }
   }
 
   & .course-study__cover-image {

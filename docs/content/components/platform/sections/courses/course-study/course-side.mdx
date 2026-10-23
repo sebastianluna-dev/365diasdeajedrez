@@ -4,13 +4,13 @@ description: "The side column of a course being studied: the course, «Aprender�
 
 # `CourseSide`
 
-|            |                                                                                                                                                                                                                                                                                                                            |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/course-study/course-side.comp.tsx`                                                                                                                                                                                                                                                   |
-| Kind       | Server Component                                                                                                                                                                                                                                                                                                           |
-| Stylesheet | `course-side.comp.css` → block `.course-side`                                                                                                                                                                                                                                                                              |
-| Used by    | [`CourseStudySection`](/components/platform/sections/courses/course-study/course-study-section), [`ChapterStudySection`](/components/platform/sections/courses/course-study/chapter-study-section)                                                                                                                         |
-| Composes   | [`PlatformSideNav`](/components/platform/shared/platform-side-nav), [`LearnMode`](/components/platform/sections/courses/course-study/learn-mode), [`ResetProgress`](/components/platform/sections/courses/course-study/reset-progress), [`RemoveCourse`](/components/platform/sections/courses/course-study/remove-course) |
+|            |                                                                                                                                                                                                    |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-study/course-side.comp.tsx`                                                                                                                           |
+| Kind       | Server Component                                                                                                                                                                                   |
+| Stylesheet | `course-side.comp.css` → block `.course-side`                                                                                                                                                      |
+| Used by    | [`CourseStudySection`](/components/platform/sections/courses/course-study/course-study-section), [`ChapterStudySection`](/components/platform/sections/courses/course-study/chapter-study-section) |
+| Composes   | [`PlatformSideNav`](/components/platform/shared/platform-side-nav)                                                                                                                                 |
 
 ## Purpose
 
@@ -19,10 +19,9 @@ The course's own column in the new design system (2026-10-22), from top to botto
 1. **The course**: its square picture (40px), its name and «40 % · 2 de 5 lecciones».
 2. **«Aprender»**, the extended FAB of `PlatformSideNav`, to `learnHref`; none without lessons in view.
 3. **«Capítulos»**, the column's links: each chapter's name, a badge with its number (the success green with a check once it is learned) and its count, «1/3».
-4. **«Qué aprender»**: `LearnMode` with `look="side"` — «Todas las lecciones» and «Sólo las prioritarias» as rows with a radio's ring —, and what the filter hides.
-5. **«Opciones»**: «Información del curso», «Eliminar mi progreso del capítulo» on a chapter's page (only with something to erase), «Eliminar mi progreso» (likewise) and «Quitar de mis cursos», in the error's red, both with `look="side"`.
+   What to learn and the course's options («Qué aprender», «Información del curso», «Eliminar mi progreso», «Quitar de mis cursos») moved on 2026-10-23 to the course's settings panel, [`CourseSettings`](/components/platform/sections/courses/course-study/course-settings), opened by the gear in the bar.
 
-On a chapter's page (`chapter`) that chapter's link is lit, and what to learn comes back to the chapter. Under 1024px the parts sit side by side above the panel.
+On a chapter's page (`chapter`) that chapter's link is lit. Under 1024px the parts sit side by side above the panel.
 
 ## Props
 
@@ -33,6 +32,6 @@ On a chapter's page (`chapter`) that chapter's link is lit, and what to learn co
 
 ## Markup & styling
 
-Block `.course-side` (103 lines).
+Block `.course-side` (59 lines).
 
-**Elements:** `__course`, `__thumb`, `__thumb-image`, `__about`, `__name`, `__figures`, `__group`, `__title`, `__link`, `__icon`
+**Elements:** `__course`, `__thumb`, `__thumb-image`, `__about`, `__name`, `__figures`

@@ -223,7 +223,8 @@
   --platform-m3-on-success-container: light-dark(#0d652d, #c4eed0);
   /* What takes something away for good: «Quitar de mis cursos». */
   --platform-m3-error: light-dark(#b3261e, #f2b8b5);
-  /* An amber tag («Prioridad») and its ink. */
+  /* An amber tag («Prioridad») and its ink, and the amber of a star. */
+  --platform-m3-warning: light-dark(#e37400, #fdd663);
   --platform-m3-warning-container: light-dark(#feefc3, #4a3700);
   --platform-m3-on-warning-container: light-dark(#5f4400, #feefc3);
   /* The streak's grid, the more done the deeper: Google's blue in four steps. */

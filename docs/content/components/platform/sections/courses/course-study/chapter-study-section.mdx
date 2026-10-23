@@ -4,15 +4,15 @@ description: "A chapter of a course being studied, in the new design system: the
 
 # `ChapterStudySection`
 
-|            |                                                                                                                                                 |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/course-study/chapter-study.section.tsx`                                                                   |
-| Kind       | Server Component                                                                                                                                |
-| Stylesheet | `chapter-study.section.css` → block `.chapter-study`, on the workspace's panel                                                                  |
-| Used by    | `/cursos/[courseRef]/[chapterOrder]` (`platform-page_width_full` + `_frame_bleed`)                                                              |
-| Composes   | [`CourseSide`](/components/platform/sections/courses/course-study/course-side), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Reads      | `getChapterView(courseId, order)` · `services/courses/courses.service.ts` (the page)                                                            |
-| Uses       | `mdIconButton` · `lib/material/material-classes.ts`; `formatDuration`; `studentErrorMessage`                                                    |
+|            |                                                                                                                                                                                                                                                                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-study/chapter-study.section.tsx`                                                                                                                                                                                                                                                          |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                       |
+| Stylesheet | `chapter-study.section.css` → block `.chapter-study`, on the workspace's panel                                                                                                                                                                                                                                                         |
+| Used by    | `/cursos/[courseRef]/[chapterOrder]` (`platform-page_width_full` + `_frame_bleed`)                                                                                                                                                                                                                                                     |
+| Composes   | [`CourseSide`](/components/platform/sections/courses/course-study/course-side), [`CourseSettings`](/components/platform/sections/courses/course-study/course-settings), [`PlatformSettingsToggle`](/components/platform/shared/platform-settings-toggle) (in the bar), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Reads      | `getChapterView(courseId, order)` · `services/courses/courses.service.ts` (the page)                                                                                                                                                                                                                                                   |
+| Uses       | `mdIconButton` · `lib/material/material-classes.ts`; `formatDuration`; `studentErrorMessage`                                                                                                                                                                                                                                           |
 
 ## Purpose
 
@@ -35,6 +35,8 @@ The panel, from top to bottom:
 4. **At the foot**, the chapters before and after by name.
 
 With no lessons it says why: none marked as priority with the filter on, or none yet. The tabs that filtered the lessons («Todas», «Por aprender», «Aprendidas») went on 2026-10-22, the day they came: a chapter has few lessons.
+
+**The course's settings** (2026-10-23): the page puts the gear in the bar ([`PlatformSettingsToggle`](/components/platform/shared/platform-settings-toggle), through `PlatformHeaderContext`) and [`CourseSettings`](/components/platform/sections/courses/course-study/course-settings) as the workspace's last column, at the right of the panel, as Gmail's quick settings: what to learn, the course's information, erasing the progress and leaving the course, which until then were the bottom of the side column.
 
 ## Markup & styling
 

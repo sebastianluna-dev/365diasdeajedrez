@@ -6,11 +6,14 @@ import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
 import { ClockIcon } from "@/components/icons/clock-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
+import { PlatformSettingsToggle } from "@/components/platform/shared/platform-settings-toggle/platform-settings-toggle.comp";
+import { PlatformHeaderContext } from "@/components/platform/sections/shell/platform-header-context.comp";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { mdIconButton } from "@/lib/material/material-classes";
 import { formatDuration } from "@/services/courses/course-rules";
 import type { ChapterLessonItem, ChapterView } from "@/services/courses/courses.types";
+import { CourseSettings } from "./course-settings.comp";
 import { CourseSide } from "./course-side.comp";
 import "./chapter-study.section.css";
 
@@ -44,6 +47,10 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
   const item = course.chapters.find((one) => one.id === chapter.id);
   return (
     <div className="platform-workspace">
+      {/* The gear in the bar, which opens the course's settings at the right. */}
+      <PlatformHeaderContext>
+        <PlatformSettingsToggle />
+      </PlatformHeaderContext>
       <div className="platform-workspace__side">
         <CourseSide
           course={course}
@@ -159,6 +166,11 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
           </nav>
         )}
       </section>
+
+      <CourseSettings
+        course={course}
+        chapter={{ id: chapter.id, name: chapter.name, completedLessons: chapter.completedLessons }}
+      />
     </div>
   );
 }

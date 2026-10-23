@@ -6,6 +6,8 @@ import { ChevronRightIcon } from "@/components/icons/chevron-right-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
+import { PlatformSettingsToggle } from "@/components/platform/shared/platform-settings-toggle/platform-settings-toggle.comp";
+import { PlatformHeaderContext } from "@/components/platform/sections/shell/platform-header-context.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { mdButton, mdCard, mdIconButton } from "@/lib/material/material-classes";
 import { platformRoutes } from "@/lib/platform-routes";
@@ -13,6 +15,7 @@ import { countLessons } from "@/services/courses/course-rules";
 import type { CourseChapterItem, CourseDetail } from "@/services/courses/courses.types";
 import { levelSpan } from "../course-card.comp";
 import { WavyProgress } from "../my-courses/wavy-progress.comp";
+import { CourseSettings } from "./course-settings.comp";
 import { CourseSide } from "./course-side.comp";
 import "./course-study.section.css";
 
@@ -90,6 +93,10 @@ export function CourseStudySection({ course, errorCode }: CourseStudySectionProp
 
   return (
     <div className="platform-workspace">
+      {/* The gear in the bar, which opens the course's settings at the right. */}
+      <PlatformHeaderContext>
+        <PlatformSettingsToggle />
+      </PlatformHeaderContext>
       <div className="platform-workspace__side">
         <CourseSide course={course} />
       </div>
@@ -228,6 +235,8 @@ export function CourseStudySection({ course, errorCode }: CourseStudySectionProp
           </div>
         )}
       </section>
+
+      <CourseSettings course={course} />
     </div>
   );
 }

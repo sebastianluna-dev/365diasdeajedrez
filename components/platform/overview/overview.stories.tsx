@@ -131,6 +131,13 @@ import { FilterPills } from "@/components/platform/shared/filter-pills/filter-pi
 import { PlatformActionsMenu } from "@/components/platform/shared/platform-actions-menu/platform-actions-menu.comp";
 import { PlatformSearchField } from "@/components/platform/shared/platform-search-field/platform-search-field.comp";
 import { PlatformSideNav } from "@/components/platform/shared/platform-side-nav/platform-side-nav.comp";
+import {
+  PlatformSettingsGroup,
+  PlatformSettingsPanel,
+} from "@/components/platform/shared/platform-settings-panel/platform-settings-panel.comp";
+import { SETTINGS_ATTRIBUTE } from "@/components/platform/shared/platform-settings-panel/settings-panel-state";
+import { PlatformSettingsToggle } from "@/components/platform/shared/platform-settings-toggle/platform-settings-toggle.comp";
+import { CourseSettingsArt } from "@/components/platform/sections/courses/course-study/course-settings-art.comp";
 import { ClassSlotFields } from "@/components/platform/shared/class-slot-fields/class-slot-fields.comp";
 import { RegisterPaymentButton } from "@/components/platform/shared/register-payment-popup/register-payment-popup.comp";
 import { ScheduleSeatPopup } from "@/components/platform/shared/schedule-seat-popup/schedule-seat-popup.comp";
@@ -294,6 +301,12 @@ const OVERVIEW_EXERCISE_CATALOGS: ComponentProps<typeof ExerciseAuthoring>["cata
   ],
   levels: [{ slug: "intermedio", name: "Intermedio", order: 2, eloMin: 1200, eloMax: 1599, isActive: true }],
 };
+
+/** Opens the settings panel for the sheet: it is drawn only while the root says so. */
+function OpenSettings() {
+  if (typeof document !== "undefined") document.documentElement.setAttribute(SETTINGS_ATTRIBUTE, "open");
+  return null;
+}
 
 function Tile({
   name,
@@ -1832,6 +1845,33 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   },
                 ]}
               />
+            </Tile>
+            {/* The settings panel is drawn only while the root says it is open. */}
+            <OpenSettings />
+            <Tile name="PlatformSettingsPanel" docs="platform-shared-platformsettingspanel" width={360} height={260}>
+              <PlatformSettingsPanel title="Ajustes del curso">
+                <PlatformSettingsGroup title="Qué aprender">
+                  <button
+                    type="button"
+                    aria-pressed="true"
+                    className="platform-settings__option platform-settings__option_state_on"
+                  >
+                    <span className="platform-settings__ring" aria-hidden="true" />
+                    <span className="platform-settings__option-text">
+                      <span className="platform-settings__option-label">Todas las lecciones</span>
+                      <span className="platform-settings__option-hint">Cada lección del curso, en orden</span>
+                    </span>
+                    <span className="platform-settings__option-art">
+                      <CourseSettingsArt kind="all-lessons" />
+                    </span>
+                  </button>
+                </PlatformSettingsGroup>
+              </PlatformSettingsPanel>
+            </Tile>
+            <Tile name="PlatformSettingsToggle" docs="platform-shared-platformsettingstoggle" width={120} height={80}>
+              <div style={{ display: "flex" }}>
+                <PlatformSettingsToggle />
+              </div>
             </Tile>
             <Tile name="PlatformSearchField" docs="platform-shared-platformsearchfield" width={400} height={96}>
               <PlatformSearchField label="Buscar clase" placeholder="Buscar por tema, alumno o profesor" />
