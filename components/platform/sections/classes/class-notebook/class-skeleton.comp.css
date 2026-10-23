@@ -1,0 +1,155 @@
+.class-skeleton {
+  /* Said to a screen reader only: on screen the shapes say it. */
+  & .class-skeleton__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Every shape pulses, together. */
+  & .class-skeleton__shape {
+    display: block;
+    flex: none;
+    background: var(--platform-m3-container);
+    animation: class-skeleton-pulse 1200ms ease-in-out infinite alternate;
+  }
+
+  /* The side column, with `PlatformSideNav`'s rhythm. */
+  & .class-skeleton__side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-1) 0 var(--platform-space-4);
+
+    & .class-skeleton__shape {
+      background: var(--platform-m3-container-high);
+    }
+
+    & .class-skeleton__bar {
+      margin-left: var(--platform-space-6);
+    }
+  }
+
+  /* The extended FAB's size. */
+  & .class-skeleton__fab {
+    width: 196px;
+    height: 56px;
+    margin: 0 0 var(--platform-space-4) var(--platform-space-2);
+    border-radius: var(--md-sys-shape-corner-lg);
+  }
+
+  & .class-skeleton__track {
+    height: 6px;
+    margin: 0 var(--platform-space-4) var(--platform-space-2) var(--platform-space-6);
+    border-radius: 1000px;
+  }
+
+  & .class-skeleton__row {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    height: 36px;
+    padding: 0 var(--platform-space-4) 0 var(--platform-space-6);
+  }
+
+  & .class-skeleton__icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+  }
+
+  & .class-skeleton__text {
+    flex: 1;
+    max-width: 140px;
+    height: 12px;
+    border-radius: 1000px;
+  }
+
+  & .class-skeleton__panel {
+    gap: var(--platform-space-6);
+  }
+
+  & .class-skeleton__trail {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+  }
+
+  & .class-skeleton__dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+
+  & .class-skeleton__article {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    max-width: 760px;
+    padding: 0 var(--platform-space-2);
+  }
+
+  & .class-skeleton__bar {
+    height: 12px;
+    border-radius: 1000px;
+  }
+
+  & .class-skeleton__bar_size_trail {
+    width: 220px;
+  }
+
+  & .class-skeleton__bar_size_title {
+    width: 60%;
+    height: 32px;
+    margin-bottom: var(--platform-space-2);
+  }
+
+  & .class-skeleton__bar_width_full {
+    width: 100%;
+  }
+
+  & .class-skeleton__bar_width_mid {
+    width: 80%;
+  }
+
+  & .class-skeleton__bar_width_half {
+    width: 50%;
+  }
+
+  & .class-skeleton__bar_width_third,
+  & .class-skeleton__bar_width_short {
+    width: 35%;
+  }
+
+  /* A position's outlined card. */
+  & .class-skeleton__figure {
+    width: min(352px, 100%);
+    margin-top: var(--platform-space-3);
+    padding: var(--platform-space-4);
+    border: 1px solid var(--platform-m3-container-high);
+    border-radius: var(--md-sys-shape-corner-lg);
+    box-sizing: border-box;
+  }
+
+  & .class-skeleton__board {
+    aspect-ratio: 1;
+    border-radius: 8px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .class-skeleton__shape {
+      animation: none;
+    }
+  }
+}
+
+/* `@keyframes` cannot be nested inside a style rule. */
+@keyframes class-skeleton-pulse {
+  to {
+    opacity: 0.45;
+  }
+}

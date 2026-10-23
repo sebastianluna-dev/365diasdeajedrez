@@ -1,5 +1,6 @@
 /* The button is `.platform-button` (square: quiet and small, or the
-   secondary box at its large size); this block only
+   secondary box at its large size), or Material's on a page moved to the
+   new design system; this block only
    colours the tick and hides the live region. */
 .copy-link-button {
   display: inline-flex;
@@ -7,6 +8,11 @@
 
   & .copy-link-button__done {
     color: var(--platform-success-ink);
+  }
+
+  /* Material's buttons (`material`): the tick in Material's green. */
+  & .platform-md-icon.copy-link-button__done {
+    color: var(--platform-m3-success);
   }
 
   & .copy-link-button__status {

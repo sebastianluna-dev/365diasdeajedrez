@@ -9,7 +9,7 @@ description: "«Entrar a la clase» stuck to the bottom of a phone's screen whil
 | File       | `components/platform/shared/class-join-bar/class-join-bar.comp.tsx`                                                                                                   |
 | Kind       | Server Component                                                                                                                                                      |
 | Stylesheet | `class-join-bar.comp.css` → block `.class-join-bar`                                                                                                                   |
-| Story      | `class-join-bar.stories.tsx` (`platform/shared/ClassJoinBar`): open, in progress, teacher                                                                             |
+| Story      | `class-join-bar.stories.tsx` (`platform/shared/ClassJoinBar`): open, in progress, teacher, Material                                                                   |
 | Used by    | `app/(platform)/profesor/page.tsx`, `app/(platform)/profesor/clases/[classId]/page.tsx`, `app/(platform)/clases/page.tsx`, `app/(platform)/clases/[classId]/page.tsx` |
 | Composes   | [`MeetingJoinCard`](/components/platform/shared/meeting-join-card) (`density="bar"`)                                                                                  |
 
@@ -19,11 +19,11 @@ On a phone the button to enter has to be where the thumb is (D20). The bar is dr
 
 ## Props
 
-The join card's data and `audience`, without `density`.
+The join card's data, `audience` and `look`, without `density`. With `look="material"` (the page of «Mis clases», moved to the new design system on 2026-10-23) the strip is Material's panel (`.class-join-bar_look_material`) and the button its filled one.
 
 ## Markup & styling
 
-Block `.class-join-bar` (31 lines): fixed to the bottom, drawn only under 1024px, with the safe area's inset; it rises when mounted (`class-join-bar-in`, 200 ms), stilled under reduced motion.
+Block `.class-join-bar` (37 lines): fixed to the bottom, drawn only under 1024px, with the safe area's inset; it rises when mounted (`class-join-bar-in`, 200 ms), stilled under reduced motion.
 
 **Breakpoints:** `(width < 1024px)`.
 

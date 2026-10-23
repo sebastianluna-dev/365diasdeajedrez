@@ -96,3 +96,6 @@ export const Compact: Story = { args: { audience: "teacher", density: "compact" 
 
 /** The bar's density, as the fixed bar draws it. */
 export const Bar: Story = { args: { density: "bar" } };
+
+/** The bar on a page moved to the new design system: Material's filled button and roles (`look="material"`). */
+export const MaterialBar: Story = { name: "Material bar", args: { density: "bar", look: "material" } };

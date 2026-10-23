@@ -25,7 +25,8 @@ Reference page: [Components › PastClassCard](/components/platform/shared/past-
   args: { card: STUDENT_PAST_CARD },
   decorators: [
     (Story) => (
-      <div className="platform-theme" style={{ maxWidth: 680, padding: 16 }}>
+      // The new design system's panel, where «Pasadas» draws the card.
+      <div className="platform-theme" style={{ maxWidth: 720, padding: 16, background: "var(--platform-m3-panel)" }}>
         <Story />
       </div>
     ),

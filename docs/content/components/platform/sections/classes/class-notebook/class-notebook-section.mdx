@@ -1,0 +1,58 @@
+---
+description: "The student's class page (`/clases/[classId]`) as a notebook, in the new design system: the way in as the extended FAB, the progress and the article's index in the side column; the trail and the article in the panel, with the class's exercises in their own column beside it."
+---
+
+# `ClassNotebookSection`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                         |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/classes/class-notebook/class-notebook.section.tsx`                                                                                                                                                                                                                                                                                        |
+| Pieces     | `class-join-side.comp.tsx`, `notebook-progress.comp.tsx` (client: the count and the «Ahora tú» questions), `class-skeleton.comp.tsx`, `class-notebook.sample.ts`                                                                                                                                                                                                        |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                        |
+| Stylesheet | `class-notebook.section.css` → block `.class-notebook`; `class-skeleton.comp.css` → block `.class-skeleton`                                                                                                                                                                                                                                                             |
+| Story      | `class-notebook.stories.tsx` (`platform/sections/classes/ClassNotebookSection`): ahead, link closed, review, cancelled                                                                                                                                                                                                                                                  |
+| Used by    | `/clases/[classId]`; `ClassSkeleton` by `app/(platform)/clases/[classId]/loading.tsx`                                                                                                                                                                                                                                                                                   |
+| Composes   | [`PlatformSideNav`](/components/platform/shared/platform-side-nav), [`StaticDiagram`](/components/chess/static-diagram) (`look="material"`), [`CopyLinkButton`](/components/platform/shared/copy-link-button) (`material="icon"`), [`MeetingCountdown`](/components/platform/shared/meeting-countdown), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Uses       | `ClassDetailView` from `services/classes/classes.types`; `meetingJoinState`; `readDiagramPgn`, `finalFenOf`; `joinSpanish`; `mdButton`, `mdIconButton`, `mdFab`; `platformRoutes`                                                                                                                                                                                       |
+
+## Purpose
+
+The class page as a notebook (2026-10-19, option 5c of the class page canvas), moved whole to the new design system on 2026-10-23 (the owner's «M4» canvas, `MaterialM4Clase`). The page bleeds onto the canvas and the section draws the workspace.
+
+- **The side column.** On top, the way in (`ClassJoinSide`): before the class, «Entrar a la clase» as Material's extended FAB while the link is open («Volver a entrar» once it ended), with the room and the countdown under it; before the link opens, when it does and the countdown (which asks for the page again at that instant, so the link never travels ahead of time); without a link, that the staff will add it and «Escríbenos». After the class, «Ver la grabación» as the FAB and «Asististe» or «No asististe». A cancelled class has nothing there. Under it, «Contenido de la clase»: «2 de 4 hechas · 50 %» over a bar (`NotebookProgressBar`; the exercises tried and the questions answered on this visit), and the article's index as `PlatformSideNav` links to anchors — each heading of the text and of a game, «Ahora tú» with how many questions, each EXERCISE block with «1/3» tried, «Lo que te llevas». At its foot, the seats left in words («Te quedan 4 clases: 3 programadas y 1 por programar.»), never an amount.
+- **The panel.** A toolbar stuck under the bar: the arrow and «Clases › Finales de torres» (the class's title), and the link to copy while the student may see it. Then the article: «Clase grupal · jueves 22 de octubre · 18:00», the title in the display face, the teacher's initials and name with the classmates, the course and the reading time; the notices (an error, a notice, cancelled, rescheduled, a make-up, a moved seat); after the class, the teacher's summary on the container; the blocks — text, positions as outlined cards «Posición · juegan blancas» on Material's blue board, «Ahora tú» questions on the container with options as rows with a radio's ring, a game as a small widget with «Abrir en el tablero», the lessons and videos it cites as cards that lift —; «Lo que te llevas» on the primary's wash; and the foot (the next class after it, the course's previous and next, «Ver mis clases» and «¿Algún problema? Escríbenos»). The reading carries `#para-preparar`, where the agenda's «N para preparar» leads.
+- **The exercises** of the class's EXERCISE blocks are cards in a column beside the article from 1280px (under it, below the article): each row its number and name, the facts while it is untried, «Resuelto» or «Fallado», and «Resolver» (tonal) or «Volver a ver» (text). An attempt from there counts for the class, not the streak (D49); the solver at `/clases/[classId]/ejercicios/[blockId]/[n]` says so and is not on the new design system yet.
+
+Front-only: the diagrams, the questions, the course, the takeaways and the next class are `NOTEBOOK_SAMPLE`, the same for every class. While it loads, `ClassSkeleton` draws the workspace in the containers' greys (markup and CSS only, as a `loading.tsx` needs).
+
+**Adapted from the canvas**: its index of three entries is the article's own headings plus «Ahora tú», the exercises and «Lo que te llevas», none lit (they are anchors on one page); «Ahora tú» counts the questions, since what is answered lives only in the visit; the canvas's position card beside the text stays in the text where the teacher put it, and only the exercises go to the side column; the exercises lose their small boards.
+
+## Props
+
+| Prop           | Type              | Required | Meaning                                    |
+| -------------- | ----------------- | -------- | ------------------------------------------ |
+| `classDetail`  | `ClassDetailView` | yes      | What `getClassById(classId)` gives.        |
+| `notice`       | `string`          | no       | A notice from `?aviso=`, already in words. |
+| `errorMessage` | `string`          | no       | An error from `?error=`, already in words. |
+
+## Markup & styling
+
+Block `.class-notebook` (721 lines), on `.platform-workspace`.
+
+**Elements:** the side's `__side`, `__join`, `__fab`, `__join-line`, `__join-ask`, `__attendance`, `__attendance-icon`, `__index`, `__index-title`, `__progress`, `__progress-count`, `__progress-track`, `__progress-fill`, `__balance`; the panel's `__panel`, `__toolbar`, `__trail`, `__crumb`, `__crumb-step`, `__crumb-here`, `__body`, `__column`, `__aside`, `__head`, `__eyebrow`, `__label`, `__title`, `__byline`, `__avatar`, `__byline-text`, `__summary`, `__summary-text`, `__reading`, `__heading`, `__paragraph`, `__muted`, `__figure`, `__figure-board`, `__caption`, `__question`, `__question-board`, `__question-body`, `__question-prompt`, `__options`, `__option`, `__option-ring`, `__feedback`, `__widget`, `__widget-board`, `__widget-text`, `__widget-title`, `__widget-meta`, `__widget-action`, `__card-link`, `__card-title`, `__card-action`, `__card-icon`, `__card`, `__exercises`, `__exercise`, `__exercise-text`, `__exercise-name`, `__exercise-facts`, `__mark`, `__takeaways`, `__takeaway-list`, `__foot`, `__next`, `__foot-links`, `__sr`
+
+**Modifiers and states:** `.class-notebook__attendance_tone_{success,warning}`, `.class-notebook__body_aside_on`, `.class-notebook__paragraph_role_lead`, `.class-notebook__option_state_{idle,right,wrong}`, `.class-notebook__feedback_tone_{right,wrong}`, `.class-notebook__mark_tone_{solved,failed}`
+
+Block `.class-skeleton` (155 lines), the loading shape.
+
+**Other classes it renders:** `.platform-workspace`, Material's buttons, icon button and FAB, `.platform-md-icon`.
+
+**Breakpoints:** `(width < 1280px)` — the exercises under the article. `(width < 1024px)` — the toolbar no longer stuck; the FAB as wide as the column above the panel. `(width < 640px)` — a smaller title, the question's board above it.
+
+**Tokens:** `--platform-m3-*` (canvas, panel, containers, primary and its wash, secondary container, success and warning containers, error, divider, row edge and shadow), `--md-sys-shape-corner-md`/`-lg`, `--md-sys-elevation-shadow-3`, `--platform-font-display`.
+
+## Related
+
+- [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section), the list of classes.
+- [`ClassAheadSection`](/components/platform/sections/classes/class-detail/class-ahead-section) and [`ClassReviewSection`](/components/platform/sections/classes/class-detail/class-review-section), the pages it replaced, kept for the stories.
+- [`ClassPracticeSection`](/components/platform/sections/classes/class-practice/class-practice-section), the solver of a class block's exercise.

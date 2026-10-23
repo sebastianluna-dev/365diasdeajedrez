@@ -1,12 +1,7 @@
-/* «Mis clases»: the tabs with their counts over a rule, then the list in a
-   fluid column beside the lane of 320px, stuck. «Próximas» is an agenda
-   of day headings and tickets; «Pasadas» a line with a stop per month, the
-   day on the left of each card. Under 1024px the lane follows the list. */
+/* «Mis clases» on the new design system: the workspace (`platform.css`)
+   draws the canvas, the side column and the panel; this block lays out the
+   side's two pieces and the panel's days, months and notices. */
 .classes-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--platform-space-8);
-
   & .classes-list__sr {
     position: absolute;
     width: 1px;
@@ -16,342 +11,186 @@
     white-space: nowrap;
   }
 
-  /* The tabs: links with their counts, the current one underlined in the
-     accent over the rule that runs the page's width. */
-  & .classes-list__tabs {
+  /* The views, then «Tus clases pagadas»; above the panel, side by side. */
+  & .classes-list__side {
     display: flex;
-    align-items: stretch;
-    gap: var(--platform-space-10);
-    border-bottom: 1px solid var(--platform-border-strong);
+    flex-direction: column;
+
+    @media (width < 1024px) {
+      flex-flow: row wrap;
+      align-items: flex-start;
+      gap: var(--platform-space-4);
+
+      & .platform-side-nav {
+        flex: 1 1 220px;
+      }
+
+      & .paid-classes {
+        flex: 1 1 260px;
+      }
+    }
   }
 
-  & .classes-list__tab {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--platform-space-3);
-    height: 56px;
-    margin-bottom: -1px;
-    font-size: var(--platform-type-lg);
-    font-weight: 600;
-    color: var(--platform-text-muted);
-    text-decoration: none;
-    white-space: nowrap;
-  }
-
-  & .classes-list__tab::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    height: 3px;
-    border-radius: 1000px;
-    background: transparent;
-    transition: background-color 160ms ease-out;
-  }
-
-  & .classes-list__tab:hover {
-    color: var(--platform-text);
-  }
-
-  & .classes-list__tab:hover::after {
-    background: var(--platform-border-strong);
-  }
-
-  & .classes-list__tab-icon {
-    width: 18px;
-    height: 18px;
-  }
-
-  & .classes-list__tab-count {
-    display: inline-grid;
-    place-items: center;
-    min-width: 28px;
-    height: 24px;
-    box-sizing: border-box;
-    padding: 0 var(--platform-space-2);
-    border-radius: 1000px;
-    background: var(--platform-surface-sunken);
-    font-family: var(--platform-font-display);
-    font-size: var(--platform-type-xs);
-    font-weight: 700;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-    color: var(--platform-text-muted);
-  }
-
-  & .classes-list__tab_state_active,
-  & .classes-list__tab_state_active:hover {
-    color: var(--platform-accent-ink);
-  }
-
-  & .classes-list__tab_state_active::after,
-  & .classes-list__tab_state_active:hover::after {
-    background: var(--platform-accent);
-  }
-
-  & .classes-list__tab_state_active .classes-list__tab-count {
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
-  }
-
-  & .classes-list__columns {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 320px;
-    gap: var(--platform-space-8);
-    align-items: start;
-  }
-
-  & .classes-list__main {
-    min-width: 0;
-  }
-
-  & .classes-list__lane {
-    position: sticky;
-    top: var(--platform-space-6);
+  & .classes-list__panel {
+    gap: var(--platform-space-4);
   }
 
   & .classes-list__quiet {
     margin: 0;
-    font-size: var(--platform-type-md);
-    color: var(--platform-text-muted);
-  }
-
-  /* «Próximas»: one section per day, its heading drawn out into a rule. */
-  & .classes-list__agenda {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-8);
+    color: var(--platform-m3-on-surface-variant);
   }
 
   & .classes-list__day {
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-4);
-    min-width: 0;
+    gap: var(--platform-space-3);
+
+    & + .classes-list__day {
+      margin-top: var(--platform-space-2);
+    }
   }
 
-  & .classes-list__day-title,
-  & .classes-list__month-title {
+  /* «Hoy jueves 22 de octubre»: the day in the display face, its aside small. */
+  & .classes-list__day-title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-lg);
+    font-weight: 500;
+  }
+
+  & .classes-list__day-aside {
+    font-family: var(--platform-font);
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* The classes paid without a date: an amber band at the panel's foot. */
+  & .classes-list__undated {
     display: flex;
     align-items: center;
-    gap: var(--platform-space-3);
-    margin: 0;
-    font-size: var(--platform-type-md);
-    font-weight: 700;
-    line-height: 1.5;
-    color: var(--platform-text);
+    gap: var(--platform-space-4);
+    margin-top: auto;
+    padding: var(--platform-space-3) var(--platform-space-4);
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--platform-m3-warning-container);
+    color: var(--platform-m3-on-warning-container);
+
+    @media (width < 640px) {
+      flex-wrap: wrap;
+    }
   }
 
-  & .classes-list__day-title::after,
-  & .classes-list__month-title::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: var(--platform-border-strong);
+  & .classes-list__undated-icon {
+    flex: none;
+    width: 22px;
+    height: 22px;
   }
 
-  & .classes-list__today {
-    color: var(--platform-accent-ink);
-  }
-
-  & .classes-list__distance {
-    font-size: var(--platform-type-sm);
-    font-weight: 500;
-    color: var(--platform-text-muted);
-  }
-
-  /* The classes paid without a date: the blue notice, how many, and «Escríbenos». */
-  & .classes-list__notice {
-    display: grid;
-    grid-template-columns: 40px minmax(0, 1fr) auto;
-    align-items: center;
-    column-gap: var(--platform-space-4);
-    padding: var(--platform-space-4) var(--platform-space-5);
-    border: 1px solid var(--platform-selection-soft);
-    border-radius: 8px;
-    background: var(--platform-selection-wash);
-    color: var(--platform-text);
-  }
-
-  & .classes-list__notice-icon {
-    display: grid;
-    place-items: center;
-    align-self: start;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--platform-selection-soft);
-    color: var(--platform-selection);
-  }
-
-  & .classes-list__notice-glyph {
-    width: 20px;
-    height: 20px;
-  }
-
-  & .classes-list__notice-text {
-    margin: 0;
-    font-size: var(--platform-type-md);
-    line-height: 1.5;
-  }
-
-  & .classes-list__notice-lead {
-    display: block;
-    font-weight: 700;
-  }
-
-  & .classes-list__notice-link,
-  & .classes-list__empty-link {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--platform-space-2);
-    min-height: 40px;
-    font-size: var(--platform-type-sm);
-    font-weight: 600;
-    color: var(--platform-selection);
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 4px;
-    white-space: nowrap;
-  }
-
-  & .classes-list__notice-link:hover,
-  & .classes-list__empty-link:hover {
-    text-decoration-thickness: 2px;
-  }
-
-  & .classes-list__notice-link-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  /* «Pasadas»: the line runs down the stops, one per month; each class
-     sits beside its day. */
-  & .classes-list__timeline {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  & .classes-list__month {
-    position: relative;
-    display: grid;
-    grid-template-columns: 40px 64px minmax(0, 1fr);
-    column-gap: var(--platform-space-4);
-    row-gap: var(--platform-space-3);
-    padding-bottom: var(--platform-space-10);
-  }
-
-  & .classes-list__month:last-child {
-    padding-bottom: 0;
-  }
-
-  & .classes-list__month::before {
-    content: "";
-    position: absolute;
-    top: 48px;
-    bottom: 8px;
-    left: 18px;
-    width: 4px;
-    border-radius: 1000px;
-    background: var(--platform-success-border);
-  }
-
-  & .classes-list__stop {
-    grid-column: 1;
-    display: grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--platform-success-soft);
-    color: var(--platform-success-ink);
-  }
-
-  & .classes-list__stop-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  & .classes-list__month-title {
-    grid-column: 2 / 4;
-    align-self: center;
-  }
-
-  /* An entry spans the two columns after the stop's: the day, then the card. */
-  & .classes-list__entry {
-    grid-column: 2 / 4;
-    display: grid;
-    grid-template-columns: subgrid;
+  & .classes-list__undated-text {
+    flex: 1 1 200px;
     min-width: 0;
+    margin: 0;
+  }
+
+  & .classes-list__undated-link {
+    /* Material's text button, in the band's own ink. */
+    --icon-color: var(--platform-m3-on-warning-container);
+    --label-text-color: var(--platform-m3-on-warning-container);
+    --state-layer-color: var(--platform-m3-on-warning-container);
+
+    flex: none;
+    text-decoration: none;
+  }
+
+  /* A past class beside its day: the number large, the weekday under it. */
+  & .classes-list__entry {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    align-items: start;
+    gap: var(--platform-space-3);
+
+    @media (width < 640px) {
+      grid-template-columns: minmax(0, 1fr);
+
+      & .classes-list__when {
+        flex-direction: row;
+        align-items: baseline;
+        gap: var(--platform-space-2);
+      }
+    }
   }
 
   & .classes-list__when {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin: 0;
-    padding-top: var(--platform-space-4);
-    text-align: right;
-    font-variant-numeric: tabular-nums;
+    padding-top: var(--platform-space-3);
   }
 
   & .classes-list__when-day {
-    display: block;
     font-family: var(--platform-font-display);
     font-size: var(--platform-type-xl);
-    font-weight: 700;
-    line-height: 1.2;
-    color: var(--platform-text);
+    font-weight: 600;
+    line-height: 1.1;
   }
 
   & .classes-list__when-weekday {
-    display: block;
-    font-size: var(--platform-type-xs);
-    color: var(--platform-text-muted);
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface-variant);
   }
 
   & .classes-list__more {
     display: flex;
     align-items: center;
     gap: var(--platform-space-3);
-    margin: var(--platform-space-8) 0 0;
+    margin: var(--platform-space-2) 0 0;
+
+    & a {
+      text-decoration: none;
+    }
   }
 
   & .classes-list__more-count {
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
   }
 
-  /* Nothing yet: a dashed box with a faint ghost of a ticket. */
+  /* Nothing at all: a dashed box with the ghost of a class. */
   & .classes-list__empty {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--platform-space-2);
-    padding: var(--platform-space-10) var(--platform-space-6);
-    border: 2px dashed var(--platform-border-strong);
-    border-radius: 8px;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-12) var(--platform-space-6);
+    border: 1px dashed var(--platform-m3-outline-variant);
+    border-radius: var(--md-sys-shape-corner-xl);
     text-align: center;
+
+    & a {
+      text-decoration: none;
+    }
   }
 
   & .classes-list__ghost {
-    display: grid;
-    grid-template-columns: 72px minmax(0, 1fr);
-    width: min(100%, 320px);
+    display: flex;
+    width: min(320px, 100%);
     height: 88px;
-    margin-bottom: var(--platform-space-4);
+    margin-bottom: var(--platform-space-2);
     overflow: hidden;
-    border-radius: 8px;
-    background: var(--platform-surface);
-    box-shadow: var(--platform-shadow-card);
-    opacity: 0.7;
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--platform-m3-container);
   }
 
   & .classes-list__ghost-stub {
-    background: var(--platform-surface-neutral);
+    width: 88px;
+    background: var(--platform-m3-container-high);
   }
 
   & .classes-list__ghost-lines {
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -362,7 +201,7 @@
   & .classes-list__ghost-line {
     height: 10px;
     border-radius: 1000px;
-    background: var(--platform-surface-neutral);
+    background: var(--platform-m3-container-high);
   }
 
   & .classes-list__ghost-line_size_short {
@@ -375,85 +214,14 @@
 
   & .classes-list__empty-title {
     margin: 0;
+    font-family: var(--platform-font-display);
     font-size: var(--platform-type-xl);
-    font-weight: 700;
-    color: var(--platform-text);
+    font-weight: 500;
   }
 
   & .classes-list__empty-text {
     max-width: 44ch;
     margin: 0;
-    font-size: var(--platform-type-md);
-    color: var(--platform-text-muted);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    & .classes-list__tab::after {
-      transition: none;
-    }
-  }
-
-  @media (width < 1024px) {
-    & .classes-list__columns {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    & .classes-list__lane {
-      position: static;
-    }
-  }
-
-  @media (width < 640px) {
-    gap: var(--platform-space-6);
-
-    & .classes-list__tabs {
-      gap: var(--platform-space-8);
-    }
-
-    & .classes-list__tab {
-      height: 48px;
-      font-size: var(--platform-type-md);
-    }
-
-    & .classes-list__notice {
-      grid-template-columns: 40px minmax(0, 1fr);
-      row-gap: var(--platform-space-1);
-      padding: var(--platform-space-4);
-    }
-
-    & .classes-list__notice-link {
-      grid-column: 2;
-      justify-self: start;
-      min-height: 44px;
-    }
-
-    /* The line keeps its stops; the day moves above each card. */
-    & .classes-list__month {
-      grid-template-columns: 40px minmax(0, 1fr);
-      column-gap: var(--platform-space-3);
-    }
-
-    & .classes-list__month-title,
-    & .classes-list__entry {
-      grid-column: 2;
-    }
-
-    & .classes-list__entry {
-      display: flex;
-      flex-direction: column;
-      gap: var(--platform-space-2);
-    }
-
-    & .classes-list__when {
-      display: flex;
-      align-items: baseline;
-      gap: var(--platform-space-2);
-      padding-top: 0;
-      text-align: left;
-    }
-
-    & .classes-list__when-day {
-      font-size: var(--platform-type-md);
-    }
+    color: var(--platform-m3-on-surface-variant);
   }
 }

@@ -86,6 +86,8 @@ import { FROM_2XL, FROM_2XL_PROPERTIES, TYPE_STEPS } from "@/components/platform
 import { useSchemeOnScreen } from "@/components/platform/foundations/use-scheme-on-screen.hook";
 import { ClassAheadSection } from "@/components/platform/sections/classes/class-detail/class-ahead.section";
 import { ClassReviewSection } from "@/components/platform/sections/classes/class-detail/class-review.section";
+import { ClassNotebookSection } from "@/components/platform/sections/classes/class-notebook/class-notebook.section";
+import { ClassesListSection } from "@/components/platform/sections/classes/classes-list/classes-list.section";
 import { ClassGameSave } from "@/components/platform/shared/class-game-save/class-game-save.comp";
 import { PaidClassesCard } from "@/components/platform/shared/paid-classes-card/paid-classes-card.comp";
 import { PastClassCard } from "@/components/platform/shared/past-class-card/past-class-card.comp";
@@ -192,6 +194,7 @@ import {
 import { CLASSES_NOW, CLASSES_TIME_ZONE, cdmx } from "@/lib/testing/fixtures/classes";
 import {
   STUDENT_BALANCE,
+  STUDENT_GROUP_CARD,
   STUDENT_PAST_CARD,
   STUDENT_WHATSAPP,
   studentCard,
@@ -2257,6 +2260,42 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 studies={[{ id: "s1", name: "Mis partidas" }]}
                 action={async () => {}}
               />
+            </Tile>
+            <Tile
+              name="ClassesListSection"
+              docs="platform-sections-classes-classeslistsection"
+              width={1100}
+              height={560}
+            >
+              <div className="platform-page platform-page_width_full platform-page_frame_bleed">
+                <ClassesListSection
+                  view={{
+                    timeZone: CLASSES_TIME_ZONE,
+                    nowIso: CLASSES_NOW.toISOString(),
+                    today: [studentCard()],
+                    upcoming: [STUDENT_GROUP_CARD],
+                    toSchedule: 1,
+                    past: [],
+                    pastTotal: 4,
+                    pastShown: 0,
+                    balance: STUDENT_BALANCE,
+                    joinOpen: null,
+                    whatsappHref: STUDENT_WHATSAPP,
+                  }}
+                  tab="proximas"
+                  pastPages={1}
+                />
+              </div>
+            </Tile>
+            <Tile
+              name="ClassNotebookSection"
+              docs="platform-sections-classes-classnotebooksection"
+              width={1100}
+              height={640}
+            >
+              <div className="platform-page platform-page_width_full platform-page_frame_bleed">
+                <ClassNotebookSection classDetail={studentDetail({ title: "Finales de torres" })} />
+              </div>
             </Tile>
             <Tile
               name="ClassAheadSection"

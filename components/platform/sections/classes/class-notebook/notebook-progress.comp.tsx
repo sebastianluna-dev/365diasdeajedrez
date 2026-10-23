@@ -37,32 +37,37 @@ export function NotebookProgress({ initialDone, total, children }: NotebookProgr
   );
 }
 
-/** «1 de 3 respondidas» and the bar under the strip. */
+/** «1 de 4 hechas · 25 %» and the bar, in the side column over the class's index. */
 export function NotebookProgressBar() {
   const progress = useContext(NotebookProgressContext);
   if (!progress || progress.total === 0) return null;
   const percent = Math.round((progress.done / progress.total) * 100);
   return (
-    <>
-      <span className="class-notebook__strip-count">
-        {progress.done} de {progress.total} {progress.total === 1 ? "hecha" : "hechas"}
-      </span>
+    <div className="class-notebook__progress">
+      <p className="class-notebook__progress-count">
+        <span>
+          {progress.done} de {progress.total} {progress.total === 1 ? "hecha" : "hechas"}
+        </span>
+        <span aria-hidden="true">{percent} %</span>
+      </p>
       <span
-        className="class-notebook__strip-track"
+        className="class-notebook__progress-track"
         role="progressbar"
         aria-label="Lo que llevas de la clase"
         aria-valuemin={0}
         aria-valuemax={progress.total}
         aria-valuenow={progress.done}
       >
-        <span className="class-notebook__strip-fill" style={{ width: `${percent}%` }} />
+        <span className="class-notebook__progress-fill" style={{ width: `${percent}%` }} />
       </span>
-    </>
+    </div>
   );
 }
 
 interface NotebookQuestionProps {
   question: NotebookQuestionBlock;
+  /** The anchor the class's index leads to, on the first question. */
+  anchorId?: string;
   /** «Pregunta 1 de 3». */
   position: string;
 }
@@ -72,7 +77,7 @@ interface NotebookQuestionProps {
  * Choosing one says at once whether it was right and why; another can be
  * chosen after a wrong one. The first choice counts the question as done.
  */
-export function NotebookQuestion({ question, position }: NotebookQuestionProps) {
+export function NotebookQuestion({ question, position, anchorId }: NotebookQuestionProps) {
   const progress = useContext(NotebookProgressContext);
   const [picked, setPicked] = useState<string | null>(null);
   const chosen = question.options.find((option) => option.id === picked) ?? null;
@@ -83,9 +88,9 @@ export function NotebookQuestion({ question, position }: NotebookQuestionProps) 
   };
 
   return (
-    <section className="class-notebook__question" aria-label="Ahora tú">
+    <section id={anchorId} className="class-notebook__question" aria-label={`Ahora tú · ${position}`}>
       <div className="class-notebook__question-board">
-        <StaticDiagram fen={question.fen} orientation={question.orientation} />
+        <StaticDiagram fen={question.fen} orientation={question.orientation} look="material" />
       </div>
       <div className="class-notebook__question-body">
         <p className="class-notebook__eyebrow">Ahora tú · {position}</p>
@@ -101,6 +106,7 @@ export function NotebookQuestion({ question, position }: NotebookQuestionProps) 
                 aria-pressed={picked === option.id}
                 onClick={() => pick(option.id)}
               >
+                <span className="class-notebook__option-ring" aria-hidden="true" />
                 {option.label}
               </button>
             );

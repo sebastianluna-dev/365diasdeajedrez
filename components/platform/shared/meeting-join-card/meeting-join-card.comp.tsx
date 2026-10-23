@@ -4,6 +4,7 @@ import { CopyLinkButton } from "@/components/platform/shared/copy-link-button/co
 import { MeetingCountdown } from "@/components/platform/shared/meeting-countdown/meeting-countdown.comp";
 import { CLASS_PHASE } from "@/constants/platform/class-codes.const";
 import { formatClassHours } from "@/lib/format-class-when";
+import { mdButton } from "@/lib/material/material-classes";
 import type { MeetingJoinData } from "./meeting-join-card.types";
 import "./meeting-join-card.comp.css";
 
@@ -11,6 +12,8 @@ export interface MeetingJoinCardProps extends MeetingJoinData {
   audience: "student" | "teacher" | "staff";
   /** `full`: the card of a class page; `compact`: a lane's row; `bar`: the fixed bar on a phone. */
   density?: "full" | "compact" | "bar";
+  /** On a page moved to the new design system: Material's filled button and its roles. */
+  look?: "material";
 }
 
 /** What the card is in: the link to come, open, the class running, its tail, or over. */
@@ -41,7 +44,7 @@ export function meetingJoinState(
  * instant it opens. The staff only copies. A Server Component; the ticking
  * is `MeetingCountdown`'s.
  */
-export function MeetingJoinCard({ audience, density = "full", ...data }: MeetingJoinCardProps) {
+export function MeetingJoinCard({ audience, density = "full", look, ...data }: MeetingJoinCardProps) {
   const state = meetingJoinState(data);
   const opensAt = data.visibleFromIso
     ? (formatClassHours(new Date(data.visibleFromIso), 0, data.timeZone).split("–")[0] ?? "")
@@ -58,18 +61,21 @@ export function MeetingJoinCard({ audience, density = "full", ...data }: Meeting
       timeZone={data.timeZone}
     />
   );
-  const buttonClass =
-    density === "full"
+  const buttonClass = look
+    ? mdButton("filled", density === "compact" ? "sm" : "md")
+    : density === "full"
       ? "platform-button platform-button_variant_accent platform-button_size_lg"
       : density === "bar"
         ? "platform-button platform-button_variant_accent"
         : "platform-button platform-button_size_sm";
 
   return (
-    <div className={`meeting-join meeting-join_density_${density} meeting-join_state_${state}`}>
+    <div
+      className={`meeting-join meeting-join_density_${density} meeting-join_state_${state}${look ? ` meeting-join_look_${look}` : ""}`}
+    >
       {(state === "open" || state === "live" || state === "tail") && data.meetingUrl && audience !== "staff" && (
         <a href={data.meetingUrl} target="_blank" rel="noreferrer" className={`${buttonClass} meeting-join__enter`}>
-          <VideoIcon variant="classic-solid" className="platform-button__icon" />
+          <VideoIcon variant="classic-solid" className={look ? "platform-md-icon" : "platform-button__icon"} />
           {state === "tail" ? "Volver a entrar" : "Entrar a la clase"}
           <span className="meeting-join__sr">(se abre en una pestaña nueva)</span>
         </a>

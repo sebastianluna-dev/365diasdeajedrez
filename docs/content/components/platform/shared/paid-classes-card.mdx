@@ -1,21 +1,23 @@
 ---
-description: "«Tus clases pagadas» as counts: how many classes the student still has, one square per class (taken, scheduled, to schedule), the counts in words and the way to ask for more. Never an amount, never which payment."
+description: "«Tus clases pagadas» as counts, a white card in the side column of «Mis clases» (the new design system): how many classes the student still has, one square per class (taken, scheduled, to schedule), the counts in words and the way to ask for more. Never an amount, never which payment."
 ---
 
 # `PaidClassesCard`
 
-|            |                                                                                                                                         |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/paid-classes-card/paid-classes-card.comp.tsx`                                                               |
-| Kind       | Server Component                                                                                                                        |
-| Stylesheet | `paid-classes-card.comp.css` → block `.paid-classes`                                                                                    |
-| Story      | `paid-classes-card.stories.tsx` (`platform/shared/PaidClassesCard`): one payment, several payments, many classes, zero, no payments     |
-| Used by    | [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section) (the lane; under the list below 1024px) |
-| Uses       | `StudentBalanceView` from `services/classes/classes.types`; `CheckIcon`, `CalendarIcon`, `CalendarClockIcon`, `WhatsappIcon`            |
+|            |                                                                                                                                                                               |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/paid-classes-card/paid-classes-card.comp.tsx`                                                                                                     |
+| Kind       | Server Component                                                                                                                                                              |
+| Stylesheet | `paid-classes-card.comp.css` → block `.paid-classes`                                                                                                                          |
+| Story      | `paid-classes-card.stories.tsx` (`platform/shared/PaidClassesCard`): one payment, several payments, many classes, zero, no payments                                           |
+| Used by    | [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section) (the side column; above the panel under 1024px)                               |
+| Uses       | `StudentBalanceView` from `services/classes/classes.types`; `mdButton` from `lib/material/material-classes`; `CheckIcon`, `CalendarIcon`, `CalendarClockIcon`, `WhatsappIcon` |
 
 ## Purpose
 
-What the student has, counted when it is read from their payments (`paymentSeats`, `services/shared/payment-seats.ts`) and never stored, **as counts only**: the figure «3 clases por tomar» in the display face, one plain square per class — ticked in green when taken, ringed in the accent when scheduled, a dashed outline when it is still to schedule —, the same counts in words («2 programadas · 1 por programar»), «Tus clases pagadas no caducan.» and «¿Quieres más clases? Escríbenos», which opens the academy's WhatsApp with the message written (`academyWhatsappHref`). Up to twelve classes are drawn as squares; more read as the counts alone. Without a payment: «Todavía no tienes clases pagadas.» and «¿Quieres clases? Escríbenos».
+What the student has, counted when it is read from their payments (`paymentSeats`, `services/shared/payment-seats.ts`) and never stored, **as counts only**: «Tus clases pagadas», the figure «3 clases por tomar» in the display face, one small square per class — a tick on the success container when taken, a calendar on the secondary container when scheduled, a calendar with a clock on amber when it is still to schedule —, the same counts in words («2 programadas · 1 por programar»), «Tus clases pagadas no caducan.» and «¿Quieres más clases? Escríbenos» as Material's text button, which opens the academy's WhatsApp with the message written (`academyWhatsappHref`). Up to sixteen classes are drawn as squares; more read as the counts alone. Without a payment: «Todavía no tienes clases pagadas.» and «¿Quieres clases? Escríbenos».
+
+Since 2026-10-23 it is drawn for the new design system (the owner's «M4» canvas, where it reads «Tus clases pagadas»): a white card with `--md-sys-shape-corner-lg` corners on the canvas of the workspace's side column, under the views of «Mis clases». It is only used there.
 
 The counts are of the payments still open, added together (with none open, of the last one). Since 2026-10-15 the card never says which payment a class belongs to — no «de tu pago del 1 de octubre», no dates or titles on the squares —, the owner's rule for every student screen: the student reads classes, not packages. Nor an amount: a payment reaches the student's mapper as a day and a count of classes.
 
@@ -28,15 +30,17 @@ The counts are of the payments still open, added together (with none open, of th
 
 ## Markup & styling
 
-Block `.paid-classes` (123 lines), inside a `.platform-card`.
+Block `.paid-classes` (104 lines).
 
-**Elements:** `.paid-classes__title`, `.paid-classes__figure`, `.paid-classes__number`, `.paid-classes__squares`, `.paid-classes__square`, `.paid-classes__square-icon`, `.paid-classes__counts`, `.paid-classes__note`, `.paid-classes__ask`, `.paid-classes__ask-icon`, `.paid-classes__sr`
+**Elements:** `.paid-classes__title`, `.paid-classes__figure`, `.paid-classes__number`, `.paid-classes__squares`, `.paid-classes__square`, `.paid-classes__square-icon`, `.paid-classes__counts`, `.paid-classes__note`, `.paid-classes__ask`, `.paid-classes__sr`
 
 **Modifiers and states:** `.paid-classes__square_kind_{taken,scheduled,to-schedule}`
 
-**Breakpoints:** `(width < 640px)` — the squares fill the row, 56px tall.
+**Other classes it renders:** Material's text button (`mdButton("text")`), `.platform-md-icon`.
 
-**Tokens:** `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-surface`, `--platform-accent`, `--platform-accent-ink`, `--platform-success-soft`, `--platform-success-ink`, `--platform-border-strong`, `--platform-font-display`
+**Breakpoints:** `(width < 1024px)` — no left margin, where the side column goes above the panel.
+
+**Tokens:** `--platform-m3-panel`, `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-success-container`, `--platform-m3-on-success-container`, `--platform-m3-secondary-container`, `--platform-m3-on-secondary-container`, `--platform-m3-warning-container`, `--platform-m3-on-warning-container`, `--platform-font-display`, `--md-sys-shape-corner-lg`
 
 ## Related
 

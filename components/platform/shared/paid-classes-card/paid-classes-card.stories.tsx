@@ -23,8 +23,11 @@ Reference page: [Components › PaidClassesCard](/components/platform/shared/pai
   args: { balance: STUDENT_BALANCE, whatsappHref: STUDENT_WHATSAPP },
   decorators: [
     (Story) => (
-      <div className="platform-theme" style={{ maxWidth: 320 }}>
-        <Story />
+      // The side column of the new design system's workspace, where «Mis clases» draws it.
+      <div className="platform-theme platform-workspace" style={{ minHeight: 0 }}>
+        <div className="platform-workspace__side">
+          <Story />
+        </div>
       </div>
     ),
   ],

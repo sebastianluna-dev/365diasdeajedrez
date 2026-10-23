@@ -4,14 +4,14 @@ description: "A square button, quiet and small or boxed and large, that copies a
 
 # `CopyLinkButton`
 
-|            |                                                                                                                                                |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/copy-link-button/copy-link-button.comp.tsx`                                                                        |
-| Kind       | Client Component                                                                                                                               |
-| Stylesheet | `copy-link-button.comp.css` → block `.copy-link-button` (the button is a `.platform-button`)                                                   |
-| Story      | `copy-link-button.stories.tsx` (`platform/shared/CopyLinkButton`): at rest, large, copied (`play`)                                             |
-| Used by    | The class sheets, beside the meeting link (phases 5–6 of the rebuild); [`ClassTicket`](/components/platform/shared/class-ticket) (`size="lg"`) |
-| Uses       | `CopyIcon` and `CheckIcon` in Classic Solid                                                                                                    |
+|            |                                                                                                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/shared/copy-link-button/copy-link-button.comp.tsx`                                                                                                                          |
+| Kind       | Client Component                                                                                                                                                                                 |
+| Stylesheet | `copy-link-button.comp.css` → block `.copy-link-button` (the button is a `.platform-button`)                                                                                                     |
+| Story      | `copy-link-button.stories.tsx` (`platform/shared/CopyLinkButton`): at rest, large, Material tonal, Material icon, copied (`play`)                                                                |
+| Used by    | The class sheets, beside the meeting link (phases 5–6 of the rebuild); [`ClassTicket`](/components/platform/shared/class-ticket) (`size="lg"`); «Mis clases» and a class's notebook (`material`) |
+| Uses       | `CopyIcon` and `CheckIcon` in Classic Solid                                                                                                                                                      |
 
 ## Purpose
 
@@ -19,11 +19,12 @@ The meeting link is copied more often than opened by whoever manages the class. 
 
 ## Props
 
-| Prop    | Type           | Required | Meaning                                                                                                                      |
-| ------- | -------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `url`   | `string`       | yes      | What goes to the clipboard.                                                                                                  |
-| `label` | `string`       | yes      | The accessible name: «Copiar el enlace de la reunión».                                                                       |
-| `size`  | `"sm" \| "lg"` | no       | `sm` (default): quiet and small, beside a line of text; `lg`: the secondary box at 48px, beside a large «Entrar a la clase». |
+| Prop       | Type                | Required | Meaning                                                                                                                                                                                                                  |
+| ---------- | ------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `url`      | `string`            | yes      | What goes to the clipboard.                                                                                                                                                                                              |
+| `label`    | `string`            | yes      | The accessible name: «Copiar el enlace de la reunión».                                                                                                                                                                   |
+| `size`     | `"sm" \| "lg"`      | no       | `sm` (default): quiet and small, beside a line of text; `lg`: the secondary box at 48px, beside a large «Entrar a la clase».                                                                                             |
+| `material` | `"tonal" \| "icon"` | no       | On a page moved to the new design system (2026-10-23): Material's tonal button with the label written beside the icon (today's class in «Mis clases»), or its bare icon button (a class's toolbar). It wins over `size`. |
 
 ## Behaviour
 
@@ -32,7 +33,7 @@ The meeting link is copied more often than opened by whoever manages the class. 
 
 ## Markup & styling
 
-Block `.copy-link-button` (20 lines).
+Block `.copy-link-button` (26 lines); with `material`, the tick is in Material's green.
 
 **Elements:** `.copy-link-button__done` (the tick's colour), `.copy-link-button__status` (visually hidden)
 

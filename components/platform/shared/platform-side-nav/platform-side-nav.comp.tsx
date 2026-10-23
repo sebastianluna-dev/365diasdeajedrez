@@ -2,15 +2,18 @@ import Link from "next/link";
 import type { ComponentType } from "react";
 import { BookOpenIcon } from "@/components/icons/book-open-icon.comp";
 import { BooksIcon } from "@/components/icons/books-icon.comp";
+import { CalendarIcon } from "@/components/icons/calendar-icon.comp";
 import { ChalkboardUserIcon } from "@/components/icons/chalkboard-user-icon.comp";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
 import { ChessBoardIcon } from "@/components/icons/chess-board-icon.comp";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
+import { CircleQuestionIcon } from "@/components/icons/circle-question-icon.comp";
 import { ClockIcon } from "@/components/icons/clock-icon.comp";
 import { GraduationCapIcon } from "@/components/icons/graduation-cap-icon.comp";
 import type { IconProps } from "@/components/icons/icon-variant.const";
 import { LayerGroupIcon } from "@/components/icons/layer-group-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
+import { RotateLeftIcon } from "@/components/icons/rotate-left-icon.comp";
 import { TrophyIcon } from "@/components/icons/trophy-icon.comp";
 import { UserGraduateIcon } from "@/components/icons/user-graduate-icon.comp";
 import { UserIcon } from "@/components/icons/user-icon.comp";
@@ -21,13 +24,16 @@ import "./platform-side-nav.comp.css";
 const ICONS = {
   "book-open": BookOpenIcon,
   books: BooksIcon,
+  calendar: CalendarIcon,
   "chalkboard-user": ChalkboardUserIcon,
   "chess-board": ChessBoardIcon,
   "circle-check": CircleCheckIcon,
+  "circle-question": CircleQuestionIcon,
   clock: ClockIcon,
   "graduation-cap": GraduationCapIcon,
   "layer-group": LayerGroupIcon,
   play: PlayIcon,
+  "rotate-left": RotateLeftIcon,
   trophy: TrophyIcon,
   user: UserIcon,
   "user-graduate": UserGraduateIcon,
@@ -67,7 +73,8 @@ export interface PlatformSideNavLink {
 }
 
 export interface PlatformSideNavGroup {
-  title: string;
+  /** The group's heading; without one, its links stand alone at the top (a page's views). */
+  title?: string;
   links: PlatformSideNavLink[];
 }
 
@@ -101,8 +108,8 @@ export function PlatformSideNav({ label, action, groups }: PlatformSideNavProps)
       )}
 
       {groups.map((group) => (
-        <div key={group.title} className="platform-side-nav__group">
-          <p className="platform-side-nav__title">{group.title}</p>
+        <div key={group.title ?? ""} className="platform-side-nav__group">
+          {group.title && <p className="platform-side-nav__title">{group.title}</p>}
           <ul className="platform-side-nav__list">
             {group.links.map((link) => {
               const Icon = link.icon ? ICONS[link.icon] : undefined;

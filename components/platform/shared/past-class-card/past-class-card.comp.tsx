@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { useId } from "react";
 import { StaticDiagram } from "@/components/chess/static-diagram.comp";
+import { BanIcon } from "@/components/icons/ban-icon.comp";
 import { ChevronRightIcon } from "@/components/icons/chevron-right-icon.comp";
 import { CircleVideoIcon } from "@/components/icons/circle-video-icon.comp";
 import { LayerGroupIcon } from "@/components/icons/layer-group-icon.comp";
 import { UserCheckIcon } from "@/components/icons/user-check-icon.comp";
 import { UserXmarkIcon } from "@/components/icons/user-xmark-icon.comp";
-import { ClassStatusTag } from "@/components/platform/shared/class-status-tag/class-status-tag.comp";
 import { formatClassHours, formatLongDay } from "@/lib/format-class-when";
 import { dayKeyIn } from "@/lib/timezone";
 import type { ClassCardData } from "@/services/classes/classes.types";
@@ -19,10 +19,12 @@ interface PastClassCardProps {
 const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
 
 /**
- * A class once it is over and counts as finished: whether the student came,
- * the hours, the topic, «Finalizada · con …», the summary the teacher left,
- * the recording and how many blocks there are, and «Ver la clase». The board
- * of the class's first position, game or lesson leads the card when the
+ * A class once it is over and counts as finished, in the new design system
+ * (2026-10-23, «Pasadas» of «Mis clases»): an outlined card that lifts under
+ * the pointer, with whether the student came, the hours, the topic,
+ * «Finalizada · con …», the summary the teacher left, the recording and how
+ * many blocks there are, and «Ver la clase». The board of the class's first
+ * position, game or lesson (Material's blue board) leads the card when the
  * class has one; a class without chess keeps the same card without it. A
  * free class says «Gratis»; which payment a paid one came from, never. A
  * moved seat says where the class went; a cancelled class steps back.
@@ -44,26 +46,29 @@ export function PastClassCard({ card }: PastClassCardProps) {
     >
       {board && (
         <div className="past-class-card__board" role="img" aria-label={`Tablero de la clase: ${board.label}`}>
-          <StaticDiagram fen={board.fen} orientation={board.orientation} />
+          <StaticDiagram fen={board.fen} orientation={board.orientation} look="material" />
         </div>
       )}
       <div className="past-class-card__body">
         <div className="past-class-card__top">
           <span className="past-class-card__tags">
             {card.cancelled ? (
-              <ClassStatusTag phase={card.phase} audience="student" />
+              <span className="past-class-card__tag">
+                <BanIcon variant="classic-solid" className="past-class-card__tag-icon" />
+                Cancelada
+              </span>
             ) : attended === true ? (
-              <span className="platform-tag platform-tag_variant_success">
-                <UserCheckIcon variant="classic-solid" className="platform-tag__icon" />
+              <span className="past-class-card__tag past-class-card__tag_tone_success">
+                <UserCheckIcon variant="classic-solid" className="past-class-card__tag-icon" />
                 Asististe
               </span>
             ) : attended === false ? (
-              <span className="platform-tag platform-tag_variant_warning">
-                <UserXmarkIcon variant="classic-solid" className="platform-tag__icon" />
+              <span className="past-class-card__tag past-class-card__tag_tone_warning">
+                <UserXmarkIcon variant="classic-solid" className="past-class-card__tag-icon" />
                 No asististe
               </span>
             ) : null}
-            {card.isFree && <span className="platform-tag">Gratis</span>}
+            {card.isFree && <span className="past-class-card__tag">Gratis</span>}
           </span>
           <time dateTime={card.startIso} className="past-class-card__hours">
             {formatClassHours(start, card.durationMin, card.timeZone)}
@@ -96,27 +101,24 @@ export function PastClassCard({ card }: PastClassCardProps) {
         )}
         {card.past?.summary && <p className="past-class-card__summary">{card.past.summary}</p>}
 
-        {(card.past?.hasRecording || blocks > 0) && (
-          <div className="past-class-card__facts">
-            {card.past?.hasRecording && (
-              <span className="past-class-card__fact">
-                <CircleVideoIcon variant="classic-solid" className="past-class-card__fact-icon" />
-                Grabación
-              </span>
-            )}
-            {blocks > 0 && (
-              <span className="past-class-card__fact">
-                <LayerGroupIcon variant="classic-solid" className="past-class-card__fact-icon" />
-                {blocks} {blocks === 1 ? "bloque" : "bloques"}
-              </span>
-            )}
-          </div>
-        )}
-
-        <Link href={card.href} className="past-class-card__more" aria-hidden="true" tabIndex={-1}>
-          Ver la clase
-          <ChevronRightIcon variant="classic-solid" className="past-class-card__more-icon" />
-        </Link>
+        <div className="past-class-card__foot">
+          {card.past?.hasRecording && (
+            <span className="past-class-card__fact">
+              <CircleVideoIcon variant="duotone-light" className="past-class-card__fact-icon" />
+              Grabación
+            </span>
+          )}
+          {blocks > 0 && (
+            <span className="past-class-card__fact">
+              <LayerGroupIcon variant="duotone-light" className="past-class-card__fact-icon" />
+              {blocks} {blocks === 1 ? "bloque" : "bloques"}
+            </span>
+          )}
+          <span className="past-class-card__more" aria-hidden="true">
+            Ver la clase
+            <ChevronRightIcon variant="classic-solid" className="past-class-card__more-icon" />
+          </span>
+        </div>
       </div>
     </article>
   );

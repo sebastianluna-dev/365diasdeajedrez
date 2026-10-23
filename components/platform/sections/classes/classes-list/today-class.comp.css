@@ -1,0 +1,209 @@
+/* Today's class: a band of the primary's wash with the stub of the day on
+   the secondary container at its left, and the class beside it. Under
+   640px the stub goes on top. */
+.today-class {
+  display: flex;
+  overflow: hidden;
+  border-radius: var(--md-sys-shape-corner-xl);
+  background: var(--platform-m3-primary-wash);
+  color: var(--platform-m3-on-surface);
+
+  & .today-class__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  & .today-class__stub {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--platform-space-0-5);
+    width: 150px;
+    padding: var(--platform-space-5);
+    box-sizing: border-box;
+    background: var(--platform-m3-secondary-container);
+    color: var(--platform-m3-on-secondary-container);
+
+    & p {
+      margin: 0;
+    }
+  }
+
+  & .today-class__day {
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+  }
+
+  & .today-class__start {
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-3xl);
+    font-weight: 600;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .today-class__span {
+    font-size: var(--platform-type-xs);
+  }
+
+  & .today-class__main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-4) var(--platform-space-6);
+  }
+
+  & .today-class__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-2) var(--platform-space-3);
+  }
+
+  & .today-class__lead {
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+  }
+
+  & .today-class__title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-2xl);
+    font-weight: 500;
+    line-height: 1.25;
+  }
+
+  & .today-class__link {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-m3-primary);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+  }
+
+  & .today-class__note {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .today-class__fields {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-2) var(--platform-space-5);
+    margin: 0;
+    font-size: var(--platform-type-xs);
+  }
+
+  & .today-class__field {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+
+    & dt {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & dd {
+      margin: 0;
+      font-weight: 600;
+    }
+  }
+
+  & .today-class__crew {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+  }
+
+  & .today-class__faces {
+    display: flex;
+    padding-left: var(--platform-space-2);
+  }
+
+  & .today-class__face {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    margin-left: calc(-1 * var(--platform-space-2));
+    border: 2px solid var(--platform-m3-primary-wash);
+    border-radius: 50%;
+    box-sizing: border-box;
+    background: var(--platform-m3-secondary-container);
+    color: var(--platform-m3-on-secondary-container);
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+  }
+
+  & .today-class__more-faces {
+    font-weight: 600;
+  }
+
+  & .today-class__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-2);
+    margin-top: var(--platform-space-1);
+
+    & a {
+      text-decoration: none;
+    }
+  }
+
+  & .today-class__copy {
+    display: inline-flex;
+  }
+
+  /* «Ver la clase» beside the way in is only for the phone with the bar. */
+  & .today-class__view {
+    display: none;
+  }
+
+  @media (width < 1024px) {
+    &.today-class_join_bar .today-class__enter {
+      display: none;
+    }
+
+    &.today-class_join_bar .today-class__view {
+      display: inline-flex;
+    }
+  }
+
+  @media (width < 640px) {
+    flex-direction: column;
+
+    & .today-class__stub {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: var(--platform-space-1) var(--platform-space-3);
+      width: auto;
+      padding: var(--platform-space-3) var(--platform-space-4);
+    }
+
+    & .today-class__start {
+      font-size: var(--platform-type-2xl);
+    }
+
+    & .today-class__main {
+      padding: var(--platform-space-4);
+    }
+  }
+}

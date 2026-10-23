@@ -1,232 +1,420 @@
-/* The class as a notebook: one reading column, the way into the class on a
-   strip that stays at the top, and the teacher's blocks set as an article
-   with the serif for the text. */
+/* The class's notebook on the new design system: the workspace
+   (`platform.css`) draws the canvas, the side column and the panel; this
+   block lays out the side's way in, progress and index, the panel's
+   toolbar, and the article with the exercises beside it. */
 .class-notebook {
-  color: var(--platform-text);
+  & .class-notebook__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
 
-  /* The strip: the way in (or, afterwards, whether they came) and the bar of
-     what there is to do. It sticks under the platform's bar. */
-  & .class-notebook__strip {
+  /* SIDE COLUMN. */
+  & .class-notebook__side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+    padding-bottom: var(--platform-space-4);
+  }
+
+  & .class-notebook__join {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-1) 0 0 var(--platform-space-2);
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  /* Material's extended FAB, flat at rest and risen onto a shadow under the
+     pointer, as `PlatformSideNav` draws its own. */
+  & .class-notebook__fab {
+    --container-elevation: none;
+
+    text-decoration: none;
+
+    &:hover {
+      --container-elevation: var(--md-sys-elevation-shadow-3);
+      --ripple-hover-opacity: 0%;
+    }
+  }
+
+  & .class-notebook__join-line {
+    margin: 0;
+    padding-left: var(--platform-space-3);
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .class-notebook__join-ask {
+    text-decoration: none;
+  }
+
+  & .class-notebook__attendance {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+    margin: 0 0 0 var(--platform-space-3);
+    padding: var(--platform-space-1) var(--platform-space-3);
+    border-radius: 1000px;
+    font-size: var(--platform-type-xs);
+    font-weight: 700;
+  }
+
+  & .class-notebook__attendance_tone_success {
+    background: var(--platform-m3-success-container);
+    color: var(--platform-m3-on-success-container);
+  }
+
+  & .class-notebook__attendance_tone_warning {
+    background: var(--platform-m3-warning-container);
+    color: var(--platform-m3-on-warning-container);
+  }
+
+  & .class-notebook__attendance-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  & .class-notebook__index {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+
+    & .platform-side-nav {
+      padding-top: 0;
+    }
+  }
+
+  & .class-notebook__index-title {
+    margin: 0;
+    padding: var(--platform-space-1) var(--platform-space-6);
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* «1 de 4 hechas · 25 %» over a thin bar of the primary. */
+  & .class-notebook__progress {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    padding: 0 var(--platform-space-4) var(--platform-space-1) var(--platform-space-6);
+  }
+
+  & .class-notebook__progress-count {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .class-notebook__progress-track {
+    display: block;
+    height: 6px;
+    overflow: hidden;
+    border-radius: 1000px;
+    background: var(--platform-m3-container-high);
+  }
+
+  & .class-notebook__progress-fill {
+    display: block;
+    height: 100%;
+    border-radius: 1000px;
+    background: var(--platform-m3-primary);
+    transition: width 200ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .class-notebook__progress-fill {
+      transition: none;
+    }
+  }
+
+  & .class-notebook__balance {
+    margin: 0;
+    padding: 0 var(--platform-space-3) 0 var(--platform-space-6);
+    font-size: var(--platform-type-xs);
+    line-height: 1.45;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* PANEL. */
+  & .class-notebook__panel {
+    gap: var(--platform-space-6);
+  }
+
+  /* The trail stays under the bar while the page scrolls, as a chapter's
+     does: it spans the panel, on the panel's white, its top corners the
+     panel's. Under 1024px it scrolls away with the page. */
+  & .class-notebook__toolbar {
     position: sticky;
     top: 70px;
-    z-index: 5;
-    background: var(--platform-surface);
-    box-shadow: 0 1px 0 var(--platform-border);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-4);
+    margin: calc(-1 * var(--platform-space-6)) calc(-1 * var(--platform-space-6)) 0;
+    padding: var(--platform-space-2) var(--platform-space-4);
+    border-bottom: 1px solid var(--platform-m3-divider);
+    isolation: isolate;
 
-    /* Under 1280px the bar is two rows tall and varies; the strip stays in the flow. */
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+    }
+
+    &::before {
+      bottom: auto;
+      height: var(--md-sys-shape-corner-lg);
+      background: var(--platform-m3-canvas);
+    }
+
+    &::after {
+      border-radius: var(--md-sys-shape-corner-lg) var(--md-sys-shape-corner-lg) 0 0;
+      background: var(--platform-m3-panel);
+    }
+
+    /* Still the containing block of its two layers, only no longer stuck. */
+    @media (width < 1024px) {
+      position: relative;
+      top: 0;
+    }
+
+    @media (width < 640px) {
+      margin: calc(-1 * var(--platform-space-4)) calc(-1 * var(--platform-space-4)) 0;
+    }
+  }
+
+  & .class-notebook__trail {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    min-width: 0;
+  }
+
+  & .class-notebook__crumb {
+    flex: none;
+    color: var(--platform-m3-on-surface-variant);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  & .class-notebook__crumb-step {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    color: var(--platform-m3-outline);
+  }
+
+  & .class-notebook__crumb-here {
+    min-width: 0;
+    overflow: hidden;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* The article, and the exercises in a column beside it from 1280px. */
+  & .class-notebook__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--platform-space-8);
+    padding: 0 var(--platform-space-2);
+
+    &.class-notebook__body_aside_on {
+      grid-template-columns: minmax(0, 1fr) 352px;
+
+      @media (width < 1280px) {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (width < 640px) {
+      padding: 0;
+    }
+  }
+
+  & .class-notebook__column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+    min-width: 0;
+    max-width: 760px;
+  }
+
+  & .class-notebook__aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+    align-self: start;
+    position: sticky;
+    top: 140px;
+
     @media (width < 1280px) {
       position: static;
     }
   }
 
-  & .class-notebook__strip-inner {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--platform-space-2) var(--platform-space-6);
-    max-width: 760px;
-    margin: 0 auto;
-    padding: var(--platform-space-3) var(--platform-space-6) var(--platform-space-4);
-  }
-
-  & .class-notebook__strip-status {
-    display: flex;
-    gap: var(--platform-space-4);
-    align-items: center;
-  }
-
-  & .class-notebook__attended {
-    color: var(--platform-success-ink);
-  }
-
-  & .class-notebook__missed {
-    color: var(--platform-text-muted);
-  }
-
-  & .class-notebook__strip-count {
-    margin-left: auto;
-    font-size: var(--platform-type-xs);
-    color: var(--platform-text-muted);
-  }
-
-  & .class-notebook__strip-track {
-    flex: 1 0 100%;
-    height: 4px;
-    border-radius: 1000px;
-    background: var(--platform-track);
-    overflow: hidden;
-  }
-
-  & .class-notebook__strip-fill {
-    display: block;
-    height: 100%;
-    background: var(--platform-accent);
-    transition: width 240ms ease-out;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    & .class-notebook__strip-fill {
-      transition: none;
-    }
-  }
-
-  /* The reading column. */
-  & .class-notebook__column {
+  & .class-notebook__head {
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-4);
-    max-width: 760px;
-    margin: 0 auto;
-    padding: var(--platform-space-12) var(--platform-space-6) var(--platform-space-24);
+    gap: var(--platform-space-2);
   }
 
-  & .class-notebook__eyebrow {
+  & .class-notebook__eyebrow,
+  & .class-notebook__label {
     margin: 0;
-    font-size: var(--platform-type-xs);
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--platform-accent-ink);
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface-variant);
   }
 
   & .class-notebook__title {
     margin: 0;
     font-family: var(--platform-font-display);
-    font-size: var(--platform-type-5xl);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
+    font-size: var(--platform-type-3xl);
+    font-weight: 500;
+    line-height: 1.25;
   }
 
   & .class-notebook__byline {
     display: flex;
     align-items: center;
-    gap: var(--platform-space-3);
-    padding-bottom: var(--platform-space-6);
-    box-shadow: 0 1px 0 var(--platform-border);
+    gap: var(--platform-space-2);
+    margin-top: var(--platform-space-1);
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
+
+    & strong {
+      color: var(--platform-m3-on-surface);
+    }
   }
 
   & .class-notebook__avatar {
     flex: none;
     display: grid;
     place-items: center;
-    width: 44px;
-    height: 44px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: var(--platform-text);
-    color: var(--platform-bg);
+    background: var(--platform-m3-secondary-container);
+    color: var(--platform-m3-on-secondary-container);
+    font-size: var(--platform-type-2xs);
     font-weight: 700;
   }
 
   & .class-notebook__byline-text {
-    display: flex;
-    flex-direction: column;
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
-
-    & strong {
-      font-size: var(--platform-type-md);
-      color: var(--platform-text);
-    }
+    min-width: 0;
   }
 
   & .class-notebook__summary {
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-2);
-    margin-top: var(--platform-space-4);
-    padding: var(--platform-space-6) var(--platform-space-8);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    box-shadow: var(--platform-shadow-card);
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-4);
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--platform-m3-container);
   }
 
   & .class-notebook__summary-text {
     margin: 0;
-    font-family: var(--platform-font-serif);
-    font-size: var(--platform-type-lg);
-    line-height: 1.65;
+    line-height: 1.55;
   }
 
-  /* The article. */
-  & .class-notebook__body {
+  & .class-notebook__reading {
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-4);
-    margin-top: var(--platform-space-6);
+    scroll-margin-top: 140px;
   }
 
   & .class-notebook__heading {
-    margin: var(--platform-space-8) 0 0;
+    margin: var(--platform-space-2) 0 0;
     font-family: var(--platform-font-display);
-    font-size: var(--platform-type-2xl);
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    font-size: var(--platform-type-xl);
+    font-weight: 500;
+    scroll-margin-top: 140px;
   }
 
   & .class-notebook__paragraph {
     margin: 0;
-    font-family: var(--platform-font-serif);
-    font-size: var(--platform-type-xl);
-    line-height: 1.7;
+    font-size: var(--platform-type-sm);
+    line-height: 1.55;
   }
 
-  & .class-notebook__paragraph.class-notebook__paragraph_role_lead {
-    font-size: var(--platform-type-2xl);
-    line-height: 1.6;
+  & .class-notebook__paragraph_role_lead {
+    font-size: var(--platform-type-md);
   }
 
+  & .class-notebook__muted {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* A position: an outlined card with its label, the board and its caption. */
   & .class-notebook__figure {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: var(--platform-space-3);
-    margin: var(--platform-space-6) 0;
-  }
-
-  & .class-notebook__figure-board {
-    width: min(420px, 100%);
+    gap: var(--platform-space-2);
+    align-self: flex-start;
+    width: min(352px, 100%);
+    margin: 0;
+    padding: var(--platform-space-3) var(--platform-space-4) var(--platform-space-4);
+    border: 1px solid var(--platform-m3-container-high);
+    border-radius: var(--md-sys-shape-corner-lg);
+    box-sizing: border-box;
   }
 
   & .class-notebook__caption {
-    max-width: 420px;
-    font-size: var(--platform-type-sm);
-    text-align: center;
-    color: var(--platform-text-muted);
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
 
     & strong {
-      color: var(--platform-text);
+      color: var(--platform-m3-on-surface);
     }
   }
 
-  /* «Ahora tú»: a position, a question and its options. */
+  /* «Ahora tú»: a position, the question and its options, on the container. */
   & .class-notebook__question {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--platform-space-6);
-    margin: var(--platform-space-6) 0;
-    padding: var(--platform-space-6);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    box-shadow: var(--platform-shadow-card);
+    gap: var(--platform-space-5);
+    padding: var(--platform-space-4);
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--platform-m3-container);
+    scroll-margin-top: 140px;
   }
 
   & .class-notebook__question-board {
-    flex: 0 0 240px;
+    flex: 0 0 200px;
   }
 
   & .class-notebook__question-body {
-    flex: 1 1 260px;
+    flex: 1 1 200px;
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-3);
+    gap: var(--platform-space-2);
   }
 
   & .class-notebook__question-prompt {
     margin: 0;
-    font-family: var(--platform-font-display);
-    font-size: var(--platform-type-xl);
-    font-weight: 600;
+    font-weight: 700;
   }
 
   & .class-notebook__options {
@@ -235,126 +423,172 @@
     gap: var(--platform-space-2);
   }
 
+  /* An option is a row of the panel's white with a radio's ring. */
   & .class-notebook__option {
-    min-height: 48px;
-    padding: 0 var(--platform-space-4);
-    border: 0;
-    border-radius: 8px;
-    background: var(--platform-surface-soft);
-    box-shadow: inset 0 0 0 1px var(--platform-border);
-    color: var(--platform-text);
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    min-height: 44px;
+    padding: var(--platform-space-2) var(--platform-space-3);
+    border: 1px solid var(--platform-m3-container-high);
+    border-radius: var(--md-sys-shape-corner-md);
+    background: var(--platform-m3-panel);
+    color: var(--platform-m3-on-surface);
     font: inherit;
-    font-weight: 600;
+    font-size: var(--platform-type-xs);
     text-align: left;
     cursor: pointer;
+    transition:
+      border-color 160ms ease-out,
+      background-color 160ms ease-out;
 
     &:hover {
-      background: var(--platform-bg);
+      border-color: var(--platform-m3-outline-variant);
     }
 
     &:focus-visible {
-      outline: 2px solid var(--platform-accent-ink);
+      outline: 2px solid var(--platform-m3-primary);
       outline-offset: 2px;
     }
   }
 
+  & .class-notebook__option-ring {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--platform-m3-on-surface-variant);
+    border-radius: 50%;
+    box-sizing: border-box;
+  }
+
   & .class-notebook__option.class-notebook__option_state_right {
-    background: var(--platform-success-soft);
-    box-shadow: inset 0 0 0 2px var(--platform-success-ink);
-    color: var(--platform-success-ink);
+    border-color: var(--platform-m3-on-success-container);
+    background: var(--platform-m3-success-container);
+    color: var(--platform-m3-on-success-container);
+
+    & .class-notebook__option-ring {
+      border-color: currentColor;
+      background: currentColor;
+      box-shadow: inset 0 0 0 3px var(--platform-m3-success-container);
+    }
   }
 
   & .class-notebook__option.class-notebook__option_state_wrong {
-    background: var(--platform-danger-soft);
-    box-shadow: inset 0 0 0 2px var(--platform-danger);
-    color: var(--platform-danger);
+    border-color: var(--platform-m3-error);
+    color: var(--platform-m3-error);
+
+    & .class-notebook__option-ring {
+      border-color: currentColor;
+      background: currentColor;
+      box-shadow: inset 0 0 0 3px var(--platform-m3-panel);
+    }
   }
 
   & .class-notebook__feedback {
     min-height: 1.5em;
     margin: 0;
-    font-size: var(--platform-type-sm);
-    line-height: 1.5;
+    font-size: var(--platform-type-xs);
   }
 
   & .class-notebook__feedback.class-notebook__feedback_tone_right {
-    color: var(--platform-success-ink);
+    color: var(--platform-m3-on-surface);
   }
 
   & .class-notebook__feedback.class-notebook__feedback_tone_wrong {
-    color: var(--platform-danger);
+    color: var(--platform-m3-error);
   }
 
-  /* A game: a small board, who played it, and the way to the board. */
+  /* A game: its final board small, who played it, and the way to the board. */
   & .class-notebook__widget {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: var(--platform-space-5);
-    padding: var(--platform-space-4);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    box-shadow: var(--platform-shadow-card);
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-3);
+    border: 1px solid var(--platform-m3-container-high);
+    border-radius: var(--md-sys-shape-corner-lg);
+
+    @media (width < 640px) {
+      flex-wrap: wrap;
+    }
   }
 
   & .class-notebook__widget-board {
-    flex: 0 0 128px;
+    flex: none;
+    width: 96px;
   }
 
   & .class-notebook__widget-text {
-    flex: 1 1 200px;
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-1);
-  }
-
-  & .class-notebook__widget-title {
-    font-size: var(--platform-type-lg);
+    gap: var(--platform-space-0-5);
   }
 
   & .class-notebook__widget-meta {
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
   }
 
-  /* A lesson or a video cited by the article. */
+  & .class-notebook__widget-action {
+    flex: none;
+    text-decoration: none;
+  }
+
+  /* A lesson or a video: an outlined card, the whole of it the link, that
+     lifts under the pointer as a row of Gmail's. */
   & .class-notebook__card-link {
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-1);
-    padding: var(--platform-space-4) var(--platform-space-5);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    box-shadow: inset 0 0 0 1px var(--platform-border);
-    color: var(--platform-text);
+    padding: var(--platform-space-3) var(--platform-space-4);
+    border: 1px solid var(--platform-m3-container-high);
+    border-radius: var(--md-sys-shape-corner-lg);
+    color: var(--platform-m3-on-surface);
     text-decoration: none;
+    transition: box-shadow 160ms ease-out;
 
     &:hover {
-      background: var(--platform-surface-soft);
+      box-shadow:
+        inset 1px 0 0 var(--platform-m3-row-edge),
+        inset -1px 0 0 var(--platform-m3-row-edge),
+        0 1px 2px 0 color-mix(in srgb, var(--platform-m3-row-shadow) 30%, transparent),
+        0 1px 3px 1px color-mix(in srgb, var(--platform-m3-row-shadow) 15%, transparent);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-m3-primary);
+      outline-offset: 2px;
     }
   }
 
-  & .class-notebook__card-kind {
-    font-size: var(--platform-type-2xs);
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--platform-text-muted);
-  }
-
   & .class-notebook__card-title {
-    font-size: var(--platform-type-lg);
+    font-size: var(--platform-type-md);
   }
 
   & .class-notebook__card-action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+    font-size: var(--platform-type-xs);
     font-weight: 600;
-    color: var(--platform-accent-ink);
+    color: var(--platform-m3-primary);
+  }
+
+  & .class-notebook__card-icon {
+    width: 10px;
+    height: 10px;
+  }
+
+  /* The exercises of a block: an outlined card of rows. */
+  & .class-notebook__card {
+    padding: var(--platform-space-3) var(--platform-space-4) var(--platform-space-1);
+    border: 1px solid var(--platform-m3-container-high);
+    border-radius: var(--md-sys-shape-corner-lg);
+    scroll-margin-top: 140px;
   }
 
   & .class-notebook__exercises {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--platform-space-3);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -362,86 +596,122 @@
 
   & .class-notebook__exercise {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: var(--platform-space-3);
-    padding: var(--platform-space-3);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    box-shadow: inset 0 0 0 1px var(--platform-border);
-  }
+    gap: var(--platform-space-2);
+    min-height: 52px;
+    padding: var(--platform-space-2) 0;
+    border-bottom: 1px solid var(--platform-m3-divider);
 
-  & .class-notebook__exercise-board {
-    flex: 0 0 72px;
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    & a {
+      flex: none;
+      text-decoration: none;
+    }
   }
 
   & .class-notebook__exercise-text {
-    flex: 1;
+    flex: 1 1 160px;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    min-width: 0;
+    gap: var(--platform-space-0-5);
+    font-size: var(--platform-type-xs);
+  }
+
+  & .class-notebook__exercise-facts {
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
   }
 
   & .class-notebook__mark {
-    font-size: var(--platform-type-xs);
-    color: var(--platform-text-muted);
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 var(--platform-space-2);
+    border-radius: 1000px;
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
   }
 
-  & .class-notebook__mark.class-notebook__mark_tone_solved {
-    font-weight: 600;
-    color: var(--platform-success-ink);
+  & .class-notebook__mark_tone_solved {
+    background: var(--platform-m3-success-container);
+    color: var(--platform-m3-on-success-container);
   }
 
-  & .class-notebook__mark.class-notebook__mark_tone_failed {
-    font-weight: 600;
-    color: var(--platform-danger);
+  & .class-notebook__mark_tone_failed {
+    background: var(--platform-m3-container-high);
+    color: var(--platform-m3-error);
   }
 
   & .class-notebook__takeaways {
-    margin-top: var(--platform-space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-4) var(--platform-space-5);
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--platform-m3-primary-wash);
+    scroll-margin-top: 140px;
+
+    & .class-notebook__heading {
+      margin: 0;
+    }
   }
 
   & .class-notebook__takeaway-list {
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-2);
-    margin: var(--platform-space-3) 0 0;
-    padding-left: var(--platform-space-6);
-    list-style: decimal;
-    font-family: var(--platform-font-serif);
-    font-size: var(--platform-type-lg);
-    line-height: 1.6;
-
-    & li::marker {
-      font-weight: 700;
-      color: var(--platform-accent-ink);
-    }
+    margin: 0;
+    padding-left: var(--platform-space-5);
+    font-size: var(--platform-type-sm);
+    line-height: 1.5;
   }
 
   & .class-notebook__foot {
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-2);
-    margin-top: var(--platform-space-12);
-    padding-top: var(--platform-space-6);
-    box-shadow: 0 -1px 0 var(--platform-border);
+    padding-top: var(--platform-space-4);
+    border-top: 1px solid var(--platform-m3-divider);
   }
 
   & .class-notebook__next {
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-1);
-    margin: 0 0 var(--platform-space-2);
+    gap: var(--platform-space-0-5);
+    margin: 0;
   }
 
-  & .class-notebook__muted {
-    margin: 0;
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
+  & .class-notebook__foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-2);
+    margin: 0 0 0 calc(-1 * var(--platform-space-3));
+
+    & a {
+      text-decoration: none;
+    }
+  }
+
+  @media (width < 1024px) {
+    & .class-notebook__join {
+      align-items: stretch;
+      padding-left: 0;
+    }
+
+    & .class-notebook__fab {
+      justify-content: center;
+    }
   }
 
   @media (width < 640px) {
     & .class-notebook__title {
-      font-size: var(--platform-type-4xl);
+      font-size: var(--platform-type-2xl);
     }
 
     & .class-notebook__question-board {

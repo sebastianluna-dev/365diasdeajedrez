@@ -12,11 +12,13 @@ export type ClassJoinBarProps = Omit<MeetingJoinCardProps, "density">;
  * drawn only under 1024px. Always a SIBLING of `.platform-page`, never
  * inside it: while the page's entrance animation runs, its transform makes
  * it the containing block of anything fixed. The page reserves the
- * bar's height with `platform-page_foot_join-bar`.
+ * bar's height with `platform-page_foot_join-bar`. With `look="material"`
+ * (a page moved to the new design system) the strip is Material's panel and
+ * the button its filled one.
  */
 export function ClassJoinBar(props: ClassJoinBarProps) {
   return (
-    <div className="class-join-bar">
+    <div className={`class-join-bar${props.look ? ` class-join-bar_look_${props.look}` : ""}`}>
       <MeetingJoinCard {...props} density="bar" />
     </div>
   );

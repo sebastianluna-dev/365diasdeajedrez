@@ -1,49 +1,63 @@
 ---
-description: "«Mis clases» (ALU-1): two tabs with their counts; «Próximas» as tickets by day with the classes paid without a date in one notice, «Pasadas» as a line of months with each class's card; «Tus clases pagadas» in counts beside both."
+description: "«Mis clases» (ALU-1) in the new design system: the views «Próximas» and «Pasadas» and «Tus clases pagadas» in the side column; in the panel, the agenda by day — today's class as a large band with the way in, a later one as a row, the classes paid without a date at the foot — or the past classes by month."
 ---
 
 # `ClassesListSection`
 
-|            |                                                                                                                                                                                               |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/classes/classes-list/classes-list.section.tsx`                                                                                                                  |
-| Kind       | Server Component                                                                                                                                                                              |
-| Stylesheet | `classes-list.section.css` → block `.classes-list`                                                                                                                                            |
-| Used by    | `/clases`                                                                                                                                                                                     |
-| Composes   | [`ClassTicket`](/components/platform/shared/class-ticket), [`PastClassCard`](/components/platform/shared/past-class-card), [`PaidClassesCard`](/components/platform/shared/paid-classes-card) |
-| Uses       | `StudentClassesView` from `services/classes/classes.types`; `formatAgendaDay`, `classDayParts` from `lib/format-class-when`; `dayKeyIn` from `lib/timezone`; `platformRoutes`                 |
+|            |                                                                                                                                                                                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/classes/classes-list/classes-list.section.tsx`                                                                                                                                                                                                                                                                                       |
+| Pieces     | `today-class.comp.tsx`, `agenda-row.comp.tsx`, `class-phase-chip.comp.tsx`, `classes-skeleton.comp.tsx`, `agenda-class.ts`                                                                                                                                                                                                                                         |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                   |
+| Stylesheet | `classes-list.section.css` → block `.classes-list`; `today-class.comp.css` → block `.today-class`; `agenda-row.comp.css` → block `.agenda-row`; `class-phase-chip.comp.css` → block `.class-phase-chip`; `classes-skeleton.comp.css` → block `.classes-skeleton`                                                                                                   |
+| Story      | `classes-list.stories.tsx` (`platform/sections/classes/ClassesListSection`): upcoming, link closed, past, empty                                                                                                                                                                                                                                                    |
+| Used by    | `/clases`; `ClassesSkeleton` by `app/(platform)/clases/loading.tsx`                                                                                                                                                                                                                                                                                                |
+| Composes   | [`PlatformSideNav`](/components/platform/shared/platform-side-nav), [`PaidClassesCard`](/components/platform/shared/paid-classes-card), [`PastClassCard`](/components/platform/shared/past-class-card), [`CopyLinkButton`](/components/platform/shared/copy-link-button) (`material="tonal"`), [`MeetingCountdown`](/components/platform/shared/meeting-countdown) |
+| Uses       | `StudentClassesView` from `services/classes/classes.types`; `meetingJoinState`; `formatAgendaDay`, `classDayParts`, `formatClassHours`, `formatClassDay`, `formatClassLength` from `lib/format-class-when`; `dayKeyIn`; `mdButton`; `platformRoutes`                                                                                                               |
 
 ## Purpose
 
-The student's classes as the owner chose them on 2026-10-15 («8 · Boletos y tarjetas, sin pagos»). Two tabs, links with their counts: «Próximas» (`/clases`) and «Pasadas» (`/clases?vista=pasadas`).
+The student's classes as the owner chose them on 2026-10-15 («8 · Boletos y tarjetas, sin pagos»), moved whole to the new design system on 2026-10-23 (the owner's «M4» canvas, `MaterialM4Clases`). The page bleeds onto the canvas and the section draws the workspace (`.platform-workspace`); the bar shows «Clases» with its drawing (`NavArt` `teach`), and there is no search: none maps onto a student's classes.
 
-- **«Próximas»** is an agenda by day: a heading per day drawn out into a rule («Hoy · jueves 15 de octubre», «Domingo 18 de octubre · en 3 días»), and under it each class as its [`ClassTicket`](/components/platform/shared/class-ticket) — today's tinted, the one whose link is open with «Entrar a la clase» (on a phone the page's [`ClassJoinBar`](/components/platform/shared/class-join-bar) takes that button, `withJoinBar`). After the days, «Sin fecha»: the classes paid and not dated yet as one blue notice, «Tienes 1 clase pagada sin fecha. Administración te escribirá para fijarla.» with «Escríbenos». Nothing ahead: «No tienes más clases programadas…».
-- **«Pasadas»** is a line with a stop per month, newest first («Octubre 2026 · 1 clase»), and each class beside its day (the number and the weekday), drawn as its [`PastClassCard`](/components/platform/shared/past-class-card): the board of its chess when it has some, the same card without it when it has none. Months, never payments: a month of four classes of one payment is four cards. Ten classes a page: «Ver más» asks for one more (`?vista=pasadas&pagina=<n>`).
-- **The lane**, beside both tabs (sticky from 1024px, under the list below it): [`PaidClassesCard`](/components/platform/shared/paid-classes-card), in counts.
+- **The side column**: the two views as [`PlatformSideNav`](/components/platform/shared/platform-side-nav) links with their counts and no group title — «Próximas» (`/clases`, the calendar) and «Pasadas» (`/clases?vista=pasadas`, the arrow back) —, and under them [`PaidClassesCard`](/components/platform/shared/paid-classes-card): the seats the student has left, in counts. «Clases pagadas» on the canvas is that balance, never money. Under 1024px the column goes above the panel and the two sit side by side.
+- **«Próximas»** is the agenda by day: each day's heading in the display face with its date or its distance small beside it («Hoy jueves 22 de octubre», «Domingo 25 de octubre en 3 días»). Today's class (and one whose link is open on another day) is `TodayClass`: a band of the primary's wash with the stub of the day on the secondary container — the day, the start in large figures, the end and how long —, the phase as a `ClassPhaseChip` («Enlace abierto» in the primary on white) and the countdown, the topic, «Profesor», «Sala», «Tipo» and the classmates' faces, and the way in: «Entrar a la clase» (Material's filled button) and «Copiar el enlace» (tonal) while the link is open, «Ver la clase» before, and «N para preparar» as a text button to the class's `#para-preparar`. On a phone the page's [`ClassJoinBar`](/components/platform/shared/class-join-bar) (`look="material"`) takes «Entrar a la clase» and the band offers «Ver la clase» instead (`withJoinBar`). A later class is `AgendaRow`: one outlined row, the whole of it the link, that lifts under the pointer — the hours, the topic, who gives it, the kind (with the classmates) and the room, a make-up's note, the phase, and at the right when the link opens («El enlace se abre a las 16:50», «Administración agregará el enlace») and «N para preparar». At the panel's foot, the classes paid and not dated yet as one amber band, «Tienes 1 clase pagada sin fecha. Administración te escribirá para fijarla.» with «Escríbenos». Nothing ahead: «No tienes más clases programadas…».
+- **«Pasadas»** is the months, newest first («Octubre 2026 1 clase»), each class beside its day (the number and the weekday) as its [`PastClassCard`](/components/platform/shared/past-class-card): the board of its chess when it has some, the same card without it when it has none. Months, never payments. Ten classes a page: «Ver más» (Material's outlined button) asks for one more (`?vista=pasadas&pagina=<n>`).
 
-Without a class of any kind and nothing paid: a dashed box with the faint ghost of a ticket, «No tienes clases programadas», «Cuando administración programe una clase contigo, aparecerá aquí con su fecha y su enlace.» and «¿Quieres tomar clases? Escríbenos». Nothing on the page says which payment a class belongs to.
+The page's heading is «Mis clases · Próximas» (or «Pasadas») for a screen reader only: the bar and the lit view already say it on screen. Without a class of any kind and nothing paid: a dashed box with the faint ghost of a class, «No tienes clases programadas», «Cuando administración programe una clase contigo, aparecerá aquí con su fecha y su enlace.» and «¿Quieres tomar clases? Escríbenos». Nothing on the page says which payment a class belongs to, nor any amount.
+
+While it loads, `ClassesSkeleton` draws the same workspace in the containers' greys (markup and CSS only, as a `loading.tsx` needs).
+
+**Adapted from the canvas**: the canvas's «Profesora» is «Profesor», as the data does not say; its «3 por hacer» is the class's «N para preparar» (the blocks the student may see now); a later row says the link's hour or the staff's, never a countdown; the classmates' faces are the secondary container, not each person's colour.
 
 ## Props
 
 | Prop        | Type                      | Required | Meaning                                                                |
 | ----------- | ------------------------- | -------- | ---------------------------------------------------------------------- |
 | `view`      | `StudentClassesView`      | yes      | What `getUserClasses(pastPages)` gives.                                |
-| `tab`       | `"proximas" \| "pasadas"` | yes      | The tab from `?vista=`.                                                |
+| `tab`       | `"proximas" \| "pasadas"` | yes      | The view from `?vista=`.                                               |
 | `pastPages` | `number`                  | yes      | How many pages of past classes are shown; «Ver más» asks for one more. |
 
 ## Markup & styling
 
-Block `.classes-list` (459 lines).
+Block `.classes-list` (227 lines), on `.platform-workspace`.
 
-**Elements:** `.classes-list__sr`, `.classes-list__tabs`, `.classes-list__tab`, `.classes-list__tab-icon`, `.classes-list__tab-count`, `.classes-list__columns`, `.classes-list__main`, `.classes-list__lane`, `.classes-list__quiet`, `.classes-list__agenda`, `.classes-list__day`, `.classes-list__day-title`, `.classes-list__today`, `.classes-list__distance`, `.classes-list__notice`, `.classes-list__notice-icon`, `.classes-list__notice-glyph`, `.classes-list__notice-text`, `.classes-list__notice-lead`, `.classes-list__notice-link`, `.classes-list__notice-link-icon`, `.classes-list__timeline`, `.classes-list__month`, `.classes-list__stop`, `.classes-list__stop-icon`, `.classes-list__month-title`, `.classes-list__entry`, `.classes-list__when`, `.classes-list__when-day`, `.classes-list__when-weekday`, `.classes-list__more`, `.classes-list__more-count`, `.classes-list__empty`, `.classes-list__ghost`, `.classes-list__ghost-stub`, `.classes-list__ghost-lines`, `.classes-list__ghost-line`, `.classes-list__empty-title`, `.classes-list__empty-text`, `.classes-list__empty-link`
+**Elements:** `.classes-list__sr`, `.classes-list__side`, `.classes-list__panel`, `.classes-list__quiet`, `.classes-list__day`, `.classes-list__day-title`, `.classes-list__day-aside`, `.classes-list__undated`, `.classes-list__undated-icon`, `.classes-list__undated-text`, `.classes-list__undated-link`, `.classes-list__entry`, `.classes-list__when`, `.classes-list__when-day`, `.classes-list__when-weekday`, `.classes-list__more`, `.classes-list__more-count`, `.classes-list__empty`, `.classes-list__ghost`, `.classes-list__ghost-stub`, `.classes-list__ghost-lines`, `.classes-list__ghost-line`, `.classes-list__empty-title`, `.classes-list__empty-text`
 
-**Modifiers and states:** `.classes-list__tab_state_active`, `.classes-list__ghost-line_size_{short,mid}`
+**Modifiers and states:** `.classes-list__ghost-line_size_{short,mid}`
 
-**Other classes it renders:** `.platform-button`.
+Block `.today-class` (209 lines): `__stub`, `__day`, `__start`, `__span`, `__main`, `__meta`, `__lead`, `__title`, `__link`, `__note`, `__fields`, `__field`, `__crew`, `__faces`, `__face`, `__more-faces`, `__actions`, `__enter`, `__copy`, `__view`, `__sr`; `_join_bar`.
 
-**Breakpoints:** `(width < 1024px)` — one column, the lane under the list; `(width < 640px)` — smaller tabs, the notice's link under its text, the day above each past card.
+Block `.agenda-row` (125 lines): `__time`, `__start`, `__span`, `__main`, `__title`, `__meta`, `__note`, `__lead`, `__prepare`, `__sr`; `_state_cancelled`.
 
-**Tokens:** `--platform-text`, `--platform-text-muted`, `--platform-surface`, `--platform-surface-neutral`, `--platform-surface-sunken`, `--platform-border-strong`, `--platform-shadow-card`, `--platform-accent`, `--platform-accent-soft`, `--platform-accent-ink`, `--platform-selection`, `--platform-selection-soft`, `--platform-selection-wash`, `--platform-success-soft`, `--platform-success-ink`, `--platform-success-border`, `--platform-font-display`
+Block `.class-phase-chip` (51 lines): `__dot`; `_tone_{quiet,open,live,done}`.
+
+Block `.classes-skeleton` (176 lines), the loading shape.
+
+**Other classes it renders:** `.platform-workspace`, Material's buttons (`mdButton`), `.platform-md-icon`.
+
+**Breakpoints:** `(width < 1024px)` — the side's two pieces side by side above the panel; the band leaves «Entrar a la clase» to the bar. `(width < 768px)` — a row in one column, the hours on their own line. `(width < 640px)` — the band's stub on top, the day above each past card, the amber band's link under its text.
+
+**Tokens:** `--platform-m3-*` (canvas, panel, containers, primary wash, secondary container, success and warning containers, row edge and shadow), `--md-sys-shape-corner-lg`/`-xl`, `--platform-font-display`.
 
 ## Usage
 
@@ -53,10 +67,13 @@ From `app/(platform)/clases/page.tsx`:
 const tab: ClassesTab = vista === "pasadas" ? "pasadas" : "proximas";
 const view = await getUserClasses(pastPages);
 
-<ClassesListSection view={view} tab={tab} pastPages={pastPages} />;
+<div className="platform-page platform-page_width_full platform-page_frame_bleed">
+  <ClassesListSection view={view} tab={tab} pastPages={pastPages} />
+</div>;
 ```
 
 ## Related
 
-- [`ClassTicket`](/components/platform/shared/class-ticket), [`PastClassCard`](/components/platform/shared/past-class-card), [`PaidClassesCard`](/components/platform/shared/paid-classes-card), [`ClassAheadSection`](/components/platform/sections/classes/class-detail/class-ahead-section).
-- [Student features › Classes](/platform/student).
+- [`ClassNotebookSection`](/components/platform/sections/classes/class-notebook/class-notebook-section), the page of one class.
+- [`ClassTicket`](/components/platform/shared/class-ticket), the boarding pass the dashboard still draws.
+- [Styling › The new design system](/ui/styling#the-new-design-system-material-3-expressive), [Student features › Classes](/platform/student).

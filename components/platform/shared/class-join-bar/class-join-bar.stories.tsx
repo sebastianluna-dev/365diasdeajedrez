@@ -57,3 +57,6 @@ export const InProgress: Story = {
 
 /** The teacher's bar. */
 export const Teacher: Story = { args: { audience: "teacher" } };
+
+/** On a page moved to the new design system («Mis clases»): Material's panel and its filled button. */
+export const Material: Story = { args: { look: "material" } };

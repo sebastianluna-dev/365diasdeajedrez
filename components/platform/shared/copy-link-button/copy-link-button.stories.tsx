@@ -25,6 +25,7 @@ Reference page: [Components › CopyLinkButton](/components/platform/shared/copy
     url: { control: "text" },
     label: { control: "text" },
     size: { control: "inline-radio", options: ["sm", "lg"] },
+    material: { control: "inline-radio", options: [undefined, "tonal", "icon"] },
   },
   decorators: [
     (Story) => (
@@ -43,6 +44,15 @@ export const Default: Story = {};
 
 /** Large: the secondary box at 48px, as on a class's ticket beside «Entrar a la clase». */
 export const Large: Story = { args: { size: "lg" } };
+
+/** On a page moved to the new design system: Material's tonal button with the label, as on today's class in «Mis clases». */
+export const MaterialTonal: Story = {
+  name: "Material tonal",
+  args: { material: "tonal", label: "Copiar el enlace" },
+};
+
+/** On a page moved to the new design system: Material's bare icon button, as in a class's toolbar. */
+export const MaterialIcon: Story = { name: "Material icon", args: { material: "icon" } };
 
 /** Pressed: the tick, and «Enlace copiado» announced. The headless browser has no clipboard, so the story lends one. */
 export const Copied: Story = {

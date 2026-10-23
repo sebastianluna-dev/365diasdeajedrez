@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
 import { CopyIcon } from "@/components/icons/copy-icon.comp";
+import { mdButton, mdIconButton } from "@/lib/material/material-classes";
 import "./copy-link-button.comp.css";
 
 interface CopyLinkButtonProps {
@@ -14,6 +15,13 @@ interface CopyLinkButtonProps {
    * 48px, beside a large «Entrar a la clase» (a class's ticket).
    */
   size?: "sm" | "lg";
+  /**
+   * On a page moved to the new design system, Material's button instead:
+   * `tonal` the 40px tonal button with the label written beside the icon (a
+   * class's «Copiar el enlace»), `icon` a bare icon button (a toolbar's).
+   * It wins over `size`.
+   */
+  material?: "tonal" | "icon";
 }
 
 const COPIED_MS = 2000;
@@ -24,7 +32,7 @@ const COPIED_MS = 2000;
  * live region a screen reader hears. Where the clipboard is not available
  * (an insecure context), the button stays and does nothing it cannot do.
  */
-export function CopyLinkButton({ url, label, size = "sm" }: CopyLinkButtonProps) {
+export function CopyLinkButton({ url, label, size = "sm", material }: CopyLinkButtonProps) {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -47,18 +55,26 @@ export function CopyLinkButton({ url, label, size = "sm" }: CopyLinkButtonProps)
       <button
         type="button"
         className={
-          size === "lg"
-            ? "platform-button platform-button_size_lg platform-button_shape_square"
-            : "platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square"
+          material === "tonal"
+            ? mdButton("tonal", "sm")
+            : material === "icon"
+              ? mdIconButton("standard", "sm")
+              : size === "lg"
+                ? "platform-button platform-button_size_lg platform-button_shape_square"
+                : "platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square"
         }
-        aria-label={label}
+        aria-label={material === "tonal" ? undefined : label}
         onClick={copy}
       >
         {copied ? (
-          <CheckIcon variant="classic-solid" className="platform-button__icon copy-link-button__done" />
+          <CheckIcon
+            variant="classic-solid"
+            className={`${material ? "platform-md-icon" : "platform-button__icon"} copy-link-button__done`}
+          />
         ) : (
-          <CopyIcon variant="classic-solid" className="platform-button__icon" />
+          <CopyIcon variant="classic-solid" className={material ? "platform-md-icon" : "platform-button__icon"} />
         )}
+        {material === "tonal" && label}
       </button>
       <span className="copy-link-button__status" role="status" aria-live="polite">
         {copied ? "Enlace copiado" : ""}

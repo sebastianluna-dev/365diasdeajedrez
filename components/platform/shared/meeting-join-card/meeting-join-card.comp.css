@@ -78,4 +78,19 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  /* On a page moved to the new design system: Material's roles. */
+  &.meeting-join_look_material {
+    & .meeting-join__enter {
+      text-decoration: none;
+    }
+
+    & .meeting-join__line {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .meeting-join__whatsapp {
+      color: var(--platform-m3-primary);
+    }
+  }
 }
