@@ -126,6 +126,18 @@ function pushVariation(start: PgnTreeNode, depth: number, out: ProseBlock[]): vo
 }
 
 /**
+ * One variation whole, from its first move: its paragraphs as a lesson's text
+ * prints them — its moves with their comments, and the variations of it a
+ * step deeper, in parentheses. What the lesson's note shows of each line the
+ * author offers at a move.
+ */
+export function buildVariationBlocks(start: PgnTreeNode): ProseBlock[] {
+  const blocks: ProseBlock[] = [];
+  pushVariation(start, 0, blocks);
+  return blocks;
+}
+
+/**
  * Cuts the game into paragraphs: runs of the main line, the comments that
  * close them and the variations that hang from them.
  */

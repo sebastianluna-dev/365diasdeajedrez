@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildProseBlocks, type ProseBlock } from "./notation-prose";
+import { buildProseBlocks, buildVariationBlocks, type ProseBlock } from "./notation-prose";
 
 type VariationBlock = Extract<ProseBlock, { kind: "variation" }>;
 
@@ -139,5 +139,22 @@ describe("buildProseBlocks", () => {
     const keys = blocks.map((block) => block.key);
 
     expect(new Set(keys).size).toBe(keys.length);
+  });
+});
+
+describe("buildVariationBlocks", () => {
+  it("prints one variation whole: its moves, its comments and its own variations in parentheses", () => {
+    const tree = parsePgnTree(
+      '[Event "Test"]\n\n1. e4 e5 (1... c5 {la Siciliana} 2. Nf3 (2. c3 {la Alapin}) d6) 2. Nf3 *',
+    );
+    const [, alternative] = tree!.children[0]!.children;
+    const blocks = buildVariationBlocks(alternative!);
+
+    expect(blocks.map(text)).toEqual(["1... c5 {la Siciliana} 2. Cf3", "2. c3 {la Alapin}", "2... d6"]);
+    expect(blocks.filter(isVariation).map((block) => [block.depth, block.opens ?? false, block.closes ?? 0])).toEqual([
+      [0, false, 0],
+      [1, true, 1],
+      [0, false, 0],
+    ]);
   });
 });

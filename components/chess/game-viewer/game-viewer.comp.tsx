@@ -40,7 +40,7 @@ import { mdButton, mdIconButton } from "@/lib/material/material-classes";
 import { MoveTree } from "./move-tree.comp";
 import { MoveNotes } from "./move-notes.comp";
 import { TrophyIcon } from "@/components/icons/trophy-icon.comp";
-import { lineThrough } from "@/lib/chess/notation-line";
+import { mainLineAnchor, mainLineOf } from "@/lib/chess/notation-line";
 import { playMoveSound } from "./move-sound";
 import { usePgnEditing } from "./use-pgn-editing.hook";
 import {
@@ -778,9 +778,11 @@ export function GameViewer({
   );
   const hasHead = Boolean(title || badge);
   const notes = moveList === "notes";
-  // How far through the line being read: the move on the board of all of them.
-  const notesLine = notes && tree ? lineThrough(notationTree ?? tree, currentPath) : [];
-  const notesAt = notesLine.findIndex((step) => step.path === currentPath) + 1;
+  // How far through the main line: its move on the board, or the one a
+  // variation on the board branches from, of all of them.
+  const notesLine = notes && tree ? mainLineOf(notationTree ?? tree) : [];
+  const notesAnchor = mainLineAnchor(currentPath);
+  const notesAt = notesLine.findIndex((step) => step.path === notesAnchor) + 1;
 
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- not a control: the click is only noted, so the viewer's keys answer once it has been used

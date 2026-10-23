@@ -58,15 +58,16 @@ const meta = {
     docs: {
       description: {
         component: `
-A lesson read one move at a time, in the new design system: the line being
-followed as pills — the moves played, the one on the board in the primary,
-the ones to come dimmed —, under it a note with what the author says about
-the move on the board and the other moves offered there.
-A variation is entered from its move in «Otras jugadas», and from then on it
-is the line. The viewer draws it with \`moveList="notes"\`.
+A lesson read one move at a time, in the new design system: the main line
+as pills that never change — the moves played, the one on the board in the
+primary, the ones to come dimmed —, under it a note with what the author
+says about that move and each line offered there, whole: its moves as pills
+and its comments. A move of a variation on the board leaves the main line
+lit on the move it branches from, and is lit itself in that move's note.
+The viewer draws it with \`moveList="notes"\`.
 
 Here it sits on the workspace's white panel, as in the lesson. Clicking a
-pill or an alternative moves the board, as the viewer would.
+pill, in the line or in a variation, moves the board, as the viewer would.
 
 Source: \`components/chess/game-viewer/move-notes.comp.tsx\`.
 Reference page: [Components › MoveNotes](/components/chess/game-viewer/move-notes) in the docs site.
@@ -96,7 +97,7 @@ Reference page: [Components › MoveNotes](/components/chess/game-viewer/move-no
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** At 3... Ag4: the moves played, the one on the board, the rest dimmed; its note, and 3... exd4 offered instead. */
+/** At 3... Ag4: the moves played, the one on the board, the rest dimmed, and its note. */
 export const Default: Story = {};
 
 /** Before the first move: the PGN's opening comment as the note, «Para empezar». */
@@ -105,7 +106,13 @@ export const AtTheStart: Story = {
   args: { currentPath: "" },
 };
 
-/** Inside a variation, 4. Dxd4: the line is now the variation, from the start. */
+/** At 3. d4, with 3... exd4 offered there: the note prints that line whole, its comments and its own variation in parentheses. */
+export const WithAVariation: Story = {
+  name: "With a variation",
+  args: { currentPath: mainLinePath(5) },
+};
+
+/** Inside that variation, on 4. Dxd4: the main line stays, 3. d4 lit, and the move is lit in the note. */
 export const InVariation: Story = {
   name: "In a variation",
   args: { currentPath: "0.0.0.0.0.1.1" },
