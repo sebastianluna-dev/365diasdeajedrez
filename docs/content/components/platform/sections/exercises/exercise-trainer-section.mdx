@@ -1,5 +1,5 @@
 ---
-description: "«Ejercicios» itself, on its panel: the toolbar with the trail to the topic, its tally and the level, and a library exercise of the topic and level on the solve page — or why none is dealt."
+description: "«Ejercicios» itself, on its panel: with no toolbar, a library exercise of the topic and level on the solve page — or why none is dealt."
 ---
 
 # `ExerciseTrainerSection`
@@ -16,22 +16,21 @@ description: "«Ejercicios» itself, on its panel: the toolbar with the trail to
 
 ## Props
 
-| Prop        | Type              | Required | Meaning                                                                                                     |
-| ----------- | ----------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
-| `serving`   | `PracticeServing` | yes      | The exercise dealt, or why none is (`empty`, `choose`).                                                     |
-| `filters`   | `PracticeFilters` | yes      | The topics, to name the one on screen and its parent, and the levels the toolbar offers.                    |
-| `topicCode` | `string \| null`  | yes      | The topic of the address (`tema`); null on «Todos los temas».                                               |
-| `levelSlug` | `string \| null`  | yes      | The level of the address (`nivel`); null on every level.                                                    |
-| `again`     | `boolean`         | no       | One library exercise again, from a pill of «Esta sesión»: its title heads the trail, and there is no level. |
+| Prop        | Type              | Required | Meaning                                                                                                           |
+| ----------- | ----------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
+| `serving`   | `PracticeServing` | yes      | The exercise dealt, or why none is (`empty`, `choose`).                                                           |
+| `filters`   | `PracticeFilters` | yes      | The topics, to name the one on screen (the page's heading).                                                       |
+| `topicCode` | `string \| null`  | yes      | The topic of the address (`tema`); null on «Todos los temas».                                                     |
+| `again`     | `boolean`         | no       | One library exercise again, from a pill of «Esta sesión»: its title is the page's heading, and there is no level. |
 
 ## Behaviour
 
-Since the move to the new design system (2026-10-23) «Ejercicios» and «Ejercicios por tema» are one page: the topic is chosen in the side column, the level in the toolbar, and both live in the address (`/ejercicios?tema=<Topic code>&nivel=<Level slug>`). The service is the one it was (D18, D32): a random library exercise of the topic (its subtopics included) in the level's Elo range, the ones never solved and not tried today first, with the context `PRACTICE`; with no topic, any topic, and with no level, any level (`open`); «Siguiente» (`&tras=<id>`) deals another of the same choice; one tried this study day opens unscored (§2.7); every one of the choice solved, a note says they repeat.
+Since the move to the new design system (2026-10-23) «Ejercicios» and «Ejercicios por tema» are one page: the topic and the level are chosen in the side column (the level in its «Nivel» group since 2026-10-23; it was a select in the panel's toolbar), and both live in the address (`/ejercicios?tema=<Topic code>&nivel=<Level slug>`). The service is the one it was (D18, D32): a random library exercise of the topic (its subtopics included) in the level's Elo range, the ones never solved and not tried today first, with the context `PRACTICE`; with no topic, any topic, and with no level, any level (`open`); «Siguiente» (`&tras=<id>`) deals another of the same choice; one tried this study day opens unscored (§2.7); every one of the choice solved, a note says they repeat.
 
-The toolbar: «Ejercicios › Táctica › Clavada» (the topic its `h1`, its parent a crumb that keeps the level), the topic's tally, and the level. With nothing dealt the panel says why: an empty library («La biblioteca aún no tiene ejercicios.», with the way to the series), a choice with no exercise («No hay ejercicios de ese tema en ese nivel todavía.»), or a code that is not in the catalogs.
+**No toolbar** (2026-10-23, the owner's request): the trail, the topic's tally and the level went; the topic on screen and the level are the side column's lit links, and the page's `h1` is the topic, read out and not drawn (`.exercise-trainer__heading`). With nothing dealt the panel says why: an empty library («La biblioteca aún no tiene ejercicios.», with the way to the series), a choice with no exercise («No hay ejercicios de ese tema en ese nivel todavía.»), or a code that is not in the catalogs.
 
 ## Markup & styling
 
-Block `.exercise-trainer` (14 lines): only the repeat note, a pill of the info container; the rest is the toolbar's and the solve page's.
+Block `.exercise-trainer` (24 lines): the heading read out and not drawn (`__heading`), and the repeat note, a pill of the info container; the rest is the solve page's.
 
 **Tokens:** `--platform-m3-info-container`, `--platform-m3-on-info-container`

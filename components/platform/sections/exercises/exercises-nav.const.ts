@@ -4,7 +4,7 @@ import type {
   PlatformSideNavLink,
 } from "@/components/platform/shared/platform-side-nav/platform-side-nav.comp";
 import { platformRoutes } from "@/lib/platform-routes";
-import type { PracticeTopicOption } from "@/services/exercises/practice.types";
+import type { PracticeLevelOption, PracticeTopicOption } from "@/services/exercises/practice.types";
 
 /** The parameter of the series' page that says which view is on screen: `?de=academia`. */
 export const SERIES_VIEW_PARAM = "de";
@@ -17,6 +17,8 @@ export const SUBTOPIC_LIMIT = 5;
 export interface ExercisesNavData {
   /** The topics that have a library exercise (`getPracticeFilters`): the first level and their children. */
   topics: PracticeTopicOption[];
+  /** The active levels the trainer deals from, by the Level catalog's bands. */
+  levels: PracticeLevelOption[];
   /** The series the student's teacher gave them, and the academy's published ones, by id: a series' pages light their view. */
   teacherSeriesIds: string[];
   academySeriesIds: string[];
@@ -49,7 +51,9 @@ export function exercisesNavAction({ pathname }: ExercisesNavLocation): Platform
  * topic, then each first-level topic, the one open showing its subtopics (the
  * first five, the one on screen always among them, unless `expanded`) — and
  * «Tuyo»: what the teacher gave, the academy's series when there are any,
- * and the history. A topic keeps the level chosen (`nivel`). Which link is lit
+ * and the history; on the trainer, between them, «Nivel» — every level or one
+ * band, as radio rings (2026-10-23; it was a select in the panel's toolbar),
+ * each keeping the topic on screen. A topic keeps the level chosen (`nivel`). Which link is lit
  * follows the address: the layout draws the column once, so the browser
  * lights it (`ExercisesSideNav`).
  */
@@ -116,6 +120,27 @@ export function exercisesNavGroups(
           ...topicLinks,
         ],
       },
+      ...(onTrainer && data.levels.length > 0
+        ? [
+            {
+              title: "Nivel",
+              links: [
+                {
+                  label: "Todos los niveles",
+                  href: platformRoutes.exerciseTrainer({ tema: topicCode ?? undefined }),
+                  choice: true,
+                  current: !level,
+                },
+                ...data.levels.map((option) => ({
+                  label: option.name,
+                  href: platformRoutes.exerciseTrainer({ tema: topicCode ?? undefined, nivel: option.slug }),
+                  choice: true,
+                  current: level === option.slug,
+                })),
+              ],
+            },
+          ]
+        : []),
       {
         title: "Tuyo",
         links: [

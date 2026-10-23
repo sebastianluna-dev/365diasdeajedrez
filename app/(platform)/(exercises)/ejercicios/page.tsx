@@ -37,12 +37,5 @@ export default async function ExercisesPage({ searchParams }: ExercisesPageProps
     getPracticeExercise(choice, codeOf(tras), { open: true }),
   ]);
 
-  return (
-    <ExerciseTrainerSection
-      serving={serving}
-      filters={filters}
-      topicCode={choice.topicCode}
-      levelSlug={choice.levelSlug}
-    />
-  );
+  return <ExerciseTrainerSection serving={serving} filters={filters} topicCode={choice.topicCode} />;
 }

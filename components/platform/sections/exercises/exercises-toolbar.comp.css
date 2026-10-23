@@ -61,23 +61,6 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* The level: a small outlined button of Material's look over our select. */
-  & .exercises-toolbar__level.platform-select__trigger {
-    height: 32px;
-    padding: 0 var(--platform-space-3);
-    border-color: var(--platform-m3-outline);
-    background: var(--platform-m3-panel);
-    color: var(--platform-m3-on-surface);
-    font-size: var(--platform-type-2xs);
-    font-weight: 600;
-
-    &:focus-visible {
-      outline: 2px solid var(--platform-m3-primary);
-      outline-offset: 2px;
-      border-color: var(--platform-m3-outline);
-    }
-  }
-
   @media (width < 640px) {
     margin: calc(-1 * var(--platform-space-4)) calc(-1 * var(--platform-space-4)) 0;
     padding-left: var(--platform-space-4);

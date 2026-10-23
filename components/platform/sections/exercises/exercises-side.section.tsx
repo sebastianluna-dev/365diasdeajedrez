@@ -3,7 +3,7 @@ import { getPracticeFilters } from "@/services/exercises/practice.service";
 import { ExercisesSideNav } from "./exercises-side-nav.comp";
 
 /**
- * The side column's data: the topics with a library exercise and the series
+ * The side column's data: the topics with a library exercise, the levels, and the series
  * the student may open, the teacher's and the academy's (both cached per
  * request, so the page under it reads them again for free). It is the one
  * part of the frame that waits for the database, so `ExercisesWorkspace`
@@ -15,6 +15,7 @@ export async function ExercisesSideSection() {
     <ExercisesSideNav
       data={{
         topics: filters.topics,
+        levels: filters.levels,
         teacherSeriesIds: home.series.map((series) => series.id),
         academySeriesIds: home.academySeries.map((series) => series.id),
       }}

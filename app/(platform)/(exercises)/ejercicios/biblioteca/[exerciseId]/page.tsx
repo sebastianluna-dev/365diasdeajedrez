@@ -26,5 +26,5 @@ export default async function LibraryExercisePage({ params }: LibraryExercisePag
   const [filters, serving] = await Promise.all([getPracticeFilters(), getLibraryExerciseToSolve(exerciseId)]);
   if (serving?.kind !== "exercise") notFound();
 
-  return <ExerciseTrainerSection serving={serving} filters={filters} topicCode={null} levelSlug={null} again />;
+  return <ExerciseTrainerSection serving={serving} filters={filters} topicCode={null} again />;
 }

@@ -11,6 +11,10 @@ const DATA: ExercisesNavData = {
     })),
     { code: "ENDGAME", label: "Finales", parentCode: null },
   ],
+  levels: [
+    { slug: "inicial", name: "Inicial", range: "hasta 1199" },
+    { slug: "intermedio", name: "Intermedio", range: "1200–1599" },
+  ],
   teacherSeriesIds: ["s1", "s2"],
   academySeriesIds: ["a1"],
 };
@@ -20,10 +24,11 @@ const at = (url: string) => {
   return { pathname: parsed.pathname, params: parsed.searchParams };
 };
 
+// The topics and «Tuyo»: what is lit as a view, not as a level's ring.
 const lit = (groups: ReturnType<typeof exercisesNavGroups>["groups"]) =>
-  groups.flatMap((group) =>
-    group.links.flatMap((link) => [link, ...(link.subLinks ?? [])]).filter((link) => link.current),
-  );
+  groups
+    .filter((group) => group.title !== "Nivel")
+    .flatMap((group) => group.links.flatMap((link) => [link, ...(link.subLinks ?? [])]).filter((link) => link.current));
 
 describe("the side column of «Ejercicios»", () => {
   it("lights «Todos los temas» on the bare page and opens no topic", () => {
@@ -76,5 +81,18 @@ describe("the side column of «Ejercicios»", () => {
   it("fills «Puzzle Rush» only on its own page", () => {
     expect(exercisesNavAction(at("/puzzle-rush")).current).toBe(true);
     expect(exercisesNavAction(at("/ejercicios")).current).toBe(false);
+  });
+
+  it("offers the levels on the trainer only, as rings that keep the topic, the one in the address lit", () => {
+    const { groups } = exercisesNavGroups(DATA, at("/ejercicios?tema=ENDGAME&nivel=intermedio"), false);
+    const levels = groups.find((group) => group.title === "Nivel");
+    expect(levels?.links.map((link) => [link.label, link.href, link.current, link.choice])).toEqual([
+      ["Todos los niveles", "/ejercicios?tema=ENDGAME", false, true],
+      ["Inicial", "/ejercicios?tema=ENDGAME&nivel=inicial", false, true],
+      ["Intermedio", "/ejercicios?tema=ENDGAME&nivel=intermedio", true, true],
+    ]);
+    expect(
+      exercisesNavGroups(DATA, at("/ejercicios/historial"), false).groups.some((group) => group.title === "Nivel"),
+    ).toBe(false);
   });
 });

@@ -1,6 +1,16 @@
-/* The trainer's panel (exercise-trainer.section.tsx): the toolbar, the
-   note of a choice already solved through, and the solve page. */
+/* The trainer's panel (exercise-trainer.section.tsx): its heading, read out
+   and not drawn, the note of a choice already solved through, and the solve
+   page. */
 .exercise-trainer {
+  & .exercise-trainer__heading {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
   & .exercise-trainer__note {
     align-self: flex-start;
     margin: 0;
