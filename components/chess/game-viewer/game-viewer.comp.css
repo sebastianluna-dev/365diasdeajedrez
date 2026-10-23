@@ -833,14 +833,15 @@
        place, the two are cards of their own, one under the other, as the
        design draws them: the engine's (`EnginePanel`, outlined) and the
        notation's, which takes the panel's outline. */
-    &:not(.game-viewer_list_notes) .game-viewer__panel:has(> .engine-panel, > .game-viewer__headline) {
+    &:not(.game-viewer_list_notes)
+      .game-viewer__panel:has(> .engine-panel, > .game-viewer__headline, > .game-viewer__record) {
       gap: var(--platform-space-3);
       overflow: visible;
       border: 0;
       border-radius: 0;
     }
 
-    & .game-viewer__panel:has(> .engine-panel, > .game-viewer__headline) > .game-viewer__moves {
+    & .game-viewer__panel:has(> .engine-panel, > .game-viewer__headline, > .game-viewer__record) > .game-viewer__moves {
       border: 1px solid var(--platform-m3-container-high);
       border-radius: var(--md-sys-shape-corner-lg);
     }
@@ -1022,6 +1023,111 @@
         height: auto;
       }
     }
+  }
+
+  /* The game's record at the head of the moves' column, above the engine (a
+     study's game, 2026-10-23; it spanned the panel above the board until
+     then): an outlined card of the new design system. The label and the
+     pencil, the event, where and when in one line, and what was played in
+     pills. Only the platform passes it. */
+  & .game-viewer__record {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: var(--platform-space-3) var(--platform-space-4);
+    border: 1px solid var(--platform-m3-container-high);
+    border-radius: var(--md-sys-shape-corner-lg);
+    color: var(--platform-m3-on-surface);
+  }
+
+  & .game-viewer__record-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-2);
+  }
+
+  & .game-viewer__record-label {
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* The pencil is taller than a line of the label, and must not make the
+     head taller than a record one cannot edit. */
+  & .game-viewer__record-edit {
+    margin-block: calc(-1 * var(--platform-space-1));
+  }
+
+  & .game-viewer__record-title {
+    margin: var(--platform-space-1) 0 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-lg);
+    font-weight: 500;
+    line-height: 1.35;
+    text-wrap: pretty;
+  }
+
+  & .game-viewer__record-context {
+    margin: var(--platform-space-0-5) 0 0;
+    font-size: var(--platform-type-xs);
+    line-height: 1.4;
+    color: var(--platform-m3-on-surface-variant);
+    text-wrap: pretty;
+  }
+
+  & .game-viewer__record-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-2);
+    margin: var(--platform-space-2) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* An assist chip of Material's: an icon and a short fact in an outline. */
+  & .game-viewer__record-fact {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+    max-width: 100%;
+    min-height: 24px;
+    box-sizing: border-box;
+    padding: var(--platform-space-0-5) var(--platform-space-3) var(--platform-space-0-5) var(--platform-space-2);
+    border: 1px solid var(--platform-m3-outline-variant);
+    border-radius: 8px;
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* The opening's name runs on from its code; where the column is narrow a
+     long name wraps, balanced, inside the pill. */
+  & .game-viewer__record-fact-text {
+    min-width: 0;
+    text-wrap: balance;
+  }
+
+  & .game-viewer__record-fact-detail {
+    color: var(--platform-m3-on-surface);
+  }
+
+  & .game-viewer__record-fact-icon {
+    flex: none;
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Read out, not drawn. */
+  & .game-viewer__record-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 

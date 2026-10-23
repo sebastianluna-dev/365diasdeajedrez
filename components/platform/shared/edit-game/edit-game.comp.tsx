@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useImperativeHandle, useRef, type MouseEvent, type Ref } from "react";
 import { PenIcon } from "@/components/icons/pen-icon.comp";
 import { PenToSquareIcon } from "@/components/icons/pen-to-square-icon.comp";
 import { GameFields, type GameFieldValues } from "@/components/platform/shared/game-fields/game-fields.comp";
@@ -28,9 +28,13 @@ interface EditGameProps {
   /**
    * `text` writes «Editar» as the action of a row; `icon` is a pencil with no
    * word, for the head of a card that is already titled «Datos de la partida»
-   * (the game's record beside the board).
+   * (the game's record beside the board); `none` draws no trigger, for a
+   * record whose pencil someone else draws (the study's game, whose record
+   * is the viewer's, 2026-10-23), which opens it through `ref`.
    */
-  trigger?: "text" | "icon";
+  trigger?: "text" | "icon" | "none";
+  /** Opens the popup from outside, for `trigger="none"`. */
+  ref?: Ref<EditGameHandle>;
   /**
    * `material`: the pencil as Material's standard icon button, for a page
    * moved to the new design system (a study's game, 2026-10-23). Only the
@@ -39,19 +43,26 @@ interface EditGameProps {
   look?: "material";
 }
 
+/** What a host that draws its own pencil can do with the popup. */
+export interface EditGameHandle {
+  /** Opens it, giving the focus back to the button pressed when it closes. */
+  open: (event: MouseEvent<HTMLElement>) => void;
+}
+
 /**
  * «Editar»: the button and the popup with a game's record. It saves through
  * the action it is given and closes; the moves are not edited here but on the
  * board.
  */
-export function EditGame({ action, values, results, titleHint, trigger = "text", look }: EditGameProps) {
+export function EditGame({ action, values, results, titleHint, trigger = "text", look, ref }: EditGameProps) {
   const popup = useRef<PlatformPopupHandle>(null);
+  useImperativeHandle(ref, () => ({ open: (event) => popup.current?.open(event) }), []);
 
   return (
     <div className="edit-game">
       {/* Beside a game of a list it is the action of a row; in the head of
           the record, the pencil. */}
-      {trigger === "icon" && look === "material" ? (
+      {trigger === "none" ? null : trigger === "icon" && look === "material" ? (
         <button
           type="button"
           className={`${mdIconButton("standard", "xs")} edit-game__open`}

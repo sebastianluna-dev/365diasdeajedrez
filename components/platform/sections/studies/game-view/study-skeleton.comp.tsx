@@ -1,4 +1,4 @@
-import { GameRecordSkeleton, GameSkeleton } from "./game-skeleton.comp";
+import { GameSkeleton } from "./game-skeleton.comp";
 import "./study-skeleton.comp.css";
 
 // NOTHING here may import a Client Component, however indirectly: a
@@ -33,7 +33,6 @@ export function StudySkeleton() {
 
         <section className="platform-workspace__panel study-skeleton__panel">
           <span className="study-skeleton__shape study-skeleton__trail" aria-hidden="true" />
-          <GameRecordSkeleton />
           <GameSkeleton />
         </section>
       </div>

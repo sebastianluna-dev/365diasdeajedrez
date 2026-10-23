@@ -4,14 +4,14 @@ description: "The board column of a Mis estudios game: two hooks — the PGN's h
 
 # `GameViewSection`
 
-|            |                                                                                                                                                                                                                                                     |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/game-view/game-view.section.tsx`                                                                                                                                                                              |
-| Kind       | Client Component                                                                                                                                                                                                                                    |
-| Stylesheet | `game-view.section.css` → block `.game-view`                                                                                                                                                                                                        |
-| Used by    | `/estudios/[studyId]/partidas/[gameId]`, in the panel beside the layout's [`StudyAside`](/components/platform/sections/studies/game-view/study-aside), under the page's [`GameRecord`](/components/platform/sections/studies/game-view/game-record) |
-| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer) (with `players` and `tools`), [`PlatformNotice`](/components/platform/shared/platform-notice)                                                                                             |
-| Uses       | [`usePgnHistory`](/components/platform/shared/use-pgn-history-hook), [`useGameAutosave`](/components/platform/shared/use-game-autosave-hook); `GameView` from `services/studies/studies.types`; `localStorage` (the move, per game)                 |
+|            |                                                                                                                                                                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/studies/game-view/game-view.section.tsx`                                                                                                                                                                                                   |
+| Kind       | Client Component                                                                                                                                                                                                                                                         |
+| Stylesheet | `game-view.section.css` → block `.game-view`                                                                                                                                                                                                                             |
+| Used by    | `/estudios/[studyId]/partidas/[gameId]`, in the panel beside the layout's [`StudyAside`](/components/platform/sections/studies/game-view/study-aside)                                                                                                                    |
+| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer) (with `players`, `tools` and `record`), [`EditGame`](/components/platform/shared/edit-game) (`trigger="none"`, opened by the record's pencil), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Uses       | [`usePgnHistory`](/components/platform/shared/use-pgn-history-hook), [`useGameAutosave`](/components/platform/shared/use-game-autosave-hook); `GameView` from `services/studies/studies.types`; `localStorage` (the move, per game)                                      |
 
 ## Purpose
 
@@ -24,6 +24,8 @@ The section only wires the two things the viewer cannot own: the PGN's history, 
 | Prop           | Type                      | Required | Meaning                                                                                                                                                                                                                                                     |
 | -------------- | ------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `game`         | `GameView`                | yes      | The game with `pgn`, `canEdit`, `canCreateExercise` (a teacher's own game with the exercises on: the viewer gets `exerciseFromHereHref`, «Crear ejercicio desde aquí», also as a reader), players (name, Elo, title, country), record fields and `studyId`. |
+| `record`       | `GameViewerRecord`        | yes      | The game's record without its pencil, built on the server by `gameRecordOf` (`game-record.ts` beside it): «Datos de la partida», the event, the round, date and place, and the opening and the moves as facts.                                              |
+| `results`      | `StudyKindOption[]`       | yes      | The results catalog, for the record's form; empty when the game is not the viewer's to edit.                                                                                                                                                                |
 | `asReader`     | `boolean`                 | no       | The owner asked to see the game as a reader (`?vista=lector` on the page): nothing is edited or saved, and the game's analysis mode applies.                                                                                                                |
 | `errorCode`    | `string`                  | no       | What bounced back from an action, translated by `STUDY_ERROR_MESSAGES`: the game's (`gameInClasses`) and the study's (`confirmStudyDelete`, `fen`, the common codes), whose forms live in the aside.                                                        |
 | `importReport` | `PgnImportReport \| null` | no       | The result of the PGN import that has just happened (`?importadas=`, read by the page with `readImportReport`). The notice goes above the board, like an error: «Se importaron N partidas.», or how many of how many and why the rest stayed out.           |
@@ -36,9 +38,11 @@ The section only wires the two things the viewer cannot own: the PGN's history, 
 - **The game's settings** reach the viewer as data: `orientation` from `game.orientationCode`, `pinnedComment`, and `hideNextMoves` when its analysis mode is `CONCEAL`. A mode is the reader's — the viewer ignores it while editing —, so the game's owner gets a line over the board that says which mode readers will see, with «Ver como lector», a link to the same page with `?vista=lector`; there the section mounts the viewer as a reader's (`canEdit` off: no undo, no autosave, no editing) and the line offers «Volver a editar».
 - **The move it was left on** (2026-10-07). `useRememberedMove` drives the viewer (`path`, `onPathChange`) and keeps the move in this browser's `localStorage`, one key per game (`365:estudios:partida:<gameId>:jugada`), written on every move — at once, with nothing to send when the page closes —; opening the game again starts on that move. The server renders the start, which is all it can know; the browser's first render reads the stored move through `useSyncExternalStore`, so the board, drawn in the browser only, opens on it. A move the PGN no longer has is resolved by the viewer to its closest ancestor; what the viewer reports back that is the move it was given is an echo and is not written; blocked or cleared storage leaves the game at the start. Which **game** a study opens on is the server's ([`RememberOpenedGame`](/components/platform/sections/studies/game-view/remember-opened-game)); which **move**, this device's. The teacher's view of a student's game keeps its move too, in the teacher's browser.
 
+- **The game's record heads the moves' column**, above the engine (2026-10-23; until then a card of its own, `GameRecord`, spanning the panel above the board, whose height now goes to the board). The viewer draws it from data (`record`); for whoever may edit the game the section adds its pencil, which opens [`EditGame`](/components/platform/shared/edit-game) mounted with `trigger="none"` through its `ref` — the form is the section's, the drawing the viewer's.
+
 ## Markup & styling
 
-Block `.game-view` (24 lines): the board column (`min-width: 0`), the margin under the notice and the owner's line about the readers' mode (`.game-view__mode`, `.game-view__mode-link`). The grid that puts it beside the study and the game's record is the layout's, `.game-page__layout` in `game-page.css`; the strips are [`PlayerStrip`](/components/chess/game-viewer/player-strip)'s.
+Block `.game-view` (24 lines): the board column (`min-width: 0`), the margin under the notice and the owner's line about the readers' mode (`.game-view__mode`, `.game-view__mode-link`). The grid that puts it beside the study is the layout's, `.game-page__layout` in `game-page.css`; the strips are [`PlayerStrip`](/components/chess/game-viewer/player-strip)'s.
 
 **Other selectors it styles:** `.platform-notice` (margin inside the column).
 
@@ -49,23 +53,22 @@ No media queries of its own.
 From `app/(platform)/estudios/[studyId]/partidas/[gameId]/page.tsx`:
 
 ```tsx
-import { GameRecord } from "@/components/platform/sections/studies/game-view/game-record.comp";
+import { gameRecordOf } from "@/components/platform/sections/studies/game-view/game-record";
 import { GameViewSection } from "@/components/platform/sections/studies/game-view/game-view.section";
 
-<>
-  <GameViewSection
-    game={game}
-    asReader={vista === "lector"}
-    errorCode={error}
-    importReport={readImportReport(importadas)}
-  />
-  <GameRecord game={game} results={results} />
-</>;
+<GameViewSection
+  game={game}
+  record={gameRecordOf(game)}
+  results={results}
+  asReader={vista === "lector"}
+  errorCode={error}
+  importReport={readImportReport(importadas)}
+/>;
 ```
 
 The frame around the two — `.game-page__layout` and the study's column — is the layout's, `app/(platform)/estudios/[studyId]/partidas/layout.tsx`.
 
 ## Related
 
-- [`StudyAside`](/components/platform/sections/studies/game-view/study-aside), the study beside this column, and [`GameRecord`](/components/platform/sections/studies/game-view/game-record), the game's record under it.
+- [`StudyAside`](/components/platform/sections/studies/game-view/study-aside), the study beside this column.
 - [`GameViewer`](/components/chess/game-viewer/game-viewer) and [`GameTools`](/components/chess/game-viewer/game-tools), which the viewer mounts with `tools`.

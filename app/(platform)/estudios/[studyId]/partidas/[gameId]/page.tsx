@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { GameRecord } from "@/components/platform/sections/studies/game-view/game-record.comp";
+import { gameRecordOf } from "@/components/platform/sections/studies/game-view/game-record";
 import { GameViewSection } from "@/components/platform/sections/studies/game-view/game-view.section";
 import { RememberOpenedGame } from "@/components/platform/sections/studies/game-view/remember-opened-game.comp";
 import { readImportReport } from "@/services/shared/pgn-import-report";
@@ -25,8 +25,8 @@ export async function generateMetadata({ params }: GamePageProps): Promise<Metad
 }
 
 /**
- * What is about the game: its record and the board, in the panel under the
- * layout's trail. The frame and the study itself — its name, its list of games — are
+ * What is about the game: the board and, heading its moves' column, its
+ * record, in the panel under the layout's trail. The frame and the study itself — its name, its list of games — are
  * the layout's (`../layout.tsx`), which is not rendered again from one game to
  * the next. The page loads and hands over; what each piece shows is decided
  * inside it, with the permission table of `services/studies/study-rules`.
@@ -44,11 +44,12 @@ export default async function GamePage({ params, searchParams }: GamePageProps) 
 
   return (
     <>
-      {/* Under the layout's trail, in the panel: the game's record at its
-          head, then the board. */}
-      <GameRecord game={game} results={results} />
+      {/* Under the layout's trail, in the panel: the board, with the game's
+          record at the head of the moves' column. */}
       <GameViewSection
         game={game}
+        record={gameRecordOf(game)}
+        results={results}
         asReader={vista === "lector"}
         errorCode={error}
         importReport={readImportReport(importadas)}

@@ -458,3 +458,27 @@ export const AnalysisPlaying: Story = {
   },
   decorators: AnalysisMaterial.decorators,
 };
+
+/**
+ * A study's game in the new design system (2026-10-23): the game's record at the head of the moves' column, above
+ * the engine — the event, where and when, the opening and the moves, and the pencil that opens its form.
+ */
+export const StudyMaterial: Story = {
+  name: "Study (Material)",
+  args: {
+    ...STUDY_ARGS,
+    look: "material",
+    record: {
+      label: "Datos de la partida",
+      title: "Nacional Abierto 2026",
+      context: "Ronda 3 · 12 oct 2026 · Ciudad de México",
+      facts: [
+        { kind: "opening", text: "B90", detail: "Siciliana, Najdorf", srLabel: "Apertura, código ECO: " },
+        { kind: "moves", text: "41 jugadas" },
+      ],
+      edit: { label: "Editar los datos de la partida", onOpen: fn().mockName("edit") },
+    },
+  },
+  render: (args) => <EditableGameViewer key={args.pgn} {...args} />,
+  decorators: AnalysisMaterial.decorators,
+};

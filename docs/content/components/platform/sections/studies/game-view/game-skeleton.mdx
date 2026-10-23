@@ -4,13 +4,13 @@ description: "The game's own shape, empty, while the next game of the study arri
 
 # `GameSkeleton`
 
-|            |                                                                                                                                                                                  |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/game-view/game-skeleton.comp.tsx`                                                                                                          |
-| Kind       | Server Component                                                                                                                                                                 |
-| Stylesheet | `game-skeleton.comp.css` → block `.game-skeleton`                                                                                                                                |
-| Used by    | `app/(platform)/estudios/[studyId]/partidas/[gameId]/loading.tsx`, after `GameRecordSkeleton`; [`StudySkeleton`](/components/platform/sections/studies/game-view/study-skeleton) |
-| Composes   | [`BoardSkeleton`](/components/platform/shared/board-skeleton)                                                                                                                    |
+|            |                                                                                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/game-skeleton.comp.tsx`                                                                              |
+| Kind       | Server Component                                                                                                                                     |
+| Stylesheet | `game-skeleton.comp.css` → block `.game-skeleton`                                                                                                    |
+| Used by    | `app/(platform)/estudios/[studyId]/partidas/[gameId]/loading.tsx`; [`StudySkeleton`](/components/platform/sections/studies/game-view/study-skeleton) |
+| Composes   | [`BoardSkeleton`](/components/platform/shared/board-skeleton)                                                                                        |
 
 ## Purpose
 
@@ -28,7 +28,6 @@ None. What it shows is the shape of a game's page, which is the same for all of 
 - **The strips are blank bands** of the strip's own height — a line of its text (`xs` at 1.3) and its padding —, rounded on their outer side and pressed against the board, as [`PlayerStrip`](/components/chess/game-viewer/player-strip) is.
 - **The notation's card is measured like the viewer's column**: `height: 0` keeps it out of the row's sizing — the board alone sets that — and `min-height` hands it the row less the bar of keys under the notation (a 48px key and the gap over it).
 - **The tools' card** under the board is a blank card of about the height of the first tab (236px), so the page is as long as it is going to be and the scrollbar does not come and go.
-- **`GameRecordSkeleton`**, exported from this same file, keeps the record's place under the study with a blank card (`.game-record_state_loading`, drawn with the record's own block, whose stylesheet this file imports), so the left column does not close up and open again. It is here and **not** in `game-record.comp.tsx`, where it was for an hour: that file mounts the edit dialog, a Client Component, and a `loading.tsx` that reaches one gets its scripts written without the policy's nonce and blocked by the browser (see [Conventions](/conventions); `components/loading-boundaries.test.ts`).
 - `aria-busy="true"` on the block; the board says «Cargando la partida» (`role="status"`); the blank cards are `aria-hidden`.
 
 ## Markup & styling
@@ -48,15 +47,10 @@ Block `.game-skeleton` (96 lines), a grid like `.game-viewer__layout`.
 From `app/(platform)/estudios/[studyId]/partidas/[gameId]/loading.tsx`:
 
 ```tsx
-import { GameRecordSkeleton, GameSkeleton } from "@/components/platform/sections/studies/game-view/game-skeleton.comp";
+import { GameSkeleton } from "@/components/platform/sections/studies/game-view/game-skeleton.comp";
 
 export default function GameLoading() {
-  return (
-    <>
-      <GameSkeleton />
-      <GameRecordSkeleton />
-    </>
-  );
+  return <GameSkeleton />;
 }
 ```
 

@@ -40,6 +40,9 @@ import { mdButton, mdIconButton } from "@/lib/material/material-classes";
 import { MoveTree } from "./move-tree.comp";
 import { MoveNotes } from "./move-notes.comp";
 import { TrophyIcon } from "@/components/icons/trophy-icon.comp";
+import { BookOpenIcon } from "@/components/icons/book-open-icon.comp";
+import { ListOlIcon } from "@/components/icons/list-ol-icon.comp";
+import { PenIcon } from "@/components/icons/pen-icon.comp";
 import { ChessBoardIcon } from "@/components/icons/chess-board-icon.comp";
 import { mainLineAnchor, mainLineOf } from "@/lib/chess/notation-line";
 import { playMoveSound } from "./move-sound";
@@ -81,6 +84,26 @@ export interface GameViewerPlay {
    * viewer, and read politely to a screen reader as it changes.
    */
   headline?: { title: string; detail?: string };
+}
+
+/**
+ * The record of the game on the board, at the head of the moves' column (a
+ * study's game, 2026-10-23): data, drawn by the viewer as an outlined card.
+ * Only what the game has is given; a fact that is missing takes no place.
+ */
+export interface GameViewerRecord {
+  /** The card's small heading: «Datos de la partida». */
+  label: string;
+  /** Its title, in the display font: the event. */
+  title?: string;
+  /** Under it, in one line: the round, the date and the place. */
+  context?: string;
+  /** What was played, in pills with an icon: the opening and how many moves. */
+  facts: { kind: "opening" | "moves"; text: string; detail?: string; srLabel?: string }[];
+  /** Said when the game has nothing to show. */
+  empty?: string;
+  /** The pencil at the heading, for whoever may edit the record: it opens the host's form. */
+  edit?: { label: string; onOpen: (event: MouseEvent<HTMLButtonElement>) => void };
 }
 
 interface GameViewerProps {
@@ -171,6 +194,8 @@ interface GameViewerProps {
    * next one, and how far through the line one is under the title.
    */
   moveList?: "table" | "flow" | "notes";
+  /** The game's record, at the head of the moves' column, above the engine. */
+  record?: GameViewerRecord;
   /**
    * The lesson's exercises, at the foot of the panel in `notes`: what there
    * is to practise, how it stands and the way in. Data, drawn by the viewer.
@@ -278,6 +303,7 @@ export function GameViewer({
   title,
   subtitle,
   badge,
+  record,
   practice,
   boardTools = true,
   flipKey = true,
@@ -972,6 +998,8 @@ export function GameViewer({
               </div>
             )}
 
+            {record && <ViewerRecord record={record} />}
+
             {engine && !isPlaying && (
               <EnginePanel
                 fen={fen}
@@ -1103,5 +1131,51 @@ export function GameViewer({
         />
       )}
     </div>
+  );
+}
+
+/** The game's record as the moves' column heads it: an outlined card of the new design system. */
+function ViewerRecord({ record }: { record: GameViewerRecord }) {
+  return (
+    <section className="game-viewer__record" aria-label={record.label}>
+      <div className="game-viewer__record-head">
+        <p className="game-viewer__record-label">{record.label}</p>
+        {record.edit && (
+          <button
+            type="button"
+            className={`${mdIconButton("standard", "xs")} game-viewer__record-edit`}
+            aria-label={record.edit.label}
+            onClick={record.edit.onOpen}
+          >
+            <PenIcon className="platform-md-icon" />
+          </button>
+        )}
+      </div>
+
+      {record.title && <p className="game-viewer__record-title">{record.title}</p>}
+      {record.context && <p className="game-viewer__record-context">{record.context}</p>}
+
+      {record.facts.length > 0 && (
+        <ul className="game-viewer__record-facts">
+          {record.facts.map((fact) => {
+            const Icon = fact.kind === "opening" ? BookOpenIcon : ListOlIcon;
+            return (
+              <li key={fact.kind} className="game-viewer__record-fact">
+                <Icon className="game-viewer__record-fact-icon" />
+                {/* The icon says it to the eye; the words, to a screen reader. */}
+                {fact.srLabel && <span className="game-viewer__record-sr">{fact.srLabel}</span>}
+                {/* One run of text, so a long name wraps inside the pill. */}
+                <span className="game-viewer__record-fact-text">
+                  {fact.text}
+                  {fact.detail && <span className="game-viewer__record-fact-detail"> · {fact.detail}</span>}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      {record.empty && <p className="game-viewer__record-context">{record.empty}</p>}
+    </section>
   );
 }

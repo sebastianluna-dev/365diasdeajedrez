@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useState, useSyncExternalStore } from "react";
-import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
+import { useCallback, useRef, useState, useSyncExternalStore } from "react";
+import { GameViewer, type GameViewerRecord } from "@/components/chess/game-viewer/game-viewer.comp";
+import { EditGame, type EditGameHandle } from "@/components/platform/shared/edit-game/edit-game.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import {
   isCompleteImport,
@@ -13,14 +14,18 @@ import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
 import { STUDY_ERROR_MESSAGES } from "@/constants/platform/student-messages.const";
 import { GAME_ANALYSIS_MODE, GAME_ANALYSIS_MODE_LABELS } from "@/constants/platform/study-codes.const";
 import { platformRoutes } from "@/lib/platform-routes";
-import type { GameView } from "@/services/studies/studies.types";
+import type { GameView, StudyKindOption } from "@/services/studies/studies.types";
 import { useGameAutosave } from "@/components/platform/shared/use-game-autosave.hook";
 import { usePgnHistory } from "@/components/platform/shared/use-pgn-history.hook";
-import { autosaveGamePgn } from "@/services/studies/studies.actions";
+import { autosaveGamePgn, updateGameDetails } from "@/services/studies/studies.actions";
 import "./game-view.section.css";
 
 interface GameViewSectionProps {
   game: GameView;
+  /** The game's record, as the viewer heads its moves' column with it (`gameRecordOf`). */
+  record: Omit<GameViewerRecord, "edit">;
+  /** Results from the catalog, for the record's form. Empty when the game is not the viewer's to edit. */
+  results: StudyKindOption[];
   /**
    * The owner asked to see the game as a reader: nothing is edited or saved,
    * and the game's analysis mode applies, as it does to whoever cannot edit it.
@@ -37,10 +42,12 @@ interface GameViewSectionProps {
 }
 
 /**
- * The board column of a Mis estudios game: it is read and annotated in the
- * SAME place. The study around it — its games, its actions — is the layout's
- * business (`StudyAside`), and the game's record is `GameRecord`, which the
- * page renders after this.
+ * The board of a Mis estudios game: it is read and annotated in the SAME
+ * place. The study around it — its games, its actions — is the layout's
+ * business (`StudyAside`). The game's record heads the moves' column, above
+ * the engine (2026-10-23): the viewer draws it from data, and its pencil
+ * opens the record's form, which this section mounts without a trigger of
+ * its own (`EditGame trigger="none"`), for whoever may edit the game.
  *
  * There is no separate editing screen. Whoever owns the game plays on the
  * board to add moves and uses the list's right click to comment, annotate,
@@ -48,7 +55,14 @@ interface GameViewSectionProps {
  * wires the two things the viewer cannot own: the PGN's history, which the
  * autosave reads, and the autosave itself, which is a server action.
  */
-export function GameViewSection({ game, asReader = false, errorCode, importReport }: GameViewSectionProps) {
+export function GameViewSection({
+  game,
+  record,
+  results,
+  asReader = false,
+  errorCode,
+  importReport,
+}: GameViewSectionProps) {
   // An owner looking as a reader edits nothing: the viewer is the reader's.
   const canEdit = game.canEdit && !asReader;
   const { pgn, applyPgn } = usePgnHistory(game.pgn, { undo: canEdit });
@@ -60,6 +74,16 @@ export function GameViewSection({ game, asReader = false, errorCode, importRepor
   // so its owner is told it is on and given the way to see it at work.
   const mode = game.analysisModeCode === GAME_ANALYSIS_MODE.CONCEAL ? GAME_ANALYSIS_MODE.CONCEAL : null;
   const gamePath = platformRoutes.gameDetail(game.studyId, game.id);
+
+  // The record's form, opened by the pencil the viewer draws on the record.
+  // Editing the record is the owner's even as a reader: it is not the moves.
+  const editRef = useRef<EditGameHandle>(null);
+  const viewerRecord: GameViewerRecord = game.canEdit
+    ? {
+        ...record,
+        edit: { label: "Editar los datos de la partida", onOpen: (event) => editRef.current?.open(event) },
+      }
+    : record;
 
   return (
     <section className="game-view">
@@ -81,14 +105,29 @@ export function GameViewSection({ game, asReader = false, errorCode, importRepor
         </p>
       )}
 
+      {game.canEdit && (
+        /* The whole record, without going field by field: `GameView` already
+           contains every field of `GameFieldValues`, and listing them here is
+           how the title and the federation got lost once — the form asked for
+           them and this list did not pass them, so saving erased them. */
+        <EditGame
+          ref={editRef}
+          action={updateGameDetails.bind(null, game.studyId, game.id)}
+          results={results}
+          values={game}
+          titleHint="Cómo identificas esta partida dentro del estudio. Si lo dejas vacío se usan los dos jugadores."
+          trigger="none"
+        />
+      )}
+
       <GameViewer
         pgn={pgn}
+        record={viewerRecord}
         orientation={game.orientationCode === BOARD_ORIENTATION.BLACK ? "black" : "white"}
         pinnedComment={game.pinnedComment}
         hideNextMoves={mode === GAME_ANALYSIS_MODE.CONCEAL}
-        // No header in the panel: the players are already in the board strips
-        // and in the aside's record, and repeating them here stole height from
-        // the moves, which is what one comes to look at.
+        // No title in the panel: the players are already in the board strips,
+        // and the record heads the column.
         // In Mis estudios the game is traversed: the controls go next to the
         // moves, not under the board.
         controls="panel"
