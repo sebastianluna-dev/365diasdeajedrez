@@ -1,6 +1,7 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useMemo, useRef } from "react";
+import { useLingering } from "./use-lingering.hook";
 import { BookOpenIcon } from "@/components/icons/book-open-icon.comp";
 import { sanToSpanish } from "@/lib/chess/notation";
 import { alternativesAt, lineThrough } from "@/lib/chess/notation-line";
@@ -67,11 +68,21 @@ export function MoveNotes({ tree, currentPath, onSelect, pinnedComment }: MoveNo
 
   const line = lineThrough(tree, currentPath);
   const currentIndex = line.findIndex((node) => node.path === currentPath);
-  const current = nodeAtPath(tree, currentPath);
-  const alternatives = alternativesAt(tree, currentPath);
-  const comment = current
-    ? current.comment
-    : [pinnedComment, tree.initialComment].filter(Boolean).join("\n\n") || undefined;
+
+  // What the note says about the move on the board, or null when it says
+  // nothing. Memoised by the move: `useLingering` keeps the last one on
+  // screen while the card leaves, and tells one note from the next by
+  // identity.
+  const note = useMemo(() => {
+    const current = nodeAtPath(tree, currentPath);
+    const alternatives = alternativesAt(tree, currentPath);
+    const comment = current
+      ? current.comment
+      : [pinnedComment, tree.initialComment].filter(Boolean).join("\n\n") || undefined;
+    if (!comment && alternatives.length === 0) return null;
+    return { path: currentPath, heading: current ? moveLabel(current, true) : "Para empezar", comment, alternatives };
+  }, [tree, currentPath, pinnedComment]);
+  const shownNote = useLingering(note);
 
   // A move as a pill; an alternative carries its number, since it stands alone.
   const chip = (node: PgnTreeNode, state: "played" | "current" | "later", numbered = false) => (
@@ -110,19 +121,25 @@ export function MoveNotes({ tree, currentPath, onSelect, pinnedComment }: MoveNo
         })}
       </p>
 
-      {(comment || alternatives.length > 0) && (
-        <section ref={noteRef} className="move-notes__note" aria-label="La jugada">
+      {shownNote.value && (
+        // On a move with nothing said the last note stays a moment, leaving
+        // (`_state_closing`), and then goes.
+        <section
+          ref={noteRef}
+          className={`move-notes__note${shownNote.closing ? " move-notes__note_state_closing" : ""}`}
+          aria-label="La jugada"
+        >
           {/* Keyed by the move: the card stays, its text fades to the new one. */}
-          <div key={currentPath} className="move-notes__note-body">
+          <div key={shownNote.value.path} className="move-notes__note-body">
             <p className="move-notes__note-head">
               <BookOpenIcon className="move-notes__note-icon" />
-              {current ? moveLabel(current, true) : "Para empezar"}
+              {shownNote.value.heading}
             </p>
-            {comment && <p className="move-notes__comment">{comment}</p>}
-            {alternatives.length > 0 && (
+            {shownNote.value.comment && <p className="move-notes__comment">{shownNote.value.comment}</p>}
+            {shownNote.value.alternatives.length > 0 && (
               <p className="move-notes__others">
                 <span className="move-notes__others-label">Otras jugadas:</span>
-                {alternatives.map((node) => (
+                {shownNote.value.alternatives.map((node) => (
                   <span key={node.path} className="move-notes__step">
                     {chip(node, "later", true)}
                   </span>

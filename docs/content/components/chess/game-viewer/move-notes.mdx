@@ -4,14 +4,14 @@ description: "A lesson read one move at a time, in the new design system: the li
 
 # `MoveNotes`
 
-|            |                                                                                                                                                                             |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/chess/game-viewer/move-notes.comp.tsx`                                                                                                                          |
-| Kind       | Client Component                                                                                                                                                            |
-| Stylesheet | `move-notes.comp.css` → block `.move-notes`                                                                                                                                 |
-| Story      | `move-notes.stories.tsx` (`chess/game-viewer/MoveNotes`): a move of the main line with its note and an alternative, the start, a move inside a variation, and the last move |
-| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="notes"`)                                                                                              |
-| Uses       | `lineThrough`, `alternativesAt` from `lib/chess/notation-line`<br />`moveLabel` from `lib/chess/notation-prose`                                                             |
+|            |                                                                                                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/chess/game-viewer/move-notes.comp.tsx`                                                                                                                                         |
+| Kind       | Client Component                                                                                                                                                                           |
+| Stylesheet | `move-notes.comp.css` → block `.move-notes`                                                                                                                                                |
+| Story      | `move-notes.stories.tsx` (`chess/game-viewer/MoveNotes`): a move of the main line with its note and an alternative, the start, a move inside a variation, and the last move                |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="notes"`)                                                                                                             |
+| Uses       | `lineThrough`, `alternativesAt` from `lib/chess/notation-line`<br />`moveLabel` from `lib/chess/notation-prose`<br />`useLingering` from `components/chess/game-viewer/use-lingering.hook` |
 
 ## Purpose
 
@@ -31,17 +31,17 @@ A variation is not printed after the main line, as [`MoveTree`](/components/ches
 ## Behaviour
 
 - **The line** (`aria-label="Jugadas"`): every move of it as a pill, White's with its number before it, and a line opening on Black's move with «N...». The moves played are the ink, the one on the board is the primary with `aria-current="step"`, and the ones to come are dimmed (`--platform-m3-outline`, which still reads at 4.5:1 on the white panel). A move's NAGs are drawn as their symbols and said in words to a screen reader.
-- **The note** (`<section aria-label="La jugada">`), on the container: the move on the board, numbered («6. Ae3»), its comment, and «Otras jugadas» — the variations that branch where the next move is played (`alternativesAt`), each numbered since it stands alone. Before the first move it is «Para empezar», with the owner's pinned note and the PGN's opening comment. A move with no comment and no alternatives has no note. The card comes in with a fade and a rise of 4px in 160 ms (`ease-out`, `move-notes-note-in`) when a move with a note follows one without. From one note to the next it **stays** (2026-10-23): only its text is keyed by the move and fades to the new one (`move-notes-body-in`), while its height goes from the old to the new in 300 ms on Material's standard curve (`cubic-bezier(0.2, 0, 0, 1)`). `height: auto` is not animatable everywhere yet, so a layout effect pins the height it had, lets it go to what the new text needs and puts `auto` back at `transitionend`; a move pressed mid-transition starts from where the card is. All of it is off under `prefers-reduced-motion`.
+- **The note** (`<section aria-label="La jugada">`), on the container: the move on the board, numbered («6. Ae3»), its comment, and «Otras jugadas» — the variations that branch where the next move is played (`alternativesAt`), each numbered since it stands alone. Before the first move it is «Para empezar», with the owner's pinned note and the PGN's opening comment. A move with no comment and no alternatives has no note. The card comes in with a fade and a rise of 4px in 160 ms (`ease-out`, `move-notes-note-in`) when a move with a note follows one without. From one note to the next it **stays** (2026-10-23): only its text is keyed by the move and fades to the new one (`move-notes-body-in`), while its height goes from the old to the new in 300 ms on Material's standard curve (`cubic-bezier(0.2, 0, 0, 1)`). `height: auto` is not animatable everywhere yet, so a layout effect pins the height it had, lets it go to what the new text needs and puts `auto` back at `transitionend`; a move pressed mid-transition starts from where the card is. On a move with nothing said the card **leaves** (2026-10-23): [`useLingering`](/components/chess/game-viewer/use-lingering-hook) keeps the last note mounted for 120 ms with `.move-notes__note_state_closing`, which plays the way in backwards (`move-notes-note-out`, `ease-in`), and then it goes; the note is memoised by the move, since the hook tells one note from the next by identity. All of it is off under `prefers-reduced-motion`, where the leaving card is hidden at once.
 
 ## Markup & styling
 
-Block `.move-notes` (156 lines), in the `--platform-m3-*` roles. The pills are 28px high and round; the note has the `lg` corner (`--md-sys-shape-corner-lg`).
+Block `.move-notes` (175 lines), in the `--platform-m3-*` roles. The pills are 28px high and round; the note has the `lg` corner (`--md-sys-shape-corner-lg`).
 
 **Elements:** `.move-notes__line`, `.move-notes__step`, `.move-notes__number`, `.move-notes__move`, `.move-notes__sr`, `.move-notes__note`, `.move-notes__note-body`, `.move-notes__note-head`, `.move-notes__note-icon`, `.move-notes__comment`, `.move-notes__others`, `.move-notes__others-label`
 
-**Modifiers and states:** `.move-notes__move_state_played`, `.move-notes__move_state_current`, `.move-notes__move_state_later`
+**Modifiers and states:** `.move-notes__move_state_played`, `.move-notes__move_state_current`, `.move-notes__move_state_later`, `.move-notes__note_state_closing`
 
-**Keyframes:** `move-notes-note-in`, `move-notes-body-in`, at the top level because `@keyframes` cannot be nested.
+**Keyframes:** `move-notes-note-in`, `move-notes-note-out`, `move-notes-body-in`, at the top level because `@keyframes` cannot be nested.
 
 **Tokens:** `--platform-m3-container`, `--platform-m3-container-high`, `--platform-m3-on-primary`, `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-outline`, `--platform-m3-primary`
 
