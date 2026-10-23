@@ -88,17 +88,15 @@ export const LinksOnly: Story = {
   args: { onReorder: undefined },
 };
 
-/** The new design system's look (`look="material"`): a study's side column on the canvas, the current game in the secondary container. */
+/**
+ * The new design system's look (`look="material"`): a study's side column on the canvas, one line per game — its
+ * number, its name and its result —, the current one in the secondary container, the grip under the pointer.
+ */
 export const Material: Story = {
   name: "En el sistema de diseño nuevo",
   args: {
     look: "material",
-    settings: {
-      save: fn(async () => {}).mockName("updateGameSettings"),
-      clearAnnotations: fn(async () => {}).mockName("clearGameAnnotations"),
-      clearVariations: fn(async () => {}).mockName("clearGameVariations"),
-      remove: fn(async () => {}).mockName("deleteStudyGame"),
-    },
+    games: GAMES.map((game, index) => ({ ...game, number: index + 1 })),
   },
   decorators: [
     (Story) => (

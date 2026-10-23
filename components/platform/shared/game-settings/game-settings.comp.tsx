@@ -19,7 +19,7 @@ import { PlatformSelect } from "@/components/platform/shared/platform-select/pla
 import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
 import { GAME_ANALYSIS_MODE_LABELS } from "@/constants/platform/study-codes.const";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
-import { mdIconButton } from "@/lib/material/material-classes";
+import { mdButton, mdIconButton } from "@/lib/material/material-classes";
 import "./game-settings.comp.css";
 
 /**
@@ -82,6 +82,12 @@ interface GameSettingsProps {
    * moved to the new design system (a study's side column, 2026-10-23).
    */
   look?: "material";
+  /**
+   * `button`: Material's tonal button «Configurar» with the gear, instead of
+   * the gear alone, for the card of the game on the board at the foot of a
+   * study's column (2026-10-23), where the rows carry no gear.
+   */
+  trigger?: "gear" | "button";
 }
 
 type Destructive = "annotations" | "variations" | "game";
@@ -122,7 +128,7 @@ const CLASS_BLOCKS_ACKNOWLEDGEMENT =
  * one thing more before it is deleted: a box that says the class's block
  * will be left empty.
  */
-export function GameSettings({ game, isCurrent, actions, look }: GameSettingsProps) {
+export function GameSettings({ game, isCurrent, actions, look, trigger = "gear" }: GameSettingsProps) {
   const popup = useRef<PlatformPopupHandle>(null);
   const confirm = useRef<PlatformConfirmPopupHandle>(null);
   /** The step the confirmation asks about: the last red word pressed. */
@@ -157,21 +163,33 @@ export function GameSettings({ game, isCurrent, actions, look }: GameSettingsPro
 
   return (
     <div className="game-settings">
-      <button
-        type="button"
-        className={`${
-          look === "material"
-            ? mdIconButton("standard", "xs")
-            : "platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square"
-        } game-settings__open`}
-        aria-label={`Ajustes de «${game.name}»`}
-        onClick={(event) => popup.current?.open(event)}
-      >
-        <GearIcon
-          variant="classic-solid"
-          className={look === "material" ? "platform-md-icon" : "platform-button__icon"}
-        />
-      </button>
+      {trigger === "button" ? (
+        <button
+          type="button"
+          className={`${mdButton("tonal", "sm")} game-settings__open`}
+          aria-label={`Configurar «${game.name}»`}
+          onClick={(event) => popup.current?.open(event)}
+        >
+          <GearIcon variant="classic-solid" className="platform-md-icon" />
+          Configurar
+        </button>
+      ) : (
+        <button
+          type="button"
+          className={`${
+            look === "material"
+              ? mdIconButton("standard", "xs")
+              : "platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square"
+          } game-settings__open`}
+          aria-label={`Ajustes de «${game.name}»`}
+          onClick={(event) => popup.current?.open(event)}
+        >
+          <GearIcon
+            variant="classic-solid"
+            className={look === "material" ? "platform-md-icon" : "platform-button__icon"}
+          />
+        </button>
+      )}
 
       {/* The popup opens on the name, the first control of the content, which
           is what one comes to change. */}

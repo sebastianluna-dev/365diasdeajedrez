@@ -1,9 +1,7 @@
 import { STUDY_ERROR_MESSAGES } from "@/constants/platform/student-messages.const";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
-import { PlatformHeaderContext } from "@/components/platform/sections/shell/platform-header-context.comp";
 import { StudyAside } from "@/components/platform/sections/studies/game-view/study-aside.comp";
-import { StudiesSearch } from "@/components/platform/sections/studies/studies-search/studies-search.comp";
 import type { ClassGameItem, StudentOption, StudyDetail, StudyKindOption } from "@/services/studies/studies.types";
 import "./study-detail.section.css";
 
@@ -42,11 +40,6 @@ export function StudyDetailSection({
 
   return (
     <div className="platform-workspace">
-      {/* The library's search, in the bar, as on a study's games. */}
-      <PlatformHeaderContext>
-        <StudiesSearch />
-      </PlatformHeaderContext>
-
       <div className="platform-workspace__side">
         <StudyAside study={study} results={results} classGames={classGames} kinds={kinds} students={students} />
       </div>

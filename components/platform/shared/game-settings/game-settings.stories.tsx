@@ -61,6 +61,12 @@ type Story = StoryObj<typeof meta>;
 /** The gear alone, as a row of the list ends: the popup is closed. */
 export const Closed: Story = { name: "El engrane" };
 
+/** «Configurar», Material's tonal button with the gear (`trigger="button"`), as the open game's card at the foot of a study's column shows it. */
+export const ButtonTrigger: Story = {
+  name: "El botón «Configurar»",
+  args: { look: "material", trigger: "button" },
+};
+
 /** The popup, opened by the story: the name to change, focused, and, under a rule, the three ways to destroy. */
 export const Open: Story = {
   name: "Los ajustes abiertos",

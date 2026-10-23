@@ -16,10 +16,9 @@ import type {
   StudyDetail,
   StudyGameItem,
   StudyKindOption,
-  StudyOrigin,
 } from "@/services/studies/studies.types";
 import { canReorderStudyGames, canShareStudy, STUDY_GAMES_PAGE_SIZE } from "@/services/studies/study-rules";
-import { gameCountLabel, StudyChip } from "../study-chip/study-chip.comp";
+import { gameCountLabel } from "../study-chip/study-chip.comp";
 import { StudyGames } from "./study-games.comp";
 import { StudySettings } from "./study-settings.comp";
 import "./study-aside.comp.css";
@@ -38,13 +37,14 @@ interface StudyAsideProps {
 }
 
 /**
- * A game as the list names it: the title the student gave it heads the row —
- * without it, `label` already falls back to the round, the event or its
- * position within the study — and who played it is the second line.
+ * A game as the list names it: the title the student gave it — without it,
+ * `label` already falls back to the round, the event or its position within
+ * the study —, its number in the study and its result, on one line.
  */
-function listItem(game: StudyGameItem): GameListItem {
+function listItem(game: StudyGameItem, index: number): GameListItem {
   return {
     id: game.id,
+    number: index + 1,
     name: game.title ?? game.label,
     players: `${game.white} — ${game.black}`,
     title: game.title,
@@ -57,19 +57,20 @@ function listItem(game: StudyGameItem): GameListItem {
   };
 }
 
-/** Where a study that is not the viewer's comes from, for its chip. */
-function originOf(study: StudyDetail): StudyOrigin | undefined {
-  if (study.courseName) return { code: "COURSE", label: study.courseName };
-  if (study.sharedByName) return { code: "TEACHER", label: study.sharedByName };
-  return undefined;
+/** Under the study's name: where it comes from or its kind, and how many games. */
+function metaOf(study: StudyDetail): string {
+  const source = study.courseName ?? study.sharedByName ?? study.kindLabel;
+  return `${source} · ${gameCountLabel(study.gameCount)}`;
 }
 
 /**
  * The study's side column, in the new design system (2026-10-23, «M4» of
- * the owner's canvas): its name and its kind as a chip with its size, the
- * sliders that open its form for its owner, «Nueva partida» as the extended
- * FAB, its games as the column's rows («Partidas»), and, for a collection's
- * owner, who it is shared with. A study has no page of its own — its URL
+ * the owner's canvas, then its choice «B» the same day): «Nueva partida» as
+ * the extended FAB at the top; the study's name heading its games, with
+ * where it comes from or its kind and how many games under it, and the
+ * sliders that open its form for its owner; its games as a numbered index,
+ * one line each, and the game on the board at its foot with «Configurar»;
+ * and, for a collection's owner, who it is shared with. A study has no page of its own — its URL
  * redirects to a game — so this is where it lives.
  *
  * It is mounted by the LAYOUT of the game pages and knows nothing of the game
@@ -90,38 +91,32 @@ export function StudyAside({ study, results, classGames, kinds, students }: Stud
 
   return (
     <aside className="study-aside" aria-label="El estudio">
+      {canWrite && <NewGame studyId={study.id} studyName={study.name} results={results} classGames={classGames} />}
+
       <div className="study-aside__head">
         <div className="study-aside__heading">
           <h2 className="study-aside__name">{study.name}</h2>
-          <StudyChip
-            study={{ kindCode: study.kindCode, kindLabel: study.kindLabel, origin: originOf(study) }}
-            suffix={gameCountLabel(study.gameCount)}
-          />
+          <p className="study-aside__meta">{metaOf(study)}</p>
         </div>
         {canWrite && <StudySettings study={study} kinds={kinds} />}
       </div>
 
-      {canWrite && <NewGame studyId={study.id} studyName={study.name} results={results} classGames={classGames} />}
-
       {study.games.length > 0 && (
-        <div className="study-aside__games">
-          <p className="study-aside__title">Partidas</p>
-          <StudyGames
-            games={study.games.map(listItem)}
-            pageSize={STUDY_GAMES_PAGE_SIZE}
-            onReorder={canReorder ? reorderStudyGames.bind(null, study.id) : undefined}
-            settings={
-              canWrite
-                ? {
-                    save: updateGameSettings.bind(null, study.id),
-                    clearAnnotations: clearGameAnnotations.bind(null, study.id),
-                    clearVariations: clearGameVariations.bind(null, study.id),
-                    remove: deleteStudyGame.bind(null, study.id),
-                  }
-                : undefined
-            }
-          />
-        </div>
+        <StudyGames
+          games={study.games.map(listItem)}
+          pageSize={STUDY_GAMES_PAGE_SIZE}
+          onReorder={canReorder ? reorderStudyGames.bind(null, study.id) : undefined}
+          settings={
+            canWrite
+              ? {
+                  save: updateGameSettings.bind(null, study.id),
+                  clearAnnotations: clearGameAnnotations.bind(null, study.id),
+                  clearVariations: clearGameVariations.bind(null, study.id),
+                  remove: deleteStudyGame.bind(null, study.id),
+                }
+              : undefined
+          }
+        />
       )}
 
       {/* Who a collection reaches: for the owner only, at the foot of the column. */}

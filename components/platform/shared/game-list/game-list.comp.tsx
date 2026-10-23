@@ -26,6 +26,8 @@ export interface GameListItem extends Omit<GameSettingsGame, "orientationCode"> 
   players?: string;
   /** The PGN token of the result: "1-0", "½-½", "*". */
   resultLabel: string;
+  /** Its place in the whole study, 1 first: the index the material look numbers its rows with. */
+  number?: number;
   href: string;
 }
 
@@ -50,7 +52,8 @@ interface GameListProps {
    * `material`: the new design system's (2026-10-23), for a page moved to it
    * — a study's side column on the canvas: rows as `PlatformSideNav` draws
    * its links, square at the left and round at the right, the current one in
-   * the secondary container. Without it, the platform's own look.
+   * the secondary container, each on one line with its number in the study
+   * and the grip showing under the pointer. Without it, the platform's own look.
    */
   look?: "material";
 }
@@ -60,10 +63,17 @@ function settingsGame(game: GameListItem): GameSettingsGame {
   return { ...game, orientationCode: game.orientationCode ?? "WHITE" };
 }
 
-/** A game of the list: what it is called, who played it and how it ended, leading to its board. */
-function GameLink({ game, isCurrent }: { game: GameListItem; isCurrent: boolean }) {
+/**
+ * A game of the list: what it is called, who played it and how it ended,
+ * leading to its board. In the material look it is one line (2026-10-23, the
+ * owner's choice «B»): its number in the study, its name and its result,
+ * without who played it.
+ */
+function GameLink({ game, isCurrent, look }: { game: GameListItem; isCurrent: boolean; look?: "material" }) {
+  const oneLine = look === "material";
   return (
     <Link href={game.href} aria-current={isCurrent ? "page" : undefined} className="game-list__item">
+      {oneLine && game.number !== undefined && <span className="game-list__number">{game.number}</span>}
       <span className="game-list__main">
         {/* The name, on two lines at most: a longer one is cut, so the full
             one is shown on hover. */}
@@ -72,7 +82,7 @@ function GameLink({ game, isCurrent }: { game: GameListItem; isCurrent: boolean 
         </span>
         {/* Under it and small, who played: not said twice when the game has no
             name of its own and is already called by its players. */}
-        {game.players && game.players !== game.name && (
+        {!oneLine && game.players && game.players !== game.name && (
           <span className="game-list__players" title={game.players}>
             {game.players}
           </span>
@@ -126,7 +136,7 @@ function SortableRow({ game, isCurrent, settings, look }: RowProps) {
       >
         <GripDotsVerticalIcon variant="duotone-solid" />
       </button>
-      <GameLink game={game} isCurrent={isCurrent} />
+      <GameLink game={game} isCurrent={isCurrent} look={look} />
       {settings && <GameSettings game={settingsGame(game)} isCurrent={isCurrent} actions={settings} look={look} />}
     </li>
   );
@@ -215,7 +225,7 @@ export function GameList({ games, currentId, onReorder, settings, look }: GameLi
     <ul className={className} ref={listRef}>
       {games.map((game) => (
         <li key={game.id} className={rowClassName(game.id === currentId)}>
-          <GameLink game={game} isCurrent={game.id === currentId} />
+          <GameLink game={game} isCurrent={game.id === currentId} look={look} />
           {settings && (
             <GameSettings game={settingsGame(game)} isCurrent={game.id === currentId} actions={settings} look={look} />
           )}

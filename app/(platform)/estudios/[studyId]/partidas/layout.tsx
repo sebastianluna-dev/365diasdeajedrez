@@ -1,8 +1,6 @@
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { StudyAside } from "@/components/platform/sections/studies/game-view/study-aside.comp";
-import { StudiesSearch } from "@/components/platform/sections/studies/studies-search/studies-search.comp";
-import { PlatformHeaderContext } from "@/components/platform/sections/shell/platform-header-context.comp";
 import {
   getClassGames,
   getGameResultOptions,
@@ -56,11 +54,6 @@ export default async function StudyGamesLayout({ children, params }: StudyGamesL
   return (
     <div className="platform-page platform-page_width_full platform-page_frame_bleed game-page">
       <div className="platform-workspace">
-        {/* The library's search, in the bar: it takes what is typed to «Mis estudios». */}
-        <PlatformHeaderContext inlineClassName="game-page__search">
-          <StudiesSearch />
-        </PlatformHeaderContext>
-
         <div className="platform-workspace__side">
           <StudyAside study={study} results={results} classGames={classGames} kinds={kinds} students={students} />
         </div>

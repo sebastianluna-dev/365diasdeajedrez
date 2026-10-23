@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { GameList, type GameListItem } from "@/components/platform/shared/game-list/game-list.comp";
-import type { GameSettingsActions } from "@/components/platform/shared/game-settings/game-settings.comp";
+import { GameSettings, type GameSettingsActions } from "@/components/platform/shared/game-settings/game-settings.comp";
 import { mdButton } from "@/lib/material/material-classes";
 import { gamesOfPage, pageCountOf, pageOfGame } from "./study-games-page";
 import "./study-games.comp.css";
@@ -15,7 +15,11 @@ interface StudyGamesProps {
   pageSize: number;
   /** Saves a new order; only for a study that fits on one page (see `StudyAside`). */
   onReorder?: (orderedIds: string[]) => Promise<void>;
-  /** What a game's settings do; without them the rows have no gear. */
+  /**
+   * What a game's settings do. The rows carry no gear (2026-10-23): the game
+   * on the board is configured from the card at the foot of the list, and
+   * without them, for whoever only reads, there is none.
+   */
   settings?: GameSettingsActions;
 }
 
@@ -28,6 +32,10 @@ interface StudyGamesProps {
  * For the same reason the list carries every game and its pages are turned
  * here, with no trip to the server. It opens on the page the current game
  * falls on, and goes back to it when one moves to another game.
+ *
+ * Under it, the game on the board: «Partida abierta», its name and result,
+ * and «Configurar» for whoever may (2026-10-23, the owner's choice «B»). A
+ * game is configured only once it is open, so the rows stay one line each.
  */
 export function StudyGames({ games, pageSize, onReorder, settings }: StudyGamesProps) {
   const { gameId = "" } = useParams<{ gameId?: string }>();
@@ -38,6 +46,7 @@ export function StudyGames({ games, pageSize, onReorder, settings }: StudyGamesP
   const [turned, setTurned] = useState({ gameId, page: ownPage });
   const page = turned.gameId === gameId ? Math.min(turned.page, pageCount) : ownPage;
   const turnTo = (target: number) => setTurned({ gameId, page: target });
+  const open = games.find((game) => game.id === gameId);
 
   return (
     <div className="study-games">
@@ -47,7 +56,6 @@ export function StudyGames({ games, pageSize, onReorder, settings }: StudyGamesP
         games={gamesOfPage(games, page, pageSize)}
         currentId={gameId}
         onReorder={onReorder}
-        settings={settings}
         // The study's side column, in the new design system (2026-10-23).
         look="material"
       />
@@ -74,6 +82,27 @@ export function StudyGames({ games, pageSize, onReorder, settings }: StudyGamesP
             Siguientes →
           </button>
         </nav>
+      )}
+
+      {open && (
+        <section className="study-games__open" aria-label="Partida abierta">
+          <p className="study-games__open-text">
+            <span className="study-games__open-label">Partida abierta</span>
+            <span className="study-games__open-name" title={open.name}>
+              {open.name}
+              {open.resultLabel !== "*" && ` · ${open.resultLabel}`}
+            </span>
+          </p>
+          {settings && (
+            <GameSettings
+              game={{ ...open, orientationCode: open.orientationCode ?? "WHITE" }}
+              isCurrent
+              actions={settings}
+              look="material"
+              trigger="button"
+            />
+          )}
+        </section>
       )}
     </div>
   );

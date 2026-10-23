@@ -29,12 +29,6 @@
     gap: var(--platform-space-4);
   }
 
-  /* Where there is no bar to take it (a page drawn outside the shell), the
-     search stays on top of the panel. */
-  & .game-page__search {
-    display: flex;
-  }
-
   /* Without the width for the board and the notation side by side beside the
      column, the board goes back to the viewer's own ceiling. */
   @media (width < 1280px) {

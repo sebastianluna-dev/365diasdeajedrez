@@ -253,8 +253,44 @@
       padding-left: var(--platform-space-1);
     }
 
+    /* One line (2026-10-23): the number in the study, the name cut short,
+       the result. */
+    & .game-list__item,
+    & .game-list__item:hover {
+      min-height: 36px;
+      padding-block: 0;
+    }
+
+    & .game-list__number {
+      flex: none;
+      min-width: 20px;
+      font-size: var(--platform-type-2xs);
+      color: var(--platform-m3-on-surface-variant);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
     & .game-list__name {
-      font-weight: 600;
+      display: block;
+      font-weight: 500;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    & .game-list__row_state_active .game-list__name {
+      font-weight: 700;
+    }
+
+    /* The grip shows under the pointer, or reached by the keyboard: the row
+       is one line to read, and is sorted only now and then. */
+    & .game-list__grip {
+      opacity: 0;
+    }
+
+    & .game-list__row:hover .game-list__grip,
+    & .game-list__row:focus-within .game-list__grip,
+    & .game-list__row_state_dragging .game-list__grip {
+      opacity: 1;
     }
 
     & .game-list__players,
@@ -265,6 +301,7 @@
     }
 
     & .game-list__row.game-list__row_state_active .game-list__item,
+    & .game-list__row.game-list__row_state_active .game-list__number,
     & .game-list__row.game-list__row_state_active .game-list__players,
     & .game-list__row.game-list__row_state_active .game-list__result,
     & .game-list__row.game-list__row_state_active .game-list__grip {
