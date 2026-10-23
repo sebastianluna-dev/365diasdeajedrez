@@ -657,6 +657,12 @@
     & .game-viewer__panel-subtitle {
       font-size: var(--platform-type-xs);
       color: var(--platform-m3-on-surface-variant);
+      text-decoration: none;
+    }
+
+    & a.game-viewer__panel-subtitle:hover {
+      color: var(--platform-m3-on-surface);
+      text-decoration: underline;
     }
 
     & .game-viewer__progress {

@@ -1,8 +1,8 @@
 .lesson-frame {
-  /* The panel of the lesson: its toolbar, then the lesson, which fills what
-     is left. The panel's own padding is the board's air; the gap is the
-     toolbar's. */
-  gap: var(--platform-space-4);
+  /* The panel of the lesson: the lesson alone, which fills it (the toolbar
+     of the trail and the arrows went on 2026-10-23: the column of lessons
+     beside it says where one is and moves on). The panel's own padding is
+     the board's air. */
 
   /* 24 between the board and the panel of text (`--viewer-column-gap`). */
   --viewer-column-gap: var(--platform-space-6);
@@ -25,73 +25,6 @@
   /* The column of notes runs down beside the keys too, to the foot of the
      board's card, where the practice card sits (the design, 2026-10-22). */
   --viewer-panel-trim: 0px;
-
-  /* The toolbar: back to the chapter and the trail at the left, the arrows
-     to the lessons beside it at the right. */
-  & .lesson-frame__toolbar {
-    flex: none;
-    min-height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--platform-space-4);
-    margin: calc(-1 * var(--platform-space-2)) 0 0 calc(-1 * var(--platform-space-2));
-  }
-
-  & .lesson-frame__trail,
-  & .lesson-frame__steps {
-    display: flex;
-    align-items: center;
-    gap: var(--platform-space-2);
-    min-width: 0;
-  }
-
-  & .lesson-frame__steps {
-    flex: none;
-    gap: var(--platform-space-1);
-  }
-
-  & .lesson-frame__crumb {
-    flex: none;
-    max-width: 30%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: var(--platform-m3-on-surface-variant);
-    text-decoration: none;
-  }
-
-  & a.lesson-frame__crumb:hover {
-    text-decoration: underline;
-  }
-
-  & .lesson-frame__crumb-step {
-    flex: none;
-    width: 10px;
-    height: 10px;
-    color: var(--platform-m3-outline);
-  }
-
-  & .lesson-frame__crumb-here {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-weight: 600;
-  }
-
-  & .lesson-frame__step_state_off {
-    opacity: 0.38;
-    pointer-events: none;
-  }
-
-  /* On a narrow panel the course's name goes: the chapter leads back. */
-  @media (width < 1280px) {
-    & .lesson-frame__crumb_kind_course,
-    & .lesson-frame__crumb_kind_course + .lesson-frame__crumb-step {
-      display: none;
-    }
-  }
 
   & .lesson-frame__main {
     flex: 1;

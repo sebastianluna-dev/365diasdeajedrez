@@ -82,8 +82,8 @@ interface GameViewerProps {
   /** Dotted path to open the viewer at (TrainingExercise.path / ClassBlock.movePath). */
   initialPath?: string;
   title?: string;
-  /** A line above the title, beside the badge, in `notes` («Capítulo 2 · La Najdorf»). */
-  subtitle?: string;
+  /** A line above the title, beside the badge, in `notes` («Capítulo 2 · La Najdorf»); a link with `href`. */
+  subtitle?: { label: string; href?: string };
   /** Badge to the right of the title ("Prioritaria"); above it, beside the subtitle, in `notes`. */
   badge?: string;
   /**
@@ -919,7 +919,14 @@ export function GameViewer({
                 {(badge || subtitle) && (
                   <p className="game-viewer__panel-kicker">
                     {badge && <span className="game-viewer__panel-badge">{badge}</span>}
-                    {subtitle && <span className="game-viewer__panel-subtitle">{subtitle}</span>}
+                    {subtitle &&
+                      (subtitle.href ? (
+                        <Link href={subtitle.href} className="game-viewer__panel-subtitle">
+                          {subtitle.label}
+                        </Link>
+                      ) : (
+                        <span className="game-viewer__panel-subtitle">{subtitle.label}</span>
+                      ))}
                   </p>
                 )}
                 {title && <h1 className="game-viewer__panel-title">{title}</h1>}

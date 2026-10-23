@@ -180,7 +180,7 @@ export const LessonMaterial: Story = {
     look: "material",
     moveList: "notes",
     badge: "Prioritaria",
-    subtitle: "Capítulo 2 · Partidas clásicas",
+    subtitle: { label: "Capítulo 2 · Partidas clásicas", href: "#" },
     practice: {
       title: "Ahora practica",
       detail: "3 ejercicios · 1 de 3 resueltos",
