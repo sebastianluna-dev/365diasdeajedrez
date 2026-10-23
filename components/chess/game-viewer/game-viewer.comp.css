@@ -763,6 +763,25 @@
       padding: var(--platform-space-3) 0 0;
       box-shadow: inset 0 1px 0 var(--platform-m3-container-high);
     }
+
+    /* A game consulted move by move (a study's, 2026-10-23): the player
+       strips loose on the panel, the tools under the board on the
+       container's grey, and the notation in an outlined card — the design's
+       table, which reads as a list of its own beside the board. */
+    & .game-viewer__player {
+      background: transparent;
+    }
+
+    & .game-viewer__board-footer {
+      border-radius: var(--md-sys-shape-corner-lg);
+      background: var(--platform-m3-container);
+      box-shadow: none;
+    }
+
+    &:not(.game-viewer_list_notes) .game-viewer__panel {
+      border: 1px solid var(--platform-m3-container-high);
+      border-radius: var(--md-sys-shape-corner-lg);
+    }
   }
 
   &.game-viewer_state_fullscreen {

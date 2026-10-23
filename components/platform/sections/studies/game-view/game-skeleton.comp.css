@@ -1,10 +1,11 @@
 /* The game while the game is on its way. It draws the viewer's own tracks
    with the viewer's own numbers (game-viewer.comp.css), so the board of the
    skeleton and the board of the game are the same box and nothing moves when
-   one replaces the other. */
+   one replaces the other. In the containers' grey of the new design system
+   (2026-10-23), with no shadow: the panel is already white. */
 .game-skeleton {
-  /* What the bar of keys under the notation takes: a key and the gap over it. */
-  --game-skeleton-nav: calc(48px + var(--platform-space-4));
+  /* What the bar of keys under the notation takes: a key of Material's (40px) and the gap over it. */
+  --game-skeleton-nav: calc(40px + var(--platform-space-4));
 
   display: grid;
   grid-template-columns: minmax(0, var(--viewer-board-max, 600px)) minmax(320px, 1fr);
@@ -28,7 +29,7 @@
   /* A player's strip, blank: a line of the strip's text and its padding. */
   & .game-skeleton__strip {
     height: calc(1.3 * var(--platform-type-xs) + 2 * var(--platform-space-1));
-    background: var(--platform-surface);
+    background: var(--platform-m3-container);
   }
 
   & .game-skeleton__strip_side_top {
@@ -47,9 +48,8 @@
     grid-row: 1;
     height: 0;
     min-height: calc(100% - var(--game-skeleton-nav));
-    border-radius: 8px;
-    background: var(--platform-surface);
-    box-shadow: var(--platform-shadow-card);
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--platform-m3-container);
   }
 
   /* The tools under the board — comment, quality, share —, blank: about what
@@ -58,9 +58,8 @@
     grid-column: 1;
     grid-row: 2;
     min-height: 236px;
-    border-radius: 8px;
-    background: var(--platform-surface);
-    box-shadow: var(--platform-shadow-card);
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--platform-m3-container);
   }
 
   /* The notation is a narrow column from a tablet up, as in the viewer. */

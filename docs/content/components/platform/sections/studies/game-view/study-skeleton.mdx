@@ -1,0 +1,37 @@
+---
+description: "Arriving at a study, in the new design system: the whole workspace with the shape of the study's column and, in the panel, the trail, the blank record and the board's skeleton."
+---
+
+# `StudySkeleton`
+
+|            |                                                                                                          |
+| ---------- | -------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/study-skeleton.comp.tsx`                                 |
+| Kind       | Server Component (markup and CSS only)                                                                   |
+| Stylesheet | `study-skeleton.comp.css` → block `.study-skeleton`                                                      |
+| Used by    | `app/(platform)/estudios/[studyId]/loading.tsx`                                                          |
+| Composes   | `GameRecordSkeleton` and [`GameSkeleton`](/components/platform/sections/studies/game-view/game-skeleton) |
+
+## Purpose
+
+Opening a study is opening a game of it, so what is waited for on arrival is the whole workspace (2026-10-23, in place of the turning knight): the bleeding page, the side column with the study's name, its chip, «Nueva partida»'s FAB and seven rows of games, softly pulsing on the canvas; and the panel with the trail's row, the blank record and the board's skeleton with its ring. From one game to the next only the page is waited for, since the layout stays: that wait is `GameSkeleton`'s alone (`partidas/[gameId]/loading.tsx`).
+
+It is a `loading.tsx`'s, so it imports no Client Component, however indirectly (`components/loading-boundaries.test.ts`).
+
+## Props
+
+None.
+
+## Markup & styling
+
+Block `.study-skeleton` (82 lines), on `.platform-workspace`.
+
+**Elements:** `.study-skeleton__shape`, `.study-skeleton__side`, `.study-skeleton__name`, `.study-skeleton__chip`, `.study-skeleton__fab`, `.study-skeleton__row`, `.study-skeleton__line`, `.study-skeleton__panel`, `.study-skeleton__trail`
+
+**Modifiers:** `.study-skeleton__line_width_short`.
+
+**Keyframes:** `study-skeleton-pulse`, at the top level.
+
+**Tokens:** `--platform-m3-container`, `--platform-m3-container-high`, `--md-sys-shape-corner-lg`, the space scale.
+
+**Breakpoints:** `(prefers-reduced-motion: reduce)` stops the pulse.

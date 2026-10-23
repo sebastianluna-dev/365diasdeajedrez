@@ -159,3 +159,8 @@ export const PinnedComment: Story = {
 export const Evaluated: Story = {
   args: { tree: treeOf(EVALUATED_GAME), currentPath: mainLinePath(18) },
 };
+
+/** The new design system's notation (`look="material"`), as a study's game draws it: the move on the board a pill of the primary. */
+export const Material: Story = {
+  args: { look: "material" },
+};

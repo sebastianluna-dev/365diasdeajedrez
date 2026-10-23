@@ -9,7 +9,7 @@ description: "Lichess-style tabular notation: the main line as number · white �
 | File       | `components/chess/game-viewer/move-table.comp.tsx`                                                                                                                                                                                                                                                                      |
 | Kind       | Client Component                                                                                                                                                                                                                                                                                                        |
 | Stylesheet | `move-table.comp.css` → block `.move-table`                                                                                                                                                                                                                                                                             |
-| Story      | `move-table.stories.tsx` (`chess/game-viewer/MoveTable`): an annotated game, a move inside a nested variation, a bare main line, a game headed by its owner's pinned comment, and an evaluated game                                                                                                                     |
+| Story      | `move-table.stories.tsx` (`chess/game-viewer/MoveTable`): an annotated game, a move inside a nested variation, a bare main line, a game headed by its owner's pinned comment, an evaluated game, and the new design system's look                                                                                       |
 | Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="table"`, the default)                                                                                                                                                                                                                             |
 | Uses       | `buildNotationBlocks` from `lib/chess/notation-blocks`<br />`formatEvaluation` from `lib/chess/engine-protocol`<br />`sanToSpanish` from `lib/chess/notation`<br />`nagGlyph`, `nagLabel`, `PgnTree`, `PgnTreeNode` from `lib/chess/pgn-tree`<br />`scrollerOf`, `scrollToMiddle` from `components/chess/scroll-within` |
 
@@ -21,14 +21,15 @@ The hard part, deciding the order of rows and blocks and when Black's move has t
 
 ## Props
 
-| Prop               | Type                                        | Required | Meaning                                                                                                                                   |
-| ------------------ | ------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `tree`             | `PgnTree`                                   | yes      | The parsed game.                                                                                                                          |
-| `currentPath`      | `string`                                    | yes      | Dotted path of the active node; `""` is the initial position.                                                                             |
-| `onSelect`         | `(path: string) => void`                    | yes      | Click on a move.                                                                                                                          |
-| `onContextMenu`    | `(path: string, event: MouseEvent) => void` | no       | Right click on a move: opens its menu where it can be edited. Absent in read-only viewers.                                                |
-| `pinnedComment`    | `string`                                    | no       | The game owner's note (`Game.pinnedComment`), drawn as the list's first comment: before the PGN's own opening comment and the first move. |
-| `highlightedPaths` | `ReadonlySet<string>`                       | no       | Moves painted in the selection's blue (`_line_played`): the line the analysis board is playing against the module.                        |
+| Prop               | Type                                        | Required | Meaning                                                                                                                                                                                                                     |
+| ------------------ | ------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tree`             | `PgnTree`                                   | yes      | The parsed game.                                                                                                                                                                                                            |
+| `currentPath`      | `string`                                    | yes      | Dotted path of the active node; `""` is the initial position.                                                                                                                                                               |
+| `onSelect`         | `(path: string) => void`                    | yes      | Click on a move.                                                                                                                                                                                                            |
+| `onContextMenu`    | `(path: string, event: MouseEvent) => void` | no       | Right click on a move: opens its menu where it can be edited. Absent in read-only viewers.                                                                                                                                  |
+| `pinnedComment`    | `string`                                    | no       | The game owner's note (`Game.pinnedComment`), drawn as the list's first comment: before the PGN's own opening comment and the first move.                                                                                   |
+| `highlightedPaths` | `ReadonlySet<string>`                       | no       | Moves painted in the selection's blue (`_line_played`): the line the analysis board is playing against the module.                                                                                                          |
+| `look`             | `"material"`                                | no       | The new design system's notation (2026-10-23, a study's game; the viewer hands it on): the numbers on the container's grey, each move a pill whose move on the board is the primary's, the variations on the canvas's tint. |
 
 ## Behaviour
 
@@ -41,7 +42,9 @@ The hard part, deciding the order of rows and blocks and when Black's move has t
 
 ## Markup & styling
 
-Block `.move-table` (225 lines). The evaluations are in `--platform-text-muted`, not a lighter grey: the cell turns to `--platform-surface-neutral` under the pointer, a fill where the subtle grey falls under 4.5:1. On the active move they take its accent and stay behind it by their weight (500 against the move's 700), not by an opacity.
+Block `.move-table` (292 lines). The evaluations are in `--platform-text-muted`, not a lighter grey: the cell turns to `--platform-surface-neutral` under the pointer, a fill where the subtle grey falls under 4.5:1. On the active move they take its accent and stay behind it by their weight (500 against the move's 700), not by an opacity.
+
+**Modifiers:** `.move-table_look_material`.
 
 **Elements:** `.move-table__row`, `.move-table__number`, `.move-table__cell`, `.move-table__move`, `.move-table__nag`, `.move-table__sr` (the NAGs in words, visually hidden), `.move-table__eval`, `.move-table__ellipsis`, `.move-table__comment`, `.move-table__line`, `.move-table__inline`, `.move-table__inline-comment`
 

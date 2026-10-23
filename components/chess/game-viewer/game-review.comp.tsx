@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
+import { mdButton } from "@/lib/material/material-classes";
 import { reviewGame, type PlayerReview } from "@/lib/chess/game-review";
 import { parseEditableGame, serializeGame, setEvaluation } from "@/lib/chess/pgn-edit";
 import { parsePgnTree, type MoveEvaluation } from "@/lib/chess/pgn-tree";
@@ -19,6 +20,8 @@ interface GameReviewProps {
   currentPath: string;
   onSelectPath: (path: string) => void;
   onPgnChange: (pgn: string) => void;
+  /** `material`: Material's outlined buttons, for a page moved to the new design system. */
+  look?: "material";
 }
 
 /**
@@ -28,7 +31,17 @@ interface GameReviewProps {
  * PGN, one `[%eval]` per move, so if it is there, it is rendered. That makes
  * it survive a page reload and travel with the game when exported.
  */
-export function GameReview({ pgn, canEdit, white, black, currentPath, onSelectPath, onPgnChange }: GameReviewProps) {
+export function GameReview({
+  pgn,
+  canEdit,
+  white,
+  black,
+  currentPath,
+  onSelectPath,
+  onPgnChange,
+  look,
+}: GameReviewProps) {
+  const material = look === "material";
   const tree = useMemo(() => parsePgnTree(pgn), [pgn]);
   const evaluations = useMemo(() => (tree ? mainlineEvaluations(tree) : null), [tree]);
   const review = useMemo(() => (tree ? reviewGame(mainlinePositions(tree)) : null), [tree]);
@@ -95,7 +108,7 @@ export function GameReview({ pgn, canEdit, white, black, currentPath, onSelectPa
         <button
           type="button"
           disabled={moveCount === 0}
-          className="platform-button game-review__start"
+          className={`${material ? mdButton("outlined", "sm") : "platform-button"} game-review__start`}
           onClick={() => runner.start(pgn)}
         >
           Generar evaluación
@@ -141,7 +154,7 @@ export function GameReview({ pgn, canEdit, white, black, currentPath, onSelectPa
         </span>
         <button
           type="button"
-          className="platform-button platform-button_size_sm game-review__again"
+          className={`${material ? mdButton("outlined", "xs") : "platform-button platform-button_size_sm"} game-review__again`}
           onClick={() => runner.start(pgn)}
         >
           Volver a evaluar

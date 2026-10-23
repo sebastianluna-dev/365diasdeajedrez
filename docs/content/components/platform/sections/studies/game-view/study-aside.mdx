@@ -1,29 +1,30 @@
 ---
-description: "The study beside its games' boards, a Server Component mounted by the layout of the game pages so that it holds still from one game to the next: the study's name and its owner's actions, the list of games, «Nueva partida» and a collection's sharing card."
+description: "The study's side column in the new design system, a Server Component mounted by the layout of the game pages so that it holds still from one game to the next: the study's name and kind, the sliders that open its form, «Nueva partida» as the extended FAB, its games as the column's rows and a collection's sharing card."
 ---
 
 # `StudyAside`
 
-|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/game-view/study-aside.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                             |
-| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| Stylesheet | `study-aside.comp.css` → block `.study-aside`                                                                                                                                                                                                                                                                                                                                                                                                     |
-| Used by    | The layout of `/estudios/[studyId]/partidas/[gameId]` (`app/(platform)/estudios/[studyId]/partidas/layout.tsx`), beside the page's [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section) and [`GameRecord`](/components/platform/sections/studies/game-view/game-record)                                                                                                                                         |
-| Composes   | [`StudyGames`](/components/platform/sections/studies/game-view/study-games) (the list, over [`GameList`](/components/platform/shared/game-list)), [`StudySettings`](/components/platform/sections/studies/game-view/study-settings) (the study's own actions), [`NewGame`](/components/platform/sections/studies/study-detail/new-game), [`StudentSharePanel`](/components/platform/shared/student-share-panel) (`subject="collection"`, compact) |
-| Uses       | `canShareStudy`, `canReorderStudyGames`, `STUDY_GAMES_PAGE_SIZE` from `services/studies/study-rules`; `StudyDetail`, `StudyKindOption`, `ClassGameItem`, `StudentOption` from `services/studies/studies.types`                                                                                                                                                                                                                                    |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/study-aside.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Stylesheet | `study-aside.comp.css` → block `.study-aside`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Used by    | The layout of `/estudios/[studyId]/partidas/[gameId]` (`app/(platform)/estudios/[studyId]/partidas/layout.tsx`), in `.platform-workspace__side`; [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (a study with no games)                                                                                                                                                                                                                                                                          |
+| Composes   | [`StudyChip`](/components/platform/sections/studies/study-chip), [`StudySettings`](/components/platform/sections/studies/game-view/study-settings) (the study's own actions), [`NewGame`](/components/platform/sections/studies/study-detail/new-game) (the FAB), [`StudyGames`](/components/platform/sections/studies/game-view/study-games) (the list, over [`GameList`](/components/platform/shared/game-list) in its material look), [`StudentSharePanel`](/components/platform/shared/student-share-panel) (`subject="collection"`, compact) |
+| Uses       | `canShareStudy`, `canReorderStudyGames`, `STUDY_GAMES_PAGE_SIZE` from `services/studies/study-rules`; `StudyDetail`, `StudyKindOption`, `StudyOrigin`, `ClassGameItem`, `StudentOption` from `services/studies/studies.types`                                                                                                                                                                                                                                                                                                                     |
 
 ## Purpose
 
-A study has no page of its own — its URL redirects to the first game — so this column is where the study lives. It receives **data**, never components, and decides for itself what to show with the same permission table the server actions apply (`services/studies/study-rules`): the layout only loads and hands over. It is a Server Component; the modals it mounts are Client Components with their own state, and so is the list ([`StudyGames`](/components/platform/sections/studies/game-view/study-games)).
+A study has no page of its own — its URL redirects to a game — so this column is where the study lives. Since 2026-10-23 it is the side column of the new design system's workspace («M4» of the owner's canvas, `MaterialM4Estudio`), on the canvas, with `PlatformSideNav`'s rhythm:
 
-**It is the layout's, not the page's** (2026-10-05). Until then the whole column was rendered by the game page, as `GameAside`, and so it was rendered again — and, while the next game loaded, replaced by the loading knight — every time one went from a game to another: the list blinked and lost its scroll. Next does not render a layout again when only the segment under it changes, so mounted by the layout of `/estudios/[studyId]/partidas` the study holds still: its list keeps its scroll and its page, and only the board and the game's record change. The price is that nothing here may depend on the game on the board or on the query string — a layout is not told when they change —, which is what split the old aside in three:
+1. **The study**: its name, and under it a [`StudyChip`](/components/platform/sections/studies/study-chip) with its kind (or where it comes from) and its size, «Torneo · 9 partidas»; for its owner, at the right of the row, the sliders that open its form ([`StudySettings`](/components/platform/sections/studies/game-view/study-settings); «Eliminar estudio» is at the form's foot).
+2. **«Nueva partida»**, Material's extended FAB ([`NewGame`](/components/platform/sections/studies/study-detail/new-game)), for whoever may write.
+3. **«Partidas»**, the games as the column's rows ([`StudyGames`](/components/platform/sections/studies/game-view/study-games) over [`GameList`](/components/platform/shared/game-list) with `look="material"`): the name, who played, the result at the right, the one on the board lit in the secondary container, each with its grip and gear for the owner.
+4. For a collection's owner, **who it is shared with** (`StudentSharePanel`, compact), on a panel of its own at the foot. The canvas has a share button in the panel's toolbar instead; the sharing card stays here, where it was, so nothing about it changes.
 
-- the study, here;
-- the record of the current game, [`GameRecord`](/components/platform/sections/studies/game-view/game-record), which the page renders;
-- which row of the list is the current one, read from the address in the browser by [`StudyGames`](/components/platform/sections/studies/game-view/study-games).
+It receives **data**, never components, and decides for itself what to show with the same permission table the server actions apply (`services/studies/study-rules`): the layout only loads and hands over.
 
-The card is the study: its name heads it, with three bars at the end of the row that open the study's form ([`StudySettings`](/components/platform/sections/studies/game-view/study-settings); «Eliminar estudio» is at the form's foot), the games follow (with their pages nav when the study spans several) and "Nueva partida" closes the card. A collection's owner gets a second card under it, the sharing panel.
+**It is the layout's, not the page's** (2026-10-05): Next does not render a layout again when only the segment under it changes, so the study holds still from game to game — its list keeps its scroll and its page —, and only the record and the board change. Nothing here may depend on the game on the board or on the query string; which row is the current one is read from the address by [`StudyGames`](/components/platform/sections/studies/game-view/study-games).
 
 ## Props
 
@@ -37,49 +38,36 @@ The card is the study: its name heads it, with three bars at the end of the row 
 
 ## Behaviour
 
-- `canWrite = study.permissions.canEditGames` gates the study's three bars, "Nueva partida" and the gear of settings on each game of the list (`settings`, the four actions bound to the study: `updateGameSettings`, `clearGameAnnotations`, `clearGameVariations`, `deleteStudyGame`); whether the form offers «Eliminar estudio» is `StudySettings`' own business (`canDelete`: "Mis partidas" is editable but not deletable). `canShare` is `canShareStudy(study)`: the owner of a collection.
-- **Reordering** is `canReorderStudyGames(study)`: whoever may edit the games, while the study fits on one page of the list (`STUDY_GAMES_PAGE_SIZE`, 100). Dragging reorders what the list shows, and `reorderStudyGames` takes nothing but the whole study, so a page of several would mix its new order with the old one of the rest. Only then does `reorderStudyGames`, bound to the study, go to the list as `onReorder`; without it the rows are links only.
-- **Every game goes to the list**, each `StudyGameItem` as a `GameListItem` (`listItem`: the title, or the `label` fallback, as the name, and the players as the second line). The layout cannot know which page of a long study the current game falls on, so the paging is the list's, in the browser.
-- **How it stays fresh.** A layout is not rendered again on navigation, but it is after a server action that calls `revalidatePath`, like the page: that is how a renamed, reordered, new or deleted game reaches the list. Checked in the running app on 2026-10-05: saving a game's name from its gear changed its row, in the same list node.
+- `canWrite = study.permissions.canEditGames` gates the sliders, the FAB and the gear of settings on each game (`settings`, the four actions bound to the study: `updateGameSettings`, `clearGameAnnotations`, `clearGameVariations`, `deleteStudyGame`); whether the form offers «Eliminar estudio» is `StudySettings`' own (`canDelete`). `canShare` is `canShareStudy(study)`: the owner of a collection.
+- **The chip's origin**: a course's database says its course, a received collection the teacher who shared it (`originOf`), as the library's cards do.
+- **Reordering** is `canReorderStudyGames(study)`: whoever may edit the games, while the study fits on one page of the list (`STUDY_GAMES_PAGE_SIZE`, 100).
+- **Every game goes to the list**, each `StudyGameItem` as a `GameListItem` (`listItem`: the title, or the `label` fallback, as the name, and the players as the second line). A study with no games draws no «Partidas».
+- **How it stays fresh.** A layout is rendered again after a server action that calls `revalidatePath`, like the page: that is how a renamed, reordered, new or deleted game reaches the list.
 
 ## Markup & styling
 
-Block `.study-aside` (86 lines): a column of cards (`flex`, the scale's `space-6` between them). The card is white on the page's grey over a light shadow, with no outline, like every box of the game view; the sharing card (`StudentSharePanel` in its compact layout) matches.
+Block `.study-aside` (60 lines), a column on the canvas.
 
-**Elements:** `.study-aside__card`, `.study-aside__head`, `.study-aside__name`, `.study-aside__new`
+**Elements:** `.study-aside__head`, `.study-aside__heading`, `.study-aside__name`, `.study-aside__games`, `.study-aside__title` (the group's title, as `PlatformSideNav` writes its own), `.study-aside__share` (the panel's white, with its corners, around the sharing card)
 
-**The head is one row** (2026-10-05): the study's name and, at its end, the three bars that open its form, level with the name. Under the name there used to be a row of words — «Editar datos», «Eliminar» — and beside it the number of games; the owner asked for a button instead (a menu of two items first, then the bars that open the form at once) and found the count beside the point in a head. The bars fall in the column of the gears of the rows under them: the head is inset more than the list, and the button's negative right margin is the difference, written with the scale's own steps so it holds at 1536px too (measured at 1400 and 1600px: same x).
+**Tokens:** `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-panel`, `--md-sys-shape-corner-lg`, the type and space scales.
 
-**Other selectors it styles:** `.new-game__open`, the «Nueva partida» trigger in its slot, drawn as a line of the card, its «+» the button's own `PlusIcon` (a `::before` until 2026-10-07), kept in the accent's ink with its word, since the platform's button draws a neutral icon in the muted grey: by its own class and not by `.platform-button`, because the dialog it opens lives in the same slot and its «Cancelar» and «Agregar partida» took that look until 2026-10-05; `.study-settings` in the head (its margins).
-
-**Tokens:** `--platform-accent-ink`, `--platform-accent-wash`, `--platform-border`, `--platform-surface`, `--platform-text-subtle`
-
-**The page's width and the board's size.** The stylesheet that lays the three pieces out (`game-page.css`, beside the layout) measures the board by the **height** of the window (2026-10-04): `--game-board-max` is `100vh` less what sits above the board (the shell's 70px bar, the air under it, the top player strip) and below it (the bottom strip, the gap and the row of tabs of the tools), so the board is as large as the window allows and the tabs «Comentario», «Calidad»… are left peeking at the bottom edge, which says the panel is there, a scroll away. It is handed to the viewer as `--viewer-board-max`, with a floor of 320px. The page is as wide as its three columns ask for — this column at `clamp(280px, 24%, 360px)`, the board, and the notation at the viewer's 400px —, so it grows with the board; on a window too narrow for the board the height would give, the notation keeps its 320px and the board takes what is left. Under 1280px the board goes back to the viewer's 600px.
-
-**Where the three pieces go.** `.game-page__layout` is a grid of two columns and two rows: the study at the top of the left column, the game's record under it, and the board — or the skeleton that stands in for it while a game loads ([`GameSkeleton`](/components/platform/sections/studies/game-view/game-skeleton)) — down the right column, across both rows. The second row is the flexible one (`auto 1fr`), so the study's row is as tall as the study. The markup has the page first (the board, then the record) and the study after it, because a layout can only put its children in one place; the grid places each piece by name.
-
-**Breakpoints** (in `game-page.css`; this block has none): under `(width < 1280px)` the board goes first, alone in its row, and the study and the record share the row **under** it, as Lichess puts a study's chapters under the board (2026-10-04; before, the aside went above the board and pushed it down); under `(width < 640px)` they stack — the board, the study, the record.
+**The page around it** (`game-page.css`, beside the layout): the page bleeds onto the canvas (`platform-page_width_full` + `platform-page_frame_bleed`) and the layout draws `.platform-workspace`; the board is measured by the **height** of the window (`--game-board-max`: `100vh` less the bar, the panel's padding, the trail, the record, the gaps, the two strips and the tabs of the tools, which are left peeking), handed to the viewer as `--viewer-board-max` with a floor of 320px, and back to the viewer's 600px under 1280px. Under 1024px the workspace puts this column above the panel.
 
 ## Usage
 
 From `app/(platform)/estudios/[studyId]/partidas/layout.tsx`:
 
 ```tsx
-import { StudyAside } from "@/components/platform/sections/studies/game-view/study-aside.comp";
-
-<div className="platform-page game-page platform-page_width_wide">
-  <div className="game-page__layout">
-    {children}
-    <StudyAside study={study} results={results} classGames={classGames} kinds={kinds} students={students} />
-  </div>
-</div>;
+<div className="platform-workspace__side">
+  <StudyAside study={study} results={results} classGames={classGames} kinds={kinds} students={students} />
+</div>
 ```
 
 The layout loads the study with `getStudyWithGames` and the catalogs only when they can be used (`canEditGames`, `canShareStudy`), passing empty lists otherwise.
 
 ## Related
 
-- [`StudyGames`](/components/platform/sections/studies/game-view/study-games), the list's leaf: the current game and the pages.
-- [`GameRecord`](/components/platform/sections/studies/game-view/game-record), the card under this one, which is the page's.
-- [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section), the board column beside it.
+- [`StudyTrail`](/components/platform/sections/studies/game-view/study-trail), the panel's toolbar beside it, also the layout's.
+- [`GameRecord`](/components/platform/sections/studies/game-view/game-record) and [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section), the page's, in the panel.
 - [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section), the study's page when it has no game to show.

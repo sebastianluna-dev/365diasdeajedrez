@@ -11,7 +11,7 @@ Also the `GameListItem` type.
 | File       | `components/platform/shared/game-list/game-list.comp.tsx`                                                                                                                                                                                                                                                            |
 | Kind       | Client Component                                                                                                                                                                                                                                                                                                     |
 | Stylesheet | `game-list.comp.css` → block `.game-list`                                                                                                                                                                                                                                                                            |
-| Story      | `game-list.stories.tsx` (`platform/shared/GameList`): a collection that can be put in order, the same with a gear of settings on each game, and the same list as links only; the order goes to a spy                                                                                                                 |
+| Story      | `game-list.stories.tsx` (`platform/shared/GameList`): a collection that can be put in order, the same with a gear of settings on each game, the same list as links only, and the new design system's look in a side column; the order goes to a spy                                                                  |
 | Used by    | [`StudyGames`](/components/platform/sections/studies/game-view/study-games), inside [`StudyAside`](/components/platform/sections/studies/game-view/study-aside) (a student's study), [`ChapterGameSection`](/components/platform/sections/staff/courses/chapter-game-section) (a chapter's collection, in its aside) |
 | Composes   | [`SortableDnd`](/components/platform/shared/sortable-dnd), with `useSortableRows`; [`GameSettings`](/components/platform/shared/game-settings) at the end of each row, with `settings`                                                                                                                               |
 | Uses       | `useSortable` from `@dnd-kit/sortable`; `ArrowUpIcon`, `GripDotsVerticalIcon`                                                                                                                                                                                                                                        |
@@ -28,6 +28,7 @@ The games of a study or of a chapter's collection, beside the board, to jump bet
 | `currentId` | `string`                                  | yes      | The current game: its row gets `aria-current="page"` and the active state, and is centred in the list.                                                                                                                                                                                                                                                                                    |
 | `onReorder` | `(orderedIds: string[]) => Promise<void>` | no       | Saves a new order, a server action already bound to its study or chapter. Without it the rows are links only: the aside leaves it out where nobody may reorder.                                                                                                                                                                                                                           |
 | `settings`  | `GameSettingsActions`                     | no       | What a game's settings do — rename, clean, delete —, server actions already bound to the study. With them each row ends in the gear of [`GameSettings`](/components/platform/shared/game-settings); the staff's collection does not pass them.                                                                                                                                            |
+| `look`      | `"material"`                              | no       | The new design system's (2026-10-23), for a study's side column on the canvas: the rows as `PlatformSideNav` draws its links — square at the left, round at the right —, the current one in the secondary container with no rule, the gear as Material's icon button (passed on to `GameSettings`).                                                                                       |
 
 ## Behaviour
 
@@ -40,7 +41,9 @@ The games of a study or of a chapter's collection, beside the board, to jump bet
 
 ## Markup & styling
 
-Block `.game-list` (205 lines), the `<ul>` itself.
+Block `.game-list` (274 lines), the `<ul>` itself.
+
+**Modifiers:** `.game-list_look_material` (the new design system's look, which reads `--platform-m3-*` and `--md-sys-elevation-shadow-2`).
 
 **Elements:** `.game-list__row`, `.game-list__grip`, `.game-list__item`, `.game-list__main`, `.game-list__name`, `.game-list__players`, `.game-list__result`
 

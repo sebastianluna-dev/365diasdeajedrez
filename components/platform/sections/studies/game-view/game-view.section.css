@@ -1,6 +1,6 @@
 .game-view {
-  /* The board's column; the page's layout gives it the room next to the
-     aside, and the viewer splits it inside between board and notation. */
+  /* The board's column; the panel gives it its width, and the viewer splits
+     it inside between board and notation. */
   min-width: 0;
 
   /* What bounces back from a server action, above the board: it is the answer
@@ -10,15 +10,15 @@
   }
 
   /* For the game's owner, that a reader's mode is on: a line over the board,
-     quiet, with the way to see it. On the page's grey, so the muted one. */
+     quiet, with the way to see it. On the panel's white, in its grey. */
   & .game-view__mode {
     margin: 0 0 var(--platform-space-3);
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
   }
 
   & .game-view__mode-link {
     font-weight: 700;
-    color: var(--platform-accent-ink);
+    color: var(--platform-m3-primary);
   }
 }

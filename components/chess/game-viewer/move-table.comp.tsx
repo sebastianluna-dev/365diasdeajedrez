@@ -23,6 +23,12 @@ interface MoveTableProps {
   pinnedComment?: string;
   /** Moves painted in the selection's blue: the line being played against the module. */
   highlightedPaths?: ReadonlySet<string>;
+  /**
+   * `material`: the new design system's notation (2026-10-23, a study's
+   * game): the numbers on the container's grey, the move on the board a pill
+   * of the primary, the comments and variations on the panel's tints.
+   */
+  look?: "material";
 }
 
 const moveNumberOf = (node: PgnTreeNode) => Math.ceil(node.ply / 2);
@@ -50,6 +56,7 @@ export function MoveTable({
   onContextMenu,
   pinnedComment,
   highlightedPaths,
+  look,
 }: MoveTableProps) {
   const activeRef = useRef<HTMLButtonElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -108,7 +115,7 @@ export function MoveTable({
   };
 
   return (
-    <div className="move-table" ref={rootRef}>
+    <div className={`move-table${look === "material" ? " move-table_look_material" : ""}`} ref={rootRef}>
       {pinnedComment && <p className="move-table__comment move-table__comment_kind_pinned">{pinnedComment}</p>}
       {tree.initialComment && <p className="move-table__comment">{tree.initialComment}</p>}
 

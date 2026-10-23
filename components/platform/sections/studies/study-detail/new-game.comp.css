@@ -1,4 +1,26 @@
 .new-game {
+  display: flex;
+
+  /* The study's main action, as `PlatformSideNav` draws its own: Material's
+     extended FAB, flat at rest, risen onto a shadow under the pointer as
+     Gmail's «Redactar», its colour never darkening. */
+  & .new-game__open {
+    --container-elevation: none;
+
+    margin-left: var(--platform-space-2);
+
+    &:hover {
+      --container-elevation: var(--md-sys-elevation-shadow-3);
+      --ripple-hover-opacity: 0%;
+    }
+
+    @media (width < 1024px) {
+      flex: 1;
+      justify-content: center;
+      margin-left: 0;
+    }
+  }
+
   /* The popup's content pads itself: the strip above it is `PlatformPopup`'s.
      The subtitle is the content's first line, under the strip's rule. */
   & .new-game__subtitle {

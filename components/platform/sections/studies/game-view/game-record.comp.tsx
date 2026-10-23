@@ -23,8 +23,9 @@ function contextOf(game: GameView): string[] {
 }
 
 /**
- * The record of the game on the board, in the column of its study. The
- * event is its title; under it, in one line, the round, the date and the
+ * The record of the game on the board, at the head of the panel, in the new
+ * design system (2026-10-23): an outlined card over the board. The event is
+ * its title, in the display font; under it, in one line, the round, the date and the
  * place; and what was played — the opening, by its code and its name, and
  * how many moves — in pills with an icon each.
  *
@@ -33,9 +34,9 @@ function contextOf(game: GameView): string[] {
  * list of games and the players' strips already say it. Neither is deleting
  * the game, which is in its settings, behind the gear of its row.
  *
- * It is the page's and not the layout's — the one card of that column that is
- * about the current game —, so it is the one that changes from game to game
- * while the study above it holds still (`StudyAside`). It decides for itself
+ * It is the page's and not the layout's — the one card about the current
+ * game besides the board —, so it changes from game to game while the
+ * study's column holds still (`StudyAside`). It decides for itself
  * what the viewer may do, from `game.canEdit`. A Server Component: the modal
  * it mounts is a Client Component with its own state.
  */
@@ -61,6 +62,7 @@ export function GameRecord({ game, results }: GameRecordProps) {
             values={game}
             titleHint="Cómo identificas esta partida dentro del estudio. Si lo dejas vacío se usan los dos jugadores."
             trigger="icon"
+            look="material"
           />
         )}
       </div>

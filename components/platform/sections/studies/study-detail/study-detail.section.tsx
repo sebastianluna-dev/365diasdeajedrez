@@ -1,13 +1,11 @@
 import { STUDY_ERROR_MESSAGES } from "@/constants/platform/student-messages.const";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
-import { StudentSharePanel } from "@/components/platform/shared/student-share-panel/student-share-panel.comp";
-import { DeleteStudy } from "@/components/platform/sections/studies/studies-list/delete-study.comp";
+import { PlatformHeaderContext } from "@/components/platform/sections/shell/platform-header-context.comp";
+import { StudyAside } from "@/components/platform/sections/studies/game-view/study-aside.comp";
+import { StudyTrail } from "@/components/platform/sections/studies/game-view/study-trail.comp";
+import { StudiesSearch } from "@/components/platform/sections/studies/studies-search/studies-search.comp";
 import type { ClassGameItem, StudentOption, StudyDetail, StudyKindOption } from "@/services/studies/studies.types";
-import { shareStudyWithStudent, unshareStudyWithStudent } from "@/services/studies/studies.actions";
-import { canShareStudy } from "@/services/studies/study-rules";
-import { EditStudy } from "./edit-study.comp";
-import { NewGame } from "./new-game.comp";
 import "./study-detail.section.css";
 
 interface StudyDetailSectionProps {
@@ -24,10 +22,14 @@ interface StudyDetailSectionProps {
 }
 
 /**
- * The study WITHOUT games. A study is read on its game page — the study's own
- * URL redirects to the first game — so this section only ever renders when
- * there is no game to go to: the header that names it, the actions that let
- * its owner fill it, and the empty state.
+ * The study WITHOUT games, in the new design system (2026-10-23). A study is
+ * read on its game page — the study's own URL redirects to a game — so this
+ * section only ever renders when there is no game to go to. It is the game
+ * pages' workspace with nothing on the board: the study's side column
+ * (`StudyAside`: its name and kind, the sliders that open its form — where
+ * it is edited and deleted —, «Nueva partida» as the FAB and, for a
+ * collection's owner, who it is shared with), and in the panel the trail
+ * and the empty state.
  */
 export function StudyDetailSection({
   study,
@@ -37,78 +39,31 @@ export function StudyDetailSection({
   students,
   errorCode,
 }: StudyDetailSectionProps) {
-  // What the viewer can do comes from services/studies/study-rules, the same
-  // table the server actions apply: here only what is shown is decided.
   const canWrite = study.permissions.canEditGames;
-  // The sharing panel belongs to the OWNER of a collection; whoever receives
-  // it gets `shares` empty and does not pass this filter either.
-  const canShare = canShareStudy(study);
 
   return (
-    <section className="study-detail">
-      <header className="study-detail__head">
-        <div className="study-detail__heading">
-          <div className="study-detail__tags">
-            <span className="study-detail__kind">{study.kindLabel}</span>
-            {study.courseName && <span className="study-detail__origin">{study.courseName}</span>}
-            {study.sharedByName && <span className="study-detail__origin">Te la compartió {study.sharedByName}</span>}
-            {!canWrite && <span className="study-detail__readonly">Sólo lectura</span>}
-          </div>
+    <div className="platform-workspace">
+      {/* The library's search, in the bar, as on a study's games. */}
+      <PlatformHeaderContext>
+        <StudiesSearch />
+      </PlatformHeaderContext>
 
-          <h1 className="study-detail__name">{study.name}</h1>
+      <div className="platform-workspace__side">
+        <StudyAside study={study} results={results} classGames={classGames} kinds={kinds} students={students} />
+      </div>
 
-          <p className="study-detail__meta">
-            {study.description && <span>{study.description}</span>}
-            {study.description && <span className="study-detail__dot">·</span>}
-            <span>
-              {study.gameCount} {study.gameCount === 1 ? "partida" : "partidas"}
-            </span>
-            <span className="study-detail__dot">·</span>
-            <span>Creado el {study.createdAtLabel}</span>
-          </p>
-        </div>
+      <section className="platform-workspace__panel study-detail" aria-label={study.name}>
+        <StudyTrail studyName={study.name} games={[]} />
 
-        {canWrite && (
-          <div className="study-detail__actions">
-            {study.permissions.canDelete && (
-              <DeleteStudy
-                id={study.id}
-                name={study.name}
-                gameCount={study.gameCount}
-                citedGameCount={study.citedGameCount}
-                trigger="button"
-              />
-            )}
-            <EditStudy
-              id={study.id}
-              name={study.name}
-              description={study.description}
-              kindCode={study.kindCode}
-              kindLabel={study.kindLabel}
-              kinds={kinds}
-              canChangeKind={study.permissions.canChangeKind}
-            />
-            <NewGame studyId={study.id} studyName={study.name} results={results} classGames={classGames} />
-          </div>
-        )}
-      </header>
+        {errorCode && <PlatformNotice message={STUDY_ERROR_MESSAGES[errorCode] ?? "No se pudo completar la acción."} />}
 
-      {errorCode && <PlatformNotice message={STUDY_ERROR_MESSAGES[errorCode] ?? "No se pudo completar la acción."} />}
-
-      {canShare && (
-        <StudentSharePanel
-          subject="collection"
-          shares={study.shares}
-          students={students}
-          share={shareStudyWithStudent.bind(null, study.id)}
-          unshare={unshareStudyWithStudent.bind(null, study.id)}
+        <EmptyState
+          title="Sin partidas todavía"
+          description={
+            canWrite ? "Este estudio no tiene partidas. Agrega una con «Nueva partida»." : "Todavía no tiene partidas."
+          }
         />
-      )}
-
-      <EmptyState
-        title="Sin partidas todavía"
-        description={canWrite ? "Este estudio no tiene partidas. Crea una para empezar." : "Todavía no tiene partidas."}
-      />
-    </section>
+      </section>
+    </div>
   );
 }

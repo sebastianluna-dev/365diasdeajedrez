@@ -31,16 +31,19 @@ For the same reason the paging is here. A study's list shows a hundred games at 
 ## Behaviour
 
 - **The page shown** is the one the current game falls on (`pageOfGame`; the first for a game that is not in the list). «← Anteriores» and «Siguientes →» turn it without navigating; the page turned to is remembered together with the game one was on when turning, so on another game the list goes back to that game's page — derived during render, with no effect to reset it. A page beyond the last (a game was deleted) answers the last.
-- The nav «← Anteriores · Página n de m · Siguientes →» only exists with more than one page; its two controls are buttons, disabled at the ends, since they go nowhere.
+- The nav «← Anteriores · Página n de m · Siguientes →» only exists with more than one page; its two controls are buttons — Material's text buttons (`mdButton("text", "xs")`) since 2026-10-23 —, disabled at the ends, since they go nowhere.
+- The list is [`GameList`](/components/platform/shared/game-list) in its material look (`look="material"`), the study's side column being on the new design system's canvas.
 - `GameList` is keyed by the page: each page is a list of its own, whose scroll starts at the top.
 
 ## Markup & styling
 
-Block `.study-games` (31 lines): the wrapper and the pages nav. The list is `GameList`'s own block.
+Block `.study-games` (14 lines): the wrapper and the pages nav. The list is `GameList`'s own block.
 
-**Elements:** `.study-games__pages`, `.study-games__page-button`, `.study-games__page-status`
+**Elements:** `.study-games__pages`, `.study-games__page-status`
 
-**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-text-faint` (a button at an end), `--platform-text-subtle`
+**Other classes it renders:** `btn btn-text btn-xs` (`mdButton`).
+
+**Tokens:** `--platform-m3-on-surface-variant`, the type and space scales.
 
 No media queries.
 

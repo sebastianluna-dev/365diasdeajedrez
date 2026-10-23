@@ -25,8 +25,8 @@ export async function generateMetadata({ params }: GamePageProps): Promise<Metad
 }
 
 /**
- * What is about the game: the board and, in the study's column, the game's
- * record. The frame and the study itself — its name, its list of games — are
+ * What is about the game: its record and the board, in the panel under the
+ * layout's trail. The frame and the study itself — its name, its list of games — are
  * the layout's (`../layout.tsx`), which is not rendered again from one game to
  * the next. The page loads and hands over; what each piece shows is decided
  * inside it, with the permission table of `services/studies/study-rules`.
@@ -44,14 +44,15 @@ export default async function GamePage({ params, searchParams }: GamePageProps) 
 
   return (
     <>
-      {/* Two of the layout's three pieces: the stylesheet beside it places them. */}
+      {/* Under the layout's trail, in the panel: the game's record at its
+          head, then the board. */}
+      <GameRecord game={game} results={results} />
       <GameViewSection
         game={game}
         asReader={vista === "lector"}
         errorCode={error}
         importReport={readImportReport(importadas)}
       />
-      <GameRecord game={game} results={results} />
       {/* The study opens here next time: said from the browser, once shown. */}
       <RememberOpenedGame studyId={studyId} gameId={gameId} />
     </>

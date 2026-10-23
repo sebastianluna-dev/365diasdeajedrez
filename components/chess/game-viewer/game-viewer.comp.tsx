@@ -900,6 +900,7 @@ export function GameViewer({
               onSelectPath={setCurrentPath}
               onPgnChange={publishPgn}
               exerciseFromHereHref={exerciseHrefFor(currentPath)}
+              look={look}
             />
           </div>
         )}
@@ -995,6 +996,7 @@ export function GameViewer({
                   onContextMenu={isEditing ? openMenu : undefined}
                   pinnedComment={pinnedComment}
                   highlightedPaths={playedLine}
+                  look={look}
                 />
               )}
               {/* Said in the list itself, where the missing moves would be looked for. */}

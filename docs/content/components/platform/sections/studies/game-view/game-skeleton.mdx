@@ -4,13 +4,13 @@ description: "The game's own shape, empty, while the next game of the study arri
 
 # `GameSkeleton`
 
-|            |                                                                                              |
-| ---------- | -------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/game-view/game-skeleton.comp.tsx`                      |
-| Kind       | Server Component                                                                             |
-| Stylesheet | `game-skeleton.comp.css` → block `.game-skeleton`                                            |
-| Used by    | `app/(platform)/estudios/[studyId]/partidas/[gameId]/loading.tsx`, with `GameRecordSkeleton` |
-| Composes   | [`BoardSkeleton`](/components/platform/shared/board-skeleton)                                |
+|            |                                                                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/game-skeleton.comp.tsx`                                                                                                          |
+| Kind       | Server Component                                                                                                                                                                 |
+| Stylesheet | `game-skeleton.comp.css` → block `.game-skeleton`                                                                                                                                |
+| Used by    | `app/(platform)/estudios/[studyId]/partidas/[gameId]/loading.tsx`, after `GameRecordSkeleton`; [`StudySkeleton`](/components/platform/sections/studies/game-view/study-skeleton) |
+| Composes   | [`BoardSkeleton`](/components/platform/shared/board-skeleton)                                                                                                                    |
 
 ## Purpose
 
@@ -33,13 +33,13 @@ None. What it shows is the shape of a game's page, which is the same for all of 
 
 ## Markup & styling
 
-Block `.game-skeleton` (97 lines), a grid like `.game-viewer__layout`.
+Block `.game-skeleton` (96 lines), a grid like `.game-viewer__layout`.
 
 **Elements:** `.game-skeleton__board`, `.game-skeleton__strip`, `.game-skeleton__panel`, `.game-skeleton__tools`
 
 **Modifiers and states:** `.game-skeleton__strip_side_top`, `.game-skeleton__strip_side_bottom`
 
-**Tokens:** `--platform-surface`, `--platform-shadow-card`
+**Tokens:** `--platform-m3-container` (the blank shapes, on the panel's white, with no shadow since 2026-10-23), `--md-sys-shape-corner-lg`
 
 **Breakpoints:** `(width >= 768px)` caps the notation's card; `(width < 768px)` is the viewer's phone layout — one column: the board, the room of the keys and the notation's card (45vh, what the notation is let to be) under it, the tools last. Where the block goes in the page is `game-page.css`'s.
 

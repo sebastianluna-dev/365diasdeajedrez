@@ -1,5 +1,5 @@
 ---
-description: "The three bars at the end of the head of the study's card: one press opens the study's form, which for a study that can be deleted also offers «Eliminar estudio» at its foot."
+description: "The sliders at the end of the head of the study's side column: one press opens the study's form, which for a study that can be deleted also offers «Eliminar estudio» at its foot."
 ---
 
 # `StudySettings`
@@ -11,7 +11,7 @@ description: "The three bars at the end of the head of the study's card: one pre
 | Stylesheet | `study-settings.comp.css` → block `.study-settings`                                                                                                                                                                                                         |
 | Used by    | [`StudyAside`](/components/platform/sections/studies/game-view/study-aside), in the head of the study's card                                                                                                                                                |
 | Composes   | [`EditStudy`](/components/platform/sections/studies/study-detail/edit-study) (on `PlatformPopup`) and [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) (on `PlatformConfirmPopup`), both with `trigger="none"`, as siblings |
-| Uses       | `BarsIcon` from `components/icons/`; `StudyDetail`, `StudyKindOption` from `services/studies/studies.types`                                                                                                                                                 |
+| Uses       | `SlidersIcon` from `components/icons/`; `mdIconButton` from `lib/material/material-classes`; `StudyDetail`, `StudyKindOption` from `services/studies/studies.types`                                                                                         |
 
 ## Purpose
 
@@ -34,7 +34,7 @@ What its owner does to the study itself — change its name, its description or 
 - **Deleting is in the form, and the confirmation on top of it.** When `study.permissions.canDelete`, `EditStudy` gets `onDelete` and draws «Eliminar estudio» at its foot, in the danger ink under a rule, as a game's settings draw what destroys. Pressed, [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study)'s confirmation opens over the form, which stays open beneath (until 2026-10-06 the form closed first and the confirmation took its place). Cancelling leaves the form as it was; deleting closes the confirmation and then, through `DeleteStudy`'s `onDone`, the form (`editRef.current?.close()`), each `close()` returning the focus a step back. The two are mounted as siblings, never one inside the other. "Mis partidas" has no such foot.
 - **It receives the study and decides what it offers**; `StudyAside` mounts it only for whoever may edit the study.
 - **Focus.** A native `<dialog>` returns the focus, on closing, to whatever had it when it opened, and a click does not focus a button in Safari, nor in Firefox on a Mac: `PlatformPopup.open(event)` focuses the trigger before opening, so the button gets the focus back and it does not land on `<body>`. The bars only pass the click on.
-- The button is named «Editar el estudio «study»»; it is the platform's quiet button, a small square (`platform-button_variant_quiet platform-button_size_sm platform-button_shape_square`, 32px), its icon the bars in Classic Solid — drawn like the gear of a game's row under it, and in the same column (2026-10-07; it was its own 28px button, the accent under the pointer).
+- The button is named «Editar el estudio «study»»; since 2026-10-23, when the study moved to the new design system, it is Material's standard icon button (`mdIconButton("standard", "sm")`, 40px) with the sliders in Duotone Light, as the canvas draws it. Until then it was the platform's quiet small square with three bars in Classic Solid (2026-10-07).
 
 ## Markup & styling
 
