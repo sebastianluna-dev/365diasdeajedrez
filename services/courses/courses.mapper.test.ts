@@ -616,11 +616,9 @@ describe("la columna junto a una lección", () => {
     expect(outline?.chapter.lessons.map((lesson) => lesson.id)).toEqual(["l4"]);
   });
 
-  it("marca lo aprendido en cada lección y cuenta el avance del curso", () => {
+  it("marca lo aprendido en cada lección", () => {
     const outline = mapCourseOutline(COURSE, 2, state({ lessonStatus: completed("l5") }));
     expect(outline?.chapter.lessons[1]?.statusCode).toBe(PROGRESS_STATUS.COMPLETED);
-    expect(outline?.progress.completedLessons).toBe(1);
-    expect(outline?.progress.totalLessons).toBeGreaterThan(3);
   });
 
   it("no existe para un capítulo que el curso no tiene", () => {

@@ -46,11 +46,6 @@
     }
   }
 
-  & .lesson-outline__figures {
-    font-size: var(--platform-type-2xs);
-    color: var(--platform-m3-on-surface-variant);
-  }
-
   & .lesson-outline__chapters {
     display: flex;
     flex-direction: column;

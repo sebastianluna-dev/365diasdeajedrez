@@ -261,8 +261,6 @@ export interface CourseOutline {
   courseHref: string;
   /** The course's square image, for the head of the column. */
   courseThumbnail?: string;
-  /** How far the course is: its lessons in view and how many are learned, for the head of the column. */
-  progress: { completedLessons: number; totalLessons: number };
   /**
    * The chapter the lesson is in, and only that one (2026-10-23): its lessons
    * already filtered by the student's preferences — the same list

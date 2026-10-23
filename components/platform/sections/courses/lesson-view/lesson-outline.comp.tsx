@@ -11,7 +11,8 @@ interface LessonOutlineProps {
 
 /**
  * The lesson's side column in the new design system: the course at the top —
- * its picture, its name (the way back to it) and how far it is —, and the
+ * its picture and its name (the way back to it; how far it is went on
+ * 2026-10-23, the course's page says it) —, and the
  * chapter the lesson is in with its lessons (`OutlineList`), the one being
  * read lit. Only that chapter since 2026-10-23, and no switch for the
  * priority lessons: that setting is the course's settings panel's.
@@ -22,8 +23,7 @@ interface LessonOutlineProps {
  * browser.
  */
 export function LessonOutline({ outline }: LessonOutlineProps) {
-  const { courseName, courseHref, courseThumbnail, progress, chapter } = outline;
-  const percent = progress.totalLessons > 0 ? Math.round((progress.completedLessons / progress.totalLessons) * 100) : 0;
+  const { courseName, courseHref, courseThumbnail, chapter } = outline;
 
   return (
     <nav className="lesson-outline" aria-label="Lecciones del capítulo">
@@ -37,10 +37,6 @@ export function LessonOutline({ outline }: LessonOutlineProps) {
           <Link href={courseHref} className="lesson-outline__course-name">
             {courseName}
           </Link>
-          <span className="lesson-outline__figures">
-            {percent} % · {progress.completedLessons} de {progress.totalLessons}{" "}
-            {progress.totalLessons === 1 ? "lección" : "lecciones"}
-          </span>
         </span>
       </div>
 

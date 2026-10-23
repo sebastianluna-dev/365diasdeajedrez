@@ -1,5 +1,5 @@
 ---
-description: "The lesson's side column in the workspace: the course with how far it is, and the chapter the lesson is in with its lessons, the one being read lit."
+description: "The lesson's side column in the workspace: the course's picture and name, and the chapter the lesson is in with its lessons, the one being read lit."
 ---
 
 # `LessonOutline`
@@ -24,22 +24,22 @@ It belongs to the **chapter's layout** and not to the lesson's page, which is wh
 
 ## Props
 
-| Prop      | Type            | Required | Meaning                                                                                                                                                                                                                                                              |
-| --------- | --------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `outline` | `CourseOutline` | yes      | The course (`courseId`, `courseName`, `courseHref`, `courseThumbnail?`, `progress`) and its `chapter` (`OutlineChapter`: `id`, `order`, `name`, `href`, `lessons`). One object, read by the chapter's segment: the column takes the model and decides what it draws. |
+| Prop      | Type            | Required | Meaning                                                                                                                                                                                                                                                  |
+| --------- | --------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `outline` | `CourseOutline` | yes      | The course (`courseId`, `courseName`, `courseHref`, `courseThumbnail?`) and its `chapter` (`OutlineChapter`: `id`, `order`, `name`, `href`, `lessons`). One object, read by the chapter's segment: the column takes the model and decides what it draws. |
 
 ## Behaviour
 
-- **The course's head**: its picture (40px), its name — the column's way back to the course's page, underlined under the pointer — and how far it is, «X % · N de M lecciones», counted over the course's lessons in view (`progress`, from the mapper), so the priority filter takes lessons out of it as it does from the list.
+- **The course's head**: its picture (40px) and its name — the column's way back to the course's page, underlined under the pointer. How far the course is («7 % · 4 de 61 lecciones») went on 2026-10-23: the course's page says it.
 - **The chapter the lesson is in**, alone (2026-10-23; until then every chapter of the course, folding), in [`OutlineList`](/components/platform/sections/courses/lesson-view/outline-list). There is no switch for the priority lessons any more: that setting is the course's settings panel's ([`CourseSettings`](/components/platform/sections/courses/course-study/course-settings)).
 - The list is the **same sequence** `prevLessonHref`/`nextLessonHref` walk: the mapper builds both from `flattenLessons`, so a lesson hidden by the priority filter is missing from the column and from the toolbar's arrows alike.
 - The whole `<nav>` is labelled "Lecciones del curso", and each chapter's `<section>` by its name.
 
 ## Markup & styling
 
-Block `.lesson-outline` (171 lines), drawn with the `--platform-m3-*` roles. The rows are the workspace side's: 36px high, square on the left and round on the right (`0 1000px 1000px 0`), `--platform-m3-container-high` under the pointer, and the lesson being read on `--platform-m3-secondary-container`, bold. The chapter's head is a link to its page: «Capítulo 2» small over its name in bold, and «learned/total». A learned lesson's mark is `CircleCheckIcon` (Classic Solid) in the primary's blue, as on the chapter's page (2026-10-23; it was the success green), the one being read a play, the rest a clock.
+Block `.lesson-outline` (166 lines), drawn with the `--platform-m3-*` roles. The rows are the workspace side's: 36px high, square on the left and round on the right (`0 1000px 1000px 0`), `--platform-m3-container-high` under the pointer, and the lesson being read on `--platform-m3-secondary-container`, bold. The chapter's head is a link to its page: «Capítulo 2» small over its name in bold, and «learned/total». A learned lesson's mark is `CircleCheckIcon` (Classic Solid) in the primary's blue, as on the chapter's page (2026-10-23; it was the success green), the one being read a play, the rest a clock.
 
-**Elements:** `.lesson-outline__course`, `.lesson-outline__thumb`, `.lesson-outline__thumb-image`, `.lesson-outline__about`, `.lesson-outline__course-name`, `.lesson-outline__figures`, `.lesson-outline__chapters`, `.lesson-outline__chapter`, `.lesson-outline__chapter-text`, `.lesson-outline__title`, `.lesson-outline__chapter-name`, `.lesson-outline__count`, `.lesson-outline__list`, `.lesson-outline__lesson`, `.lesson-outline__name`, `.lesson-outline__mark`
+**Elements:** `.lesson-outline__course`, `.lesson-outline__thumb`, `.lesson-outline__thumb-image`, `.lesson-outline__about`, `.lesson-outline__course-name`, `.lesson-outline__chapters`, `.lesson-outline__chapter`, `.lesson-outline__chapter-text`, `.lesson-outline__title`, `.lesson-outline__chapter-name`, `.lesson-outline__count`, `.lesson-outline__list`, `.lesson-outline__lesson`, `.lesson-outline__name`, `.lesson-outline__mark`
 
 **Modifiers and states:** `.lesson-outline__lesson_state_current`, `.lesson-outline__mark_state_done`
 

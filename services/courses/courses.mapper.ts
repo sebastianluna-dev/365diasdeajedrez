@@ -510,16 +510,12 @@ export function mapCourseOutline(
   if (!chapter) return null;
 
   const visible = flattenLessons(course, state);
-  const completedLessons = visible.filter(
-    (lesson) => state.lessonStatus.get(lesson.id) === PROGRESS_STATUS.COMPLETED,
-  ).length;
 
   return {
     courseId: course.id,
     courseName: course.name,
     courseHref: platformRoutes.courseDetail(course.id),
     courseThumbnail: thumbnailOf(course),
-    progress: { completedLessons, totalLessons: visible.length },
     chapter: {
       id: chapter.id,
       order: chapter.order,
