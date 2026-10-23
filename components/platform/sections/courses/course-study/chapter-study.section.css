@@ -86,13 +86,13 @@
     color: var(--platform-m3-on-surface-variant);
   }
 
-  /* The lessons, as Gmail lists mail: rows across the panel, a hairline
-     between them. */
+  /* The lessons, as Gmail lists mail: rows across the panel, a light
+     hairline between them. */
   & .chapter-study__lessons {
     margin: 0 calc(-1 * var(--platform-space-6));
     padding: 0;
     list-style: none;
-    border-top: 1px solid var(--platform-m3-outline-variant);
+    border-top: 1px solid var(--platform-m3-divider);
   }
 
   /* The same columns on every row — the labels' one fixed —, so the moves
@@ -104,13 +104,21 @@
     gap: var(--platform-space-4);
     min-height: 56px;
     padding: var(--platform-space-2) var(--platform-space-6);
-    border-bottom: 1px solid var(--platform-m3-outline-variant);
+    position: relative;
+    border-bottom: 1px solid var(--platform-m3-divider);
     color: var(--platform-m3-on-surface);
     text-decoration: none;
-    transition: background-color 160ms ease-out;
+    transition: box-shadow 160ms ease-out;
 
+    /* Under the pointer the row lifts over its neighbours, as Gmail's, and
+       keeps its colour. */
     &:hover {
-      background: color-mix(in srgb, var(--platform-m3-on-surface) 4%, var(--platform-m3-panel));
+      z-index: 1;
+      box-shadow:
+        inset 1px 0 0 var(--platform-m3-row-edge),
+        inset -1px 0 0 var(--platform-m3-row-edge),
+        0 1px 2px 0 color-mix(in srgb, var(--platform-m3-row-shadow) 30%, transparent),
+        0 1px 3px 1px color-mix(in srgb, var(--platform-m3-row-shadow) 15%, transparent);
     }
 
     &:focus-visible {
@@ -129,8 +137,7 @@
   }
 
   /* The lesson «Aprender» opens stands on the container. */
-  & .chapter-study__lesson_state_next,
-  & .chapter-study__lesson_state_next:hover {
+  & .chapter-study__lesson_state_next {
     background: var(--platform-m3-container);
   }
 

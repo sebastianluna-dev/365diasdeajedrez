@@ -208,6 +208,14 @@
   --platform-m3-on-surface-variant: light-dark(#444746, #c4c7c5);
   --platform-m3-outline: light-dark(#747775, #8e918f);
   --platform-m3-outline-variant: light-dark(#c4c7c5, #444746);
+  /* The hairline between the rows of a list, lighter than the outline, as
+     Gmail divides its mail. */
+  --platform-m3-divider: light-dark(#eceff1, #2f3133);
+  /* A row of a list under the pointer, as Gmail's: it does not change colour,
+     it lifts — the hairline at its sides (`-row-edge`) and a soft shadow
+     under it, of `-row-shadow` thinned by the sheet. */
+  --platform-m3-row-edge: light-dark(#dadce0, #3c4043);
+  --platform-m3-row-shadow: light-dark(#3c4043, #000000);
   --platform-m3-primary: light-dark(#0b57d0, #a8c7fa);
   --platform-m3-primary-hover: light-dark(#0a4cb8, #bcd4fb);
   --platform-m3-on-primary: light-dark(#ffffff, #062e6f);
