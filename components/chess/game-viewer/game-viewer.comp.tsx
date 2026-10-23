@@ -40,6 +40,7 @@ import { mdButton, mdIconButton } from "@/lib/material/material-classes";
 import { MoveTree } from "./move-tree.comp";
 import { MoveNotes } from "./move-notes.comp";
 import { TrophyIcon } from "@/components/icons/trophy-icon.comp";
+import { ChessBoardIcon } from "@/components/icons/chess-board-icon.comp";
 import { mainLineAnchor, mainLineOf } from "@/lib/chess/notation-line";
 import { playMoveSound } from "./move-sound";
 import { usePgnEditing } from "./use-pgn-editing.hook";
@@ -73,6 +74,13 @@ export interface GameViewerPlay {
    */
   fromPath?: string;
   leafPath?: string;
+  /**
+   * What is said in the engine's place while the line is played, in two
+   * lines: whose turn it is («Te toca mover.») and what happened last («El
+   * módulo jugó 11…b5.»). The analysis board's module; data, drawn by the
+   * viewer, and read politely to a screen reader as it changes.
+   */
+  headline?: { title: string; detail?: string };
 }
 
 interface GameViewerProps {
@@ -96,6 +104,13 @@ interface GameViewerProps {
    * through the lesson and nothing else.
    */
   boardTools?: boolean;
+  /**
+   * Whether the keys offer turning the board around, with `boardTools`. Off
+   * where the page turns it from a toolbar of its own and passes the side as
+   * `orientation` (the analysis board, 2026-10-23): the keys keep the
+   * settings menu.
+   */
+  flipKey?: boolean;
   /**
    * How the viewer is drawn. `material`: the new design system's
    * (2026-10-22), for a page already passed to it — the blue board with the
@@ -265,6 +280,7 @@ export function GameViewer({
   badge,
   practice,
   boardTools = true,
+  flipKey = true,
   look,
   onwards,
   players,
@@ -629,11 +645,11 @@ export function GameViewer({
 
   const material = look === "material";
   // A key of the bar: the platform's square, or Material's wide pill — the
-  // way forward filled, the rest on the container's grey (`__key`).
+  // way forward filled (`__key_kind_main`), the rest on the container's grey.
   const keyClass = (main = false) =>
     material
       ? main
-        ? mdIconButton("filled", "sm", "wide")
+        ? `${mdIconButton("filled", "sm", "wide")} game-viewer__key game-viewer__key_kind_main`
         : `${mdIconButton("tonal", "sm", "wide")} game-viewer__key`
       : "game-viewer__nav-button";
   const keyIcon = material ? "platform-md-icon" : "game-viewer__nav-icon";
@@ -683,7 +699,7 @@ export function GameViewer({
       </button>
       {/* Flipping the board is an action on the game, not a viewer setting:
           it goes with the buttons the game is traversed with. */}
-      {boardTools && (
+      {boardTools && flipKey && (
         <button
           type="button"
           title="Girar el tablero"
@@ -967,7 +983,22 @@ export function GameViewer({
                 state={engineState}
                 flipBoard={flipBoard}
                 onExpandedChange={setEngineExpanded}
+                look={look}
               />
+            )}
+
+            {/* Playing the line against the module: what is said where the
+                engine was (the analysis board, 2026-10-23). */}
+            {isPlaying && play?.headline && (
+              <div className="game-viewer__headline" role="status" aria-live="polite">
+                <span className="game-viewer__headline-disc" aria-hidden="true">
+                  <ChessBoardIcon variant="classic-solid" className="game-viewer__headline-icon" />
+                </span>
+                <p className="game-viewer__headline-text">
+                  <span className="game-viewer__headline-title">{play.headline.title}</span>
+                  {play.headline.detail && <span className="game-viewer__headline-detail">{play.headline.detail}</span>}
+                </p>
+              </div>
             )}
 
             <div className={`game-viewer__moves${moveList !== "table" ? ` game-viewer__moves_list_${moveList}` : ""}`}>

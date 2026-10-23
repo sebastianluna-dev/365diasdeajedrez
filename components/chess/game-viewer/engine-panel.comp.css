@@ -250,4 +250,156 @@
     padding: var(--platform-space-1) var(--platform-space-3);
     color: var(--platform-text-muted);
   }
+
+  /* The new design system (2026-10-23, `look="material"`, the analysis
+     board), as «M4» of the owner's canvas draws it: an outlined card on the
+     panel, a switch before «Módulo», each evaluation a white pill at the head
+     of its line, the lines loose on the card, and one «Ver más jugadas» that
+     opens the three. */
+  &.engine-panel_look_material {
+    --engine-panel-font-size: var(--platform-type-xs);
+
+    padding: var(--platform-space-2) var(--platform-space-3) var(--platform-space-1);
+    border: 1px solid var(--platform-m3-container-high);
+    border-radius: var(--md-sys-shape-corner-lg);
+    box-shadow: none;
+    color: var(--platform-m3-on-surface);
+
+    & .engine-panel__head {
+      padding: 0;
+    }
+
+    /* The whole row is the switch: the track, «Módulo» in bold and whether
+       it is on. */
+    & .engine-panel__switch {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--platform-space-3);
+      min-height: 32px;
+      padding: 0 var(--platform-space-2) 0 0;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: inherit;
+      font-family: inherit;
+      font-size: var(--platform-type-xs);
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: 2px solid var(--platform-m3-primary);
+        outline-offset: 2px;
+      }
+    }
+
+    & .engine-panel__track {
+      position: relative;
+      flex: none;
+      width: 36px;
+      height: 20px;
+      border-radius: 1000px;
+      background: var(--platform-m3-container-high);
+      box-shadow: inset 0 0 0 2px var(--platform-m3-outline);
+      transition: background-color 160ms ease-out;
+    }
+
+    & .engine-panel__thumb {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--platform-m3-outline);
+      transition:
+        transform 160ms ease-out,
+        width 160ms ease-out,
+        height 160ms ease-out,
+        top 160ms ease-out;
+    }
+
+    & .engine-panel__switch[aria-checked="true"] .engine-panel__track {
+      background: var(--platform-m3-primary);
+      box-shadow: none;
+    }
+
+    & .engine-panel__switch[aria-checked="true"] .engine-panel__thumb {
+      top: 3px;
+      width: 14px;
+      height: 14px;
+      background: var(--platform-m3-on-primary);
+      transform: translateX(16px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      & .engine-panel__thumb {
+        transition: none;
+      }
+    }
+
+    & .engine-panel__name {
+      font-weight: 700;
+    }
+
+    & .engine-panel__state,
+    & .engine-panel__depth {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .engine-panel__depth {
+      margin-left: auto;
+      font-size: var(--platform-type-2xs);
+    }
+
+    & .engine-panel__body {
+      background: transparent;
+    }
+
+    & .engine-panel__row {
+      grid-template-columns: minmax(0, 1fr);
+      padding: var(--platform-space-1) 0;
+    }
+
+    & .engine-panel__line,
+    & .engine-panel__move-number {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .engine-panel__row_rank_best .engine-panel__line {
+      color: var(--platform-m3-on-surface);
+    }
+
+    /* The evaluation, a white pill of its own width, so the three line up. */
+    & .engine-panel__score {
+      display: inline-block;
+      min-width: 48px;
+      margin-right: var(--platform-space-3);
+      padding: 0 var(--platform-space-1);
+      border-radius: 8px;
+      box-shadow: inset 0 0 0 1px var(--platform-m3-outline-variant);
+      background: var(--platform-m3-panel);
+      box-sizing: border-box;
+      color: var(--platform-m3-on-surface);
+      font-size: var(--platform-type-2xs);
+      text-align: center;
+    }
+
+    & .engine-panel__move:hover {
+      background: var(--platform-m3-secondary-container);
+      color: var(--platform-m3-on-secondary-container);
+    }
+
+    & .engine-panel__message {
+      padding: var(--platform-space-1) 0;
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .engine-panel__all {
+      margin-left: calc(-1 * var(--platform-space-3));
+    }
+
+    & .engine-panel__preview {
+      border-radius: var(--md-sys-shape-corner-md);
+      background: var(--platform-m3-panel);
+    }
+  }
 }

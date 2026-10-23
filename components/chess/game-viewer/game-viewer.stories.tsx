@@ -121,6 +121,7 @@ Reference page: [Components › GameViewer](/components/chess/game-viewer/game-v
     result: { control: "text", description: "The PGN result token; each strip opens with its player's point." },
     controls: { control: "inline-radio", options: ["board", "panel"] },
     boardTools: { control: "boolean", description: "The flip and the options menu beside the arrows." },
+    flipKey: { control: "boolean", description: "The flip among them; off where the page turns the board itself." },
     engine: { control: "boolean", description: "Offers the engine (switched off until someone switches it on)." },
     interaction: { control: "inline-radio", options: ["read", "edit", "play"] },
     play: { control: false },
@@ -405,4 +406,55 @@ export const AdventureGame: Story = {
       },
     },
   },
+};
+
+/** The analysis board's viewer in the new design system (`look="material"`), on the workspace's white panel. */
+const ANALYSIS_ARGS: Partial<ComponentProps<typeof GameViewer>> = {
+  ...STUDY_ARGS,
+  players: undefined,
+  result: undefined,
+  tools: {},
+  look: "material",
+  // The page turns the board from its own toolbar.
+  flipKey: false,
+};
+
+/**
+ * The analysis board (`look="material"`, 2026-10-23): the evaluation bar's place at the board's left, the tools under
+ * it on the container's grey, the engine's card with its switch and the notation's card beside it, and Material's keys
+ * under them, without the flip, which the page's toolbar has.
+ */
+export const AnalysisMaterial: Story = {
+  name: "Analysis (Material)",
+  args: ANALYSIS_ARGS,
+  render: (args) => <EditableGameViewer key={args.pgn} {...args} />,
+  decorators: [
+    (Story) => (
+      <div style={{ padding: 24, background: "var(--platform-m3-panel)" }}>
+        <Story />
+      </div>
+    ),
+  ],
+};
+
+/**
+ * The analysis board playing the position against the module, the person's turn: in the engine's place the card filled
+ * with the primary says so, and what the module played; the line's moves in the selection's blue.
+ */
+export const AnalysisPlaying: Story = {
+  name: "Analysis (Material): playing",
+  args: {
+    ...ANALYSIS_ARGS,
+    initialPath: mainLinePath(14),
+    interaction: "play",
+    play: {
+      color: "white",
+      status: "your-turn",
+      onMove: fn().mockName("move"),
+      fromPath: mainLinePath(12),
+      leafPath: mainLinePath(14),
+      headline: { title: "Te toca mover.", detail: "El módulo jugó 7… De7." },
+    },
+  },
+  decorators: AnalysisMaterial.decorators,
 };
