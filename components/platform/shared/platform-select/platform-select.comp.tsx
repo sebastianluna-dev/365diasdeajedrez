@@ -4,6 +4,7 @@ import { type ComponentProps, useState } from "react";
 import { Select } from "radix-ui";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
 import { AngleRightIcon } from "@/components/icons/angle-right-icon.comp";
+import { usePlatformLook } from "@/components/platform/shared/platform-look";
 import { savedValueKey } from "../saved-value-key";
 import "./platform-select.comp.css";
 
@@ -82,6 +83,11 @@ function findOptionLabel(
  * against the viewport, so it also works inside a modal `<dialog>`, whose top
  * layer would leave a portal to `<body>` inert.
  *
+ * In a popup of a page moved to the new design system (`usePlatformLook`) its
+ * trigger is Material 3's outlined field with its caret, the box of
+ * `PlatformFormField`'s, and its list Material's menu: 48px options on the
+ * container, the chosen one on the secondary container.
+ *
  * It is mounted under the value it opens with (`savedValueKey`): after a save
  * that changed it, the select starts again from what was saved instead of
  * going back, on the form's reset, to what it showed when the page was loaded.
@@ -111,6 +117,8 @@ function SelectControl({
   const isControlled = valueProp !== undefined;
   const [inner, setInner] = useState(defaultValue ?? "");
   const value = isControlled ? valueProp : inner;
+  // In a popup of a moved page: Material's outlined field and its menu.
+  const look = usePlatformLook();
 
   const handleValueChange = (next: string) => {
     const resolved = next === EMPTY_VALUE ? "" : next;
@@ -139,7 +147,9 @@ function SelectControl({
   );
 
   return (
-    <div className={`platform-select${tone === "accent" ? " platform-select_tone_accent" : ""}`}>
+    <div
+      className={`platform-select${tone === "accent" ? " platform-select_tone_accent" : ""}${look === "material" ? " platform-select_look_material" : ""}`}
+    >
       <Select.Root
         name={name}
         form={form}
@@ -166,7 +176,10 @@ function SelectControl({
             {emptyOption && (
               /* The check is drawn by hand: the primitive only marks the item
                  whose value is the current one, and this one stands for `""`. */
-              <Select.Item value={EMPTY_VALUE} className="platform-select__item">
+              <Select.Item
+                value={EMPTY_VALUE}
+                className={`platform-select__item${value === "" ? " platform-select__item_chosen" : ""}`}
+              >
                 <Select.ItemText>{emptyOption}</Select.ItemText>
                 {value === "" && (
                   <span className="platform-select__indicator">

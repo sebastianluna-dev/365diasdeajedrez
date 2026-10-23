@@ -193,4 +193,136 @@
     flex: none;
     white-space: nowrap;
   }
+
+  /* MATERIAL'S LOOK, on a page moved to the new design system: Material 3's
+     basic dialog, «Confirmación 1» of the owner's canvas. The frame's
+     `platform-dialog_look_material` draws the surface, the 28px corners, the
+     shadow and the scrim; here, no rule along the top, the icon centred over
+     the question, the supporting text, the box as a soft card and the two
+     text buttons at the right, with no hairline over them. */
+  &.platform-confirm-popup_look_material {
+    width: min(460px, calc(100vw - 32px));
+    border-top: 0;
+
+    & .platform-confirm-popup__form {
+      gap: var(--platform-space-4);
+      padding: var(--platform-space-6);
+    }
+
+    & .platform-confirm-popup__head {
+      flex-direction: column;
+      align-items: center;
+      gap: var(--platform-space-4);
+    }
+
+    /* The glyph alone: the secondary role (our primary) by default, the
+       error's red for what destroys. */
+    & .platform-confirm-popup__icon {
+      width: auto;
+      height: auto;
+      background: none;
+      color: var(--platform-m3-primary);
+    }
+
+    & .platform-confirm-popup__icon_tone_error {
+      color: var(--platform-m3-error);
+    }
+
+    & .platform-confirm-popup__icon-glyph {
+      width: 24px;
+      height: 24px;
+    }
+
+    & .platform-confirm-popup__heading {
+      display: flex;
+      flex-direction: column;
+      gap: var(--platform-space-4);
+      width: 100%;
+    }
+
+    & .platform-confirm-popup__title {
+      font-family: var(--platform-font-display);
+      font-size: var(--platform-type-2xl);
+      font-weight: 600;
+      line-height: 1.33;
+      letter-spacing: 0;
+      text-align: center;
+    }
+
+    /* Supporting text: the body's medium size, the variant ink, at the left. */
+    & .platform-confirm-popup__description,
+    & .platform-confirm-popup__consequences {
+      margin: 0;
+      font-size: var(--platform-type-xs);
+      line-height: 1.43;
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .platform-confirm-popup__consequences {
+      padding-left: var(--platform-space-5);
+    }
+
+    & .platform-confirm-popup__warning {
+      margin: 0;
+      font-size: var(--platform-type-xs);
+      font-weight: 500;
+      line-height: 1.43;
+      color: var(--platform-m3-error);
+    }
+
+    & .platform-confirm-popup__fields {
+      margin: var(--platform-space-2) 0 0;
+    }
+
+    /* The box to tick, as a soft card: the panel's white with a hairline,
+       Material's medium corners, the text in the surface's ink. */
+    & .platform-confirm-popup__acknowledgement {
+      gap: var(--platform-space-3);
+      padding: var(--platform-space-3) var(--platform-space-4);
+      border: 1px solid var(--platform-m3-outline-variant);
+      border-radius: var(--md-sys-shape-corner-md);
+      background: var(--platform-m3-panel);
+      font-size: var(--platform-type-xs);
+      line-height: 1.43;
+      color: var(--platform-m3-on-surface);
+    }
+
+    /* Material's checkbox: 18px, a 2px line of the variant ink, filled with
+       the primary and its tick when checked (what is chosen is blue). */
+    & .platform-confirm-popup__check {
+      width: 18px;
+      height: 18px;
+      margin-top: var(--platform-space-0-5);
+      border: 2px solid var(--platform-m3-on-surface-variant);
+      border-radius: var(--md-sys-shape-corner-xs);
+      background: transparent;
+    }
+
+    & .platform-confirm-popup__check[data-state="checked"] {
+      border-color: var(--platform-m3-primary);
+      background: var(--platform-m3-primary);
+      color: var(--platform-m3-on-primary);
+    }
+
+    & .platform-confirm-popup__check:focus-visible {
+      outline-color: var(--platform-m3-primary);
+    }
+
+    & .platform-confirm-popup__check-icon {
+      width: 12px;
+      height: 12px;
+    }
+
+    & .platform-confirm-popup__foot {
+      gap: var(--platform-space-2);
+      margin: var(--platform-space-2) 0 0;
+      padding: 0;
+      box-shadow: none;
+    }
+
+    & .platform-confirm-popup__foot > button {
+      flex: none;
+      white-space: nowrap;
+    }
+  }
 }

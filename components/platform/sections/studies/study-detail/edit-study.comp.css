@@ -27,4 +27,26 @@
     padding: var(--platform-space-4) var(--platform-space-6) var(--platform-space-5);
     border-top: 1px solid var(--platform-border);
   }
+
+  /* In Material's dialog (`PlatformPopup` on a moved page): the form under
+     the headline with no rule between them, Material's buttons
+     (`popupButton`), and the rule over the danger row in its own hairline. */
+  & .platform-popup_look_material {
+    & .edit-study__form {
+      padding-top: var(--platform-space-3);
+    }
+
+    & .edit-study__kind {
+      font-size: var(--platform-type-xs);
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .edit-study__actions {
+      gap: var(--platform-space-2);
+    }
+
+    & .edit-study__danger {
+      border-top-color: var(--platform-m3-outline-variant);
+    }
+  }
 }

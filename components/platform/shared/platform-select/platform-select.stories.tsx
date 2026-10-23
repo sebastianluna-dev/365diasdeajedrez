@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { userEvent, within } from "storybook/test";
+import { PlatformLookContext } from "@/components/platform/shared/platform-look";
 import { PlatformSelect } from "./platform-select.comp";
 
 const STUDY_KINDS = [
@@ -100,6 +101,31 @@ export const Open: Story = {
  */
 export const Accent: Story = {
   args: { tone: "accent", "aria-label": "Ordenar" },
+  parameters: Open.parameters,
+  play: Open.play,
+};
+
+/** Inside a popup of a page moved to the new design system (its look set here by hand, on the dialog's surface). */
+const materialDialog: NonNullable<Story["decorators"]> = [
+  (Story) => (
+    <PlatformLookContext value="material">
+      <div style={{ padding: 24, borderRadius: 28, background: "var(--platform-m3-dialog)" }}>
+        <Story />
+      </div>
+    </PlatformLookContext>
+  ),
+];
+
+/** Material's look, closed: the trigger is the outlined text field, with its caret at the end. */
+export const Material: Story = { decorators: materialDialog };
+
+/**
+ * Material's look, open: the trigger's outline in the primary at 2px and the list as Material's menu — 48px options
+ * on the container, the chosen one on the secondary container, no tick.
+ */
+export const MaterialOpen: Story = {
+  name: "Material open",
+  decorators: materialDialog,
   parameters: Open.parameters,
   play: Open.play,
 };

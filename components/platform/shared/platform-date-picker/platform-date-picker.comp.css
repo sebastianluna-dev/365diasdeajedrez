@@ -204,6 +204,140 @@
     cursor: default;
   }
 
+  /* MATERIAL'S LOOK (in a popup of a page moved to the new design system,
+     «Formulario A»): the trigger is the outlined text field of
+     `PlatformFormField`, with the calendar at its end; the calendar is
+     Material's docked date picker — on the container, its days round, the
+     chosen one a circle of the primary and today ringed in it. */
+  &.platform-date-picker_look_material {
+    & .platform-date-picker__trigger {
+      justify-content: space-between;
+      height: 56px;
+      padding: 0 var(--platform-space-3) 0 var(--platform-space-4);
+      border: 1px solid var(--platform-m3-outline);
+      border-radius: var(--md-sys-shape-corner-xs);
+      background: transparent;
+      color: var(--platform-m3-on-surface);
+      font-size: var(--platform-type-md);
+    }
+
+    & .platform-date-picker__trigger:hover:not(:disabled) {
+      border-color: var(--platform-m3-on-surface);
+    }
+
+    & .platform-date-picker__trigger:focus-visible,
+    & .platform-date-picker__trigger[data-state="open"] {
+      outline: none;
+      border-color: var(--platform-m3-primary);
+      box-shadow: inset 0 0 0 1px var(--platform-m3-primary);
+    }
+
+    .platform-form__field[data-invalid] & .platform-date-picker__trigger {
+      border-color: var(--platform-m3-error);
+      box-shadow: inset 0 0 0 1px var(--platform-m3-error);
+    }
+
+    & .platform-date-picker__trigger[data-placeholder] {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    /* The calendar is the field's trailing icon. */
+    & .platform-date-picker__icon {
+      order: 1;
+      width: 20px;
+      height: 20px;
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .platform-date-picker__content {
+      padding: var(--platform-space-3) var(--platform-space-3) var(--platform-space-2);
+      border: 0;
+      border-radius: var(--md-sys-shape-corner-lg);
+      background: var(--platform-m3-container);
+      color: var(--platform-m3-on-surface);
+      box-shadow:
+        0 2px 6px 2px color-mix(in srgb, var(--platform-m3-row-shadow) 15%, transparent),
+        0 1px 2px 0 color-mix(in srgb, var(--platform-m3-row-shadow) 30%, transparent);
+    }
+
+    & .platform-date-picker__caption {
+      font-size: var(--platform-type-xs);
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    & .platform-date-picker__weekday {
+      font-size: var(--platform-type-2xs);
+      font-weight: 400;
+      letter-spacing: 0;
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .platform-date-picker__day {
+      height: 40px;
+      border-radius: 50%;
+      color: var(--platform-m3-on-surface);
+      font-size: var(--platform-type-xs);
+    }
+
+    & .platform-date-picker__day.platform-date-picker__day_outside {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .platform-date-picker__day:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--platform-m3-on-surface) 8%, transparent);
+      color: var(--platform-m3-on-surface);
+    }
+
+    & .platform-date-picker__day:focus-visible {
+      outline-color: var(--platform-m3-primary);
+    }
+
+    & .platform-date-picker__day[aria-current="date"] {
+      font-weight: 400;
+      color: var(--platform-m3-primary);
+      box-shadow: inset 0 0 0 1px var(--platform-m3-primary);
+    }
+
+    & .platform-date-picker__day.platform-date-picker__day_selected,
+    & .platform-date-picker__day.platform-date-picker__day_selected:hover {
+      background: var(--platform-m3-primary);
+      color: var(--platform-m3-on-primary);
+      font-weight: 600;
+      box-shadow: none;
+    }
+
+    & .platform-date-picker__day.platform-date-picker__day_selected:focus-visible {
+      outline-color: var(--platform-m3-on-primary);
+    }
+
+    & .platform-date-picker__day:disabled {
+      color: color-mix(in srgb, var(--platform-m3-on-surface) 38%, transparent);
+    }
+
+    & .platform-date-picker__foot {
+      justify-content: flex-end;
+      box-shadow: none;
+    }
+
+    /* «Hoy» and «Quitar»: Material's text buttons, a word of the primary on
+       a pill that its state layer fills under the pointer. */
+    & .platform-date-picker__action {
+      padding: var(--platform-space-2) var(--platform-space-3);
+      border-radius: 1000px;
+      color: var(--platform-m3-primary);
+      font-size: var(--platform-type-xs);
+    }
+
+    & .platform-date-picker__action:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--platform-m3-primary) 8%, transparent);
+    }
+
+    & .platform-date-picker__action:disabled {
+      color: color-mix(in srgb, var(--platform-m3-on-surface) 38%, transparent);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     & .platform-date-picker__content[data-state="open"],
     & .platform-date-picker__content[data-state="closed"] {

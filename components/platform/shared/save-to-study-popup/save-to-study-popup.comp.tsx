@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { Ref } from "react";
 import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
+import { popupButton, usePlatformLook } from "@/components/platform/shared/platform-look";
 import {
   PlatformPopup,
   type PlatformPopupHandle,
@@ -53,16 +54,24 @@ export function SaveToStudyPopup({ ref, studies, defaultTitle, action, pgn, onCa
           <PlatformFormField name="title" label="Nombre">
             <input type="text" maxLength={120} placeholder={defaultTitle} />
           </PlatformFormField>
-          <footer className="save-to-study-popup__foot">
-            <button type="button" className="platform-button" onClick={onCancel}>
-              Cancelar
-            </button>
-            <SubmitButton className="platform-button platform-button_variant_ink" pendingLabel="Guardando…">
-              Guardar
-            </SubmitButton>
-          </footer>
+          <SaveToStudyFoot onCancel={onCancel} />
         </PlatformForm>
       )}
     </PlatformPopup>
+  );
+}
+
+/** The two buttons, in the popup's look: Material's on a page moved to the new design system. */
+function SaveToStudyFoot({ onCancel }: { onCancel: () => void }) {
+  const look = usePlatformLook();
+  return (
+    <footer className="save-to-study-popup__foot">
+      <button type="button" className={popupButton(look, "exit")} onClick={onCancel}>
+        Cancelar
+      </button>
+      <SubmitButton className={popupButton(look, "submit")} pendingLabel="Guardando…">
+        Guardar
+      </SubmitButton>
+    </footer>
   );
 }

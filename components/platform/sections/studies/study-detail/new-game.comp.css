@@ -165,6 +165,64 @@
     cursor: not-allowed;
   }
 
+  /* In Material's dialog (`PlatformPopup` on this moved page): the subtitle
+     as the headline's supporting text, the live tab marked in the primary
+     as Material's tabs are, the PGN still the outlined field but tall and in
+     the monospace face, and the foot over a hairline with Material's buttons
+     (`popupButton`). */
+  & .platform-popup_look_material {
+    & .new-game__subtitle {
+      margin-top: calc(-1 * var(--platform-space-2));
+      padding-top: 0;
+      font-size: var(--platform-type-xs);
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .new-game__tabs {
+      box-shadow: inset 0 -1px 0 var(--platform-m3-outline-variant);
+    }
+
+    & .new-game__tab {
+      color: var(--platform-m3-on-surface-variant);
+      font-size: var(--platform-type-xs);
+    }
+
+    & .new-game__tab:hover {
+      color: var(--platform-m3-on-surface);
+    }
+
+    & .new-game__tab.new-game__tab_state_active {
+      color: var(--platform-m3-primary);
+      font-weight: 600;
+      box-shadow: inset 0 -3px 0 var(--platform-m3-primary);
+    }
+
+    & .new-game__panel .new-game__textarea {
+      min-height: 190px;
+      font-size: var(--platform-type-sm);
+    }
+
+    & .new-game__pick {
+      border-color: var(--platform-m3-outline-variant);
+      border-radius: var(--md-sys-shape-corner-md);
+    }
+
+    & .new-game__hint,
+    & .new-game__note {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .new-game__actions {
+      gap: var(--platform-space-2);
+      box-shadow: inset 0 1px 0 var(--platform-m3-outline-variant);
+    }
+
+    & .new-game__actions > button {
+      flex: none;
+      white-space: nowrap;
+    }
+  }
+
   @media (width < 640px) {
     & .new-game__grid {
       grid-template-columns: 1fr;

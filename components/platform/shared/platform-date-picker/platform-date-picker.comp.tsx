@@ -4,7 +4,9 @@ import { type ComponentProps, type KeyboardEvent, useEffect, useId, useRef, useS
 import { Popover } from "radix-ui";
 import { CalendarIcon } from "@/components/icons/calendar-icon.comp";
 import { AngleRightIcon } from "@/components/icons/angle-right-icon.comp";
+import { usePlatformLook } from "@/components/platform/shared/platform-look";
 import { formatSpanishDate, MONTHS_ES } from "@/lib/format-spanish-date";
+import { mdIconButton } from "@/lib/material/material-classes";
 import "./platform-date-picker.comp.css";
 
 interface PlatformDatePickerProps extends Omit<
@@ -112,6 +114,11 @@ function weeksOf(month: Date): Date[][] {
  * the trigger, positioned against the viewport, so it also works inside a
  * modal `<dialog>`. The popover is not modal either, so the page keeps
  * scrolling and its scrollbar.
+ *
+ * In a popup of a page moved to the new design system (`usePlatformLook`)
+ * the trigger is Material 3's outlined field, the box of `PlatformFormField`'s,
+ * with the calendar at its end, and the calendar Material's docked one: on
+ * the container, the chosen day a circle of the primary, today ringed in it.
  */
 export function PlatformDatePicker({
   name,
@@ -203,9 +210,17 @@ export function PlatformDatePicker({
   const focusedIso = toIso(focused);
 
   const triggerClassName = className ? `platform-date-picker__trigger ${className}` : "platform-date-picker__trigger";
+  // In a popup of a moved page: Material's outlined field, its calendar and its icon buttons.
+  const material = usePlatformLook() === "material";
+  const navClassName = `${
+    material
+      ? mdIconButton("standard", "xs")
+      : "platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square"
+  } platform-date-picker__nav`;
+  const navIconClassName = `${material ? "platform-md-icon" : "platform-button__icon"} platform-date-picker__nav-icon`;
 
   return (
-    <div className="platform-date-picker">
+    <div className={`platform-date-picker${material ? " platform-date-picker_look_material" : ""}`}>
       <Popover.Root open={open} onOpenChange={handleOpenChange}>
         <Popover.Trigger
           type="button"
@@ -255,13 +270,13 @@ export function PlatformDatePicker({
           <div className="platform-date-picker__head">
             <button
               type="button"
-              className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square platform-date-picker__nav"
+              className={navClassName}
               aria-label="Mes anterior"
               onClick={() => moveFocus(addMonths(focused, -1))}
             >
               <AngleRightIcon
                 variant="classic-solid"
-                className="platform-button__icon platform-date-picker__nav-icon platform-date-picker__nav-icon_direction_back"
+                className={`${navIconClassName} platform-date-picker__nav-icon_direction_back`}
               />
             </button>
             <span id={captionId} className="platform-date-picker__caption" aria-live="polite">
@@ -269,14 +284,11 @@ export function PlatformDatePicker({
             </span>
             <button
               type="button"
-              className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square platform-date-picker__nav"
+              className={navClassName}
               aria-label="Mes siguiente"
               onClick={() => moveFocus(addMonths(focused, 1))}
             >
-              <AngleRightIcon
-                variant="classic-solid"
-                className="platform-button__icon platform-date-picker__nav-icon"
-              />
+              <AngleRightIcon variant="classic-solid" className={navIconClassName} />
             </button>
           </div>
 

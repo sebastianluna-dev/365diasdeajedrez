@@ -13,4 +13,10 @@
   & .optional-mark {
     display: none;
   }
+
+  /* An outlined field of Material's look writes the mark on its supporting
+     line: with nothing else on it, the line goes too. */
+  & .platform-form__support:has(> .optional-mark:only-child) {
+    display: none;
+  }
 }

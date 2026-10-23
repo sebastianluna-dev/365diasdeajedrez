@@ -9,6 +9,7 @@ import {
   PlatformFormField,
   PlatformFormGroup,
 } from "@/components/platform/shared/platform-form/platform-form.comp";
+import { popupButton, usePlatformLook } from "@/components/platform/shared/platform-look";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
 interface NewStudyFormProps {
@@ -30,6 +31,8 @@ interface NewStudyFormProps {
  */
 export function NewStudyForm({ kinds, action, onClose, onSubmit }: NewStudyFormProps) {
   const [name, setName] = useState("");
+  // The popup's look: Material's buttons on a page moved to the new design system.
+  const look = usePlatformLook();
 
   return (
     <PlatformForm action={action} className="new-study__form" onSubmit={onSubmit} autoComplete="off">
@@ -72,14 +75,10 @@ export function NewStudyForm({ kinds, action, onClose, onSubmit }: NewStudyFormP
       <footer className="new-study__foot">
         <p className="new-study__note">Podrás cambiarlo todo después.</p>
         <div className="new-study__actions">
-          <button type="button" className="platform-button" onClick={onClose}>
+          <button type="button" className={popupButton(look, "exit")} onClick={onClose}>
             Cancelar
           </button>
-          <SubmitButton
-            className="platform-button platform-button_variant_ink"
-            pendingLabel="Creando…"
-            disabled={name.trim() === ""}
-          >
+          <SubmitButton className={popupButton(look, "submit")} pendingLabel="Creando…" disabled={name.trim() === ""}>
             Crear estudio
           </SubmitButton>
         </div>

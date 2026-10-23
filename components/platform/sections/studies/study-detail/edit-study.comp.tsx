@@ -9,6 +9,7 @@ import {
   PlatformPopup,
   type PlatformPopupHandle,
 } from "@/components/platform/shared/platform-popup/platform-popup.comp";
+import { popupButton, popupButtonIcon, usePlatformLook } from "@/components/platform/shared/platform-look";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import "./edit-study.comp.css";
@@ -133,30 +134,40 @@ export function EditStudy({
 
           {/* The two buttons alone at the row's end: a note beside them was
               squeezed into three lines. */}
-          <div className="edit-study__actions">
-            <button type="button" className="platform-button" onClick={() => popup.current?.close()}>
-              Cancelar
-            </button>
-            <SubmitButton className="platform-button platform-button_variant_ink">Guardar</SubmitButton>
-          </div>
+          <EditStudyActions onCancel={() => popup.current?.close()} />
         </PlatformForm>
 
         {/* What destroys, apart from what saves and under a rule, as in a
             game's settings. It only leads to the confirmation, which opens
             on top of this popup; this one stays open beneath. */}
-        {onDelete && (
-          <div className="edit-study__danger">
-            <button
-              type="button"
-              className="platform-button platform-button_variant_danger platform-button_size_sm platform-button_shape_pill"
-              onClick={onDelete}
-            >
-              <TrashCanIcon variant="classic-solid" className="platform-button__icon" />
-              Eliminar estudio
-            </button>
-          </div>
-        )}
+        {onDelete && <EditStudyDelete onDelete={onDelete} />}
       </PlatformPopup>
+    </div>
+  );
+}
+
+/** The popup's two buttons, in its look: Material's on a page moved to the new design system. */
+function EditStudyActions({ onCancel }: { onCancel: () => void }) {
+  const look = usePlatformLook();
+  return (
+    <div className="edit-study__actions">
+      <button type="button" className={popupButton(look, "exit")} onClick={onCancel}>
+        Cancelar
+      </button>
+      <SubmitButton className={popupButton(look, "submit")}>Guardar</SubmitButton>
+    </div>
+  );
+}
+
+/** «Eliminar estudio» under the rule, in the popup's look. */
+function EditStudyDelete({ onDelete }: { onDelete: () => void }) {
+  const look = usePlatformLook();
+  return (
+    <div className="edit-study__danger">
+      <button type="button" className={popupButton(look, "destroy")} onClick={onDelete}>
+        <TrashCanIcon variant="classic-solid" className={popupButtonIcon(look)} />
+        Eliminar estudio
+      </button>
     </div>
   );
 }

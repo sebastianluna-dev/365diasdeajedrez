@@ -13,6 +13,7 @@ import {
   PlatformPopup,
   type PlatformPopupHandle,
 } from "@/components/platform/shared/platform-popup/platform-popup.comp";
+import { popupButton, usePlatformLook } from "@/components/platform/shared/platform-look";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { PlatformCheckbox } from "@/components/platform/shared/platform-checkbox/platform-checkbox.comp";
@@ -217,27 +218,20 @@ interface FooterProps {
 }
 
 function Footer({ onCancel, label, disabled, onConfirm }: FooterProps) {
+  // The popup's look: Material's buttons on a page moved to the new design system.
+  const look = usePlatformLook();
   return (
     <div className="new-game__actions">
       <span className="new-game__note">{NOTE}</span>
-      <button type="button" className="platform-button" onClick={onCancel}>
+      <button type="button" className={popupButton(look, "exit")} onClick={onCancel}>
         Cancelar
       </button>
       {onConfirm ? (
-        <button
-          type="button"
-          className="platform-button platform-button_variant_ink"
-          disabled={disabled}
-          onClick={onConfirm}
-        >
+        <button type="button" className={popupButton(look, "submit")} disabled={disabled} onClick={onConfirm}>
           {label}
         </button>
       ) : (
-        <SubmitButton
-          className="platform-button platform-button_variant_ink"
-          disabled={disabled}
-          pendingLabel="Agregando…"
-        >
+        <SubmitButton className={popupButton(look, "submit")} disabled={disabled} pendingLabel="Agregando…">
           {label}
         </SubmitButton>
       )}

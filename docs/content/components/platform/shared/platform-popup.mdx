@@ -6,14 +6,14 @@ description: "The platform's modal popup: a native <dialog> on the .platform-dia
 
 Also exports the type `PlatformPopupHandle`.
 
-|            |                                                                                                                                                                             |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/platform-popup/platform-popup.comp.tsx`                                                                                                         |
-| Kind       | Client Component                                                                                                                                                            |
-| Stylesheet | `platform-popup.comp.css` → block `.platform-popup`                                                                                                                         |
-| Story      | `platform-popup.stories.tsx` (`platform/shared/PlatformPopup`): closed, open, with a form, large, tall, and a sheet on a phone                                              |
-| Used by    | Every popup of the platform that is not a confirmation: the study's and the game's forms, the game's settings, the new study, course, game and source, the authors' manager |
-| Uses       | `XmarkIcon`; the frame `.platform-dialog` of `app/(platform)/platform.css`                                                                                                  |
+|            |                                                                                                                                                                                                             |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-popup/platform-popup.comp.tsx`                                                                                                                                         |
+| Kind       | Client Component                                                                                                                                                                                            |
+| Stylesheet | `platform-popup.comp.css` → block `.platform-popup`                                                                                                                                                         |
+| Story      | `platform-popup.stories.tsx` (`platform/shared/PlatformPopup`): closed, open, with a form, large, tall, a sheet on a phone, and Material's dialog on a moved page: with a form, the form invalid, and large |
+| Used by    | Every popup of the platform that is not a confirmation: the study's and the game's forms, the game's settings, the new study, course, game and source, the authors' manager                                 |
+| Uses       | `XmarkIcon`; the frame `.platform-dialog` of `app/(platform)/platform.css`                                                                                                                                  |
 
 ## Purpose
 
@@ -40,13 +40,15 @@ It is a native `<dialog>` opened with `showModal()`, so the focus trap, Escape a
 - **A confirmation on top.** A `PlatformConfirmPopup` mounted as a sibling and opened while this one is open stacks over it in the top layer, with its own backdrop; this one waits beneath, inert, and keeps what was typed. See [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup).
 - **Not inside a form.** The popup is a `<dialog>`, and a `<form>` of the content may post a server action; the piece never closes a form by itself.
 
+- **Material's look on a moved page** (2026-10-23, «Formulario A» of the owner's canvas). A page moved to the new design system draws `.platform-workspace`, and a `<dialog>` stays where it is mounted in the DOM even in the top layer, so `open()` asks its own element (`lookOf` in `components/platform/shared/platform-look.ts`) whether it is inside that frame, and before `showModal()` draws itself in that look (`flushSync`, only when the look changes, so an opening from an effect never forces a render). In Material's look the frame takes `platform-dialog_look_material` (platform.css: Material's extra-large 28px corners, `--platform-m3-dialog`, its third level of shadow, a 32 % scrim), the block `platform-popup_look_material` (the headline in `--platform-font-display` at 24px and 600 (the one weight under 700 the platform ships Poppins in; the canvas draws it regular) with no rule under it, the cross Material's standard icon button, and `lg` at 800px), and the content gets the look through `PlatformLookContext`: `PlatformFormField`, `PlatformSelect` and `PlatformDatePicker` turn into Material's outlined fields, and the content's own buttons read it with `usePlatformLook()` + `popupButton(look, role)` (`exit` a text button, `submit` a filled one, `destroy`/`destroy-part` small outlined ones, the first in the error's red through `.platform-md-error`). No host passes anything: the site, `/admin` and the pages not yet moved draw no workspace and keep the platform's popup exactly as it was. Since the content reads the look from inside the popup, a button the host writes directly as a child of `PlatformPopup` has to live in a small component of its own (`EditGameForm`, `EditStudyActions`, `GameSettingsDanger`, `SaveToStudyFoot`).
+
 ## Markup & styling
 
 Block `.platform-popup`, on the element that also carries the frame `.platform-dialog` (`platform.css`): the frame centres, surfaces, shadows, scrolls and animates; the block adds the width and the strip.
 
 **Elements:** `.platform-popup__head`, `.platform-popup__title`, `.platform-popup__close` (the cross: the platform's quiet small square with `XmarkIcon` in Classic Solid, pulled into the strip's padding)
 
-**Modifiers:** `.platform-popup_size_sm`, `.platform-popup_size_md`, `.platform-popup_size_lg`
+**Modifiers:** `.platform-popup_size_sm`, `.platform-popup_size_md`, `.platform-popup_size_lg`, `.platform-popup_look_material` (with the frame's `.platform-dialog_look_material`)
 
 **Tokens:** `--platform-border`, `--platform-space-2`, `--platform-space-4`, `--platform-space-6`, `--platform-type-xl`, `--platform-text-muted`, `--platform-text`, `--platform-surface-neutral`
 

@@ -207,4 +207,161 @@
     font-weight: 600;
     color: var(--platform-danger);
   }
+
+  /* MATERIAL'S OUTLINED TEXT FIELD (`_look_material`, inside a popup of a page
+     moved to the new design system; «Formulario A» of the owner's canvas):
+     the control 56px high on the dialog's surface, a 1px outline with
+     Material's extra-small corner, the label sitting on the outline over a
+     notch of the surface behind it, and a supporting line under the control
+     with «Opcional» and the hint. With the focus the outline is the primary
+     at 2px and the label follows it — what one fills in is blue —; invalid,
+     both are the error's red, and so is the message on the supporting line.
+     The 2px are the 1px border and a 1px inset shadow, so nothing moves. A
+     select and a date picker draw the same box (their own sheets). */
+  & .platform-form__field.platform-form__field_look_material {
+    /* What is behind the label: the dialog's surface. */
+    --field-notch: var(--platform-m3-dialog);
+
+    position: relative;
+    gap: var(--platform-space-1);
+
+    & > .platform-form__label-row {
+      position: absolute;
+      top: 0;
+      left: var(--platform-space-3);
+      z-index: 1;
+      max-width: calc(100% - 2 * var(--platform-space-3));
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    & .platform-form__label {
+      display: block;
+      overflow: hidden;
+      padding: 0 var(--platform-space-1);
+      background: var(--field-notch);
+      font-size: var(--platform-type-2xs);
+      line-height: 1.33;
+      color: var(--platform-m3-on-surface-variant);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &:focus-within .platform-form__label {
+      color: var(--platform-m3-primary);
+    }
+
+    & > input,
+    & > textarea,
+    & .platform-form__frame {
+      border: 1px solid var(--platform-m3-outline);
+      border-radius: var(--md-sys-shape-corner-xs);
+      background: transparent;
+      color: var(--platform-m3-on-surface);
+    }
+
+    & > input,
+    & > textarea {
+      padding: 0 var(--platform-space-4);
+      font-size: var(--platform-type-md);
+    }
+
+    & > input {
+      height: 56px;
+    }
+
+    & > textarea,
+    & .platform-form__frame > textarea {
+      min-height: 88px;
+      padding: var(--platform-space-4);
+      line-height: 1.5;
+    }
+
+    & .platform-form__frame > textarea {
+      padding-bottom: var(--platform-space-1);
+      color: var(--platform-m3-on-surface);
+      font-size: var(--platform-type-md);
+    }
+
+    & > input::placeholder,
+    & > textarea::placeholder,
+    & .platform-form__frame > textarea::placeholder {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & > input:hover,
+    & > textarea:hover,
+    & .platform-form__frame:hover {
+      border-color: var(--platform-m3-on-surface);
+    }
+
+    & > input:focus,
+    & > textarea:focus,
+    & .platform-form__frame:has(> textarea:focus) {
+      outline: none;
+      border-color: var(--platform-m3-primary);
+      box-shadow: inset 0 0 0 1px var(--platform-m3-primary);
+    }
+
+    &[data-invalid] .platform-form__label,
+    &[data-invalid]:focus-within .platform-form__label {
+      color: var(--platform-m3-error);
+    }
+
+    &[data-invalid] > input,
+    &[data-invalid] > textarea,
+    &[data-invalid] .platform-form__frame,
+    &[data-invalid] > input:focus,
+    &[data-invalid] > textarea:focus,
+    &[data-invalid] .platform-form__frame:has(> textarea:focus) {
+      border-color: var(--platform-m3-error);
+      box-shadow: inset 0 0 0 1px var(--platform-m3-error);
+    }
+
+    /* The "i" of an input, inside it at its end; the label row is out of the
+       grid's flow, so the control and the "i" take the first row. */
+    &.platform-form__field_with_info > input,
+    &.platform-form__field_with_info > .platform-form__info {
+      grid-row: 1;
+    }
+
+    &.platform-form__field_with_info > input {
+      padding-right: var(--platform-space-12);
+    }
+
+    & .platform-form__count {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    /* The supporting line: «Opcional», the hint, the messages, in from the
+       control's edge as its text is. */
+    & .platform-form__support {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--platform-space-1) var(--platform-space-2);
+      padding: 0 var(--platform-space-4);
+    }
+
+    & .optional-mark {
+      box-shadow: inset 0 0 0 1px var(--platform-m3-outline-variant);
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .platform-form__hint,
+    & .platform-form__message {
+      font-size: var(--platform-type-2xs);
+      line-height: 1.33;
+    }
+
+    & .platform-form__hint {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .platform-form__message {
+      padding: 0 var(--platform-space-4);
+      font-weight: 400;
+      color: var(--platform-m3-error);
+    }
+  }
 }

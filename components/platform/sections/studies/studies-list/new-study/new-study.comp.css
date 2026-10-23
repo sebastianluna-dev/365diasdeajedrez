@@ -86,4 +86,29 @@
     gap: var(--platform-space-3);
     margin-left: auto;
   }
+
+  /* In Material's dialog (`PlatformPopup` on this moved page): the subtitle
+     as the headline's supporting text, and the foot on the dialog's own
+     surface over a hairline, its buttons Material's (`popupButton`). */
+  & .platform-popup_look_material {
+    & .new-study__body {
+      padding-top: 0;
+    }
+
+    & .new-study__subtitle,
+    & .new-study__note {
+      font-size: var(--platform-type-xs);
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .new-study__foot {
+      padding: var(--platform-space-4) var(--platform-space-6) var(--platform-space-6);
+      border-top-color: var(--platform-m3-outline-variant);
+      background: transparent;
+    }
+
+    & .new-study__actions {
+      gap: var(--platform-space-2);
+    }
+  }
 }
