@@ -202,4 +202,73 @@
   & .game-settings {
     margin-right: var(--platform-space-1);
   }
+
+  /* The new design system (2026-10-23, `look="material"`): a study's side
+     column on the canvas, its rows drawn as `PlatformSideNav` draws its
+     links — square at the left, where the column begins, round at the
+     right —, the current one in the secondary container with its ink, with
+     no rule: the fill says it, as it does for a view of the column. */
+  &.game-list_look_material {
+    padding: 0;
+
+    & .game-list__row {
+      border-radius: 0 1000px 1000px 0;
+      color: var(--platform-m3-on-surface);
+    }
+
+    & .game-list__row:hover {
+      background: var(--platform-m3-container-high);
+    }
+
+    & .game-list__row.game-list__row_state_active,
+    & .game-list__row.game-list__row_state_active.game-list__row_state_dragging {
+      --quiet-ink: var(--platform-m3-on-secondary-container);
+
+      background: var(--platform-m3-secondary-container);
+      box-shadow: none;
+    }
+
+    & .game-list__row.game-list__row_state_dragging {
+      background: var(--platform-m3-panel);
+      box-shadow: var(--md-sys-elevation-shadow-2);
+    }
+
+    & .game-list__grip,
+    & .game-list__row:hover .game-list__grip,
+    & .game-list__row:focus-within .game-list__grip {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .game-list__grip:focus-visible {
+      outline-color: var(--platform-m3-primary);
+    }
+
+    & .game-list__item,
+    & .game-list__item:hover {
+      padding-left: var(--platform-space-6);
+      color: var(--platform-m3-on-surface);
+    }
+
+    & .game-list__grip + .game-list__item {
+      padding-left: var(--platform-space-1);
+    }
+
+    & .game-list__name {
+      font-weight: 600;
+    }
+
+    & .game-list__players,
+    & .game-list__row:hover .game-list__players,
+    & .game-list__result {
+      font-size: var(--platform-type-2xs);
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .game-list__row.game-list__row_state_active .game-list__item,
+    & .game-list__row.game-list__row_state_active .game-list__players,
+    & .game-list__row.game-list__row_state_active .game-list__result,
+    & .game-list__row.game-list__row_state_active .game-list__grip {
+      color: var(--platform-m3-on-secondary-container);
+    }
+  }
 }

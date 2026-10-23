@@ -2,6 +2,7 @@
 
 import { PlusIcon } from "@/components/icons/plus-icon.comp";
 import { useRef, useState } from "react";
+import { mdFab } from "@/lib/material/material-classes";
 import { createStudy } from "@/services/studies/studies.actions";
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import {
@@ -20,9 +21,9 @@ interface NewStudyProps {
 }
 
 /**
- * «Nuevo estudio»: the dashed slot that heads the grid of «Mis estudios», and
- * the popup it opens. The only way in since 2026-10-07: the page's head had a
- * button to the same popup, which the owner took out.
+ * «Nuevo estudio»: the page's main action, at the top of its side column as
+ * Material's extended FAB (the new design system, 2026-10-23; until then the
+ * dashed slot that headed the grid), and the popup it opens.
  */
 export function NewStudy({ kinds }: NewStudyProps) {
   const popup = useRef<PlatformPopupHandle>(null);
@@ -34,10 +35,14 @@ export function NewStudy({ kinds }: NewStudyProps) {
 
   return (
     <div className="new-study">
-      {/* The first cell of the grid: what does not exist yet, dashed, lit when
-          it is about to be pressed. */}
-      <button type="button" className="new-study__slot" onClick={(event) => popup.current?.open(event)}>
-        <PlusIcon variant="classic-solid" className="new-study__slot-icon" />
+      {/* A button and not `PlatformSideNav`'s action, which is a link: this
+          one opens a popup. It wears the same FAB and takes the same place. */}
+      <button
+        type="button"
+        className={`${mdFab("primary-container")} new-study__fab`}
+        onClick={(event) => popup.current?.open(event)}
+      >
+        <PlusIcon variant="classic-solid" className="platform-md-icon" />
         Nuevo estudio
       </button>
 

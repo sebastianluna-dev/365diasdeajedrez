@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { GameList, type GameListItem } from "@/components/platform/shared/game-list/game-list.comp";
 import type { GameSettingsActions } from "@/components/platform/shared/game-settings/game-settings.comp";
+import { mdButton } from "@/lib/material/material-classes";
 import { gamesOfPage, pageCountOf, pageOfGame } from "./study-games-page";
 import "./study-games.comp.css";
 
@@ -47,13 +48,15 @@ export function StudyGames({ games, pageSize, onReorder, settings }: StudyGamesP
         currentId={gameId}
         onReorder={onReorder}
         settings={settings}
+        // The study's side column, in the new design system (2026-10-23).
+        look="material"
       />
 
       {pageCount > 1 && (
         <nav className="study-games__pages" aria-label="Páginas de partidas">
           <button
             type="button"
-            className="study-games__page-button"
+            className={mdButton("text", "xs")}
             disabled={page <= 1}
             onClick={() => turnTo(page - 1)}
           >
@@ -64,7 +67,7 @@ export function StudyGames({ games, pageSize, onReorder, settings }: StudyGamesP
           </span>
           <button
             type="button"
-            className="study-games__page-button"
+            className={mdButton("text", "xs")}
             disabled={page >= pageCount}
             onClick={() => turnTo(page + 1)}
           >

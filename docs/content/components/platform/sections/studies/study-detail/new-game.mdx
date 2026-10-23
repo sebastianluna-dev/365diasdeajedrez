@@ -42,13 +42,13 @@ Adding a game to a study, from wherever the student has it. Four tabs, each a fo
 - The class tab is not a form: the footer button is `type="button"` and calls the action inside a transition with the picked ids, then closes.
 - The internal `Footer` renders the note, cancel and the confirm button: a `SubmitButton` that says «Agregando…» while the form is on its way; with `onConfirm` it is a plain button instead, so it does not submit an enclosing form.
 - Tabs use `role="tablist"`/`role="tab"` with `aria-selected`. Each on one line, with a `space-3` side padding: wider, «Pegar PGN» and its neighbours broke over two lines in the 600px popup; on a phone the row scrolls sideways.
-- **Its own buttons keep their look beside the board.** The popup lives inside the aside's «Nueva partida» slot, whose rule drew the trigger as a line with a «+»; it reached `.platform-button`, so «Cancelar» and «Agregar partida» took it too, until 2026-10-05 (the rule now names `.new-game__open`). The footer's buttons do not wrap: the note gives way.
+- **The trigger is the study's FAB** (2026-10-23, the new design system): Material's extended FAB (`mdFab("primary-container")`) with the «+», at the top of the study's side column under its name, as Gmail's «Redactar» — flat at rest, on a shadow under the pointer —; under 1024px it takes the column's width. Until then it was a line of the study's card with a «+» in the accent. The footer's buttons do not wrap: the note gives way.
 
 ## Markup & styling
 
-Block `.new-game` (160 lines): the trigger and the popup's content, which pads itself under the strip; the strip, the width and the frame are `PlatformPopup`'s.
+Block `.new-game` (182 lines): the trigger and the popup's content, which pads itself under the strip; the strip, the width and the frame are `PlatformPopup`'s.
 
-**Elements:** `.new-game__open`, `.new-game__subtitle` (the content's first line), `.new-game__tabs`, `.new-game__tab`, `.new-game__panel`, `.new-game__textarea`, `.new-game__hint` (the class tab's), `.new-game__grid`, `.new-game__list`, `.new-game__pick` (the class on each `PlatformCheckbox` row: border and padding, the border darkening under the pointer), `.new-game__actions`, `.new-game__note`
+**Elements:** `.new-game__open` (the FAB's place; its look is `fab fab-primary-container`), `.new-game__subtitle` (the content's first line), `.new-game__tabs`, `.new-game__tab`, `.new-game__panel`, `.new-game__textarea`, `.new-game__hint` (the class tab's), `.new-game__grid`, `.new-game__list`, `.new-game__pick` (the class on each `PlatformCheckbox` row: border and padding, the border darkening under the pointer), `.new-game__actions`, `.new-game__note`
 
 **Modifiers and states:** `.new-game__tab_state_active`
 

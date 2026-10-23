@@ -1,113 +1,38 @@
 .game-page {
-  /* A workspace, not a page that opens with a big title: it starts right
-     under the bar, and the board gets the height. The shell reserves 44px
-     there; the difference is recovered here instead of touching its padding. */
-  margin-top: calc(-1 * var(--platform-space-5));
-  gap: var(--platform-space-4);
-
   /* The board is measured by the HEIGHT that is left, not by the width: it is
      what one looks at, and it takes all of the window save what sits above
-     and below it — the shell's bar (70px), the air under the bar (the
-     shell's padding less the margin recovered above), the two player strips
-     (a line of `xs` text at 1.3 and their padding) — and, at the foot, the
-     gap and the row of tabs of the tools under the board (their padding and
-     a line of `sm` text), which is left peeking so one knows the comment and
-     the quality of a move are there, a scroll away. The floor keeps the
-     board from becoming a stamp on a short window. */
+     and below it — the shell's bar (70px), the panel's padding (twice), the
+     trail (a key of Material's and its padding), the game's record (about
+     104px) and the gaps between the three, the two player strips (a line of
+     `xs` text at 1.3 and their padding) — and, at the foot, the gap and the
+     row of tabs of the tools under the board, which is left peeking so one
+     knows the comment and the quality of a move are there, a scroll away.
+     The floor keeps the board from becoming a stamp on a short window. */
   --game-board-max: max(
     320px,
     calc(
-      100vh - 70px - (var(--platform-space-12) - var(--platform-space-5)) - 2 *
-        (1.3 * var(--platform-type-xs) + 2 * var(--platform-space-1)) - var(--platform-space-6) -
-        (var(--platform-space-4) + 1.5 * var(--platform-type-sm) + var(--platform-space-3))
+      100vh - 70px - 2 * var(--platform-space-6) - (40px + 2 * var(--platform-space-2)) - 104px - 3 *
+        var(--platform-space-4) - 2 * (1.3 * var(--platform-type-xs) + 2 * var(--platform-space-1)) -
+        var(--platform-space-6) - (2 * var(--platform-space-3) + 1.5 * var(--platform-type-xs))
     )
   );
   --viewer-board-max: var(--game-board-max);
 
-  /* As wide as its three columns ask for: the aside at its widest (360px),
-     the board at the size the height gives it, and the notation at its own
-     widest (the viewer's 400px), with the two gaps. So the page grows with
-     the board, and what a wider window adds beyond that stays as margin. */
-  &.platform-page_width_wide {
-    max-width: calc(360px + var(--game-board-max) + 400px + 2 * var(--platform-space-6));
+  /* The panel: the trail, the record and the board, a step closer together
+     than a page's sections. */
+  & .game-page__panel {
+    gap: var(--platform-space-4);
   }
 
-  /* Three pieces in two columns. On the left the study (the layout's own, the
-     one that holds still from game to game) and under it the game's record;
-     on the right, down the two rows, the board with its notation — or the
-     skeleton that stands in for it while a game loads. The left column measures
-     its own and the board keeps the rest. The second row is the flexible
-     one: it takes whatever height the board has left over, so the study's
-     row is as tall as the study and no taller. */
-  & .game-page__layout {
-    display: grid;
-    grid-template-columns: clamp(280px, 24%, 360px) minmax(0, 1fr);
-    grid-template-rows: auto 1fr;
-    gap: var(--platform-space-6);
-    align-items: start;
+  /* Where there is no bar to take it (a page drawn outside the shell), the
+     search stays on top of the panel. */
+  & .game-page__search {
+    display: flex;
   }
 
-  /* The page comes before the study in the markup — the layout can only put
-     its children in one place —; on a wide window the study takes the top of
-     the left column all the same. */
-  & .game-page__layout > .study-aside {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  & .game-page__layout > .game-record {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  & .game-page__layout > .game-view,
-  & .game-page__layout > .game-skeleton {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-  }
-
-  /* Without the width for three columns the board goes first, alone in its
-     row, which is what one came for, and the study and the record share the
-     row under it, as Lichess puts a study's chapters under the board on a
-     tablet. The board goes back to the viewer's own ceiling. */
+  /* Without the width for the board and the notation side by side beside the
+     column, the board goes back to the viewer's own ceiling. */
   @media (width < 1280px) {
     --viewer-board-max: 600px;
-
-    & .game-page__layout {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-rows: none;
-    }
-
-    & .game-page__layout > .game-view,
-    & .game-page__layout > .game-skeleton {
-      grid-column: 1 / -1;
-      grid-row: 1;
-    }
-
-    & .game-page__layout > .study-aside {
-      grid-column: 1;
-      grid-row: 2;
-    }
-
-    & .game-page__layout > .game-record {
-      grid-column: 2;
-      grid-row: 2;
-    }
-  }
-
-  /* On a phone, one under the other: the board, the study, the record. */
-  @media (width < 640px) {
-    & .game-page__layout {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    & .game-page__layout > .study-aside,
-    & .game-page__layout > .game-record {
-      grid-column: 1;
-    }
-
-    & .game-page__layout > .game-record {
-      grid-row: 3;
-    }
   }
 }

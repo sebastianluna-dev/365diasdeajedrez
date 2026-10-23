@@ -87,3 +87,26 @@ export const LinksOnly: Story = {
   name: "Sólo enlaces",
   args: { onReorder: undefined },
 };
+
+/** The new design system's look (`look="material"`): a study's side column on the canvas, the current game in the secondary container. */
+export const Material: Story = {
+  name: "En el sistema de diseño nuevo",
+  args: {
+    look: "material",
+    settings: {
+      save: fn(async () => {}).mockName("updateGameSettings"),
+      clearAnnotations: fn(async () => {}).mockName("clearGameAnnotations"),
+      clearVariations: fn(async () => {}).mockName("clearGameVariations"),
+      remove: fn(async () => {}).mockName("deleteStudyGame"),
+    },
+  },
+  decorators: [
+    (Story) => (
+      <div className="platform-workspace" style={{ minHeight: 0 }}>
+        <div className="platform-workspace__side">
+          <Story />
+        </div>
+      </div>
+    ),
+  ],
+};

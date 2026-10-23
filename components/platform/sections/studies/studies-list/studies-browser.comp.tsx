@@ -1,42 +1,14 @@
 "use client";
 
 import { useId, useState, type CSSProperties } from "react";
-import { MagnifyingGlassIcon } from "@/components/icons/magnifying-glass-icon.comp";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
-import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
-import { DATABASE_KIND, type DatabaseKindCode } from "@/constants/platform/study-codes.const";
+import { PlatformHeaderContext } from "@/components/platform/sections/shell/platform-header-context.comp";
 import { foldForSearch } from "@/lib/fold-for-search";
-import type { StudyKindOption, StudySummary } from "@/services/studies/studies.types";
-import { NewStudy } from "./new-study/new-study.comp";
+import type { StudyResume, StudySummary } from "@/services/studies/studies.types";
+import { StudiesSearch } from "../studies-search/studies-search.comp";
+import { ResumeStudy } from "./resume-study.comp";
 import { StudyCard } from "./study-card.comp";
 import "./studies-browser.comp.css";
-
-/** Everything, their own by kind, or what they received. */
-type Tab = "ALL" | "RECEIVED" | DatabaseKindCode;
-
-/** Their own kinds, in the order the tabs take them, by the plural a tab says. */
-const OWN_TABS: { code: DatabaseKindCode; label: string }[] = [
-  { code: DATABASE_KIND.MY_GAMES, label: "Mis partidas" },
-  { code: DATABASE_KIND.STUDY, label: "Estudios" },
-  { code: DATABASE_KIND.TOURNAMENT, label: "Torneos" },
-  { code: DATABASE_KIND.COLLECTION, label: "Colecciones" },
-];
-
-type Sort = "RECENT" | "NAME" | "GAMES";
-
-const SORT_OPTIONS: { value: Sort; label: string }[] = [
-  { value: "RECENT", label: "Recientes" },
-  { value: "NAME", label: "Nombre" },
-  { value: "GAMES", label: "Más partidas" },
-];
-
-const COMPARE: Record<Sort, (left: StudySummary, right: StudySummary) => number> = {
-  // By when they last opened it (or created it): ISO strings sort as the
-  // moments they write.
-  RECENT: (left, right) => right.recentAt.localeCompare(left.recentAt),
-  NAME: (left, right) => left.name.localeCompare(right.name, "es", { sensitivity: "base" }),
-  GAMES: (left, right) => right.gameCount - left.gameCount || left.name.localeCompare(right.name, "es"),
-};
 
 /** The card's place in the entrance: the stylesheet turns it into its delay. */
 type ItemStyle = CSSProperties & { "--studies-browser-index": number };
@@ -45,120 +17,81 @@ type ItemStyle = CSSProperties & { "--studies-browser-index": number };
 const itemStyle = (index: number): ItemStyle => ({ "--studies-browser-index": Math.min(index, 12) });
 
 interface StudiesBrowserProps {
-  /** Those that are theirs: "Mis partidas", their tournaments and their studies. */
+  /** Their own studies the view shows, in its order. */
   own: StudySummary[];
-  /** What reaches them ready-made and cannot be touched: a teacher's collections, the games of their classes. */
+  /** What reached them ready-made that the view shows, in its order. */
   received: StudySummary[];
-  /** The kinds they can create, for the grid's «Nuevo estudio» slot. */
-  kinds: StudyKindOption[];
+  /** «Sigue donde ibas», on the view of every study; absent on the others, or when nothing was opened. */
+  resume?: StudySummary & { resume: StudyResume };
+  /** What the address asked to search (`?q=`, a search sent from a study's bar). */
+  initialQuery?: string;
+  /** The view's name, for what it says when it has nothing: «Torneos». */
+  viewLabel: string;
+  /**
+   * Which view and order are on screen: a new one remounts the groups, and
+   * the cards play their entrance again.
+   */
+  viewKey: string;
 }
 
 /**
- * The library of «Mis estudios» (2026-10-07, the «Biblioteca» direction): one
- * bar with the search, the tabs and the order; under it the grid of their own
- * studies, opened by the slot that creates one, and what they received in a
- * block of its own. Everything is filtered here, in the browser: the page
- * brings every study once, each with the folded text its search matches.
+ * The library of «Mis estudios», in the new design system (2026-10-23, «M4»
+ * of the owner's canvas): the panel of the workspace. «Sigue donde ibas» at
+ * its head, then «Tus estudios» and «Recibido» in grids of outlined cards.
+ * Which kinds and in what order is the address's, chosen in the side column
+ * and applied on the server; the search lives in the bar
+ * (`PlatformHeaderContext`) and filters here, as one types: every study came
+ * with the folded text it is searched by.
  */
-export function StudiesBrowser({ own, received, kinds }: StudiesBrowserProps) {
-  const [query, setQuery] = useState("");
-  const [tab, setTab] = useState<Tab>("ALL");
-  const [sort, setSort] = useState<Sort>("RECENT");
+export function StudiesBrowser({ own, received, resume, initialQuery = "", viewLabel, viewKey }: StudiesBrowserProps) {
+  const [query, setQuery] = useState(initialQuery);
+  const ownTitleId = useId();
   const receivedTitleId = useId();
-
-  // The tabs come from what is there, not from a fixed list: a kind they have
-  // none of has no tab, and the counts are the library's, whatever is searched.
-  const tabs = [
-    { code: "ALL" as Tab, label: "Todos", count: own.length + received.length },
-    ...OWN_TABS.map(({ code, label }) => ({
-      code: code as Tab,
-      label,
-      count: own.filter((s) => s.kindCode === code).length,
-    })),
-    { code: "RECEIVED" as Tab, label: "Recibidos", count: received.length },
-  ].filter((entry) => entry.code === "ALL" || entry.count > 0);
 
   const wanted = foldForSearch(query);
   const matches = (study: StudySummary) => !wanted || study.searchText.includes(wanted);
-  const ownShown = tab === "RECEIVED" ? [] : own.filter((s) => (tab === "ALL" || s.kindCode === tab) && matches(s));
-  const receivedShown = tab === "ALL" || tab === "RECEIVED" ? received.filter(matches) : [];
-  ownShown.sort(COMPARE[sort]);
-  receivedShown.sort(COMPARE[sort]);
+  const ownShown = own.filter(matches);
+  const receivedShown = received.filter(matches);
   const total = ownShown.length + receivedShown.length;
-
-  // The slot that creates goes first in their own grid, while nothing is
-  // searched and the tab is one a new study can belong to.
-  const showSlot = !wanted && (tab === "ALL" || kinds.some((kind) => kind.code === tab));
-  const slotOffset = showSlot ? 1 : 0;
 
   return (
     <div className="studies-browser">
-      <div className="studies-browser__bar">
-        <label className="studies-browser__search">
-          <MagnifyingGlassIcon variant="classic-solid" className="studies-browser__search-icon" />
-          <input
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Buscar por nombre o jugador"
-            aria-label="Buscar estudios"
-            className="studies-browser__search-input"
-          />
-        </label>
-
-        <div className="studies-browser__tabs" role="group" aria-label="Tipo">
-          {tabs.map((entry) => (
-            <button
-              key={entry.code}
-              type="button"
-              onClick={() => setTab(entry.code)}
-              aria-pressed={entry.code === tab}
-              className="studies-browser__tab"
-            >
-              {entry.label}
-              <span className="studies-browser__tab-count">{entry.count}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* In a box of its own: the select's own root is what the bar lays out. */}
-        <div className="studies-browser__sort">
-          <PlatformSelect
-            aria-label="Ordenar"
-            tone="accent"
-            options={SORT_OPTIONS}
-            value={sort}
-            onValueChange={(value) => setSort(value as Sort)}
-          />
-        </div>
-      </div>
+      <PlatformHeaderContext inlineClassName="studies-browser__search">
+        <StudiesSearch value={query} onChange={setQuery} />
+      </PlatformHeaderContext>
 
       {/* What a search left, said out loud: the grid changes without a word. */}
       <p className="studies-browser__status" aria-live="polite">
         {wanted ? `${total} ${total === 1 ? "estudio" : "estudios"}` : ""}
       </p>
 
-      {total === 0 && wanted && (
-        <EmptyState
-          title={`Nada coincide con «${query.trim()}»`}
-          description="Busca por el nombre del estudio o por el de un jugador de sus partidas."
-        />
-      )}
+      {resume && !wanted && <ResumeStudy study={resume} />}
 
-      {/* The groups are keyed by the tab and the order, so changing either
+      {total === 0 &&
+        (wanted ? (
+          <EmptyState
+            title={`Nada coincide con «${query.trim()}»`}
+            description="Busca por el nombre del estudio o por el de un jugador de sus partidas."
+          />
+        ) : (
+          <EmptyState
+            title={`Nada en «${viewLabel}»`}
+            description="Elige otro tipo en la columna, o crea un estudio con «Nuevo estudio»."
+          />
+        ))}
+
+      {/* The groups are keyed by the view and the order, so changing either
           remounts them and the cards play their entrance again, one after
           another (`--studies-browser-index` sets each one's delay); typing
           does not. */}
-      {(ownShown.length > 0 || showSlot) && (
-        <section key={`own-${tab}-${sort}`} className="studies-browser__group" aria-label="Tus estudios">
+      {ownShown.length > 0 && (
+        <section key={`own-${viewKey}`} className="studies-browser__group" aria-labelledby={ownTitleId}>
+          <h2 id={ownTitleId} className="studies-browser__title">
+            Tus estudios
+          </h2>
           <div className="studies-browser__grid">
-            {showSlot && (
-              <div className="studies-browser__item" style={itemStyle(0)}>
-                <NewStudy kinds={kinds} />
-              </div>
-            )}
             {ownShown.map((study, index) => (
-              <div key={study.id} className="studies-browser__item" style={itemStyle(slotOffset + index)}>
+              <div key={study.id} className="studies-browser__item" style={itemStyle(index)}>
                 <StudyCard study={study} />
               </div>
             ))}
@@ -167,9 +100,9 @@ export function StudiesBrowser({ own, received, kinds }: StudiesBrowserProps) {
       )}
 
       {receivedShown.length > 0 && (
-        <section key={`received-${tab}-${sort}`} className="studies-browser__group" aria-labelledby={receivedTitleId}>
-          <h2 id={receivedTitleId} className="studies-browser__group-title">
-            Recibido <span className="studies-browser__group-count">{receivedShown.length}</span>
+        <section key={`received-${viewKey}`} className="studies-browser__group" aria-labelledby={receivedTitleId}>
+          <h2 id={receivedTitleId} className="studies-browser__title">
+            Recibido <span className="studies-browser__count">{receivedShown.length}</span>
           </h2>
           <div className="studies-browser__grid">
             {receivedShown.map((study, index) => (
@@ -177,7 +110,7 @@ export function StudiesBrowser({ own, received, kinds }: StudiesBrowserProps) {
                 key={study.id}
                 className="studies-browser__item"
                 // The received group follows their own, so its cards start after it.
-                style={itemStyle(slotOffset + ownShown.length + index)}
+                style={itemStyle(ownShown.length + index)}
               >
                 <StudyCard study={study} />
               </div>

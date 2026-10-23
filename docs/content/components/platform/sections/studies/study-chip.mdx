@@ -1,0 +1,57 @@
+---
+description: "A study's kind as a low pill in the kind's own colour, with its icon: what a card of the library, «Sigue donde ibas» and the study's side column say a study is, or where it comes from."
+---
+
+# `StudyChip`
+
+Also `studyChipOf` and `gameCountLabel`, in the same file.
+
+|            |                                                                                                                                                                                                          |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/study-chip/study-chip.comp.tsx`                                                                                                                                    |
+| Kind       | Server Component                                                                                                                                                                                         |
+| Stylesheet | `study-chip.comp.css` → block `.study-chip`                                                                                                                                                              |
+| Used by    | [`StudyCard`](/components/platform/sections/studies/studies-list/study-card), [`ResumeStudy`](/components/platform/sections/studies/studies-list/resume-study), the study's side column                  |
+| Uses       | `StudySummary`, `StudyOrigin` from `services/studies/studies.types`; `DATABASE_KIND`; `UserIcon`, `BookOpenIcon`, `TrophyIcon`, `LayerGroupIcon`, `GraduationCapIcon`, `ChalkboardUserIcon`, `UsersIcon` |
+
+## Purpose
+
+In the new design system (2026-10-23, «M4» of the owner's canvas) a study's kind is a chip in a colour of its own, so the library is read by colour before it is read by word:
+
+| Kind or origin              | Icon                 | Tone        | Container                                                    |
+| --------------------------- | -------------------- | ----------- | ------------------------------------------------------------ |
+| «Mis partidas» (`MY_GAMES`) | `UserIcon`           | `info`      | `--platform-m3-info-container`, its ink `-on-info-container` |
+| «Estudio» (`STUDY`)         | `BookOpenIcon`       | `success`   | `--platform-m3-success-container`                            |
+| «Torneo» (`TOURNAMENT`)     | `TrophyIcon`         | `warning`   | `--platform-m3-warning-container`                            |
+| «Colección» (`COLLECTION`)  | `LayerGroupIcon`     | `secondary` | `--platform-m3-secondary-container`                          |
+| A course (`COURSE`)         | `GraduationCapIcon`  | `secondary` | `--platform-m3-secondary-container`                          |
+| A teacher (`TEACHER`)       | `ChalkboardUserIcon` | `neutral`   | `--platform-m3-container-high`, ink `-on-surface-variant`    |
+| «Tus clases» (`CLASSES`)    | `UsersIcon`          | `info`      | `--platform-m3-info-container`                               |
+
+A study that is not theirs says where it comes from (`origin`) instead of its kind. The canvas drew the teacher's chip in Material's purple; the platform uses none (see [The new design system](/ui/styling#the-new-design-system-material-3-expressive)), so it is the neutral grey.
+
+## Props
+
+| Prop     | Type                                                        | Required | Meaning                                                      |
+| -------- | ----------------------------------------------------------- | -------- | ------------------------------------------------------------ |
+| `study`  | `Pick<StudySummary, "kindCode" \| "kindLabel" \| "origin">` | yes      | The kind and, when it is not theirs, where it comes from.    |
+| `suffix` | `string`                                                    | no       | Said after the kind in the same chip: «Torneo · 9 partidas». |
+
+`gameCountLabel(count)` writes «1 partida» or «9 partidas», for the chip's suffix and the cards' meta.
+
+## Markup & styling
+
+Block `.study-chip` (54 lines).
+
+**Elements:** `.study-chip__icon` (Classic Solid, 13px), `.study-chip__label`
+
+**Modifiers:** `.study-chip_tone_info`, `_tone_success`, `_tone_warning`, `_tone_secondary`, `_tone_neutral`.
+
+**Tokens:** the containers above and their inks, the type and space scales.
+
+## Usage
+
+```tsx
+<StudyChip study={study} />
+<StudyChip study={study} suffix={gameCountLabel(study.gameCount)} />
+```

@@ -9,13 +9,13 @@ description: "The record of the game on the board, in the column of its study: i
 | File       | `components/platform/sections/studies/game-view/game-record.comp.tsx`                                                                                                          |
 | Kind       | Server Component                                                                                                                                                               |
 | Stylesheet | `game-record.comp.css` → block `.game-record`                                                                                                                                  |
-| Used by    | `/estudios/[studyId]/partidas/[gameId]`, under the layout's [`StudyAside`](/components/platform/sections/studies/game-view/study-aside)                                        |
+| Used by    | `/estudios/[studyId]/partidas/[gameId]`, at the head of the panel, under the layout's [`StudyTrail`](/components/platform/sections/studies/game-view/study-trail)              |
 | Composes   | [`EditGame`](/components/platform/shared/edit-game)                                                                                                                            |
 | Uses       | `openingOfEco` from `lib/chess/eco-openings`; `updateGameDetails` from `services/studies/studies.actions`; `GameView`, `StudyKindOption` from `services/studies/studies.types` |
 
 ## Purpose
 
-The one card of the study's column that is about the **current game**. It was the second card of `GameAside` until 2026-10-05, when the study's part of that column moved to the layout so as to hold still from game to game ([`StudyAside`](/components/platform/sections/studies/game-view/study-aside)); what depends on the game stayed with the page, and this is it.
+The one card about the **current game** besides the board. Since 2026-10-23 (the new design system) it heads the panel, under the trail and over the board, as an outlined card; until then it was the second card of the study's column. It was the second card of `GameAside` until 2026-10-05, when the study's part of that column moved to the layout so as to hold still from game to game ([`StudyAside`](/components/platform/sections/studies/game-view/study-aside)); what depends on the game stayed with the page, and this is it.
 
 **What it carries, and in what order** (2026-10-05, chosen by the owner among twelve options, «Pastillas»). The card had the event, the place and a two-by-two grid of labelled cells — Fecha, Ronda, ECO, Resultado. Now:
 
@@ -47,7 +47,7 @@ Not here yet, though the options showed them: the **time control** and **how the
 
 ## Markup & styling
 
-Block `.game-record` (110 lines), a `<section>`: white on the page's grey over a light shadow, with no outline, like every box of the game view. A column: the head (the label and the pencil), the event, the line, the pills, which wrap.
+Block `.game-record` (109 lines), a `<section>`: an outlined card of the new design system on the panel's white (the container-high outline, `--md-sys-shape-corner-lg` corners), the event in the display font, the pills as Material's assist chips — an outline and 8px corners. The pencil is [`EditGame`](/components/platform/shared/edit-game) with `look="material"`. A column: the head (the label and the pencil), the event, the line, the pills, which wrap.
 
 **Elements:** `.game-record__head`, `.game-record__label`, `.game-record__event`, `.game-record__context`, `.game-record__facts`, `.game-record__fact`, `.game-record__fact-text` (one run of text, so it wraps inside the pill), `.game-record__opening` (the opening's name), `.game-record__fact-icon`, `.game-record__sr`
 
@@ -55,7 +55,9 @@ Block `.game-record` (110 lines), a `<section>`: white on the page's grey over a
 
 **Other selectors it styles:** `.edit-game` in the head (negative margins, so the 28px pencil neither makes the head taller nor sits inside the card's text edge).
 
-**Tokens:** `--platform-surface`, `--platform-surface-neutral` (the pills), `--platform-text-muted` (their icons), `--platform-text-subtle`
+**Modifiers:** `.game-record_state_loading` (the blank card, on the container's grey).
+
+**Tokens:** `--platform-m3-container`, `--platform-m3-container-high`, `--platform-m3-outline-variant` (the pills), `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-font-display`, `--md-sys-shape-corner-lg`
 
 No media queries of its own: where it goes — under the study on a wide window, beside it on a tablet, under it on a phone — is the page's (`.game-page__layout` in `game-page.css`, see [`StudyAside`](/components/platform/sections/studies/game-view/study-aside)).
 

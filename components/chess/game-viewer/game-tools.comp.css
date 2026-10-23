@@ -261,4 +261,101 @@
       padding-bottom: var(--platform-space-2);
     }
   }
+
+  /* The new design system (2026-10-23, `look="material"`, a study's game):
+     the tabs on the container's grey with a rule of the primary under the
+     chosen one, the comment's field on the panel's white with an outline,
+     the chosen quality in the secondary container. */
+  &.game-tools_look_material {
+    & .game-tools__tabs {
+      gap: var(--platform-space-2);
+      padding: 0 var(--platform-space-2);
+      box-shadow: inset 0 -1px 0 var(--platform-m3-container-high);
+    }
+
+    & .game-tools__tab {
+      padding: var(--platform-space-3);
+      font-size: var(--platform-type-xs);
+      font-weight: 500;
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .game-tools__tab:hover {
+      color: var(--platform-m3-on-surface);
+    }
+
+    & .game-tools__tab.game-tools__tab_state_active {
+      color: var(--platform-m3-primary);
+      font-weight: 700;
+      box-shadow: inset 0 -3px 0 var(--platform-m3-primary);
+    }
+
+    & .game-tools__target {
+      padding: 0 var(--platform-space-2) 0 0;
+      align-self: center;
+      font-size: var(--platform-type-2xs);
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .game-tools__panel {
+      padding: var(--platform-space-3);
+    }
+
+    & .game-tools__textarea {
+      background: var(--platform-m3-panel);
+      box-shadow: inset 0 0 0 1px var(--platform-m3-outline-variant);
+      color: var(--platform-m3-on-surface);
+    }
+
+    & .game-tools__textarea:focus {
+      background: var(--platform-m3-panel);
+      box-shadow: inset 0 0 0 2px var(--platform-m3-primary);
+    }
+
+    & .game-tools__hint,
+    & .game-tools__share-value,
+    & .game-tools__foot {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .game-tools__nags {
+      background: var(--platform-m3-container-high);
+    }
+
+    & .game-tools__nag-column {
+      background: var(--platform-m3-container);
+    }
+
+    & .game-tools__nag-title,
+    & .game-tools__nag-glyph {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .game-tools__nag-label,
+    & .game-tools__share-label {
+      color: var(--platform-m3-on-surface);
+    }
+
+    & .game-tools__nag:hover:not(:disabled) {
+      background: var(--platform-m3-container-high);
+    }
+
+    & .game-tools__nag.game-tools__nag_state_active {
+      background: var(--platform-m3-secondary-container);
+    }
+
+    & .game-tools__nag_state_active .game-tools__nag-glyph,
+    & .game-tools__nag_state_active .game-tools__nag-label {
+      color: var(--platform-m3-on-secondary-container);
+    }
+
+    & .game-tools__foot {
+      background: var(--platform-m3-container);
+      box-shadow: inset 0 1px 0 var(--platform-m3-container-high);
+    }
+
+    & .game-tools__share {
+      box-shadow: inset 0 -1px 0 var(--platform-m3-container-high);
+    }
+  }
 }

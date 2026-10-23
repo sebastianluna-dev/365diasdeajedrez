@@ -1,0 +1,84 @@
+/* «Sigue donde ibas»: a band on the container's grey at the head of the
+   panel, the board, the words and the way back in. */
+.resume-study {
+  display: flex;
+  align-items: center;
+  gap: var(--platform-space-6);
+  padding: var(--platform-space-4);
+  border-radius: var(--md-sys-shape-corner-lg);
+  background: var(--platform-m3-container);
+  color: var(--platform-m3-on-surface);
+
+  & .resume-study__board {
+    flex: none;
+    display: block;
+    width: 160px;
+  }
+
+  & .resume-study__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+  }
+
+  & .resume-study__eyebrow {
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .resume-study__name {
+    margin: 0;
+    overflow-wrap: anywhere;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-2xl);
+    font-weight: 500;
+    line-height: 1.25;
+  }
+
+  & .resume-study__game {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .resume-study__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-2) var(--platform-space-3);
+    margin-top: var(--platform-space-3);
+  }
+
+  & .resume-study__detail {
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .resume-study__action {
+    flex: none;
+    text-decoration: none;
+  }
+
+  /* On a phone the board and the words share a row, and the way in takes
+     the width under them. */
+  @media (width < 640px) {
+    flex-wrap: wrap;
+    gap: var(--platform-space-4);
+
+    & .resume-study__board {
+      width: 96px;
+    }
+
+    & .resume-study__name {
+      font-size: var(--platform-type-xl);
+    }
+
+    & .resume-study__action {
+      flex: 1 1 100%;
+    }
+  }
+}

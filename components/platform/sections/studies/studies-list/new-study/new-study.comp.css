@@ -1,45 +1,24 @@
-/* A cell of the library's grid: it fills it, and the slot fills it too. */
+/* The main action of the page's side column, as `PlatformSideNav` draws its
+   own: Material's extended FAB, flat at rest, risen onto a shadow under the
+   pointer as Gmail's «Redactar», its colour never darkening. */
 .new-study {
   display: flex;
 
-  /* The slot of what does not exist yet: dashed, the cell's whole size — as
-     tall as the covers beside it —, and lit only when it is about to be
-     pressed. */
-  & .new-study__slot {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--platform-space-2);
-    min-height: 116px;
-    padding: var(--platform-space-4);
-    border: 1.5px dashed var(--platform-border-strong);
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-muted);
-    font-family: inherit;
-    font-size: var(--platform-type-md);
-    font-weight: 700;
-    cursor: pointer;
-    transition: 150ms;
-    transition-property: border-color, background-color, color;
+  & .new-study__fab {
+    --container-elevation: none;
 
-    @media (width < 640px) {
-      min-height: 56px;
+    margin: var(--platform-space-1) 0 var(--platform-space-3) var(--platform-space-2);
+
+    &:hover {
+      --container-elevation: var(--md-sys-elevation-shadow-3);
+      --ripple-hover-opacity: 0%;
     }
-  }
 
-  & .new-study__slot:hover {
-    border-color: var(--platform-accent);
-    background: var(--platform-accent-wash);
-    color: var(--platform-accent-ink);
-  }
-
-  & .new-study__slot-icon {
-    flex: none;
-    width: 16px;
-    height: 16px;
+    @media (width < 1024px) {
+      flex: 1;
+      justify-content: center;
+      margin: 0 0 var(--platform-space-3);
+    }
   }
 
   /* The popup's strip (the name, the cross) is `PlatformPopup`'s; the

@@ -1,21 +1,21 @@
 ---
-description: "The study without games: header with kind, origin and read-only mark, the action bar (delete, edit, new game) when writing is allowed, the sharing panel for a collection's owner, and the empty state; a study with games is read on its game page."
+description: "The study without games, in the new design system: the game pages' workspace with nothing on the board — the study's side column, and in the panel the trail and the empty state; a study with games is read on its game page."
 ---
 
 # `StudyDetailSection`
 
-|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/study-detail/study-detail.section.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| Stylesheet | `study-detail.section.css` → block `.study-detail`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| Used by    | `/estudios/[studyId]`, only for a study with no games                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| Composes   | [`EditStudy`](/components/platform/sections/studies/study-detail/edit-study), [`NewGame`](/components/platform/sections/studies/study-detail/new-game), [`StudentSharePanel`](/components/platform/shared/student-share-panel) (`subject="collection"`, with `shareStudyWithStudent`/`unshareStudyWithStudent` bound to the study), [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study), [`PlatformNotice`](/components/platform/shared/platform-notice), [`EmptyState`](/components/platform/shared/empty-state) |
-| Uses       | `STUDY_ERROR_MESSAGES` from `constants/platform/student-messages.const`; `canShareStudy` from `services/studies/study-rules`; `StudyDetail`, `StudyKindOption`, `ClassGameItem`, `StudentOption` from `services/studies/studies.types`                                                                                                                                                                                                                                                                                                         |
+|            |                                                                                                                                                                                                                                                                                                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/studies/study-detail/study-detail.section.tsx`                                                                                                                                                                                                                                                                                                               |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                           |
+| Stylesheet | `study-detail.section.css` → block `.study-detail` (the panel)                                                                                                                                                                                                                                                                                                                             |
+| Used by    | `/estudios/[studyId]`, only for a study with no games                                                                                                                                                                                                                                                                                                                                      |
+| Composes   | [`StudyAside`](/components/platform/sections/studies/game-view/study-aside) (the side column), [`StudyTrail`](/components/platform/sections/studies/game-view/study-trail), [`StudiesSearch`](/components/platform/sections/studies/studies-search) (in the bar), [`PlatformNotice`](/components/platform/shared/platform-notice), [`EmptyState`](/components/platform/shared/empty-state) |
+| Uses       | `STUDY_ERROR_MESSAGES` from `constants/platform/student-messages.const`; `StudyDetail`, `StudyKindOption`, `ClassGameItem`, `StudentOption` from `services/studies/studies.types`                                                                                                                                                                                                          |
 
 ## Purpose
 
-A study is read on its game page: `/estudios/[studyId]` redirects to the first game, and the column beside the board ([`StudyAside`](/components/platform/sections/studies/game-view/study-aside), mounted by the game pages' layout) carries the study's name, actions and games. This section only ever renders when there is no game to go to. The header names the study and says what it is; the action bar offers what the viewer may do, which for its owner is how the study gets its first game; the body is the empty state. What is offered comes from `services/studies/study-rules`, the same table the server actions apply: this section only decides what is **shown**, never what is allowed.
+A study is read on its game page: `/estudios/[studyId]` redirects to the game it was left on, or its first. This section only ever renders when there is no game to go to. Since 2026-10-23 it is the game pages' workspace with nothing on the board: the same side column ([`StudyAside`](/components/platform/sections/studies/game-view/study-aside): the study's name and kind, the sliders that open its form — where it is edited and, but «Mis partidas», deleted —, «Nueva partida» as the FAB, and for a collection's owner who it is shared with), the bar's search, and in the panel the trail («Estudios › the study») and the empty state. Until then it was a page of its own with a head, its tags and a row of buttons («Eliminar estudio», «Editar», «Nueva partida»): each of those is now in the column, once.
 
 ## Props
 
@@ -30,42 +30,34 @@ A study is read on its game page: `/estudios/[studyId]` redirects to the first g
 
 ## Behaviour
 
-- `canWrite = permissions.canEditGames` gates the whole action bar; inside it `canDelete` gates the delete button ("Mis partidas" is editable but not deletable).
-- `canShare` is `canShareStudy(study)`: a **collection** the viewer can delete, which means its owner; whoever receives one gets `shares` empty and fails this test too. The game aside applies the same helper.
-- Tags: kind, course name or "Te la compartió …", and "Sólo lectura" when not writable.
-- The empty state has different copy for writable and read-only studies.
+- What is offered is the column's, which asks `services/studies/study-rules`, the same table the server actions apply.
+- The empty state has different copy for writable («Agrega una con «Nueva partida».») and read-only studies.
 - Errors render through [`PlatformNotice`](/components/platform/shared/platform-notice) with a fallback message for unknown codes.
 
 ## Markup & styling
 
-Block `.study-detail` (104 lines).
+Block `.study-detail` (5 lines), on `.platform-workspace__panel`: its gap.
 
-**Elements:** `.study-detail__head`, `.study-detail__heading`, `.study-detail__tags`, `.study-detail__kind`, `.study-detail__origin`, `.study-detail__readonly`, `.study-detail__name`, `.study-detail__meta`, `.study-detail__dot`, `.study-detail__actions`, `.study-detail__new`
-
-No modifiers.
-
-**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`
-
-**Breakpoints:** `(width < 1024px)` stacks the actions under the heading.
+**Tokens:** the space scale.
 
 ## Usage
 
-From `app/(platform)/estudios/[studyId]/page.tsx`, after the redirect to the first game has not happened:
+From `app/(platform)/estudios/[studyId]/page.tsx`, after the redirect to a game has not happened:
 
 ```tsx
-import { StudyDetailSection } from "@/components/platform/sections/studies/study-detail/study-detail.section";
-
-<StudyDetailSection
-  study={study}
-  kinds={kinds}
-  results={results}
-  classGames={classGames}
-  students={students}
-  errorCode={error}
-/>;
+<div className="platform-page platform-page_width_full platform-page_frame_bleed">
+  <StudyDetailSection
+    study={study}
+    kinds={kinds}
+    results={results}
+    classGames={classGames}
+    students={students}
+    errorCode={error}
+  />
+</div>
 ```
 
 ## Related
 
-- [`StudyAside`](/components/platform/sections/studies/game-view/study-aside), where a study with games is named, reordered, edited and shared.
+- [`StudyAside`](/components/platform/sections/studies/game-view/study-aside).
 - [Student features › Studies](/platform/student) for the kinds and the permission table.

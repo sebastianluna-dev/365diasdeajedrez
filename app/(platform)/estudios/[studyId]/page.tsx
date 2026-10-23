@@ -12,7 +12,6 @@ import {
   getStudyById,
   getStudyKinds,
 } from "@/services/studies/studies.service";
-import "./study-page.css";
 
 interface StudyPageProps {
   params: Promise<{ studyId: string }>;
@@ -59,7 +58,9 @@ export default async function StudyPage({ params, searchParams }: StudyPageProps
     : [[], [], [], []];
 
   return (
-    <div className="platform-page study-page">
+    // The new design system (2026-10-23): the page bleeds onto the canvas;
+    // the section draws the workspace.
+    <div className="platform-page platform-page_width_full platform-page_frame_bleed">
       <StudyDetailSection
         study={study}
         kinds={kinds}

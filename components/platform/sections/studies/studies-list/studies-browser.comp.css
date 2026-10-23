@@ -4,131 +4,12 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--platform-space-6);
+  gap: var(--platform-space-4);
 
-  /* One bar: the search at the start, the tabs beside it, the order at the
-     end. On a phone each takes a line of its own, the order last. */
-  & .studies-browser__bar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--platform-space-3) var(--platform-space-4);
-
-    @media (width < 640px) {
-      gap: var(--platform-space-3);
-    }
-  }
-
-  /* The platform's control on white, with the glass inside it: the field is
-     the box, so the box takes the focus. In the accent's red and not in a
-     form's blue (2026-10-07, the owner's call): it is not a form and never
-     says an error, so its red cannot be read as one, and outside a form the
-     focus is the brand's — the accent's border and its pale ring. */
+  /* Where there is no bar to take it (a story), the search stays on top of
+     the panel. */
   & .studies-browser__search {
-    flex: 0 1 320px;
-    min-width: 0;
     display: flex;
-    align-items: center;
-    gap: var(--platform-space-2);
-    padding: 0 var(--platform-space-3);
-    border: 1px solid var(--platform-border);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    color: var(--platform-text-muted);
-    cursor: text;
-
-    @media (width < 640px) {
-      flex: 1 1 100%;
-    }
-  }
-
-  & .studies-browser__search:has(.studies-browser__search-input:focus) {
-    outline: 2px solid var(--platform-accent-soft);
-    border-color: var(--platform-accent);
-  }
-
-  & .studies-browser__search-icon {
-    flex: none;
-    width: 16px;
-    height: 16px;
-  }
-
-  & .studies-browser__search-input {
-    flex: 1;
-    min-width: 0;
-    padding: var(--platform-space-2) 0;
-    border: 0;
-    background: transparent;
-    color: var(--platform-text);
-    font-family: inherit;
-    font-size: var(--platform-type-lg);
-  }
-
-  & .studies-browser__search-input::placeholder {
-    color: var(--platform-text-subtle);
-  }
-
-  /* The box shows the focus, so the input itself draws none. */
-  & .studies-browser__search-input:focus-visible {
-    outline: none;
-  }
-
-  /* The tabs scroll sideways where they do not fit, rather than wrap. */
-  & .studies-browser__tabs {
-    flex: 1 1 auto;
-    min-width: 0;
-    display: flex;
-    gap: var(--platform-space-1);
-    overflow-x: auto;
-    scrollbar-width: none;
-
-    @media (width < 640px) {
-      flex: 1 1 100%;
-    }
-  }
-
-  /* A tab is a word and its count; the chosen one is filled with the ink, a
-     weight the red button of the head does not compete with. */
-  & .studies-browser__tab {
-    flex: none;
-    display: inline-flex;
-    align-items: baseline;
-    gap: var(--platform-space-2);
-    padding: var(--platform-space-2) var(--platform-space-3);
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-muted);
-    font-family: inherit;
-    font-size: var(--platform-type-sm);
-    font-weight: 600;
-    white-space: nowrap;
-    cursor: pointer;
-  }
-
-  & .studies-browser__tab:hover {
-    background: color-mix(in srgb, var(--platform-text) 6%, transparent);
-    color: var(--platform-text);
-  }
-
-  & .studies-browser__tab[aria-pressed="true"] {
-    background: var(--platform-text);
-    color: var(--platform-surface);
-  }
-
-  & .studies-browser__tab-count {
-    font-size: var(--platform-type-xs);
-    font-variant-numeric: tabular-nums;
-    opacity: 0.75;
-  }
-
-  /* At the end of the bar; where it wraps, at the end of its own line. As
-     wide as its longest option: its list takes the trigger's width, and
-     narrower, «Más partidas» broke in two. */
-  & .studies-browser__sort {
-    flex: none;
-    width: 176px;
-    margin-left: auto;
   }
 
   /* Read out, not drawn. */
@@ -145,48 +26,51 @@
   & .studies-browser__group {
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-3);
+    gap: var(--platform-space-4);
+    margin-top: var(--platform-space-2);
   }
 
-  & .studies-browser__group-title {
+  /* A group's title in the display font, as the canvas draws it; its count
+     in a pill of the secondary container. */
+  & .studies-browser__title {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: var(--platform-space-2);
-    margin: var(--platform-space-2) 0 0;
-    font-size: var(--platform-type-xs);
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-lg);
+    font-weight: 500;
+    color: var(--platform-m3-on-surface);
+  }
+
+  & .studies-browser__count {
+    padding: var(--platform-space-0-5) var(--platform-space-2);
+    border-radius: 1000px;
+    background: var(--platform-m3-secondary-container);
+    color: var(--platform-m3-on-secondary-container);
+    font-family: var(--platform-font);
+    font-size: var(--platform-type-2xs);
     font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--platform-text-muted);
   }
 
-  & .studies-browser__group-count {
-    font-weight: 600;
-    color: var(--platform-text-subtle);
-  }
-
-  /* Covers: the board on top of each card (card «T2», the owner's choice on
-     2026-10-07, after the board beside the text in four, three and two
-     columns). Four across the page's 1240px, three under 1024px, two on a
-     phone, as a shelf of covers is laid out. */
+  /* Three across the panel, two under 1280px, one on a phone. */
   & .studies-browser__grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--platform-space-5);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--platform-space-3);
 
-    @media (width < 1024px) {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+    @media (width < 1280px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     @media (width < 640px) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--platform-space-3);
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 
   /* Each card comes in with a fade and a short rise, one after another: the
      delay grows with the card's index, which the component sets. The group
-     remounts when the tab or the order changes, so the entrance plays again
+     remounts when the view or the order changes, so the entrance plays again
      then. */
   & .studies-browser__item {
     display: flex;

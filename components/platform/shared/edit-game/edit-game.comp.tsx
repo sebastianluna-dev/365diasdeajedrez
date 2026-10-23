@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { PenIcon } from "@/components/icons/pen-icon.comp";
 import { PenToSquareIcon } from "@/components/icons/pen-to-square-icon.comp";
 import { GameFields, type GameFieldValues } from "@/components/platform/shared/game-fields/game-fields.comp";
 import { PlatformForm } from "@/components/platform/shared/platform-form/platform-form.comp";
@@ -8,6 +9,7 @@ import {
   PlatformPopup,
   type PlatformPopupHandle,
 } from "@/components/platform/shared/platform-popup/platform-popup.comp";
+import { mdIconButton } from "@/lib/material/material-classes";
 import "./edit-game.comp.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
@@ -29,6 +31,12 @@ interface EditGameProps {
    * (the game's record beside the board).
    */
   trigger?: "text" | "icon";
+  /**
+   * `material`: the pencil as Material's standard icon button, for a page
+   * moved to the new design system (a study's game, 2026-10-23). Only the
+   * `icon` trigger has one.
+   */
+  look?: "material";
 }
 
 /**
@@ -36,14 +44,23 @@ interface EditGameProps {
  * the action it is given and closes; the moves are not edited here but on the
  * board.
  */
-export function EditGame({ action, values, results, titleHint, trigger = "text" }: EditGameProps) {
+export function EditGame({ action, values, results, titleHint, trigger = "text", look }: EditGameProps) {
   const popup = useRef<PlatformPopupHandle>(null);
 
   return (
     <div className="edit-game">
       {/* Beside a game of a list it is the action of a row; in the head of
           the record, the pencil. */}
-      {trigger === "icon" ? (
+      {trigger === "icon" && look === "material" ? (
+        <button
+          type="button"
+          className={`${mdIconButton("standard", "xs")} edit-game__open`}
+          aria-label="Editar los datos de la partida"
+          onClick={(event) => popup.current?.open(event)}
+        >
+          <PenIcon className="platform-md-icon" />
+        </button>
+      ) : trigger === "icon" ? (
         <button
           type="button"
           className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square edit-game__open"

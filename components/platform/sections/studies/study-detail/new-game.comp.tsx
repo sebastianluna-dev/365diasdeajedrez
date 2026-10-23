@@ -3,6 +3,7 @@
 import { PlusIcon } from "@/components/icons/plus-icon.comp";
 import { useRef, useState, useTransition } from "react";
 import { PGN_MAX_GAMES } from "@/constants/platform/content-limits.const";
+import { mdFab } from "@/lib/material/material-classes";
 import { copyClassGamesToStudy, createStudyGame, importPgnGames } from "@/services/studies/studies.actions";
 import type { ClassGameItem, StudyKindOption } from "@/services/studies/studies.types";
 import { OptionalFields } from "@/components/platform/shared/optional-fields/optional-fields.comp";
@@ -53,8 +54,14 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
 
   return (
     <div className="new-game">
-      <button type="button" className="platform-button new-game__open" onClick={(event) => popup.current?.open(event)}>
-        <PlusIcon variant="classic-solid" className="platform-button__icon" />
+      {/* The study's main action, at the top of its side column as Material's
+          extended FAB (the new design system, 2026-10-23). */}
+      <button
+        type="button"
+        className={`${mdFab("primary-container")} new-game__open`}
+        onClick={(event) => popup.current?.open(event)}
+      >
+        <PlusIcon variant="classic-solid" className="platform-md-icon" />
         Nueva partida
       </button>
 

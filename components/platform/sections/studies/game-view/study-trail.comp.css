@@ -1,0 +1,72 @@
+/* The panel's toolbar on a study's game: one row across the panel, under a
+   thin rule, as the canvas draws it. The panel's own padding is taken back,
+   so the rule runs from edge to edge. */
+.study-trail {
+  display: flex;
+  align-items: center;
+  gap: var(--platform-space-2);
+  min-width: 0;
+  margin: calc(-1 * var(--platform-space-6)) calc(-1 * var(--platform-space-6)) 0;
+  padding: var(--platform-space-2) var(--platform-space-3) var(--platform-space-2) var(--platform-space-2);
+  box-shadow: inset 0 -1px 0 var(--platform-m3-container);
+  font-size: var(--platform-type-xs);
+  color: var(--platform-m3-on-surface);
+
+  & .study-trail__crumb {
+    flex: none;
+    color: var(--platform-m3-on-surface-variant);
+    text-decoration: none;
+  }
+
+  & a.study-trail__crumb:hover {
+    text-decoration: underline;
+  }
+
+  /* The study and the game give way when the row is short: their names are
+     cut, never the way back. */
+  & span.study-trail__crumb {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .study-trail__crumb.study-trail__crumb_state_here {
+    font-weight: 600;
+    color: var(--platform-m3-on-surface);
+  }
+
+  & .study-trail__step {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    color: var(--platform-m3-outline);
+  }
+
+  /* Which game of how many, and the arrows, at the right end. */
+  & .study-trail__games {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+    margin-left: auto;
+    padding-left: var(--platform-space-3);
+  }
+
+  & .study-trail__count {
+    margin-right: var(--platform-space-1);
+    color: var(--platform-m3-on-surface-variant);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* The panel pads itself less on a phone. */
+  @media (width < 640px) {
+    margin: calc(-1 * var(--platform-space-4)) calc(-1 * var(--platform-space-4)) 0;
+
+    & .study-trail__count {
+      display: none;
+    }
+  }
+}

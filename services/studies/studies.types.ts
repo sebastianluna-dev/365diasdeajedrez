@@ -26,6 +26,12 @@ export interface StudySummary {
   /** Which side the card's board is seen from: that game's orientation. */
   boardOrientation: "white" | "black";
   /**
+   * The game the viewer last left the study on, for «Sigue donde ibas»: what
+   * it is called and who played it, and how long ago it was opened. Absent
+   * when they never opened one, or that game was deleted.
+   */
+  resume?: StudyResume;
+  /**
    * Everything the list's search matches against, folded (`foldForSearch`):
    * the name, the description, where it comes from and every game's title,
    * players and event.
@@ -51,6 +57,16 @@ export interface StudySummary {
   /** Games of this study cited in some class; a warning is given before deleting. */
   citedGameCount: number;
   href: string;
+}
+
+/** The game a study was last left on (`StudyVisit`), as «Sigue donde ibas» names it. */
+export interface StudyResume {
+  /** The game's title, or its round («Ronda 3»); absent when it only has its players. */
+  gameName?: string;
+  /** «Pérez — Gómez». */
+  players: string;
+  /** «hace 2 horas». */
+  openedAgoLabel: string;
 }
 
 /** Where a study that reached the viewer comes from. */

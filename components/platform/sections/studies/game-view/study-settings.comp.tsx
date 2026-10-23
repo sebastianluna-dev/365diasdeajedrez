@@ -1,12 +1,13 @@
 "use client";
 
 import { useRef } from "react";
-import { BarsIcon } from "@/components/icons/bars-icon.comp";
+import { SlidersIcon } from "@/components/icons/sliders-icon.comp";
 import {
   DeleteStudy,
   type DeleteStudyHandle,
 } from "@/components/platform/sections/studies/studies-list/delete-study.comp";
 import { EditStudy, type EditStudyHandle } from "@/components/platform/sections/studies/study-detail/edit-study.comp";
+import { mdIconButton } from "@/lib/material/material-classes";
 import type { StudyDetail, StudyKindOption } from "@/services/studies/studies.types";
 import "./study-settings.comp.css";
 
@@ -18,7 +19,9 @@ interface StudySettingsProps {
 }
 
 /**
- * The three bars at the end of the head of the study's card: one press opens
+ * The sliders at the end of the head of the study's side column (Material's
+ * standard icon button, in the new design system since 2026-10-23; three
+ * bars on the platform's quiet button until then): one press opens
  * the study's form — its name, its description, its kind. For a study that
  * can be deleted the form also offers «Eliminar estudio», at its foot, which
  * opens the confirmation on top of the form.
@@ -43,11 +46,11 @@ export function StudySettings({ study, kinds }: StudySettingsProps) {
     <div className="study-settings">
       <button
         type="button"
-        className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square study-settings__open"
+        className={`${mdIconButton("standard", "sm")} study-settings__open`}
         aria-label={`Editar el estudio «${study.name}»`}
         onClick={(event) => editRef.current?.open(event)}
       >
-        <BarsIcon variant="classic-solid" className="platform-button__icon" />
+        <SlidersIcon className="platform-md-icon" />
       </button>
 
       <EditStudy

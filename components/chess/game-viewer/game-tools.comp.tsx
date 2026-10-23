@@ -14,6 +14,7 @@ import {
   type NagOption,
 } from "@/lib/chess/pgn-tree";
 import { GameReview } from "@/components/chess/game-viewer/game-review.comp";
+import { mdButton } from "@/lib/material/material-classes";
 import { sanToSpanish } from "@/lib/chess/notation";
 import { plainMovetext } from "@/lib/chess/plain-movetext";
 import "./game-tools.comp.css";
@@ -101,6 +102,12 @@ interface GameToolsProps {
    * the menu opens on a right click, which a long press on iOS Safari does not fire.
    */
   exerciseFromHereHref?: string;
+  /**
+   * `material`: the new design system's (2026-10-23, a study's game): the
+   * tabs and the chosen quality in the primary's blue, and Material's
+   * outlined buttons in place of the platform's.
+   */
+  look?: "material";
 }
 
 export function GameTools({
@@ -116,7 +123,14 @@ export function GameTools({
   onSelectPath,
   onPgnChange,
   exerciseFromHereHref,
+  look,
 }: GameToolsProps) {
+  const material = look === "material";
+  // A button of the tabs: the platform's, or Material's outlined one, at the
+  // size each place asks for (`sm` the platform's 32px, Material's `xs`).
+  const buttonClass = (small: boolean) =>
+    material ? mdButton("outlined", small ? "xs" : "sm") : `platform-button${small ? " platform-button_size_sm" : ""}`;
+  const spinnerClass = `${material ? "platform-md-icon" : "platform-button__icon"} platform-button__spinner`;
   const [copied, setCopied] = useState<"fen" | "pgn" | "plain" | null>(null);
   // What is being generated, so it cannot be pressed twice meanwhile: a
   // sixty-frame GIF takes its time and gives no notice by itself.
@@ -227,7 +241,7 @@ export function GameTools({
   ];
 
   return (
-    <div className="game-tools" ref={rootRef}>
+    <div className={`game-tools${material ? " game-tools_look_material" : ""}`} ref={rootRef}>
       <div className="game-tools__tabs" role="tablist" aria-label="Herramientas de la partida">
         {tabs.map((option) => (
           <button
@@ -322,6 +336,7 @@ export function GameTools({
           currentPath={currentPath}
           onSelectPath={onSelectPath}
           onPgnChange={onPgnChange}
+          look={look}
         />
       )}
 
@@ -334,7 +349,7 @@ export function GameTools({
             </div>
             <button
               type="button"
-              className="platform-button platform-button_size_sm game-tools__share-button"
+              className={`${buttonClass(true)} game-tools__share-button`}
               onClick={() => void copy(fen, "fen")}
             >
               {copied === "fen" ? "Copiado" : "Copiar"}
@@ -348,7 +363,7 @@ export function GameTools({
             </div>
             <button
               type="button"
-              className="platform-button platform-button_size_sm game-tools__share-button"
+              className={`${buttonClass(true)} game-tools__share-button`}
               onClick={() => void copy(pgn, "pgn")}
             >
               {copied === "pgn" ? "Copiado" : "Copiar"}
@@ -367,7 +382,7 @@ export function GameTools({
             <button
               type="button"
               disabled={plainPgn === null}
-              className="platform-button platform-button_size_sm game-tools__share-button"
+              className={`${buttonClass(true)} game-tools__share-button`}
               onClick={() => plainPgn && void copy(plainPgn, "plain")}
             >
               {copied === "plain" ? "Copiado" : "Copiar"}
@@ -382,10 +397,7 @@ export function GameTools({
                   La posición tras {moveName} como inicio y lo que sigue como solución
                 </span>
               </div>
-              <a
-                href={exerciseFromHereHref}
-                className="platform-button platform-button_size_sm game-tools__share-button"
-              >
+              <a href={exerciseFromHereHref} className={`${buttonClass(true)} game-tools__share-button`}>
                 Crear ejercicio
               </a>
             </div>
@@ -396,24 +408,20 @@ export function GameTools({
               type="button"
               disabled={exporting !== null}
               aria-busy={exporting === "image" || undefined}
-              className="platform-button game-tools__export-button"
+              className={`${buttonClass(false)} game-tools__export-button`}
               onClick={() => void exportImage()}
             >
-              {exporting === "image" && (
-                <SpinnerIcon variant="classic-solid" className="platform-button__icon platform-button__spinner" />
-              )}
+              {exporting === "image" && <SpinnerIcon variant="classic-solid" className={spinnerClass} />}
               {exporting === "image" ? "Generando…" : "Posición (PNG)"}
             </button>
             <button
               type="button"
               disabled={exporting !== null}
               aria-busy={exporting === "gif" || undefined}
-              className="platform-button game-tools__export-button"
+              className={`${buttonClass(false)} game-tools__export-button`}
               onClick={() => void exportGif()}
             >
-              {exporting === "gif" && (
-                <SpinnerIcon variant="classic-solid" className="platform-button__icon platform-button__spinner" />
-              )}
+              {exporting === "gif" && <SpinnerIcon variant="classic-solid" className={spinnerClass} />}
               {exporting === "gif" ? "Generando…" : "Partida (GIF)"}
             </button>
           </div>

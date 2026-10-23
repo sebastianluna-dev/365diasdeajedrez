@@ -19,6 +19,7 @@ import { PlatformSelect } from "@/components/platform/shared/platform-select/pla
 import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
 import { GAME_ANALYSIS_MODE_LABELS } from "@/constants/platform/study-codes.const";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
+import { mdIconButton } from "@/lib/material/material-classes";
 import "./game-settings.comp.css";
 
 /**
@@ -76,6 +77,11 @@ interface GameSettingsProps {
    */
   isCurrent: boolean;
   actions: GameSettingsActions;
+  /**
+   * `material`: the gear as Material's standard icon button, for a page
+   * moved to the new design system (a study's side column, 2026-10-23).
+   */
+  look?: "material";
 }
 
 type Destructive = "annotations" | "variations" | "game";
@@ -116,7 +122,7 @@ const CLASS_BLOCKS_ACKNOWLEDGEMENT =
  * one thing more before it is deleted: a box that says the class's block
  * will be left empty.
  */
-export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
+export function GameSettings({ game, isCurrent, actions, look }: GameSettingsProps) {
   const popup = useRef<PlatformPopupHandle>(null);
   const confirm = useRef<PlatformConfirmPopupHandle>(null);
   /** The step the confirmation asks about: the last red word pressed. */
@@ -153,11 +159,18 @@ export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
     <div className="game-settings">
       <button
         type="button"
-        className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square game-settings__open"
+        className={`${
+          look === "material"
+            ? mdIconButton("standard", "xs")
+            : "platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square"
+        } game-settings__open`}
         aria-label={`Ajustes de «${game.name}»`}
         onClick={(event) => popup.current?.open(event)}
       >
-        <GearIcon variant="classic-solid" className="platform-button__icon" />
+        <GearIcon
+          variant="classic-solid"
+          className={look === "material" ? "platform-md-icon" : "platform-button__icon"}
+        />
       </button>
 
       {/* The popup opens on the name, the first control of the content, which

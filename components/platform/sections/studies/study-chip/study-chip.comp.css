@@ -1,0 +1,54 @@
+/* A study's kind, as the new design system's canvas draws it (2026-10-23): a
+   low pill in the kind's own container, its icon and its word in the
+   container's ink. */
+.study-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--platform-space-1);
+  max-width: 100%;
+  height: 24px;
+  padding: 0 var(--platform-space-3) 0 var(--platform-space-2);
+  border-radius: 1000px;
+  box-sizing: border-box;
+  font-size: var(--platform-type-2xs);
+  font-weight: 600;
+  line-height: 1;
+
+  & .study-chip__icon {
+    flex: none;
+    width: 13px;
+    height: 13px;
+  }
+
+  & .study-chip__label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &.study-chip_tone_info {
+    background: var(--platform-m3-info-container);
+    color: var(--platform-m3-on-info-container);
+  }
+
+  &.study-chip_tone_success {
+    background: var(--platform-m3-success-container);
+    color: var(--platform-m3-on-success-container);
+  }
+
+  &.study-chip_tone_warning {
+    background: var(--platform-m3-warning-container);
+    color: var(--platform-m3-on-warning-container);
+  }
+
+  &.study-chip_tone_secondary {
+    background: var(--platform-m3-secondary-container);
+    color: var(--platform-m3-on-secondary-container);
+  }
+
+  &.study-chip_tone_neutral {
+    background: var(--platform-m3-container-high);
+    color: var(--platform-m3-on-surface-variant);
+  }
+}

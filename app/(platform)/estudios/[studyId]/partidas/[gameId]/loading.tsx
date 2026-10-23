@@ -11,8 +11,8 @@ import { GameRecordSkeleton, GameSkeleton } from "@/components/platform/sections
 export default function GameLoading() {
   return (
     <>
-      <GameSkeleton />
       <GameRecordSkeleton />
+      <GameSkeleton />
     </>
   );
 }

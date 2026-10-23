@@ -170,6 +170,26 @@ describe("mapStudySummary", () => {
     expect(view.boardFen).toBe("rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2");
   });
 
+  it("names the game it was left on for «Sigue donde ibas», by its title or its round", () => {
+    const now = new Date(2026, 9, 7, 12);
+    const visit = (game: { title?: string | null; round?: string | null }) =>
+      mapStudySummary(summary(), "owner", 9, {
+        now,
+        visit: {
+          openedAt: new Date(2026, 9, 7, 10),
+          game: { id: "g3", pgn: "", orientation: null, white: "Pérez", black: "Gómez", ...game },
+        },
+      }).resume;
+    expect(visit({ round: "3" })).toEqual({
+      gameName: "Ronda 3",
+      players: "Pérez — Gómez",
+      openedAgoLabel: "hace 2 horas",
+    });
+    expect(visit({ title: "La final", round: "3" })?.gameName).toBe("La final");
+    expect(visit({})?.gameName).toBeUndefined();
+    expect(mapStudySummary(summary(), "owner", 0).resume).toBeUndefined();
+  });
+
   it("goes back to its first game when the one it was left on was deleted", () => {
     const row = summary({ games: [{ id: "g1", pgn: "", orientation: null }] });
     const view = mapStudySummary(row, "owner", 1, { visit: { openedAt: new Date(2026, 9, 7), game: null } });

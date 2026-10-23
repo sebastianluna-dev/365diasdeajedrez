@@ -106,3 +106,31 @@ export const Chapters: Story = {
     ],
   },
 };
+
+/** «Mis estudios»: the kinds with their counts, and the order as a choice of one, each with its ring. */
+export const Choices: Story = {
+  args: {
+    label: "Estudios",
+    action: undefined,
+    groups: [
+      {
+        title: "Tipos",
+        links: [
+          { label: "Todos", href: "/estudios", count: 8, icon: "chess-board", current: true },
+          { label: "Mis partidas", href: "/estudios?tipo=mis-partidas", count: 1, icon: "user" },
+          { label: "Estudios", href: "/estudios?tipo=estudios", count: 2, icon: "book-open" },
+          { label: "Torneos", href: "/estudios?tipo=torneos", count: 2, icon: "trophy" },
+          { label: "Recibidos", href: "/estudios?tipo=recibidos", count: 3, icon: "books" },
+        ],
+      },
+      {
+        title: "Ordenar",
+        links: [
+          { label: "Recientes", href: "/estudios", choice: true, current: true },
+          { label: "Nombre", href: "/estudios?orden=nombre", choice: true },
+          { label: "Más partidas", href: "/estudios?orden=partidas", choice: true },
+        ],
+      },
+    ],
+  },
+};

@@ -222,4 +222,71 @@
     color: var(--platform-text-subtle);
     white-space: normal;
   }
+
+  /* The new design system's notation (2026-10-23, `look="material"`, a
+     study's game), as «M4» of the owner's canvas draws it: the numbers on
+     the container's grey, each move a pill whose move on the board is the
+     primary's, the comments between thin rules and the variations on the
+     canvas's tint. */
+  &.move-table_look_material {
+    color: var(--platform-m3-on-surface);
+
+    & .move-table__row {
+      grid-template-columns: 40px 1fr 1fr;
+    }
+
+    & .move-table__number {
+      justify-content: center;
+      padding: var(--platform-space-1) 0;
+      background: var(--platform-m3-container);
+      box-shadow: none;
+      color: var(--platform-m3-on-surface-variant);
+      font-size: var(--platform-type-2xs);
+    }
+
+    & .move-table__cell {
+      margin: var(--platform-space-0-5) var(--platform-space-1);
+      padding: var(--platform-space-0-5) var(--platform-space-3);
+      border-radius: 1000px;
+      font-weight: 600;
+    }
+
+    & .move-table__move:hover {
+      background: var(--platform-m3-container-high);
+    }
+
+    & .move-table__move.move-table__move_state_active,
+    & .move-table__inline.move-table__inline_state_active {
+      background: var(--platform-m3-primary);
+      color: var(--platform-m3-on-primary);
+    }
+
+    & .move-table__ellipsis,
+    & .move-table__eval {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .move-table__comment {
+      border-color: var(--platform-m3-container);
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .move-table__line {
+      border-color: var(--platform-m3-container);
+      background: var(--platform-m3-canvas);
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .move-table__line::before {
+      border-color: var(--platform-m3-outline-variant);
+    }
+
+    & .move-table__inline:hover {
+      background: var(--platform-m3-container-high);
+    }
+
+    & .move-table__inline-comment {
+      color: var(--platform-m3-on-surface-variant);
+    }
+  }
 }

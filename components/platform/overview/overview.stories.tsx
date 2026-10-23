@@ -72,6 +72,7 @@ import { CommentIcon } from "@/components/icons/comment-icon.comp";
 import { PauseIcon } from "@/components/icons/pause-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { PlusIcon } from "@/components/icons/plus-icon.comp";
+import { mdFab } from "@/lib/material/material-classes";
 import { MagnifyingGlassIcon } from "@/components/icons/magnifying-glass-icon.comp";
 import { ArrowRightToLineIcon } from "@/components/icons/arrow-right-to-line-icon.comp";
 import { VolumeXmarkIcon } from "@/components/icons/volume-xmark-icon.comp";
@@ -2303,7 +2304,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               <SectionDialog
                 block="new-study"
                 label="Nuevo estudio"
-                buttonClassName="new-study__slot"
+                buttonClassName={`${mdFab("primary-container")} new-study__fab`}
                 title="Nuevo estudio"
                 size="md"
                 form={(close) => (
@@ -2794,7 +2795,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               <PiecePlacementBoard placement="6k1/5ppp/8/8/8/8/5PPP/3R2K1" onPlacementChange={() => undefined} />
             </Tile>
             <Tile name="StaticDiagram" docs="chess-staticdiagram" width={400} height={448}>
-              <StaticDiagram fen={LUCENA} caption="La posición de Lucena" />
+              <StaticDiagram fen={LUCENA} caption="La posición de Lucena" look="material" />
             </Tile>
             <Tile name="PlayerStrip" docs="chess-game-viewer-playerstrip" width={400} height={88}>
               {/* PlayerStrip returns a fragment: this row stands in for the viewer's .game-viewer__player. */}

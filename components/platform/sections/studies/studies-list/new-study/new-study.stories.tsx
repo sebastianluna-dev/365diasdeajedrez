@@ -6,6 +6,7 @@ import {
   PlatformPopup,
   type PlatformPopupHandle,
 } from "@/components/platform/shared/platform-popup/platform-popup.comp";
+import { mdFab } from "@/lib/material/material-classes";
 import { NewStudyForm } from "./new-study-form.comp";
 import "./new-study.comp.css";
 
@@ -28,10 +29,14 @@ function NewStudySample({ kinds }: NewStudyArgs) {
   const popup = useRef<PlatformPopupHandle>(null);
   const [opening, setOpening] = useState(0);
   return (
-    // As wide as a cell of the library's grid.
-    <div className="new-study" style={{ width: 280 }}>
-      <button type="button" className="new-study__slot" onClick={(event) => popup.current?.open(event)}>
-        <PlusIcon variant="classic-solid" className="new-study__slot-icon" />
+    // At the top of the side column, as the page puts it.
+    <div className="new-study" style={{ width: 256 }}>
+      <button
+        type="button"
+        className={`${mdFab("primary-container")} new-study__fab`}
+        onClick={(event) => popup.current?.open(event)}
+      >
+        <PlusIcon variant="classic-solid" className="platform-md-icon" />
         Nuevo estudio
       </button>
       <PlatformPopup ref={popup} title="Nuevo estudio" size="md" onClose={() => setOpening((count) => count + 1)}>
@@ -57,7 +62,7 @@ const meta = {
     docs: {
       description: {
         component: `
-The «Nuevo estudio» slot of the library's grid and its popup, a \`PlatformPopup\` with
+The «Nuevo estudio» FAB of the side column and its popup, a \`PlatformPopup\` with
 \`NewStudyForm\` inside and a stub in place of \`createStudy\`. Under the strip,
 the subtitle, the three fields on \`PlatformForm\` (the kind as
 \`PlatformChoiceCards\`) and the footer band; the submit stays off until the

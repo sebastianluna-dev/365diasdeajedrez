@@ -1,32 +1,43 @@
 ---
-description: "Splits the student's studies by ownership (editable versus received) before handing them to the browser; the page reads them, alongside the kinds, so both travel at once."
+description: "«Mis estudios» in the new design system: the workspace with «Nuevo estudio» as the extended FAB and the kinds and the order as links in the side column, and the library in the panel; the view and the order come from the address and are applied here, on the server."
 ---
 
 # `StudiesListSection`
 
-|            |                                                                                        |
-| ---------- | -------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/studies-list/studies-list.section.tsx`           |
-| Kind       | Server Component                                                                       |
-| Stylesheet | none: the browser and the cards paint everything                                       |
-| Used by    | `/estudios`                                                                            |
-| Composes   | [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser) |
-| Uses       | `StudySummary`, `StudyKindOption` from `services/studies/studies.types`                |
+|            |                                                                                                                                                                                                                                                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-list/studies-list.section.tsx`                                                                                                                                                                                                                                      |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                  |
+| Stylesheet | none: the workspace is `.platform-workspace` (`platform.css`), and the browser and the cards paint the rest                                                                                                                                                                                                       |
+| Used by    | `/estudios`                                                                                                                                                                                                                                                                                                       |
+| Composes   | [`NewStudy`](/components/platform/sections/studies/studies-list/new-study) (the FAB), [`PlatformSideNav`](/components/platform/shared/platform-side-nav), [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Uses       | `StudySummary`, `StudyKindOption` from `services/studies/studies.types`; `studiesNavGroups`, `studiesOfView`, `resumeStudyOf`, `isOwnStudy`, `STUDY_VIEWS`, `STUDY_SORTS` from `studies-nav.const.ts`                                                                                                             |
 
 ## Purpose
 
-The body of "Mis estudios". The page resolves the identity in the DAL first and then reads the studies and the kinds together, so the list does not wait for the dialog's data nor the other way round; this section decides the one split the browser does not: **ownership**. What the student can edit ("Mis partidas", their tournaments, their studies) goes to `own`; what reaches them ready-made and read-only (the collections a teacher handed them, the games from their classes) goes to `received`. The collections of the courses they started are not in the list since 2026-10-02 (`getUserStudies` reads `getListedDatabasesWhere`): a course's games are met in the course, and their pages still open and the position search still finds them. The split is by permission, not by kind, so a future kind lands in the right group by itself.
+The whole of «Mis estudios», moved to the new design system on 2026-10-23 («M4» of the owner's canvas, `MaterialM4Estudios`). The page bleeds onto the canvas (`platform-page_width_full` + `platform-page_frame_bleed`) and this section draws the workspace:
+
+- **The side column** (`.platform-workspace__side`): «Nuevo estudio» as Material's extended FAB ([`NewStudy`](/components/platform/sections/studies/studies-list/new-study): a button, since it opens a popup, and not the side nav's own action, which is a link), and under it a [`PlatformSideNav`](/components/platform/shared/platform-side-nav) with two groups: **«Tipos»** — «Todos», «Mis partidas», «Estudios», «Torneos», «Colecciones» when they own one, «Recibidos» when they received something —, each with its count, and **«Ordenar»** — «Recientes», «Nombre», «Más partidas» —, as a choice of one with a radio's ring.
+- **The panel** (`.platform-workspace__panel`): the notice of what `createStudy` bounced back with, and the library, [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser).
 
 ## Props
 
-| Prop      | Type                | Required | Meaning                                                                                                        |
-| --------- | ------------------- | -------- | -------------------------------------------------------------------------------------------------------------- |
-| `studies` | `StudySummary[]`    | yes      | `getUserStudies()`, read by the page in parallel with `getStudyKinds()`.                                       |
-| `kinds`   | `StudyKindOption[]` | yes      | `getStudyKinds()`: the kinds the viewer can create, handed to the browser for the grid's «Nuevo estudio» slot. |
+| Prop           | Type                | Required | Meaning                                                                         |
+| -------------- | ------------------- | -------- | ------------------------------------------------------------------------------- |
+| `studies`      | `StudySummary[]`    | yes      | `getUserStudies()`, read by the page in parallel with `getStudyKinds()`.        |
+| `kinds`        | `StudyKindOption[]` | yes      | `getStudyKinds()`: the kinds the viewer can create, for «Nuevo estudio».        |
+| `view`         | `StudyView`         | yes      | The kinds on screen, from `?tipo=` (`studyViewOf`): `undefined` is «Todos».     |
+| `sort`         | `StudySort`         | yes      | The order, from `?orden=` (`studySortOf`): `undefined` is «Recientes».          |
+| `query`        | `string`            | no       | `?q=`, a search sent from a study's bar, which the library opens with.          |
+| `errorMessage` | `string`            | no       | What `createStudy` bounced back with, already in words (`studentErrorMessage`). |
 
 ## Behaviour
 
-The list is partitioned on `permissions.canEditGames` and passed to the client browser, even when it is empty: the library's grid opens with the slot that creates a study ([`NewStudy`](/components/platform/sections/studies/studies-list/new-study)), the only way to create one since the page's head lost its button (2026-10-07), so an empty state of its own — «Todavía no tienes estudios», until then — would have hidden it. «Mis partidas» is born with the account, so the list is rarely empty at all. The page hands the kinds the viewer may create for that slot.
+- **A view is an address.** The links of the side column carry `?tipo=` and `?orden=`, each keeping the other (`studiesHref`), so a view can be shared and the back button undoes it, as on «Cursos». The page reads them and this section filters and orders on the server (`studiesOfView`); the lit link is the one whose values match. A value the page does not know is «Todos» or «Recientes». Until 2026-10-23 they were tabs and a select inside the library, held in the browser's state.
+- **The counts** are the library's, whatever is searched: «Todos» every study, a kind the viewer's own of that kind, «Recibidos» what is not theirs. «Mis partidas», «Estudios» and «Torneos» are always listed (every student has a place for them); «Colecciones» and «Recibidos» only when there is one.
+- **«Recientes»** orders by `recentAt` (when the viewer last opened a game of the study, `StudyVisit.openedAt`, or its creation), «Nombre» by Spanish collation without case, «Más partidas» by size.
+- **«Sigue donde ibas»** is given only on «Todos»: the study whose game was opened last, while that game is there (`resumeStudyOf`).
+- **The split is by ownership**, not by kind (`isOwnStudy`, `permissions.canEditGames`): what the student can edit goes to `own`; what reaches them ready-made and read-only (a teacher's collections, the games of their classes) goes to `received`. The collections of the courses they started are not in the list since 2026-10-02 (`getUserStudies` reads `getListedDatabasesWhere`).
 
 ## Markup & styling
 
@@ -39,10 +50,21 @@ From `app/(platform)/estudios/page.tsx`:
 ```tsx
 import { StudiesListSection } from "@/components/platform/sections/studies/studies-list/studies-list.section";
 
-<StudiesListSection studies={studies} kinds={kinds} />;
+<div className="platform-page platform-page_width_full platform-page_frame_bleed">
+  <StudiesListSection
+    studies={studies}
+    kinds={kinds}
+    view={studyViewOf(tipo)}
+    sort={studySortOf(orden)}
+    query={q}
+    errorMessage={studentErrorMessage(error) ?? undefined}
+  />
+</div>;
 ```
 
 ## Related
 
-- [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser), [`StudyCard`](/components/platform/sections/studies/studies-list/study-card), [`NewStudy`](/components/platform/sections/studies/studies-list/new-study).
+- `studies-nav.const.ts` (and its test): the views, the orders, their addresses and the side column's groups.
+- [`StudiesSkeleton`](/components/platform/sections/studies/studies-list/studies-skeleton), what `/estudios/loading.tsx` draws meanwhile.
+- [The new design system](/ui/styling#the-new-design-system-material-3-expressive).
 - Kinds, permissions and `study-rules` in [Student features › Studies](/platform/student).

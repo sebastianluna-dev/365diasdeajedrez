@@ -5,6 +5,8 @@ const meta: MetaRecord = {
   "study-detail": "study-detail/",
   "game-view": "game-view/",
   "class-games": "class-games/",
+  "study-chip": "StudyChip",
+  "studies-search": "StudiesSearch",
 };
 
 export default meta;

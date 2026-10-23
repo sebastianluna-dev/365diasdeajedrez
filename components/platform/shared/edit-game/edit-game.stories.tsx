@@ -79,3 +79,6 @@ export const Open: Story = { play: open };
 
 /** With the pencil for a trigger, as in the head of the game's record beside a study's board: no word, named «Editar los datos de la partida». */
 export const WithIcon: Story = { name: "With icon", args: { trigger: "icon" } };
+
+/** The pencil as Material's standard icon button (`look="material"`), as a study's game record draws it. */
+export const MaterialIcon: Story = { name: "Material icon", args: { trigger: "icon", look: "material" } };

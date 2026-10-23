@@ -1,0 +1,44 @@
+---
+description: "What «Mis estudios» draws while it loads, in the new design system: the workspace with the shape of the FAB, the side column's groups, «Sigue donde ibas» and two rows of cards, softly pulsing."
+---
+
+# `StudiesSkeleton`
+
+|            |                                                                               |
+| ---------- | ----------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-list/studies-skeleton.comp.tsx` |
+| Kind       | Server Component (markup and CSS only)                                        |
+| Stylesheet | `studies-skeleton.comp.css` → block `.studies-skeleton`                       |
+| Used by    | `app/(platform)/estudios/loading.tsx`                                         |
+
+## Purpose
+
+The library's own shape while it loads (2026-10-23), in place of the knight that turned over the old page: the bleeding page and its workspace, the side column with the FAB's place and the rows of «Tipos» and «Ordenar», and the panel with «Sigue donde ibas» and six cards, in the containers' greys, pulsing together, so nothing jumps when the page arrives. To a screen reader it is one status, «Cargando tus estudios…».
+
+It is a `loading.tsx`'s, so it imports no Client Component, however indirectly (`components/loading-boundaries.test.ts`).
+
+## Props
+
+None.
+
+## Markup & styling
+
+Block `.studies-skeleton` (170 lines), on `.platform-workspace`, with `.platform-workspace__side` and `.platform-workspace__panel`.
+
+**Elements:** `.studies-skeleton__label`, `.studies-skeleton__shape`, `.studies-skeleton__side`, `.studies-skeleton__fab`, `.studies-skeleton__group`, `.studies-skeleton__title`, `.studies-skeleton__row`, `.studies-skeleton__icon`, `.studies-skeleton__text`, `.studies-skeleton__panel`, `.studies-skeleton__resume`, `.studies-skeleton__board`, `.studies-skeleton__stack`, `.studies-skeleton__bar`, `.studies-skeleton__grid`, `.studies-skeleton__card`
+
+**Modifiers:** `.studies-skeleton__board_size_lg`, `.studies-skeleton__bar_size_title`, `_size_heading`, `_width_half`, `_width_third`.
+
+**Keyframes:** `studies-skeleton-pulse`, at the top level.
+
+**Tokens:** `--platform-m3-container`, `--platform-m3-container-high`, `--md-sys-shape-corner-lg`, the space scale.
+
+**Breakpoints:** the grid's, `(width < 1280px)` and `(width < 640px)`; `(prefers-reduced-motion: reduce)` stops the pulse.
+
+## Usage
+
+```tsx
+export default function StudiesLoading() {
+  return <StudiesSkeleton />;
+}
+```

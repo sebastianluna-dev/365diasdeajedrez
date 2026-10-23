@@ -92,6 +92,8 @@ export function GameViewSection({ game, asReader = false, errorCode, importRepor
         // In Mis estudios the game is traversed: the controls go next to the
         // moves, not under the board.
         controls="panel"
+        // The new design system's board, notation and tools (2026-10-23).
+        look="material"
         engine
         editable={canEdit}
         onPgnChange={applyPgn}

@@ -5,8 +5,10 @@ const meta: MetaRecord = {
   "study-aside": "StudyAside",
   "study-settings": "StudySettings",
   "study-games": "StudyGames",
+  "study-trail": "StudyTrail",
   "game-record": "GameRecord",
   "game-skeleton": "GameSkeleton",
+  "study-skeleton": "StudySkeleton",
   "remember-opened-game": "RememberOpenedGame",
 };
 

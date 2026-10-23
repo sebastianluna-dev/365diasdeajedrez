@@ -115,6 +115,23 @@
     height: 10px;
   }
 
+  /* One of a group of which one is on (an order): a radio's ring, filled
+     with the primary on the one chosen, a ring of the panel's white between. */
+  & .platform-side-nav__choice {
+    flex: none;
+    box-sizing: border-box;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--platform-m3-on-surface-variant);
+    border-radius: 50%;
+  }
+
+  & .platform-side-nav__choice.platform-side-nav__choice_state_on {
+    border-color: var(--platform-m3-primary);
+    background: var(--platform-m3-primary);
+    box-shadow: inset 0 0 0 3px var(--platform-m3-panel);
+  }
+
   & .platform-side-nav__level {
     flex: none;
     width: 12px;

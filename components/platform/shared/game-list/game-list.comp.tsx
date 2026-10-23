@@ -46,6 +46,13 @@ interface GameListProps {
    * that opens `GameSettings`; without them, for whoever only reads, it does not.
    */
   settings?: GameSettingsActions;
+  /**
+   * `material`: the new design system's (2026-10-23), for a page moved to it
+   * — a study's side column on the canvas: rows as `PlatformSideNav` draws
+   * its links, square at the left and round at the right, the current one in
+   * the secondary container. Without it, the platform's own look.
+   */
+  look?: "material";
 }
 
 /** The game as its settings take it: a side is always said there. */
@@ -81,6 +88,7 @@ interface RowProps {
   game: GameListItem;
   isCurrent: boolean;
   settings?: GameSettingsActions;
+  look?: "material";
 }
 
 /** The row's class: the current game's row is the card that says so, grip included. */
@@ -95,7 +103,7 @@ function rowClassName(isCurrent: boolean, isDragging = false): string {
 }
 
 /** A game that can be moved: dnd-kit gives it its place and the grip, inside the row's card, picks it up. */
-function SortableRow({ game, isCurrent, settings }: RowProps) {
+function SortableRow({ game, isCurrent, settings, look }: RowProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: game.id,
     data: { name: game.name },
@@ -119,7 +127,7 @@ function SortableRow({ game, isCurrent, settings }: RowProps) {
         <GripDotsVerticalIcon variant="duotone-solid" />
       </button>
       <GameLink game={game} isCurrent={isCurrent} />
-      {settings && <GameSettings game={settingsGame(game)} isCurrent={isCurrent} actions={settings} />}
+      {settings && <GameSettings game={settingsGame(game)} isCurrent={isCurrent} actions={settings} look={look} />}
     </li>
   );
 }
@@ -130,10 +138,12 @@ interface SortableRowsProps {
   onReorder: (orderedIds: string[]) => Promise<void>;
   settings?: GameSettingsActions;
   listRef: RefObject<HTMLUListElement | null>;
+  className: string;
+  look?: "material";
 }
 
 /** The list whoever may reorder sees: the order applied at once and saved in a transition. */
-function SortableRows({ games, currentId, onReorder, settings, listRef }: SortableRowsProps) {
+function SortableRows({ games, currentId, onReorder, settings, listRef, className, look }: SortableRowsProps) {
   const { rows, moveById } = useSortableRows({
     items: games,
     // Every game of a study or a collection is moved: none has a fixed place.
@@ -143,9 +153,9 @@ function SortableRows({ games, currentId, onReorder, settings, listRef }: Sortab
 
   return (
     <SortableDnd items={rows.map((game) => ({ id: game.id, name: game.name }))} noun="partida" onMove={moveById}>
-      <ul className="game-list" ref={listRef}>
+      <ul className={className} ref={listRef}>
         {rows.map((game) => (
-          <SortableRow key={game.id} game={game} isCurrent={game.id === currentId} settings={settings} />
+          <SortableRow key={game.id} game={game} isCurrent={game.id === currentId} settings={settings} look={look} />
         ))}
       </ul>
     </SortableDnd>
@@ -173,8 +183,9 @@ function SortableRows({ games, currentId, onReorder, settings, listRef }: Sortab
  * Component for that order and for the scroll: the aside around it stays on
  * the server.
  */
-export function GameList({ games, currentId, onReorder, settings }: GameListProps) {
+export function GameList({ games, currentId, onReorder, settings, look }: GameListProps) {
   const listRef = useRef<HTMLUListElement>(null);
+  const className = `game-list${look === "material" ? " game-list_look_material" : ""}`;
 
   useEffect(() => {
     const list = listRef.current;
@@ -188,16 +199,26 @@ export function GameList({ games, currentId, onReorder, settings }: GameListProp
 
   if (onReorder) {
     return (
-      <SortableRows games={games} currentId={currentId} onReorder={onReorder} settings={settings} listRef={listRef} />
+      <SortableRows
+        games={games}
+        currentId={currentId}
+        onReorder={onReorder}
+        settings={settings}
+        listRef={listRef}
+        className={className}
+        look={look}
+      />
     );
   }
 
   return (
-    <ul className="game-list" ref={listRef}>
+    <ul className={className} ref={listRef}>
       {games.map((game) => (
         <li key={game.id} className={rowClassName(game.id === currentId)}>
           <GameLink game={game} isCurrent={game.id === currentId} />
-          {settings && <GameSettings game={settingsGame(game)} isCurrent={game.id === currentId} actions={settings} />}
+          {settings && (
+            <GameSettings game={settingsGame(game)} isCurrent={game.id === currentId} actions={settings} look={look} />
+          )}
         </li>
       ))}
     </ul>

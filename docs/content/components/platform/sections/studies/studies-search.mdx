@@ -1,0 +1,38 @@
+---
+description: "The studies' search in the bar, as Material's search bar: on «Mis estudios» it filters the library as one types; on a study it is a GET form that takes the search to the library."
+---
+
+# `StudiesSearch`
+
+|            |                                                                                                                                                                                                                                                |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-search/studies-search.comp.tsx`                                                                                                                                                                  |
+| Kind       | Client Component                                                                                                                                                                                                                               |
+| Stylesheet | `studies-search.comp.css` → block `.studies-search`                                                                                                                                                                                            |
+| Used by    | [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser) (live); the layout of a study's game pages and [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (a form) |
+| Uses       | `MagnifyingGlassIcon`; `platformRoutes.studies`                                                                                                                                                                                                |
+
+## Purpose
+
+«M4» of the owner's canvas puts «Buscar por nombre o jugador» in the bar of «Estudios» (2026-10-23), as «Cursos» puts [`CourseSearch`](/components/platform/sections/courses/course-search): a pill in the container's grey with the glass, white with a shadow while it holds the focus. Each page puts it in the bar through `PlatformHeaderContext`.
+
+## Props
+
+| Prop       | Type                      | Required | Meaning                                                                           |
+| ---------- | ------------------------- | -------- | --------------------------------------------------------------------------------- |
+| `value`    | `string`                  | no       | What is searched, on «Mis estudios».                                              |
+| `onChange` | `(value: string) => void` | no       | With it the field is the library's and filters as one types; Enter sends nothing. |
+
+## Behaviour
+
+- **Live**, on «Mis estudios»: the field is controlled by the library, which filters as one types; the form's submit is cancelled, since everything is already on screen.
+- **A form**, on a study: a plain GET to `/estudios?q=`, so it works without JavaScript and the library opens filtered by it (`initialQuery`).
+- A search is not a form that validates — nothing to err —, so it is a bare `<form role="search">` and the pill itself says where the focus is (`:focus-within`).
+
+## Markup & styling
+
+Block `.studies-search` (43 lines), the same pill as `.course-search`.
+
+**Elements:** `.studies-search__icon`, `.studies-search__input`
+
+**Tokens:** `--platform-m3-container-high`, `--platform-m3-panel`, `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-shadow-card`, the type and space scales.
