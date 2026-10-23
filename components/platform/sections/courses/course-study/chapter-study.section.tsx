@@ -3,8 +3,7 @@ import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
 import { ChevronLeftIcon } from "@/components/icons/chevron-left-icon.comp";
 import { ChevronRightIcon } from "@/components/icons/chevron-right-icon.comp";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
-import { ClockIcon } from "@/components/icons/clock-icon.comp";
-import { PlayIcon } from "@/components/icons/play-icon.comp";
+import { CircleIcon } from "@/components/icons/circle-icon.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { PlatformSettingsToggle } from "@/components/platform/shared/platform-settings-toggle/platform-settings-toggle.comp";
 import { PlatformHeaderContext } from "@/components/platform/sections/shell/platform-header-context.comp";
@@ -102,12 +101,11 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
                 <li key={lesson.id}>
                   <Link href={lesson.href} className={`chapter-study__lesson chapter-study__lesson_state_${state}`}>
                     <span className="chapter-study__status">
+                      {/* Learned, a filled check; still to learn, an empty ring (2026-10-23). */}
                       {state === "done" ? (
-                        <CircleCheckIcon variant="duotone-solid" className="chapter-study__status-icon" />
-                      ) : state === "next" ? (
-                        <PlayIcon variant="classic-solid" className="chapter-study__status-icon" />
+                        <CircleCheckIcon variant="classic-solid" className="chapter-study__status-icon" />
                       ) : (
-                        <ClockIcon variant="duotone-light" className="chapter-study__status-icon" />
+                        <CircleIcon variant="classic-light" className="chapter-study__status-icon" />
                       )}
                       <span className="chapter-study__status-label">
                         {state === "done" ? "Aprendida" : state === "next" ? "Siguiente" : "Por aprender"}

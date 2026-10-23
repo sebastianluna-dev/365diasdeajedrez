@@ -175,11 +175,8 @@
     color: var(--platform-m3-on-surface-variant);
   }
 
+  /* Learned: the filled check in the primary's blue (the owner's choice, 2026-10-23). */
   & .chapter-study__lesson_state_done .chapter-study__status-icon {
-    color: var(--platform-m3-success);
-  }
-
-  & .chapter-study__lesson_state_next .chapter-study__status-icon {
     color: var(--platform-m3-primary);
   }
 
@@ -194,18 +191,19 @@
     white-space: nowrap;
   }
 
-  /* What is still to learn reads in bold, as an unread message does. */
+  /* Only the next lesson, the one «Aprender» opens, reads in bold
+     (2026-10-23): the rest, learned or not, in the regular weight. */
   & .chapter-study__lesson-name {
     display: flex;
     align-items: center;
     gap: var(--platform-space-2);
     min-width: 0;
     font-size: var(--platform-type-sm);
-    font-weight: 700;
+    font-weight: 400;
   }
 
-  & .chapter-study__lesson_state_done .chapter-study__lesson-name {
-    font-weight: 400;
+  & .chapter-study__lesson_state_next .chapter-study__lesson-name {
+    font-weight: 700;
   }
 
   & .chapter-study__next {
