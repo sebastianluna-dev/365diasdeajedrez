@@ -58,15 +58,6 @@
     gap: var(--platform-space-4);
   }
 
-  /* The trail's row, on the panel. */
-  & .study-skeleton__panel .study-skeleton__trail {
-    width: 280px;
-    max-width: 100%;
-    height: 40px;
-    border-radius: 1000px;
-    background: var(--platform-m3-container);
-  }
-
   @media (prefers-reduced-motion: reduce) {
     & .study-skeleton__shape {
       animation: none;

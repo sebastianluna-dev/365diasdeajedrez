@@ -3,7 +3,6 @@ import { EmptyState } from "@/components/platform/shared/empty-state/empty-state
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { PlatformHeaderContext } from "@/components/platform/sections/shell/platform-header-context.comp";
 import { StudyAside } from "@/components/platform/sections/studies/game-view/study-aside.comp";
-import { StudyTrail } from "@/components/platform/sections/studies/game-view/study-trail.comp";
 import { StudiesSearch } from "@/components/platform/sections/studies/studies-search/studies-search.comp";
 import type { ClassGameItem, StudentOption, StudyDetail, StudyKindOption } from "@/services/studies/studies.types";
 import "./study-detail.section.css";
@@ -53,8 +52,6 @@ export function StudyDetailSection({
       </div>
 
       <section className="platform-workspace__panel study-detail" aria-label={study.name}>
-        <StudyTrail games={[]} />
-
         {errorCode && <PlatformNotice message={STUDY_ERROR_MESSAGES[errorCode] ?? "No se pudo completar la acción."} />}
 
         <EmptyState

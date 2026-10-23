@@ -1,4 +1,4 @@
-/* The panel of a study without games: the trail and the empty state, a step
+/* The panel of a study without games: a notice and the empty state, a step
    closer together than a page's sections. */
 .study-detail {
   gap: var(--platform-space-4);
