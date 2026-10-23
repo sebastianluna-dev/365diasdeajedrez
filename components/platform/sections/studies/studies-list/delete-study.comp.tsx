@@ -1,6 +1,7 @@
 "use client";
 
 import { useImperativeHandle, useRef, type Ref } from "react";
+import { mdIconButton } from "@/lib/material/material-classes";
 import { deleteStudy } from "@/services/studies/studies.actions";
 import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
 import {
@@ -15,7 +16,8 @@ interface DeleteStudyProps {
   gameCount: number;
   citedGameCount: number;
   /**
-   * `icon` is the card's cross; `button` the boxed text button of the empty
+   * `icon` is the card's cross, Material's icon button (the library moved
+   * to the new design system on 2026-10-23); `button` the boxed text button of the empty
    * study page; `none` draws no trigger, and whoever mounts it opens the
    * confirmation through `ref` (`StudySettings` beside the board, from
    * «Eliminar estudio» at the foot of the study's form). The trigger
@@ -71,11 +73,11 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
       {trigger === "icon" ? (
         <button
           type="button"
-          className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square delete-study__open"
+          className={`${mdIconButton("standard", "xs")} delete-study__open`}
           title={`Eliminar «${name}»`}
           onClick={(event) => confirm.current?.open(event)}
         >
-          <XmarkIcon variant="classic-solid" className="platform-button__icon" />
+          <XmarkIcon variant="classic-solid" className="platform-md-icon" />
           <span className="delete-study__open-label">Eliminar «{name}»</span>
         </button>
       ) : trigger === "button" ? (

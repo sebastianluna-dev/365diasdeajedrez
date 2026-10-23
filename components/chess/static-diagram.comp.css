@@ -141,4 +141,49 @@
     font-size: var(--platform-type-sm, 14px);
     color: var(--color-muted-on-light);
   }
+
+  /* The new design system's board (2026-10-23, `look="material"`): the blue
+     squares and the «elegida» pieces, as the material board draws them. Only
+     the platform passes it, so its tokens need no fallback. */
+  &.static-diagram_look_material {
+    --board-light: var(--platform-m3-board-light);
+    --board-dark: var(--platform-m3-board-dark);
+
+    & .static-diagram__piece_glyph_w-pawn {
+      background-image: url("/pieces/elegida/w-pawn.svg");
+    }
+    & .static-diagram__piece_glyph_w-knight {
+      background-image: url("/pieces/elegida/w-knight.svg");
+    }
+    & .static-diagram__piece_glyph_w-bishop {
+      background-image: url("/pieces/elegida/w-bishop.svg");
+    }
+    & .static-diagram__piece_glyph_w-rook {
+      background-image: url("/pieces/elegida/w-rook.svg");
+    }
+    & .static-diagram__piece_glyph_w-queen {
+      background-image: url("/pieces/elegida/w-queen.svg");
+    }
+    & .static-diagram__piece_glyph_w-king {
+      background-image: url("/pieces/elegida/w-king.svg");
+    }
+    & .static-diagram__piece_glyph_b-pawn {
+      background-image: url("/pieces/elegida/b-pawn.svg");
+    }
+    & .static-diagram__piece_glyph_b-knight {
+      background-image: url("/pieces/elegida/b-knight.svg");
+    }
+    & .static-diagram__piece_glyph_b-bishop {
+      background-image: url("/pieces/elegida/b-bishop.svg");
+    }
+    & .static-diagram__piece_glyph_b-rook {
+      background-image: url("/pieces/elegida/b-rook.svg");
+    }
+    & .static-diagram__piece_glyph_b-queen {
+      background-image: url("/pieces/elegida/b-queen.svg");
+    }
+    & .static-diagram__piece_glyph_b-king {
+      background-image: url("/pieces/elegida/b-king.svg");
+    }
+  }
 }

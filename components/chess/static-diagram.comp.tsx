@@ -20,6 +20,12 @@ interface StaticDiagramProps {
   arrows?: StaticDiagramArrow[];
   /** Circles round squares, a PGN's [%csl]: what a teacher's diagram points at. */
   circles?: { square: string; tone: StaticDiagramTone }[];
+  /**
+   * `material`: the new design system's board (2026-10-23), for a page
+   * already passed to it — the blue squares and the «elegida» pieces, as
+   * `ChessBoard look="material"` draws them. Only the platform passes it.
+   */
+  look?: "material";
 }
 
 /**
@@ -34,6 +40,7 @@ export function StaticDiagram({
   context = "platform",
   arrows,
   circles,
+  look,
 }: StaticDiagramProps) {
   const squares = parseFenPlacement(fen);
   const ordered = orientation === "black" ? [...squares].reverse() : squares;
@@ -47,7 +54,9 @@ export function StaticDiagram({
   });
 
   return (
-    <figure className={`static-diagram${context === "article" ? " static-diagram_context_article" : ""}`}>
+    <figure
+      className={`static-diagram${context === "article" ? " static-diagram_context_article" : ""}${look === "material" ? " static-diagram_look_material" : ""}`}
+    >
       <div className="static-diagram__grid">
         {ordered.map((glyph, index) => {
           const file = index % 8;

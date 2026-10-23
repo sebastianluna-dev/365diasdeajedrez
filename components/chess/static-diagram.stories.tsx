@@ -103,3 +103,8 @@ export const OnAPhone: Story = {
     ),
   ],
 };
+
+/** The new design system's board (`look="material"`): the blue squares and the «elegida» pieces, as a study's card shows it. */
+export const Material: Story = {
+  args: { look: "material", caption: undefined },
+};

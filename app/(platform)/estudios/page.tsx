@@ -1,18 +1,21 @@
 import type { Metadata } from "next";
+import { studySortOf, studyViewOf } from "@/components/platform/sections/studies/studies-list/studies-nav.const";
 import { StudiesListSection } from "@/components/platform/sections/studies/studies-list/studies-list.section";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getStudyKinds, getUserStudies } from "@/services/studies/studies.service";
-import "./studies-page.css";
 
 export const metadata: Metadata = {
   title: "Mis estudios",
 };
 
 interface StudiesPageProps {
-  /** What `createStudy` bounced back with. */
-  searchParams: Promise<{ error?: string }>;
+  /**
+   * `error`: what `createStudy` bounced back with. `tipo` and `orden`: the
+   * view and the order of the side column. `q`: a search sent from a
+   * study's bar, which the library opens with.
+   */
+  searchParams: Promise<{ error?: string; tipo?: string; orden?: string; q?: string }>;
 }
 
 export default async function StudiesPage({ searchParams }: StudiesPageProps) {
@@ -20,26 +23,26 @@ export default async function StudiesPage({ searchParams }: StudiesPageProps) {
   // `getStudyKinds` now checks whether the caller is a teacher — to offer them
   // "Colección" — resolving a role is not checking a session.
   await getCurrentUser();
-  // The kinds for the grid's «Nuevo estudio» and the studies do not depend on
-  // each other: read together, the page waits for the slower one, not for both.
-  const [kinds, studies, { error }] = await Promise.all([getStudyKinds(), getUserStudies(), searchParams]);
-  const errorMessage = studentErrorMessage(error);
+  // The kinds for «Nuevo estudio» and the studies do not depend on each
+  // other: read together, the page waits for the slower one, not for both.
+  const [kinds, studies, { error, tipo, orden, q }] = await Promise.all([
+    getStudyKinds(),
+    getUserStudies(),
+    searchParams,
+  ]);
 
+  // The new design system (2026-10-23): the page takes the window and bleeds
+  // onto the canvas; the section draws the workspace.
   return (
-    <div className="platform-page platform-page_width_wide studies-page">
-      {/* No «Nuevo estudio» here: the library's grid opens with the slot that
-          creates one (2026-10-07, the owner's call: two ways to the same popup
-          on one screen were one too many). */}
-      <header className="platform-page__head">
-        <h1 className="platform-page__title">Mis estudios</h1>
-        <p className="platform-page__subtitle">
-          Tus partidas, tus torneos, tus estudios y las colecciones que te han compartido.
-        </p>
-      </header>
-
-      {errorMessage && <PlatformNotice message={errorMessage} />}
-
-      <StudiesListSection studies={studies} kinds={kinds} />
+    <div className="platform-page platform-page_width_full platform-page_frame_bleed">
+      <StudiesListSection
+        studies={studies}
+        kinds={kinds}
+        view={studyViewOf(tipo)}
+        sort={studySortOf(orden)}
+        query={q}
+        errorMessage={studentErrorMessage(error) ?? undefined}
+      />
     </div>
   );
 }

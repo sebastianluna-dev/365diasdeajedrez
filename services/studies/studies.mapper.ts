@@ -108,7 +108,16 @@ export type GameViewRow = Prisma.GameGetPayload<{ include: typeof gameViewInclud
 export interface StudySummaryVisit {
   openedAt: Date;
   /** Null once that game was deleted: the study goes back to its first game. */
-  game: { id: string; pgn: string; orientation: { code: string } | null } | null;
+  game: {
+    id: string;
+    pgn: string;
+    orientation: { code: string } | null;
+    /** What «Sigue donde ibas» names the game by; optional, so a test can leave them out. */
+    title?: string | null;
+    round?: string | null;
+    white?: string;
+    black?: string;
+  } | null;
 }
 
 /** What the list adds to a study's row: read by the service, all optional. */
@@ -150,6 +159,7 @@ export function mapStudySummary(
     // An empty study: an empty PGN ends where it starts, the initial position.
     boardFen: finalFenOf(shown?.pgn ?? ""),
     boardOrientation: orientationCodeOf(shown?.orientation ?? null) === BOARD_ORIENTATION.BLACK ? "black" : "white",
+    resume: visit?.game ? resumeOf(visit.game, visit.openedAt, now) : undefined,
     searchText: foldForSearch([row.name, row.description, origin?.label, ...gameTerms].filter(Boolean).join(" ")),
     origin,
     courseName: row.course?.name,
@@ -162,6 +172,18 @@ export function mapStudySummary(
     // there. Without games there is nothing to go to, so the card opens the
     // study's empty page.
     href: shown ? platformRoutes.gameDetail(row.id, shown.id) : platformRoutes.studyDetail(row.id),
+  };
+}
+
+/**
+ * «Sigue donde ibas»: the game a study was left on, by its title or its round
+ * and its players, and how long ago it was opened.
+ */
+function resumeOf(game: NonNullable<StudySummaryVisit["game"]>, openedAt: Date, now: Date) {
+  return {
+    gameName: game.title || (game.round ? `Ronda ${game.round}` : undefined),
+    players: `${game.white ?? "Blancas"} — ${game.black ?? "Negras"}`,
+    openedAgoLabel: formatRelativeSpanish(openedAt, now),
   };
 }
 

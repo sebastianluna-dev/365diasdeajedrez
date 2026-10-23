@@ -1,0 +1,56 @@
+---
+description: "«Sigue donde ibas» at the head of the library: the study whose game was opened last, its board, its name, which game and who played it, its kind and its size, and «Seguir»."
+---
+
+# `ResumeStudy`
+
+|            |                                                                                                                                          |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-list/resume-study.comp.tsx`                                                                |
+| Kind       | Server Component (rendered inside the library, a Client Component)                                                                       |
+| Stylesheet | `resume-study.comp.css` → block `.resume-study`                                                                                          |
+| Used by    | [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser)                                                   |
+| Composes   | [`StaticDiagram`](/components/chess/static-diagram) (`look="material"`), [`StudyChip`](/components/platform/sections/studies/study-chip) |
+| Uses       | `StudySummary`, `StudyResume` from `services/studies/studies.types`; `mdButton` from `lib/material/material-classes`; `PlayIcon`         |
+
+## Purpose
+
+The band «M4» of the owner's canvas puts at the head of «Mis estudios» (2026-10-23), as «Cursos» has its own: on the container's grey, the board at 160px where the game ends, «Sigue donde ibas», the study's name in the display font, which game it was left on and who played it («Ronda 3 · Pérez — Gómez»), its kind as a chip and «9 partidas · abierto hace 2 horas», and «Seguir», Material's filled button, which opens that game.
+
+The canvas also said on which move («en la jugada 9»); that move is remembered by the browser and not by the server (`GameViewSection`, `localStorage`), so the band does not say it.
+
+## Props
+
+| Prop    | Type                                     | Required | Meaning                                                                                                       |
+| ------- | ---------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------- |
+| `study` | `StudySummary & { resume: StudyResume }` | yes      | The study whose game was opened last (`resumeStudyOf`); `resume` names that game and says when it was opened. |
+
+## Behaviour
+
+- `resume` comes from the mapper (`resumeOf`, over the `StudyVisit` row and its game): the game's title, or «Ronda N» when it has a round, and its players; it is absent when the game was deleted, so the band never leads nowhere. `href` is already that game's.
+- On a phone the board shrinks to 96px and «Seguir» takes the width under the words.
+
+## Markup & styling
+
+Block `.resume-study` (84 lines).
+
+**Elements:** `.resume-study__board`, `.resume-study__body`, `.resume-study__eyebrow`, `.resume-study__name`, `.resume-study__game`, `.resume-study__meta`, `.resume-study__detail`, `.resume-study__action`
+
+**Other classes it renders:** `btn btn-filled btn-md` (`mdButton`), `.platform-md-icon`.
+
+**Tokens:** `--platform-m3-container`, `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-font-display`, `--md-sys-shape-corner-lg`, the type and space scales.
+
+**Breakpoints:** `(width < 640px)`.
+
+## Usage
+
+```tsx
+{
+  resume && !wanted && <ResumeStudy study={resume} />;
+}
+```
+
+## Related
+
+- [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser).
+- `RememberOpenedGame`, which writes the `StudyVisit` this reads.

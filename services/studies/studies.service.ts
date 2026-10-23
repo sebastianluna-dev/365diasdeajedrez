@@ -98,7 +98,18 @@ export async function getUserStudies(): Promise<StudySummary[]> {
       select: {
         databaseId: true,
         openedAt: true,
-        game: { select: { id: true, pgn: true, orientation: { select: { code: true } } } },
+        game: {
+          select: {
+            id: true,
+            pgn: true,
+            orientation: { select: { code: true } },
+            // What «Sigue donde ibas» names the game by.
+            title: true,
+            round: true,
+            white: true,
+            black: true,
+          },
+        },
       },
     }),
     getClassGamesSummary(),

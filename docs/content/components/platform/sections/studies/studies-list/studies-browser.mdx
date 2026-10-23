@@ -1,57 +1,57 @@
 ---
-description: "The library of «Mis estudios»: one bar with the search, the tabs by kind and the order, the grid of their own studies headed by the slot that creates one, and what they received in a block of its own; everything filtered in the browser."
+description: "The library of «Mis estudios» in the panel of the new design system: «Sigue donde ibas» at its head, then «Tus estudios» and «Recibido» in grids of outlined cards; the search lives in the bar and filters as one types."
 ---
 
 # `StudiesBrowser`
 
-|            |                                                                                                                                                                                                                                                                                                           |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/studies-list/studies-browser.comp.tsx`                                                                                                                                                                                                                              |
-| Kind       | Client Component                                                                                                                                                                                                                                                                                          |
-| Stylesheet | `studies-browser.comp.css` → block `.studies-browser`                                                                                                                                                                                                                                                     |
-| Used by    | [`StudiesListSection`](/components/platform/sections/studies/studies-list/studies-list-section)                                                                                                                                                                                                           |
-| Composes   | [`StudyCard`](/components/platform/sections/studies/studies-list/study-card), [`NewStudy`](/components/platform/sections/studies/studies-list/new-study) (the slot), [`PlatformSelect`](/components/platform/shared/platform-select) (the order), [`EmptyState`](/components/platform/shared/empty-state) |
-| Uses       | `StudySummary`, `StudyKindOption` from `services/studies/studies.types`; `DATABASE_KIND`; `foldForSearch` from `lib/fold-for-search`; `MagnifyingGlassIcon`                                                                                                                                               |
+|            |                                                                                                                                                                                                                                                                                                                                                |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-list/studies-browser.comp.tsx`                                                                                                                                                                                                                                                                   |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                               |
+| Stylesheet | `studies-browser.comp.css` → block `.studies-browser`                                                                                                                                                                                                                                                                                          |
+| Used by    | [`StudiesListSection`](/components/platform/sections/studies/studies-list/studies-list-section)                                                                                                                                                                                                                                                |
+| Composes   | [`ResumeStudy`](/components/platform/sections/studies/studies-list/resume-study), [`StudyCard`](/components/platform/sections/studies/studies-list/study-card), [`StudiesSearch`](/components/platform/sections/studies/studies-search) (in the bar, through `PlatformHeaderContext`), [`EmptyState`](/components/platform/shared/empty-state) |
+| Uses       | `StudySummary`, `StudyResume` from `services/studies/studies.types`; `foldForSearch` from `lib/fold-for-search`                                                                                                                                                                                                                                |
 
 ## Purpose
 
-The body of «Mis estudios», rebuilt on 2026-10-07 in the «Biblioteca» direction (page «P1», search «B1»), which the owner chose among three directions and then a set of variants. Until then it was a row of filter chips over two titled groups of tall cards in two columns, with no search and no order.
+The panel of «Mis estudios», rebuilt in the new design system on 2026-10-23 («M4» of the owner's canvas). From top to bottom:
 
-From top to bottom:
+1. **«Sigue donde ibas»** ([`ResumeStudy`](/components/platform/sections/studies/studies-list/resume-study)), when the section gives one and nothing is searched.
+2. **«Tus estudios»**, a title in the display font over a grid of [`StudyCard`](/components/platform/sections/studies/studies-list/study-card)s: three across the panel, two under 1280px, one on a phone.
+3. **«Recibido»**, with its count in a pill of the secondary container: what reaches them ready-made, read-only.
 
-1. **The bar**: the search at the start, the tabs beside it, the order at the end (on a phone each takes a line of its own).
-2. **Their own studies**, in a grid of covers — four across the page's 1240px, three under 1024px, two on a phone —, headed by the dashed slot that creates one ([`NewStudy`](/components/platform/sections/studies/studies-list/new-study)), the only way to create one: the page's head has no button.
-3. **«Recibido»**, with its count: what reaches them ready-made and cannot be touched, in a block of its own.
-
-It is a Client Component because it filters; everything it renders arrived from the server in one read, and nothing is fetched or written here.
+Which kinds and in what order arrived already applied by the section, from the address (the side column's links). What is left here is the search, which filters as one types; the rest of the page is on the server.
 
 ## Props
 
-| Prop       | Type                | Required | Meaning                                                                                                   |
-| ---------- | ------------------- | -------- | --------------------------------------------------------------------------------------------------------- |
-| `own`      | `StudySummary[]`    | yes      | Those that are theirs: «Mis partidas», their tournaments and their studies (a teacher's own collections). |
-| `received` | `StudySummary[]`    | yes      | What reaches them ready-made: a teacher's collections, the games of their classes.                        |
-| `kinds`    | `StudyKindOption[]` | yes      | The kinds they can create, for the slot's popup and to know in which tabs the slot belongs.               |
+| Prop           | Type                                     | Required | Meaning                                                                                     |
+| -------------- | ---------------------------------------- | -------- | ------------------------------------------------------------------------------------------- |
+| `own`          | `StudySummary[]`                         | yes      | Their own studies the view shows, in its order.                                             |
+| `received`     | `StudySummary[]`                         | yes      | What reached them that the view shows, in its order.                                        |
+| `resume`       | `StudySummary & { resume: StudyResume }` | no       | «Sigue donde ibas»: only on «Todos», and only when a game was opened.                       |
+| `initialQuery` | `string`                                 | no       | `?q=`: a search sent from a study's bar opens the library already filtered.                 |
+| `viewLabel`    | `string`                                 | yes      | The view's name, for what an empty view says («Nada en «Torneos»»).                         |
+| `viewKey`      | `string`                                 | yes      | The view and the order on screen: a new one remounts the groups, which play their entrance. |
 
 ## Behaviour
 
-- **The search** matches each study's `searchText`, which the mapper folds (`foldForSearch`: no case, no accents) from its name, its description, where it comes from and **every game's** title, players and event; what is typed is folded the same way, so «kasparov» finds «Kaspárov» and «anderssen» finds the study whose games he played. It filters as one types. A live region, out of sight, says how many studies are left («1 estudio»); none left, an [`EmptyState`](/components/platform/shared/empty-state) says what was searched and what one can search by.
-- **The tabs**: «Todos», then their own by kind — «Mis partidas», «Estudios», «Torneos», «Colecciones» — and «Recibidos», each with its count. The counts are the library's, whatever is searched, and a kind they have none of has no tab. They are buttons with `aria-pressed`; the chosen one is filled with the ink, which the head's red button does not compete with.
-- **The order**: «Recientes» (the default, by `recentAt`: when the viewer last opened a game of the study, `StudyVisit.openedAt`, or, for one they never opened, when it was created, so a study just made is not sent to the bottom; the owner's call, 2026-10-07), «Nombre» (Spanish collation, no case) or «Más partidas». It replaced the server's order, which put «Mis partidas» first. It is a [`PlatformSelect`](/components/platform/shared/platform-select) in the accent's tone (`tone="accent"`): a filter is not a form, so its focus and the option under the pointer are the brand's red and not a form's blue.
-- **The slot** heads their own grid while nothing is searched and the tab is «Todos» or one of the kinds they can create.
-- **Entrance.** The groups are keyed by the tab and the order, so changing either remounts them and every card plays its entrance again: a 260 ms fade with a short rise, staggered 35 ms per card through `--studies-browser-index`, capped at the twelfth so a long library does not take a second to come in. Typing does not replay it. Off under `prefers-reduced-motion`.
+- **The search is in the bar.** [`StudiesSearch`](/components/platform/sections/studies/studies-search) goes into the shell's bar through `PlatformHeaderContext`, as «Cursos» puts its own, but stays in this component's tree: its state is this one's. It matches each study's `searchText`, which the mapper folds (`foldForSearch`: no case, no accents) from its name, its description, where it comes from and **every game's** title, players and event; what is typed is folded the same way. A live region, out of sight, says how many studies are left; none left, an [`EmptyState`](/components/platform/shared/empty-state) says what was searched. An empty view without a search says so and points to the column and to «Nuevo estudio».
+- **«Sigue donde ibas» steps aside while searching**: what is searched is what is wanted.
+- **Entrance.** The groups are keyed by `viewKey`, so a new view or order remounts them and every card plays its entrance again: a 260 ms fade with a short rise, staggered 35 ms per card through `--studies-browser-index`, capped at the twelfth. Typing does not replay it. Off under `prefers-reduced-motion`.
+- **What went on 2026-10-23**: the bar of the old library (its search box, the tabs by kind and the order's select) — the tabs and the order are the side column's links now, the search is the bar's — and the dashed «Nuevo estudio» slot that headed the grid, now the side column's FAB.
 
 ## Markup & styling
 
-Block `.studies-browser` (220 lines).
+Block `.studies-browser` (104 lines).
 
-**Elements:** `.studies-browser__bar`, `.studies-browser__search` (the box: its border, and the focus in the accent's red — its border and pale ring —, not a form's blue: it is not a form and never says an error, the owner's call, as for the header's search), `.studies-browser__search-icon`, `.studies-browser__search-input`, `.studies-browser__tabs`, `.studies-browser__tab`, `.studies-browser__tab-count`, `.studies-browser__sort` (the box around the select, which the bar lays out), `.studies-browser__status` (the live region, out of sight), `.studies-browser__group`, `.studies-browser__group-title`, `.studies-browser__group-count`, `.studies-browser__grid`, `.studies-browser__item` (the animated wrapper of each card)
+**Elements:** `.studies-browser__search` (where there is no bar, a story, the search stays on top of the panel in this box), `.studies-browser__status` (the live region, out of sight), `.studies-browser__group`, `.studies-browser__title`, `.studies-browser__count`, `.studies-browser__grid`, `.studies-browser__item` (the animated wrapper of each card)
 
 **Keyframes:** `studies-browser-item-in`, at the top level because `@keyframes` cannot be nested.
 
-**Tokens:** `--platform-accent`, `--platform-accent-soft`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, the type and space scales.
+**Tokens:** `--platform-m3-on-surface`, `--platform-m3-secondary-container`, `--platform-m3-on-secondary-container`, `--platform-font`, `--platform-font-display`, the type and space scales.
 
-**Breakpoints:** `(width < 1024px)` takes the grid to three columns; `(width < 640px)` puts the search and the tabs on lines of their own and the grid in two columns; `(prefers-reduced-motion: reduce)` removes the entrance.
+**Breakpoints:** `(width < 1280px)` takes the grid to two columns, `(width < 640px)` to one; `(prefers-reduced-motion: reduce)` removes the entrance.
 
 ## Usage
 
@@ -61,13 +61,16 @@ From `components/platform/sections/studies/studies-list/studies-list.section.tsx
 import { StudiesBrowser } from "./studies-browser.comp";
 
 <StudiesBrowser
-  own={studies.filter((study) => study.permissions.canEditGames)}
-  received={studies.filter((study) => !study.permissions.canEditGames)}
-  kinds={kinds}
+  own={shown.filter(isOwnStudy)}
+  received={shown.filter((study) => !isOwnStudy(study))}
+  resume={resume?.resume ? { ...resume, resume: resume.resume } : undefined}
+  initialQuery={query}
+  viewLabel={viewLabel}
+  viewKey={`${viewLabel}-${sortLabel}`}
 />;
 ```
 
 ## Related
 
-- [`StudyCard`](/components/platform/sections/studies/studies-list/study-card).
+- [`StudyCard`](/components/platform/sections/studies/studies-list/study-card), [`ResumeStudy`](/components/platform/sections/studies/studies-list/resume-study).
 - [Student features › Studies](/platform/student).

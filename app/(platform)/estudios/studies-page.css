@@ -1,5 +1,0 @@
-/* The page's title and the library under it; the head is the platform's own
-   (`.platform-page__head`), with no button since the grid creates. */
-.studies-page {
-  gap: var(--platform-space-10);
-}

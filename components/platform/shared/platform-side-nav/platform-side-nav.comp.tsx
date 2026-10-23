@@ -1,22 +1,32 @@
 import Link from "next/link";
 import type { ComponentType } from "react";
 import { BookOpenIcon } from "@/components/icons/book-open-icon.comp";
+import { BooksIcon } from "@/components/icons/books-icon.comp";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
+import { ChessBoardIcon } from "@/components/icons/chess-board-icon.comp";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
 import { ClockIcon } from "@/components/icons/clock-icon.comp";
 import { GraduationCapIcon } from "@/components/icons/graduation-cap-icon.comp";
 import type { IconProps } from "@/components/icons/icon-variant.const";
+import { LayerGroupIcon } from "@/components/icons/layer-group-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
+import { TrophyIcon } from "@/components/icons/trophy-icon.comp";
+import { UserIcon } from "@/components/icons/user-icon.comp";
 import { mdFab } from "@/lib/material/material-classes";
 import "./platform-side-nav.comp.css";
 
 /** The drawings a link can carry, by their Font Awesome names. */
 const ICONS = {
   "book-open": BookOpenIcon,
+  books: BooksIcon,
+  "chess-board": ChessBoardIcon,
   "circle-check": CircleCheckIcon,
   clock: ClockIcon,
   "graduation-cap": GraduationCapIcon,
+  "layer-group": LayerGroupIcon,
   play: PlayIcon,
+  trophy: TrophyIcon,
+  user: UserIcon,
 } satisfies Record<string, ComponentType<IconProps>>;
 
 export type PlatformSideNavIcon = keyof typeof ICONS;
@@ -45,6 +55,11 @@ export interface PlatformSideNavLink {
    * check once it is `done`.
    */
   badge?: { text: string; done?: boolean };
+  /**
+   * One of a group of which exactly one is on — an order, say —: a ring
+   * before the label, filled on the one that is `current`, as a radio is.
+   */
+  choice?: boolean;
 }
 
 export interface PlatformSideNavGroup {
@@ -111,6 +126,12 @@ export function PlatformSideNav({ label, action, groups }: PlatformSideNavProps)
                           link.badge.text
                         )}
                       </span>
+                    )}
+                    {link.choice && (
+                      <span
+                        className={`platform-side-nav__choice${link.current ? " platform-side-nav__choice_state_on" : ""}`}
+                        aria-hidden="true"
+                      />
                     )}
                     {link.level !== undefined && (
                       <span

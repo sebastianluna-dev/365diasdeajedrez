@@ -1,54 +1,53 @@
 ---
-description: "One study in the library of «Mis estudios», as a cover: its board — where its first game ends — across the top, and under it its kind (or where it comes from), its name in two lines at most, its games and how long ago it was touched; the whole card is the link, and the delete cross still works above it."
+description: "One study in the library of «Mis estudios», in the new design system: an outlined card with its board on the left and, beside it, its kind as a chip in its colour, its name in two lines at most and its games and age, or that it is read-only; the whole card is the link, and the delete cross still works above it."
 ---
 
 # `StudyCard`
 
-|            |                                                                                                                                                                                                     |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/studies-list/study-card.comp.tsx`                                                                                                                             |
-| Kind       | Server Component                                                                                                                                                                                    |
-| Stylesheet | `study-card.comp.css` → block `.study-card`                                                                                                                                                         |
-| Used by    | [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser)                                                                                                              |
-| Composes   | [`StaticDiagram`](/components/chess/static-diagram) (the board), [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study)                                                   |
-| Uses       | `StudySummary`, `StudyOrigin` from `services/studies/studies.types`; `DATABASE_KIND`; `UserIcon`, `BookOpenIcon`, `TrophyIcon`, `BooksIcon`, `GraduationCapIcon`, `ChalkboardUserIcon`, `UsersIcon` |
+|            |                                                                                                                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-list/study-card.comp.tsx`                                                                                                                                                               |
+| Kind       | Server Component                                                                                                                                                                                                                      |
+| Stylesheet | `study-card.comp.css` → block `.study-card`                                                                                                                                                                                           |
+| Used by    | [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser)                                                                                                                                                |
+| Composes   | [`StaticDiagram`](/components/chess/static-diagram) (the board, `look="material"`), [`StudyChip`](/components/platform/sections/studies/study-chip), [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) |
+| Uses       | `StudySummary` from `services/studies/studies.types`; `mdCard` from `lib/material/material-classes`                                                                                                                                   |
 
 ## Purpose
 
-A study as the library shows it (2026-10-07: the «Biblioteca» direction, card «T2», the «cover», which the owner chose among three directions and then five cards). A study is recognised by its board, as on Lichess: the card opens with its board across its whole width — where the last game the viewer opened in the study ends, or its first game when they never opened one —, and under it says, from top to bottom:
+A study as the library shows it, in the new design system (2026-10-23, «M4» of the owner's canvas): Material's outlined card (`mdCard("outlined")`), the study's board on the left at 96px — the blue board with the «elegida» pieces, where the game the study opens on ends —, and beside it:
 
-- **what it is**, with its icon, in the accent's ink — «Mis partidas» (`UserIcon`), «Estudio» (`BookOpenIcon`), «Torneo» (`TrophyIcon`), «Colección» (`BooksIcon`) — or, for a study that is not theirs, **where it comes from**, in grey: the teacher who shared it (`ChalkboardUserIcon`), the course (`GraduationCapIcon`), «Tus clases» (`UsersIcon`);
-- **its name**, in two lines at most: a library is scanned;
-- **how many games and how long ago** it was touched («3 partidas · anteayer», the exact date in the tooltip).
+- **its kind**, a [`StudyChip`](/components/platform/sections/studies/study-chip) in the kind's colour — «Mis partidas» blue, «Estudio» green, «Torneo» amber, «Colección» the secondary container — or, for a study that is not theirs, where it comes from: the course, the teacher who shared it (grey), «Tus clases»;
+- **its name**, in two lines at most;
+- **how many games and how long ago** it was touched («9 partidas · hace 2 horas», the exact date in the tooltip), or, when it is not theirs, «sólo lectura».
 
-It replaced a card with the site's logo mark as its tile, the description and the first four games listed by name: tall cards in two columns, all of them with the same tile. The description and the games are still what the [search](/components/platform/sections/studies/studies-list/studies-browser) finds.
+Until 2026-10-23 it was a «cover» (the board across the card's top, 2026-10-07) on the page's grey with a shadow.
 
-**The whole card is the link.** The name is the only `<a>`; its `::after` is stretched over the card (`position: absolute; inset: 0`), so a click anywhere goes to the game the study was left on, or its first (`href`; the study's empty page when it has none) while the markup keeps one link with the study's name. The board is `aria-hidden`: the name says what the study is. Keyboard focus on the link draws the accent's ring around the card (`:has(:focus-visible)`), the ring of everything outside a form.
+**The whole card is the link.** The name is the only `<a>`; its `::after` is stretched over the card, so a click anywhere goes to the game the study was left on, or its first (`href`; the study's empty page when it has none). The board is `aria-hidden`: the name says what the study is. Keyboard focus on the link draws the primary's ring around the card (`:has(:focus-visible)`).
 
 ## Props
 
-| Prop    | Type           | Required | Meaning                                                                                                                                                                                                                                            |
-| ------- | -------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `study` | `StudySummary` | yes      | `id`, `name`, `href`, `kindCode`, `kindLabel`, `origin?`, `boardFen`, `boardOrientation`, `gameCount`, `citedGameCount`, `updatedAtLabel`, `updatedAgoLabel`, `permissions: { canDelete, … }`. The rest (`searchText`, `updatedAt`) is the list's. |
+| Prop    | Type           | Required | Meaning                                                                                                                                                                                                                              |
+| ------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `study` | `StudySummary` | yes      | `id`, `name`, `href`, `kindCode`, `kindLabel`, `origin?`, `boardFen`, `boardOrientation`, `gameCount`, `citedGameCount`, `updatedAtLabel`, `updatedAgoLabel`, `permissions: { canDelete, canEditGames, … }`. The rest is the list's. |
 
 ## Behaviour
 
-- **The board** is `boardFen` seen from `boardOrientation`, both from the mapper: the final position (`finalFenOf` over its PGN) of the last game the viewer opened in the study (`StudyVisit`, since 2026-10-07: the owner wanted the card to say where they were), or of its first game in the aside's order when they never opened one (`studySummaryInclude` takes that one game), from the side that game is set to open from. A study without games shows the starting position. The class-games card shows the latest class's game.
-- **Under the pointer** the shadow grows (`--platform-shadow-card` to `--platform-shadow-lift`); nothing moves.
-- **The card went through four shapes the same day.** First «T1», the board beside the text, at 92px in four columns and then in three; then 120px in two; the owner then took the cover. Beside the text the board read as an icon.
-- **The cross.** `permissions.canDelete` renders the [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) cross over the board's top right corner, on a white tile of its own (the quiet button is drawn for a white ground and was lost on the squares), raised above the stretched link with `z-index`; it comes out when the card is pointed at or holds the focus, and is always drawn where nothing hovers (`(hover: none)`). A study that cannot be deleted («Mis partidas», what was received) has none. The «Sólo lectura» pill of the old card went: what is not theirs is in its own block, «Recibido», and says where it comes from.
+- **The board** is `boardFen` seen from `boardOrientation`, both from the mapper: the final position of the last game the viewer opened in the study (`StudyVisit`), or of its first game when they never opened one. A study without games shows the starting position.
+- **Under the pointer** the card's fill turns to the canvas's blue-grey; nothing moves.
+- **The cross.** `permissions.canDelete` renders the [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) cross — Material's standard icon button — at the card's top right, raised above the stretched link. A study that cannot be deleted («Mis partidas», what was received) has none.
 
 ## Markup & styling
 
-Block `.study-card` (129 lines).
+Block `.study-card` (90 lines). It sets the Material card's own properties — `--container-color`, `--outline-color` (the container-high grey) and `--container-shape` (`--md-sys-shape-corner-lg`) — and lays it out in a row.
 
-**Elements:** `.study-card__board`, `.study-card__body`, `.study-card__kind`, `.study-card__kind-icon`, `.study-card__kind-label`, `.study-card__name`, `.study-card__meta`, `.study-card__actions`
+**Elements:** `.study-card__board`, `.study-card__body`, `.study-card__name`, `.study-card__meta`, `.study-card__actions`
 
-**Modifiers:** `.study-card__kind_received` (where a study that is not theirs comes from, in grey).
+**Other classes it renders:** `card card-outlined` (`mdCard`).
 
-**Tokens:** `--platform-accent-ink`, `--platform-shadow-card` (the card and the cross's tile), `--platform-shadow-lift`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, the type and space scales.
+**Tokens:** `--platform-m3-panel`, `--platform-m3-canvas`, `--platform-m3-container-high`, `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-primary`, `--md-sys-shape-corner-lg`, the type and space scales.
 
-**Breakpoints:** `(hover: none)` always draws the cross; the board takes the card's width, which the grid sets.
+**Breakpoints:** none of its own; the grid sets its width.
 
 ## Usage
 
@@ -65,5 +64,4 @@ import { StudyCard } from "./study-card.comp";
 ## Related
 
 - [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser), the library the card lives in.
-- [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section), where the name leads.
 - `services/studies/study-rules.ts` decides the permissions.
