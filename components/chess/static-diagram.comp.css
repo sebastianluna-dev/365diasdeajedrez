@@ -83,6 +83,17 @@
     background: var(--board-dark);
   }
 
+  /* The move that led here, each square keeping its own lightness under the
+     amber, as the live board's material look does: a layer under the piece
+     that takes the amber's hue and the square's lightness. */
+  & .static-diagram__square_last-move::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--platform-m3-board-last-move);
+    mix-blend-mode: color;
+  }
+
   & .static-diagram__piece {
     position: absolute;
     inset: 6%;

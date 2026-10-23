@@ -1,3 +1,4 @@
+import type { GameLine } from "@/lib/chess/game-moves";
 import type { LessonPractice } from "@/services/exercises/lesson-practice.types";
 import type { ProgressStatusCode } from "@/constants/platform/shared-codes.const";
 
@@ -213,11 +214,12 @@ export interface ChapterLessonItem {
   /** It is the course's next lesson to learn: the one «Aprender» opens. */
   isNext: boolean;
   /**
-   * The moves of the lesson's game, all of them: "1.e4 c5 2.Cf3 …" to the
-   * last. Absent for a lesson without moves, which is a diagram and is told
+   * The main line of the lesson's game, all of it: the moves as the list
+   * writes them ("1.e4", "c5", "2.Cf3" …) and as a preview board replays
+   * them. Absent for a lesson without moves, which is a diagram and is told
    * by its description.
    */
-  moves?: string;
+  line?: GameLine;
   /** How that game ended: "1-0", "0-1" or "½-½". Absent when it did not, or the PGN does not say. */
   result?: string;
   href: string;

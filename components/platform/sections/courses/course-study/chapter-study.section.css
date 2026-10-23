@@ -203,6 +203,12 @@
     color: var(--platform-m3-on-surface-variant);
   }
 
+  /* The moves of a game cut their own line (`MoveLinePreview`): the cell lets
+     the board hanging from it show over the rows below. */
+  & .chapter-study__moves_kind_line {
+    overflow: visible;
+  }
+
   & .chapter-study__labels {
     display: flex;
     justify-content: flex-end;

@@ -235,6 +235,35 @@ export function uciLineSteps(fen: string, uciMoves: string[]): UciLineStep[] {
   return out;
 }
 
+/** A move of a line written in SAN, and the position it leads to. */
+export interface SanLineStep {
+  /** The position AFTER the move: the one previewed when pointing at it. */
+  fen: string;
+  /** The squares the move went between, to light on the preview board. */
+  from: Key;
+  to: Key;
+}
+
+/**
+ * Replays a line written in SAN (a game's main line) from `fen`, and returns
+ * each move with the position it leads to. It stops at the first move that
+ * does not fit, as `uciLineSteps` does: a short line beats a wrong one.
+ */
+export function sanLineSteps(fen: string, sans: readonly string[]): SanLineStep[] {
+  const out: SanLineStep[] = [];
+  let current = fen;
+
+  for (const san of sans) {
+    const squares = moveSquaresOfSan(current, san);
+    const next = applySan(current, san);
+    if (!squares || !next) break;
+    out.push({ fen: next, from: squares.from, to: squares.to });
+    current = next;
+  }
+
+  return out;
+}
+
 /** Only the SANs of the line, for whoever does not need the positions. */
 export function uciLineToSan(fen: string, uciMoves: string[]): string[] {
   return uciLineSteps(fen, uciMoves).map((step) => step.san);

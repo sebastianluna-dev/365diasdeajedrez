@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MoveLinePreview } from "@/components/chess/move-line-preview/move-line-preview.comp";
 import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
 import { ChevronLeftIcon } from "@/components/icons/chevron-left-icon.comp";
 import { ChevronRightIcon } from "@/components/icons/chevron-right-icon.comp";
@@ -35,7 +36,8 @@ const isLearned = (lesson: ChapterLessonItem) => lesson.statusCode === PROGRESS_
  * chapter's name and description, and its lessons as rows, as Gmail
  * lists mail: an icon that says where the lesson is (learned, next, still to
  * come), its name — «Siguiente» on the one «Aprender» opens —, the moves of
- * its game with how it ended, and its labels. At the foot, the chapters
+ * its game with how it ended (a move pointed at shows its position on a small
+ * board, `MoveLinePreview`), and its labels. At the foot, the chapters
  * before and after by name.
  *
  * The whole row is the link to the lesson. With only the priority lessons
@@ -111,11 +113,14 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
 
                     {/* The game whole, not how it opens: it is read through here.
                         A lesson without moves is a diagram, told by its description. */}
-                    <span className="chapter-study__moves">
-                      {lesson.moves
-                        ? `${lesson.moves}${lesson.result ? ` · ${lesson.result}` : ""}`
-                        : (lesson.description ?? "")}
-                    </span>
+                    {lesson.line ? (
+                      // Pointing at a move shows its position on a small board.
+                      <div className="chapter-study__moves chapter-study__moves_kind_line">
+                        <MoveLinePreview line={lesson.line} suffix={lesson.result} />
+                      </div>
+                    ) : (
+                      <span className="chapter-study__moves">{lesson.description ?? ""}</span>
+                    )}
 
                     <span className="chapter-study__labels">
                       {lesson.isPriority && <span className="chapter-study__label">Prioritaria</span>}

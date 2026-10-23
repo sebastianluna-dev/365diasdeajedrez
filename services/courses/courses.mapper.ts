@@ -459,7 +459,7 @@ export function mapChapterView(
       estimatedDuration: lesson.estimatedDuration ?? undefined,
       statusCode: asStatus(state.lessonStatus.get(lesson.id)),
       isNext: lesson.id === nextId,
-      moves: games?.get(lesson.id)?.moves,
+      line: games?.get(lesson.id)?.line,
       result: games?.get(lesson.id)?.result,
       href: platformRoutes.lessonDetail(course.id, chapter.order, lesson.id),
     }));

@@ -93,6 +93,19 @@ export const WithArrows: Story = {
   },
 };
 
+/**
+ * The new design system's board (`look="material"`): the blue squares and the «elegida» pieces, with the move that led
+ * here (`lastMove`) in amber — the board `MoveLinePreview` shows when a move of a list is pointed at.
+ */
+export const MaterialWithLastMove: Story = {
+  args: {
+    fen: OPERA_MATE,
+    caption: "Después de 17.Td8#",
+    look: "material",
+    lastMove: { from: "d1", to: "d8" },
+  },
+};
+
 /** In a phone's column, 343px: the grid is fluid and shrinks with it. */
 export const OnAPhone: Story = {
   decorators: [

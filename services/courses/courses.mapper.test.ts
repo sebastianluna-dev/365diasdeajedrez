@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { gameMoves } from "@/lib/chess/game-moves";
 
 import { PROGRESS_STATUS, type ProgressStatusCode } from "@/constants/platform/shared-codes.const";
 import {
@@ -449,10 +450,13 @@ describe("los capítulos del curso", () => {
   });
 
   it("cada lección trae las jugadas de su partida y cómo acabó, y la que no tiene jugadas no trae nada", () => {
-    const games = new Map([["l1", { moves: "1.f3 e5 2.g4 Dh4#", result: "0-1" }]]);
+    const games = new Map([["l1", gameMoves("1. f3 e5 2. g4 Qh4# 0-1")!]]);
     const view = mapChapterView(WITH_NAMES, "cap-1", state(), { games, reviewCount: 3 });
 
-    expect(view?.lessons.map((lesson) => lesson.moves)).toEqual(["1.f3 e5 2.g4 Dh4#", undefined]);
+    expect(view?.lessons.map((lesson) => lesson.line?.plies.map((ply) => ply.label).join(" "))).toEqual([
+      "1.f3 e5 2.g4 Dh4#",
+      undefined,
+    ]);
     expect(view?.lessons.map((lesson) => lesson.result)).toEqual(["0-1", undefined]);
     expect(view?.course.reviewCount).toBe(3);
     expect(view?.course.reviewHref).toBe("/entrenador?course=10000009");

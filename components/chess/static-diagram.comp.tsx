@@ -20,10 +20,11 @@ interface StaticDiagramProps {
   arrows?: StaticDiagramArrow[];
   /** Circles round squares, a PGN's [%csl]: what a teacher's diagram points at. */
   circles?: { square: string; tone: StaticDiagramTone }[];
+  /** The move that led here, its two squares lit as the live board lights them. */
+  lastMove?: { from: string; to: string };
   /**
-   * `material`: the new design system's board (2026-10-23), for a page
-   * already passed to it — the blue squares and the «elegida» pieces, as
-   * `ChessBoard look="material"` draws them. Only the platform passes it.
+   * The new design system's board (2026-10-23): its blue squares, the amber
+   * of the last move and the «elegida» pieces, as `ChessBoard look="material"`.
    */
   look?: "material";
 }
@@ -40,6 +41,7 @@ export function StaticDiagram({
   context = "platform",
   arrows,
   circles,
+  lastMove,
   look,
 }: StaticDiagramProps) {
   const squares = parseFenPlacement(fen);
@@ -55,16 +57,22 @@ export function StaticDiagram({
 
   return (
     <figure
-      className={`static-diagram${context === "article" ? " static-diagram_context_article" : ""}${look === "material" ? " static-diagram_look_material" : ""}`}
+      className={`static-diagram${context === "article" ? " static-diagram_context_article" : ""}${look ? ` static-diagram_look_${look}` : ""}`}
     >
       <div className="static-diagram__grid">
         {ordered.map((glyph, index) => {
           const file = index % 8;
           const rank = Math.floor(index / 8);
           const isLight = (file + rank) % 2 === 0;
+          // The square's name, read from the board as White sees it.
+          const square = squareName(orientation === "black" ? 63 - index : index);
+          const isLastMove = square === lastMove?.from || square === lastMove?.to;
 
           return (
-            <div key={index} className={`static-diagram__square static-diagram__square_${isLight ? "light" : "dark"}`}>
+            <div
+              key={index}
+              className={`static-diagram__square static-diagram__square_${isLight ? "light" : "dark"}${isLastMove ? " static-diagram__square_last-move" : ""}`}
+            >
               {glyph && <div className={`static-diagram__piece static-diagram__piece_glyph_${glyph}`} />}
             </div>
           );
@@ -94,4 +102,9 @@ export function StaticDiagram({
       {caption && <figcaption className="static-diagram__caption">{caption}</figcaption>}
     </figure>
   );
+}
+
+/** "a8" for the first of the 64 squares in board order (rank 8 first), "h1" for the last. */
+function squareName(index: number): string {
+  return `${"abcdefgh"[index % 8]}${8 - Math.floor(index / 8)}`;
 }

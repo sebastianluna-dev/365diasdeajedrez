@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { finalFenOf, moveSquaresOfSan, uciLineSteps, uciLineToSan } from "./replay";
+import { finalFenOf, moveSquaresOfSan, sanLineSteps, uciLineSteps, uciLineToSan } from "./replay";
 
 describe("uciLineToSan", () => {
   const START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -81,5 +81,19 @@ describe("moveSquaresOfSan", () => {
   it("nada para una jugada ilegal o un FEN que no se lee", () => {
     expect(moveSquaresOfSan(START, "Nf6")).toBeUndefined();
     expect(moveSquaresOfSan("not a fen", "e4")).toBeUndefined();
+  });
+});
+
+describe("sanLineSteps", () => {
+  const START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+  it("gives each move's squares and the position it leads to", () => {
+    const steps = sanLineSteps(START, ["e4", "c5", "Nf3"]);
+    expect(steps.map(({ from, to }) => `${from}${to}`)).toEqual(["e2e4", "c7c5", "g1f3"]);
+    expect(steps[2]?.fen).toBe("rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2");
+  });
+
+  it("stops at the first move that does not fit", () => {
+    expect(sanLineSteps(START, ["e4", "Ke3", "Nf3"])).toHaveLength(1);
   });
 });

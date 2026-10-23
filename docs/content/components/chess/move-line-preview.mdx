@@ -1,0 +1,62 @@
+---
+description: "A game's moves on one line, where pointing at a move shows the position it leads to on a small board, as the engine's lines do; used by the chapter's list of lessons."
+---
+
+# `MoveLinePreview`
+
+|            |                                                                                                                                                          |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/move-line-preview/move-line-preview.comp.tsx`                                                                                          |
+| Kind       | Client Component                                                                                                                                         |
+| Stylesheet | `move-line-preview.comp.css` → block `.move-line-preview`                                                                                                |
+| Story      | `move-line-preview.stories.tsx` (`chess/MoveLinePreview`): the line alone, pointing at a move, and a line that starts from a position with Black to move |
+| Used by    | [`ChapterStudySection`](/components/platform/sections/courses/course-study/chapter-study-section) (the moves of each lesson's game)                      |
+| Composes   | [`StaticDiagram`](/components/chess/static-diagram) (`look="material"`, with `lastMove`)                                                                 |
+| Uses       | `sanLineSteps` from `lib/chess/replay.ts`, `GameLine` from `lib/chess/game-moves.ts`, [`useLingering`](/components/chess/game-viewer/use-lingering-hook) |
+
+## Purpose
+
+A list of lessons shows each lesson's game as a line of moves («1.e4 c5 2.Cf3 …»). Reading eight moves in one's head is what makes a line hard to follow, so pointing at a move shows the position it leads to on a small board — as the engine's lines do on the analysis board ([`EnginePanel`](/components/chess/game-viewer/engine-panel)) (2026-10-23).
+
+## Props
+
+| Prop          | Type                 | Required               | Meaning                                                                                                                                                                                                                 |
+| ------------- | -------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `line`        | `GameLine`           | yes                    | The line: `initialFen?` (absent for the standard position) and `plies`, each `{ label, san }` — as the list writes it («1.e4», «c5», «12…Ab4») and its English SAN, which replays it. `gameMoves` builds it from a PGN. |
+| `suffix`      | `string`             | no                     | Written after the last move, after a «·»: how the game ended.                                                                                                                                                           |
+| `orientation` | `"white" \| "black"` | no · default `"white"` | Which side is at the bottom of the preview.                                                                                                                                                                             |
+
+## Behaviour
+
+- The moves are one line, cut with an ellipsis where its place ends; each is a `<span>` that, pointed at, shows the board. Leaving the line hides it.
+- **The positions are replayed on the first move pointed at**, not before (`sanLineSteps` from the line's start): a list of lessons sends the moves and nothing else. A move that does not fit ends the replay, and the moves after it show no board.
+- **The board hangs at a fixed place**, under the start of the line, not under the pointer: following a line move by move does not move it from side to side. When there is no room below (the line's bottom plus 232px past the window's), it opens above.
+- It does not catch the pointer (`pointer-events: none`), so it never covers the next move, nor a click on the row that holds it; and it is `aria-hidden`: the moves are already read as text, the board only pictures them. With no pointer that hovers (a phone), it never shows.
+- The move shown is lit in the line (`_state_pointed`, the secondary container), and on the board in the amber of the last move.
+
+## Markup & styling
+
+Block `.move-line-preview` (76 lines), `position: relative` so the board hangs from it.
+
+**Elements:** `.move-line-preview__line` (one line, `overflow: hidden` with an ellipsis), `.move-line-preview__move`, `.move-line-preview__board` (200px, the panel's white on a soft shadow, `--md-sys-shape-corner-md` corners)
+
+**Modifiers and states:** `.move-line-preview__move_state_pointed`, `.move-line-preview__board_side_{below,above}`, `.move-line-preview__board_state_closing`
+
+**Tokens:** `--platform-m3-secondary-container`, `--platform-m3-on-secondary-container`, `--platform-m3-panel`, `--platform-m3-row-shadow`, `--platform-space-1`, `--platform-space-3`
+
+The board enters in 160ms (`ease-out`) and leaves in 120ms (`ease-in`), kept mounted for its exit by `useLingering`; both animations are off under `prefers-reduced-motion: reduce`. The container that holds it must not clip it: the chapter's cell sets `overflow: visible` (`chapter-study__moves_kind_line`), since the line cuts itself.
+
+## Usage
+
+From `components/platform/sections/courses/course-study/chapter-study.section.tsx`:
+
+```tsx
+<div className="chapter-study__moves chapter-study__moves_kind_line">
+  <MoveLinePreview line={lesson.line} suffix={lesson.result} />
+</div>
+```
+
+## Related
+
+- [`EnginePanel`](/components/chess/game-viewer/engine-panel), whose lines preview the same way, on a live board.
+- [`StaticDiagram`](/components/chess/static-diagram), the board it shows.

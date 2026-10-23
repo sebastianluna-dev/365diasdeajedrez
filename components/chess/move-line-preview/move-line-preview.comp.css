@@ -1,0 +1,76 @@
+.move-line-preview {
+  /* The line and, hanging from it, the board of the move pointed at. */
+  position: relative;
+  min-width: 0;
+
+  /* One line, cut where its place ends. */
+  & .move-line-preview__line {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .move-line-preview__move {
+    border-radius: 4px;
+    transition: background-color 120ms ease-out;
+  }
+
+  /* The move the board shows: the primary's soft container, as a move on the
+     board is lit in the notation. */
+  & .move-line-preview__move_state_pointed {
+    background: var(--platform-m3-secondary-container);
+    color: var(--platform-m3-on-secondary-container);
+  }
+
+  /* The small board, at a fixed place under the start of the line (above it
+     when there is no room): it does not follow the pointer and does not catch
+     it, so it never covers the next move. */
+  & .move-line-preview__board {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    width: 200px;
+    padding: var(--platform-space-1);
+    border-radius: var(--md-sys-shape-corner-md);
+    background: var(--platform-m3-panel);
+    box-shadow:
+      0 1px 3px 0 color-mix(in srgb, var(--platform-m3-row-shadow) 30%, transparent),
+      0 4px 8px 3px color-mix(in srgb, var(--platform-m3-row-shadow) 15%, transparent);
+    pointer-events: none;
+    animation: move-line-preview-in 160ms ease-out;
+  }
+
+  & .move-line-preview__board_side_below {
+    top: calc(100% + var(--platform-space-3));
+  }
+
+  & .move-line-preview__board_side_above {
+    bottom: calc(100% + var(--platform-space-3));
+  }
+
+  & .move-line-preview__board_state_closing {
+    animation: move-line-preview-out 120ms ease-in forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .move-line-preview__board,
+    & .move-line-preview__board_state_closing {
+      animation: none;
+    }
+  }
+}
+
+@keyframes move-line-preview-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@keyframes move-line-preview-out {
+  to {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}

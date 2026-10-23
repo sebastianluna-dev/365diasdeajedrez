@@ -41,6 +41,7 @@ import { PlayedGameCard } from "@/components/platform/shared/played-game-card/pl
 import { MoveTree } from "@/components/chess/game-viewer/move-tree.comp";
 import { MoveNotes } from "@/components/chess/game-viewer/move-notes.comp";
 import { PlayerStrip } from "@/components/chess/game-viewer/player-strip.comp";
+import { MoveLinePreview } from "@/components/chess/move-line-preview/move-line-preview.comp";
 import { StaticDiagram } from "@/components/chess/static-diagram.comp";
 import { ChevronLeftIcon } from "@/components/icons/chevron-left-icon.comp";
 import { ChevronRightIcon } from "@/components/icons/chevron-right-icon.comp";
@@ -241,6 +242,7 @@ import { CONTENT_ROLE } from "@/constants/platform/course-codes.const";
 import { buildPlatformApps } from "@/constants/platform/nav-items.const";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { GAME_RESULT } from "@/constants/platform/study-codes.const";
+import { gameMoves } from "@/lib/chess/game-moves";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import {
   FIXTURE_BOT,
@@ -593,6 +595,9 @@ const RESULTS = [
 ];
 
 const LUCENA = "1K1k4/1P6/8/8/8/8/r7/2R5 w - - 0 1";
+
+/** The opening of the Opera game, as a list of lessons shows a game: what MoveLinePreview previews. */
+const OVERVIEW_LINE = gameMoves("1. e4 e5 2. Nf3 d6 3. d4 Bg4 4. dxe5 Bxf3 5. Qxf3 dxe5 6. Bc4 Nf6 7. Qb3 Qe7 1-0")!;
 
 /**
  * The address the sheet is drawn at: a staff member on a course's syllabus, so
@@ -2796,6 +2801,9 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             </Tile>
             <Tile name="StaticDiagram" docs="chess-staticdiagram" width={400} height={448}>
               <StaticDiagram fen={LUCENA} caption="La posición de Lucena" look="material" />
+            </Tile>
+            <Tile name="MoveLinePreview" docs="chess-movelinepreview" width={400} height={88}>
+              <MoveLinePreview line={OVERVIEW_LINE.line} suffix={OVERVIEW_LINE.result} />
             </Tile>
             <Tile name="PlayerStrip" docs="chess-game-viewer-playerstrip" width={400} height={88}>
               {/* PlayerStrip returns a fragment: this row stands in for the viewer's .game-viewer__player. */}
