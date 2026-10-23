@@ -1,5 +1,6 @@
 "use client";
 
+import { useLayoutEffect, useRef } from "react";
 import { BookOpenIcon } from "@/components/icons/book-open-icon.comp";
 import { sanToSpanish } from "@/lib/chess/notation";
 import { alternativesAt, lineThrough } from "@/lib/chess/notation-line";
@@ -26,6 +27,44 @@ interface MoveNotesProps {
  * it is the line (`lineThrough`).
  */
 export function MoveNotes({ tree, currentPath, onSelect, pinnedComment }: MoveNotesProps) {
+  const noteRef = useRef<HTMLElement>(null);
+  // The note's height as it was last settled, to grow or shrink from.
+  const settledHeight = useRef<number | null>(null);
+
+  // From one move with a note to another the card stays and only changes
+  // size: its height is pinned at what it was, then let go to what the new
+  // text needs, and the CSS transition carries it there; the text inside
+  // fades in on its own (keyed by the move). Done by hand because `height:
+  // auto` is not animatable everywhere yet.
+  useLayoutEffect(() => {
+    const note = noteRef.current;
+    if (!note) {
+      settledHeight.current = null;
+      return;
+    }
+    // Mid-transition the pinned px is where the card is now; settled, it is
+    // the height last measured.
+    const moving = note.style.height.endsWith("px");
+    const from = moving ? note.getBoundingClientRect().height : settledHeight.current;
+    note.style.height = "auto";
+    const to = note.getBoundingClientRect().height;
+    settledHeight.current = to;
+    if (from === null || Math.abs(from - to) < 1 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    note.style.height = `${from}px`;
+    void note.offsetHeight; // the pinned height is laid out before it moves
+    note.style.height = `${to}px`;
+    const settle = (event: TransitionEvent) => {
+      if (event.target !== note || event.propertyName !== "height") return;
+      note.style.height = "auto";
+      note.removeEventListener("transitionend", settle);
+    };
+    note.addEventListener("transitionend", settle);
+    return () => note.removeEventListener("transitionend", settle);
+  }, [currentPath]);
+
   const line = lineThrough(tree, currentPath);
   const currentIndex = line.findIndex((node) => node.path === currentPath);
   const current = nodeAtPath(tree, currentPath);
@@ -72,23 +111,25 @@ export function MoveNotes({ tree, currentPath, onSelect, pinnedComment }: MoveNo
       </p>
 
       {(comment || alternatives.length > 0) && (
-        // Keyed by the move, so the note fades in again with every move.
-        <section key={currentPath} className="move-notes__note" aria-label="La jugada">
-          <p className="move-notes__note-head">
-            <BookOpenIcon className="move-notes__note-icon" />
-            {current ? moveLabel(current, true) : "Para empezar"}
-          </p>
-          {comment && <p className="move-notes__comment">{comment}</p>}
-          {alternatives.length > 0 && (
-            <p className="move-notes__others">
-              <span className="move-notes__others-label">Otras jugadas:</span>
-              {alternatives.map((node) => (
-                <span key={node.path} className="move-notes__step">
-                  {chip(node, "later", true)}
-                </span>
-              ))}
+        <section ref={noteRef} className="move-notes__note" aria-label="La jugada">
+          {/* Keyed by the move: the card stays, its text fades to the new one. */}
+          <div key={currentPath} className="move-notes__note-body">
+            <p className="move-notes__note-head">
+              <BookOpenIcon className="move-notes__note-icon" />
+              {current ? moveLabel(current, true) : "Para empezar"}
             </p>
-          )}
+            {comment && <p className="move-notes__comment">{comment}</p>}
+            {alternatives.length > 0 && (
+              <p className="move-notes__others">
+                <span className="move-notes__others-label">Otras jugadas:</span>
+                {alternatives.map((node) => (
+                  <span key={node.path} className="move-notes__step">
+                    {chip(node, "later", true)}
+                  </span>
+                ))}
+              </p>
+            )}
+          </div>
         </section>
       )}
     </div>

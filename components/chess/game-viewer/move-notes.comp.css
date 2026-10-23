@@ -75,21 +75,35 @@
   }
 
   /* What the author says about the move on the board. */
+  /* It comes in when a move with something said follows one without: a
+     fade and a rise of a few px, the time of a menu (160 ms, `ease-out`).
+     From one note to the next it stays, and only its height moves (pinned
+     and let go by the component, carried by this transition) while the
+     text inside fades to the new one. The height eases on Material's
+     standard curve, in 300 ms: a long, soft settle rather than a jump. */
   & .move-notes__note {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-2);
     padding: var(--platform-space-4) var(--platform-space-5);
     border-radius: var(--md-sys-shape-corner-lg);
     background: var(--platform-m3-container);
-    /* It comes in with every move: a fade and a rise of a few px, the time
-       of a menu (160 ms, `ease-out`), so it reads as the next thing said and
-       not as the panel being redrawn. */
+    overflow: hidden;
     animation: move-notes-note-in 160ms ease-out;
+    transition: height 300ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  & .move-notes__note-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    animation: move-notes-body-in 160ms ease-out;
   }
 
   @media (prefers-reduced-motion: reduce) {
     & .move-notes__note {
+      animation: none;
+      transition: none;
+    }
+
+    & .move-notes__note-body {
       animation: none;
     }
   }
@@ -125,6 +139,12 @@
 
   & .move-notes__others .move-notes__move:hover {
     background: var(--platform-m3-container-high);
+  }
+}
+
+@keyframes move-notes-body-in {
+  from {
+    opacity: 0;
   }
 }
 
