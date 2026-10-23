@@ -91,7 +91,7 @@
   }
 
   & .studies-skeleton__board {
-    width: 96px;
+    width: 128px;
     aspect-ratio: 1;
     border-radius: 8px;
   }

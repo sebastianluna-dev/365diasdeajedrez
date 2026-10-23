@@ -27,12 +27,12 @@
     outline-offset: 2px;
   }
 
-  /* The study's board, where the game it opens on ends: a thumbnail of 96px,
+  /* The study's board, where the game it opens on ends: a thumbnail of 128px,
      in the board's own 8px corners. */
   & .study-card__board {
     flex: none;
     display: block;
-    width: 96px;
+    width: 128px;
   }
 
   & .study-card__body {
