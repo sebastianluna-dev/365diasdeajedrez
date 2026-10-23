@@ -1,38 +1,55 @@
-/* «Historial»: the three filters in a row, the count, the attempts as the
-   teacher's rows, and «Ver más» under them. */
+/* «Historial» on the panel (exercise-history.comp.tsx): the three filters in
+   a row, the count, the attempts as rows across the panel, and «Ver más»
+   under them. */
 .exercise-history {
   display: flex;
   flex-direction: column;
   gap: var(--platform-space-4);
+  color: var(--platform-m3-on-surface);
 
   & .exercise-history__sample {
     margin: 0;
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
   }
 
   & .exercise-history__filters {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--platform-space-3);
+    gap: var(--platform-space-2);
   }
 
   & .exercise-history__filters > * {
     min-width: 0;
   }
 
+  /* A filter: a small outlined button of Material's look over our select. */
+  & .exercise-history__filter.platform-select__trigger {
+    height: 32px;
+    padding: 0 var(--platform-space-3);
+    border-color: var(--platform-m3-outline);
+    background: var(--platform-m3-panel);
+    color: var(--platform-m3-on-surface);
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-m3-primary);
+      outline-offset: 2px;
+      border-color: var(--platform-m3-outline);
+    }
+  }
+
   & .exercise-history__count {
     margin: 0;
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
   }
 
   & .exercise-history__list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-2);
-    margin: 0;
+    margin: 0 calc(-1 * var(--platform-space-6));
     padding: 0;
+    border-top: 1px solid var(--platform-m3-divider);
     list-style: none;
   }
 
@@ -43,14 +60,14 @@
   }
 
   & .exercise-history__more-count {
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
     font-variant-numeric: tabular-nums;
   }
 
   @media (width < 640px) {
-    & .exercise-history__filters {
-      flex-direction: column;
+    & .exercise-history__list {
+      margin: 0 calc(-1 * var(--platform-space-4));
     }
   }
 }

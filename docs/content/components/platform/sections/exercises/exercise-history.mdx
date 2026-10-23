@@ -1,0 +1,36 @@
+---
+description: "The student's «Historial» on the panel of «Ejercicios»: every scored attempt as a row, narrowed by three filters, a page at a time."
+---
+
+# `ExerciseHistory`
+
+|            |                                                                                                                                                                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/exercises/exercise-history/exercise-history.comp.tsx`                                                                                                                                    |
+| Kind       | Client Component (the filters and the pages shown)                                                                                                                                                                     |
+| Stylesheet | `exercise-history.comp.css` → block `.exercise-history`                                                                                                                                                                |
+| Used by    | `/ejercicios/historial`, under the panel's [`ExercisesToolbar`](/components/platform/sections/exercises/exercises-toolbar)                                                                                             |
+| Composes   | [`ExerciseAttemptRow`](/components/platform/shared/exercise-attempt-row) (`look="material"`), [`PlatformSelect`](/components/platform/shared/platform-select), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads      | `ExerciseHistoryRow[]`; while `EXERCISES_PERSISTENCE_ENABLED` is off, `sampleExerciseHistory(now)` (`services/exercises/exercise-history.samples.ts`)                                                                  |
+
+## Props
+
+| Prop     | Type                   | Required | Meaning                                                 |
+| -------- | ---------------------- | -------- | ------------------------------------------------------- |
+| `rows`   | `ExerciseHistoryRow[]` | yes      | Every scored attempt of the student.                    |
+| `nowIso` | `string`               | yes      | The instant the periods are counted from, the server's. |
+| `sample` | `boolean`              | no       | The rows are a sample: a line says so.                  |
+
+## Behaviour
+
+«Historial» (D51; PLAN.md §9, phase 6): the attempts, the latest first, each as the row the teacher reads, in its material look (a row across the panel, as Gmail lists mail), narrowed by three filters that are not a form — the result, where it came from, the period (`filterExerciseHistory`) — and shown 25 at a time («Ver más», Material's outlined button, with «25 de 41»).
+
+## Markup & styling
+
+Block `.exercise-history` (73 lines): the filters as small outlined triggers of Material's look (`__filter` on the select's trigger), the count, the list across the panel on a hairline, «Ver más».
+
+**Elements:** `__sample`, `__filters`, `__filter`, `__count`, `__list`, `__more`, `__more-count`
+
+**Tokens:** `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-outline`, `--platform-m3-panel`, `--platform-m3-primary`, `--platform-m3-divider`
+
+**Breakpoints:** `(width < 640px)`.

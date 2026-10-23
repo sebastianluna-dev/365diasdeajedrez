@@ -1,0 +1,140 @@
+/* The panel of «Ejercicios» while a page arrives (exercises-panel-skeleton.comp.tsx):
+   shapes in the container's grey, softly pulsing, where the page's own land. */
+.exercises-panel-skeleton {
+  /* The board is the new design system's: the skeleton's squares are its blue, not the green. */
+  --board-light: var(--platform-m3-board-light);
+  --board-dark: var(--platform-m3-board-dark);
+
+  & .exercises-panel-skeleton__shape {
+    display: block;
+    flex: none;
+    background: var(--platform-m3-container-high);
+    animation: exercises-panel-skeleton-pulse 1200ms ease-in-out infinite alternate;
+  }
+
+  /* The toolbar's line across the panel's top, as `ExercisesToolbar` draws it. */
+  & .exercises-panel-skeleton__toolbar {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    box-sizing: border-box;
+    margin: calc(-1 * var(--platform-space-6)) calc(-1 * var(--platform-space-6)) 0;
+    padding: 0 var(--platform-space-6);
+    border-bottom: 1px solid var(--platform-m3-divider);
+  }
+
+  & .exercises-panel-skeleton__crumbs {
+    width: 200px;
+    height: 12px;
+    border-radius: 1000px;
+  }
+
+  /* The board and its keys at the left, the column at the right, as the solve page lays them. */
+  & .exercises-panel-skeleton__body {
+    display: grid;
+    grid-template-columns: minmax(280px, max(320px, min(100vh - 254px, 600px))) minmax(300px, 1fr);
+    gap: var(--platform-space-6);
+  }
+
+  & .exercises-panel-skeleton__stage {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    min-width: 0;
+  }
+
+  & .exercises-panel-skeleton__keys {
+    width: 260px;
+    height: 40px;
+    align-self: center;
+    border-radius: 1000px;
+  }
+
+  & .exercises-panel-skeleton__column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+  }
+
+  & .exercises-panel-skeleton__card {
+    height: 96px;
+    border-radius: var(--md-sys-shape-corner-lg);
+  }
+
+  & .exercises-panel-skeleton__card_size_tall {
+    height: 184px;
+  }
+
+  & .exercises-panel-skeleton__list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Said to a screen reader only. */
+  & .exercises-panel-skeleton__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  & .exercises-panel-skeleton__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-4);
+    height: 56px;
+    border-bottom: 1px solid var(--platform-m3-divider);
+  }
+
+  & .exercises-panel-skeleton__text {
+    width: 240px;
+    height: 12px;
+    border-radius: 1000px;
+  }
+
+  & .exercises-panel-skeleton__meta {
+    width: 64px;
+    height: 12px;
+    border-radius: 1000px;
+  }
+
+  @media (width < 1280px) {
+    & .exercises-panel-skeleton__body {
+      grid-template-columns: minmax(260px, 480px) minmax(280px, 1fr);
+    }
+  }
+
+  @media (width < 1024px) {
+    & .exercises-panel-skeleton__body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (width < 640px) {
+    & .exercises-panel-skeleton__toolbar {
+      margin: calc(-1 * var(--platform-space-4)) calc(-1 * var(--platform-space-4)) 0;
+      padding: 0 var(--platform-space-4);
+    }
+
+    & .exercises-panel-skeleton__text {
+      width: 160px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .exercises-panel-skeleton__shape {
+      animation: none;
+    }
+  }
+}
+
+/* `@keyframes` cannot be nested inside a style rule. */
+@keyframes exercises-panel-skeleton-pulse {
+  to {
+    opacity: 0.45;
+  }
+}

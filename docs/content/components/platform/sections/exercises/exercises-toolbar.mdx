@@ -1,0 +1,37 @@
+---
+description: "The toolbar on top of every panel of «Ejercicios» and «Puzzle Rush»: the trail down to the page, whose last crumb is its heading, and at the right a fact, the topic's tally, the level and the buttons."
+---
+
+# `ExercisesToolbar`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/platform/sections/exercises/exercises-toolbar.comp.tsx`; its two leaves, `exercise-topic-tally.comp.tsx` and `exercise-level-filter.comp.tsx`                                                                                                                                                                                                                                                        |
+| Kind       | Server Component (it also draws inside a Client Component: the rush's); the tally and the level are Client Components                                                                                                                                                                                                                                                                                            |
+| Stylesheet | `exercises-toolbar.comp.css` → block `.exercises-toolbar`                                                                                                                                                                                                                                                                                                                                                        |
+| Used by    | [`ExerciseTrainerSection`](/components/platform/sections/exercises/exercise-trainer-section), [`ExerciseSolveSection`](/components/platform/sections/exercises/exercise-solve-section), [`ExerciseSeriesListSection`](/components/platform/sections/exercises/exercise-series-list-section), [`ExerciseSeriesSection`](/components/platform/sections/exercises/exercise-series-section), `/ejercicios/historial` |
+| Composes   | [`PlatformSelect`](/components/platform/shared/platform-select) (the level), `mdButton` · `lib/material/material-classes.ts`                                                                                                                                                                                                                                                                                     |
+
+## Props
+
+| Prop         | Type                                                         | Required | Meaning                                                                                                                                                 |
+| ------------ | ------------------------------------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `trail`      | `{ label; href? }[]`                                         | yes      | From «Ejercicios» down to the page; the last crumb is the page's heading, `h1`.                                                                         |
+| `summary`    | `string`                                                     | no       | A fact at the right, in the variant ink: «Ejercicio 3 de 10», «4 de 10 resueltos».                                                                      |
+| `tallyTopic` | `string`                                                     | no       | The topic on screen, by code: «72 % de acierto · 18 resueltos», as this browser keeps it (the sample rating, `exercise-rating.store.ts`).               |
+| `level`      | `{ levels; value; topicCode }`                               | no       | The trainer's level: every level («Todos los niveles») or one band of the Level catalog; a change replaces the address, the topic kept, `tras` dropped. |
+| `actions`    | `{ label; href?; onClick?; tone: "filled" \| "outlined" }[]` | no       | Material's buttons at the right end: a link, or, from a Client Component host, a press.                                                                 |
+
+## Behaviour
+
+Data in, as the rule asks: the two parts that live in the browser — the topic's tally (a store of this browser) and the level (it follows the address) — are leaves of their own. The level is a filter, not a form: `PlatformSelect` in the accent's tone, drawn as a small outlined trigger of Material's look, its focus ring the primary; it never says an error.
+
+## Markup & styling
+
+Block `.exercises-toolbar` (85 lines): on a hairline (`--platform-m3-divider`) across the panel's top — the panel's padding is undone on three sides —, at least 56px tall; the trail and the end wrap.
+
+**Elements:** `__trail`, `__crumb`, `__separator`, `__title`, `__end`, `__summary`, `__level` (on the select's trigger)
+
+**Tokens:** `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-outline`, `--platform-m3-divider`, `--platform-m3-panel`, `--platform-m3-primary`
+
+**Breakpoints:** `(width < 640px)`.

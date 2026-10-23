@@ -101,7 +101,90 @@
     color: var(--platform-success-ink);
   }
 
+  /* The new design system's (the student's «Historial», 2026-10-23): a row
+     across the panel as Gmail lists mail, a light hairline under it; under
+     the pointer it lifts over its neighbours and keeps its colour. */
+  &.exercise-attempt-row_look_material {
+    position: relative;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-3) var(--platform-space-6);
+    border-bottom: 1px solid var(--platform-m3-divider);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--platform-m3-on-surface);
+    transition: box-shadow 160ms ease-out;
+
+    &:hover {
+      z-index: 1;
+      box-shadow:
+        inset 1px 0 0 var(--platform-m3-row-edge),
+        inset -1px 0 0 var(--platform-m3-row-edge),
+        0 1px 2px 0 color-mix(in srgb, var(--platform-m3-row-shadow) 30%, transparent),
+        0 1px 3px 1px color-mix(in srgb, var(--platform-m3-row-shadow) 15%, transparent);
+    }
+
+    & .exercise-attempt-row__title {
+      font-size: var(--platform-type-xs);
+      color: var(--platform-m3-on-surface);
+    }
+
+    & .exercise-attempt-row__link:focus-visible {
+      outline-color: var(--platform-m3-primary);
+    }
+
+    & .exercise-attempt-row__meta {
+      font-size: var(--platform-type-2xs);
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .exercise-attempt-row__detail {
+      border-top-color: var(--platform-m3-divider);
+    }
+
+    & .exercise-attempt-row__mistake {
+      font-size: var(--platform-type-xs);
+      color: var(--platform-m3-on-surface);
+    }
+
+    & .exercise-attempt-row__move_tone_danger {
+      color: var(--platform-m3-error);
+    }
+
+    & .exercise-attempt-row__move_tone_success {
+      color: var(--platform-m3-success);
+    }
+  }
+
+  /* The outcome in the material look: a tag of Material's containers. */
+  & .exercise-attempt-row__outcome {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 var(--platform-space-3);
+    border-radius: 1000px;
+    background: var(--platform-m3-container);
+    color: var(--platform-m3-on-surface-variant);
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+  }
+
+  & .exercise-attempt-row__outcome_tone_success {
+    background: var(--platform-m3-success-container);
+    color: var(--platform-m3-on-success-container);
+  }
+
+  & .exercise-attempt-row__outcome_tone_warning {
+    background: var(--platform-m3-warning-container);
+    color: var(--platform-m3-on-warning-container);
+  }
+
   @media (width < 640px) {
+    &.exercise-attempt-row_look_material {
+      padding: var(--platform-space-3) var(--platform-space-4);
+    }
+
     & .exercise-attempt-row__main {
       flex-wrap: wrap;
     }

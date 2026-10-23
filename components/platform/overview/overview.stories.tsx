@@ -175,7 +175,6 @@ import { ClassExerciseProgress } from "@/components/platform/sections/teacher/cl
 import { ExerciseReviewBar } from "@/components/platform/sections/staff/exercises/exercise-review-bar/exercise-review-bar.comp";
 import { SeriesPublishSwitch } from "@/components/platform/sections/staff/exercises/series-publish-switch/series-publish-switch.comp";
 import { AddLibraryExercisesButton } from "@/components/platform/sections/staff/courses/add-library-exercises-popup/add-library-exercises-popup.comp";
-import { PracticeFilters } from "@/components/platform/sections/exercises/practice-filters/practice-filters.comp";
 import { TopicButton } from "@/components/platform/sections/teacher/classes/topic-popup/topic-popup.comp";
 import { FinalizeClassButton } from "@/components/platform/shared/finalize-class-popup/finalize-class-popup.comp";
 import { MeetingCountdown } from "@/components/platform/shared/meeting-countdown/meeting-countdown.comp";
@@ -2574,6 +2573,28 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 context={{ attempt: { kind: "SERIES", seriesId: "dmSerie1" }, position: "2 / 5" }}
               />
             </Tile>
+            <Tile name="ExerciseSolverPage" docs="platform-shared-exercisesolverpage" width={1040} height={640}>
+              {/* The solver with an `aside` draws the full page of «Ejercicios». */}
+              <div className="platform-workspace" style={{ minHeight: 0 }}>
+                <section className="platform-workspace__panel">
+                  <ExerciseSolver
+                    exercise={{
+                      id: "dmEjer05",
+                      title: "La enfilada en la columna",
+                      prompt: "Juegan blancas y ganan la dama",
+                      kind: "SEQUENCE",
+                      mateIn: null,
+                      solutionPgn: `[SetUp "1"]\n[FEN "4q3/8/8/4k3/8/8/8/R6K w - - 0 1"]\n\n1. Re1+ Kd6 2. Rxe8 *`,
+                      hints: [],
+                      explanation: null,
+                      difficulty: 1250,
+                    }}
+                    mode="preview"
+                    aside={{ scope: "overview", href: null, topic: { code: "SKEWER", label: "Enfilada" } }}
+                  />
+                </section>
+              </div>
+            </Tile>
             <Tile name="ExerciseAttemptRow" docs="platform-shared-exerciseattemptrow" width={640} height={120}>
               <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
                 <ExerciseAttemptRow
@@ -2758,21 +2779,6 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               <AddLibraryExercisesButton
                 exercises={OVERVIEW_PICKABLE}
                 addToLesson={async () => popupFormDone("lessonExercisesCopied")}
-              />
-            </Tile>
-            <Tile name="PracticeFilters" docs="platform-sections-exercises-practicefilters" width={640} height={72}>
-              <PracticeFilters
-                filters={{
-                  topics: [
-                    { code: "TACTICS", label: "Táctica", parentCode: null },
-                    { code: "FORK", label: "Horquilla", parentCode: "TACTICS" },
-                  ],
-                  levels: [{ slug: "intermedio", name: "Intermedio", range: "1200–1599" }],
-                  libraryEmpty: false,
-                }}
-                choice={{ topicCode: "TACTICS", levelSlug: "intermedio" }}
-                variant="home"
-                accent
               />
             </Tile>
             <Tile name="MovePathPicker" docs="platform-shared-movepathpicker" width={960} height={640}>

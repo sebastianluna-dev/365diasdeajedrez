@@ -21,14 +21,11 @@ import { RotateLeftIcon } from "@/components/icons/rotate-left-icon.comp";
 import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { defaultExercisePrompt } from "@/lib/chess/exercise-labels";
-import {
-  recordRatedExercise,
-  useExerciseRating,
-} from "@/components/platform/shared/exercise-solve-aside/exercise-rating.store";
-import { ExerciseSessionHistory } from "@/components/platform/shared/exercise-session-history/exercise-session-history.comp";
 import { recordSolve } from "@/components/platform/shared/exercise-session-history/exercise-solve-history.store";
-import { ExerciseSolveAside } from "@/components/platform/shared/exercise-solve-aside/exercise-solve-aside.comp";
+import { recordRatedExercise, useExerciseRating } from "./exercise-rating.store";
 import { linePaths, notationRows, type NotationMove } from "./exercise-solver-notation";
+import { ExerciseSolverPage } from "@/components/platform/shared/exercise-solver-page/exercise-solver-page.comp";
+import { BLOCK_NOTE, isPassed, resultModeOf, resultTextOf, saveNoteOf } from "./exercise-solver-result";
 import {
   boardAt,
   canMove,
@@ -75,8 +72,6 @@ function scoreOf(result: SolverResult): number {
   return 0;
 }
 
-const isPassed = (result: SolverResult) => result.kind === "clean" || result.kind === "hinted";
-
 /**
  * The solve screen (PLAN.md §5.3), the same wherever an exercise is solved:
  * a series, practice, a lesson, a class block and the editor's «Probar». The
@@ -85,8 +80,9 @@ const isPassed = (result: SolverResult) => result.kind === "clean" || result.kin
  * student may go on to learn, each wrong try written in the notation as a
  * variation; «Pista» shows the author's texts, then the piece to move (D37);
  * «Ver la solución» walks through the answer and counts as failed (D20).
- * With `aside` it is the full page: the rating, the exercise, its series or
- * topic and the visit's history around the board. Designed for a phone (D39).
+ * With `aside` it is the full page of «Ejercicios» in the new design system
+ * (`ExerciseSolverPage`): the material board, the status card, the moves, the
+ * visit's history and the rating's switches. Designed for a phone (D39).
  */
 export function ExerciseSolver({ exercise, mode, context, next, back, submit, aside }: ExerciseSolverProps) {
   const controls = useExerciseSolver({ exercise, mode, context, submit });
@@ -127,8 +123,9 @@ export function ExerciseSolver({ exercise, mode, context, next, back, submit, as
   if (!session) {
     return <PlatformNotice message="Este ejercicio no se puede resolver: su solución no se lee." />;
   }
+  const View = aside ? ExerciseSolverPage : ExerciseSolverView;
   return (
-    <ExerciseSolverView
+    <View
       exercise={exercise}
       context={context}
       next={next}
@@ -152,6 +149,7 @@ export interface ExerciseSolverViewProps {
   context?: ExerciseSolverContext;
   next?: ExerciseSolverLink;
   back?: ExerciseSolverLink;
+  /** The full page's data: only `ExerciseSolverPage` reads it. */
   aside?: ExerciseSolverAside;
   /** The state to draw (`useExerciseSolver`, or a story's `reduceSession` steps). */
   session: SolverSession;
@@ -165,45 +163,12 @@ export interface ExerciseSolverViewProps {
   onRetry: () => void;
 }
 
-/** What a class block's solve says on a day the exercise was already scored (D49): it marks the block, nothing else. */
-const BLOCK_NOTE = "Ya lo intentaste hoy: este intento cuenta para la clase, no para tu racha.";
-
-const SAVE_NOTES: Partial<Record<SolverSaveState, { message: string; variant: "error" | "info" }>> = {
-  failed: { message: "No se guardó el intento.", variant: "error" },
-  notScored: { message: "Ya lo intentaste hoy: este intento no cuenta.", variant: "info" },
-  stored: { message: BLOCK_NOTE, variant: "info" },
-};
-
-/**
- * The note under the result about the save: only in a mode that submits, and
- * not what the head already says (a `block` page knows its attempt is stored
- * for the block alone).
- */
-function saveNoteOf(mode: ExerciseSolverMode, save: SolverSaveState) {
-  if (!submitsAttempt(mode)) return undefined;
-  if (mode === "block" && save === "stored") return undefined;
-  return SAVE_NOTES[save];
-}
-
-/**
- * The mode the result is told in: the server's answer wins over the page's
- * (a stale page, a second tab): an attempt that did not count never says
- * «¡Resuelto!» (§2.7), and one kept for its class block says so (D49).
- */
-function resultModeOf(mode: ExerciseSolverMode, save: SolverSaveState): ExerciseSolverMode {
-  if (mode !== "solve") return mode;
-  if (save === "notScored") return "unscored";
-  if (save === "stored") return "block";
-  return mode;
-}
-
 /** The solve screen as data: what `ExerciseSolver` draws from its hook, and what a story draws from a session. */
 export function ExerciseSolverView({
   exercise,
   context,
   next,
   back,
-  aside,
   session,
   save,
   autoplay,
@@ -267,12 +232,7 @@ export function ExerciseSolverView({
   };
 
   return (
-    <section
-      className={`exercise-solver exercise-solver_mode_${mode}${aside ? " exercise-solver_layout_page" : ""}`}
-      aria-label={exercise.title}
-    >
-      {aside && <ExerciseSolveAside aside={aside} exercise={exercise} />}
-
+    <section className={`exercise-solver exercise-solver_mode_${mode}`} aria-label={exercise.title}>
       <div className={`exercise-solver__board${board.tone === "error" ? " exercise-solver__board_state_wrong" : ""}`}>
         <ChessBoard
           position={{ fen: board.fen, lastMove: board.lastMove ?? undefined, check: board.check }}
@@ -284,8 +244,6 @@ export function ExerciseSolverView({
           lastMoveTone={board.tone ?? undefined}
         />
       </div>
-
-      {aside && <ExerciseSessionHistory scope={aside.scope} current={{ title: exercise.title, open: !over }} />}
 
       <div className="exercise-solver__panel">
         {rows.length > 0 ? (
@@ -325,8 +283,7 @@ export function ExerciseSolverView({
               next={next}
               back={back}
               fullSolution={fullSolution}
-              // The full page fits the window: its notation already walks the line, and a viewer under it would scroll the page.
-              canShowFull={!aside}
+              canShowFull
               onToggleFullSolution={() => setFullSolution((current) => !current)}
               onRetry={() => {
                 setViewPath(null);
@@ -357,11 +314,9 @@ export function ExerciseSolverView({
                   <p className="exercise-solver__turn-title">Tu turno</p>
                   <p className="exercise-solver__turn-line">{prompt}</p>
                   {/* No clock: only Puzzle Rush counts the time. */}
-                  {((context?.position && !aside) || solve.failed) && (
+                  {(context?.position || solve.failed) && (
                     <p className="exercise-solver__meta">
-                      {context?.position && !aside && (
-                        <span className="exercise-solver__position">{context.position}</span>
-                      )}
+                      {context?.position && <span className="exercise-solver__position">{context.position}</span>}
                       {solve.failed && <span className="platform-tag exercise-solver__failed">Fallado</span>}
                     </p>
                   )}
@@ -463,42 +418,13 @@ export function ExerciseSolverView({
         </button>
       </div>
 
-      {over && fullSolution && !aside && (
+      {over && fullSolution && (
         <div className="exercise-solver__full">
           <GameViewer pgn={exercise.solutionPgn} orientation={player} title="La solución completa" />
         </div>
       )}
     </section>
   );
-}
-
-// A retry or a preview says how it went this time, never «¡Resuelto!» (§2.7). A class
-// block's solve on a day already scored (`block`, D49) is «¡Resuelto!»: it marks the block.
-const AGAIN_TITLES: Record<SolverResult["kind"], string> = {
-  clean: "Esta vez, sin errores",
-  hinted: "Esta vez, con pista",
-  failed: "Esta vez, con un error",
-  shown: "Esta vez viste la solución",
-};
-
-/** How it went, told to the student: the title, the line under it, and the tone of its mark. */
-function resultTextOf(
-  result: SolverResult,
-  misses: number,
-  solutionShown: boolean,
-  counts: boolean,
-): { title: string; line: string | null; tone: "ok" | "late" | "error" } {
-  if (!counts) {
-    return { title: AGAIN_TITLES[result.kind], line: null, tone: isPassed(result) ? "ok" : "error" };
-  }
-  if (result.kind === "clean") return { title: "¡Resuelto!", line: "Sin errores.", tone: "ok" };
-  if (result.kind === "hinted") return { title: "Resuelto con pista", line: "Cuenta como resuelto.", tone: "ok" };
-  if (solutionShown) return { title: "Viste la solución", line: "Cuenta como fallado.", tone: "error" };
-  return {
-    title: misses === 1 ? "Resuelto, después de un error" : `Resuelto, después de ${misses} errores`,
-    line: "Cuenta como fallado: lo decide la primera jugada.",
-    tone: "late",
-  };
 }
 
 interface ResultPanelProps {
