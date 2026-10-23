@@ -364,7 +364,7 @@ export function ClassNotebookSection({ classDetail, notice, errorMessage }: Clas
 
         <section className="platform-workspace__panel class-notebook__panel" aria-labelledby="class-notebook-title">
           <div className="class-notebook__toolbar">
-            <nav className="class-notebook__trail" aria-label="Dónde estás">
+            <nav className="class-notebook__trail" aria-label="Dónde estás en tus clases">
               <Link href={platformRoutes.classes} className={mdIconButton("standard", "sm")} aria-label="Mis clases">
                 <ArrowLeftIcon variant="classic-solid" className="platform-md-icon" />
               </Link>

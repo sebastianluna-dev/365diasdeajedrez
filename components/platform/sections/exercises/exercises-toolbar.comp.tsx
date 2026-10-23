@@ -46,7 +46,7 @@ export function ExercisesToolbar({ trail, summary, tallyTopic, level, actions = 
   const last = trail.length - 1;
   return (
     <div className="exercises-toolbar">
-      <nav className="exercises-toolbar__trail" aria-label="Dónde estás">
+      <nav className="exercises-toolbar__trail" aria-label="Dónde estás en Ejercicios">
         {trail.map((crumb, index) => (
           <Fragment key={`${index}:${crumb.label}`}>
             {index > 0 && (
