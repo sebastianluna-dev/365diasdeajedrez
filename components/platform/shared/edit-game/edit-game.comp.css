@@ -30,4 +30,33 @@
     padding: var(--platform-space-6);
     box-shadow: inset 0 1px 0 var(--platform-track);
   }
+
+  /* MATERIAL'S LOOK (the popup of a page moved to the new design system,
+     «Formulario A»): the subtitle pulled up under the headline as its
+     supporting text, the fields in from the dialog's edge, and the two
+     buttons stuck to the foot over a hairline while the fields scroll
+     under them, on the dialog's own surface. */
+  & .edit-game__form.edit-game__form_look_material {
+    & .edit-game__subtitle {
+      margin-top: calc(-1 * var(--platform-space-2));
+      padding: 0 var(--platform-space-6);
+      font-size: var(--platform-type-xs);
+      line-height: 1.43;
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .edit-game__body {
+      padding: var(--platform-space-5) var(--platform-space-6) var(--platform-space-6);
+    }
+
+    & .edit-game__actions {
+      position: sticky;
+      bottom: 0;
+      gap: var(--platform-space-2);
+      margin-top: 0;
+      padding: var(--platform-space-4) var(--platform-space-6) var(--platform-space-6);
+      background: var(--platform-m3-dialog);
+      box-shadow: inset 0 1px 0 var(--platform-m3-outline-variant);
+    }
+  }
 }

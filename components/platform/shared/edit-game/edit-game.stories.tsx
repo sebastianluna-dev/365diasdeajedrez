@@ -82,3 +82,22 @@ export const WithIcon: Story = { name: "With icon", args: { trigger: "icon" } };
 
 /** The pencil as Material's standard icon button (`look="material"`), as a study's game record draws it. */
 export const MaterialIcon: Story = { name: "Material icon", args: { trigger: "icon", look: "material" } };
+
+/**
+ * Open on a page moved to the new design system (inside `.platform-workspace`): «Formulario A» — Material's dialog,
+ * the record in three sections titled in the primary («La partida», «Jugadores», «Resultado y apertura») in two
+ * columns, each player a row of name, Elo, title and federation, the fields outlined, and «Cancelar» and «Guardar
+ * datos» stuck to the foot.
+ */
+export const MaterialOpen: Story = {
+  name: "Material open",
+  args: { trigger: "icon", look: "material" },
+  decorators: [
+    (Story) => (
+      <div className="platform-workspace" style={{ minHeight: 0, padding: 16 }}>
+        <Story />
+      </div>
+    ),
+  ],
+  play: open,
+};

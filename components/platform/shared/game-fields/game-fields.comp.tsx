@@ -1,5 +1,6 @@
 import type { ComponentProps } from "react";
 import { PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
+import type { PlatformLook } from "@/components/platform/shared/platform-look";
 import { federationOptions, FIDE_TITLE_LABELS, FIDE_TITLES } from "@/lib/chess/federations";
 import "./game-fields.comp.css";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
@@ -85,80 +86,182 @@ interface GameFieldsProps {
   results: { code: string; label: string }[];
   /** What the name's "i" says, different on creation and on edit. */
   titleHint: string;
+  /**
+   * `material`: the layout of «Formulario A» (2026-10-23), for the popup of a
+   * page moved to the new design system — three sections titled in the
+   * primary and divided by a rule («La partida», «Jugadores», «Resultado y
+   * apertura»), two columns, and each player a row of name, Elo, title and
+   * federation. Its host reads it from the popup (`usePlatformLook`): this
+   * piece is also drawn by the server, which has no popup to ask.
+   */
+  look?: PlatformLook;
 }
 
-export function GameFields({ values, results, titleHint }: GameFieldsProps) {
+/** One player's four fields, labelled for the platform's layout (one under the other) or Material's (one row). */
+function playerFields(side: "white" | "black", values: GameFieldValues | undefined, short: boolean) {
+  const white = side === "white";
+  const name = white ? "Blancas" : "Negras";
+  const of = white ? "de las blancas" : "de las negras";
+  return {
+    name: (
+      <PlatformFormField name={side} label={name}>
+        <input type="text" defaultValue={(white ? values?.white : values?.black) ?? ""} maxLength={120} />
+      </PlatformFormField>
+    ),
+    elo: (
+      <PlatformFormField name={`${side}Elo`} label={short ? "Elo" : `Elo ${of}`}>
+        <input type="number" defaultValue={(white ? values?.whiteElo : values?.blackElo) ?? ""} min={100} max={4000} />
+      </PlatformFormField>
+    ),
+    title: (
+      <PlatformFormField name={`${side}Title`} label={short ? "Título" : `Título ${of}`}>
+        <CodeSelect
+          value={white ? values?.whiteTitle : values?.blackTitle}
+          options={TITLE_OPTIONS}
+          emptyLabel="Sin título"
+        />
+      </PlatformFormField>
+    ),
+    country: (
+      <PlatformFormField name={`${side}Country`} label={short ? "Federación" : `Federación ${of}`}>
+        <CodeSelect
+          value={white ? values?.whiteCountry : values?.blackCountry}
+          options={federationOptions()}
+          emptyLabel="Sin federación"
+        />
+      </PlatformFormField>
+    ),
+  };
+}
+
+export function GameFields({ values, results, titleHint, look = "platform" }: GameFieldsProps) {
+  const material = look === "material";
+  const white = playerFields("white", values, material);
+  const black = playerFields("black", values, material);
+
+  const title = (
+    <PlatformFormField name="title" label={material ? "Nombre" : "Nombre de la partida"} info={titleHint}>
+      <input type="text" defaultValue={values?.title ?? ""} maxLength={120} />
+    </PlatformFormField>
+  );
+  const result = (
+    <PlatformFormField name="resultCode" label="Resultado">
+      <PlatformSelect
+        defaultValue={values?.resultCode ?? "ONGOING"}
+        options={results.map((option) => ({ value: option.code, label: option.label }))}
+      />
+    </PlatformFormField>
+  );
+  const date = (
+    <PlatformFormField name="playedAt" label="Fecha">
+      <PlatformDatePicker defaultValue={values?.playedAtValue ?? ""} />
+    </PlatformFormField>
+  );
+  const event = (
+    <PlatformFormField name="event" label="Evento">
+      <input type="text" defaultValue={values?.event ?? ""} maxLength={120} />
+    </PlatformFormField>
+  );
+  const site = (
+    <PlatformFormField name="site" label="Lugar">
+      <input type="text" defaultValue={values?.site ?? ""} maxLength={120} />
+    </PlatformFormField>
+  );
+  const round = (
+    <PlatformFormField name="round" label="Ronda">
+      <input type="text" defaultValue={values?.round ?? ""} maxLength={120} />
+    </PlatformFormField>
+  );
+  const eco = (
+    <PlatformFormField name="eco" label="ECO" info="Código de apertura, como «B40».">
+      <input type="text" defaultValue={values?.eco ?? ""} maxLength={120} />
+    </PlatformFormField>
+  );
+
+  if (material) {
+    return (
+      <OptionalFields>
+        <div className="game-fields game-fields_look_material">
+          <div className="game-fields__section">
+            <h3 className="game-fields__section-title">La partida</h3>
+            <div className="game-fields__grid">
+              {title}
+              {event}
+              {site}
+              <div className="game-fields__grid">
+                {date}
+                {round}
+              </div>
+            </div>
+          </div>
+
+          {/* Each player a row, named by its side: «Elo» and «Título» are
+              said once per row, and the group tells whose they are. */}
+          <div className="game-fields__section">
+            <h3 className="game-fields__section-title">Jugadores</h3>
+            {[
+              { side: "Blancas", fields: white },
+              { side: "Negras", fields: black },
+            ].map(({ side, fields }) => (
+              <div key={side} role="group" aria-label={side} className="game-fields__player">
+                {fields.name}
+                {fields.elo}
+                {fields.title}
+                {fields.country}
+              </div>
+            ))}
+          </div>
+
+          <div className="game-fields__section">
+            <h3 className="game-fields__section-title">Resultado y apertura</h3>
+            <div className="game-fields__grid">
+              {result}
+              {eco}
+            </div>
+          </div>
+        </div>
+      </OptionalFields>
+    );
+  }
+
   return (
     <OptionalFields>
       <div className="game-fields">
-        <PlatformFormField name="title" label="Nombre de la partida" info={titleHint}>
-          <input type="text" defaultValue={values?.title ?? ""} maxLength={120} />
-        </PlatformFormField>
+        {title}
 
         <div className="game-fields__row">
-          <PlatformFormField name="white" label="Blancas">
-            <input type="text" defaultValue={values?.white ?? ""} maxLength={120} />
-          </PlatformFormField>
-          <PlatformFormField name="whiteElo" label="Elo de las blancas">
-            <input type="number" defaultValue={values?.whiteElo ?? ""} min={100} max={4000} />
-          </PlatformFormField>
+          {white.name}
+          {white.elo}
         </div>
 
         <div className="game-fields__row">
-          <PlatformFormField name="whiteTitle" label="Título de las blancas">
-            <CodeSelect value={values?.whiteTitle} options={TITLE_OPTIONS} emptyLabel="Sin título" />
-          </PlatformFormField>
-          <PlatformFormField name="whiteCountry" label="Federación de las blancas">
-            <CodeSelect value={values?.whiteCountry} options={federationOptions()} emptyLabel="Sin federación" />
-          </PlatformFormField>
+          {white.title}
+          {white.country}
         </div>
 
         <div className="game-fields__row">
-          <PlatformFormField name="black" label="Negras">
-            <input type="text" defaultValue={values?.black ?? ""} maxLength={120} />
-          </PlatformFormField>
-          <PlatformFormField name="blackElo" label="Elo de las negras">
-            <input type="number" defaultValue={values?.blackElo ?? ""} min={100} max={4000} />
-          </PlatformFormField>
+          {black.name}
+          {black.elo}
         </div>
 
         <div className="game-fields__row">
-          <PlatformFormField name="blackTitle" label="Título de las negras">
-            <CodeSelect value={values?.blackTitle} options={TITLE_OPTIONS} emptyLabel="Sin título" />
-          </PlatformFormField>
-          <PlatformFormField name="blackCountry" label="Federación de las negras">
-            <CodeSelect value={values?.blackCountry} options={federationOptions()} emptyLabel="Sin federación" />
-          </PlatformFormField>
+          {black.title}
+          {black.country}
         </div>
 
         <div className="game-fields__row">
-          <PlatformFormField name="resultCode" label="Resultado">
-            <PlatformSelect
-              defaultValue={values?.resultCode ?? "ONGOING"}
-              options={results.map((result) => ({ value: result.code, label: result.label }))}
-            />
-          </PlatformFormField>
-          <PlatformFormField name="playedAt" label="Fecha">
-            <PlatformDatePicker defaultValue={values?.playedAtValue ?? ""} />
-          </PlatformFormField>
+          {result}
+          {date}
         </div>
 
         <div className="game-fields__row">
-          <PlatformFormField name="event" label="Evento">
-            <input type="text" defaultValue={values?.event ?? ""} maxLength={120} />
-          </PlatformFormField>
-          <PlatformFormField name="site" label="Lugar">
-            <input type="text" defaultValue={values?.site ?? ""} maxLength={120} />
-          </PlatformFormField>
+          {event}
+          {site}
         </div>
 
         <div className="game-fields__row">
-          <PlatformFormField name="round" label="Ronda">
-            <input type="text" defaultValue={values?.round ?? ""} maxLength={120} />
-          </PlatformFormField>
-          <PlatformFormField name="eco" label="ECO" info="Código de apertura, como «B40».">
-            <input type="text" defaultValue={values?.eco ?? ""} maxLength={120} />
-          </PlatformFormField>
+          {round}
+          {eco}
         </div>
       </div>
     </OptionalFields>

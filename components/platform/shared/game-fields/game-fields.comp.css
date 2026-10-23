@@ -12,4 +12,67 @@
       flex: 1 1 220px;
     }
   }
+
+  /* MATERIAL'S LAYOUT (`look="material"`, «Formulario A»): three sections,
+     each titled in the primary and set off from the one above by a rule;
+     two columns, and each player one row of name, Elo, title and
+     federation, the name twice as wide. The room between rows is the
+     outlined field's: its label stands half over the row above. */
+  &.game-fields_look_material {
+    gap: var(--platform-space-4);
+
+    & .game-fields__section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--platform-space-5);
+    }
+
+    & .game-fields__section + .game-fields__section {
+      padding-top: var(--platform-space-4);
+      border-top: 1px solid var(--platform-m3-outline-variant);
+    }
+
+    & .game-fields__section-title {
+      margin: 0;
+      font-size: var(--platform-type-xs);
+      font-weight: 600;
+      line-height: 1.43;
+      color: var(--platform-m3-primary);
+    }
+
+    & .game-fields__grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--platform-space-5) var(--platform-space-4);
+      align-items: start;
+    }
+
+    & .game-fields__player {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+      gap: var(--platform-space-4);
+      align-items: start;
+    }
+
+    @media (width < 768px) {
+      & .game-fields__player {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+
+        & > :first-child {
+          grid-column: 1 / -1;
+        }
+      }
+    }
+
+    @media (width < 640px) {
+      & .game-fields__grid,
+      & .game-fields__player {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      & .game-fields__player {
+        row-gap: var(--platform-space-5);
+      }
+    }
+  }
 }

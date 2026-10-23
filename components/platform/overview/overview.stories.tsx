@@ -2387,13 +2387,25 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 </MovedPageFrame>
               </div>
             </Tile>
-            <Tile name="EditGame" docs="platform-shared-editgame" width={400} height={88}>
-              <EditGame
-                action={settles}
-                values={{ white: "Kasparov, Garry", black: "Topalov, Veselin", resultCode: GAME_RESULT.WHITE_WINS }}
-                results={RESULTS}
-                titleHint="Cómo identificas esta partida dentro del estudio."
-              />
+            <Tile name="EditGame" docs="platform-shared-editgame" width={400} height={144}>
+              <div className="overview__stack">
+                <EditGame
+                  action={settles}
+                  values={{ white: "Kasparov, Garry", black: "Topalov, Veselin", resultCode: GAME_RESULT.WHITE_WINS }}
+                  results={RESULTS}
+                  titleHint="Cómo identificas esta partida dentro del estudio."
+                />
+                <MovedPageFrame>
+                  <EditGame
+                    action={settles}
+                    values={{ white: "Kasparov, Garry", black: "Topalov, Veselin", resultCode: GAME_RESULT.WHITE_WINS }}
+                    results={RESULTS}
+                    titleHint="Cómo identificas esta partida dentro del estudio."
+                    trigger="icon"
+                    look="material"
+                  />
+                </MovedPageFrame>
+              </div>
             </Tile>
             <Tile name="NewStudy" docs="platform-sections-studies-studies-list-newstudy" width={400} height={136}>
               <SectionDialog
