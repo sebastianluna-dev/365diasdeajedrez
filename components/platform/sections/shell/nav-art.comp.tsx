@@ -517,6 +517,20 @@ function ImportArt() {
   );
 }
 
+/**
+ * The home page («Inicio»): the academy's mark, two red squares and two of
+ * the board's cream. It names a page and is in no tile, so nothing of it
+ * moves.
+ */
+function HomeArt() {
+  return (
+    <>
+      <path d="M40 40h80v80H40z M120 120h80v80h-80z" fill="#a81e22" />
+      <path d="M120 40h80v80h-80z M40 120h80v80H40z" fill="#f4e8d2" />
+    </>
+  );
+}
+
 /** Each drawing's frame: cut close to what it draws, so it fills its slot. */
 const VIEW_BOXES: Record<PlatformNavArt, string> = {
   play: "14 26 212 168",
@@ -539,6 +553,7 @@ const VIEW_BOXES: Record<PlatformNavArt, string> = {
   review: "36 40 172 168",
   series: "34 40 180 160",
   import: "38 26 164 184",
+  home: "36 36 168 168",
 };
 
 /**
@@ -581,6 +596,7 @@ export function NavArt({ art, className }: NavArtProps) {
       {art === "review" && <ReviewArt />}
       {art === "series" && <SeriesArt />}
       {art === "import" && <ImportArt />}
+      {art === "home" && <HomeArt />}
     </svg>
   );
 }

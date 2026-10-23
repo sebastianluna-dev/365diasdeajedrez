@@ -4,19 +4,19 @@ description: "The drawing of each tool of the platform's menu: illustrations in 
 
 # `NavArt`
 
-|            |                                                                              |
-| ---------- | ---------------------------------------------------------------------------- |
-| File       | `components/platform/sections/shell/nav-art.comp.tsx`                        |
-| Kind       | Component without state, drawn inside the client menu                        |
-| Stylesheet | `nav-art.comp.css` → block `.nav-art`                                        |
-| Used by    | [`PlatformAppsMenu`](/components/platform/sections/shell/platform-apps-menu) |
-| Uses       | `PlatformNavArt` from `constants/platform/nav-items.const`                   |
+|            |                                                                                                                                                            |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/shell/nav-art.comp.tsx`                                                                                                      |
+| Kind       | Component without state, drawn inside the client menu                                                                                                      |
+| Stylesheet | `nav-art.comp.css` → block `.nav-art`                                                                                                                      |
+| Used by    | [`PlatformAppsMenu`](/components/platform/sections/shell/platform-apps-menu), [`PlatformPageName`](/components/platform/sections/shell/platform-page-name) |
+| Uses       | `PlatformNavArt` from `constants/platform/nav-items.const`                                                                                                 |
 
 ## Purpose
 
 Illustrations, not icons (`AGENTS.md`, «Componentes»): drawn by hand as SVG beside the menu that uses them, in their own colours in both themes — the board's cream (`#f4e8d2`) and wood (`#8f6a45`, `#a57c52`), the squares' tan, the brand's red — never `currentColor`, and `aria-hidden`, because the tool's name is its label.
 
-The first six were the drawings of the bar's sections (2026-10-18): «Jugar» (a red pawn on a 3×3 board), «Ejercicios» (a puzzle piece cut from a board), «Aprender» (a mortarboard, now «Cursos»), «Enseñar» (the class's wall board on its easel, now the classes), «Material» (books with a diagram, now «Clases prediseñadas») and «Herramientas» (a toolbox, gone with its section). With the Google-style header (2026-10-19) each tool has its own: «Ejercicios por tema» (two labels), «Puzzle Rush» (a stopwatch), «Estudiar» (an open book), «Panel del profesor» (a house), «Calendario» (a desk calendar with a ringed day), «Mis alumnos» and «Alumnos» (two pawns), «Mi ficha» (a card with a pawn's portrait), «Tablero de análisis» (a board with an arrow and the evaluation bar), «Explorador» (a magnifying glass), «Entrenador» (a dumbbell), «Administración» (a clipboard), «Profesores» (a pawn under a mortarboard), «Revisión» (a sheet and its stamp), «Series» (fanned cards) and «Importar» (a sheet into a tray).
+The first six were the drawings of the bar's sections (2026-10-18): «Jugar» (a red pawn on a 3×3 board), «Ejercicios» (a puzzle piece cut from a board), «Aprender» (a mortarboard, now «Cursos»), «Enseñar» (the class's wall board on its easel, now the classes), «Material» (books with a diagram, now «Clases prediseñadas») and «Herramientas» (a toolbox, gone with its section). With the Google-style header (2026-10-19) each tool has its own: «Ejercicios por tema» (two labels), «Puzzle Rush» (a stopwatch), «Estudiar» (an open book), «Panel del profesor» (a house), «Calendario» (a desk calendar with a ringed day), «Mis alumnos» and «Alumnos» (two pawns), «Mi ficha» (a card with a pawn's portrait), «Tablero de análisis» (a board with an arrow and the evaluation bar), «Explorador» (a magnifying glass), «Entrenador» (a dumbbell), «Administración» (a clipboard), «Profesores» (a pawn under a mortarboard), «Revisión» (a sheet and its stamp), «Series» (fanned cards) and «Importar» (a sheet into a tray). One more names a page and is in no tile (2026-10-23): `home`, the home page's «Inicio» in the bar, the academy's mark — two red squares and two of the board's cream —, with nothing that moves.
 
 ## Props
 

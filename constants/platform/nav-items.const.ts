@@ -40,7 +40,9 @@ export type PlatformNavArt =
   | "teachers"
   | "review"
   | "series"
-  | "import";
+  | "import"
+  /** Not a tool: the home page's own drawing, the academy's mark (`pageNameOf`). */
+  | "home";
 
 /** A tool of the menu: its name (also the page's name in the bar), its address and its drawing. */
 export interface PlatformApp {
@@ -213,6 +215,13 @@ export function buildPlatformApps(roles: PlatformNavRoles, features: PlatformNav
 }
 
 /**
+ * The home page in the bar (2026-10-23, the new design system's «Inicio»):
+ * not a tool of the menu — no tile leads to it, the wordmark and the avatar
+ * do —, but the bar names it as it names a tool's page.
+ */
+export const HOME_PAGE: PlatformApp = { label: "Inicio", href: platformRoutes.dashboard, art: "home" };
+
+/**
  * The tool of the page on screen, or null: the one whose address is the
  * page's or the LONGEST that starts it — `/profesor` and `/profesor/alumnos`
  * are different tools and a plain prefix would light up both at once. Its
@@ -227,4 +236,14 @@ export function activeApp(apps: PlatformApps, pathname: string): PlatformApp | n
     if (matches && (best === null || path.length > pathOf(best).length)) best = app;
   }
   return best;
+}
+
+/**
+ * What the bar names the page on screen with: its tool (`activeApp`), or
+ * «Inicio» on the home page itself, which is no tool's. Null elsewhere (a
+ * lesson), where the wordmark stays. The menu marks a tile by `activeApp`
+ * alone, so no tile lights up on the home page.
+ */
+export function pageNameOf(apps: PlatformApps, pathname: string): PlatformApp | null {
+  return activeApp(apps, pathname) ?? (pathname === HOME_PAGE.href ? HOME_PAGE : null);
 }
