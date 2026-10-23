@@ -164,3 +164,12 @@ export const Evaluated: Story = {
 export const Material: Story = {
   args: { look: "material" },
 };
+
+/**
+ * An evaluated game in the new design system's look: the evaluation of the move on the board takes the pill's own
+ * ink, not the grey, which read under 2:1 on the primary's blue.
+ */
+export const MaterialEvaluated: Story = {
+  name: "Material, evaluated",
+  args: { look: "material", tree: treeOf(EVALUATED_GAME), currentPath: mainLinePath(18) },
+};

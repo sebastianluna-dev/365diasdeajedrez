@@ -266,6 +266,12 @@
       color: var(--platform-m3-on-surface-variant);
     }
 
+    /* On the active move's primary the evaluation takes the move's own ink
+       (on-primary): the grey above read at under 2:1 on the blue. */
+    & .move-table__move_state_active .move-table__eval {
+      color: inherit;
+    }
+
     & .move-table__comment {
       border-color: var(--platform-m3-container);
       color: var(--platform-m3-on-surface-variant);

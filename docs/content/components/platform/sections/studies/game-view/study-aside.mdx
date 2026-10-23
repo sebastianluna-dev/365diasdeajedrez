@@ -52,7 +52,7 @@ Block `.study-aside` (60 lines), a column on the canvas.
 
 **Tokens:** `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-panel`, `--md-sys-shape-corner-lg`, the type and space scales.
 
-**The page around it** (`game-page.css`, beside the layout): the page bleeds onto the canvas (`platform-page_width_full` + `platform-page_frame_bleed`) and the layout draws `.platform-workspace`; the board is measured by the **height** of the window (`--game-board-max`: `100vh` less the bar, the panel's padding, the trail, the record, the gaps, the two strips and the tabs of the tools, which are left peeking), handed to the viewer as `--viewer-board-max` with a floor of 320px, and back to the viewer's 600px under 1280px. Under 1024px the workspace puts this column above the panel.
+**The page around it** (`game-page.css`, beside the layout): the page bleeds onto the canvas (`platform-page_width_full` + `platform-page_frame_bleed`) and the layout draws `.platform-workspace`; the board is measured by the **height** of the window (`--game-board-max`: `100vh` less the bar, the panel's padding, the two strips and the tabs of the tools, which are left peeking — the toolbar and the record above the board went on 2026-10-23, and their height to the board), handed to the viewer as `--viewer-board-max` with a floor of 320px, and back to the viewer's 600px under 1280px. The moves' column is wider than the viewer's own: `--viewer-panel-min` 400px and `--viewer-panel-max` 520px (2026-10-23), the board giving way for it. Under 1024px the workspace puts this column above the panel.
 
 ## Usage
 

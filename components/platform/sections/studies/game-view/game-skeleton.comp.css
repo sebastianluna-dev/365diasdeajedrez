@@ -8,7 +8,7 @@
   --game-skeleton-nav: calc(40px + var(--platform-space-4));
 
   display: grid;
-  grid-template-columns: minmax(0, var(--viewer-board-max, 600px)) minmax(320px, 1fr);
+  grid-template-columns: minmax(0, var(--viewer-board-max, 600px)) minmax(var(--viewer-panel-min, 320px), 1fr);
   gap: var(--platform-space-6);
   align-items: stretch;
   min-width: 0;

@@ -17,6 +17,12 @@
   );
   --viewer-board-max: var(--game-board-max);
 
+  /* The moves' column, wider than the viewer's own (2026-10-23): it holds
+     the game's record, the engine and the notation with its evaluations.
+     Never under 400px nor over 520; the board gives way for it. */
+  --viewer-panel-min: 400px;
+  --viewer-panel-max: 520px;
+
   /* The panel: a notice and the board, a step closer together than a
      page's sections. */
   & .game-page__panel {
