@@ -8,17 +8,23 @@ description: "Where a position comes into the analysis board: «FEN» and «PGN�
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | File       | `components/platform/sections/tools/analysis-board/position-input/position-input.comp.tsx`                                   |
 | Kind       | Client Component                                                                                                             |
-| Stylesheet | `position-input.comp.css` → block `.position-input`                                                                          |
+| Stylesheet | `position-input.comp.css` → block `.position-input` (51 lines)                                                               |
 | Story      | `position-input.stories.tsx` (`platform/sections/tools/analysis-board/PositionInput`): empty, an invalid FEN, an invalid PGN |
 | Used by    | [`AnalysisBoardSection`](/components/platform/sections/tools/analysis-board/analysis-board-section)                          |
 | Uses       | [`PlatformForm`](/components/platform/shared/platform-form), `readPositionInput` from `lib/chess/position-input`             |
 
 ## Purpose
 
-K1, chosen on 2026-10-08: two fields with their labels under the board and one «Cargar» that reads whichever has text — the PGN when both do, as the FEN's hint says. A `PlatformForm` that submits nothing: `readPositionInput` checks it in the browser, and a failure is drawn under its own field («No es un FEN válido.», «No es un PGN válido.») through the field's `serverError`, cleared as soon as anything is typed. A good one calls `onLoad` with the PGN to open and empties the fields.
+K1, chosen on 2026-10-08: two fields with their labels and one «Cargar» that reads whichever has text — the PGN when both do, as the FEN's hint says. A `PlatformForm` that submits nothing: `readPositionInput` checks it in the browser, and a failure is drawn under its own field («No es un FEN válido.», «No es un PGN válido.») through the field's `serverError`, cleared as soon as anything is typed. A good one calls `onLoad` with the PGN to open and empties the fields.
 
 ## Props
 
 | Prop     | Type                    | Required | Meaning                               |
 | -------- | ----------------------- | -------- | ------------------------------------- |
 | `onLoad` | `(pgn: string) => void` | yes      | The board starts again from this PGN. |
+
+## Markup & styling
+
+Since 2026-10-23 it is the white box of the side column's «Cargar» on the analysis board's workspace (`--platform-m3-panel`, `--md-sys-shape-corner-lg`), with Material's tonal «Cargar» across it (`mdButton("tonal", "sm")`). Its 240px ask for compact fields: the block sets `PlatformForm`'s labels and hint a size down in `--platform-m3-on-surface-variant`, the controls in the monospaced face at `--platform-type-2xs` on `--platform-m3-outline` (the placeholders «Pega una posición» and «Pega una partida» in the platform's face), the textarea two rows high, and the focus in the primary's blue — a field with an error keeps the form's red (`:not([data-invalid])`).
+
+**Elements:** `.position-input__submit`

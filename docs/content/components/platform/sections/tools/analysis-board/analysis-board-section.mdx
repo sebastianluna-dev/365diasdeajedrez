@@ -1,5 +1,5 @@
 ---
-description: "The analysis board's leaf with state: the study's viewer on one shared engine, the work kept for the tab, the FEN/PGN form, the module to play against, and «Guardar en un estudio»."
+description: "The analysis board's leaf with state, in the new design system: the workspace with «Guardar en un estudio», «Cargar» and «Jugar contra el módulo» in the side column, and on the panel a toolbar over the study's viewer in its material look, on one shared engine."
 ---
 
 # `AnalysisBoardSection`
@@ -8,19 +8,36 @@ description: "The analysis board's leaf with state: the study's viewer on one sh
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Files      | `components/platform/sections/tools/analysis-board/analysis-board.section.tsx`, `use-engine-sparring.hook.ts`                                                                                                                                                                                               |
 | Kind       | Client Component                                                                                                                                                                                                                                                                                            |
-| Stylesheet | `analysis-board.section.css` → block `.analysis-board`                                                                                                                                                                                                                                                      |
+| Stylesheet | `analysis-board.section.css` → block `.analysis-board` (171 lines)                                                                                                                                                                                                                                          |
 | Used by    | `app/(platform)/herramientas/tablero-de-analisis/page.tsx`                                                                                                                                                                                                                                                  |
 | Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`PositionInput`](/components/platform/sections/tools/analysis-board/position-input), [`PlayVsEngine`](/components/platform/sections/tools/analysis-board/play-vs-engine), [`SaveToStudyPopup`](/components/platform/shared/save-to-study-popup) |
-| Uses       | `useEngineClient`, `useEnginePlayer` (`components/chess/engine`), `usePgnHistory`, `addMoveToPgn`, `gameEnd`, `FULL_STRENGTH_PROFILE`                                                                                                                                                                       |
+| Uses       | `useEngineClient`, `useEnginePlayer` (`components/chess/engine`), `usePgnHistory`, `addMoveToPgn`, `gameEnd`, `FULL_STRENGTH_PROFILE`, `mdFab`, `mdIconButton`                                                                                                                                              |
 
 ## Purpose
 
-The whole of [Analysis board](/chess/analysis-board) on the client. It receives the source the page resolved (or none), the person's own studies and `saveAnalysisToStudy`, and owns:
+The whole of [Analysis board](/chess/analysis-board) on the client, drawn since 2026-10-23 in the new design system («M4» of the owner's canvas). It receives the source the page resolved (or none), the person's own studies, `saveAnalysisToStudy` and the error the page read from `?error=`, and owns:
 
 - the PGN with an undo stack (`usePgnHistory`), the current move, and the work kept for the tab in `sessionStorage` (written only once something changed; read once per visit in the browser, and the board keyed by what it opened with);
 - **one engine** (`useEngineClient(true)`, created on arrival) for the viewer's analysis (`engineClient`) and the module;
-- `useEngineSparring`: the position played against the module, every move added after the line's last with `addMoveToPgn`, the module's answered at once.
+- `useEngineSparring`: the position played against the module, every move added after the line's last with `addMoveToPgn`, the module's answered at once;
+- the side the board is seen from (`orientation`): turned from the toolbar, and to the person's colour when a line against the module starts.
+
+It draws the workspace itself (`.platform-workspace`), because the side column and the panel share that state:
+
+- **The side column** (`.platform-workspace__side`): «Guardar en un estudio» as Material's extended FAB (`mdFab("primary-container")`, flat at rest and onto a shadow under the pointer, as `PlatformSideNav`'s), which opens the `SaveToStudyPopup`; then two groups, each a `<details>` open by default whose `<summary>` folds it: «Cargar» over [`PositionInput`](/components/platform/sections/tools/analysis-board/position-input), and «Jugar contra el módulo» over [`PlayVsEngine`](/components/platform/sections/tools/analysis-board/play-vs-engine).
+- **The panel** (`.platform-workspace__panel`): the page's heading, said to a screen reader only (the bar already shows the name, beside the board's drawing, `NavArt`'s `board`); a toolbar with where the board came from (the source's label, `Partida: Ana Torres – Don Chuy`, on the container's grey) and two of Material's icon buttons: «Girar el tablero» and the share, which copies the link to the position on the board (`platformRoutes.analysisBoard({ fen })`, absolute) and shows a tick for two seconds, said in a `role="status"`; the error, if any; and the [`GameViewer`](/components/chess/game-viewer/game-viewer) with `look="material"`, `flipKey={false}`, the engine, the tools and the keys under the notation. While a line against the module is on, the viewer gets `play.headline`: «Te toca mover.» with «El módulo jugó 11… b5.», or «El módulo piensa…» with «Jugaste 12. g4.».
+
+## Props
+
+| Prop           | Type                                     | Required | Meaning                                                                     |
+| -------------- | ---------------------------------------- | -------- | --------------------------------------------------------------------------- |
+| `source`       | `{ pgn: string; label: string } \| null` | yes      | What the URL named, or null for the tab's work or an empty board.           |
+| `studies`      | `{ id: string; name: string }[]`         | yes      | The person's own studies, for «Guardar en un estudio».                      |
+| `saveAction`   | `(formData: FormData) => Promise<void>`  | yes      | `saveAnalysisToStudy`.                                                      |
+| `errorMessage` | `string`                                 | no       | What an action bounced back with, already in words (`studentErrorMessage`). |
 
 ## Markup & styling
 
-**Elements:** `.analysis-board__source`, `.analysis-board__below` (the form beside a 360px column, stacked under 1024px), `.analysis-board__side`, `.analysis-board__save`
+The board is measured by the window's height (`--viewer-board-max: max(320px, calc(100vh - 300px))`, 600px under 1024px), the notation's column may reach 480px (`--viewer-panel-max`), and the toolbar runs from edge to edge of the panel over a hairline of `--platform-m3-container`. Under 1024px the side column goes above the panel, as on every workspace.
+
+**Elements:** `.analysis-board__side`, `.analysis-board__save`, `.analysis-board__group`, `.analysis-board__group-title`, `.analysis-board__caret` (turned while the group is folded; still under `prefers-reduced-motion`), `.analysis-board__panel`, `.analysis-board__title`, `.analysis-board__toolbar`, `.analysis-board__source`, `.analysis-board__source-icon`, `.analysis-board__actions`, `.analysis-board__flip-icon` (the viewer's arrows of turning, stood on end), `.analysis-board__copied`, `.analysis-board__status`

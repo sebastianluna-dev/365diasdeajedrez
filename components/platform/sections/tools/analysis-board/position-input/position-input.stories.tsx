@@ -10,8 +10,9 @@ const meta = {
       description: {
         component: `
 Where a position comes into the analysis board (K1): «FEN» and «PGN», each
-with its label, and one «Cargar». It is checked in the browser: a bad FEN or
-PGN says so under its own field and the board stays as it was.
+with its label, and one «Cargar», in the white box of the side column's
+«Cargar» (the new design system, 2026-10-23). It is checked in the browser: a
+bad FEN or PGN says so under its own field and the board stays as it was.
 
 Source: \`components/platform/sections/tools/analysis-board/position-input/position-input.comp.tsx\`.
 Reference page: [Components › PositionInput](/components/platform/sections/tools/analysis-board/position-input) in the docs site.
@@ -22,7 +23,7 @@ Reference page: [Components › PositionInput](/components/platform/sections/too
   args: { onLoad: fn().mockName("loadOnTheBoard") },
   decorators: [
     (Story) => (
-      <div style={{ maxWidth: 720 }}>
+      <div style={{ maxWidth: 256, padding: 8, background: "var(--platform-m3-canvas)" }}>
         <Story />
       </div>
     ),
@@ -32,7 +33,7 @@ Reference page: [Components › PositionInput](/components/platform/sections/too
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Both fields empty, under the board. */
+/** Both fields empty, in the side column's white box. */
 export const Empty: Story = {};
 
 /** A FEN without kings, «Cargar» pressed by its `play`: «No es un FEN válido.» under the field. */

@@ -4,6 +4,7 @@ import type { Key } from "@lichess-org/chessground/types";
 import { useState } from "react";
 import { ChessBoard } from "@/components/chess/chess-board.comp";
 import { AngleRightIcon } from "@/components/icons/angle-right-icon.comp";
+import { mdButton } from "@/lib/material/material-classes";
 import { engineLineTokens, formatEvaluation } from "@/lib/chess/engine-protocol";
 import type { PositionOutcome } from "@/lib/chess/legal-moves";
 import { sanToSpanish } from "@/lib/chess/notation";
@@ -24,6 +25,13 @@ interface EnginePanelProps {
    * notation, and that accounting belongs to the card, not the engine.
    */
   onExpandedChange?: (expanded: boolean) => void;
+  /**
+   * `material`: the new design system's (2026-10-23, the analysis board): a
+   * card with a switch before «Módulo», each evaluation a pill, and one «Ver
+   * más jugadas» under the three lines that opens them all, in place of an
+   * arrow on each.
+   */
+  look?: "material";
 }
 
 /** How many moves of each continuation are replayed. */
@@ -47,7 +55,16 @@ interface Preview {
  * evaluation is also used by the bar next to the board. Two consumers of the
  * same data called for keeping it in the place that contains them both.
  */
-export function EnginePanel({ fen, enabled, onToggle, state, flipBoard = false, onExpandedChange }: EnginePanelProps) {
+export function EnginePanel({
+  fen,
+  enabled,
+  onToggle,
+  state,
+  flipBoard = false,
+  onExpandedChange,
+  look,
+}: EnginePanelProps) {
+  const material = look === "material";
   const { lines, info, loading, outcome, failed } = state;
   // At most one expanded: collapsed they fit on one row and the three are
   // compared at a glance, which is what they are for. Opening one closes the
@@ -57,6 +74,14 @@ export function EnginePanel({ fen, enabled, onToggle, state, flipBoard = false, 
   // With the engine off nothing is expanded: it is DERIVED, instead of having
   // to remember to reset it when switching off.
   const openLine = enabled ? expanded : null;
+
+  // Material's card opens the three at once from its «Ver más jugadas».
+  const [allOpen, setAllOpen] = useState(false);
+  const everyOpen = enabled && allOpen;
+  const toggleAll = () => {
+    setAllOpen(!allOpen);
+    onExpandedChange?.(!allOpen);
+  };
 
   const toggleLine = (multipv: number) => {
     const next = expanded === multipv ? null : multipv;
@@ -70,28 +95,57 @@ export function EnginePanel({ fen, enabled, onToggle, state, flipBoard = false, 
   const [preview, setPreview] = useState<Preview | null>(null);
 
   return (
-    <div className="engine-panel" onMouseLeave={() => setPreview(null)}>
-      <div className="engine-panel__head">
-        <span className="engine-panel__label">Módulo</span>
+    <div
+      className={`engine-panel${material ? " engine-panel_look_material" : ""}`}
+      onMouseLeave={() => setPreview(null)}
+    >
+      {material ? (
+        <div className="engine-panel__head">
+          {/* The whole row is the switch, as the platform's are: the track,
+              the module's name and whether it is on. */}
+          <button
+            type="button"
+            role="switch"
+            aria-checked={enabled}
+            onClick={() => {
+              onToggle();
+              setAllOpen(false);
+            }}
+            className="engine-panel__switch"
+          >
+            <span className="engine-panel__track" aria-hidden="true">
+              <span className="engine-panel__thumb" />
+            </span>
+            <span className="engine-panel__name">Módulo</span>
+            <span className="engine-panel__state">{enabled ? "Encendido" : "Apagado"}</span>
+          </button>
+          {enabled && info && <span className="engine-panel__depth">prof. {info.depth}</span>}
+        </div>
+      ) : (
+        <div className="engine-panel__head">
+          <span className="engine-panel__label">Módulo</span>
 
-        {/* The depth goes here and not on each line: the three are analysed at
+          {/* The depth goes here and not on each line: the three are analysed at
             once and to the same depth, so repeating it three times would be noise. */}
-        {enabled && info && <span className="engine-panel__depth">prof. {info.depth}</span>}
+          {enabled && info && <span className="engine-panel__depth">prof. {info.depth}</span>}
 
-        <button
-          type="button"
-          onClick={onToggle}
-          aria-pressed={enabled}
-          className={`engine-panel__toggle${enabled ? " engine-panel__toggle_state_on" : ""}`}
-          title={enabled ? "Apagar el módulo de análisis" : "Encender el módulo de análisis"}
-        >
-          <span className="engine-panel__dot" aria-hidden="true" />
-          {enabled ? "Encendido" : "Apagado"}
-        </button>
-      </div>
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-pressed={enabled}
+            className={`engine-panel__toggle${enabled ? " engine-panel__toggle_state_on" : ""}`}
+            title={enabled ? "Apagar el módulo de análisis" : "Encender el módulo de análisis"}
+          >
+            <span className="engine-panel__dot" aria-hidden="true" />
+            {enabled ? "Encendido" : "Apagado"}
+          </button>
+        </div>
+      )}
 
       {enabled && (
-        <div className={`engine-panel__body${openLine !== null ? " engine-panel__body_state_expanded" : ""}`}>
+        <div
+          className={`engine-panel__body${openLine !== null || everyOpen ? " engine-panel__body_state_expanded" : ""}`}
+        >
           {failed ? (
             <p className="engine-panel__message">No se pudo cargar el módulo en este navegador.</p>
           ) : outcome ? (
@@ -106,7 +160,7 @@ export function EnginePanel({ fen, enabled, onToggle, state, flipBoard = false, 
                   fen,
                   steps.map((step) => step.san),
                 );
-                const isOpen = openLine === line.multipv;
+                const isOpen = material ? everyOpen : openLine === line.multipv;
 
                 return (
                   <li
@@ -138,15 +192,17 @@ export function EnginePanel({ fen, enabled, onToggle, state, flipBoard = false, 
                       ))}
                     </span>
 
-                    <button
-                      type="button"
-                      aria-expanded={isOpen}
-                      title={isOpen ? "Ver menos jugadas" : "Ver más jugadas"}
-                      onClick={() => toggleLine(line.multipv)}
-                      className={`engine-panel__more${isOpen ? " engine-panel__more_state_expanded" : ""}`}
-                    >
-                      <AngleRightIcon className="engine-panel__more-icon" />
-                    </button>
+                    {!material && (
+                      <button
+                        type="button"
+                        aria-expanded={isOpen}
+                        title={isOpen ? "Ver menos jugadas" : "Ver más jugadas"}
+                        onClick={() => toggleLine(line.multipv)}
+                        className={`engine-panel__more${isOpen ? " engine-panel__more_state_expanded" : ""}`}
+                      >
+                        <AngleRightIcon className="engine-panel__more-icon" />
+                      </button>
+                    )}
                   </li>
                 );
               })}
@@ -157,11 +213,22 @@ export function EnginePanel({ fen, enabled, onToggle, state, flipBoard = false, 
         </div>
       )}
 
+      {material && enabled && lines.length > 0 && !failed && !outcome && (
+        <button
+          type="button"
+          aria-expanded={everyOpen}
+          onClick={toggleAll}
+          className={`${mdButton("text", "xs")} engine-panel__all`}
+        >
+          {everyOpen ? "Ver menos jugadas" : "Ver más jugadas"}
+        </button>
+      )}
+
       {/* Outside the lines block, which clips whatever overflows it: the
           preview hangs below and is painted over the notation. */}
       {preview && (
         <div className="engine-panel__preview" aria-hidden="true">
-          <ChessBoard position={{ fen: preview.fen, lastMove: preview.lastMove }} flipBoard={flipBoard} />
+          <ChessBoard position={{ fen: preview.fen, lastMove: preview.lastMove }} flipBoard={flipBoard} look={look} />
         </div>
       )}
     </div>

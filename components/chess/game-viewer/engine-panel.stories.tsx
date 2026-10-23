@@ -93,20 +93,26 @@ Reference page: [Components › EnginePanel](/components/chess/game-viewer/engin
     onExpandedChange: { description: "Whether a line is expanded, for the viewer's accounting; a spy here." },
   },
   decorators: [
-    // The notation card of the viewer, as narrow as its column can be.
-    (Story) => (
-      <div
-        style={{
-          maxWidth: 400,
-          overflow: "hidden",
-          borderRadius: 8,
-          background: "var(--platform-surface)",
-          boxShadow: "var(--platform-shadow-card)",
-        }}
-      >
-        <Story />
-      </div>
-    ),
+    // The notation card of the viewer, as narrow as its column can be; the
+    // material look is a card of its own, on the workspace's white panel.
+    (Story, { args }) =>
+      args.look === "material" ? (
+        <div style={{ maxWidth: 480, padding: 16, background: "var(--platform-m3-panel)" }}>
+          <Story />
+        </div>
+      ) : (
+        <div
+          style={{
+            maxWidth: 400,
+            overflow: "hidden",
+            borderRadius: 8,
+            background: "var(--platform-surface)",
+            boxShadow: "var(--platform-shadow-card)",
+          }}
+        >
+          <Story />
+        </div>
+      ),
   ],
 } satisfies Meta<typeof EnginePanel>;
 
@@ -160,3 +166,20 @@ export const Stalemate: Story = {
 
 /** The engine could not start in this browser, said instead of a switch that does not respond. */
 export const Failed: Story = { args: { state: { ...SEARCHING, failed: true } } };
+
+/**
+ * The new design system's card (`look="material"`, the analysis board): the switch before «Módulo», each evaluation a
+ * white pill, and «Ver más jugadas» under the three lines.
+ */
+export const Material: Story = { args: { look: "material" } };
+
+/** The material card switched off: the switch and «Apagado», nothing under it. */
+export const MaterialOff: Story = { args: { look: "material", enabled: false } };
+
+/** The material card's «Ver más jugadas», pressed by its `play` function: the three lines open a second row each. */
+export const MaterialExpanded: Story = {
+  args: { look: "material" },
+  play: async ({ canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole("button", { name: "Ver más jugadas" }));
+  },
+};

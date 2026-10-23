@@ -602,9 +602,24 @@
     /* The keys but the way forward: the container's grey with the ink, as in
        the design, not Material's tonal blue (which it reads through these
        two properties of its own). */
-    & .game-viewer__key {
+    & .game-viewer__key:not(.game-viewer__key_kind_main) {
       --container-color: var(--platform-m3-container);
       --icon-color: var(--platform-m3-on-surface);
+    }
+
+    /* On a phone the keys share the width, as the platform's do, instead of
+       the last one running out of the window. */
+    @media (width < 768px) {
+      & .game-viewer__key,
+      & .game-viewer__options {
+        flex: 1 1 0;
+        min-width: 0;
+        padding-inline: 0;
+      }
+
+      & .game-viewer__options .game-viewer__key {
+        width: 100%;
+      }
     }
 
     & .game-viewer__panel {
@@ -781,6 +796,98 @@
     &:not(.game-viewer_list_notes) .game-viewer__panel {
       border: 1px solid var(--platform-m3-container-high);
       border-radius: var(--md-sys-shape-corner-lg);
+    }
+
+    /* The evaluation bar hangs from the board's LEFT edge here (the analysis
+       board, 2026-10-23), 12px wide and 8px from it; the layout gives up
+       those 20px on its left so the bar is the panel's and not the
+       padding's. Under 768px it is not drawn, and gives nothing up. */
+    & .game-viewer__layout:has(.game-viewer__evaluation) {
+      padding-left: var(--platform-space-5);
+    }
+
+    & .game-viewer__evaluation {
+      right: calc(100% + var(--platform-space-2));
+      left: auto;
+      width: 12px;
+      border-radius: 1000px;
+      /* The pieces' black and white in both themes: the platform's ink and
+         surface swap in the dark one, and the bar read upside down. */
+      background: var(--platform-m3-piece-black);
+    }
+
+    & .game-viewer__evaluation-fill {
+      background: var(--platform-m3-piece-white);
+      box-shadow: inset 0 0 0 1px var(--platform-m3-outline-variant);
+      border-radius: 0 0 1000px 1000px;
+    }
+
+    @media (width < 768px) {
+      & .game-viewer__layout:has(.game-viewer__evaluation) {
+        padding-left: 0;
+      }
+    }
+
+    /* With the engine above the notation (the analysis board and a
+       study's game, 2026-10-23), or the line against the module in its
+       place, the two are cards of their own, one under the other, as the
+       design draws them: the engine's (`EnginePanel`, outlined) and the
+       notation's, which takes the panel's outline. */
+    &:not(.game-viewer_list_notes) .game-viewer__panel:has(> .engine-panel, > .game-viewer__headline) {
+      gap: var(--platform-space-3);
+      overflow: visible;
+      border: 0;
+      border-radius: 0;
+    }
+
+    & .game-viewer__panel:has(> .engine-panel, > .game-viewer__headline) > .game-viewer__moves {
+      border: 1px solid var(--platform-m3-container-high);
+      border-radius: var(--md-sys-shape-corner-lg);
+    }
+
+    /* Playing the line against the module, in the engine's place: a card
+       filled with the primary, the board on its disc, whose turn it is in
+       the display font and what happened last under it. */
+    & .game-viewer__headline {
+      display: flex;
+      align-items: center;
+      gap: var(--platform-space-4);
+      padding: var(--platform-space-4);
+      border-radius: var(--md-sys-shape-corner-lg);
+      background: var(--platform-m3-primary);
+      color: var(--platform-m3-on-primary);
+    }
+
+    & .game-viewer__headline-disc {
+      display: grid;
+      flex: none;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--platform-m3-on-primary) 18%, transparent);
+    }
+
+    & .game-viewer__headline-icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    & .game-viewer__headline-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      margin: 0;
+    }
+
+    & .game-viewer__headline-title {
+      font-family: var(--platform-font-display);
+      font-size: var(--platform-type-xl);
+      font-weight: 500;
+    }
+
+    & .game-viewer__headline-detail {
+      font-size: var(--platform-type-xs);
     }
   }
 

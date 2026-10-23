@@ -266,6 +266,11 @@
   --platform-m3-board-ink-light: light-dark(#4f6fa3, #3f5c8c);
   --platform-m3-board-ink-dark: light-dark(#eef3fb, #eef3fb);
   --platform-m3-board-last-move: light-dark(#f2c14e, #e0b043);
+  /* The two colours of the pieces as marks off the board (the analysis
+     board's «Blancas» and «Negras», 2026-10-23): white and black in both
+     themes, since they name the pieces and not a surface. */
+  --platform-m3-piece-white: light-dark(#ffffff, #ffffff);
+  --platform-m3-piece-black: light-dark(#1f1f1f, #1f1f1f);
 
   /* MATERIAL'S OWN ROLES (`@material/web`, its Expressive components of
      `labs/gb`, 2026-10-22): its stylesheets read `--md-sys-*`, which it
