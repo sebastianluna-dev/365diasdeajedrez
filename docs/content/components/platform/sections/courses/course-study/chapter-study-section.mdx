@@ -29,8 +29,8 @@ description: "A chapter of a course being studied, in the new design system: the
 
 The panel, from top to bottom:
 
-1. **A toolbar**: Material's icon button and the course's name back to the course, «Capítulo N · name» as the trail's current step; at the right «Capítulo N de M» and the arrows to the chapters before and after (named after them; switched off at either end). It **stays under the bar** while the page scrolls, as Gmail's (`position: sticky; top: 70px`), spanning the panel on its white with the panel's top corners, drawn over a strip of the canvas so nothing scrolling under it shows through the corners; under 1024px, where the bar is no longer one row of 70px, it scrolls away.
-2. **No head of its own** (2026-10-23): the chapter's big name and its description went, since the trail already says it; the end of the trail, «Capítulo 2 · La Najdorf», is the page's `<h1>` (`__crumb-here`, at the trail's size) and what labels the panel.
+1. **A toolbar**, stuck under the bar while the page scrolls: the chapter's name, «Capítulo 2 · La Najdorf», as the page's `<h1>` (`__title`, what labels the panel), and at the right «Capítulo N de M» and the arrows to the chapters beside it. The trail back to the course (an icon button and the course's name) went on 2026-10-23: the side column leads back.
+2. **No head of its own** (2026-10-23): the chapter's big name and its description went; the toolbar's title names the chapter.
 3. **Its lessons, as rows** (as Gmail lists mail), the whole row the link: an icon that says whether the lesson is learned — a filled check (Classic Solid) in the primary's blue, or an empty ring (Classic Light) while it is not (2026-10-23; until then a green check, a play on the next one and a clock) —, its name, in bold only on the next one «Aprender» opens (the row on the container, with a «Siguiente» label), the moves of its game with how it ended (one line, cut where the row ends; a diagram's description instead), and its labels: «Prioritaria» and its length. The columns are the same on every row (the labels' one fixed at 180px), so the moves start at the same place down the list.
 4. **At the foot**, the chapters before and after by name.
 
@@ -40,9 +40,9 @@ With no lessons it says why: none marked as priority with the filter on, or none
 
 ## Markup & styling
 
-Block `.chapter-study` (259 lines), set on `.platform-workspace__panel`.
+Block `.chapter-study` (232 lines), set on `.platform-workspace__panel`.
 
-**Elements:** `__toolbar`, `__trail`, `__steps`, `__crumb`, `__crumb-step`, `__crumb-here`, `__position`, `__empty`, `__lessons`, `__lesson`, `__status`, `__status-icon`, `__status-label`, `__lesson-name`, `__next`, `__moves`, `__labels`, `__label`, `__pager`, `__pager-link`, `__pager-icon`
+**Elements:** `__toolbar`, `__title`, `__steps`, `__position`, `__empty`, `__lessons`, `__lesson`, `__status`, `__status-icon`, `__status-label`, `__lesson-name`, `__next`, `__moves`, `__labels`, `__label`, `__pager`, `__pager-link`, `__pager-icon`
 
 **Modifiers:** `__lesson_state_{done,next,later}`, `__step_state_off`
 

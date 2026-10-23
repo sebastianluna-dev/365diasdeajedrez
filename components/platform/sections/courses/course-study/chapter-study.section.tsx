@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
 import { ChevronLeftIcon } from "@/components/icons/chevron-left-icon.comp";
 import { ChevronRightIcon } from "@/components/icons/chevron-right-icon.comp";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
@@ -27,11 +26,12 @@ const isLearned = (lesson: ChapterLessonItem) => lesson.statusCode === PROGRESS_
 /**
  * A chapter of a course being studied, in the new design system (2026-10-22,
  * «M4» of the owner's canvas): the course's side column (`CourseSide`) with
- * this chapter lit, and a panel with a toolbar — back to the course, the
- * trail, «Capítulo N de M» and the arrows to the chapters beside it, stuck
- * under the bar while the page scrolls, as Gmail's (2026-10-22; the tabs
- * that filtered the lessons went the same day: a chapter has few) —, the
- * chapter's name and description, and its lessons as rows, as Gmail
+ * this chapter lit, and a panel with a toolbar — the chapter's name as the
+ * page's title, «Capítulo N de M» and the arrows to the chapters beside it,
+ * stuck under the bar while the page scrolls, as Gmail's (2026-10-22; the
+ * tabs that filtered the lessons went the same day: a chapter has few; the
+ * trail back to the course and the big name and description, 2026-10-23) —,
+ * and its lessons as rows, as Gmail
  * lists mail: an icon that says where the lesson is (learned, next, still to
  * come), its name — «Siguiente» on the one «Aprender» opens —, the moves of
  * its game with how it ended, and its labels. At the foot, the chapters
@@ -55,21 +55,12 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
 
       <section className="platform-workspace__panel chapter-study" aria-labelledby="chapter-study-name">
         <div className="chapter-study__toolbar">
-          <nav className="chapter-study__trail" aria-label="Dónde estás">
-            <Link href={course.studyHref} className={mdIconButton("standard", "sm")} aria-label="Volver al curso">
-              <ArrowLeftIcon variant="classic-solid" className="platform-md-icon" />
-            </Link>
-            <Link href={course.studyHref} className="chapter-study__crumb">
-              {course.name}
-            </Link>
-            <ChevronRightIcon variant="classic-solid" className="chapter-study__crumb-step" />
-            {/* The page's heading: the chapter, where the trail ends (its big
-                name and description above the lessons went on 2026-10-23,
-                since the trail already says it). */}
-            <h1 id="chapter-study-name" className="chapter-study__crumb-here" aria-current="page">
-              Capítulo {chapter.order} · {chapter.name}
-            </h1>
-          </nav>
+          {/* The page's heading, the toolbar's title (2026-10-23: the trail
+              back to the course went, and the chapter's big name and
+              description with it; the side column leads back). */}
+          <h1 id="chapter-study-name" className="chapter-study__title">
+            Capítulo {chapter.order} · {chapter.name}
+          </h1>
 
           <nav className="chapter-study__steps" aria-label="Capítulos vecinos">
             <span className="chapter-study__position">

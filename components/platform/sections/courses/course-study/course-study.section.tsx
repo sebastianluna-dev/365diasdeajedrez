@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
 import { ArrowRotateLeftIcon } from "@/components/icons/arrow-rotate-left-icon.comp";
 import { ChevronRightIcon } from "@/components/icons/chevron-right-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
@@ -9,8 +8,7 @@ import { PlatformNotice } from "@/components/platform/shared/platform-notice/pla
 import { PlatformSettingsToggle } from "@/components/platform/shared/platform-settings-toggle/platform-settings-toggle.comp";
 import { PlatformHeaderContext } from "@/components/platform/sections/shell/platform-header-context.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
-import { mdButton, mdCard, mdIconButton } from "@/lib/material/material-classes";
-import { platformRoutes } from "@/lib/platform-routes";
+import { mdButton, mdCard } from "@/lib/material/material-classes";
 import { countLessons } from "@/services/courses/course-rules";
 import type { CourseChapterItem, CourseDetail } from "@/services/courses/courses.types";
 import { levelSpan } from "../course-card.comp";
@@ -66,7 +64,7 @@ function chapterStates(chapters: CourseChapterItem[]): Map<string, ChapterState>
  * The course to study, in the new design system (2026-10-22, «M4» of the
  * owner's canvas): a workspace whose side column is the course's
  * (`CourseSide`: «Aprender» and its chapters) and whose panel
- * holds, under a toolbar back to «Tus cursos», the course — its picture, its
+ * holds the course — its picture, its
  * name, who wrote it and what it is about, how far it is, «Aprender» and
  * «Repasar» — and its chapters as cards: their number and state, their
  * name and description, how far each is and what pressing it does.
@@ -102,23 +100,6 @@ export function CourseStudySection({ course, errorCode }: CourseStudySectionProp
       </div>
 
       <section className="platform-workspace__panel course-study" aria-labelledby="course-study-name">
-        <nav className="course-study__toolbar" aria-label="Dónde estás">
-          <Link
-            href={platformRoutes.courses}
-            className={mdIconButton("standard", "sm")}
-            aria-label="Volver a tus cursos"
-          >
-            <ArrowLeftIcon variant="classic-solid" className="platform-md-icon" />
-          </Link>
-          <Link href={platformRoutes.courses} className="course-study__crumb">
-            Tus cursos
-          </Link>
-          <ChevronRightIcon variant="classic-solid" className="course-study__crumb-step" />
-          <span className="course-study__crumb-here" aria-current="page">
-            {course.name}
-          </span>
-        </nav>
-
         {errorMessage && <PlatformNotice message={errorMessage} />}
 
         <header className="course-study__hero">

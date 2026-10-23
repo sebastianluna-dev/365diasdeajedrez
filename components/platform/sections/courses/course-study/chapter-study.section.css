@@ -12,7 +12,7 @@
     justify-content: space-between;
     gap: var(--platform-space-4);
     margin: calc(-1 * var(--platform-space-6)) calc(-1 * var(--platform-space-6)) 0;
-    padding: var(--platform-space-2) var(--platform-space-6) var(--platform-space-2) var(--platform-space-4);
+    padding: var(--platform-space-2) var(--platform-space-6);
     isolation: isolate;
 
     /* Its white, with the panel's top corners, drawn over a strip of the
@@ -42,48 +42,21 @@
     }
   }
 
-  & .chapter-study__trail,
-  & .chapter-study__steps {
-    display: flex;
-    align-items: center;
-    gap: var(--platform-space-2);
-    min-width: 0;
-  }
-
   & .chapter-study__steps {
     flex: none;
+    display: flex;
+    align-items: center;
     gap: var(--platform-space-1);
   }
 
-  & .chapter-study__crumb {
-    flex: none;
-    max-width: 40%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: var(--platform-m3-on-surface-variant);
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  & .chapter-study__crumb-step {
-    flex: none;
-    width: 10px;
-    height: 10px;
-    color: var(--platform-m3-outline);
-  }
-
-  /* The page's heading, at the end of the trail: the trail's own size. */
-  & .chapter-study__crumb-here {
-    margin: 0;
-    font-size: inherit;
+  /* The page's heading: the chapter, as the toolbar's title. */
+  & .chapter-study__title {
     min-width: 0;
+    margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-size: var(--platform-type-sm);
     font-weight: 600;
   }
 
