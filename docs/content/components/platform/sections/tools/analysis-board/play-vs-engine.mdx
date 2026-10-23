@@ -1,21 +1,23 @@
 ---
-description: "«Jugar esta posición contra el módulo»: the colour and the button while analysing; the selection's blue band with whose turn it is, how it ended and «Volver al análisis» while playing."
+description: "«Jugar contra el módulo» in the analysis board's side column: the colour and «Jugar esta posición» while analysing; the pale blue box with the person's colour, how it ended and «Volver al análisis» while playing."
 ---
 
 # `PlayVsEngine`
 
-|            |                                                                                                                            |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/tools/analysis-board/play-vs-engine/play-vs-engine.comp.tsx`                                 |
-| Kind       | Client Component                                                                                                           |
-| Stylesheet | `play-vs-engine.comp.css` → block `.play-vs-engine`                                                                        |
-| Story      | `play-vs-engine.stories.tsx` (`platform/sections/tools/analysis-board/PlayVsEngine`): analysing, your turn, thinking, over |
-| Used by    | [`AnalysisBoardSection`](/components/platform/sections/tools/analysis-board/analysis-board-section)                        |
-| Uses       | [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards), `ChessKingPieceIcon`, `ArrowLeftIcon`          |
+|            |                                                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/tools/analysis-board/play-vs-engine/play-vs-engine.comp.tsx`                                                       |
+| Kind       | Client Component                                                                                                                                 |
+| Stylesheet | `play-vs-engine.comp.css` → block `.play-vs-engine` (84 lines)                                                                                   |
+| Story      | `play-vs-engine.stories.tsx` (`platform/sections/tools/analysis-board/PlayVsEngine`): analysing, playing with White and with Black, failed, over |
+| Used by    | [`AnalysisBoardSection`](/components/platform/sections/tools/analysis-board/analysis-board-section)                                              |
+| Uses       | [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards), `mdButton`, `PlayIcon`, `XmarkIcon`                                  |
 
 ## Purpose
 
-Planning decision B, drawn as T3 asks. Analysing, a card: what it does («A máxima potencia y al instante, sin reloj. Lo que juegues queda como variante del análisis.»), the colour as two cards — the side to move at the node on the board first — and «Jugar contra el módulo». Playing, the band above the board in the selection's blue: «Juegas con blancas contra el módulo», then «Te toca mover.», «El módulo piensa…» or how it ended («Jaque mate: ganaste.»), said politely to a screen reader, and «Volver al análisis».
+Planning decision B, drawn as T3 asks and, since 2026-10-23, as the new design system's side column draws it: the white box under the group «Jugar contra el módulo». Analysing, the colour as two cells of `PlatformChoiceCards` (`layout="line"`), each the disc of its colour before its name — the side to move at the node on the board first — and Material's tonal «Jugar esta posición». Playing, the box turns the pale blue of `--platform-m3-info-container`: «Juegas con blancas» after its disc, «Lo que juegues queda como variante del análisis.» or how it ended («Jaque mate: ganaste.», «El módulo dejó de responder. Lo jugado queda como variante.»), said politely to a screen reader, and «Volver al análisis» on white. Whose turn it is is no longer said here: the panel says it in the engine's place (`GameViewer`'s `play.headline`).
+
+Dropped in the move: the box's own heading (the group's title says it) and its line «A máxima potencia y al instante, sin reloj.», which the design leaves out; the module still plays that way.
 
 ## Props
 
@@ -28,6 +30,8 @@ Planning decision B, drawn as T3 asks. Analysing, a card: what it does («A máx
 
 ## Markup & styling
 
-**Elements:** `.play-vs-engine__heading`, `.play-vs-engine__note`, `.play-vs-engine__piece`, `.play-vs-engine__start`, `.play-vs-engine__text`, `.play-vs-engine__title`, `.play-vs-engine__status`
+The discs are the pieces' colours, the same in both themes (`--platform-m3-piece-white`, `--platform-m3-piece-black`). The choice cards keep their radio's mark and the selection's blue; this block only lays each cell out in a row and a size down (rules of four classes, to outweigh the line layout's three). «Volver al análisis» is Material's elevated button made flat and white (`--container-elevation: none`, `--container-color: var(--platform-m3-panel)`).
 
-**Modifiers:** `.play-vs-engine_state_playing` (the band: `--platform-selection-wash` with a 4px edge of `--platform-selection`)
+**Elements:** `.play-vs-engine__dot`, `.play-vs-engine__start`, `.play-vs-engine__back`, `.play-vs-engine__title`, `.play-vs-engine__note`
+
+**Modifiers:** `.play-vs-engine_state_playing` (the box in `--platform-m3-info-container`, its text in `--platform-m3-on-info-container`), `.play-vs-engine__dot_side_white`, `.play-vs-engine__dot_side_black`

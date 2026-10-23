@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { FEN_MAX_LENGTH, readPositionInput } from "@/lib/chess/position-input";
 import { PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
+import { mdButton } from "@/lib/material/material-classes";
 import "./position-input.comp.css";
 
 interface PositionInputProps {
@@ -12,11 +13,12 @@ interface PositionInputProps {
 }
 
 /**
- * Where a position comes in (K1): two fields with their labels under the
- * board, «FEN» and «PGN», and one «Cargar» that reads whichever has text — the
- * PGN when both do. It is checked here, before anything changes: a bad FEN or
- * PGN says so under its own field and the board stays as it was. Nothing
- * travels to the server.
+ * Where a position comes in (K1): two fields with their labels, «FEN» and
+ * «PGN», and one «Cargar» that reads whichever has text — the PGN when both
+ * do. It is checked here, before anything changes: a bad FEN or PGN says so
+ * under its own field and the board stays as it was. Nothing travels to the
+ * server. In the new design system (2026-10-23) it is the white box of the
+ * side column's «Cargar», with Material's tonal button.
  */
 export function PositionInput({ onLoad }: PositionInputProps) {
   const [error, setError] = useState<{ field: "fen" | "pgn"; message: string } | null>(null);
@@ -47,13 +49,13 @@ export function PositionInput({ onLoad }: PositionInputProps) {
           maxLength={FEN_MAX_LENGTH}
           spellCheck={false}
           autoComplete="off"
-          placeholder="rnbqkbnr/pppppppp/8/…"
+          placeholder="Pega una posición"
         />
       </PlatformFormField>
       <PlatformFormField name="pgn" label="PGN" serverError={error?.field === "pgn" ? error.message : undefined}>
-        <textarea rows={4} maxLength={PGN_MAX_LENGTH} spellCheck={false} placeholder="1. e4 e5 2. Cf3…" />
+        <textarea rows={2} maxLength={PGN_MAX_LENGTH} spellCheck={false} placeholder="Pega una partida" />
       </PlatformFormField>
-      <button type="submit" className="platform-button position-input__submit">
+      <button type="submit" className={`${mdButton("tonal", "sm")} position-input__submit`}>
         Cargar
       </button>
     </PlatformForm>

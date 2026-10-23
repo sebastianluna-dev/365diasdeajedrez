@@ -2431,16 +2431,16 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             <Tile
               name="PositionInput"
               docs="platform-sections-tools-analysis-board-positioninput"
-              width={400}
-              height={360}
+              width={256}
+              height={320}
             >
               <PositionInput onLoad={() => undefined} />
             </Tile>
             <Tile
               name="PlayVsEngine"
               docs="platform-sections-tools-analysis-board-playvsengine"
-              width={400}
-              height={280}
+              width={256}
+              height={320}
             >
               <div className="overview__stack">
                 <PlayVsEngine sideToMove="white" playing={null} onStart={() => undefined} onStop={() => undefined} />

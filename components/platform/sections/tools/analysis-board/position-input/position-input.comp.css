@@ -1,11 +1,51 @@
-/* Under the board: the two fields and «Cargar» at the end. */
+/* The side column's «Cargar» (the new design system, 2026-10-23): a white
+   box on the canvas, the two fields compact enough for its 240px, what is
+   pasted in the monospaced face, and Material's tonal «Cargar» across it. */
 .position-input {
-  padding: var(--platform-space-5);
-  border-radius: 8px;
-  background: var(--platform-surface);
-  box-shadow: var(--platform-shadow-card);
+  gap: var(--platform-space-3);
+  padding: var(--platform-space-3);
+  border-radius: var(--md-sys-shape-corner-lg);
+  background: var(--platform-m3-panel);
+
+  & .platform-form__field {
+    gap: var(--platform-space-1);
+  }
+
+  & .platform-form__label,
+  & .platform-form__hint {
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .platform-form__field > input,
+  & .platform-form__field > textarea {
+    border-color: var(--platform-m3-outline);
+    background: var(--platform-m3-panel);
+    color: var(--platform-m3-on-surface);
+    font-family: var(--platform-font-mono);
+    font-size: var(--platform-type-2xs);
+    line-height: 1.4;
+  }
+
+  & .platform-form__field > input::placeholder,
+  & .platform-form__field > textarea::placeholder {
+    color: var(--platform-m3-on-surface-variant);
+    font-family: var(--platform-font);
+  }
+
+  & .platform-form__field > textarea {
+    min-height: 64px;
+  }
+
+  /* The focus in the primary's blue, as Material draws it; a field with an
+     error keeps the form's red. */
+  & .platform-form__field:not([data-invalid]) > input:focus,
+  & .platform-form__field:not([data-invalid]) > textarea:focus {
+    outline: 1px solid var(--platform-m3-primary);
+    border-color: var(--platform-m3-primary);
+  }
 
   & .position-input__submit {
-    align-self: flex-end;
+    align-self: stretch;
   }
 }

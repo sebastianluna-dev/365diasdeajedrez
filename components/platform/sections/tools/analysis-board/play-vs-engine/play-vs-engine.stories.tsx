@@ -12,10 +12,12 @@ const meta = {
     docs: {
       description: {
         component: `
-«Jugar esta posición contra el módulo» on the analysis board (B, T3).
-Analysing, the colour — the side to move by default — and the button;
-playing, the selection's blue band with whose turn it is, how it ended, and
-«Volver al análisis», which leaves the line as a variation.
+«Jugar contra el módulo» in the analysis board's side column (B, T3; the
+new design system, 2026-10-23). Analysing, a white box with the colour — the
+side to move by default — and «Jugar esta posición»; playing, the box in the
+pale blue of the info container with the person's colour, that the line stays as
+a variation or how it ended, and «Volver al análisis». Whose turn it is is
+said on the panel, in the engine's place.
 
 Source: \`components/platform/sections/tools/analysis-board/play-vs-engine/play-vs-engine.comp.tsx\`.
 Reference page: [Components › PlayVsEngine](/components/platform/sections/tools/analysis-board/play-vs-engine) in the docs site.
@@ -26,7 +28,7 @@ Reference page: [Components › PlayVsEngine](/components/platform/sections/tool
   args: { sideToMove: "white", playing: null, onStart: fn().mockName("start"), onStop: fn().mockName("stop") },
   decorators: [
     (Story) => (
-      <div style={{ maxWidth: 720 }}>
+      <div style={{ maxWidth: 256, padding: 8, background: "var(--platform-m3-canvas)" }}>
         <Story />
       </div>
     ),
@@ -39,14 +41,19 @@ type Story = StoryObj<typeof meta>;
 /** Analysing, with Black to move at the node: Black is offered first. */
 export const Idle: Story = { args: { sideToMove: "black" } };
 
-/** Playing with White, the person's turn. */
-export const YourTurn: Story = {
+/** Playing with White: the box in the pale blue of the info container, the line kept as a variation, the way back. */
+export const Playing: Story = {
   args: { playing: { color: "white", status: "your-turn", end: null, failed: false } },
 };
 
-/** The module answering. */
-export const Thinking: Story = {
-  args: { playing: { color: "white", status: "thinking", end: null, failed: false } },
+/** Playing with Black, the module answering: the black disc before «Juegas con negras». */
+export const PlayingBlack: Story = {
+  args: { playing: { color: "black", status: "thinking", end: null, failed: false } },
+};
+
+/** The module stopped answering: the line ends where it is, and stays. */
+export const Failed: Story = {
+  args: { playing: { color: "white", status: "over", end: null, failed: true } },
 };
 
 /** The line ended in mate for the person: «Jaque mate: ganaste.» */

@@ -1,34 +1,171 @@
-/* The analysis board: the band when playing the module, the viewer, and
-   under it the FEN/PGN form beside the module and «Guardar en un estudio». */
+/* The analysis board in the new design system (2026-10-23, «M4» of the
+   owner's canvas), on `.platform-workspace`: the side column with the FAB
+   and its two groups, and the panel with its toolbar over the viewer. */
 .analysis-board {
-  display: grid;
-  gap: var(--platform-space-4);
-
-  & .analysis-board__source {
-    margin: 0;
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
-  }
-
-  & .analysis-board__below {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
-    align-items: start;
-    gap: var(--platform-space-4);
-  }
+  /* The board is measured by the window's height: all of it but the bar,
+     the panel's padding, the toolbar and the tabs of the tools under the
+     board, which stay in sight. The floor keeps it from becoming a stamp. */
+  --viewer-board-max: max(320px, calc(100vh - 300px));
+  /* The notation's column reads wider than the viewer's 400px here: the
+     engine's lines and the table share it, as in the design. */
+  --viewer-panel-max: 480px;
+  --viewer-column-gap: var(--platform-space-6);
 
   & .analysis-board__side {
-    display: grid;
-    gap: var(--platform-space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-1) 0 var(--platform-space-4);
   }
 
+  /* Material's extended FAB at the top of the column, as `PlatformSideNav`
+     draws its action: flat at rest, onto a shadow under the pointer. */
   & .analysis-board__save {
-    justify-self: start;
+    --container-elevation: none;
+
+    align-self: flex-start;
+    margin: 0 0 var(--platform-space-2) var(--platform-space-2);
+
+    &:hover {
+      --container-elevation: var(--md-sys-elevation-shadow-3);
+      --ripple-hover-opacity: 0%;
+    }
+  }
+
+  /* A group of the column, folded from its title as a disclosure: «Cargar»
+     and «Jugar contra el módulo», each over its white box. */
+  & .analysis-board__group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+  }
+
+  & .analysis-board__group-title {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    min-height: 32px;
+    padding: 0 var(--platform-space-3);
+    border-radius: 0 1000px 1000px 0;
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface);
+    list-style: none;
+    cursor: pointer;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &:hover {
+      background: var(--platform-m3-container-high);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-m3-primary);
+      outline-offset: -2px;
+    }
+  }
+
+  & .analysis-board__caret {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    color: var(--platform-m3-on-surface-variant);
+    transform: rotate(-90deg);
+    transition: transform 160ms ease-out;
+  }
+
+  & .analysis-board__group[open] .analysis-board__caret {
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .analysis-board__caret {
+      transition: none;
+    }
+  }
+
+  & .analysis-board__group > :not(summary) {
+    margin-left: var(--platform-space-2);
+  }
+
+  & .analysis-board__panel {
+    gap: var(--platform-space-4);
+    padding-top: var(--platform-space-3);
+  }
+
+  /* Where the board came from at the left, turning it and sharing it at the
+     right, over a hairline. */
+  & .analysis-board__toolbar {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    min-height: 40px;
+    margin: 0 calc(-1 * var(--platform-space-6));
+    padding: 0 var(--platform-space-3) var(--platform-space-3) var(--platform-space-6);
+    border-bottom: 1px solid var(--platform-m3-container);
+  }
+
+  & .analysis-board__source {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    min-width: 0;
+    height: 32px;
+    padding: 0 var(--platform-space-3);
+    border-radius: 8px;
+    background: var(--platform-m3-container);
+    color: var(--platform-m3-on-surface-variant);
+    font-size: var(--platform-type-xs);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  & .analysis-board__source-icon {
+    flex: none;
+    width: 14px;
+    height: 14px;
+  }
+
+  & .analysis-board__actions {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* The viewer's own arrows of turning, stood on end as the design draws them. */
+  & .analysis-board__flip-icon {
+    transform: rotate(90deg);
+  }
+
+  & .analysis-board__copied {
+    color: var(--platform-m3-success);
+  }
+
+  /* Said to a screen reader, not drawn: the bar already names the page, and
+     the tick says the link was copied. */
+  & .analysis-board__title,
+  & .analysis-board__status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    margin: 0;
+    white-space: nowrap;
   }
 
   @media (width < 1024px) {
-    & .analysis-board__below {
-      grid-template-columns: minmax(0, 1fr);
+    --viewer-board-max: 600px;
+  }
+
+  @media (width < 640px) {
+    & .analysis-board__toolbar {
+      margin: 0 calc(-1 * var(--platform-space-4));
+      padding: 0 var(--platform-space-2) var(--platform-space-3) var(--platform-space-4);
     }
   }
 }
