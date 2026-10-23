@@ -1,22 +1,22 @@
 ---
-description: "The lesson's side column in the workspace: the course with how far it is, the priority switch, and its chapters, which fold open on their lessons, the lesson being read lit."
+description: "The lesson's side column in the workspace: the course with how far it is, and the chapter the lesson is in with its lessons, the one being read lit."
 ---
 
 # `LessonOutline`
 
-|            |                                                                                                                                                                                       |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/lesson-view/lesson-outline.comp.tsx`                                                                                                            |
-| Kind       | Server Component                                                                                                                                                                      |
-| Stylesheet | `lesson-outline.comp.css` → block `.lesson-outline`                                                                                                                                   |
-| Used by    | [`LessonFrame`](/components/platform/sections/courses/lesson-view/lesson-frame)                                                                                                       |
-| Composes   | [`OutlineList`](/components/platform/sections/courses/lesson-view/outline-list), [`PriorityLessonsFilter`](/components/platform/sections/courses/lesson-view/priority-lessons-filter) |
-| Uses       | `PROGRESS_STATUS` from `constants/platform/shared-codes.const`<br />`CourseOutline` from `services/courses/courses.types`                                                             |
-| Writes     | `setOnlyPriorityLessons()` · `services/courses/courses.actions.ts`                                                                                                                    |
+|            |                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/lesson-view/lesson-outline.comp.tsx`                                                |
+| Kind       | Server Component                                                                                                          |
+| Stylesheet | `lesson-outline.comp.css` → block `.lesson-outline`                                                                       |
+| Used by    | [`LessonFrame`](/components/platform/sections/courses/lesson-view/lesson-frame)                                           |
+| Composes   | [`OutlineList`](/components/platform/sections/courses/lesson-view/outline-list)                                           |
+| Uses       | `PROGRESS_STATUS` from `constants/platform/shared-codes.const`<br />`CourseOutline` from `services/courses/courses.types` |
+| Writes     | `setOnlyPriorityLessons()` · `services/courses/courses.actions.ts`                                                        |
 
 ## Purpose
 
-Where the lesson stands: the course at the top, its chapters under it and, in the open one, its lessons, with the one being read lit. It is the course condensed into a column, so moving on to the next lesson does not mean going back twice.
+Where the lesson stands: the course at the top and, under it, the chapter the lesson is in with its lessons, the one being read lit. It is the chapter's page condensed into a column, so moving on to the next lesson does not mean going back to it.
 
 Since 2026-10-22 it is the **side of the workspace** of the new design system (see [Styling](/ui/styling#the-new-design-system-material-3-expressive)), as [`CourseSide`](/components/platform/sections/courses/course-study/course-side) is on the course's and the chapter's pages: on the canvas, at the left of the panel, with the rhythm of [`PlatformSideNav`](/components/platform/shared/platform-side-nav). On a wide window the side scrolls on its own and the page does not ([`LessonFrame`](/components/platform/sections/courses/lesson-view/lesson-frame)).
 
@@ -24,25 +24,24 @@ It belongs to the **chapter's layout** and not to the lesson's page, which is wh
 
 ## Props
 
-| Prop      | Type            | Required | Meaning                                                                                                                                                                                                                                                           |
-| --------- | --------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `outline` | `CourseOutline` | yes      | The course (`courseId`, `courseName`, `courseHref`, `courseThumbnail?`, `onlyPriorityLessons`) and its `chapters` (`OutlineChapter[]`: `id`, `name`, `lessons`). One object, read by the chapter's segment: the column takes the model and decides what it draws. |
+| Prop      | Type            | Required | Meaning                                                                                                                                                                                                                                                              |
+| --------- | --------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `outline` | `CourseOutline` | yes      | The course (`courseId`, `courseName`, `courseHref`, `courseThumbnail?`, `progress`) and its `chapter` (`OutlineChapter`: `id`, `order`, `name`, `href`, `lessons`). One object, read by the chapter's segment: the column takes the model and decides what it draws. |
 
 ## Behaviour
 
-- **The course's head**: its picture (40px), its name — the column's way back to the course's page, underlined under the pointer — and how far it is, «X % · N de M lecciones», counted from the very lessons the column lists, so the figure and the marks can never differ and the priority filter takes lessons out of both at once.
-- **The priority switch** under it, «Sólo lecciones de prioridad» — the same per-course setting the course's side offers through [`LearnMode`](/components/platform/sections/courses/course-study/learn-mode) — in [`PriorityLessonsFilter`](/components/platform/sections/courses/lesson-view/priority-lessons-filter), the column's client leaf. It takes effect the moment it is pressed; it is still a `<form action={setOnlyPriorityLessons…}>`, and where it comes back to is the lesson being read, which [`CurrentPathField`](/components/platform/shared/current-path-field) puts in a hidden `returnTo`.
-- **The chapters**, in [`OutlineList`](/components/platform/sections/courses/lesson-view/outline-list): each folds open on its lessons, and the lesson's chapter is open on arrival.
+- **The course's head**: its picture (40px), its name — the column's way back to the course's page, underlined under the pointer — and how far it is, «X % · N de M lecciones», counted over the course's lessons in view (`progress`, from the mapper), so the priority filter takes lessons out of it as it does from the list.
+- **The chapter the lesson is in**, alone (2026-10-23; until then every chapter of the course, folding), in [`OutlineList`](/components/platform/sections/courses/lesson-view/outline-list). There is no switch for the priority lessons any more: that setting is the course's settings panel's ([`CourseSettings`](/components/platform/sections/courses/course-study/course-settings)).
 - The list is the **same sequence** `prevLessonHref`/`nextLessonHref` walk: the mapper builds both from `flattenLessons`, so a lesson hidden by the priority filter is missing from the column and from the toolbar's arrows alike.
 - The whole `<nav>` is labelled "Lecciones del curso", and each chapter's `<section>` by its name.
 
 ## Markup & styling
 
-Block `.lesson-outline` (221 lines), drawn with the `--platform-m3-*` roles. The rows are the workspace side's: 36px high, square on the left and round on the right (`0 1000px 1000px 0`), `--platform-m3-container-high` under the pointer, and the lesson being read on `--platform-m3-secondary-container`, bold. A chapter's number sits in a 20px disc, the success green with a check once all its lessons are learned; a learned lesson's mark is `CircleCheckIcon` (Classic Solid) in the primary's blue, as on the chapter's page (2026-10-23; it was the success green, in Duotone Solid), the one being read a play, the rest a clock. The chapter's chevron turns when it opens; under `prefers-reduced-motion` it does not animate.
+Block `.lesson-outline` (171 lines), drawn with the `--platform-m3-*` roles. The rows are the workspace side's: 36px high, square on the left and round on the right (`0 1000px 1000px 0`), `--platform-m3-container-high` under the pointer, and the lesson being read on `--platform-m3-secondary-container`, bold. The chapter's head is a link to its page: «Capítulo 2» small over its name in bold, and «learned/total». A learned lesson's mark is `CircleCheckIcon` (Classic Solid) in the primary's blue, as on the chapter's page (2026-10-23; it was the success green), the one being read a play, the rest a clock.
 
-**Elements:** `.lesson-outline__course`, `.lesson-outline__thumb`, `.lesson-outline__thumb-image`, `.lesson-outline__about`, `.lesson-outline__course-name`, `.lesson-outline__figures`, `.lesson-outline__filter` (the switch's form, drawn by `PriorityLessonsFilter`), `.lesson-outline__chapters`, `.lesson-outline__title`, `.lesson-outline__section`, `.lesson-outline__chapter`, `.lesson-outline__badge`, `.lesson-outline__badge-check`, `.lesson-outline__chapter-name`, `.lesson-outline__count`, `.lesson-outline__fold`, `.lesson-outline__list`, `.lesson-outline__lesson`, `.lesson-outline__name`, `.lesson-outline__mark`
+**Elements:** `.lesson-outline__course`, `.lesson-outline__thumb`, `.lesson-outline__thumb-image`, `.lesson-outline__about`, `.lesson-outline__course-name`, `.lesson-outline__figures`, `.lesson-outline__chapters`, `.lesson-outline__chapter`, `.lesson-outline__chapter-text`, `.lesson-outline__title`, `.lesson-outline__chapter-name`, `.lesson-outline__count`, `.lesson-outline__list`, `.lesson-outline__lesson`, `.lesson-outline__name`, `.lesson-outline__mark`
 
-**Modifiers and states:** `.lesson-outline__chapter_state_current`, `.lesson-outline__badge_state_done`, `.lesson-outline__lesson_state_current`, `.lesson-outline__mark_state_done`; `aria-expanded` on a chapter turns its chevron.
+**Modifiers and states:** `.lesson-outline__lesson_state_current`, `.lesson-outline__mark_state_done`
 
 ## Usage
 

@@ -17,7 +17,7 @@ function lesson(id: string, name: string, statusCode: LessonSibling["statusCode"
 
 /** A chapter of the course, by its order, name and lessons. */
 function chapter(order: number, name: string, lessons: LessonSibling[]): OutlineChapter {
-  return { id: `capitulo-${order}`, name, lessons };
+  return { id: `capitulo-${order}`, order, name, href: `/cursos/${COURSE}/${order}`, lessons };
 }
 
 const { COMPLETED, IN_PROGRESS, NOT_STARTED } = PROGRESS_STATUS;
@@ -32,16 +32,6 @@ const LESSONS: LessonSibling[] = [
   lesson("peon-de-torre", "Torre y peón de torre", NOT_STARTED),
   lesson("repaso", "Repaso: ocho finales para resolver", NOT_STARTED),
 ];
-
-/** The chapters around it: one before, all done, and one after, not started. */
-const FIRST_CHAPTER = chapter(1, "Rey y peones: lo que hay que saber antes", [
-  lesson("oposicion", "La oposición", COMPLETED, 1),
-  lesson("cuadrado", "La regla del cuadrado", COMPLETED, 1),
-]);
-const LAST_CHAPTER = chapter(3, "Torre contra pieza menor", [
-  lesson("torre-alfil", "Torre contra alfil: la esquina buena", NOT_STARTED, 3),
-  lesson("torre-caballo", "Torre contra caballo", NOT_STARTED, 3),
-]);
 
 /** A long chapter: sixteen lessons, the first twelve done. */
 const LONG_CHAPTER: LessonSibling[] = [
@@ -71,14 +61,12 @@ const meta = {
     docs: {
       description: {
         component: `
-The course's chapters in the lesson's side column (the new design system):
-each a row with its number — the success green with a check once every
-lesson of it is learned —, its name and how many of its lessons are learned,
-which opens and closes its lessons. The chapter of the lesson being read is
-open on arrival and its lesson lit: that row is not a link, it carries
-\`aria-current="page"\` and a play; a lesson learned carries the check, the
-rest a clock. On every change of pathname the lesson being read is brought
-into view when the column's scroll leaves it cut off.
+The chapter in the lesson's side column (the new design system): its number
+and name — a link to its page — and how many of its lessons are learned,
+then its lessons. A lesson learned carries the blue check, the one being
+read (not a link, \`aria-current="page"\`) a play, the rest a clock. On
+every change of pathname the lesson being read is brought into view when
+the column's scroll leaves it cut off.
 
 The list has no stylesheet of its own: it imports the column's
 (\`lesson-outline.comp.css\`), and the story mounts it in the column's
@@ -92,13 +80,13 @@ Reference page: [Components › OutlineList](/components/platform/sections/cours
     },
   },
   args: {
-    chapters: [FIRST_CHAPTER, chapter(2, "Finales de torre que hay que saber", LESSONS), LAST_CHAPTER],
+    chapter: chapter(2, "Finales de torre que hay que saber", LESSONS),
   },
   argTypes: {
-    chapters: {
+    chapter: {
       control: "object",
       description:
-        "`OutlineChapter[]` (`id`, `name`, `href`, `lessons`) in reading order, each lesson a `LessonSibling` (`id`, `name`, `href`, `statusCode`); the row whose `href` is the pathname is the one being read.",
+        "`OutlineChapter` (`id`, `order`, `name`, `href`, `lessons`), each lesson a `LessonSibling` (`id`, `name`, `href`, `statusCode`); the row whose `href` is the pathname is the one being read.",
     },
   },
   decorators: [
@@ -122,7 +110,7 @@ Reference page: [Components › OutlineList](/components/platform/sections/cours
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** The whole course, three chapters: the first all learned (its number a check), the second open with two lessons done, the third being read, and one done ahead of its turn; the third closed. */
+/** The chapter midway: two lessons learned, the third being read, one learned ahead of its turn, the rest to come. */
 export const MidChapter: Story = {};
 
 /** Going back to a lesson already done: the row being read carries its check, lit. */
@@ -130,9 +118,9 @@ export const RereadingADoneLesson: Story = {
   parameters: { nextjs: { navigation: { pathname: href("philidor") } } },
 };
 
-/** A long course in a column that scrolls: the lesson being read, thirteenth of the long second chapter, is brought into view on mount and is scrolled to the nearest edge of the column. */
+/** A long chapter in a column that scrolls: the lesson being read, the thirteenth, is brought into view on mount. */
 export const LongChapter: Story = {
-  args: { chapters: [FIRST_CHAPTER, chapter(2, "Finales que hay que saber", LONG_CHAPTER), LAST_CHAPTER] },
+  args: { chapter: chapter(2, "Finales que hay que saber", LONG_CHAPTER) },
   parameters: {
     columnHeight: 440,
     nextjs: { navigation: { pathname: href("leccion-13") } },

@@ -2,9 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { CheckIcon } from "@/components/icons/check-icon.comp";
-import { ChevronDownIcon } from "@/components/icons/chevron-down-icon.comp";
+import { useEffect, useRef } from "react";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
 import { ClockIcon } from "@/components/icons/clock-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
@@ -15,19 +13,17 @@ import type { OutlineChapter } from "@/services/courses/courses.types";
 import "./lesson-outline.comp.css";
 
 interface OutlineListProps {
-  /** Every chapter of the course with its lessons, in reading order. */
-  chapters: OutlineChapter[];
+  /** The chapter the lesson is in, with its lessons in reading order. */
+  chapter: OutlineChapter;
 }
 
 const isDone = (statusCode: string) => statusCode === PROGRESS_STATUS.COMPLETED;
 
 /**
- * The course's chapters in the lesson's side column (2026-10-22, the new
- * design system): each a row with its number — the success green with a check
- * once every lesson of it is learned —, its name and «1/3», which opens and
- * closes its lessons, as Gmail's labels fold. The chapter of the lesson being
- * read is open on arrival, and its lesson lit; a lesson learned carries the
- * success green's check, the one being read a play, the rest a clock.
+ * The chapter in the lesson's side column (2026-10-23: that chapter alone,
+ * no longer every chapter of the course): its number and name — a link to
+ * its page — and «learned/total», then its lessons. A lesson learned carries
+ * the blue check, the one being read a play, the rest a clock.
  *
  * Client because of one thing: which lesson is open. The column lives in the
  * chapter's layout, which is not rendered again when one moves within it —
@@ -36,19 +32,10 @@ const isDone = (statusCode: string) => statusCode === PROGRESS_STATUS.COMPLETED;
  * lesson being read is brought into view when the column's place leaves it
  * cut off.
  */
-export function OutlineList({ chapters }: OutlineListProps) {
+export function OutlineList({ chapter }: OutlineListProps) {
   const pathname = usePathname();
-  const listRef = useRef<HTMLDivElement>(null);
-  const currentChapter = chapters.find((chapter) => chapter.lessons.some((lesson) => lesson.href === pathname));
-  const [open, setOpen] = useState<ReadonlySet<string>>(() => new Set(currentChapter ? [currentChapter.id] : []));
-
-  // A move into another chapter opens it, and whatever was opened by hand stays so.
-  const currentId = currentChapter?.id;
-  const [shownFor, setShownFor] = useState(currentId);
-  if (currentId !== shownFor) {
-    setShownFor(currentId);
-    if (currentId && !open.has(currentId)) setOpen(new Set([...open, currentId]));
-  }
+  const listRef = useRef<HTMLOListElement>(null);
+  const learned = chapter.lessons.filter((lesson) => isDone(lesson.statusCode)).length;
 
   useEffect(() => {
     const current = listRef.current?.querySelector<HTMLElement>('[aria-current="page"]');
@@ -57,92 +44,54 @@ export function OutlineList({ chapters }: OutlineListProps) {
     current.scrollIntoView({ block: "nearest", behavior: calm ? "auto" : "smooth" });
   }, [pathname]);
 
-  const toggle = (id: string) =>
-    setOpen((before) => {
-      const after = new Set(before);
-      if (after.has(id)) after.delete(id);
-      else after.add(id);
-      return after;
-    });
-
   return (
-    <div ref={listRef} className="lesson-outline__chapters">
-      <p className="lesson-outline__title">Capítulos</p>
-      {chapters.map((chapter, index) => {
-        const learned = chapter.lessons.filter((lesson) => isDone(lesson.statusCode)).length;
-        const whole = chapter.lessons.length > 0 && learned === chapter.lessons.length;
-        const isOpen = open.has(chapter.id);
-        const listId = `lesson-outline-${chapter.id}`;
+    <section className="lesson-outline__chapters" aria-label={chapter.name}>
+      <Link href={chapter.href} className="lesson-outline__chapter">
+        <span className="lesson-outline__chapter-text">
+          <span className="lesson-outline__title">Capítulo {chapter.order}</span>
+          <span className="lesson-outline__chapter-name" title={chapter.name}>
+            {chapter.name}
+          </span>
+        </span>
+        <span className="lesson-outline__count">
+          {learned}/{chapter.lessons.length}
+        </span>
+      </Link>
 
-        return (
-          <section key={chapter.id} className="lesson-outline__section" aria-label={chapter.name}>
-            <button
-              type="button"
-              className={`lesson-outline__chapter${chapter.id === currentId ? " lesson-outline__chapter_state_current" : ""}`}
-              aria-expanded={isOpen}
-              aria-controls={listId}
-              onClick={() => toggle(chapter.id)}
-            >
-              <span
-                className={`lesson-outline__badge${whole ? " lesson-outline__badge_state_done" : ""}`}
-                aria-hidden="true"
-              >
-                {whole ? <CheckIcon variant="classic-solid" className="lesson-outline__badge-check" /> : index + 1}
-              </span>
-              <span className="lesson-outline__chapter-name" title={chapter.name}>
-                {chapter.name}
-              </span>
-              <span className="lesson-outline__count">
-                {learned}/{chapter.lessons.length}
-              </span>
-              <ChevronDownIcon variant="classic-solid" className="lesson-outline__fold" />
-            </button>
+      <ol ref={listRef} className="lesson-outline__list">
+        {chapter.lessons.map((lesson) => {
+          const isCurrent = lesson.href === pathname;
+          const icon = isDone(lesson.statusCode) ? (
+            <CircleCheckIcon variant="classic-solid" className="lesson-outline__mark lesson-outline__mark_state_done" />
+          ) : isCurrent ? (
+            <PlayIcon variant="classic-solid" className="lesson-outline__mark" />
+          ) : (
+            <ClockIcon variant="duotone-light" className="lesson-outline__mark" />
+          );
 
-            {isOpen && (
-              <ol id={listId} className="lesson-outline__list">
-                {chapter.lessons.map((lesson) => {
-                  const isCurrent = lesson.href === pathname;
-                  const icon = isDone(lesson.statusCode) ? (
-                    <CircleCheckIcon
-                      variant="classic-solid"
-                      className="lesson-outline__mark lesson-outline__mark_state_done"
-                    />
-                  ) : isCurrent ? (
-                    <PlayIcon variant="classic-solid" className="lesson-outline__mark" />
-                  ) : (
-                    <ClockIcon variant="duotone-light" className="lesson-outline__mark" />
-                  );
-
-                  return (
-                    <li key={lesson.id}>
-                      {/* The lesson being read is not a link: it leads where one
-                          already is, and `aria-current` is what says so. */}
-                      {isCurrent ? (
-                        <span
-                          className="lesson-outline__lesson lesson-outline__lesson_state_current"
-                          aria-current="page"
-                        >
-                          {icon}
-                          <span className="lesson-outline__name" title={lesson.name}>
-                            {lesson.name}
-                          </span>
-                        </span>
-                      ) : (
-                        <Link href={lesson.href} className="lesson-outline__lesson">
-                          {icon}
-                          <span className="lesson-outline__name" title={lesson.name}>
-                            {lesson.name}
-                          </span>
-                        </Link>
-                      )}
-                    </li>
-                  );
-                })}
-              </ol>
-            )}
-          </section>
-        );
-      })}
-    </div>
+          return (
+            <li key={lesson.id}>
+              {/* The lesson being read is not a link: it leads where one
+                  already is, and `aria-current` is what says so. */}
+              {isCurrent ? (
+                <span className="lesson-outline__lesson lesson-outline__lesson_state_current" aria-current="page">
+                  {icon}
+                  <span className="lesson-outline__name" title={lesson.name}>
+                    {lesson.name}
+                  </span>
+                </span>
+              ) : (
+                <Link href={lesson.href} className="lesson-outline__lesson">
+                  {icon}
+                  <span className="lesson-outline__name" title={lesson.name}>
+                    {lesson.name}
+                  </span>
+                </Link>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </section>
   );
 }

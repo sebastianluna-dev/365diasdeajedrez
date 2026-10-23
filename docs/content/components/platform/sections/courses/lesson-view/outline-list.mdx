@@ -1,36 +1,33 @@
 ---
-description: "The course's chapters in the lesson's side column: each folds open on its lessons; it opens the chapter of the lesson being read, marks that lesson from the browser and brings it into view when the column's place leaves it cut off."
+description: "The chapter in the lesson's side column: its number and name, a link to its page, and its lessons; it marks the lesson being read from the browser and brings it into view when the column leaves it cut off."
 ---
 
 # `OutlineList`
 
-|            |                                                                                                                                                                                                                                                                                                                   |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/lesson-view/outline-list.comp.tsx`                                                                                                                                                                                                                                          |
-| Kind       | Client Component                                                                                                                                                                                                                                                                                                  |
-| Stylesheet | none of its own: it draws `.lesson-outline__list` and its rows, and imports the column's `lesson-outline.comp.css` itself, so it renders right wherever it is mounted (see [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline))                                                   |
-| Story      | `outline-list.stories.tsx` (`platform/sections/courses/lesson-view/OutlineList`): the whole course midway through its second chapter, back on a lesson already done, and a long course whose column scrolls to the lesson being read (checked by its `play` function), in the column's markup at the side's 256px |
-| Used by    | [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline)                                                                                                                                                                                                                               |
+|            |                                                                                                                                                                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/lesson-view/outline-list.comp.tsx`                                                                                                                                                                                                         |
+| Kind       | Client Component                                                                                                                                                                                                                                                                 |
+| Stylesheet | none of its own: it draws `.lesson-outline__list` and its rows, and imports the column's `lesson-outline.comp.css` itself, so it renders right wherever it is mounted (see [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline))                  |
+| Story      | `outline-list.stories.tsx` (`platform/sections/courses/lesson-view/OutlineList`): a chapter midway, back on a lesson already done, and a long chapter whose column scrolls to the lesson being read (checked by its `play` function), in the column's markup at the side's 256px |
+| Used by    | [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline)                                                                                                                                                                                              |
 
 ## Purpose
 
-The chapters and rows of the column, and one of its two client pieces (the other is the filter's switch, [`PriorityLessonsFilter`](/components/platform/sections/courses/lesson-view/priority-lessons-filter)).
+The chapter of the column, and its one client piece. Since 2026-10-23 it is **that chapter alone** — the one the lesson is in, whose layout the column belongs to —, and no longer every chapter of the course folded under its head: what one moves through while reading is the chapter's lessons, and the course's other chapters are on its page.
 
 Client because of one thing: **which lesson is open**. The column lives in the chapter's layout, and a layout is not rendered again when one moves within it — that is the whole point, the list is not fetched between lessons — so the server cannot mark the row. `usePathname` does, and it does it the instant the link is followed, before the lesson's own PGN has arrived: the row lights up first and the board follows.
 
-Keeping the place in the list is no longer anyone's job either. The element is never unmounted, so its scroll stays where it was; what used to remember it in `sessionStorage` (`OutlineScroll`) went away with the move.
-
 ## Props
 
-| Prop       | Type               | Required | Meaning                                                                               |
-| ---------- | ------------------ | -------- | ------------------------------------------------------------------------------------- |
-| `chapters` | `OutlineChapter[]` | yes      | Every chapter of the course with its `lessons` (`LessonSibling[]`), in reading order. |
+| Prop      | Type             | Required | Meaning                                                                                                |
+| --------- | ---------------- | -------- | ------------------------------------------------------------------------------------------------------ |
+| `chapter` | `OutlineChapter` | yes      | The chapter the lesson is in (`id`, `order`, `name`, `href`, `lessons`), its lessons in reading order. |
 
 ## Behaviour
 
-- Under the title «Capítulos», **each chapter is a `<section>`** labelled by its name, whose head is a `<button>` with `aria-expanded` and `aria-controls` that opens and closes its `<ol>` of lessons, as a label folds in Gmail (2026-10-22, the new design system; until then every chapter was open, its head stuck to the top of the column). The head carries the chapter's number — a check on the success green once all its lessons are learned —, its name on one line cut with an ellipsis (the whole name its `title`), «learned/total» and a chevron.
-- **The chapter of the lesson being read is open on arrival**, and a move into another chapter opens that one too; what was opened or closed by hand stays so. It is state set during render from the pathname (the chapter last shown is remembered beside it), not an effect.
-- The row whose `href` is the current pathname is not a link — it leads where one already is — and carries `aria-current="page"`, which is what says so to a screen reader and what the stylesheet lights. A lesson learned carries `CircleCheckIcon` (Classic Solid) in the primary's blue (2026-10-23; it was the success green), the one being read a play (when not learned), the rest a clock.
+- **The chapter's head** is a link to its page: «Capítulo 2» over its name (one line, cut with an ellipsis, the whole name its `title`) and «learned/total».
+- The row whose `href` is the current pathname is not a link — it leads where one already is — and carries `aria-current="page"`, which is what says so to a screen reader and what the stylesheet lights. A lesson learned carries `CircleCheckIcon` (Classic Solid) in the primary's blue, the one being read a play (when not learned), the rest a clock.
 - **On each change of pathname it brings the lesson being read into view** when the column leaves it cut off (`scrollIntoView({ block: "nearest" })`), smoothly unless `prefers-reduced-motion: reduce` says otherwise.
 
 ## Related

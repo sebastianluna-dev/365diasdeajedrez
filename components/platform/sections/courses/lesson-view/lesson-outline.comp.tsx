@@ -1,10 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
-import { setOnlyPriorityLessons } from "@/services/courses/courses.actions";
 import type { CourseOutline } from "@/services/courses/courses.types";
 import { OutlineList } from "./outline-list.comp";
-import { PriorityLessonsFilter } from "./priority-lessons-filter.comp";
 import "./lesson-outline.comp.css";
 
 interface LessonOutlineProps {
@@ -13,10 +10,11 @@ interface LessonOutlineProps {
 }
 
 /**
- * The lesson's side column in the new design system (2026-10-22): the course
- * at the top — its picture, its name (the way back to it) and how far it is
- * —, the switch for the priority lessons, and its chapters, the lesson's open
- * with its lessons (`OutlineList`).
+ * The lesson's side column in the new design system: the course at the top —
+ * its picture, its name (the way back to it) and how far it is —, and the
+ * chapter the lesson is in with its lessons (`OutlineList`), the one being
+ * read lit. Only that chapter since 2026-10-23, and no switch for the
+ * priority lessons: that setting is the course's settings panel's.
  *
  * It belongs to the chapter's layout and not to the lesson's page: that is
  * what keeps it from being fetched and drawn again on every move, and it is
@@ -24,13 +22,11 @@ interface LessonOutlineProps {
  * browser.
  */
 export function LessonOutline({ outline }: LessonOutlineProps) {
-  const { courseId, courseName, courseHref, courseThumbnail, onlyPriorityLessons, chapters } = outline;
-  const lessons = chapters.flatMap((chapter) => chapter.lessons);
-  const done = lessons.filter((lesson) => lesson.statusCode === PROGRESS_STATUS.COMPLETED).length;
-  const percent = lessons.length > 0 ? Math.round((done / lessons.length) * 100) : 0;
+  const { courseName, courseHref, courseThumbnail, progress, chapter } = outline;
+  const percent = progress.totalLessons > 0 ? Math.round((progress.completedLessons / progress.totalLessons) * 100) : 0;
 
   return (
-    <nav className="lesson-outline" aria-label="Lecciones del curso">
+    <nav className="lesson-outline" aria-label="Lecciones del capítulo">
       <div className="lesson-outline__course">
         <span className="lesson-outline__thumb">
           {courseThumbnail && (
@@ -42,17 +38,13 @@ export function LessonOutline({ outline }: LessonOutlineProps) {
             {courseName}
           </Link>
           <span className="lesson-outline__figures">
-            {percent} % · {done} de {lessons.length} {lessons.length === 1 ? "lección" : "lecciones"}
+            {percent} % · {progress.completedLessons} de {progress.totalLessons}{" "}
+            {progress.totalLessons === 1 ? "lección" : "lecciones"}
           </span>
         </span>
       </div>
 
-      <PriorityLessonsFilter
-        action={setOnlyPriorityLessons.bind(null, courseId, !onlyPriorityLessons)}
-        enabled={onlyPriorityLessons}
-      />
-
-      <OutlineList chapters={chapters} />
+      <OutlineList chapter={chapter} />
     </nav>
   );
 }

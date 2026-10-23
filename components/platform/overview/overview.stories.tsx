@@ -1685,33 +1685,33 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               <nav className="lesson-outline overview__outline" aria-label="Lecciones del capítulo">
                 <div>
                   <OutlineList
-                    chapters={[
-                      {
-                        id: "capitulo-2",
-                        name: "Finales de torre",
-                        lessons: [
-                          {
-                            id: "lucena",
-                            name: "La posición de Lucena",
-                            href: "#",
-                            statusCode: PROGRESS_STATUS.COMPLETED,
-                          },
-                          // The lesson on screen is the one whose address is the sheet's.
-                          {
-                            id: "philidor",
-                            name: "La posición de Philidor",
-                            href: SHEET_PATH,
-                            statusCode: PROGRESS_STATUS.IN_PROGRESS,
-                          },
-                          {
-                            id: "vancura",
-                            name: "La defensa Vancura",
-                            href: "#",
-                            statusCode: PROGRESS_STATUS.NOT_STARTED,
-                          },
-                        ],
-                      },
-                    ]}
+                    chapter={{
+                      id: "capitulo-2",
+                      order: 2,
+                      name: "Finales de torre",
+                      href: "#",
+                      lessons: [
+                        {
+                          id: "lucena",
+                          name: "La posición de Lucena",
+                          href: "#",
+                          statusCode: PROGRESS_STATUS.COMPLETED,
+                        },
+                        // The lesson on screen is the one whose address is the sheet's.
+                        {
+                          id: "philidor",
+                          name: "La posición de Philidor",
+                          href: SHEET_PATH,
+                          statusCode: PROGRESS_STATUS.IN_PROGRESS,
+                        },
+                        {
+                          id: "vancura",
+                          name: "La defensa Vancura",
+                          href: "#",
+                          statusCode: PROGRESS_STATUS.NOT_STARTED,
+                        },
+                      ],
+                    }}
                   />
                 </div>
               </nav>

@@ -51,42 +51,22 @@
     color: var(--platform-m3-on-surface-variant);
   }
 
-  /* The priority switch, under the course. */
-  & .lesson-outline__filter {
-    padding: 0 var(--platform-space-4) 0 var(--platform-space-6);
-  }
-
   & .lesson-outline__chapters {
     display: flex;
     flex-direction: column;
     gap: var(--platform-space-0-5);
   }
 
-  & .lesson-outline__title {
-    margin: 0;
-    padding: var(--platform-space-1) var(--platform-space-6);
-    font-size: var(--platform-type-xs);
-    font-weight: 600;
-    color: var(--platform-m3-on-surface-variant);
-  }
-
-  /* A chapter: a row as `PlatformSideNav` draws its links, which opens and
-     closes its lessons. */
+  /* The chapter the lesson is in, as the column's head row: «Capítulo 2» over
+     its name, and «learned/total»; a link to its page. */
   & .lesson-outline__chapter {
     display: flex;
     align-items: center;
     gap: var(--platform-space-3);
-    width: 100%;
-    height: 36px;
-    padding: 0 var(--platform-space-3) 0 var(--platform-space-6);
-    border: 0;
+    padding: var(--platform-space-2) var(--platform-space-4) var(--platform-space-2) var(--platform-space-6);
     border-radius: 0 1000px 1000px 0;
-    background: transparent;
     color: inherit;
-    font-family: inherit;
-    font-size: var(--platform-type-sm);
-    text-align: left;
-    cursor: pointer;
+    text-decoration: none;
     transition: background-color 160ms ease-out;
 
     &:hover {
@@ -99,46 +79,34 @@
     }
   }
 
-  & .lesson-outline__chapter_state_current {
-    font-weight: 700;
+  & .lesson-outline__chapter-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
   }
 
-  & .lesson-outline__badge {
-    flex: none;
-    display: grid;
-    place-items: center;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--platform-m3-container-high);
-    color: var(--platform-m3-on-surface-variant);
+  & .lesson-outline__title {
     font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .lesson-outline__chapter-name {
+    font-size: var(--platform-type-sm);
     font-weight: 700;
-  }
-
-  & .lesson-outline__chapter_state_current .lesson-outline__badge {
-    background: var(--platform-m3-primary);
-    color: var(--platform-m3-on-primary);
-  }
-
-  & .lesson-outline__badge_state_done,
-  & .lesson-outline__chapter_state_current .lesson-outline__badge_state_done {
-    background: var(--platform-m3-success);
-    color: var(--platform-m3-on-success);
-  }
-
-  & .lesson-outline__badge-check {
-    width: 10px;
-    height: 10px;
   }
 
   & .lesson-outline__chapter-name,
   & .lesson-outline__name {
-    flex: 1;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  & .lesson-outline__name {
+    flex: 1;
   }
 
   & .lesson-outline__count {
@@ -147,32 +115,20 @@
     color: var(--platform-m3-on-surface-variant);
   }
 
-  /* The fold's chevron, turned up while the lessons show. */
-  & .lesson-outline__fold {
-    flex: none;
-    width: 10px;
-    height: 10px;
-    color: var(--platform-m3-on-surface-variant);
-    transition: transform 160ms ease-out;
-  }
-
-  & .lesson-outline__chapter[aria-expanded="true"] .lesson-outline__fold {
-    transform: rotate(180deg);
-  }
-
   & .lesson-outline__list {
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  /* A lesson: a row indented under its chapter. */
+  /* A lesson: a row as `PlatformSideNav` draws its links, its mark lined up
+     with the chapter's words. */
   & .lesson-outline__lesson {
     display: flex;
     align-items: center;
     gap: var(--platform-space-3);
-    height: 32px;
-    padding: 0 var(--platform-space-4) 0 calc(var(--platform-space-6) + 32px);
+    height: 36px;
+    padding: 0 var(--platform-space-4) 0 var(--platform-space-6);
     border-radius: 0 1000px 1000px 0;
     color: var(--platform-m3-on-surface);
     font-size: var(--platform-type-xs);
@@ -211,11 +167,5 @@
   & .lesson-outline__mark_state_done,
   & .lesson-outline__lesson_state_current .lesson-outline__mark_state_done {
     color: var(--platform-m3-primary);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    & .lesson-outline__fold {
-      transition: none;
-    }
   }
 }

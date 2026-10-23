@@ -603,21 +603,24 @@ describe("los niveles del curso", () => {
 });
 
 describe("la columna junto a una lección", () => {
-  it("trae todos los capítulos del curso, cada uno con sus lecciones en orden", () => {
+  it("trae sólo el capítulo de la lección, con sus lecciones en orden", () => {
     const outline = mapCourseOutline(COURSE, 2, state());
-    expect(outline?.chapters.map((chapter) => chapter.id)).toEqual(["cap-1", "cap-2"]);
-    expect(outline?.chapters[1]?.lessons.map((lesson) => lesson.id)).toEqual(["l4", "l5", "l6"]);
-    expect(outline?.chapters[1]?.lessons[0]?.href).toBe("/cursos/10000009/2/l4");
+    expect(outline?.chapter.id).toBe("cap-2");
+    expect(outline?.chapter.href).toBe("/cursos/10000009/2");
+    expect(outline?.chapter.lessons.map((lesson) => lesson.id)).toEqual(["l4", "l5", "l6"]);
+    expect(outline?.chapter.lessons[0]?.href).toBe("/cursos/10000009/2/l4");
   });
 
-  it("con el filtro encendido, cada capítulo trae sólo lo que se ve", () => {
-    const outline = mapCourseOutline(COURSE, 1, state({ onlyPriorityLessons: true }));
-    expect(outline?.chapters.map((chapter) => chapter.lessons.map((lesson) => lesson.id))).toEqual([["l1"], ["l4"]]);
+  it("con el filtro encendido, el capítulo trae sólo lo que se ve", () => {
+    const outline = mapCourseOutline(COURSE, 2, state({ onlyPriorityLessons: true }));
+    expect(outline?.chapter.lessons.map((lesson) => lesson.id)).toEqual(["l4"]);
   });
 
-  it("marca lo aprendido en cada lección", () => {
-    const outline = mapCourseOutline(COURSE, 1, state({ lessonStatus: completed("l5") }));
-    expect(outline?.chapters[1]?.lessons[1]?.statusCode).toBe(PROGRESS_STATUS.COMPLETED);
+  it("marca lo aprendido en cada lección y cuenta el avance del curso", () => {
+    const outline = mapCourseOutline(COURSE, 2, state({ lessonStatus: completed("l5") }));
+    expect(outline?.chapter.lessons[1]?.statusCode).toBe(PROGRESS_STATUS.COMPLETED);
+    expect(outline?.progress.completedLessons).toBe(1);
+    expect(outline?.progress.totalLessons).toBeGreaterThan(3);
   });
 
   it("no existe para un capítulo que el curso no tiene", () => {

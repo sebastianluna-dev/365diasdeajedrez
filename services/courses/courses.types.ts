@@ -261,21 +261,24 @@ export interface CourseOutline {
   courseHref: string;
   /** The course's square image, for the head of the column. */
   courseThumbnail?: string;
-  /** The student asked to see only the priority lines of this course. */
-  onlyPriorityLessons: boolean;
+  /** How far the course is: its lessons in view and how many are learned, for the head of the column. */
+  progress: { completedLessons: number; totalLessons: number };
   /**
-   * The chapters with at least one lesson to show, in reading order. Their
-   * lessons are already filtered by the student's preferences — the same
-   * list «anterior»/«siguiente» walk, so the column and the buttons never
-   * disagree — and a chapter the filter empties is left out.
+   * The chapter the lesson is in, and only that one (2026-10-23): its lessons
+   * already filtered by the student's preferences — the same list
+   * «anterior»/«siguiente» walk, so the column and the buttons never
+   * disagree.
    */
-  chapters: OutlineChapter[];
+  chapter: OutlineChapter;
 }
 
-/** A chapter as the column beside a lesson lists it: its name and its lessons (its name is not a link). */
+/** The chapter as the column beside a lesson lists it: its order, its name, its page and its lessons. */
 export interface OutlineChapter {
   id: string;
+  order: number;
   name: string;
+  /** The chapter's own page. */
+  href: string;
   lessons: LessonSibling[];
 }
 

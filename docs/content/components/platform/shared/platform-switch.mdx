@@ -4,14 +4,14 @@ description: "An on/off that takes effect the moment it is pressed, on Radix's S
 
 # `PlatformSwitch`
 
-|            |                                                                                                                                                            |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/platform-switch/platform-switch.comp.tsx`                                                                                      |
-| Kind       | Client Component                                                                                                                                           |
-| Stylesheet | `platform-switch.comp.css` → block `.platform-switch`                                                                                                      |
-| Story      | `platform-switch.stories.tsx` (`platform/shared/PlatformSwitch`)                                                                                           |
-| Used by    | [`PriorityLessonsFilter`](/components/platform/sections/courses/lesson-view/priority-lessons-filter) («Sólo lecciones de prioridad», in the accent's tone) |
-| Uses       | `Switch` from `radix-ui`; `savedValueKey`                                                                                                                  |
+|            |                                                                             |
+| ---------- | --------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-switch/platform-switch.comp.tsx`       |
+| Kind       | Client Component                                                            |
+| Stylesheet | `platform-switch.comp.css` → block `.platform-switch`                       |
+| Story      | `platform-switch.stories.tsx` (`platform/shared/PlatformSwitch`)            |
+| Used by    | `SeriesPublishSwitch` («Publicada»), `ExerciseSolveAside`, `ClassBlockList` |
+| Uses       | `Switch` from `radix-ui`; `savedValueKey`                                   |
 
 ## Purpose
 
@@ -38,7 +38,7 @@ The whole row is the switch (the «C» of the 2026-10-06 checkbox study): it nee
 ## Behaviour
 
 - The row is the primitive's button (`role="switch"`): a click anywhere on it switches it; Space and Enter from the keyboard.
-- It does not save anything by itself. `onCheckedChange` is where the host acts; the outline's `PriorityLessonsFilter` submits its form there (`requestSubmit()`), so the server action still writes the preference and draws the page again.
+- It does not save anything by itself. `onCheckedChange` is where the host acts; a host can submit a form there (`requestSubmit()`), so a server action writes the value and draws the page again, or set it optimistically, as `SeriesPublishSwitch` does.
 - **It starts again from what was saved.** It is mounted under the value it opens with (`savedValueKey(defaultChecked)`): after the action, React resets the form and the primitive would go back to the value it was mounted with; a new value mounts it anew from that.
 
 ## Markup & styling
@@ -57,17 +57,10 @@ No media queries. The knob's slide and the colour transitions are off under `pre
 
 ## Usage
 
-From `components/platform/sections/courses/lesson-view/priority-lessons-filter.comp.tsx`:
+From `components/platform/sections/staff/exercises/series-publish-switch/series-publish-switch.comp.tsx`:
 
 ```tsx
-<form ref={formRef} action={action} className="lesson-outline__filter">
-  <CurrentPathField name="returnTo" />
-  <PlatformSwitch
-    label="Sólo lecciones de prioridad"
-    defaultChecked={enabled}
-    onCheckedChange={() => formRef.current?.requestSubmit()}
-  />
-</form>
+<PlatformSwitch label="Publicada" hint={hint} checked={shown} onCheckedChange={toggle} />
 ```
 
 ## Related
