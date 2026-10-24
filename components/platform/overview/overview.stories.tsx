@@ -98,6 +98,7 @@ import { LessonSkeleton } from "@/components/platform/sections/courses/lesson-vi
 import { OutlineList } from "@/components/platform/sections/courses/lesson-view/outline-list.comp";
 import { MyCourseCard } from "@/components/platform/sections/courses/my-courses/my-course-card.comp";
 import { StatsCards } from "@/components/platform/sections/dashboard/activity-stats/stats-cards.comp";
+import { HomeSection } from "@/components/platform/sections/dashboard/home/home.section";
 import { ExplorerGames } from "@/components/platform/sections/explorer/explorer-games.comp";
 import { ExplorerMoveList } from "@/components/platform/sections/explorer/explorer-move-list.comp";
 import { ExplorerNextMoves } from "@/components/platform/sections/explorer/explorer-next-moves.comp";
@@ -2286,6 +2287,34 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   tab="proximas"
                   pastPages={1}
                 />
+              </div>
+            </Tile>
+            <Tile name="HomeSection" docs="platform-sections-dashboard-homesection" width={1100} height={860}>
+              <div className="platform-page platform-page_width_full platform-page_frame_bleed">
+                <div className="platform-workspace platform-workspace_side_none">
+                  <HomeSection
+                    dashboard={{
+                      profile: {
+                        displayName: "Alumno Demo",
+                        email: "alumno.demo@365diasdeajedrez.com",
+                        memberSinceLabel: "2 de septiembre, 2026",
+                      },
+                      stats: STATS,
+                      continueStudying: {
+                        courseName: "La Najdorf",
+                        lessonName: "6.Ae3, el ataque inglés",
+                        percent: 40,
+                        completedLessons: 4,
+                        totalLessons: 10,
+                        href: "#",
+                      },
+                      recentActivity: [],
+                    }}
+                    nextClass={STUDENT_GROUP_CARD}
+                    classExercises={{ classTitle: "Finales de torres", href: "#", done: 1, total: 3 }}
+                    goal={{ streak: { days: 12, studiedToday: true }, minutesToday: 12, goalMinutes: 20, percent: 60 }}
+                  />
+                </div>
               </div>
             </Tile>
             <Tile

@@ -1,3 +1,7 @@
+/* «Tus estadísticas» in the new design system: Material's filter chips for
+   the ranges (the chip draws itself), the metrics as tiles on the
+   container's grey with their figure in the display face, and the topics
+   as pale blue pills. */
 .stats-cards {
   display: flex;
   flex-direction: column;
@@ -10,25 +14,7 @@
   }
 
   & .stats-cards__filter {
-    padding: var(--platform-space-2) var(--platform-space-4);
-    border: 1px solid var(--platform-border);
-    border-radius: 1000px;
-    background: transparent;
-    color: var(--platform-text-muted);
-    font-size: var(--platform-type-md);
-    font-weight: 600;
     font-family: inherit;
-    cursor: pointer;
-  }
-
-  & .stats-cards__filter:hover {
-    color: var(--platform-text);
-  }
-
-  & .stats-cards__filter.stats-cards__filter_state_active {
-    background: var(--platform-accent-soft);
-    border-color: color-mix(in srgb, var(--platform-accent) 40%, transparent);
-    color: var(--platform-accent-ink);
   }
 
   & .stats-cards__grid {
@@ -50,21 +36,21 @@
     flex-direction: column;
     gap: var(--platform-space-1);
     padding: var(--platform-space-4);
-    border: 1px solid var(--platform-border);
-    border-radius: 8px;
-    background: var(--platform-surface);
+    border-radius: var(--md-sys-shape-corner-md);
+    background: var(--platform-m3-container);
   }
 
   & .stats-cards__value {
+    font-family: var(--platform-font-display);
     font-size: var(--platform-type-3xl);
-    font-weight: 700;
-    color: var(--platform-text);
+    font-weight: 500;
     line-height: 1;
+    color: var(--platform-m3-on-surface);
   }
 
   & .stats-cards__label {
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-muted);
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
   }
 
   & .stats-cards__topics {
@@ -75,7 +61,16 @@
   }
 
   & .stats-cards__topics-title {
-    font-size: var(--platform-type-md);
-    color: var(--platform-text-muted);
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .stats-cards__topic {
+    padding: var(--platform-space-1) var(--platform-space-3);
+    border-radius: 1000px;
+    background: var(--platform-m3-info-container);
+    color: var(--platform-m3-on-info-container);
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
   }
 }

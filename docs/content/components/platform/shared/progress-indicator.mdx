@@ -4,13 +4,13 @@ description: "A progress bar with its percentage and an optional detail, inline,
 
 # `ProgressIndicator`
 
-|            |                                                                                                                                                                                                                                    |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/progress-indicator/progress-indicator.comp.tsx`                                                                                                                                                        |
-| Kind       | Server Component                                                                                                                                                                                                                   |
-| Stylesheet | `progress-indicator.comp.css` → block `.progress-indicator`                                                                                                                                                                        |
-| Story      | `progress-indicator.stories.tsx` (`platform/shared/ProgressIndicator`): inline and stacked, not started, finished, without a detail, and the figure in progress and finished                                                       |
-| Used by    | [`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section), [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section) |
+|            |                                                                                                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/shared/progress-indicator/progress-indicator.comp.tsx`                                                                                                                                                          |
+| Kind       | Server Component                                                                                                                                                                                                                     |
+| Stylesheet | `progress-indicator.comp.css` → block `.progress-indicator`                                                                                                                                                                          |
+| Story      | `progress-indicator.stories.tsx` (`platform/shared/ProgressIndicator`): inline and stacked, not started, finished, without a detail, and the figure in progress and finished                                                         |
+| Used by    | [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section); the dashboard's «Continuar estudiando» drew it until 2026-10-23, when the home page moved to the new design system |
 
 ## Purpose
 
@@ -47,14 +47,14 @@ Block `.progress-indicator` (78 lines).
 
 ## Usage
 
-From `components/platform/sections/dashboard/continue-studying/continue-studying.section.tsx` (no screen passes `layout="stacked"` today):
+From `components/platform/sections/teacher/students/assigned-student-detail.section.tsx` (no screen passes `layout="stacked"` today):
 
 ```tsx
 import { ProgressIndicator } from "@/components/platform/shared/progress-indicator/progress-indicator.comp";
 
 <ProgressIndicator
-  percent={continueStudying.percent}
-  detail={`${continueStudying.completedLessons} de ${continueStudying.totalLessons} lecciones`}
+  percent={course.percent}
+  detail={`${course.completedLessons} de ${course.totalLessons} lecciones`}
 />;
 ```
 
@@ -73,4 +73,4 @@ From `components/platform/sections/courses/course-card.comp.tsx`, beside the car
 
 - [`CourseStudySection`](/components/platform/sections/courses/course-study/course-study-section) draws Material's wavy progress ([`WavyProgress`](/components/platform/sections/courses/my-courses/wavy-progress)) for the course and each chapter since 2026-10-22, not this bar.
 - [`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card) draws its own bar on its cover card; the catalog's [`CourseCard`](/components/platform/sections/courses/course-card) used this one until 2026-10-07, when it stopped showing the progress.
-- [`StudyGoalSection`](/components/platform/sections/dashboard/study-goal/study-goal-section) draws the daily-goal bar separately too (two figures around one bar).
+- [`HomeSection`](/components/platform/sections/dashboard/home/home-section) draws the daily-goal bar separately too («Hoy 12 de 20 min» beside one bar).

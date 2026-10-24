@@ -1,0 +1,101 @@
+.home-skeleton {
+  /* Said to a screen reader only: on screen the shapes say it. */
+  & .home-skeleton__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Every shape pulses, together. */
+  & .home-skeleton__shape {
+    display: block;
+    flex: none;
+    background: var(--platform-m3-container);
+    animation: home-skeleton-pulse 1200ms ease-in-out infinite alternate;
+  }
+
+  /* The home page's column, with its rhythm. */
+  & .home-skeleton__column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-5);
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: var(--platform-space-4) var(--platform-space-2);
+    box-sizing: border-box;
+  }
+
+  & .home-skeleton__bar {
+    height: 14px;
+    border-radius: 1000px;
+  }
+
+  & .home-skeleton__bar_size_title {
+    width: 70%;
+    height: 32px;
+  }
+
+  & .home-skeleton__bar_width_half {
+    width: 50%;
+  }
+
+  & .home-skeleton__bar_width_fifth {
+    width: 20%;
+  }
+
+  & .home-skeleton__bar_width_tenth {
+    width: 10%;
+  }
+
+  & .home-skeleton__bar_size_track {
+    flex: 1;
+    height: 8px;
+  }
+
+  & .home-skeleton__focus {
+    height: 200px;
+    border-radius: var(--md-sys-shape-corner-xl);
+  }
+
+  & .home-skeleton__tiles {
+    display: flex;
+    gap: var(--platform-space-3);
+  }
+
+  & .home-skeleton__tile {
+    flex: 1;
+    height: 76px;
+    border-radius: var(--md-sys-shape-corner-lg);
+  }
+
+  & .home-skeleton__day {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-6);
+    margin-top: var(--platform-space-8);
+  }
+
+  @media (width < 768px) {
+    & .home-skeleton__tiles {
+      flex-direction: column;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .home-skeleton__shape {
+      animation: none;
+    }
+  }
+}
+
+/* `@keyframes` cannot be nested inside a style rule. */
+@keyframes home-skeleton-pulse {
+  to {
+    opacity: 0.45;
+  }
+}

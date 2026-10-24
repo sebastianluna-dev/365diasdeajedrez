@@ -691,6 +691,12 @@ html body.platform-theme[data-scroll-locked] {
     width: 256px;
   }
 
+  /* A page with no side column (the home page, `_side_none`): as much canvas
+     at the panel's left as at its right. */
+  &.platform-workspace_side_none {
+    padding-left: var(--platform-space-4);
+  }
+
   /* The bar's three bars hid it (`PlatformSideToggle`): the panel takes the room. */
   :root[data-side-nav="hidden"] & .platform-workspace__side {
     display: none;

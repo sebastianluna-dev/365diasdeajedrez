@@ -37,9 +37,9 @@ export async function readStudyGoal(): Promise<StudyGoal> {
 const GOAL_SCHEMA = z.object({ goalMinutes: formInt(1, 100_000).refine(isGoalOption) });
 
 export async function updateDailyGoal(formData: FormData): Promise<void> {
-  // The goal is set in two places — beside the streak on the dashboard and in
-  // «Ajustes» — so the form says which one it came from and a failure goes
-  // back to the page that is on screen, not to the other one.
+  // The goal is set in «Ajustes» (the home page only shows it, since its move
+  // to the new design system); the form still says where it came from, so a
+  // failure goes back to the page that is on screen.
   const returnTo = safeReturnTo(readReturnTo(formData), platformRoutes.dashboard);
 
   const parsed = parseForm(GOAL_SCHEMA, formData);

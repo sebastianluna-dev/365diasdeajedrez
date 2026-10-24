@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { mdChip } from "@/lib/material/material-classes";
 import type { DashboardStats, StatsRangeKey } from "@/services/dashboard/dashboard.types";
 import "./stats-cards.comp.css";
 
@@ -16,6 +17,8 @@ interface StatsCardsProps {
 }
 
 // The four ranges arrive precomputed from the server; the toggle is local.
+// In the new design system (2026-10-23, with the home page): the ranges are
+// Material's filter chips, the metrics tiles on the container's grey.
 //
 // The ranges are toggle buttons, one of them pressed, and not tabs: they
 // filter the one panel below instead of each showing a panel of its own, so
@@ -34,7 +37,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
             type="button"
             aria-pressed={range === item.key}
             onClick={() => setRange(item.key)}
-            className={`stats-cards__filter${range === item.key ? " stats-cards__filter_state_active" : ""}`}
+            className={`${mdChip("filter", range === item.key)} stats-cards__filter`}
           >
             {item.label}
           </button>
@@ -54,7 +57,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
         <div className="stats-cards__topics">
           <span className="stats-cards__topics-title">Por tema:</span>
           {current.topics.map((topic) => (
-            <span key={topic.label} className="platform-tag stats-cards__topic">
+            <span key={topic.label} className="stats-cards__topic">
               {topic.label} · {topic.count}
             </span>
           ))}

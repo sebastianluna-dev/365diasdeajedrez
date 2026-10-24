@@ -1,0 +1,81 @@
+/* «Lo siguiente»: a block of the primary, its text in the primary's «on»
+   colour, the countdown ring at its right. */
+.home-focus {
+  /* Material's buttons inside read these roles: pointed at the block's own
+     colours, the filled one is white with the primary's ink, the text one
+     and the focus ring are white. */
+  --md-sys-color-primary: var(--platform-m3-on-primary);
+  --md-sys-color-on-primary: var(--platform-m3-primary);
+  --md-sys-color-secondary: var(--platform-m3-on-primary);
+
+  display: flex;
+  align-items: center;
+  gap: var(--platform-space-8);
+  padding: var(--platform-space-8) var(--platform-space-10);
+  border-radius: var(--md-sys-shape-corner-xl);
+  background: var(--platform-m3-primary);
+  color: var(--platform-m3-on-primary);
+
+  & .home-focus__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  & .home-focus__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  & .home-focus__lead {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+  }
+
+  & .home-focus__title {
+    margin: var(--platform-space-2) 0 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-3xl);
+    font-weight: 500;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  & .home-focus__line,
+  & .home-focus__note {
+    margin: var(--platform-space-2) 0 0;
+  }
+
+  & .home-focus__note {
+    font-size: var(--platform-type-xs);
+  }
+
+  & .home-focus__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-2) var(--platform-space-4);
+    margin-top: var(--platform-space-6);
+
+    & a {
+      text-decoration: none;
+    }
+  }
+
+  @media (width < 640px) {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-6);
+
+    & .home-focus__title {
+      font-size: var(--platform-type-2xl);
+    }
+  }
+}

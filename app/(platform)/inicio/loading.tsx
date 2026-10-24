@@ -1,5 +1,5 @@
-import { BoardLoading } from "@/components/platform/shared/board-loading/board-loading.comp";
+import { HomeSkeleton } from "@/components/platform/sections/dashboard/home/home-skeleton.comp";
 
 export default function DashboardLoading() {
-  return <BoardLoading />;
+  return <HomeSkeleton />;
 }

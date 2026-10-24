@@ -1,0 +1,83 @@
+/* The home page's panel: one column in its middle. The first screen — the
+   greeting, the focus, «Después» and the day — is at least as tall as what
+   the window shows of the panel, so the day sits at its foot and the
+   statistics start under the fold. */
+.home {
+  /* Over the panel's own padding, a little more air, as the canvas draws it. */
+  & .home__column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-12);
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: var(--platform-space-4) var(--platform-space-2);
+    box-sizing: border-box;
+  }
+
+  & .home__today {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-5);
+    /* The window under the bar (70px), less the canvas under the panel
+       and the panel's and the column's padding above and below. */
+    min-height: calc(
+      100vh - 70px - var(--platform-space-3) - 2 * var(--platform-space-6) - 2 * var(--platform-space-4)
+    );
+
+    & .home__foot {
+      margin-top: auto;
+    }
+  }
+
+  & .home__greeting {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+  }
+
+  & .home__title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-3xl);
+    font-weight: 500;
+    line-height: 1.25;
+  }
+
+  & .home__subtitle,
+  & .home__empty {
+    margin: 0;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .home__block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+    scroll-margin-top: calc(70px + var(--platform-space-3));
+  }
+
+  & .home__block-title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-xl);
+    font-weight: 500;
+  }
+
+  @media (width < 1024px) {
+    & .home__today {
+      min-height: 0;
+    }
+  }
+
+  @media (width < 640px) {
+    & .home__column {
+      gap: var(--platform-space-8);
+      padding: 0;
+    }
+
+    & .home__title {
+      font-size: var(--platform-type-2xl);
+    }
+  }
+}
