@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   activeApp,
   buildPlatformApps,
+  HOME_PAGE,
   needsStudentExerciseAccess,
+  pageNameOf,
   PLATFORM_SHORTCUTS,
   type PlatformApps,
   type PlatformNavFeatures,
@@ -202,5 +204,23 @@ describe("activeApp", () => {
   it("no confunde un prefijo textual con una ruta hija", () => {
     // "/profesor" must not light up on "/profesorado".
     expect(activeApp(profesor, "/profesorado")).toBeNull();
+  });
+});
+
+describe("pageNameOf", () => {
+  const alumno = buildPlatformApps(STUDENT, ALL_ON);
+
+  it("nombra la página por su herramienta", () => {
+    expect(pageNameOf(alumno, "/clases/abc")?.label).toBe("Clases");
+  });
+
+  it("nombra «Inicio» en la página de inicio, que no es una herramienta", () => {
+    expect(pageNameOf(alumno, "/inicio")).toEqual(HOME_PAGE);
+    expect(HOME_PAGE.art).toBe("home");
+  });
+
+  it("no nombra nada donde no hay herramienta ni es el inicio", () => {
+    expect(pageNameOf(alumno, "/inicio/otra")).toBeNull();
+    expect(pageNameOf(alumno, "/lecciones/abc")).toBeNull();
   });
 });

@@ -34,8 +34,8 @@ const meta = {
         component: `
 The student's recent activity, one row per entry of the activity log: what
 happened, on what, its topic and when — what it was about and its topic only
-when the entry has them. The dashboard's «Actividad reciente» card renders it, already mapped by
-\`services/dashboard\`.
+when the entry has them. The home page's «Actividad reciente» renders it, in
+the new design system, already mapped by \`services/dashboard\`.
 
 Source: \`components/platform/shared/activity-list/activity-list.comp.tsx\`.
 Reference page: [Components › ActivityList](/components/platform/shared/activity-list) in the docs site.
@@ -48,10 +48,12 @@ Reference page: [Components › ActivityList](/components/platform/shared/activi
     items: { control: "object", description: "`ActivityItem[]` from `services/dashboard/dashboard.types`." },
   },
   decorators: [
-    // In the app the list sits in the dashboard's card, under its title.
+    // In the app the list sits on the home page's white panel, under «Actividad reciente».
     (Story) => (
-      <section className="platform-card" style={{ maxWidth: 560 }}>
-        <h2 className="platform-card__title">Actividad reciente</h2>
+      <section
+        className="platform-theme"
+        style={{ maxWidth: 560, padding: 24, background: "var(--platform-m3-panel)" }}
+      >
         <Story />
       </section>
     ),
@@ -61,7 +63,7 @@ Reference page: [Components › ActivityList](/components/platform/shared/activi
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Three entries, as the dashboard writes them: two with their topic, and an attended class, which has none. */
+/** Three entries, as the home page writes them: two with their topic, and an attended class, which has none. */
 export const Default: Story = {};
 
 /** A single entry. */

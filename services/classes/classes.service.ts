@@ -30,7 +30,13 @@ import {
   type StudentPaymentCount,
   type StudentSeatSource,
 } from "./classes.mapper";
-import type { ClassCardData, ClassDetailView, StudentBalanceView, StudentClassesView } from "./classes.types";
+import type {
+  ClassCardData,
+  ClassDetailView,
+  ClassExercisesToDo,
+  StudentBalanceView,
+  StudentClassesView,
+} from "./classes.types";
 
 // The student's reads: «Mis clases», the class page, «Próxima clase» and what
 // they have left. Every reader resolves the student with `getCurrentUser()`
@@ -269,4 +275,38 @@ export const getClassById = cache(async (classId: string): Promise<ClassDetailVi
     { ...source, row, viewerId: seats.userId, balanceLine: balanceLineOf(seats.payments), exerciseMarks },
     seats.context,
   );
+});
+
+/**
+ * «Ejercicios de tu clase» on the home page: of the next class ahead and of
+ * the last one gone (in that order, neither cancelled), the first with
+ * exercises the student may solve now and has not all done. Derived from
+ * the class page's read (`getClassById`, cached per request), so the marks
+ * are the ones the notebook shows: what was tried in THAT block. Null with
+ * the exercises off, or with nothing left to do.
+ */
+export const getClassExercisesToDo = cache(async (): Promise<ClassExercisesToDo | null> => {
+  if (!EXERCISES_ENABLED) return null;
+  const seats = await readStudentSeats();
+  const { ahead, past } = splitAhead(seats);
+  const live = (source: StudentClassSource) => studentPhaseOf(source, seats.now) !== CLASS_PHASE.CANCELLED;
+  const candidates = [ahead.find(live), past.find(live)].filter(
+    (source): source is StudentClassSource => source !== undefined,
+  );
+  for (const source of candidates) {
+    const detail = await getClassById(source.id);
+    if (!detail) continue;
+    const exercises = detail.blocks.flatMap((block) =>
+      block.kind === "EXERCISE" ? block.exercises.filter((exercise) => exercise.href !== undefined) : [],
+    );
+    const undone = exercises.find((exercise) => exercise.mark === null);
+    if (!undone?.href) continue;
+    return {
+      classTitle: detail.title,
+      href: undone.href,
+      done: exercises.filter((exercise) => exercise.mark !== null).length,
+      total: exercises.length,
+    };
+  }
+  return null;
 });

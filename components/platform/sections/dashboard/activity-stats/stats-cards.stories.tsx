@@ -84,10 +84,10 @@ const meta = {
     docs: {
       description: {
         component: `
-The dashboard's «Tus estadísticas»: a strip of four toggle buttons — this
-week, this month, this year, all time, one of them pressed — over one card per
-metric and a «Por tema» row of
-tags, which is left out when the range has no topic. The four ranges arrive
+The home page's «Tus estadísticas», in the new design system: a strip of
+four of Material's filter chips, toggle buttons — this week, this month, this
+year, all time, one of them pressed — over one tile per metric and a «Por
+tema» row of pills, which is left out when the range has no topic. The four ranges arrive
 precomputed from \`services/dashboard\`, so choosing one is local state and
 fetches nothing; the strip opens on «Esta semana». Each range after the first
 has its own story, chosen by its \`play\` function.
@@ -107,11 +107,13 @@ Reference page: [Components › StatsCards](/components/platform/sections/dashbo
     },
   },
   decorators: [
-    // In the app it is the body of the dashboard's card, under its title, at
-    // the page's whole width.
+    // In the app it is under «Tus estadísticas» on the home page's white
+    // panel, in its 760px column.
     (Story) => (
-      <section className="platform-card">
-        <h2 className="platform-card__title">Tus estadísticas</h2>
+      <section
+        className="platform-theme"
+        style={{ maxWidth: 760, padding: 24, background: "var(--platform-m3-panel)" }}
+      >
         <Story />
       </section>
     ),

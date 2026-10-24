@@ -1,0 +1,103 @@
+/* «Después»: the tiles under the focus, side by side on the container's
+   grey, each icon on its own tone; under 768px, one under the other. */
+.home-later {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-3);
+
+  & .home-later__title {
+    margin: var(--platform-space-2) 0 0;
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .home-later__list {
+    display: flex;
+    gap: var(--platform-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .home-later__item {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+  }
+
+  & .home-later__tile {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-4) var(--platform-space-5);
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--platform-m3-container);
+    color: var(--platform-m3-on-surface);
+    text-decoration: none;
+
+    &:hover {
+      background: var(--platform-m3-container-high);
+    }
+
+    &:focus-visible {
+      outline: 3px solid var(--platform-m3-primary);
+      outline-offset: 2px;
+    }
+  }
+
+  & .home-later__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--md-sys-shape-corner-md);
+  }
+
+  & .home-later__icon_tone_course {
+    background: var(--platform-m3-success-container);
+    color: var(--platform-m3-on-success-container);
+  }
+
+  & .home-later__icon_tone_class {
+    background: var(--platform-m3-secondary-container);
+    color: var(--platform-m3-on-secondary-container);
+  }
+
+  & .home-later__icon_tone_exercises {
+    background: var(--platform-m3-warning-container);
+    color: var(--platform-m3-on-warning-container);
+  }
+
+  & .home-later__glyph {
+    width: 20px;
+    height: 20px;
+  }
+
+  & .home-later__text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  & .home-later__name {
+    font-weight: 700;
+  }
+
+  & .home-later__line {
+    overflow: hidden;
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (width < 768px) {
+    & .home-later__list {
+      flex-direction: column;
+    }
+  }
+}

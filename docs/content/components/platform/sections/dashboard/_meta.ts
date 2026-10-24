@@ -1,12 +1,8 @@
 import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
+  home: "home",
   "activity-stats": "activity-stats",
-  "continue-studying": "continue-studying",
-  "next-class": "next-class",
-  "profile-summary": "profile-summary",
-  "recent-activity": "recent-activity",
-  "study-goal": "study-goal",
 };
 
 export default meta;

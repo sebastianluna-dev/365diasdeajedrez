@@ -1,7 +1,7 @@
 import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
-  "continue-studying-section": "ContinueStudyingSection",
+  "home-section": "HomeSection",
 };
 
 export default meta;

@@ -4,18 +4,18 @@ description: "The statistics cards with a week / month / year / all-time strip o
 
 # `StatsCards`
 
-|            |                                                                                                                                                                                                                              |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/dashboard/activity-stats/stats-cards.comp.tsx`                                                                                                                                                 |
-| Kind       | Client Component                                                                                                                                                                                                             |
-| Stylesheet | `stats-cards.comp.css` → block `.stats-cards`                                                                                                                                                                                |
-| Story      | `stats-cards.stories.tsx` (`platform/sections/dashboard/activity-stats/StatsCards`): each of the four ranges (the three after the first chosen by a `play` function) and a student with nothing yet, in the dashboard's card |
-| Used by    | [`ActivityStatsSection`](/components/platform/sections/dashboard/activity-stats/activity-stats-section)                                                                                                                      |
-| Uses       | `DashboardStats`, `StatsRangeKey` from `services/dashboard/dashboard.types`                                                                                                                                                  |
+|            |                                                                                                                                                                                                                               |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/dashboard/activity-stats/stats-cards.comp.tsx`                                                                                                                                                  |
+| Kind       | Client Component                                                                                                                                                                                                              |
+| Stylesheet | `stats-cards.comp.css` → block `.stats-cards`                                                                                                                                                                                 |
+| Story      | `stats-cards.stories.tsx` (`platform/sections/dashboard/activity-stats/StatsCards`): each of the four ranges (the three after the first chosen by a `play` function) and a student with nothing yet, on the home page's panel |
+| Used by    | [`HomeSection`](/components/platform/sections/dashboard/home/home-section)                                                                                                                                                    |
+| Uses       | `DashboardStats`, `StatsRangeKey` from `services/dashboard/dashboard.types`                                                                                                                                                   |
 
 ## Purpose
 
-The metric cards ("Lecciones completadas", "Ejercicios resueltos"…) for a period, with a strip of toggle buttons to change the period and a "Por tema" row of tags. It is a Client Component because the selected range is interface state; the numbers themselves are all in the props, so switching is instant and involves no data fetching.
+The metric cards ("Lecciones completadas", "Ejercicios resueltos"…) for a period, with a strip of toggle buttons to change the period and a "Por tema" row of pills. Since 2026-10-23 it is drawn in the new design system, under «Tus estadísticas» on the home page: the toggles are Material's filter chips (`mdChip("filter", pressed)`), the metrics tiles on the container's grey with their figure in the display face, the topics pale blue pills. It is a Client Component because the selected range is interface state; the numbers themselves are all in the props, so switching is instant and involves no data fetching.
 
 ## Props
 
@@ -31,31 +31,30 @@ The metric cards ("Lecciones completadas", "Ejercicios resueltos"…) for a peri
 
 ## Markup & styling
 
-Block `.stats-cards` (81 lines).
+Block `.stats-cards` (76 lines).
 
 **Elements:** `.stats-cards__filters`, `.stats-cards__filter`, `.stats-cards__grid`, `.stats-cards__card`, `.stats-cards__value`, `.stats-cards__label`, `.stats-cards__topics`, `.stats-cards__topics-title`, `.stats-cards__topic`
 
-**Modifiers and states:** `.stats-cards__filter_state_active`
+**Other classes it renders:** Material's filter chip (`mdChip`) on each range, `chip-selected` on the pressed one.
 
-**Other classes it renders:** `.platform-tag` on each topic.
-
-**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+**Tokens:** `--platform-m3-container`, `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-info-container`, `--platform-m3-on-info-container`, `--md-sys-shape-corner-md`, `--platform-font-display`
 
 **Breakpoints:** `(width < 1024px)` drops the grid from five columns to three; `(width < 640px)` to two. The buttons wrap at any width.
 
 ## Usage
 
-From `components/platform/sections/dashboard/activity-stats/activity-stats.section.tsx`:
+From `components/platform/sections/dashboard/home/home.section.tsx`:
 
 ```tsx
-import { StatsCards } from "./stats-cards.comp";
-
-const { stats } = await getUserDashboard();
-// …
-<StatsCards stats={stats} />;
+<section id="estadisticas" className="home__block" aria-labelledby="home-stats-title">
+  <h2 id="home-stats-title" className="home__block-title">
+    Tus estadísticas
+  </h2>
+  <StatsCards stats={dashboard.stats} />
+</section>
 ```
 
 ## Related
 
-- [`ActivityStatsSection`](/components/platform/sections/dashboard/activity-stats/activity-stats-section).
+- [`HomeSection`](/components/platform/sections/dashboard/home/home-section).
 - How the ranges are computed: `statRangeSumsQuery` and `bucketStatRangeSums` in `services/dashboard/dashboard.mapper.ts`, and `lib/date-ranges.ts`.

@@ -1,21 +1,21 @@
 ---
-description: "The dashboard's recent-activity list: a <ul> of activity facts already labelled by the dashboard mapper (type, subject, topic, date)."
+description: "The home page's recent-activity list, in the new design system: a <ul> of activity facts already labelled by the dashboard mapper (type, subject, topic, date)."
 ---
 
 # `ActivityList`
 
-|            |                                                                                                              |
-| ---------- | ------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/shared/activity-list/activity-list.comp.tsx`                                            |
-| Kind       | Server Component                                                                                             |
-| Stylesheet | `activity-list.comp.css` → block `.activity-list`                                                            |
-| Story      | `activity-list.stories.tsx` (`platform/shared/ActivityList`): three entries in the dashboard's card, and one |
-| Used by    | [`RecentActivitySection`](/components/platform/sections/dashboard/recent-activity/recent-activity-section)   |
-| Uses       | `ActivityItem` from `services/dashboard/dashboard.types`                                                     |
+|            |                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/activity-list/activity-list.comp.tsx`                                             |
+| Kind       | Server Component                                                                                              |
+| Stylesheet | `activity-list.comp.css` → block `.activity-list`                                                             |
+| Story      | `activity-list.stories.tsx` (`platform/shared/ActivityList`): three entries on the home page's panel, and one |
+| Used by    | [`HomeSection`](/components/platform/sections/dashboard/home/home-section)                                    |
+| Uses       | `ActivityItem` from `services/dashboard/dashboard.types`                                                      |
 
 ## Purpose
 
-Renders the activity facts of a student ("Lección completada · Finales de torre · Aperturas · hace 2 días"). Every string arrives ready from `services/dashboard`'s mapper; the component lays them out and adds nothing. It sits in `shared/` because the teacher's student detail is expected to reuse it; today only the dashboard does.
+Renders the activity facts of a student ("Lección completada · Finales de torre · Aperturas · hace 2 días"). Every string arrives ready from `services/dashboard`'s mapper; the component lays them out and adds nothing. It sits in `shared/` because the teacher's student detail is expected to reuse it; today only the home page does. Since 2026-10-23 it is drawn in the new design system: rows parted by `--platform-m3-divider`, the topic a pale blue pill.
 
 ## Props
 
@@ -25,26 +25,26 @@ Renders the activity facts of a student ("Lección completada · Finales de torr
 
 ## Behaviour
 
-None. The empty case is the caller's: `RecentActivitySection` renders an [`EmptyState`](/components/platform/shared/empty-state) instead.
+None. The empty case is the caller's: `HomeSection` writes a line instead.
 
 ## Markup & styling
 
-Block `.activity-list` (60 lines).
+Block `.activity-list` (69 lines).
 
 **Elements:** `.activity-list__item`, `.activity-list__main`, `.activity-list__type`, `.activity-list__subject`, `.activity-list__meta`, `.activity-list__topic`, `.activity-list__date`
 
-**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-text`, `--platform-text-muted`
+**Tokens:** `--platform-m3-divider`, `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-info-container`, `--platform-m3-on-info-container`
 
-No media queries.
+**Breakpoints:** `(width < 640px)` — each row's meta under its text.
 
 ## Usage
 
-From `components/platform/sections/dashboard/recent-activity/recent-activity.section.tsx`:
+From `components/platform/sections/dashboard/home/home.section.tsx`:
 
 ```tsx
 import { ActivityList } from "@/components/platform/shared/activity-list/activity-list.comp";
 
-<ActivityList items={recentActivity} />;
+<ActivityList items={dashboard.recentActivity} />;
 ```
 
 ## Related

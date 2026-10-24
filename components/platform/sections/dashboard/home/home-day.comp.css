@@ -1,0 +1,86 @@
+/* «Tu día de estudio»: one row over a hairline — the streak, today's
+   minutes with their bar taking what is left, and the way to the
+   statistics. Under 768px the bar goes to a row of its own. */
+.home-day {
+  display: flex;
+  align-items: center;
+  gap: var(--platform-space-6);
+  padding-top: var(--platform-space-5);
+  border-top: 1px solid var(--platform-m3-divider);
+
+  & p {
+    margin: 0;
+  }
+
+  & .home-day__streak {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+  }
+
+  & .home-day__flame {
+    width: 18px;
+    height: 18px;
+    color: var(--platform-flame);
+  }
+
+  & .home-day__flame-core {
+    color: var(--platform-flame-core);
+  }
+
+  & .home-day__goal {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+  }
+
+  & .home-day__minutes {
+    white-space: nowrap;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .home-day__track {
+    flex: 1;
+    height: 8px;
+    overflow: hidden;
+    border-radius: 1000px;
+    background: var(--platform-m3-container-high);
+  }
+
+  & .home-day__fill {
+    display: block;
+    height: 100%;
+    border-radius: 1000px;
+    background: var(--platform-m3-primary);
+  }
+
+  & .home-day__link {
+    flex: none;
+    font-weight: 600;
+    color: var(--platform-m3-primary);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: 3px solid var(--platform-m3-primary);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+  }
+
+  @media (width < 768px) {
+    flex-wrap: wrap;
+    gap: var(--platform-space-3) var(--platform-space-6);
+
+    & .home-day__goal {
+      flex-basis: 100%;
+      order: 3;
+    }
+  }
+}

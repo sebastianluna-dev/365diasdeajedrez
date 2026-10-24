@@ -194,6 +194,20 @@ export interface StudentClassesView {
   whatsappHref: string;
 }
 
+/**
+ * «Ejercicios de tu clase» on the home page: the exercises of a class's
+ * EXERCISE blocks the student may solve now, and how many of them they have
+ * done there (a mark, solved or failed: the first decided attempt). Counts,
+ * derived from the class page's own read; nothing is stored.
+ */
+export interface ClassExercisesToDo {
+  classTitle: string;
+  /** The first exercise still undone: where «Ejercicios de tu clase» leads. */
+  href: string;
+  done: number;
+  total: number;
+}
+
 export interface ClassDetailView {
   id: string;
   title: string;

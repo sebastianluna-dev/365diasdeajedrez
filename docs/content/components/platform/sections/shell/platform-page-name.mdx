@@ -4,17 +4,17 @@ description: "The page's drawing and name at the left of the bar, in the wordmar
 
 # `PlatformPageName`
 
-|            |                                                                                                                                                                          |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/shell/platform-page-name.comp.tsx`                                                                                                         |
-| Kind       | Client Component                                                                                                                                                         |
-| Stylesheet | `platform-page-name.comp.css` → block `.platform-page-name`                                                                                                              |
-| Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)                                                                                            |
-| Uses       | [`NavArt`](/components/platform/sections/shell/nav-art); `activeApp`, `PlatformApps` from `constants/platform/nav-items.const`<br />`usePathname` from `next/navigation` |
+|            |                                                                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/shell/platform-page-name.comp.tsx`                                                                                                          |
+| Kind       | Client Component                                                                                                                                                          |
+| Stylesheet | `platform-page-name.comp.css` → block `.platform-page-name`                                                                                                               |
+| Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)                                                                                             |
+| Uses       | [`NavArt`](/components/platform/sections/shell/nav-art); `pageNameOf`, `PlatformApps` from `constants/platform/nav-items.const`<br />`usePathname` from `next/navigation` |
 
 ## Purpose
 
-The Google-style header (2026-10-19) names the page — «Calendario», «Ejercicios», «Clases» — in the display font, and since 2026-10-22 (the new design system's header) with the tool's drawing before it (the `NavArt` of its tile in the tools menu, still) and **in the wordmark's place**: the shell hides the wordmark while a name is drawn (`:has(.platform-page-name)`), so the wordmark stays only where no tool names the page. The name is the label of the tool the page belongs to (`activeApp`, the longest address that starts the page's), so a deep page keeps its tool's name («Mis alumnos» on one student's page), and a page no tool leads to (a lesson) shows none. Client, because it follows the address.
+The Google-style header (2026-10-19) names the page — «Calendario», «Ejercicios», «Clases» — in the display font, and since 2026-10-22 (the new design system's header) with the tool's drawing before it (the `NavArt` of its tile in the tools menu, still) and **in the wordmark's place**: the shell hides the wordmark while a name is drawn (`:has(.platform-page-name)`), so the wordmark stays only where no tool names the page. The name is the label of the tool the page belongs to (`activeApp`, the longest address that starts the page's), so a deep page keeps its tool's name («Mis alumnos» on one student's page), and a page no tool leads to (a lesson) shows none. The one exception is the home page (2026-10-23, `pageNameOf`): `/inicio` is no tool's — no tile leads to it —, and the bar names it «Inicio» with the academy's mark (`HOME_PAGE`, `NavArt` `home`), as the owner's «CabeceraInicio» draws it; the menu still lights no tile there. Client, because it follows the address.
 
 ## Props
 

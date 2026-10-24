@@ -1,0 +1,91 @@
+---
+description: "«Inicio», the student's home page, in the new design system: one focus in a block of the primary — today's class with its countdown ring, the course in progress, the next class or choosing what to study —, «Después» as tiles, the day at the first screen's foot, and the statistics and recent activity under it."
+---
+
+# `HomeSection`
+
+|            |                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/dashboard/home/home.section.tsx`                                                                                                                                                                                                                                                                                                                                       |
+| Pieces     | `home-focus.comp.tsx`, `home-class-lead.comp.tsx`, `home-class-ring.comp.tsx`, `home-later.comp.tsx`, `home-day.comp.tsx`, `home-skeleton.comp.tsx`, `home-plan.ts`                                                                                                                                                                                                                                  |
+| Kind       | Server Component; `HomeClassLead` and `HomeClassRing` are the client leaves that follow the clock                                                                                                                                                                                                                                                                                                    |
+| Stylesheet | `home.section.css` → block `.home`; `home-focus.comp.css` → block `.home-focus`; `home-class-ring.comp.css` → block `.home-class-ring`; `home-later.comp.css` → block `.home-later`; `home-day.comp.css` → block `.home-day`; `home-skeleton.comp.css` → block `.home-skeleton`                                                                                                                      |
+| Story      | `home.stories.tsx` (`platform/sections/dashboard/HomeSection`): a class day (eight minutes to go, from the browser's clock), the course first, nothing yet                                                                                                                                                                                                                                           |
+| Used by    | `/inicio`; `HomeSkeleton` by `app/(platform)/inicio/loading.tsx`                                                                                                                                                                                                                                                                                                                                     |
+| Composes   | [`StatsCards`](/components/platform/sections/dashboard/activity-stats/stats-cards), [`ActivityList`](/components/platform/shared/activity-list)                                                                                                                                                                                                                                                      |
+| Uses       | `DashboardData` (`getUserDashboard`), `ClassCardData` (`getNextClass`), `ClassExercisesToDo` (`getClassExercisesToDo`), `StudyGoal` (`getStudyGoal`); `meetingJoinState`, `useMeetingNow`, `useRefreshAtInstants`; `formatClassDay`, `formatClassHours`; `dayKeyIn`; `joinSpanish`; `mdButton`; `platformRoutes`; `FireIcon`, `CirclePlayIcon`, `GraduationCapIcon`, `CalendarDayIcon`, `TrophyIcon` |
+
+## Purpose
+
+The student's home page as the owner drew it on 2026-10-23 («Inicio: un solo foco», with «CabeceraInicio» for the bar), moved whole to the new design system. The page bleeds onto the canvas on `.platform-workspace` with **no side column** (`platform-workspace_side_none`: as much canvas at the panel's left as at its right), and the bar names it «Inicio» with the academy's mark ([`PlatformPageName`](/components/platform/sections/shell/platform-page-name)). In the panel, one column of at most 760px:
+
+- **The greeting**: «¿Qué vamos a estudiar hoy, Andrea?» (the first word of the display name), in the display face, and «Lo más importante primero; lo demás, debajo.»
+- **«Lo siguiente»** (`HomeFocus`), a block of the primary in its «on» colour, `--md-sys-shape-corner-xl`. What it holds is `homePlanOf`'s choice, in this order: **today's class** — entering it is what there is to do —, else **the course in progress**, else **the next class** on whatever day, else **choosing what to study**.
+  - Today's class: «Lo siguiente · tu clase empieza en 8 minutos» (`HomeClassLead`: «es hoy a las 18:00» more than an hour ahead, «ya empezó», «terminó»), its topic, «Hoy a las 18:00 · con Laura Méndez · grupal, con Ana, Diego y Mateo», and «Entrar a la clase» (Material's filled button, white on the primary) with «Ver la clase» while the link is open, «Ver la clase» alone before; without a link yet, «Administración agregará el enlace antes de la clase.». In its last hour the ring at the right (`HomeClassRing`) empties with the minutes left, which it shows in large figures (`role="img"`, «Faltan 8 minutos»). The lead asks for the page again at each instant the class changes phase (`useRefreshAtInstants`), which is how «Entrar a la clase» appears without the link travelling ahead of time.
+  - Another day's class: «Lo siguiente · tu próxima clase», its day and hour, «Ver la clase».
+  - The course: «Lo siguiente · tu curso», its name, «Te quedaste en: … · 4 de 10 lecciones», «Continuar» and «Ver mis cursos».
+  - Nothing: «Elige qué estudiar», «Ver el catálogo» and «Ver mis cursos».
+    Material's buttons are drawn inverted inside the block by pointing the roles they read (`--md-sys-color-primary`, `-on-primary`, `-secondary`) at the block's own colours, so the filled one is white with the primary's ink and the text one and the focus ring are white.
+- **«Después»** (`HomeLater`): what is not the focus, as tiles side by side on the container's grey, each the whole of it a link with an icon on its own tone — «Continuar el curso» (the success container), «Tu próxima clase» (the secondary container) and «Ejercicios de tu clase · 1 de 3 hechos» (the warning container, leading to the first exercise not done). Nothing to show, no group.
+- **The day** (`HomeDay`, «Tu día de estudio»), at the foot of the first screen over a hairline: the flame and «12 días de racha» («Empieza tu racha hoy» at zero), «Hoy 12 de 20 min» with its bar, and «Ver tus estadísticas», which goes down the page (`#estadisticas`). The first screen (`.home__today`) is at least as tall as what the window shows of the panel, so the day sits at its foot and what follows starts under the fold.
+- **Under it**, «lo demás»: «Tus estadísticas» ([`StatsCards`](/components/platform/sections/dashboard/activity-stats/stats-cards)) and «Actividad reciente» ([`ActivityList`](/components/platform/shared/activity-list), or a line when there is none yet).
+
+While it loads, `HomeSkeleton` draws the same panel in the containers' greys (markup and CSS only, as a `loading.tsx` needs).
+
+**From the design, left out or adapted** (2026-10-23): the daily goal is changed in «Ajustes» only — the canvas has no control for it, and the former «Cambiar objetivo» of the dashboard went with the old page —; «hechos» counts the exercises of the class's blocks that the student has a mark on, solved or failed, in that block (`getClassExercisesToDo`: the next class ahead or, failing it, the last one gone, whichever still has some undone); the canvas's classmates' first names are the names the class gives; the profile's email and «En la academia desde» of the old greeting are gone, and so is the old «Te quedan 3 clases» under the next class (it is in «Mis clases»).
+
+## Props
+
+| Prop             | Type                         | Required | Meaning                                                                      |
+| ---------------- | ---------------------------- | -------- | ---------------------------------------------------------------------------- |
+| `dashboard`      | `DashboardData`              | yes      | The profile, the course in progress, the statistics and the recent activity. |
+| `nextClass`      | `ClassCardData \| null`      | yes      | The first class ahead that is not cancelled.                                 |
+| `classExercises` | `ClassExercisesToDo \| null` | yes      | A class's exercises still undone, or null.                                   |
+| `goal`           | `StudyGoal`                  | yes      | The streak and today's minutes against the goal.                             |
+
+## Markup & styling
+
+Block `.home` (83 lines), on `.platform-workspace__panel`.
+
+**Elements:** `.home__column`, `.home__today`, `.home__foot`, `.home__greeting`, `.home__title`, `.home__subtitle`, `.home__block`, `.home__block-title`, `.home__empty`
+
+Block `.home-focus` (81 lines): `__sr`, `__body`, `__lead`, `__title`, `__line`, `__note`, `__actions`.
+
+Block `.home-class-ring` (59 lines): `__svg`, `__track`, `__arc`, `__figure`, `__minutes`, `__unit`.
+
+Block `.home-later` (103 lines): `__title`, `__list`, `__item`, `__tile`, `__icon`, `__glyph`, `__text`, `__name`, `__line`; `__icon_tone_{course,class,exercises}`.
+
+Block `.home-day` (86 lines): `__streak`, `__flame`, `__flame-core`, `__goal`, `__minutes`, `__track`, `__fill`, `__link`.
+
+Block `.home-skeleton` (101 lines), the loading shape.
+
+**Other classes it renders:** `.platform-workspace__panel`, Material's buttons (`mdButton`), `.platform-md-icon`.
+
+**Breakpoints:** `(width < 1024px)` — the first screen no longer fills the window. `(width < 768px)` — the tiles one under the other, the day's bar on a row of its own. `(width < 640px)` — the ring above the focus's text and smaller, the titles a step down, the column without its extra padding.
+
+**Tokens:** `--platform-m3-*` (primary and its «on» colour, panel, containers, divider, on-surface and its variant, success, secondary, warning and info containers), `--platform-flame`, `--platform-flame-core`, `--md-sys-shape-corner-md`/`-lg`/`-xl`, `--platform-font-display`.
+
+## Usage
+
+From `app/(platform)/inicio/page.tsx`:
+
+```tsx
+const [dashboard, nextClass, classExercises, goal] = await Promise.all([
+  getUserDashboard(),
+  getNextClass(),
+  getClassExercisesToDo(),
+  getStudyGoal(),
+]);
+
+<div className="platform-page platform-page_width_full platform-page_frame_bleed">
+  <div className="platform-workspace platform-workspace_side_none">
+    <HomeSection dashboard={dashboard} nextClass={nextClass} classExercises={classExercises} goal={goal} />
+  </div>
+</div>;
+```
+
+## Related
+
+- [`TodayClass`](/components/platform/sections/classes/classes-list/classes-list-section), today's class in «Mis clases».
+- [`AccountSettingsSection`](/components/platform/sections/account/account-settings-section), where the daily goal is set.
+- [Styling › The new design system](/ui/styling#the-new-design-system-material-3-expressive), [Student features › Home](/platform/student).

@@ -41,16 +41,16 @@ No media queries.
 
 ## Usage
 
-From `components/platform/sections/dashboard/continue-studying/continue-studying.section.tsx`:
+From `components/platform/sections/courses/my-courses/my-courses.section.tsx`:
 
 ```tsx
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 
 <EmptyState
-  title="No tienes ningún curso en progreso"
-  description="Empieza un curso para verlo aquí."
-  actionLabel="Ver mis cursos"
-  actionHref={platformRoutes.courses}
+  title="Todavía no tienes cursos"
+  description="Elige uno del catálogo y agrégalo para empezar."
+  actionLabel="Explorar cursos"
+  actionHref={platformRoutes.courseCatalog}
 />;
 ```
 
