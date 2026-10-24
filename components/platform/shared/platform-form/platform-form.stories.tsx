@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within } from "storybook/test";
+import { PlatformDatePicker } from "@/components/platform/shared/platform-date-picker/platform-date-picker.comp";
+import { PlatformLookContext } from "@/components/platform/shared/platform-look";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
 import { PlatformChoiceCards } from "@/components/platform/shared/platform-choice-cards/platform-choice-cards.comp";
@@ -195,6 +197,57 @@ export const GroupServerError: Story = {
       </PlatformFormGroup>
     </PlatformForm>
   ),
+};
+
+/**
+ * The fields as a popup of a page moved to the new design system draws them (its look, `PlatformLookContext`, set
+ * here by hand on the dialog's surface): Material 3's outlined text fields of «Formulario A» — the label on the
+ * outline, «Opcional» and the hint on the supporting line, a select and a date picker in the same box, a field with
+ * an "i", and one the server rejected, in the error's red. `play` focuses the name: the primary at 2px.
+ */
+export const MaterialFieldStates: Story = {
+  name: "Material field states",
+  render: () => (
+    <PlatformLookContext value="material">
+      <div style={{ padding: 24, borderRadius: 28, background: "var(--platform-m3-dialog)" }}>
+        <PlatformForm onSubmit={(event) => event.preventDefault()} style={{ gap: 20 }}>
+          <PlatformFormField name="name" label="Nombre" messages={{ valueMissing: "Ponle un nombre al estudio." }}>
+            <input type="text" maxLength={120} required defaultValue="Nacional Abierto 2026" />
+          </PlatformFormField>
+          <PlatformFormField name="site" label="Lugar" hint="La ciudad, o el sitio en línea.">
+            <input type="text" maxLength={120} placeholder="Ciudad de México" />
+          </PlatformFormField>
+          <PlatformFormField name="eco" label="ECO" info="Código de apertura, como «B40».">
+            <input type="text" maxLength={120} defaultValue="B90" />
+          </PlatformFormField>
+          <PlatformFormField name="whiteElo" label="Elo" serverError="Entre 100 y 4000.">
+            <input type="number" min={100} max={4000} defaultValue={21040} />
+          </PlatformFormField>
+          <PlatformFormField name="resultCode" label="Resultado">
+            <PlatformSelect
+              defaultValue="BLACK_WINS"
+              options={[
+                { value: "WHITE_WINS", label: "1-0 · ganan las blancas" },
+                { value: "BLACK_WINS", label: "0-1 · ganan las negras" },
+              ]}
+            />
+          </PlatformFormField>
+          <PlatformFormField name="playedAt" label="Fecha">
+            <PlatformDatePicker defaultValue="2026-10-12" />
+          </PlatformFormField>
+          <PlatformFormField name="description" label="Descripción">
+            <textarea maxLength={500} rows={3} placeholder="Para qué te sirve este estudio" />
+          </PlatformFormField>
+        </PlatformForm>
+      </div>
+    </PlatformLookContext>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("textbox", { name: "Nombre" }));
+    await expect(canvas.getByRole("textbox", { name: "Nombre" })).toHaveFocus();
+    await expect(canvas.getByText("Entre 100 y 4000.")).toBeVisible();
+  },
 };
 
 /** A required group submitted with nothing chosen: the browser's bubble is replaced by the message under the group. */

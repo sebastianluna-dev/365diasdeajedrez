@@ -15,6 +15,7 @@ import { Form } from "radix-ui";
 import { isOptionalControl } from "@/components/platform/shared/optional-mark/optional-control";
 import { OptionalMark } from "@/components/platform/shared/optional-mark/optional-mark.comp";
 import { PlatformInfoTip } from "@/components/platform/shared/platform-info-tip/platform-info-tip.comp";
+import { usePlatformLook } from "@/components/platform/shared/platform-look";
 import "./platform-form.comp.css";
 
 /** The validity states a message can answer to, straight from `ValidityState`. */
@@ -116,6 +117,12 @@ interface PlatformFormFieldProps {
  * read from the control itself, so the mark and the validation cannot
  * disagree and no caller writes the word. Selects and cards get none: they
  * always show their choice.
+ *
+ * Inside a popup of a page moved to the new design system (its look, from
+ * `PlatformLookContext`) it is Material 3's outlined text field instead: the
+ * control 56px high with a 4px corner, the label sitting on its outline, and
+ * a supporting line under it with «Opcional» — still read from `required` —
+ * and the hint; the messages take the same line, in the error's red.
  */
 export function PlatformFormField({
   name,
@@ -130,16 +137,23 @@ export function PlatformFormField({
   const allMessages = { ...DEFAULT_MESSAGES, ...messages };
   // A textarea's "i" goes in a strip under its text; an input's, over its end.
   const framed = Boolean(info) && children.type === "textarea";
+  // In a popup of a moved page, Material's outlined field: the label sits on
+  // the outline and «Opcional» moves to the supporting line under it.
+  const material = usePlatformLook() === "material";
+  const optional = isOptionalControl(children);
+  const className = [
+    "platform-form__field",
+    info && !framed ? "platform-form__field_with_info" : "",
+    material ? "platform-form__field_look_material" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
-    <Form.Field
-      name={name}
-      className={info && !framed ? "platform-form__field platform-form__field_with_info" : "platform-form__field"}
-      serverInvalid={Boolean(serverError)}
-    >
+    <Form.Field name={name} className={className} serverInvalid={Boolean(serverError)}>
       <div className="platform-form__label-row">
         <Form.Label className="platform-form__label">{label}</Form.Label>
-        {isOptionalControl(children) && <OptionalMark />}
+        {optional && !material && <OptionalMark />}
       </div>
       {info && framed ? (
         <TextareaFrame label={label} info={info}>
@@ -156,7 +170,16 @@ export function PlatformFormField({
           <PlatformInfoTip label={`Sobre «${label}»`} text={info} />
         </span>
       )}
-      {hint && <span className="platform-form__hint">{hint}</span>}
+      {material
+        ? // Material's supporting line: «Opcional» first, then the hint. Still
+          // the piece that writes it, from the control's `required`.
+          (optional || hint) && (
+            <span className="platform-form__support">
+              {optional && <OptionalMark />}
+              {hint && <span className="platform-form__hint">{hint}</span>}
+            </span>
+          )
+        : hint && <span className="platform-form__hint">{hint}</span>}
       {(Object.entries(allMessages) as [PlatformFormMatcher, string][]).map(([match, text]) => (
         <Form.Message key={match} match={match} className="platform-form__message">
           {text}

@@ -204,6 +204,11 @@
   --platform-m3-panel: light-dark(#ffffff, #1e1f20);
   --platform-m3-container: light-dark(#f0f4f9, #282a2c);
   --platform-m3-container-high: light-dark(#e9eef6, #333537);
+  /* A dialog of a moved page (2026-10-23, «Confirmación 1» and «Formulario
+     A» of the owner's canvas): the canvas's blue-grey white in the light
+     theme, and a container a step over the dark canvas in the dark one, so
+     it stands off the page its scrim dims. */
+  --platform-m3-dialog: light-dark(#f8fafd, #282a2c);
   --platform-m3-on-surface: light-dark(#1f1f1f, #e3e3e3);
   --platform-m3-on-surface-variant: light-dark(#444746, #c4c7c5);
   --platform-m3-outline: light-dark(#747775, #8e918f);
@@ -555,6 +560,16 @@ html body.platform-theme[data-scroll-locked] {
   width: var(--md-icon-size, 20px);
   height: var(--md-icon-size, 20px);
   color: var(--md-icon-color, currentColor);
+}
+
+/* A Material button that takes something away for good, in the error's red
+   (the destructive button of a popup of a moved page, `popupButton`): its
+   word, its icon, its line and its state layer. Unlayered, it would win over
+   the library's disabled state too, so it leaves a disabled one alone. */
+.platform-md-error:not(:disabled) {
+  --icon-color: var(--platform-m3-error);
+  --label-text-color: var(--platform-m3-error);
+  --state-layer-color: var(--platform-m3-error);
 }
 
 /* Material's ripple and focus ring animate, and its stylesheets do not ask
@@ -1425,6 +1440,29 @@ html body.platform-theme[data-scroll-locked] {
   }
 }
 
+/* A dialog of a page moved to the new design system (2026-10-23): Material
+   3's, as «Confirmación 1» and «Formulario A» of the owner's canvas draw it —
+   its 28px corners, its surface, its third level of shadow and a lighter
+   scrim of its own. `PlatformPopup` and `PlatformConfirmPopup` set the
+   modifier when they open inside `.platform-workspace` (`lookOf`); the
+   motion is the frame's, unchanged. */
+.platform-dialog.platform-dialog_look_material {
+  border-radius: var(--md-sys-shape-corner-xl);
+  background: var(--platform-m3-dialog);
+  color: var(--platform-m3-on-surface);
+  box-shadow:
+    0 4px 8px 3px color-mix(in srgb, var(--platform-m3-row-shadow) 15%, transparent),
+    0 1px 3px 0 color-mix(in srgb, var(--platform-m3-row-shadow) 30%, transparent);
+}
+
+.platform-dialog.platform-dialog_look_material[open]::backdrop {
+  background: rgba(0, 0, 0, 0.32);
+
+  @starting-style {
+    background: transparent;
+  }
+}
+
 /* A sheet on a phone (`PlatformPopup phone="sheet"`, P3): under 640px it
    stands on the bottom edge, as wide as the screen, rounded only at the top,
    and its rise comes from below the screen instead of a few pixels under the
@@ -1444,6 +1482,10 @@ html body.platform-theme[data-scroll-locked] {
     @starting-style {
       transform: translateY(100%);
     }
+  }
+
+  .platform-dialog.platform-dialog_phone_sheet.platform-dialog_look_material {
+    border-radius: var(--md-sys-shape-corner-xl) var(--md-sys-shape-corner-xl) 0 0;
   }
 }
 

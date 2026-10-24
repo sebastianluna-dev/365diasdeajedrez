@@ -36,4 +36,18 @@
     padding: var(--platform-space-4) var(--platform-space-6) var(--platform-space-5);
     border-top: 1px solid var(--platform-border);
   }
+
+  /* In Material's dialog (`PlatformPopup` on a moved page): the form under
+     the headline with no rule between them, and the danger row's rule in
+     its hairline; the buttons are Material's (`popupButton`). */
+  & .platform-popup_look_material {
+    & .game-settings__form {
+      padding-top: var(--platform-space-3);
+    }
+
+    & .game-settings__danger {
+      padding-bottom: var(--platform-space-6);
+      border-top-color: var(--platform-m3-outline-variant);
+    }
+  }
 }

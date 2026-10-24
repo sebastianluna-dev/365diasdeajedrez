@@ -1,7 +1,16 @@
 "use client";
 
-import { useId, useImperativeHandle, useRef, type ReactNode, type Ref } from "react";
+import { useId, useImperativeHandle, useRef, useState, type ReactNode, type Ref } from "react";
+import { flushSync } from "react-dom";
 import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
+import {
+  lookOf,
+  MATERIAL_DIALOG,
+  needsLook,
+  PlatformLookContext,
+  type PlatformLook,
+} from "@/components/platform/shared/platform-look";
+import { mdIconButton } from "@/lib/material/material-classes";
 import "./platform-popup.comp.css";
 
 /** What a host gets through `ref`: the three things it can do to the popup. */
@@ -28,7 +37,10 @@ interface PlatformPopupProps {
   title: string;
   /** How the host opens and closes it. Every host draws its own trigger: the popup has none. */
   ref: Ref<PlatformPopupHandle>;
-  /** `sm` 480px, `md` 600px (the default), `lg` 720px; always within the viewport. */
+  /**
+   * `sm` 480px, `md` 600px (the default), `lg` 720px — 800px in Material's
+   * look, the two columns of «Formulario A» —; always within the viewport.
+   */
   size?: "sm" | "md" | "lg";
   /**
    * `sheet`: on a phone (under 640px) it comes up from the bottom, as wide as
@@ -61,6 +73,13 @@ const FOCUSABLE =
  * the viewport and plays its entry and exit: this piece draws no motion of
  * its own.
  *
+ * On a page moved to the new design system (inside `.platform-workspace`)
+ * it is Material 3's dialog instead (`lookOf`, decided as it opens): 28px
+ * corners on the dialog's surface, the headline in the display font with no
+ * rule under it, Material's icon button for the cross, and its look handed to
+ * the content (`PlatformLookContext`), whose fields turn outlined and whose
+ * buttons read it through `popupButton`.
+ *
  * It is opened and closed through its handle, never by a trigger of its own,
  * so a host can keep it open while a `PlatformConfirmPopup` is opened on top
  * of it: a second modal stacks in the top layer over this one, with its own
@@ -70,6 +89,7 @@ const FOCUSABLE =
 export function PlatformPopup({ title, ref, size = "md", phone, onClose, children }: PlatformPopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
+  const [look, setLook] = useState<PlatformLook>("platform");
 
   useImperativeHandle(
     ref,
@@ -78,6 +98,10 @@ export function PlatformPopup({ title, ref, size = "md", phone, onClose, childre
         const dialog = dialogRef.current;
         if (!dialog || dialog.open) return;
         event?.currentTarget.focus();
+        // Drawn in its page's look before it is shown, so the first control
+        // focused below is the one on screen.
+        const next = lookOf(dialog);
+        if (needsLook(dialog, next)) flushSync(() => setLook(next));
         dialog.showModal();
         // The browser focuses the first focusable element, which is the
         // cross: the content's first control is what one comes for.
@@ -92,10 +116,12 @@ export function PlatformPopup({ title, ref, size = "md", phone, onClose, childre
     [],
   );
 
+  const material = look === "material";
+
   return (
     <dialog
       ref={dialogRef}
-      className={`platform-dialog platform-popup platform-popup_size_${size}${phone ? " platform-dialog_phone_sheet" : ""}`}
+      className={`platform-dialog platform-popup platform-popup_size_${size}${phone ? " platform-dialog_phone_sheet" : ""}${material ? ` ${MATERIAL_DIALOG} platform-popup_look_material` : ""}`}
       aria-labelledby={titleId}
       onClose={onClose}
     >
@@ -105,14 +131,18 @@ export function PlatformPopup({ title, ref, size = "md", phone, onClose, childre
         </h2>
         <button
           type="button"
-          className="platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square platform-popup__close"
+          className={`${
+            material
+              ? mdIconButton("standard", "sm")
+              : "platform-button platform-button_variant_quiet platform-button_size_sm platform-button_shape_square"
+          } platform-popup__close`}
           onClick={() => dialogRef.current?.close()}
           aria-label="Cerrar"
         >
-          <XmarkIcon variant="classic-solid" className="platform-button__icon" />
+          <XmarkIcon variant="classic-solid" className={material ? "platform-md-icon" : "platform-button__icon"} />
         </button>
       </header>
-      {children}
+      <PlatformLookContext value={look}>{children}</PlatformLookContext>
     </dialog>
   );
 }

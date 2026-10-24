@@ -46,7 +46,7 @@ Of Lichess's four analysis modes, two are here: «Análisis normal» and «Ocult
 
 ## Markup & styling
 
-Block `.game-settings` (39 lines): the gear and the popup's content. The strip, the width and the frame are `PlatformPopup`'s; the confirmation, whole, is `PlatformConfirmPopup`'s.
+Block `.game-settings` (53 lines): the gear and the popup's content; under `.platform-popup_look_material` (Material's dialog, on a moved page, 2026-10-23) the form closer to the headline and the danger row's rule in the outline-variant. «Guardar» and the three destructive buttons are `GameSettingsSave` and `GameSettingsDanger`, which read the popup's look (`popupButton`): Material's filled button, and small outlined ones with the last in the error's red. The strip, the width and the frame are `PlatformPopup`'s; the confirmation, whole, is `PlatformConfirmPopup`'s.
 
 **Elements:** `.game-settings__open` (only a hook: the gear, in Classic Solid, is the platform's quiet small square, or with `look="material"` — a study's side column, 2026-10-23 — Material's standard icon button, `mdIconButton("standard", "xs")`), `.game-settings__form`, `.game-settings__pair` (the two selects side by side; one under the other below 640px), `.game-settings__actions`, `.game-settings__danger` (the row of pills: `.platform-button` with `_size_sm` and `_shape_pill`)
 

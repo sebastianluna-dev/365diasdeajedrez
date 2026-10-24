@@ -42,4 +42,35 @@
     flex: none;
     margin-right: calc(-1 * var(--platform-space-2));
   }
+
+  /* MATERIAL'S LOOK, on a page moved to the new design system (the frame's
+     `platform-dialog_look_material` draws the surface, the corners and the
+     scrim): the head of «Formulario A» — the headline in the display font
+     at 600, the lightest weight the platform ships Poppins in (a page
+     title's), with no rule under it, and Material's icon button for the
+     cross, on its first line. The largest size takes the design's 800px,
+     for a form in two columns. */
+  &.platform-popup_look_material {
+    &.platform-popup_size_lg {
+      width: min(800px, calc(100vw - 32px));
+    }
+
+    & .platform-popup__head {
+      align-items: flex-start;
+      padding: var(--platform-space-6) var(--platform-space-4) var(--platform-space-3) var(--platform-space-6);
+      border-bottom: 0;
+    }
+
+    & .platform-popup__title {
+      font-family: var(--platform-font-display);
+      font-size: var(--platform-type-2xl);
+      font-weight: 600;
+      line-height: 1.33;
+      letter-spacing: 0;
+    }
+
+    & .platform-popup__close {
+      margin: calc(-1 * var(--platform-space-1)) 0 0;
+    }
+  }
 }

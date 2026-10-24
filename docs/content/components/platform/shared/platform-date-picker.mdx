@@ -40,6 +40,8 @@ Radix Primitives has no date primitive, so the calendar is ours and only the pop
 - The popover is a `role="dialog"` (the primitive's), named by the month on screen: `aria-labelledby` points at the caption, which names the grid too.
 - The calendar is **not portalled**, like the select's list, so it works inside a modal `<dialog>`; the popover is not modal, so the page keeps scrolling and its scrollbar. It unfolds from the trigger and folds back on `data-state`, off under `prefers-reduced-motion`.
 
+- **Material's look** (2026-10-23, «Formulario A»). Inside a popup of a page moved to the new design system (`usePlatformLook()`), the root takes `platform-date-picker_look_material`: the trigger is the outlined text field of `PlatformFormField`, with the calendar as its trailing icon; the calendar is Material's docked date picker on `--platform-m3-container` with the large corner, round 40px days, the chosen one a circle of the primary, today ringed in it, «Hoy» and «Quitar» as text buttons in the primary, and its arrows Material's standard icon buttons. The story «Material open» shows it.
+
 ## Markup & styling
 
 Block `.platform-date-picker`, a wrapper `<div>` so the trigger, the hidden input and the calendar share one root.

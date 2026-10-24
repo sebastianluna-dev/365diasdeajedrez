@@ -282,6 +282,10 @@ export const TEXT_PAIRS: readonly (readonly [text: string, background: string])[
   ["m3-on-surface-variant", "m3-info-container"],
   ["m3-on-error-container", "m3-error-container"],
   ["m3-on-error", "m3-error"],
+  // A dialog of a moved page: its text, its supporting text and labels, its
+  // primary (a text button, a focused field's label, a section's title) and
+  // its error (the destructive button, an invalid field) on its surface.
+  ...["m3-on-surface", "m3-on-surface-variant", "m3-primary", "m3-error"].map((text) => [text, "m3-dialog"] as const),
 ];
 
 /**

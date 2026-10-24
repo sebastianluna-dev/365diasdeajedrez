@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useImperativeHandle, useRef, useState, type Ref } from "react";
+import { flushSync } from "react-dom";
 import { Checkbox } from "radix-ui";
 import { BanIcon } from "@/components/icons/ban-icon.comp";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
@@ -8,7 +9,15 @@ import { CircleMinusIcon } from "@/components/icons/circle-minus-icon.comp";
 import { TrashCanIcon } from "@/components/icons/trash-can-icon.comp";
 import { TriangleExclamationIcon } from "@/components/icons/triangle-exclamation-icon.comp";
 import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
+import {
+  lookOf,
+  MATERIAL_DIALOG,
+  needsLook,
+  PlatformLookContext,
+  type PlatformLook,
+} from "@/components/platform/shared/platform-look";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
+import { mdButton } from "@/lib/material/material-classes";
 import "./platform-confirm-popup.comp.css";
 
 /** What whoever draws the trigger gets: opening, and closing it from outside. */
@@ -152,6 +161,17 @@ const ICONS: Record<PlatformConfirmVerb, typeof TrashCanIcon> = {
  * and both popups, away by itself. Mounted as a SIBLING of the popup it is
  * opened from, never inside it: a `<dialog>` under one that is closed is not
  * drawn.
+ *
+ * On a page moved to the new design system (inside `.platform-workspace`,
+ * `lookOf`, decided as it opens) it is Material 3's basic dialog instead,
+ * «Confirmación 1» of the owner's canvas: 28px corners on the dialog's
+ * surface and its own scrim, the verb's icon centred on top (in the error's
+ * red for «Eliminar»), the question centred in the display font, what goes
+ * as supporting text, the box to tick as a soft card, and two text buttons
+ * at the right — the way out in the primary, the action in the error's red.
+ * No rule, no disc: Material says it is heavy with its icon and its red word.
+ * Everything else — the verbs, the fields, the box, the stacking, `onDone`,
+ * the focus — is the same piece.
  */
 export function PlatformConfirmPopup({
   verb = "Eliminar",
@@ -176,6 +196,7 @@ export function PlatformConfirmPopup({
   const descriptionId = useId();
   const warningId = useId();
   const checkId = useId();
+  const [look, setLook] = useState<PlatformLook>("platform");
 
   useImperativeHandle(
     ref,
@@ -184,6 +205,9 @@ export function PlatformConfirmPopup({
         const dialog = dialogRef.current;
         if (!dialog || dialog.open) return;
         event?.currentTarget.focus();
+        // Drawn in its page's look before it is shown and takes the focus.
+        const next = lookOf(dialog);
+        if (needsLook(dialog, next)) flushSync(() => setLook(next));
         dialog.showModal();
       },
       close: () => dialogRef.current?.close(),
@@ -216,10 +240,12 @@ export function PlatformConfirmPopup({
     }
   };
 
+  const material = look === "material";
+
   return (
     <dialog
       ref={dialogRef}
-      className="platform-dialog platform-confirm-popup"
+      className={`platform-dialog platform-confirm-popup${material ? ` ${MATERIAL_DIALOG} platform-confirm-popup_look_material` : ""}`}
       aria-labelledby={titleId}
       aria-describedby={warning ? `${descriptionId} ${warningId}` : descriptionId}
       onClose={() => {
@@ -228,90 +254,113 @@ export function PlatformConfirmPopup({
         onClose?.();
       }}
     >
-      <Shell action={submit} className="platform-confirm-popup__form">
-        <div className="platform-confirm-popup__head">
-          <span className="platform-confirm-popup__icon" aria-hidden="true">
-            <Icon variant="duotone-solid" className="platform-confirm-popup__icon-glyph" />
-          </span>
-          <div className="platform-confirm-popup__heading">
-            <h2 id={titleId} className="platform-confirm-popup__title">
-              {title ?? `¿${verb} «${subject}»?`}
-            </h2>
-            <p id={descriptionId} className="platform-confirm-popup__description">
-              {description}
-            </p>
+      {/* Its look, handed to the fields it asks to fill. */}
+      <PlatformLookContext value={look}>
+        <Shell action={submit} className="platform-confirm-popup__form">
+          <div className="platform-confirm-popup__head">
+            {/* Material's icon is the verb's glyph alone, centred, in the
+              error's red when it destroys; the platform's sits on a disc. */}
+            <span
+              className={`platform-confirm-popup__icon${verb === "Eliminar" ? " platform-confirm-popup__icon_tone_error" : ""}`}
+              aria-hidden="true"
+            >
+              <Icon
+                variant={material ? "duotone-light" : "duotone-solid"}
+                className="platform-confirm-popup__icon-glyph"
+              />
+            </span>
+            <div className="platform-confirm-popup__heading">
+              <h2 id={titleId} className="platform-confirm-popup__title">
+                {title ?? `¿${verb} «${subject}»?`}
+              </h2>
+              <p id={descriptionId} className="platform-confirm-popup__description">
+                {description}
+              </p>
+            </div>
           </div>
-        </div>
 
-        {consequences && consequences.length > 0 && (
-          <ul className="platform-confirm-popup__consequences">
-            {consequences.map((consequence) => (
-              <li key={consequence} className="platform-confirm-popup__consequence">
-                {consequence}
-              </li>
-            ))}
-          </ul>
-        )}
+          {consequences && consequences.length > 0 && (
+            <ul className="platform-confirm-popup__consequences">
+              {consequences.map((consequence) => (
+                <li key={consequence} className="platform-confirm-popup__consequence">
+                  {consequence}
+                </li>
+              ))}
+            </ul>
+          )}
 
-        {/* Under what goes and what stays, the last thing read before
+          {/* Under what goes and what stays, the last thing read before
             deciding (2026-10-07: it was a note in the foot, beside the two
             buttons, where a long confirming label squeezed it into a column
             of one word a line). Part of the dialog's description. */}
-        {warning && (
-          <p id={warningId} className="platform-confirm-popup__warning">
-            <TriangleExclamationIcon variant="classic-solid" className="platform-confirm-popup__warning-icon" />
-            {warning}
-          </p>
-        )}
+          {warning && (
+            <p id={warningId} className="platform-confirm-popup__warning">
+              {/* Material's is a line of the supporting text, in the error's
+                red: the icon on top already warns. */}
+              {!material && (
+                <TriangleExclamationIcon variant="classic-solid" className="platform-confirm-popup__warning-icon" />
+              )}
+              {warning}
+            </p>
+          )}
 
-        {fields && fields.length > 0 && (
-          <div className="platform-confirm-popup__fields">
-            {fields.map((field) => (
-              <PlatformFormField key={field.name} name={field.name} label={field.label} hint={field.hint}>
-                <textarea
-                  rows={3}
-                  required={field.required}
-                  maxLength={field.maxLength}
-                  placeholder={field.placeholder}
-                />
-              </PlatformFormField>
-            ))}
-          </div>
-        )}
+          {fields && fields.length > 0 && (
+            <div className="platform-confirm-popup__fields">
+              {fields.map((field) => (
+                <PlatformFormField key={field.name} name={field.name} label={field.label} hint={field.hint}>
+                  <textarea
+                    rows={3}
+                    required={field.required}
+                    maxLength={field.maxLength}
+                    placeholder={field.placeholder}
+                  />
+                </PlatformFormField>
+              ))}
+            </div>
+          )}
 
-        {acknowledgement && (
-          <label htmlFor={checkId} className="platform-confirm-popup__acknowledgement">
-            {/* The box IS the field the server requires: the primitive's hidden
+          {acknowledgement && (
+            <label htmlFor={checkId} className="platform-confirm-popup__acknowledgement">
+              {/* The box IS the field the server requires: the primitive's hidden
                 input sends `name`/`value` only while it is checked. */}
-            <Checkbox.Root
-              id={checkId}
-              name={acknowledgement.name}
-              value={acknowledgement.value ?? "yes"}
-              checked={acknowledged}
-              onCheckedChange={(checked) => setAcknowledged(checked === true)}
-              className="platform-confirm-popup__check"
-            >
-              <Checkbox.Indicator className="platform-confirm-popup__check-mark" forceMount>
-                <CheckIcon variant="classic-solid" className="platform-confirm-popup__check-icon" />
-              </Checkbox.Indicator>
-            </Checkbox.Root>
-            <span className="platform-confirm-popup__acknowledgement-text">{acknowledgement.label}</span>
-          </label>
-        )}
+              <Checkbox.Root
+                id={checkId}
+                name={acknowledgement.name}
+                value={acknowledgement.value ?? "yes"}
+                checked={acknowledged}
+                onCheckedChange={(checked) => setAcknowledged(checked === true)}
+                className="platform-confirm-popup__check"
+              >
+                <Checkbox.Indicator className="platform-confirm-popup__check-mark" forceMount>
+                  <CheckIcon variant="classic-solid" className="platform-confirm-popup__check-icon" />
+                </Checkbox.Indicator>
+              </Checkbox.Root>
+              <span className="platform-confirm-popup__acknowledgement-text">{acknowledgement.label}</span>
+            </label>
+          )}
 
-        <div className="platform-confirm-popup__foot">
-          <button type="button" className="platform-button" onClick={() => dialogRef.current?.close()}>
-            {exit}
-          </button>
-          <SubmitButton
-            className="platform-button platform-button_variant_danger"
-            disabled={blocked}
-            pendingLabel={pendingLabel ?? PENDING_LABELS[verb]}
-          >
-            {confirmLabel}
-          </SubmitButton>
-        </div>
-      </Shell>
+          {/* Material's are two text buttons: the way out in the primary, the
+            action in the error's red (`platform-md-error`). */}
+          <div className="platform-confirm-popup__foot">
+            <button
+              type="button"
+              className={material ? mdButton("text") : "platform-button"}
+              onClick={() => dialogRef.current?.close()}
+            >
+              {exit}
+            </button>
+            <SubmitButton
+              className={
+                material ? `${mdButton("text")} platform-md-error` : "platform-button platform-button_variant_danger"
+              }
+              disabled={blocked}
+              pendingLabel={pendingLabel ?? PENDING_LABELS[verb]}
+            >
+              {confirmLabel}
+            </SubmitButton>
+          </div>
+        </Shell>
+      </PlatformLookContext>
     </dialog>
   );
 }

@@ -9,6 +9,7 @@ import {
   PlatformPopup,
   type PlatformPopupHandle,
 } from "@/components/platform/shared/platform-popup/platform-popup.comp";
+import { popupButton, usePlatformLook } from "@/components/platform/shared/platform-look";
 import { mdIconButton } from "@/lib/material/material-classes";
 import "./edit-game.comp.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
@@ -87,27 +88,57 @@ export function EditGame({ action, values, results, titleHint, trigger = "text",
       )}
 
       <PlatformPopup ref={popup} title="Datos de la partida" size="lg">
-        {/* The platform's form, whose context the record's fields need. It
-            only calls `onSubmit` for a valid form: a field the browser rejects
-            keeps the popup open and shows its own message. */}
-        <PlatformForm action={action} className="edit-game__form" onSubmit={() => popup.current?.close()}>
-          {/* Said once, before the fields: the row of actions does not repeat it. */}
-          <p className="edit-game__subtitle">Al guardar, estos datos se escriben también en las cabeceras del PGN.</p>
-
-          <div className="edit-game__body">
-            {/* The same fields as the create form: if one were missing here, the
-                value set on creation would be trapped. */}
-            <GameFields values={values} results={results} titleHint={titleHint} />
-          </div>
-
-          <div className="edit-game__actions">
-            <button type="button" className="platform-button" onClick={() => popup.current?.close()}>
-              Cancelar
-            </button>
-            <SubmitButton className="platform-button platform-button_variant_ink">Guardar datos</SubmitButton>
-          </div>
-        </PlatformForm>
+        <EditGameForm
+          action={action}
+          values={values}
+          results={results}
+          titleHint={titleHint}
+          onClose={() => popup.current?.close()}
+        />
       </PlatformPopup>
     </div>
+  );
+}
+
+interface EditGameFormProps extends Pick<EditGameProps, "action" | "values" | "results" | "titleHint"> {
+  /** Closes the popup: «Cancelar», and a valid form on its way. */
+  onClose: () => void;
+}
+
+/**
+ * The popup's content, in the popup's look (`usePlatformLook`): the
+ * platform's, or Material's on a page moved to the new design system — the
+ * fields in the sections and columns of «Formulario A», and the two buttons
+ * stuck to the foot, «Cancelar» a text button and «Guardar datos» a filled
+ * one.
+ */
+function EditGameForm({ action, values, results, titleHint, onClose }: EditGameFormProps) {
+  const look = usePlatformLook();
+
+  return (
+    // The platform's form, whose context the record's fields need. It only
+    // calls `onSubmit` for a valid form: a field the browser rejects keeps
+    // the popup open and shows its own message.
+    <PlatformForm
+      action={action}
+      className={`edit-game__form${look === "material" ? " edit-game__form_look_material" : ""}`}
+      onSubmit={onClose}
+    >
+      {/* Said once, before the fields: the row of actions does not repeat it. */}
+      <p className="edit-game__subtitle">Al guardar, estos datos se escriben también en las cabeceras del PGN.</p>
+
+      <div className="edit-game__body">
+        {/* The same fields as the create form: if one were missing here, the
+            value set on creation would be trapped. */}
+        <GameFields values={values} results={results} titleHint={titleHint} look={look} />
+      </div>
+
+      <div className="edit-game__actions">
+        <button type="button" className={popupButton(look, "exit")} onClick={onClose}>
+          Cancelar
+        </button>
+        <SubmitButton className={popupButton(look, "submit")}>Guardar datos</SubmitButton>
+      </div>
+    </PlatformForm>
   );
 }

@@ -1,6 +1,7 @@
-import { useRef } from "react";
+import { useRef, type ReactNode } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { userEvent, within } from "storybook/test";
+import { expect, userEvent, within } from "storybook/test";
+import { popupButton } from "@/components/platform/shared/platform-look";
 import {
   PlatformPopup,
   type PlatformPopupHandle,
@@ -26,6 +27,18 @@ interface ConfirmArgs {
   stacked: boolean;
   /** Fields to fill before confirming: the reason of a cancellation. */
   withFields: boolean;
+  /** Mounted on a page moved to the new design system (inside `.platform-workspace`): Material's basic dialog. */
+  material: boolean;
+}
+
+/** The frame of a page moved to the new design system, which the popups read as they open. */
+function MovedPage({ material, children }: { material: boolean; children: ReactNode }) {
+  if (!material) return children;
+  return (
+    <div className="platform-workspace" style={{ minHeight: 0, padding: 16 }}>
+      {children}
+    </div>
+  );
 }
 
 /** A confirmation behind its trigger; stacked, the trigger is the red word at the foot of a popup. */
@@ -40,6 +53,7 @@ function ConfirmSample({
   settles,
   stacked,
   withFields,
+  material,
 }: ConfirmArgs) {
   const popup = useRef<PlatformPopupHandle>(null);
   const confirm = useRef<PlatformConfirmPopupHandle>(null);
@@ -72,18 +86,19 @@ function ConfirmSample({
       onDone={() => popup.current?.close()}
     />
   );
+  const look = material ? "material" : "platform";
   if (!stacked) {
     return (
-      <>
+      <MovedPage material={material}>
         <button type="button" className="platform-button" onClick={() => confirm.current?.open()}>
           {confirmLabel}
         </button>
         {confirmation}
-      </>
+      </MovedPage>
     );
   }
   return (
-    <>
+    <MovedPage material={material}>
       <button type="button" className="platform-button" onClick={(event) => popup.current?.open(event)}>
         Editar el estudio
       </button>
@@ -94,10 +109,10 @@ function ConfirmSample({
             <input type="text" defaultValue={subject} />
           </label>
           <div style={{ display: "flex", justifyContent: "flex-end", gap: 12 }}>
-            <button type="button" className="platform-button" onClick={() => popup.current?.close()}>
+            <button type="button" className={popupButton(look, "exit")} onClick={() => popup.current?.close()}>
               Cancelar
             </button>
-            <button type="button" className="platform-button platform-button_variant_ink">
+            <button type="button" className={popupButton(look, "submit")}>
               Guardar
             </button>
           </div>
@@ -113,7 +128,7 @@ function ConfirmSample({
         </div>
       </PlatformPopup>
       {confirmation}
-    </>
+    </MovedPage>
   );
 }
 
@@ -162,6 +177,7 @@ Reference page: [Components › PlatformConfirmPopup](/components/platform/share
     confirmLabel: "Eliminar estudio",
     settles: true,
     stacked: false,
+    material: false,
   },
   argTypes: {
     verb: { control: "inline-radio", options: ["Eliminar", "Quitar"] },
@@ -173,6 +189,10 @@ Reference page: [Components › PlatformConfirmPopup](/components/platform/share
     confirmLabel: { control: "text" },
     settles: { control: "boolean" },
     stacked: { control: "boolean" },
+    material: {
+      control: "boolean",
+      description: "Mounted inside `.platform-workspace`, as on a page moved to the new design system.",
+    },
   },
   render: (args) => <ConfirmSample {...args} />,
 } satisfies Meta<ConfirmArgs>;
@@ -266,6 +286,64 @@ export const CancelWithReason: Story = {
     confirmLabel: "Cancelar la clase",
     withFields: true,
   },
+  play: async ({ canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole("button", { name: "Cancelar la clase" }));
+  },
+};
+
+/**
+ * On a page moved to the new design system: Material 3's basic dialog, «Confirmación 1» — the bin centred on top in
+ * the error's red, the question centred, the box to tick as a soft card, and two text buttons at the right, the way
+ * out in the primary and «Eliminar partida» in the error's red, waiting for the box.
+ */
+export const Material: Story = {
+  args: {
+    material: true,
+    subject: "Ronda 3",
+    title: "¿Eliminar la partida?",
+    description: "«Ronda 3». Se elimina la partida entera, con sus variantes, comentarios y flechas.",
+    acknowledgement:
+      "Esta partida se usa en el contenido de alguna clase. Entiendo que esos bloques se quedarán vacíos.",
+    confirmLabel: "Eliminar partida",
+  },
+  play: async ({ canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole("button", { name: "Eliminar partida" }));
+    const dialog = confirmationOf(canvasElement);
+    await expect(dialog).toHaveClass("platform-dialog_look_material");
+    await expect(within(dialog).getByRole("button", { name: "Eliminar partida" })).toBeDisabled();
+    await userEvent.click(within(dialog).getByRole("checkbox"));
+    await expect(within(dialog).getByRole("button", { name: "Eliminar partida" })).toBeEnabled();
+  },
+};
+
+/** Material's, with «Quitar»: the minus in the primary, and the action still a text button in the error's red. */
+export const MaterialQuitar: Story = {
+  name: "Material quitar",
+  args: {
+    material: true,
+    verb: "Quitar",
+    subject: "Finales de torre que hay que saber",
+    title: "¿Quitar de mis cursos?",
+    description:
+      "«Finales de torre que hay que saber» sale de «Tus cursos» con su progreso: 12 de 40 lecciones aprendidas. Puedes volver a agregarlo desde el catálogo.",
+    confirmLabel: "Quitar",
+  },
+  play: async ({ canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole("button", { name: "Quitar" }));
+  },
+};
+
+/** Material's, opened over a Material popup: two dialogs, the scrim of the second over the first. */
+export const MaterialStacked: Story = {
+  name: "Material stacked",
+  args: { material: true, stacked: true },
+  play: openStacked,
+};
+
+/** Material's «Cancelar» with its reason: the reason and the note as outlined text fields, «Opcional» under the note. */
+export const MaterialCancelWithReason: Story = {
+  name: "Material cancelar with reason",
+  args: { ...CancelWithReason.args, material: true },
   play: async ({ canvasElement }) => {
     await userEvent.click(within(canvasElement).getByRole("button", { name: "Cancelar la clase" }));
   },

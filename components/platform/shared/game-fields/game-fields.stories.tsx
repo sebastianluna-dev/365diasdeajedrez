@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { PlatformForm } from "@/components/platform/shared/platform-form/platform-form.comp";
+import { PlatformLookContext } from "@/components/platform/shared/platform-look";
 import { GAME_RESULT } from "@/constants/platform/study-codes.const";
 import { GameFields, type GameFieldValues } from "./game-fields.comp";
 
@@ -87,4 +88,22 @@ export const Empty: Story = { args: { values: {} } };
 export const ValuesFromThePgn: Story = {
   name: "Values from the PGN",
   args: { values: { ...FILLED, whiteTitle: "AGM", whiteCountry: "FAI" } },
+};
+
+/**
+ * `look="material"`, as `EditGame` lays it out in a popup of a page moved to the new design system («Formulario A»):
+ * three sections titled in the primary and divided by a rule, two columns, each player a row of name, Elo, title and
+ * federation, every field outlined (the popup's look, set here by hand, on the dialog's surface).
+ */
+export const Material: Story = {
+  args: { look: "material" },
+  decorators: [
+    (Story) => (
+      <PlatformLookContext value="material">
+        <div style={{ maxWidth: 752, padding: 24, borderRadius: 28, background: "var(--platform-m3-dialog)" }}>
+          <Story />
+        </div>
+      </PlatformLookContext>
+    ),
+  ],
 };

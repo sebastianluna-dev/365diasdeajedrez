@@ -234,6 +234,7 @@ import {
   PlatformPopup,
   type PlatformPopupHandle,
 } from "@/components/platform/shared/platform-popup/platform-popup.comp";
+import { PlatformLookContext, popupButton, usePlatformLook } from "@/components/platform/shared/platform-look";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import {
   PlatformTable,
@@ -868,18 +869,31 @@ function PopupTrigger() {
         Abrir el popup
       </button>
       <PlatformPopup ref={popup} title="Un popup de la plataforma" size="sm">
-        <div className="overview__stack" style={{ padding: "var(--platform-space-6)" }}>
-          <p style={{ margin: 0 }}>Lo que hay bajo la franja es del contenido.</p>
-          <button
-            type="button"
-            className="platform-button platform-button_variant_ink"
-            onClick={() => popup.current?.close()}
-          >
-            Cerrar
-          </button>
-        </div>
+        <PopupSampleContent onClose={() => popup.current?.close()} />
       </PlatformPopup>
     </>
+  );
+}
+
+/** What is under the strip, in the popup's look: its button is Material's on a moved page. */
+function PopupSampleContent({ onClose }: { onClose: () => void }) {
+  const look = usePlatformLook();
+  return (
+    <div className="overview__stack" style={{ padding: "var(--platform-space-6)" }}>
+      <p style={{ margin: 0 }}>Lo que hay bajo la franja es del contenido.</p>
+      <button type="button" className={popupButton(look, "submit")} onClick={onClose}>
+        Cerrar
+      </button>
+    </div>
+  );
+}
+
+/** The frame of a page moved to the new design system: the popups opened inside it are Material's. */
+function MovedPageFrame({ children }: { children: ReactNode }) {
+  return (
+    <div className="platform-workspace" style={{ minHeight: 0, padding: "var(--platform-space-2)" }}>
+      {children}
+    </div>
   );
 }
 
@@ -1198,7 +1212,27 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
           </Section>
 
           <Section title="Forms">
-            <Tile name="PlatformForm" docs="platform-shared-platformform" width={400} height={344}>
+            <Tile name="PlatformForm" docs="platform-shared-platformform" width={400} height={520}>
+              {/* Material's outlined fields, as a popup of a moved page draws them. */}
+              <PlatformLookContext value="material">
+                <div
+                  style={{
+                    padding: "var(--platform-space-4)",
+                    marginBottom: "var(--platform-space-4)",
+                    borderRadius: "var(--md-sys-shape-corner-lg)",
+                    background: "var(--platform-m3-dialog)",
+                  }}
+                >
+                  <PlatformForm onSubmit={(event) => event.preventDefault()}>
+                    <PlatformFormField name="event" label="Evento" hint="Si no lo sabes, déjalo vacío.">
+                      <input type="text" maxLength={120} defaultValue="Nacional Abierto 2026" />
+                    </PlatformFormField>
+                    <PlatformFormField name="whiteElo" label="Elo" serverError="Entre 100 y 4000.">
+                      <input type="number" min={100} max={4000} defaultValue={21040} />
+                    </PlatformFormField>
+                  </PlatformForm>
+                </div>
+              </PlatformLookContext>
               <PlatformForm onSubmit={(event) => event.preventDefault()}>
                 <PlatformFormField
                   name="name"
@@ -2335,19 +2369,43 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
           </Section>
 
           <Section title="Overlays">
-            <Tile name="PlatformPopup" docs="platform-shared-platformpopup" width={400} height={112}>
-              <PopupTrigger />
+            {/* Each popup twice: on a page not yet moved, and inside the
+                frame of a moved one, where it opens as Material's dialog. */}
+            <Tile name="PlatformPopup" docs="platform-shared-platformpopup" width={400} height={168}>
+              <div className="overview__stack">
+                <PopupTrigger />
+                <MovedPageFrame>
+                  <PopupTrigger />
+                </MovedPageFrame>
+              </div>
             </Tile>
-            <Tile name="PlatformConfirmPopup" docs="platform-shared-platformconfirmpopup" width={400} height={112}>
-              <ConfirmTrigger />
+            <Tile name="PlatformConfirmPopup" docs="platform-shared-platformconfirmpopup" width={400} height={168}>
+              <div className="overview__stack">
+                <ConfirmTrigger />
+                <MovedPageFrame>
+                  <ConfirmTrigger />
+                </MovedPageFrame>
+              </div>
             </Tile>
-            <Tile name="EditGame" docs="platform-shared-editgame" width={400} height={88}>
-              <EditGame
-                action={settles}
-                values={{ white: "Kasparov, Garry", black: "Topalov, Veselin", resultCode: GAME_RESULT.WHITE_WINS }}
-                results={RESULTS}
-                titleHint="Cómo identificas esta partida dentro del estudio."
-              />
+            <Tile name="EditGame" docs="platform-shared-editgame" width={400} height={144}>
+              <div className="overview__stack">
+                <EditGame
+                  action={settles}
+                  values={{ white: "Kasparov, Garry", black: "Topalov, Veselin", resultCode: GAME_RESULT.WHITE_WINS }}
+                  results={RESULTS}
+                  titleHint="Cómo identificas esta partida dentro del estudio."
+                />
+                <MovedPageFrame>
+                  <EditGame
+                    action={settles}
+                    values={{ white: "Kasparov, Garry", black: "Topalov, Veselin", resultCode: GAME_RESULT.WHITE_WINS }}
+                    results={RESULTS}
+                    titleHint="Cómo identificas esta partida dentro del estudio."
+                    trigger="icon"
+                    look="material"
+                  />
+                </MovedPageFrame>
+              </div>
             </Tile>
             <Tile name="NewStudy" docs="platform-sections-studies-studies-list-newstudy" width={400} height={136}>
               <SectionDialog

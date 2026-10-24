@@ -15,6 +15,7 @@ import {
   PlatformPopup,
   type PlatformPopupHandle,
 } from "@/components/platform/shared/platform-popup/platform-popup.comp";
+import { popupButton, popupButtonIcon, usePlatformLook } from "@/components/platform/shared/platform-look";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
 import { GAME_ANALYSIS_MODE_LABELS } from "@/constants/platform/study-codes.const";
@@ -243,43 +244,10 @@ export function GameSettings({ game, isCurrent, actions, look, trigger = "gear" 
               defaultValue={game.pinnedComment ?? ""}
             />
           </PlatformFormField>
-          <div className="game-settings__actions">
-            <SubmitButton className="platform-button platform-button_variant_ink" pendingLabel="Guardando…">
-              Guardar
-            </SubmitButton>
-          </div>
+          <GameSettingsSave />
         </PlatformForm>
 
-        {/* What destroys, apart from what saves and under a rule: three
-            pills, each opening the confirmation with its words. Graded: the
-            two that clear part of the game are grey until pointed at
-            (caution); the one that leaves nothing is red (danger). */}
-        <div className="game-settings__danger">
-          <button
-            type="button"
-            className="platform-button platform-button_variant_caution platform-button_size_sm platform-button_shape_pill"
-            onClick={() => ask("annotations")}
-          >
-            <CommentXmarkIcon variant="classic-solid" className="platform-button__icon" />
-            Eliminar anotaciones
-          </button>
-          <button
-            type="button"
-            className="platform-button platform-button_variant_caution platform-button_size_sm platform-button_shape_pill"
-            onClick={() => ask("variations")}
-          >
-            <CodeBranchIcon variant="classic-solid" className="platform-button__icon" />
-            Eliminar variantes
-          </button>
-          <button
-            type="button"
-            className="platform-button platform-button_variant_danger platform-button_size_sm platform-button_shape_pill"
-            onClick={() => ask("game")}
-          >
-            <TrashCanIcon variant="classic-solid" className="platform-button__icon" />
-            Eliminar partida
-          </button>
-        </div>
+        <GameSettingsDanger ask={ask} />
       </PlatformPopup>
 
       <PlatformConfirmPopup
@@ -294,6 +262,46 @@ export function GameSettings({ game, isCurrent, actions, look, trigger = "gear" 
         confirmLabel={confirmation.submit}
         onDone={done}
       />
+    </div>
+  );
+}
+
+/** «Guardar», in the popup's look: Material's filled button on a page moved to the new design system. */
+function GameSettingsSave() {
+  const look = usePlatformLook();
+  return (
+    <div className="game-settings__actions">
+      <SubmitButton className={popupButton(look, "submit")} pendingLabel="Guardando…">
+        Guardar
+      </SubmitButton>
+    </div>
+  );
+}
+
+/**
+ * What destroys, apart from what saves and under a rule: three pills, each
+ * opening the confirmation with its words. Graded: the two that clear part of
+ * the game are grey until pointed at (caution); the one that leaves nothing
+ * is red (danger). In Material's look, small outlined buttons, the last one
+ * in the error's red.
+ */
+function GameSettingsDanger({ ask }: { ask: (step: Destructive) => void }) {
+  const look = usePlatformLook();
+  const icon = popupButtonIcon(look);
+  return (
+    <div className="game-settings__danger">
+      <button type="button" className={popupButton(look, "destroy-part")} onClick={() => ask("annotations")}>
+        <CommentXmarkIcon variant="classic-solid" className={icon} />
+        Eliminar anotaciones
+      </button>
+      <button type="button" className={popupButton(look, "destroy-part")} onClick={() => ask("variations")}>
+        <CodeBranchIcon variant="classic-solid" className={icon} />
+        Eliminar variantes
+      </button>
+      <button type="button" className={popupButton(look, "destroy")} onClick={() => ask("game")}>
+        <TrashCanIcon variant="classic-solid" className={icon} />
+        Eliminar partida
+      </button>
     </div>
   );
 }

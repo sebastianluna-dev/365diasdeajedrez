@@ -165,6 +165,135 @@
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);
   }
+
+  /* MATERIAL'S LOOK (in a popup of a page moved to the new design system,
+     «Formulario A»): the trigger is the outlined text field of
+     `PlatformFormField` — 56px, a 1px outline with the extra-small corner,
+     the primary at 2px with the focus or open, the error's red when invalid
+     — with its caret at the end; the list is Material's menu on the
+     container, 48px options, the one under the pointer under a state layer
+     of the ink and the chosen one on the secondary container, with no tick. */
+  &.platform-select_look_material {
+    & .platform-select__trigger {
+      height: 56px;
+      padding: 0 var(--platform-space-3) 0 var(--platform-space-4);
+      border: 1px solid var(--platform-m3-outline);
+      border-radius: var(--md-sys-shape-corner-xs);
+      background: transparent;
+      color: var(--platform-m3-on-surface);
+      font-size: var(--platform-type-md);
+    }
+
+    /* The chosen label on one line, cut short where the box is narrow (a
+       player's title): a field of 56px does not grow a second line. */
+    & .platform-select__trigger > span:first-child {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    & .platform-select__trigger:hover {
+      border-color: var(--platform-m3-on-surface);
+    }
+
+    & .platform-select__trigger:focus-visible,
+    & .platform-select__trigger[data-state="open"] {
+      outline: none;
+      border-color: var(--platform-m3-primary);
+      box-shadow: inset 0 0 0 1px var(--platform-m3-primary);
+    }
+
+    .platform-form__field[data-invalid] & .platform-select__trigger {
+      border-color: var(--platform-m3-error);
+      box-shadow: inset 0 0 0 1px var(--platform-m3-error);
+    }
+
+    & .platform-select__trigger[data-placeholder] {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .platform-select__trigger.platform-select__trigger_empty_named[data-placeholder] {
+      color: var(--platform-m3-on-surface);
+    }
+
+    & .platform-select__icon {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .platform-select__trigger[data-state="open"] .platform-select__icon {
+      color: var(--platform-m3-primary);
+    }
+
+    & .platform-select__chevron {
+      width: 16px;
+      height: 16px;
+    }
+
+    & .platform-select__content {
+      padding: var(--platform-space-2) 0;
+      border: 0;
+      border-radius: var(--md-sys-shape-corner-xs);
+      background: var(--platform-m3-container);
+      box-shadow:
+        0 2px 6px 2px color-mix(in srgb, var(--platform-m3-row-shadow) 15%, transparent),
+        0 1px 2px 0 color-mix(in srgb, var(--platform-m3-row-shadow) 30%, transparent);
+    }
+
+    & .platform-select__viewport {
+      gap: 0;
+    }
+
+    & .platform-select__item {
+      min-height: 48px;
+      padding: 0 var(--platform-space-4);
+      border-radius: 0;
+      font-size: var(--platform-type-xs);
+      color: var(--platform-m3-on-surface);
+    }
+
+    /* The state layer says which option the keys are on: the platform's ring
+       would only double it, cut by the next option. */
+    & .platform-select__item:focus-visible {
+      outline: none;
+    }
+
+    & .platform-select__item[data-highlighted] {
+      background: color-mix(in srgb, var(--platform-m3-on-surface) 8%, transparent);
+      color: var(--platform-m3-on-surface);
+    }
+
+    /* The chosen option; the empty one is marked by hand (`_chosen`), since
+       the primitive only marks the item whose value is the current one. */
+    & .platform-select__item[data-state="checked"],
+    & .platform-select__item.platform-select__item_chosen {
+      background: var(--platform-m3-secondary-container);
+      color: var(--platform-m3-on-secondary-container);
+      font-weight: 600;
+    }
+
+    & .platform-select__item[data-state="checked"][data-highlighted],
+    & .platform-select__item.platform-select__item_chosen[data-highlighted] {
+      background: color-mix(
+        in srgb,
+        var(--platform-m3-on-secondary-container) 8%,
+        var(--platform-m3-secondary-container)
+      );
+    }
+
+    & .platform-select__item[data-disabled] {
+      color: color-mix(in srgb, var(--platform-m3-on-surface) 38%, transparent);
+    }
+
+    & .platform-select__indicator {
+      display: none;
+    }
+
+    & .platform-select__group-label {
+      padding: var(--platform-space-3) var(--platform-space-4) var(--platform-space-1);
+      color: var(--platform-m3-on-surface-variant);
+    }
+  }
 }
 
 /* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */
