@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ExerciseSeriesSection } from "@/components/platform/sections/exercises/exercise-series.section";
 import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
-import { getStudentExercisesHome, getStudentSeries } from "@/services/exercises/exercises.service";
+import { getStudentSeries } from "@/services/exercises/exercises.service";
 
 interface ExerciseSeriesPageProps {
   params: Promise<{ seriesId: string }>;
@@ -19,14 +19,8 @@ export async function generateMetadata({ params }: ExerciseSeriesPageProps): Pro
 export default async function ExerciseSeriesPage({ params }: ExerciseSeriesPageProps) {
   if (!EXERCISES_ENABLED) notFound();
   const { seriesId } = await params;
-  // The home is the side column's too, read once per request: it says whose the series is.
-  const [series, home] = await Promise.all([getStudentSeries(seriesId), getStudentExercisesHome()]);
+  const series = await getStudentSeries(seriesId);
   if (!series) notFound();
 
-  return (
-    <ExerciseSeriesSection
-      series={series}
-      academy={home.academySeries.some((candidate) => candidate.id === seriesId)}
-    />
-  );
+  return <ExerciseSeriesSection series={series} />;
 }

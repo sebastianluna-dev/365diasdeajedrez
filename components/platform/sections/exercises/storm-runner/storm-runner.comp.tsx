@@ -18,7 +18,6 @@ import type { ExerciseSolverExercise } from "@/components/platform/shared/exerci
 import { exerciseKindLabel } from "@/lib/chess/exercise-labels";
 import { STORM_MAX_MISTAKES } from "@/lib/exercises/storm-deck";
 import { mdButton, mdIconButton } from "@/lib/material/material-classes";
-import { platformRoutes } from "@/lib/platform-routes";
 import { ExercisesToolbar, type ExercisesToolbarAction } from "../exercises-toolbar.comp";
 import "./storm-runner.comp.css";
 
@@ -295,10 +294,7 @@ export function StormRunner({ deck }: StormRunnerProps) {
   return (
     <section className={`platform-workspace__panel storm-runner storm-runner_phase_${phase}`} aria-label="Puzzle Rush">
       <ExercisesToolbar
-        trail={[
-          { label: "Ejercicios", href: platformRoutes.exercises },
-          { label: phase === "ready" ? "Puzzle Rush" : `Puzzle Rush · ${MODES[mode].label}` },
-        ]}
+        title={phase === "ready" ? "Puzzle Rush" : `Puzzle Rush · ${MODES[mode].label}`}
         actions={actions}
       />
 

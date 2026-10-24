@@ -5,7 +5,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: var(--platform-space-2) var(--platform-space-4);
   min-height: 56px;
   box-sizing: border-box;
@@ -14,38 +14,6 @@
   border-bottom: 1px solid var(--platform-m3-divider);
   color: var(--platform-m3-on-surface);
   font-size: var(--platform-type-xs);
-
-  & .exercises-toolbar__trail {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--platform-space-1) var(--platform-space-2);
-    min-width: 0;
-  }
-
-  & .exercises-toolbar__crumb {
-    color: var(--platform-m3-on-surface-variant);
-    text-decoration: none;
-  }
-
-  & a.exercises-toolbar__crumb:hover {
-    color: var(--platform-m3-on-surface);
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-
-  & .exercises-toolbar__separator {
-    color: var(--platform-m3-outline);
-  }
-
-  /* The page's heading, in the trail's own size: the panel is the page. */
-  & .exercises-toolbar__title {
-    margin: 0;
-    font-family: inherit;
-    font-size: var(--platform-type-xs);
-    font-weight: 600;
-    line-height: inherit;
-  }
 
   & .exercises-toolbar__end {
     display: flex;
@@ -65,4 +33,25 @@
     margin: calc(-1 * var(--platform-space-4)) calc(-1 * var(--platform-space-4)) 0;
     padding-left: var(--platform-space-4);
   }
+
+  /* The page's heading, read out and not drawn: the side column says where the student is. */
+  & .exercises-toolbar__title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* With nothing to say nor to press (`_display_heading`), only the heading is
+   left, read out, and the bar draws nothing. */
+.exercises-toolbar_display_heading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }

@@ -6,29 +6,20 @@ import { ExercisesToolbar } from "./exercises-toolbar.comp";
 
 interface ExerciseSolveSectionProps {
   item: StudentSeriesExercise;
-  /** Whose the series is, for the trail: the teacher's («De tu profesor») or the academy's. */
-  academy: boolean;
 }
 
 /**
  * The n-th exercise of a series, to solve (PLAN.md §5.3), on the panel of
- * «Ejercicios» (the new design system, 2026-10-23): the toolbar — the trail
- * through the series' view and the series, and «Ejercicio 3 de 10» — and the
+ * «Ejercicios» (the new design system, 2026-10-23): the toolbar — the
+ * exercise's title, read out, and «Ejercicio 3 de 10» — and the
  * solve page, which `ExerciseSolver` draws from the exercise, its place in
  * the series, the way on and back, and the action that records the attempt.
  */
-export function ExerciseSolveSection({ item, academy }: ExerciseSolveSectionProps) {
+export function ExerciseSolveSection({ item }: ExerciseSolveSectionProps) {
   return (
     <section className="platform-workspace__panel">
       <ExercisesToolbar
-        trail={[
-          { label: "Ejercicios", href: platformRoutes.exercises },
-          academy
-            ? { label: "Series de la academia", href: platformRoutes.exerciseAcademySeries }
-            : { label: "De tu profesor", href: platformRoutes.exerciseOverview },
-          { label: item.series.title, href: item.series.href },
-          { label: item.exercise.title },
-        ]}
+        title={item.exercise.title}
         summary={`Ejercicio ${item.series.position} de ${item.series.total}`}
       />
       {/* A new exercise is a new board: «Siguiente ejercicio» never carries the last one's state. */}

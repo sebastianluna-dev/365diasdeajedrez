@@ -1,6 +1,5 @@
 /* The trainer's panel (exercise-trainer.section.tsx): its heading, read out
-   and not drawn, the note of a choice already solved through, and the solve
-   page. */
+   and not drawn, and the solve page. */
 .exercise-trainer {
   & .exercise-trainer__heading {
     position: absolute;
@@ -9,16 +8,5 @@
     overflow: hidden;
     clip-path: inset(50%);
     white-space: nowrap;
-  }
-
-  & .exercise-trainer__note {
-    align-self: flex-start;
-    margin: 0;
-    padding: var(--platform-space-2) var(--platform-space-4);
-    border-radius: 1000px;
-    background: var(--platform-m3-info-container);
-    color: var(--platform-m3-on-info-container);
-    font-size: var(--platform-type-2xs);
-    font-weight: 600;
   }
 }

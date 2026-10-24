@@ -1,5 +1,5 @@
 ---
-description: "A series given to the student, on the panel of «Ejercicios»: the trail, what they solved, the toolbar's way on to the first exercise left, and its exercises as rows with the student's mark in that series."
+description: "A series given to the student, on the panel of «Ejercicios»: what they solved, the toolbar's way on to the first exercise left, and its exercises as rows with the student's mark in that series."
 ---
 
 # `ExerciseSeriesSection`
@@ -15,14 +15,13 @@ description: "A series given to the student, on the panel of «Ejercicios»: the
 
 ## Props
 
-| Prop      | Type                | Required | Meaning                                                                                                                                                      |
-| --------- | ------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `series`  | `StudentSeriesView` | yes      | The series, its teacher, the exercises the student may solve in it with their marks, and the way on.                                                         |
-| `academy` | `boolean`           | yes      | Whose it is, for the trail: the academy's («Series de la academia») or the teacher's («De tu profesor»). The page reads it from `getStudentExercisesHome()`. |
+| Prop     | Type                | Required | Meaning                                                                                              |
+| -------- | ------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| `series` | `StudentSeriesView` | yes      | The series, its teacher, the exercises the student may solve in it with their marks, and the way on. |
 
 ## Behaviour
 
-A series (D18, D31; PLAN.md §5.2), as a panel of the new design system (2026-10-23). The toolbar carries the trail — «Ejercicios › De tu profesor › Táctica 1», the series' name its `h1` —, «2 de 5 resueltos» and, when an exercise is left, the page's one filled button, «Empezar» (nothing tried yet) or «Continuar», to the first one not solved and not tried this study day (`triedTodayOf`): one tried today would open unscored, so the button skips it, and with nothing left that can count today there is none until tomorrow. Under it «De Profesor Demo · » and the description, and the exercises in order, as Gmail lists mail: each a row that opens it, the start drawn small on the blue board (from the side that plays), «3. Título», «Mate en 2 · 1400 · Intermedio», and the student's mark **in this series** — «Resuelto» with `CircleCheckIcon` in the success container (a pass there), «Fallado» with `CircleXmarkIcon` in the error container (attempts, none passed), or nothing. The word is always written beside the icon.
+A series (D18, D31; PLAN.md §5.2), as a panel of the new design system (2026-10-23). The toolbar carries the series' name, its `h1`, read out and not drawn (no trail since 2026-10-23: the side column lights its view), «2 de 5 resueltos» and, when an exercise is left, the page's one filled button, «Empezar» (nothing tried yet) or «Continuar», to the first one not solved and not tried this study day (`triedTodayOf`): one tried today would open unscored, so the button skips it, and with nothing left that can count today there is none until tomorrow. Under it «De Profesor Demo · » and the description, and the exercises in order, as Gmail lists mail: each a row that opens it, the start drawn small on the blue board (from the side that plays), «3. Título», «Mate en 2 · 1400 · Intermedio», and the student's mark **in this series** — «Resuelto» with `CircleCheckIcon` in the success container (a pass there), «Fallado» with `CircleXmarkIcon` in the error container (attempts, none passed), or nothing. The word is always written beside the icon.
 
 Only the exercises the student may solve through this series are listed, numbered and counted: the series owner's usable ones and the library's (`seriesItemAvailability`); a draft or an archived one is not there. A series the student may not open — another student's, or a former teacher's — never reaches here: the page answers 404.
 

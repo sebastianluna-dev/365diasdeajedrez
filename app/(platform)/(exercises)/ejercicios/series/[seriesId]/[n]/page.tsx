@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ExerciseSolveSection } from "@/components/platform/sections/exercises/exercise-solve.section";
 import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
-import { getStudentExercisesHome, getStudentSeriesExercise } from "@/services/exercises/exercises.service";
+import { getStudentSeriesExercise } from "@/services/exercises/exercises.service";
 
 interface ExerciseSeriesItemPageProps {
   params: Promise<{ seriesId: string; n: string }>;
@@ -22,17 +22,13 @@ export async function generateMetadata({ params }: ExerciseSeriesItemPageProps):
 
 /**
  * The n-th exercise of a series given to the student, to solve (§5.3). Out of range, or not theirs, it is a 404.
- * The panel's toolbar names the exercise (its h1) and the way back to the series.
+ * The panel's toolbar names the exercise (its h1, read out) and where it is in the series.
  */
 export default async function ExerciseSeriesItemPage({ params }: ExerciseSeriesItemPageProps) {
   if (!EXERCISES_ENABLED) notFound();
   const { seriesId, n } = await params;
-  // The home is the side column's too, read once per request: it says whose the series is.
-  const [item, home] = await Promise.all([
-    getStudentSeriesExercise(seriesId, positionOf(n)),
-    getStudentExercisesHome(),
-  ]);
+  const item = await getStudentSeriesExercise(seriesId, positionOf(n));
   if (!item) notFound();
 
-  return <ExerciseSolveSection item={item} academy={home.academySeries.some((series) => series.id === seriesId)} />;
+  return <ExerciseSolveSection item={item} />;
 }

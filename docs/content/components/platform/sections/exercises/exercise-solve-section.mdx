@@ -1,5 +1,5 @@
 ---
-description: "The n-th exercise of a series, to solve, on the panel of «Ejercicios»: the toolbar with the trail and «Ejercicio 3 de 10», and the solve page with the attempt's action bound."
+description: "The n-th exercise of a series, to solve, on the panel of «Ejercicios»: the toolbar with «Ejercicio 3 de 10», and the solve page with the attempt's action bound."
 ---
 
 # `ExerciseSolveSection`
@@ -15,13 +15,12 @@ description: "The n-th exercise of a series, to solve, on the panel of «Ejercic
 
 ## Props
 
-| Prop      | Type                    | Required | Meaning                                                                                                                                   |
-| --------- | ----------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `item`    | `StudentSeriesExercise` | yes      | The series, the exercise for the solver, its mode, the attempt's context with «3 / 10», the next exercise and the way back to the series. |
-| `academy` | `boolean`               | yes      | Whose the series is, for the trail: «Series de la academia» or «De tu profesor».                                                          |
+| Prop   | Type                    | Required | Meaning                                                                                                                                   |
+| ------ | ----------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `item` | `StudentSeriesExercise` | yes      | The series, the exercise for the solver, its mode, the attempt's context with «3 / 10», the next exercise and the way back to the series. |
 
 ## Behaviour
 
 `n` is 1-based among the exercises the student may solve in the series, so the URL of an exercise is the number the series page shows. The service reads the exercise again through the rule for the path the attempt will claim (`solvableInContextWhere`, the same `where` the submit checks), and opens it **unscored** when it was attempted this study day (`attemptedToday`, over its family's states): one scored attempt per exercise per study day (§2.7). The solver is mounted under the series and the exercise as its `key`, so «Siguiente ejercicio» never carries the last board's state.
 
-The panel (the new design system, 2026-10-23) heads with the toolbar: «Ejercicios › De tu profesor › Táctica 1 › La enfilada», the exercise's title its `h1`, and «Ejercicio 3 de 10» at the right; the visit's history («Esta sesión») is the series' own (`series:<id>`).
+The panel (the new design system, 2026-10-23) heads with the toolbar: the exercise's title its `h1`, read out and not drawn (no trail since 2026-10-23: the side column lights the series' view), and «Ejercicio 3 de 10» at the right; the visit's history («Esta sesión») is the series' own (`series:<id>`).

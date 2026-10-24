@@ -4,15 +4,15 @@ description: "«Ejercicios» itself, on its panel: with no toolbar, a library ex
 
 # `ExerciseTrainerSection`
 
-|            |                                                                                                                                                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/exercises/exercise-trainer.section.tsx`                                                                                                                                                     |
-| Kind       | Server Component                                                                                                                                                                                                          |
-| Stylesheet | `exercise-trainer.section.css` → block `.exercise-trainer`                                                                                                                                                                |
-| Used by    | `/ejercicios` and `/ejercicios/biblioteca/[exerciseId]` (behind `EXERCISES_ENABLED`); `/ejercicios/temas` redirects to `/ejercicios` with its query                                                                       |
-| Composes   | [`ExercisesToolbar`](/components/platform/sections/exercises/exercises-toolbar), [`ExerciseSolver`](/components/platform/shared/exercise-solver) with an `aside`, [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads      | `PracticeServing` from `getPracticeExercise(choice, after, { open: true })` or `getLibraryExerciseToSolve(id)`, and `PracticeFilters` from `getPracticeFilters()` · `services/exercises/practice.service.ts`              |
-| Writes     | `submitExerciseAttempt` · `services/exercises/exercises.actions.ts`, handed to the solver as a prop                                                                                                                       |
+|            |                                                                                                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/exercises/exercise-trainer.section.tsx`                                                                                                                                        |
+| Kind       | Server Component                                                                                                                                                                                             |
+| Stylesheet | `exercise-trainer.section.css` → block `.exercise-trainer`                                                                                                                                                   |
+| Used by    | `/ejercicios` and `/ejercicios/biblioteca/[exerciseId]` (behind `EXERCISES_ENABLED`); `/ejercicios/temas` redirects to `/ejercicios` with its query                                                          |
+| Composes   | [`ExerciseSolver`](/components/platform/shared/exercise-solver) with an `aside`, [`EmptyState`](/components/platform/shared/empty-state)                                                                     |
+| Reads      | `PracticeServing` from `getPracticeExercise(choice, after, { open: true })` or `getLibraryExerciseToSolve(id)`, and `PracticeFilters` from `getPracticeFilters()` · `services/exercises/practice.service.ts` |
+| Writes     | `submitExerciseAttempt` · `services/exercises/exercises.actions.ts`, handed to the solver as a prop                                                                                                          |
 
 ## Props
 
@@ -25,12 +25,10 @@ description: "«Ejercicios» itself, on its panel: with no toolbar, a library ex
 
 ## Behaviour
 
-Since the move to the new design system (2026-10-23) «Ejercicios» and «Ejercicios por tema» are one page: the topic and the level are chosen in the side column (the level in its «Nivel» group since 2026-10-23; it was a select in the panel's toolbar), and both live in the address (`/ejercicios?tema=<Topic code>&nivel=<Level slug>`). The service is the one it was (D18, D32): a random library exercise of the topic (its subtopics included) in the level's Elo range, the ones never solved and not tried today first, with the context `PRACTICE`; with no topic, any topic, and with no level, any level (`open`); «Siguiente» (`&tras=<id>`) deals another of the same choice; one tried this study day opens unscored (§2.7); every one of the choice solved, a note says they repeat.
+Since the move to the new design system (2026-10-23) «Ejercicios» and «Ejercicios por tema» are one page: the topic and the level are chosen in the side column (the level in its «Nivel» group since 2026-10-23; it was a select in the panel's toolbar), and both live in the address (`/ejercicios?tema=<Topic code>&nivel=<Level slug>`). The service is the one it was (D18, D32): a random library exercise of the topic (its subtopics included) in the level's Elo range, the ones never solved and not tried today first, with the context `PRACTICE`; with no topic, any topic, and with no level, any level (`open`); «Siguiente» (`&tras=<id>`) deals another of the same choice; one tried this study day opens unscored (§2.7); every one of the choice solved, they repeat, without a note (2026-10-23: with the full library that hardly happens).
 
 **No toolbar** (2026-10-23, the owner's request): the trail, the topic's tally and the level went; the topic on screen and the level are the side column's lit links, and the page's `h1` is the topic, read out and not drawn (`.exercise-trainer__heading`). With nothing dealt the panel says why: an empty library («La biblioteca aún no tiene ejercicios.», with the way to the series), a choice with no exercise («No hay ejercicios de ese tema en ese nivel todavía.»), or a code that is not in the catalogs.
 
 ## Markup & styling
 
-Block `.exercise-trainer` (24 lines): the heading read out and not drawn (`__heading`), and the repeat note, a pill of the info container; the rest is the solve page's.
-
-**Tokens:** `--platform-m3-info-container`, `--platform-m3-on-info-container`
+Block `.exercise-trainer` (12 lines): the heading read out and not drawn (`__heading`); the rest is the solve page's.

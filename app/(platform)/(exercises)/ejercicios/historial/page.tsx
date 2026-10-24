@@ -4,7 +4,6 @@ import { ExerciseHistory } from "@/components/platform/sections/exercises/exerci
 import { ExercisesToolbar } from "@/components/platform/sections/exercises/exercises-toolbar.comp";
 import { EXERCISES_ENABLED } from "@/constants/platform/features.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
-import { platformRoutes } from "@/lib/platform-routes";
 import { sampleExerciseHistory } from "@/services/exercises/exercise-history.samples";
 
 export const metadata: Metadata = {
@@ -29,7 +28,7 @@ export default async function ExerciseHistoryPage() {
   return (
     <section className="platform-workspace__panel">
       <ExercisesToolbar
-        trail={[{ label: "Ejercicios", href: platformRoutes.exercises }, { label: "Historial" }]}
+        title="Historial"
         summary="Cada intento que contó, con su resultado y, si fallaste, la jugada que era."
       />
       <ExerciseHistory rows={rows} nowIso={now.toISOString()} sample />

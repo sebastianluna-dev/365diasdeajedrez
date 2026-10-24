@@ -16,6 +16,7 @@
   & .exercises-panel-skeleton__toolbar {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     min-height: 56px;
     box-sizing: border-box;
     margin: calc(-1 * var(--platform-space-6)) calc(-1 * var(--platform-space-6)) 0;
@@ -23,8 +24,9 @@
     border-bottom: 1px solid var(--platform-m3-divider);
   }
 
-  & .exercises-panel-skeleton__crumbs {
-    width: 200px;
+  /* What the toolbar says at its right: the trail went on 2026-10-23. */
+  & .exercises-panel-skeleton__end {
+    width: 160px;
     height: 12px;
     border-radius: 1000px;
   }

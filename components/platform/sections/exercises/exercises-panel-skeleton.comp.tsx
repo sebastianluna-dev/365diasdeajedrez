@@ -24,7 +24,7 @@ export function ExercisesPanelSkeleton({ view, label }: ExercisesPanelSkeletonPr
   return (
     <section className="platform-workspace__panel exercises-panel-skeleton" aria-label={label}>
       <div className="exercises-panel-skeleton__toolbar" aria-hidden="true">
-        <span className="exercises-panel-skeleton__shape exercises-panel-skeleton__crumbs" />
+        <span className="exercises-panel-skeleton__shape exercises-panel-skeleton__end" />
       </div>
 
       {view === "board" ? (

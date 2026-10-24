@@ -41,9 +41,6 @@ export function ExerciseTrainerSection({ serving, filters, topicCode, again = fa
 
       {serving.kind === "exercise" ? (
         <>
-          {serving.exhausted && (
-            <p className="exercise-trainer__note">Ya resolviste todos los de este tema y nivel: ahora se repiten.</p>
-          )}
           {/* A new exercise is a new board: «Siguiente» never carries the last one's state. */}
           <ExerciseSolver
             key={serving.exercise.id}

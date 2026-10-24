@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { mdButton } from "@/lib/material/material-classes";
-import { platformRoutes } from "@/lib/platform-routes";
 import type { StudentExercisesHome } from "@/services/exercises/exercises.types";
 import { ExercisesToolbar } from "./exercises-toolbar.comp";
 import "./exercise-series-list.section.css";
@@ -33,7 +32,7 @@ export function ExerciseSeriesListSection({ home, view }: ExerciseSeriesListSect
   return (
     <section className="platform-workspace__panel exercise-series-list">
       <ExercisesToolbar
-        trail={[{ label: "Ejercicios", href: platformRoutes.exercises }, { label: title }]}
+        title={title}
         actions={
           continueWith
             ? [{ label: `Continuar con «${continueWith.title}»`, href: continueWith.href, tone: "filled" }]
