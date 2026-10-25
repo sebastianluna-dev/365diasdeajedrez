@@ -98,6 +98,27 @@
     font-weight: 600;
   }
 
+  /* «Ver todas las herramientas»: a row at the tray's foot, to the page of every tool. */
+  & .platform-apps-menu__all {
+    display: block;
+    padding: var(--platform-space-3) var(--platform-space-2);
+    border-radius: 8px;
+    color: var(--platform-accent-ink);
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+
+    &:hover {
+      background: var(--platform-surface);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-accent-ink);
+      outline-offset: -2px;
+    }
+  }
+
   & .platform-apps-menu__art {
     flex: none;
     width: 48px;

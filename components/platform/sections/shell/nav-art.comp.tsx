@@ -511,6 +511,28 @@ function HomeArt() {
   );
 }
 
+/** One square of «Herramientas»' nine, by its column and row. */
+function ToolsSquare({ column, row, fill }: { column: number; row: number; fill: string }) {
+  return <rect x={1 + column * 12} y={1 + row * 12} width="10" height="10" rx="2" fill={fill} />;
+}
+
+/**
+ * «Herramientas», the page of every tool: nine squares, as the menu's button
+ * draws them, in the board's cream and wood, the accent's red at two corners
+ * and the ink in the middle. It names a page and is in no tile, so nothing of
+ * it moves.
+ */
+function ToolsArt() {
+  const fills = ["#a81e22", "#d2a46f", "#8f6a45", "#d2a46f", "#2a2420", "#d2a46f", "#8f6a45", "#d2a46f", "#a81e22"];
+  return (
+    <>
+      {fills.map((fill, index) => (
+        <ToolsSquare key={index} column={index % 3} row={Math.floor(index / 3)} fill={fill} />
+      ))}
+    </>
+  );
+}
+
 /** Each drawing's frame: cut close to what it draws, so it fills its slot. */
 const VIEW_BOXES: Record<PlatformNavArt, string> = {
   play: "14 26 212 168",
@@ -533,6 +555,7 @@ const VIEW_BOXES: Record<PlatformNavArt, string> = {
   series: "34 40 180 160",
   import: "38 26 164 184",
   home: "36 36 168 168",
+  tools: "0 0 36 36",
 };
 
 /**
@@ -575,6 +598,7 @@ export function NavArt({ art, className }: NavArtProps) {
       {art === "series" && <SeriesArt />}
       {art === "import" && <ImportArt />}
       {art === "home" && <HomeArt />}
+      {art === "tools" && <ToolsArt />}
     </svg>
   );
 }

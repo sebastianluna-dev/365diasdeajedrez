@@ -1,4 +1,5 @@
 import {
+  ADVENTURE_ENABLED,
   ANALYSIS_BOARD_ENABLED,
   EXERCISES_ENABLED,
   MOVE_TRAINER_ENABLED,
@@ -7,12 +8,14 @@ import {
 import { platformRoutes, staffRoutes, teacherRoutes } from "@/lib/platform-routes";
 
 // Platform navigation: the tools menu behind the bar's 9-square button
-// (2026-10-19, the Google-style header). The menu is EXCLUSIVE by role: each
-// person sees only their own, not the sum. The same user can still be
-// student, teacher and staff at once (roles are orthogonal in the database),
-// so when they accumulate several the widest one rules — staff over teacher,
-// teacher over student — and the other areas stop appearing in the menu.
-// Hrefs always come from the route builders, never from loose strings.
+// (2026-10-19, the Google-style header) and «Herramientas» (`/herramientas`,
+// 2026-10-25), the page that shows the same tools with what each one does.
+// Both read this one list, so they cannot disagree. The menu is EXCLUSIVE by
+// role: each person sees only their own, not the sum. The same user can still
+// be student, teacher and staff at once (roles are orthogonal in the
+// database), so when they accumulate several the widest one rules — staff
+// over teacher, teacher over student — and the other areas stop appearing in
+// the menu. Hrefs always come from the route builders, never from loose strings.
 //
 // Mind what this is NOT: hiding a tool removes no permission. A teacher who
 // types /estudios still gets in, because those pages are theirs as a user;
@@ -41,13 +44,31 @@ export type PlatformNavArt =
   | "series"
   | "import"
   /** Not a tool: the home page's own drawing, the academy's mark (`pageNameOf`). */
-  | "home";
+  | "home"
+  /** Not a tool: «Herramientas», the page of every tool — nine squares, as the menu's button (`pageNameOf`). */
+  | "tools";
 
-/** A tool of the menu: its name (also the page's name in the bar), its address and its drawing. */
-export interface PlatformApp {
+/** What the bar names a page with: its name, its address and its drawing. */
+export interface PlatformPageMark {
   label: string;
   href: string;
   art: PlatformNavArt;
+}
+
+/**
+ * What a tool is for: the row of «Herramientas» it sits in. The student's
+ * practise, learn and analyse; the teacher's teach; the staff's run the
+ * academy and its exercise bank.
+ */
+export type PlatformAppGroup = "practice" | "teach" | "manage" | "bank" | "learn" | "analyze";
+
+/**
+ * A tool of the menu: its name (also the page's name in the bar), its address
+ * and its drawing; and, for «Herramientas», its row and its one line.
+ */
+export interface PlatformApp extends PlatformPageMark {
+  group: PlatformAppGroup;
+  description: string;
 }
 
 /** The role's tools, in order: the first `PLATFORM_SHORTCUTS` are «Tus atajos», the rest go under them. */
@@ -62,6 +83,8 @@ export const PLATFORM_SHORTCUTS = 6;
 /** What is switched on, which decides «Jugar», «Ejercicios» and the tools. */
 export interface PlatformNavFeatures {
   play: boolean;
+  /** The adventure mode, inside «Jugar» (`ADVENTURE_ENABLED`): it only changes that tool's line. */
+  adventure: boolean;
   analysisBoard: boolean;
   trainer: boolean;
   /**
@@ -90,6 +113,7 @@ export interface PlatformNavRoles {
 
 const FEATURES: PlatformNavFeatures = {
   play: PLAY_ENABLED,
+  adventure: PLAY_ENABLED && ADVENTURE_ENABLED,
   analysisBoard: ANALYSIS_BOARD_ENABLED,
   trainer: MOVE_TRAINER_ENABLED,
   // Since the library (phase 4) every student has «Práctica libre» and the academy's series to solve.
@@ -103,18 +127,52 @@ const FEATURES: PlatformNavFeatures = {
  */
 function boardApp(features: PlatformNavFeatures): PlatformApp[] {
   return features.analysisBoard
-    ? [{ label: "Tablero de análisis", href: platformRoutes.analysisBoard(), art: "board" }]
+    ? [
+        {
+          label: "Tablero de análisis",
+          href: platformRoutes.analysisBoard(),
+          art: "board",
+          group: "analyze",
+          description: "Carga una partida o una posición y analízala.",
+        },
+      ]
     : [];
 }
 
 function explorerApps(features: PlatformNavFeatures): PlatformApp[] {
-  return [
-    { label: "Explorador", href: platformRoutes.explorer, art: "explorer" },
-    ...(features.analysisBoard && features.trainer
-      ? [{ label: "Entrenador", href: platformRoutes.trainer, art: "trainer" as const }]
-      : []),
-  ];
+  const explorer: PlatformApp = {
+    label: "Explorador",
+    href: platformRoutes.explorer,
+    art: "explorer",
+    group: "analyze",
+    description: "Qué se juega en cada posición de la apertura.",
+  };
+  const trainer: PlatformApp = {
+    label: "Entrenador",
+    href: platformRoutes.trainer,
+    art: "trainer",
+    group: "analyze",
+    description: "Repite las líneas de tus cursos hasta saberlas.",
+  };
+  return features.analysisBoard && features.trainer ? [explorer, trainer] : [explorer];
 }
+
+/** «Cursos» and «Estudiar», the student's and the teacher's alike. */
+const COURSES: PlatformApp = {
+  label: "Cursos",
+  href: platformRoutes.courses,
+  art: "learn",
+  group: "learn",
+  description: "Tus cursos y el catálogo de la academia.",
+};
+
+const STUDIES: PlatformApp = {
+  label: "Estudiar",
+  href: platformRoutes.studies,
+  art: "studies",
+  group: "learn",
+  description: "Tus estudios: partidas, notas y diagramas.",
+};
 
 /**
  * The student's (2026-10-19): «Jugar» and the two ways to solve first, then
@@ -123,17 +181,41 @@ function explorerApps(features: PlatformNavFeatures): PlatformApp[] {
  * in «Ejercicios»' side column, and its old address redirects there.
  */
 function studentApps(features: PlatformNavFeatures, studentExercises: boolean): PlatformApp[] {
+  const play: PlatformApp = {
+    label: "Jugar",
+    href: platformRoutes.play,
+    art: "play",
+    group: "practice",
+    description: features.adventure ? "Contra un bot o en el modo aventura." : "Contra un bot, sin reloj.",
+  };
+  const exercises: PlatformApp[] = [
+    {
+      label: "Ejercicios",
+      href: platformRoutes.exercises,
+      art: "exercises",
+      group: "practice",
+      description: "Los de tus clases, las series y la biblioteca, por tema.",
+    },
+    {
+      label: "Puzzle Rush",
+      href: platformRoutes.exerciseStorm,
+      art: "rush",
+      group: "practice",
+      description: "Contra el reloj o hasta el tercer error.",
+    },
+  ];
   return [
-    ...(features.play ? [{ label: "Jugar", href: platformRoutes.play, art: "play" as const }] : []),
-    ...(studentExercises
-      ? [
-          { label: "Ejercicios", href: platformRoutes.exercises, art: "exercises" as const },
-          { label: "Puzzle Rush", href: platformRoutes.exerciseStorm, art: "rush" as const },
-        ]
-      : []),
-    { label: "Cursos", href: platformRoutes.courses, art: "learn" },
-    { label: "Clases", href: platformRoutes.classes, art: "teach" },
-    { label: "Estudiar", href: platformRoutes.studies, art: "studies" },
+    ...(features.play ? [play] : []),
+    ...(studentExercises ? exercises : []),
+    COURSES,
+    {
+      label: "Clases",
+      href: platformRoutes.classes,
+      art: "teach",
+      group: "learn",
+      description: "Tus clases, el enlace y lo que te dejaron.",
+    },
+    STUDIES,
     ...boardApp(features),
     ...explorerApps(features),
   ];
@@ -147,19 +229,63 @@ function studentApps(features: PlatformNavFeatures, studentExercises: boolean): 
  */
 function teacherApps(features: PlatformNavFeatures): PlatformApp[] {
   return [
-    { label: "Panel del profesor", href: teacherRoutes.home, art: "panel" },
-    { label: "Clases que imparto", href: teacherRoutes.classes, art: "teach" },
-    { label: "Calendario", href: teacherRoutes.calendar, art: "calendar" },
-    { label: "Mis alumnos", href: teacherRoutes.students, art: "students" },
+    {
+      label: "Panel del profesor",
+      href: teacherRoutes.home,
+      art: "panel",
+      group: "teach",
+      description: "Tu día: las clases de hoy y lo pendiente.",
+    },
+    {
+      label: "Clases que imparto",
+      href: teacherRoutes.classes,
+      art: "teach",
+      group: "teach",
+      description: "Las clases que te asignan: su contenido, la lista y el cierre.",
+    },
+    {
+      label: "Calendario",
+      href: teacherRoutes.calendar,
+      art: "calendar",
+      group: "teach",
+      description: "Tus clases por día, semana y mes.",
+    },
+    {
+      label: "Mis alumnos",
+      href: teacherRoutes.students,
+      art: "students",
+      group: "teach",
+      description: "Los alumnos que tienes asignados.",
+    },
     ...(features.exercises !== false
-      ? [{ label: "Ejercicios", href: teacherRoutes.exercises, art: "exercises" as const }]
+      ? [
+          {
+            label: "Ejercicios",
+            href: teacherRoutes.exercises,
+            art: "exercises" as const,
+            group: "teach" as const,
+            description: "Los que preparas para tus alumnos y sus series.",
+          },
+        ]
       : []),
     ...boardApp(features),
-    { label: "Clases prediseñadas", href: teacherRoutes.classTemplates, art: "material" },
-    { label: "Cursos", href: platformRoutes.courses, art: "learn" },
-    { label: "Estudiar", href: platformRoutes.studies, art: "studies" },
+    {
+      label: "Clases prediseñadas",
+      href: teacherRoutes.classTemplates,
+      art: "material",
+      group: "teach",
+      description: "Clases ya escritas por la academia.",
+    },
+    COURSES,
+    STUDIES,
     ...explorerApps(features),
-    { label: "Mi ficha", href: teacherRoutes.profile, art: "profile" },
+    {
+      label: "Mi ficha",
+      href: teacherRoutes.profile,
+      art: "profile",
+      group: "teach",
+      description: "Cómo te ven tus alumnos.",
+    },
   ];
 }
 
@@ -171,17 +297,71 @@ function teacherApps(features: PlatformNavFeatures): PlatformApp[] {
  */
 function staffApps(features: PlatformNavFeatures): PlatformApp[] {
   return [
-    { label: "Administración", href: staffRoutes.home, art: "adminpanel" },
-    { label: "Clases", href: staffRoutes.classes, art: "calendar" },
-    { label: "Alumnos", href: staffRoutes.students, art: "students" },
-    { label: "Profesores", href: staffRoutes.teachers, art: "teachers" },
-    { label: "Cursos", href: staffRoutes.courses, art: "learn" },
+    {
+      label: "Administración",
+      href: staffRoutes.home,
+      art: "adminpanel",
+      group: "manage",
+      description: "Alumnos, profesores y contenido de la plataforma.",
+    },
+    {
+      label: "Clases",
+      href: staffRoutes.classes,
+      art: "calendar",
+      group: "manage",
+      description: "Programa, reprograma y cancela las clases de la academia.",
+    },
+    {
+      label: "Alumnos",
+      href: staffRoutes.students,
+      art: "students",
+      group: "manage",
+      description: "Las cuentas, su acceso y su profesor asignado.",
+    },
+    {
+      label: "Profesores",
+      href: staffRoutes.teachers,
+      art: "teachers",
+      group: "manage",
+      description: "Quién enseña en la academia y sus clases.",
+    },
+    {
+      label: "Cursos",
+      href: staffRoutes.courses,
+      art: "learn",
+      group: "manage",
+      description: "Los cursos de la academia, sus capítulos y lecciones.",
+    },
     ...(features.exercises !== false
       ? [
-          { label: "Ejercicios", href: staffRoutes.exercises, art: "exercises" as const },
-          { label: "Revisión", href: staffRoutes.exercisesReview, art: "review" as const },
-          { label: "Series", href: staffRoutes.exerciseSeriesList, art: "series" as const },
-          { label: "Importar", href: staffRoutes.exerciseImport, art: "import" as const },
+          {
+            label: "Ejercicios",
+            href: staffRoutes.exercises,
+            art: "exercises" as const,
+            group: "bank" as const,
+            description: "La biblioteca de la academia.",
+          },
+          {
+            label: "Revisión",
+            href: staffRoutes.exercisesReview,
+            art: "review" as const,
+            group: "bank" as const,
+            description: "Las propuestas de los profesores, para aprobar o devolver.",
+          },
+          {
+            label: "Series",
+            href: staffRoutes.exerciseSeriesList,
+            art: "series" as const,
+            group: "bank" as const,
+            description: "Listas de ejercicios de la biblioteca para los alumnos.",
+          },
+          {
+            label: "Importar",
+            href: staffRoutes.exerciseImport,
+            art: "import" as const,
+            group: "bank" as const,
+            description: "Un archivo PGN, un ejercicio por partida.",
+          },
         ]
       : []),
   ];
@@ -215,12 +395,65 @@ export function buildPlatformApps(roles: PlatformNavRoles, features: PlatformNav
   return { shortcuts: apps.slice(0, PLATFORM_SHORTCUTS), more: apps.slice(PLATFORM_SHORTCUTS) };
 }
 
+/** A row of «Herramientas»: what its tools are for, in its name and one line. */
+export interface PlatformAppGroupInfo {
+  key: PlatformAppGroup;
+  label: string;
+  description: string;
+}
+
+/** The rows of «Herramientas», in the order they are drawn; a role draws only those it has tools in. */
+export const PLATFORM_APP_GROUPS: readonly PlatformAppGroupInfo[] = [
+  { key: "practice", label: "Practicar", description: "Para resolver y jugar, a tu ritmo." },
+  { key: "teach", label: "Enseñar", description: "Tus clases, tus alumnos y lo que preparas." },
+  { key: "manage", label: "Administrar", description: "Las clases, las personas y los cursos de la academia." },
+  {
+    key: "bank",
+    label: "Banco de ejercicios",
+    description: "La biblioteca, su revisión, las series y la importación.",
+  },
+  { key: "learn", label: "Aprender", description: "Lo que te enseñan y lo que guardas." },
+  { key: "analyze", label: "Analizar", description: "Para pensar una posición o una línea." },
+];
+
+/** A tool as «Herramientas» draws it: the tool, and whether it is one of «Tus atajos». */
+export interface PlatformToolTile extends PlatformApp {
+  isShortcut: boolean;
+}
+
+/** A row of «Herramientas» with its tools, in the menu's order. */
+export interface PlatformToolGroup extends PlatformAppGroupInfo {
+  tools: PlatformToolTile[];
+}
+
+/**
+ * The role's tools as «Herramientas» shows them: by what they are for, each
+ * row in `PLATFORM_APP_GROUPS`' order with its tools in the menu's, and every
+ * tool of «Tus atajos» marked. A row with no tool is left out.
+ */
+export function groupPlatformApps(apps: PlatformApps): PlatformToolGroup[] {
+  const tiles: PlatformToolTile[] = [
+    ...apps.shortcuts.map((app) => ({ ...app, isShortcut: true })),
+    ...apps.more.map((app) => ({ ...app, isShortcut: false })),
+  ];
+  return PLATFORM_APP_GROUPS.map((group) => ({
+    ...group,
+    tools: tiles.filter((tile) => tile.group === group.key),
+  })).filter((group) => group.tools.length > 0);
+}
+
 /**
  * The home page in the bar (2026-10-23, the new design system's «Inicio»):
  * not a tool of the menu — no tile leads to it, the wordmark and the avatar
  * do —, but the bar names it as it names a tool's page.
  */
-export const HOME_PAGE: PlatformApp = { label: "Inicio", href: platformRoutes.dashboard, art: "home" };
+export const HOME_PAGE: PlatformPageMark = { label: "Inicio", href: platformRoutes.dashboard, art: "home" };
+
+/**
+ * «Herramientas» in the bar (2026-10-25): the page of every tool, reached
+ * from the foot of the menu. Not a tool either, so no tile lights up on it.
+ */
+export const TOOLS_PAGE: PlatformPageMark = { label: "Herramientas", href: platformRoutes.tools, art: "tools" };
 
 /**
  * The tool of the page on screen, or null: the one whose address is the
@@ -241,10 +474,13 @@ export function activeApp(apps: PlatformApps, pathname: string): PlatformApp | n
 
 /**
  * What the bar names the page on screen with: its tool (`activeApp`), or
- * «Inicio» on the home page itself, which is no tool's. Null elsewhere (a
- * lesson), where the wordmark stays. The menu marks a tile by `activeApp`
- * alone, so no tile lights up on the home page.
+ * «Inicio» on the home page and «Herramientas» on the page of every tool,
+ * which are no tool's. Null elsewhere (a lesson), where the wordmark stays.
+ * The menu marks a tile by `activeApp` alone, so no tile lights up on those two.
  */
-export function pageNameOf(apps: PlatformApps, pathname: string): PlatformApp | null {
-  return activeApp(apps, pathname) ?? (pathname === HOME_PAGE.href ? HOME_PAGE : null);
+export function pageNameOf(apps: PlatformApps, pathname: string): PlatformPageMark | null {
+  const tool = activeApp(apps, pathname);
+  if (tool) return tool;
+  if (pathname === HOME_PAGE.href) return HOME_PAGE;
+  return pathname === TOOLS_PAGE.href ? TOOLS_PAGE : null;
 }
