@@ -119,9 +119,16 @@ export const getStreakOverview = cache(async (): Promise<StreakOverview> =>
 export async function streakOverviewOf(userId: string): Promise<StreakOverview> {
   const now = new Date();
   const today = dayKey(now, STUDY_DAY_TIMEZONE);
-  const monday = mondayOf(today);
-  const [counts, minutesThisWeek] = await Promise.all([activityByDayOf(userId, now), minutesSince(userId, monday)]);
+  const [counts, minutesThisWeek] = await Promise.all([
+    activityByDayOf(userId, now),
+    minutesSince(userId, mondayOf(today)),
+  ]);
+  return overviewOf(counts, today, minutesThisWeek);
+}
 
+/** The sixteen weeks and their figures, from the activity by day and this week's minutes. */
+function overviewOf(counts: Map<string, number>, today: string, minutesThisWeek: number): StreakOverview {
+  const monday = mondayOf(today);
   const weeks = weeksUpTo(today, OVERVIEW_WEEKS).map((week) =>
     week.map((day) => {
       const count = counts.get(day) ?? 0;
@@ -179,13 +186,16 @@ function studyMonth(start: string, days: StudyMinutesDay[]): StudyMonth {
  */
 export async function studyMonthComparisonOf(userId: string): Promise<StudyMonthComparison> {
   const today = dayKey(new Date(), STUDY_DAY_TIMEZONE);
+  return monthsOf(today, await studyMinutesByDayOf(userId, previousMonthStartOf(today), today));
+}
+
+/** The days from the first of last month to today, split at the turn of the month. */
+function monthsOf(today: string, days: StudyMinutesDay[]): StudyMonthComparison {
   const currentStart = monthStartOf(today);
-  const previousStart = previousMonthStartOf(today);
-  const days = await studyMinutesByDayOf(userId, previousStart, today);
   return {
     today,
     previous: studyMonth(
-      previousStart,
+      previousMonthStartOf(today),
       days.filter((day) => day.day < currentStart),
     ),
     current: studyMonth(
@@ -193,6 +203,26 @@ export async function studyMonthComparisonOf(userId: string): Promise<StudyMonth
       days.filter((day) => day.day >= currentStart),
     ),
   };
+}
+
+/**
+ * Both at once, as the profile reads them: the streak's overview and this
+ * month against the last, in two reads instead of three — this week's
+ * minutes are added up from the month's days, since a week's Monday is never
+ * further back than the first of last month.
+ */
+export async function studyOverviewOf(
+  userId: string,
+): Promise<{ streak: StreakOverview; months: StudyMonthComparison }> {
+  const now = new Date();
+  const today = dayKey(now, STUDY_DAY_TIMEZONE);
+  const [counts, days] = await Promise.all([
+    activityByDayOf(userId, now),
+    studyMinutesByDayOf(userId, previousMonthStartOf(today), today),
+  ]);
+  const monday = mondayOf(today);
+  const minutesThisWeek = days.filter((day) => day.day >= monday).reduce((total, day) => total + day.minutes, 0);
+  return { streak: overviewOf(counts, today, minutesThisWeek), months: monthsOf(today, days) };
 }
 
 /**
