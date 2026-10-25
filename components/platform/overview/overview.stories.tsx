@@ -41,13 +41,16 @@ import { PlayedGameCard } from "@/components/platform/shared/played-game-card/pl
 import { PlatformBandChart } from "@/components/platform/shared/platform-band-chart/platform-band-chart.comp";
 import { PlatformBigNumber } from "@/components/platform/shared/platform-big-number/platform-big-number.comp";
 import { PlatformCompareBars } from "@/components/platform/shared/platform-compare-bars/platform-compare-bars.comp";
+import { PlatformDonut } from "@/components/platform/shared/platform-donut/platform-donut.comp";
 import { PlatformLineChart } from "@/components/platform/shared/platform-line-chart/platform-line-chart.comp";
+import { PlatformPillColumns } from "@/components/platform/shared/platform-pill-columns/platform-pill-columns.comp";
 import { PlatformSparkline } from "@/components/platform/shared/platform-sparkline/platform-sparkline.comp";
 import { PlatformStreakCalendar } from "@/components/platform/shared/platform-streak-calendar/platform-streak-calendar.comp";
 import { PlatformStreakLegend } from "@/components/platform/shared/platform-streak-legend/platform-streak-legend.comp";
 import {
   SAMPLE_BOT_BARS,
   SAMPLE_LEVEL_POINTS,
+  SAMPLE_OCTOBER_MINUTES,
   SAMPLE_OCTOBER_TOTALS,
   SAMPLE_SEPTEMBER_TOTALS,
   SAMPLE_STREAK,
@@ -103,6 +106,8 @@ import { ClassAheadSection } from "@/components/platform/sections/classes/class-
 import { ClassReviewSection } from "@/components/platform/sections/classes/class-detail/class-review.section";
 import { ClassNotebookSection } from "@/components/platform/sections/classes/class-notebook/class-notebook.section";
 import { ClassesListSection } from "@/components/platform/sections/classes/classes-list/classes-list.section";
+import { ProfileStatisticsSection } from "@/components/platform/sections/profile/profile-statistics/profile-statistics.section";
+import { sampleStatistics } from "@/components/platform/sections/profile/profile-statistics/profile-statistics.samples";
 import { ClassGameSave } from "@/components/platform/shared/class-game-save/class-game-save.comp";
 import { PaidClassesCard } from "@/components/platform/shared/paid-classes-card/paid-classes-card.comp";
 import { PastClassCard } from "@/components/platform/shared/past-class-card/past-class-card.comp";
@@ -2589,6 +2594,30 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             <Tile name="PlatformStreakLegend" docs="platform-shared-platformstreaklegend" width={240} height={64}>
               <PlatformStreakLegend />
             </Tile>
+            <Tile name="PlatformPillColumns" docs="platform-shared-platformpillcolumns" width={480} height={200}>
+              <PlatformPillColumns
+                columns={SAMPLE_OCTOBER_MINUTES.map((value, index) => ({
+                  key: String(index + 1),
+                  axis: index === 0 || (index + 1) % 5 === 0 ? String(index + 1) : "",
+                  long: `día ${index + 1}`,
+                  value,
+                }))}
+                unit="min"
+                goal={{ value: 20, label: "meta 20 min" }}
+                label="Minutos de estudio cada día de octubre"
+              />
+            </Tile>
+            <Tile name="PlatformDonut" docs="platform-shared-platformdonut" width={360} height={160}>
+              <PlatformDonut
+                segments={[
+                  { key: "t0", label: "Táctica", value: 41, tone: "hatch" },
+                  { key: "t1", label: "Aperturas", value: 18, tone: "deep" },
+                  { key: "t2", label: "Finales", value: 7, tone: "mid" },
+                  { key: "t3", label: "Otros", value: 7, tone: "neutral" },
+                ]}
+                label="De qué trató lo que hiciste este mes"
+              />
+            </Tile>
           </Section>
 
           <Section title="Play">
@@ -2679,6 +2708,21 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   .map((game) => (
                     <PlayedGameCard key={game.id} game={game} now={PROFILE_NOW} />
                   ))}
+              </div>
+            </Tile>
+            <Tile
+              name="ProfileStatisticsSection"
+              docs="platform-sections-profile-profilestatisticssection"
+              width={1100}
+              height={860}
+            >
+              <div className="platform-page platform-page_width_full platform-page_frame_bleed">
+                <ProfileStatisticsSection
+                  statistics={sampleStatistics("mes")}
+                  tab="estudio"
+                  continueHref="/cursos"
+                  profile={{ slug: "andrea-dominguez", games: 24 }}
+                />
               </div>
             </Tile>
             <Tile name="BotLevelCard" docs="platform-sections-profile-botlevelcard" width={400} height={216}>

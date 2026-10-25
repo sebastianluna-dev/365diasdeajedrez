@@ -4,7 +4,10 @@ import { FireIcon } from "@/components/icons/fire-icon.comp";
 import { GraduationCapIcon } from "@/components/icons/graduation-cap-icon.comp";
 import { LightbulbIcon } from "@/components/icons/lightbulb-icon.comp";
 import { RobotIcon } from "@/components/icons/robot-icon.comp";
-import { PlatformSideNav, type PlatformSideNavGroup } from "@/components/platform/shared/platform-side-nav/platform-side-nav.comp";
+import {
+  PlatformSideNav,
+  type PlatformSideNavGroup,
+} from "@/components/platform/shared/platform-side-nav/platform-side-nav.comp";
 import { PlatformSparkline } from "@/components/platform/shared/platform-sparkline/platform-sparkline.comp";
 import { STUDY_DAY_TIMEZONE } from "@/constants/platform/timezones.const";
 import { platformRoutes } from "@/lib/platform-routes";
@@ -100,7 +103,10 @@ export function ProfileStatisticsSection({ statistics, tab, continueHref, profil
       Icon: GraduationCapIcon,
       figure: formatCount(study.minutes),
       unit: "min",
-      spark: { values: study.weekly, label: `Minutos de estudio por semana, las últimas ${study.weekly.length}: ${study.weekly.join(", ")}` },
+      spark: {
+        values: study.weekly,
+        label: `Minutos de estudio por semana, las últimas ${study.weekly.length}: ${study.weekly.join(", ")}`,
+      },
     },
     ...(exercises
       ? [
@@ -204,7 +210,11 @@ export function ProfileStatisticsSection({ statistics, tab, continueHref, profil
         {tab === "estudio" && <StudyTab statistics={statistics} />}
         {tab === "ejercicios" && exercises && <ExercisesTab statistics={statistics} exercises={exercises} />}
         {tab === "jugar" && play && (
-          <PlayTab statistics={statistics} play={play} gamesHref={profile ? platformRoutes.userProfileGames(profile.slug) : null} />
+          <PlayTab
+            statistics={statistics}
+            play={play}
+            gamesHref={profile ? platformRoutes.userProfileGames(profile.slug) : null}
+          />
         )}
       </section>
     </div>

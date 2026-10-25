@@ -37,7 +37,8 @@ Reference page: [Components › PlatformDonut](/components/platform/shared/platf
       { key: "t3", label: "Estructuras de peones", value: 4, tone: "light" },
       { key: "t4", label: "Otros", value: 3, tone: "neutral" },
     ],
-    label: "De qué trató lo que hiciste este mes: Táctica 41, Aperturas 18, Finales 7, Estructuras de peones 4, Otros 3.",
+    label:
+      "De qué trató lo que hiciste este mes: Táctica 41, Aperturas 18, Finales 7, Estructuras de peones 4, Otros 3.",
   },
 } satisfies Meta<typeof PlatformDonut>;
 
@@ -56,7 +57,8 @@ export const Attempts: Story = {
       { key: "wrong", label: "Fallados", value: 9, tone: "ink" },
       { key: "shown", label: "Viste la solución", value: 3, tone: "neutral" },
     ],
-    label: "Tus 52 intentos de ejercicios este mes: 34 resueltos, 6 con pista, 9 fallados y 3 en los que viste la solución.",
+    label:
+      "Tus 52 intentos de ejercicios este mes: 34 resueltos, 6 con pista, 9 fallados y 3 en los que viste la solución.",
   },
 };
 

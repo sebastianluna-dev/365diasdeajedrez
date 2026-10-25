@@ -4,14 +4,14 @@ description: "A pill per value, the one to look at hatched with its tag, and the
 
 # `PlatformPillColumns`
 
-|            |                                                                                                                                                                                                                 |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/platform-pill-columns/platform-pill-columns.comp.tsx`                                                                                                                               |
-| Kind       | Server Component                                                                                                                                                                                                |
-| Stylesheet | `platform-pill-columns.comp.css` → block `.platform-pill-columns` (99 lines)                                                                                                                                    |
-| Story      | `platform-pill-columns.stories.tsx` (`platform/shared/PlatformPillColumns`): a month with the goal, a week, without a goal (the exercises passed per week, wider columns) and today empty                         |
-| Used by    | [`ProfileStatisticsSection`](/components/platform/sections/profile/profile-statistics-section): «Estudio»'s minutes of the period and «Ejercicios»' passed per week (2026-10-25)                                  |
-| Uses       | `capsule`, `dot`, `f1`, `percentOf` · `lib/charts/chart-geometry.ts`; `useId` for the hatch's pattern                                                                                                            |
+|            |                                                                                                                                                                                           |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-pill-columns/platform-pill-columns.comp.tsx`                                                                                                         |
+| Kind       | Server Component                                                                                                                                                                          |
+| Stylesheet | `platform-pill-columns.comp.css` → block `.platform-pill-columns` (99 lines)                                                                                                              |
+| Story      | `platform-pill-columns.stories.tsx` (`platform/shared/PlatformPillColumns`): a month with the goal, a week, without a goal (the exercises passed per week, wider columns) and today empty |
+| Used by    | [`ProfileStatisticsSection`](/components/platform/sections/profile/profile-statistics-section): «Estudio»'s minutes of the period and «Ejercicios»' passed per week (2026-10-25)          |
+| Uses       | `capsule`, `dot`, `f1`, `percentOf` · `lib/charts/chart-geometry.ts`; `useId` for the hatch's pattern                                                                                     |
 
 ## Purpose
 
@@ -21,15 +21,15 @@ It is one image: the SVG carries `role="img"` and an `aria-label` made of `label
 
 ## Props
 
-| Prop        | Type                                     | Required | Meaning                                                                                                  |
-| ----------- | ---------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------- |
-| `columns`   | `{ key, axis, long, value }[]`           | yes      | Oldest first. `axis` is what goes under the column (empty leaves it unnamed); `long` what is said for it. |
-| `unit`      | `string`                                 | yes      | After every value, in the tag and in words: «min», «superados».                                          |
-| `label`     | `string`                                 | yes      | What the chart is, before its values in words.                                                           |
-| `highlight` | `number`                                 | no       | The index of the column to look at; the last (today) by default.                                         |
-| `goal`      | `{ value: number; label: string }`       | no       | The dashed line across and its name.                                                                     |
-| `width`, `height` | `number`                           | no       | The drawing's box (712 × 170): it stretches to its container's width keeping this ratio.                 |
-| `maxColumn` | `number`                                 | no       | The widest a column gets in the box's units (24); a few columns read better wider (40).                  |
+| Prop              | Type                               | Required | Meaning                                                                                                   |
+| ----------------- | ---------------------------------- | -------- | --------------------------------------------------------------------------------------------------------- |
+| `columns`         | `{ key, axis, long, value }[]`     | yes      | Oldest first. `axis` is what goes under the column (empty leaves it unnamed); `long` what is said for it. |
+| `unit`            | `string`                           | yes      | After every value, in the tag and in words: «min», «superados».                                           |
+| `label`           | `string`                           | yes      | What the chart is, before its values in words.                                                            |
+| `highlight`       | `number`                           | no       | The index of the column to look at; the last (today) by default.                                          |
+| `goal`            | `{ value: number; label: string }` | no       | The dashed line across and its name.                                                                      |
+| `width`, `height` | `number`                           | no       | The drawing's box (712 × 170): it stretches to its container's width keeping this ratio.                  |
+| `maxColumn`       | `number`                           | no       | The widest a column gets in the box's units (24); a few columns read better wider (40).                   |
 
 ## Markup & styling
 

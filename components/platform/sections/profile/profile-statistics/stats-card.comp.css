@@ -54,12 +54,9 @@
 
   & .stats-card__subtitle {
     margin: 0;
-    overflow: hidden;
     color: var(--platform-m3-on-surface-variant);
     font-size: var(--platform-type-2xs);
     line-height: 16px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   & .stats-card__link {

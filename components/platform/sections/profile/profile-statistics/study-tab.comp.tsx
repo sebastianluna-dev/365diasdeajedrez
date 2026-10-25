@@ -1,9 +1,6 @@
 import { PlatformBigNumber } from "@/components/platform/shared/platform-big-number/platform-big-number.comp";
 import { PlatformCompareBars } from "@/components/platform/shared/platform-compare-bars/platform-compare-bars.comp";
-import {
-  PlatformDonut,
-  type PlatformDonutTone,
-} from "@/components/platform/shared/platform-donut/platform-donut.comp";
+import { PlatformDonut, type PlatformDonutTone } from "@/components/platform/shared/platform-donut/platform-donut.comp";
 import { PlatformPillColumns } from "@/components/platform/shared/platform-pill-columns/platform-pill-columns.comp";
 import { PlatformStreakCalendar } from "@/components/platform/shared/platform-streak-calendar/platform-streak-calendar.comp";
 import { PlatformStreakLegend } from "@/components/platform/shared/platform-streak-legend/platform-streak-legend.comp";
@@ -101,18 +98,27 @@ export function StudyTab({ statistics }: { statistics: StudentStatistics }) {
             {daily && (
               <ul className="profile-statistics__legend">
                 <li className="profile-statistics__legend-item">
-                  <span className="profile-statistics__swatch profile-statistics__swatch_kind_hatch" aria-hidden="true" />
+                  <span
+                    className="profile-statistics__swatch profile-statistics__swatch_kind_hatch"
+                    aria-hidden="true"
+                  />
                   Hoy<strong>{todayMinutes} min</strong>
                 </li>
                 {study.goalMinutes > 0 && (
                   <li className="profile-statistics__legend-item">
-                    <span className="profile-statistics__swatch profile-statistics__swatch_kind_dash" aria-hidden="true" />
+                    <span
+                      className="profile-statistics__swatch profile-statistics__swatch_kind_dash"
+                      aria-hidden="true"
+                    />
                     Tu meta<strong>{study.goalMinutes} min</strong>
                   </li>
                 )}
                 {study.goalDays !== null && (
                   <li className="profile-statistics__legend-item">
-                    <span className="profile-statistics__swatch profile-statistics__swatch_kind_dot" aria-hidden="true" />
+                    <span
+                      className="profile-statistics__swatch profile-statistics__swatch_kind_dot"
+                      aria-hidden="true"
+                    />
                     Días cumplidos
                     <strong>
                       {study.goalDays} de {study.columns.length}
@@ -127,7 +133,11 @@ export function StudyTab({ statistics }: { statistics: StudentStatistics }) {
               columns={columns}
               unit="min"
               label={`Minutos de estudio ${daily ? "cada día" : period.bucket === "month" ? "cada mes" : "cada año"}, ${period.label.charAt(0).toLowerCase()}${period.label.slice(1)}`}
-              goal={daily && study.goalMinutes > 0 ? { value: study.goalMinutes, label: `meta ${study.goalMinutes} min` } : undefined}
+              goal={
+                daily && study.goalMinutes > 0
+                  ? { value: study.goalMinutes, label: `meta ${study.goalMinutes} min` }
+                  : undefined
+              }
             />
           </div>
         </div>
@@ -179,9 +189,7 @@ export function StudyTab({ statistics }: { statistics: StudentStatistics }) {
           icon="circle-check"
           title="Lo que hiciste"
           subtitle={`${periodPhrase(period.key).charAt(0).toUpperCase()}${periodPhrase(period.key).slice(1)}${
-            study.coursesCompleted > 0
-              ? ` · y terminaste ${plural(study.coursesCompleted, "curso", "cursos")}`
-              : ""
+            study.coursesCompleted > 0 ? ` · y terminaste ${plural(study.coursesCompleted, "curso", "cursos")}` : ""
           }`}
           link={ACTIVITY}
           reads={didInsight(study, period)}

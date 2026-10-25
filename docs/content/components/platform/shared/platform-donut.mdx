@@ -4,14 +4,14 @@ description: "A ring of separate rounded segments with gaps, the first hatched w
 
 # `PlatformDonut`
 
-|            |                                                                                                                                                                                           |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/platform-donut/platform-donut.comp.tsx`                                                                                                                       |
-| Kind       | Server Component                                                                                                                                                                          |
-| Stylesheet | `platform-donut.comp.css` → block `.platform-donut` (162 lines)                                                                                                                           |
-| Story      | `platform-donut.stories.tsx` (`platform/shared/PlatformDonut`): the topics, the attempts, the record with an open game and its own tag, and nothing yet                                     |
-| Used by    | [`ProfileStatisticsSection`](/components/platform/sections/profile/profile-statistics-section): «Por tema», «Tus intentos» and «Tus partidas» (2026-10-25)                                  |
-| Uses       | `f1`, `percentOf` · `lib/charts/chart-geometry.ts`; `useId` for the hatch's pattern                                                                                                       |
+|            |                                                                                                                                                            |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-donut/platform-donut.comp.tsx`                                                                                        |
+| Kind       | Server Component                                                                                                                                           |
+| Stylesheet | `platform-donut.comp.css` → block `.platform-donut` (162 lines)                                                                                            |
+| Story      | `platform-donut.stories.tsx` (`platform/shared/PlatformDonut`): the topics, the attempts, the record with an open game and its own tag, and nothing yet    |
+| Used by    | [`ProfileStatisticsSection`](/components/platform/sections/profile/profile-statistics-section): «Por tema», «Tus intentos» and «Tus partidas» (2026-10-25) |
+| Uses       | `f1`, `percentOf` · `lib/charts/chart-geometry.ts`; `useId` for the hatch's pattern                                                                        |
 
 ## Purpose
 
@@ -23,12 +23,12 @@ The ring is one image (`role="img"`, `aria-label` = `label`, which says the tota
 
 ## Props
 
-| Prop        | Type                                                         | Required | Meaning                                                              |
-| ----------- | ------------------------------------------------------------ | -------- | -------------------------------------------------------------------- |
-| `segments`  | `{ key, label, value, tone }[]`                              | yes      | In order round the ring from the top, clockwise.                     |
-| `label`     | `string`                                                     | yes      | The chart in words.                                                  |
-| `tag`       | `string`                                                     | no       | The white tag on the first segment; its share in % when not given.   |
-| `size`, `thickness` | `number`                                             | no       | The drawing's side and the ring's thickness, in px (112 and 20).     |
+| Prop                | Type                            | Required | Meaning                                                            |
+| ------------------- | ------------------------------- | -------- | ------------------------------------------------------------------ |
+| `segments`          | `{ key, label, value, tone }[]` | yes      | In order round the ring from the top, clockwise.                   |
+| `label`             | `string`                        | yes      | The chart in words.                                                |
+| `tag`               | `string`                        | no       | The white tag on the first segment; its share in % when not given. |
+| `size`, `thickness` | `number`                        | no       | The drawing's side and the ring's thickness, in px (112 and 20).   |
 
 ## Markup & styling
 

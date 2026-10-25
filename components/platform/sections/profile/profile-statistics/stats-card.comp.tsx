@@ -49,13 +49,13 @@ interface StatsCardProps {
  * the container's grey with Material's extra-large corners, its head — the
  * drawing in a ring, the title and what it is of, the round arrow to see
  * more — over the chart it is given, and under it the line that says what
- * the chart reads. A section named by its title.
+ * the chart reads. An article named by its title (not a section: a region landmark per card would repeat names such as «Por tema» across a page).
  */
 export function StatsCard({ icon, title, subtitle, link, reads, size = "plain", children }: StatsCardProps) {
   const id = useId();
   const Icon = ICONS[icon];
   return (
-    <section className={`stats-card stats-card_size_${size}`} aria-labelledby={id}>
+    <article className={`stats-card stats-card_size_${size}`} aria-labelledby={id}>
       <div className="stats-card__head">
         <span className={`stats-card__icon stats-card__icon_name_${icon}`} aria-hidden="true">
           <Icon variant={icon === "fire" ? "duotone-solid" : "duotone-light"} className="stats-card__glyph" />
@@ -67,13 +67,17 @@ export function StatsCard({ icon, title, subtitle, link, reads, size = "plain", 
           {subtitle && <p className="stats-card__subtitle">{subtitle}</p>}
         </div>
         {link && (
-          <Link href={link.href} className={`${mdIconButton("standard", "xs")} stats-card__link`} aria-label={link.label}>
+          <Link
+            href={link.href}
+            className={`${mdIconButton("standard", "xs")} stats-card__link`}
+            aria-label={link.label}
+          >
             <ArrowUpRightIcon variant="classic-solid" className="platform-md-icon" />
           </Link>
         )}
       </div>
       <div className="stats-card__body">{children}</div>
       <p className="stats-card__reads">{reads}</p>
-    </section>
+    </article>
   );
 }

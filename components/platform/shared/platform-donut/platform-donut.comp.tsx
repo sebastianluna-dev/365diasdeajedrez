@@ -140,10 +140,7 @@ export function PlatformDonut({ segments, label, tag, size = 112, thickness = 20
       <ul className="platform-donut__legend">
         {segments.map((segment) => (
           <li key={segment.key} className="platform-donut__item">
-            <span
-              className={`platform-donut__swatch platform-donut__swatch_tone_${segment.tone}`}
-              aria-hidden="true"
-            />
+            <span className={`platform-donut__swatch platform-donut__swatch_tone_${segment.tone}`} aria-hidden="true" />
             <span className="platform-donut__name">{segment.label}</span>
             <span className="platform-donut__value">{segment.value}</span>
           </li>

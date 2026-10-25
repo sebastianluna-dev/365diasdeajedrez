@@ -23,7 +23,13 @@ function passedShare(outcomes: ExerciseStatistics["outcomes"]): number | null {
  * comes back today to review. The attempts made from a class block count
  * for the class and are left out here (D49).
  */
-export function ExercisesTab({ statistics, exercises }: { statistics: StudentStatistics; exercises: ExerciseStatistics }) {
+export function ExercisesTab({
+  statistics,
+  exercises,
+}: {
+  statistics: StudentStatistics;
+  exercises: ExerciseStatistics;
+}) {
   const { period, today } = statistics;
   const { outcomes } = exercises;
   const attempts = outcomes.clean + outcomes.hinted + outcomes.wrong + outcomes.shown;
@@ -110,8 +116,9 @@ export function ExercisesTab({ statistics, exercises }: { statistics: StudentSta
               highlighted: theme === hardest,
             }))}
             label={`Ejercicios ${periodPhrase(period.key)} por tema: ${
-              exercises.themes.map((theme) => `${theme.label}, ${theme.solved} resueltos de ${theme.tried}`).join("; ") ||
-              "ninguno todavía"
+              exercises.themes
+                .map((theme) => `${theme.label}, ${theme.solved} resueltos de ${theme.tried}`)
+                .join("; ") || "ninguno todavía"
             }.`}
           />
         </StatsCard>

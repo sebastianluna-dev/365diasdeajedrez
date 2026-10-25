@@ -201,6 +201,11 @@
     font-family: var(--platform-font);
     font-size: var(--platform-type-2xs);
     font-weight: 400;
+
+    /* On a phone the three tabs share the width: the figure stays, its unit goes. */
+    @media (width < 640px) {
+      display: none;
+    }
   }
 
   & .profile-statistics__tab-spark {
