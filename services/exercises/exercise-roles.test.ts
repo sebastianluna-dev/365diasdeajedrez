@@ -15,6 +15,8 @@ import { PROJECT_ROOT, reach } from "@/lib/testing/module-reach";
 const STUDENT_SIDE = [
   "services/exercises",
   "services/classes",
+  // «Estadísticas» reads the student's attempts and review state.
+  "services/stats",
   "components/platform/sections/exercises",
   "components/platform/sections/classes",
   "app/(platform)/(exercises)",

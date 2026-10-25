@@ -150,11 +150,20 @@ export async function recentPlayedGamesOf(userId: string, take = PROFILE_RECENT_
   return rows.map((row) => playedGameCard(row, userId));
 }
 
-/** `userId`'s record against every bot they have played. */
-export async function botScoreboardOf(userId: string): Promise<BotScore[]> {
+/**
+ * `userId`'s record against every bot they have played; with `since`, only
+ * the games started from then on (the period of «Estadísticas»).
+ */
+export async function botScoreboardOf(userId: string, since: Date | null = null): Promise<BotScore[]> {
   const viewer = await currentViewer();
   const rows = await getPlatformDb().playedGame.findMany({
-    where: { AND: [againstBotsWhere(userId), playedGameVisibleWhere(viewer)] },
+    where: {
+      AND: [
+        againstBotsWhere(userId),
+        playedGameVisibleWhere(viewer),
+        ...(since ? [{ startedAt: { gte: since } }] : []),
+      ],
+    },
     select: SCORE_SELECT,
   });
   const byBot = new Map<number, BotScore>();
