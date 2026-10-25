@@ -6,10 +6,10 @@ import { writePlayedGameRecord } from "@/services/shared/played-game-record";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
 import { openAgainstBotWhere, seatOf } from "./play-rules";
 
-// Opening a game against a bot, shared by every action that starts one:
-// `startPlayedGame` and `rematchPlayedGame` (play.actions.ts) and
-// `startAdventureEncounter` (services/adventure). A `"use server"` module can
-// only export actions, so the helper lives here. It writes only through
+// Opening a game against a bot, for the one action that starts one,
+// `startAdventureEncounter` (services/adventure): since 2026-10-25 every game
+// against a bot is an encounter of an adventure. A `"use server"` module can
+// only export actions, so the helper lives here, beside the rules it reads. It writes only through
 // `writePlayedGameRecord`, and nothing here touches the activity log: playing
 // never counts toward the streak (no-activity.test.ts).
 

@@ -5,14 +5,12 @@ import { ToolsLauncherSection } from "./tools-launcher.section";
 
 const ALL_ON: PlatformNavFeatures = {
   play: true,
-  adventure: true,
   analysisBoard: true,
   trainer: true,
   exercises: "all",
 };
 const ALL_OFF: PlatformNavFeatures = {
   play: false,
-  adventure: false,
   analysisBoard: false,
   trainer: false,
   exercises: false,

@@ -1,24 +1,24 @@
 ---
-description: "«Jugar» as a desk when the adventure is on: the open notebook with the whole journey and where the person stands, and two tickets, «Partida libre» and «Contra una persona»."
+description: "«Jugar» as a desk when the adventure is on: the open notebook with the whole journey and where the person stands."
 ---
 
 # `AdventureCover`
 
 Also exports `AdventureCoverSection`, the Server Component that reads the progress and renders it.
 
-|            |                                                                                                                                                                                  |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Files      | `components/adventure/cover/adventure-cover/adventure-cover.comp.tsx`, `adventure-cover.section.tsx`                                                                             |
-| Kind       | Server Components (no client leaf: the cover is read-only and its only actions are links)                                                                                        |
-| Stylesheet | `adventure-cover.comp.css` → block `.adventure-cover`                                                                                                                            |
-| Story      | `adventure-cover.stories.tsx` (`adventure/cover/AdventureCover`): four of twelve, a fresh notebook, complete, with an open game                                                  |
-| Used by    | `app/(platform)/jugar/page.tsx`, when `ADVENTURE_ENABLED` is on                                                                                                                  |
-| Composes   | [`NotebookCard`](/components/adventure/cover/notebook-card), [`JourneyMiniature`](/components/adventure/cover/journey-miniature), [`Ticket`](/components/adventure/cover/ticket) |
-| Reads      | `getAdventureProgress("cuaderno-del-viajero")` (`services/adventure`), `ADVENTURE_ART` (`lib/adventure/adventures`), `platformRoutes.freePlay`                                   |
+|            |                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/adventure/cover/adventure-cover/adventure-cover.comp.tsx`, `adventure-cover.section.tsx`                             |
+| Kind       | Server Components (no client leaf: the cover is read-only and its only actions are links)                                        |
+| Stylesheet | `adventure-cover.comp.css` → block `.adventure-cover`                                                                            |
+| Story      | `adventure-cover.stories.tsx` (`adventure/cover/AdventureCover`): four of twelve, a fresh notebook, complete, with an open game  |
+| Used by    | `app/(platform)/jugar/page.tsx`, when `ADVENTURE_ENABLED` is on                                                                  |
+| Composes   | [`NotebookCard`](/components/adventure/cover/notebook-card), [`JourneyMiniature`](/components/adventure/cover/journey-miniature) |
+| Reads      | `getAdventureProgress("cuaderno-del-viajero")` (`services/adventure`), `ADVENTURE_ART` (`lib/adventure/adventures`)              |
 
 ## Purpose
 
-The cover of «Jugar» chosen on 2026-10-09: the notebook open in the middle as the protagonist and two tickets beside it. The left page is the whole journey ([`JourneyMiniature`](/components/adventure/cover/journey-miniature), taped to the page); the right page is [`NotebookCard`](/components/adventure/cover/notebook-card). The tickets are «Partida libre» (the old gallery, now at `/jugar/partida-libre`) and «Contra una persona», which is not valid yet. A pencil and a mug are left on the desk from 1280px. Since 2026-10-18 the desk is the window: the page is `platform-page_height_screen platform-page_frame_bleed`, the wood fills everything under the bar edge to edge, and the notebook takes the height the title leaves (up to 800px), so from 1280px wide and 800px tall nothing scrolls; under 860px tall the lead hides and the notebook's page tightens.
+The cover of «Jugar» chosen on 2026-10-09: the notebook open in the middle as the protagonist (its two tickets, «Partida libre» and «Contra una persona», went on 2026-10-25, when every game against a bot became an encounter of the adventure). The left page is the whole journey ([`JourneyMiniature`](/components/adventure/cover/journey-miniature), taped to the page); the right page is [`NotebookCard`](/components/adventure/cover/notebook-card). A pencil and a mug are left on the desk from 1280px. Since 2026-10-18 the desk is the window: the page is `platform-page_height_screen platform-page_frame_bleed`, the wood fills everything under the bar edge to edge, and the notebook takes the height the title leaves (up to 800px), so from 1280px wide and 800px tall nothing scrolls; under 860px tall the lead hides and the notebook's page tightens.
 
 `AdventureCoverSection` reads the person's progress in the one adventure there is and hands it to `AdventureCover`; the split is what lets Storybook draw the cover with a fixture. The block carries the class `.adventure` itself, so the paper's tokens are declared where it is drawn; inside the platform's page it is a rounded wooden panel, not a full-bleed screen.
 
@@ -30,15 +30,15 @@ The cover of «Jugar» chosen on 2026-10-09: the notebook open in the middle as 
 
 ## Behaviour
 
-Server only. The section makes the one read (the games against the adventure's rivals, plus the open game: two queries on top of the session); nothing is written and nothing is revalidated here. «Elegir un bot» and the notebook's links are plain `Link`s.
+Server only. The section makes the one read (the games against the adventure's rivals, plus the open game: two queries on top of the session); nothing is written and nothing is revalidated here. The notebook's links are plain `Link`s.
 
-**Reflow.** At 1280px and up the tickets stand in a column to the right of the notebook. Below 1280 they go under it in a row; below 768 the book is one column — the wide journey above, the person's page under it — and the tickets stack.
+**Reflow.** Below 768 the book is one column — the wide journey above, the person's page under it.
 
 ## Markup & styling
 
-Block `.adventure-cover` (352 lines).
+Block `.adventure-cover` (323 lines).
 
-**Elements:** `.adventure-cover__scene`, `__intro`, `__title`, `__lead`, `__book`, `__page`, `__picture`, `__tape`, `__tickets`, `__object`, `__pencil`, `__cup`
+**Elements:** `.adventure-cover__scene`, `__intro`, `__title`, `__lead`, `__book`, `__page`, `__picture`, `__tape`, `__object`, `__pencil`, `__cup`
 
 **Modifiers and states:** `.adventure-cover__page_side_map|info`, `.adventure-cover__tape_corner_top|bottom`
 
@@ -51,15 +51,11 @@ Block `.adventure-cover` (352 lines).
 From `app/(platform)/jugar/page.tsx`:
 
 ```tsx
-if (ADVENTURE_ENABLED) {
-  return (
-    <div className="platform-page platform-page_width_wide">
-      <AdventureCoverSection />
-    </div>
-  );
-}
+<div className="platform-page platform-page_width_full platform-page_height_screen platform-page_frame_bleed">
+  <AdventureCoverSection />
+</div>
 ```
 
 ## Related
 
-[`NotebookCard`](/components/adventure/cover/notebook-card), [`JourneyMiniature`](/components/adventure/cover/journey-miniature), [`Ticket`](/components/adventure/cover/ticket), [`AdventureShelf`](/components/adventure/shelf/adventure-shelf), [`PlayLobbySection`](/components/platform/sections/play/lobby/play-lobby-section). The miniature's scenery is the exported art (`public/aventuras/<slug>/miniatura-*.svg`) and only its path comes from `lib/adventure/adventures/cuaderno-del-viajero.art.ts`.
+[`NotebookCard`](/components/adventure/cover/notebook-card), [`JourneyMiniature`](/components/adventure/cover/journey-miniature), [`AdventureShelf`](/components/adventure/shelf/adventure-shelf). The miniature's scenery is the exported art (`public/aventuras/<slug>/miniatura-*.svg`) and only its path comes from `lib/adventure/adventures/cuaderno-del-viajero.art.ts`.

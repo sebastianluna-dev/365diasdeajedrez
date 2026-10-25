@@ -1,7 +1,7 @@
 import type { BotGroupCode } from "@/constants/platform/play-codes.const";
 import type { PlayerAvatarData } from "@/lib/avatar-tone";
 
-/** A bot as «Jugar» shows it: who it is, its label and its portrait. */
+/** A bot as a profile names it: who it is, its label and its portrait. */
 export interface BotView {
   id: number;
   slug: string;
@@ -17,11 +17,4 @@ export interface BotView {
   ratingAsOfLabel: string | null;
   groupCode: BotGroupCode;
   avatar: PlayerAvatarData;
-}
-
-/** A group of bots: one row of «Jugar». */
-export interface BotGroupView {
-  code: BotGroupCode;
-  label: string;
-  bots: BotView[];
 }

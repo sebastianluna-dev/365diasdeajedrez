@@ -10,7 +10,6 @@ import type { BotStrength } from "@/lib/chess/bots/bot-strength";
 import { toPgn } from "@/lib/chess/live-game";
 import { sanToSpanish } from "@/lib/chess/notation";
 import { playStatusOf } from "@/lib/play/play-status";
-import { platformRoutes } from "@/lib/platform-routes";
 import { storePlayedGameReview } from "@/services/play/play.actions";
 import type { PlayedGameView } from "@/services/play/play.types";
 import { AbandonPopup } from "./abandon-popup/abandon-popup.comp";
@@ -32,15 +31,15 @@ interface LiveGameSectionProps {
   /** The record against this bot, for under the board once it is over. */
   scoreboard: BotScoreboardProps | null;
   studies: { id: string; name: string }[];
-  /** `rematchPlayedGame`, bound to this game; null for whoever only reads it and for a game of an adventure, which goes back to its map. */
-  rematch: (() => Promise<void>) | null;
   /**
    * A game of an adventure: where its map is, and how many times the person
    * has already beaten this rival when the page is drawn. Over, the way on is
    * «Volver al mapa»; it carries `?victoria=` only for the first win, which
-   * the map plays. Null for a free game.
+   * the map plays. Null for an old free game (2026-10-25: there are no new ones).
    */
   adventure: { mapHref: string; priorWins: number } | null;
+  /** Where an old free game goes on to once over, «Ir a Jugar»; null while «Jugar» is switched off. */
+  playHref: string | null;
   /** `copyPlayedGameToStudy`, bound to this game. */
   copyToStudy: (formData: FormData) => Promise<void>;
   /** The game on the analysis board; null while that board is switched off. */
@@ -59,8 +58,8 @@ export function LiveGameSection({
   strength,
   scoreboard,
   studies,
-  rematch,
   adventure,
+  playHref,
   copyToStudy,
   analysisBoardHref,
 }: LiveGameSectionProps) {
@@ -143,12 +142,14 @@ export function LiveGameSection({
                 onMove: move,
                 onAbandon: (event) => abandonPopup.current?.open(event),
                 over:
-                  over && (rematch || mapHref) && state.end?.kind !== "aborted"
+                  over && state.end?.kind !== "aborted"
                     ? {
                         scoreboard,
-                        rematch,
-                        otherOpponentHref: platformRoutes.freePlay,
-                        map: mapHref ? { href: mapHref } : undefined,
+                        onwards: mapHref
+                          ? { href: mapHref, label: "Volver al mapa" }
+                          : playHref
+                            ? { href: playHref, label: "Ir a Jugar" }
+                            : null,
                         analysisBoardHref,
                         onSave: (event) => savePopup.current?.open(event),
                       }

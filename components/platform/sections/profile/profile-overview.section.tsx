@@ -14,6 +14,7 @@ import {
 import { PlatformStreakCalendar } from "@/components/platform/shared/platform-streak-calendar/platform-streak-calendar.comp";
 import { PlatformStreakLegend } from "@/components/platform/shared/platform-streak-legend/platform-streak-legend.comp";
 import { movesText, resultOf } from "@/components/platform/shared/played-game-card/played-game-card.comp";
+import { PLAY_PAGE_ENABLED } from "@/constants/platform/features.const";
 import { formatRelativeSpanish } from "@/lib/format-relative-spanish";
 import { mdButton, mdIconButton } from "@/lib/material/material-classes";
 import { platformRoutes } from "@/lib/platform-routes";
@@ -114,7 +115,9 @@ export function ProfileOverviewSection({ profile, now = new Date() }: ProfileOve
       <div className="platform-workspace__side">
         <PlatformSideNav
           label={profile.isOwn ? "Tu perfil" : `Perfil de ${profile.displayName}`}
-          action={profile.isOwn ? { label: "Jugar", href: platformRoutes.play, icon: "play" } : undefined}
+          action={
+            profile.isOwn && PLAY_PAGE_ENABLED ? { label: "Jugar", href: platformRoutes.play, icon: "play" } : undefined
+          }
           groups={groups}
         />
       </div>
@@ -220,11 +223,11 @@ export function ProfileOverviewSection({ profile, now = new Date() }: ProfileOve
                         <h3 className="profile-overview__card-heading">Contra cada bot</h3>
                         <p className="profile-overview__card-sub">Partidas · ganadas–perdidas–tablas</p>
                       </div>
-                      {profile.isOwn && (
+                      {profile.isOwn && PLAY_PAGE_ENABLED && (
                         <Link
                           href={platformRoutes.play}
                           className={`${mdIconButton("standard", "sm")} profile-overview__go`}
-                          aria-label="Ver todos los bots"
+                          aria-label="Ir a Jugar"
                         >
                           <ArrowUpRightIcon variant="classic-solid" className="platform-md-icon" />
                         </Link>

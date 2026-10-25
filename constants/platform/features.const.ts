@@ -18,8 +18,8 @@
 export const MOVE_TRAINER_ENABLED = true as boolean;
 
 /**
- * «Jugar»: games against the bots, `/jugar`, the profile at `/perfil` with the
- * games played, and every link to them.
+ * «Jugar»: games against the bots, the profile at `/perfil` with the games
+ * played, and every link to them.
  *
  * Off until the bots are calibrated (`npm run bots:calibrate`) and the owner
  * has checked the screens: the pages answer 404 — also one opened by a game's
@@ -29,16 +29,25 @@ export const PLAY_ENABLED = true as boolean;
 
 /**
  * «Modo aventura»: the first adventure, «El cuaderno del viajero», a map of
- * twelve rivals at `/jugar/aventura`, the new cover of `/jugar` and the paper
- * frame around its games. It lives inside «Jugar», so it needs `PLAY_ENABLED`
- * too.
+ * twelve rivals at `/jugar/aventura/<slug>`, drawn big on `/jugar`. It lives
+ * inside «Jugar», so it needs `PLAY_ENABLED` too.
  *
- * Off: `/jugar` stays the gallery of bots, `/jugar/aventura*` answers 404 and
- * `startAdventureEncounter` answers `notFound`. It does NOT switch off the
- * rules of the data — the hidden bot group and the refusal of its bots by
- * `startPlayedGame` and `rematchPlayedGame` —, which hold whatever this says.
+ * Since 2026-10-25 every game against a bot is an encounter of an adventure
+ * (there is no free game), so with this off there is nothing to play: see
+ * `PLAY_PAGE_ENABLED`. Off, `/jugar*` answers 404 — but a game already
+ * played still opens at `/jugar/partidas/<id>` from the profile, which only
+ * `PLAY_ENABLED` gates — and `startAdventureEncounter` answers `notFound`.
+ * It does NOT switch off the rules of the data — the hidden bot group —,
+ * which hold whatever this says.
  */
 export const ADVENTURE_ENABLED = true as boolean;
+
+/**
+ * «Jugar» as a place to play: the page `/jugar`, its tile in the tools menu
+ * and the links that lead there to play («Jugar» on the profile). Both
+ * switches, because the adventure is the only way to start a game.
+ */
+export const PLAY_PAGE_ENABLED = PLAY_ENABLED && ADVENTURE_ENABLED;
 
 /**
  * «Herramientas»: the analysis board at `/herramientas/tablero-de-analisis` and

@@ -349,7 +349,7 @@ export const PlaySaving: Story = { name: "Play: saving", args: playArgs("saving"
 
 /**
  * The game over (G6): the winner's strip green with «Ganaste», the loser's red with «Perdió» and the reason under each
- * name; under the board «Revancha» and the other ways on, and the scoreboard against Don Chuy. Nothing covers the board.
+ * name; under the board «Volver al mapa» and the tools, and the scoreboard against Don Chuy. Nothing covers the board.
  */
 export const PlayOver: Story = {
   name: "Play: over",
@@ -377,30 +377,7 @@ export const PlayOver: Story = {
       status: "over",
       over: {
         scoreboard: { you: FIXTURE_STUDENT, rival: FIXTURE_BOT, wins: 3, losses: 1, draws: 0 },
-        rematch: fn(async () => {}).mockName("rematchPlayedGame"),
-        otherOpponentHref: "/jugar/partida-libre",
-        analysisBoardHref: "/herramientas/tablero-de-analisis?partida=AbC12345",
-        onSave: fn().mockName("openSavePopup"),
-      },
-    },
-  },
-};
-
-/**
- * A game of an adventure that has been won, as the page draws it inside the paper frame: the same strips and the same
- * moves, and under the board «Volver al mapa» as the one main action (no «Revancha», no «Otro rival»), with the scoreboard.
- */
-export const AdventureGame: Story = {
-  args: {
-    ...PlayOver.args,
-    play: {
-      color: "white",
-      status: "over",
-      over: {
-        scoreboard: { you: FIXTURE_STUDENT, rival: FIXTURE_BOT, wins: 1, losses: 1, draws: 0 },
-        rematch: null,
-        otherOpponentHref: "/jugar/partida-libre",
-        map: { href: "/jugar/aventura/cuaderno-del-viajero?victoria=5" },
+        onwards: { href: "/jugar/aventura/cuaderno-del-viajero", label: "Volver al mapa" },
         analysisBoardHref: "/herramientas/tablero-de-analisis?partida=AbC12345",
         onSave: fn().mockName("openSavePopup"),
       },

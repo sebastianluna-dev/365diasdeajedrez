@@ -30,10 +30,6 @@
   --adventure-cream-bright: light-dark(#fbf7ec, #2e3552);
   --adventure-kraft: light-dark(#c9a274, #8f6a45);
   --adventure-kraft-pale: light-dark(#e8d3a8, #3d3a52);
-  /* The two tickets: the warm one is the way in that exists, the quiet one the
-     one that is coming. */
-  --adventure-ticket: light-dark(#f4e6c4, #332f48);
-  --adventure-ticket-quiet: light-dark(#e9e1cf, #282d44);
   /* A page of the notebook of 1994 on the map: the ruled sheet, the flap that
      covers a page not reached yet, and the brown ink it is written in. */
   --adventure-page: light-dark(#f3e8cc, #2a3050);

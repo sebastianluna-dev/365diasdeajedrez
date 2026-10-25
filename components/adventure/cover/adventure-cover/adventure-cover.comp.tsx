@@ -1,8 +1,6 @@
 import { JourneyMiniature } from "@/components/adventure/cover/journey-miniature/journey-miniature.comp";
 import { NotebookCard } from "@/components/adventure/cover/notebook-card/notebook-card.comp";
-import { Ticket } from "@/components/adventure/cover/ticket/ticket.comp";
 import { ADVENTURE_ART } from "@/lib/adventure/adventures";
-import { platformRoutes } from "@/lib/platform-routes";
 import type { AdventureProgressView } from "@/services/adventure/adventure.types";
 import "@/components/adventure/adventure.css";
 import "./adventure-cover.comp.css";
@@ -41,9 +39,9 @@ function Pencil() {
 
 /**
  * «Jugar» as a desk: the adventure's notebook open in the middle — the whole
- * journey on its left page, where the person stands on its right — and two
- * tickets beside it, «Partida libre» and «Contra una persona». The notebook is
- * the way in the person is meant to take; the tickets are the other two.
+ * journey on its left page, where the person stands on its right. Every game
+ * against a bot is an encounter of the adventure (2026-10-25), so the notebook
+ * is the only way in.
  */
 export function AdventureCover({ progress }: AdventureCoverProps) {
   const art = ADVENTURE_ART[progress.slug];
@@ -54,10 +52,7 @@ export function AdventureCover({ progress }: AdventureCoverProps) {
       <div className="adventure-cover__scene">
         <header className="adventure-cover__intro">
           <h1 className="adventure-cover__title">Jugar</h1>
-          <p className="adventure-cover__lead">
-            Sigue el cuaderno del viajero por la ciudad, elige un bot para una partida libre o, pronto, reta a otra
-            persona.
-          </p>
+          <p className="adventure-cover__lead">Sigue el cuaderno del viajero por la ciudad: cada página es un rival.</p>
         </header>
 
         <div className="adventure-cover__book">
@@ -86,25 +81,6 @@ export function AdventureCover({ progress }: AdventureCoverProps) {
           <div className="adventure-cover__page adventure-cover__page_side_info">
             <NotebookCard progress={progress} />
           </div>
-        </div>
-
-        <div className="adventure-cover__tickets">
-          <Ticket
-            tone="free"
-            eyebrow="Galería de bots"
-            title="Partida libre"
-            description="Elige a cualquier bot de la galería y juega sin seguir la historia."
-            stub="Cualquier bot"
-            action={{ href: platformRoutes.freePlay, label: "Elegir un bot" }}
-          />
-          <Ticket
-            tone="person"
-            eyebrow="Partida amistosa"
-            title="Contra una persona"
-            description="Reta a otro alumno de la plataforma."
-            stub="Admite dos"
-            soon
-          />
         </div>
 
         <Pencil />

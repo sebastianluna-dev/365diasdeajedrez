@@ -19,9 +19,11 @@ import { getAdventureProgress } from "./adventure.service";
 // What a person does in an adventure. The action takes the house's order:
 // both switches, the user from the DAL, the rate, zod, and only then what the
 // story allows — the SERVER enforces the story, so a form posted for a locked
-// page is bounced, whatever the screen drew. The game itself is opened by the
-// helper `startPlayedGame` shares (services/play/open-game.ts), which writes
-// through `writePlayedGameRecord`. Nothing here writes to the activity log:
+// page is bounced, whatever the screen drew. It is the ONLY way a game against
+// a bot is opened (2026-10-25: there is no free game any more); the game itself
+// is opened by `openGame` (services/play/open-game.ts), which writes through
+// `writePlayedGameRecord` — and with `replace` closes any open game against a
+// bot first, an old free one among them. Nothing here writes to the activity log:
 // playing never counts toward the streak (services/play/no-activity.test.ts).
 
 const START_SCHEMA = z.object({

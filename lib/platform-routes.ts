@@ -88,11 +88,8 @@ export const platformRoutes = {
   courseReview: (courseId: string) => `/entrenador?course=${courseId}`,
   /** Game search by position; shared by student and teacher. */
   explorer: "/explorador",
-  /** «Jugar»: the way in. It is the gallery of bots until the adventure's cover replaces it. */
+  /** «Jugar»: the way in, the adventure's. `/jugar/partida-libre`, the old gallery, redirects here. */
   play: "/jugar",
-  /** «Partida libre»: choose a bot and a colour. `?rival=<slug>` opens that bot's sheet. */
-  freePlay: "/jugar/partida-libre",
-  playAgainst: (botSlug: string) => `/jugar/partida-libre?rival=${encodeURIComponent(botSlug)}`,
   /** The adventure shelf: the notebooks to open and the ones that are coming. */
   adventures: "/jugar/aventura",
   /**

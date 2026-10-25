@@ -7,6 +7,7 @@ import { platformRoutes } from "@/lib/platform-routes";
 import { STUDY_DAY_TIMEZONE } from "@/constants/platform/timezones.const";
 import type { PlayedGameCard, PlayedGamesPage } from "@/services/play/play.types";
 import { movesText, ResultBadge, resultOf } from "@/components/platform/shared/played-game-card/played-game-card.comp";
+import { PLAY_PAGE_ENABLED } from "@/constants/platform/features.const";
 import "./played-games-timeline.comp.css";
 
 interface PlayedGamesTimelineProps {
@@ -51,9 +52,9 @@ export function PlayedGamesTimeline({ page, isOwn, hrefOf, filtered, now = new D
     ) : (
       <EmptyState
         title="Todavía no hay partidas"
-        description={isOwn ? "Las partidas que juegues contra los bots aparecen aquí." : undefined}
-        actionLabel={isOwn ? "Jugar" : undefined}
-        actionHref={isOwn ? platformRoutes.play : undefined}
+        description={isOwn ? "Las partidas que juegues contra los rivales de la aventura aparecen aquí." : undefined}
+        actionLabel={isOwn && PLAY_PAGE_ENABLED ? "Jugar" : undefined}
+        actionHref={isOwn && PLAY_PAGE_ENABLED ? platformRoutes.play : undefined}
       />
     );
   }

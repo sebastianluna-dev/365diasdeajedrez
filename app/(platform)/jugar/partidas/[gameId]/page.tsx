@@ -3,13 +3,18 @@ import { notFound } from "next/navigation";
 import { PaperFrame } from "@/components/adventure/paper-frame/paper-frame/paper-frame.comp";
 import { LiveGameSection } from "@/components/platform/sections/play/live-game/live-game.section";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
-import { ADVENTURE_ENABLED, ANALYSIS_BOARD_ENABLED, PLAY_ENABLED } from "@/constants/platform/features.const";
+import {
+  ADVENTURE_ENABLED,
+  ANALYSIS_BOARD_ENABLED,
+  PLAY_ENABLED,
+  PLAY_PAGE_ENABLED,
+} from "@/constants/platform/features.const";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { strengthFor } from "@/lib/chess/bots/bot-strength";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { platformRoutes } from "@/lib/platform-routes";
-import { copyPlayedGameToStudy, rematchPlayedGame } from "@/services/play/play.actions";
+import { copyPlayedGameToStudy } from "@/services/play/play.actions";
 import { botScoreAgainst, getPlayedGame } from "@/services/play/play.service";
 import { getOwnPlayerCard } from "@/services/profile/profile.service";
 import { getOwnStudyOptions } from "@/services/studies/studies.service";
@@ -67,10 +72,10 @@ export default async function PlayedGamePage({ params, searchParams }: PlayedGam
           : null
       }
       studies={studies}
-      rematch={seated && !adventure ? rematchPlayedGame.bind(null, game.id) : null}
       adventure={
         adventure ? { mapHref: platformRoutes.adventureMap(adventure.slug), priorWins: score?.wins ?? 0 } : null
       }
+      playHref={PLAY_PAGE_ENABLED ? platformRoutes.play : null}
       copyToStudy={copyPlayedGameToStudy.bind(null, game.id)}
       analysisBoardHref={ANALYSIS_BOARD_ENABLED ? platformRoutes.analysisBoard({ partida: game.id }) : null}
     />

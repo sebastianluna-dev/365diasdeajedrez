@@ -1,5 +1,4 @@
-/* «Jugar» as a desk: a wooden table with the notebook open on it and two
-   tickets beside it. The block carries `.adventure` itself and is the
+/* «Jugar» as a desk: a wooden table with the notebook open on it. The block carries `.adventure` itself and is the
    paper world's frame inside the platform's page. */
 .adventure-cover {
   position: relative;
@@ -28,7 +27,7 @@
     min-height: 0;
     box-sizing: border-box;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 330px;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr);
     column-gap: 48px;
     width: 100%;
@@ -199,15 +198,6 @@
     transform: rotate(-18deg);
   }
 
-  & .adventure-cover__tickets {
-    grid-column: 2;
-    grid-row: 2;
-    display: grid;
-    align-content: start;
-    gap: 34px;
-    margin-top: 18px;
-  }
-
   & .adventure-cover__object {
     position: absolute;
     pointer-events: none;
@@ -255,11 +245,6 @@
     & .adventure-cover__page_side_info {
       padding: 20px 30px 20px 32px;
     }
-
-    & .adventure-cover__tickets {
-      gap: 24px;
-      margin-top: 6px;
-    }
   }
 
   @media (width < 1280px) {
@@ -273,14 +258,6 @@
 
     & .adventure-cover__page_side_map {
       min-height: 480px;
-    }
-
-    & .adventure-cover__tickets {
-      grid-column: 1;
-      grid-row: auto;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 28px;
-      margin-top: 44px;
     }
 
     & .adventure-cover__object {
@@ -341,12 +318,6 @@
       & .journey-miniature_variant_wide {
         display: block;
       }
-    }
-
-    & .adventure-cover__tickets {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 26px;
-      margin-top: 36px;
     }
   }
 }

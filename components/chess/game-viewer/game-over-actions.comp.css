@@ -9,8 +9,4 @@
     flex-wrap: wrap;
     gap: var(--platform-space-2);
   }
-
-  & .game-over-actions__buttons form {
-    display: contents;
-  }
 }

@@ -1,6 +1,7 @@
 import { PlatformBigNumber } from "@/components/platform/shared/platform-big-number/platform-big-number.comp";
 import { PlatformDonut } from "@/components/platform/shared/platform-donut/platform-donut.comp";
 import { PlatformLineChart } from "@/components/platform/shared/platform-line-chart/platform-line-chart.comp";
+import { PLAY_PAGE_ENABLED } from "@/constants/platform/features.const";
 import { STUDY_DAY_TIMEZONE } from "@/constants/platform/timezones.const";
 import { platformRoutes } from "@/lib/platform-routes";
 import { dayKey } from "@/lib/study-streak";
@@ -41,7 +42,7 @@ export function PlayTab({ statistics, play, gamesHref }: PlayTabProps) {
         icon="robot"
         title="Nivel contra bots"
         subtitle={`Aproximado, ${play.level.sampleSize === 1 ? "tu última partida" : `tus últimas ${play.level.sampleSize} partidas`}`}
-        link={{ label: "Jugar", href: platformRoutes.play }}
+        link={PLAY_PAGE_ENABLED ? { label: "Jugar", href: platformRoutes.play } : undefined}
         reads={
           points.length >= 2 && first && last
             ? `Tu nivel después de cada partida: de ≈ ${first.value} a ≈ ${last.value}. Mueve el punto para ver cada una. No cambia con el periodo.`

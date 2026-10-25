@@ -110,9 +110,7 @@ export const Won: Story = {
           status: "over",
           over: {
             scoreboard: { you: FIXTURE_STUDENT, rival: FIXTURE_BOT, wins: 1, losses: 1, draws: 0 },
-            rematch: null,
-            otherOpponentHref: "/jugar/partida-libre",
-            map: { href: "/jugar/aventura/cuaderno-del-viajero?victoria=3" },
+            onwards: { href: "/jugar/aventura/cuaderno-del-viajero?victoria=3", label: "Volver al mapa" },
             analysisBoardHref: null,
             onSave: fn().mockName("openSavePopup"),
           },

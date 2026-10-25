@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PlayerAvatar } from "@/components/chess/player-avatar/player-avatar.comp";
 import { PenIcon } from "@/components/icons/pen-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
+import { PLAY_PAGE_ENABLED } from "@/constants/platform/features.const";
 import { federationFlag } from "@/lib/chess/federations";
 import { platformRoutes } from "@/lib/platform-routes";
 import type { ProfileHead } from "@/services/profile/profile.types";
@@ -80,10 +81,12 @@ export function ProfileHeaderSection({ profile, active }: ProfileHeaderSectionPr
               <PenIcon variant="classic-solid" className="platform-button__icon" />
               Editar perfil
             </Link>
-            <Link href={platformRoutes.play} className="platform-button platform-button_variant_accent">
-              <PlayIcon variant="classic-solid" className="platform-button__icon" />
-              Jugar
-            </Link>
+            {PLAY_PAGE_ENABLED && (
+              <Link href={platformRoutes.play} className="platform-button platform-button_variant_accent">
+                <PlayIcon variant="classic-solid" className="platform-button__icon" />
+                Jugar
+              </Link>
+            )}
           </div>
         )}
       </div>

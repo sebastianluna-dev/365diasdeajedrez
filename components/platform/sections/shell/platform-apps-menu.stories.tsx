@@ -9,7 +9,6 @@ const at = (pathname: string) => ({ nextjs: { navigation: { pathname } } });
 
 const ALL_ON: PlatformNavFeatures = {
   play: true,
-  adventure: true,
   analysisBoard: true,
   trainer: true,
   exercises: "all",
@@ -95,7 +94,7 @@ export const FewTools: Story = {
   args: {
     apps: buildPlatformApps(
       { isTeacher: false, isStaff: false },
-      { play: false, adventure: false, analysisBoard: false, trainer: false, exercises: false },
+      { play: false, analysisBoard: false, trainer: false, exercises: false },
     ),
   },
   parameters: at(platformRoutes.settings),

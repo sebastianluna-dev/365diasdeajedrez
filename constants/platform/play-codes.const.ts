@@ -71,10 +71,12 @@ export const BOT_GROUP_LABELS: Record<BotGroupCode, string> = {
 };
 
 /**
- * Whether the gallery shows a group. The rivals of an adventure live in a
- * hidden group (`lib/adventure/adventures/*`): the gallery omits it and
- * `startPlayedGame`/`rematchPlayedGame` refuse its bots, so only the
- * adventure's own action can start a game against them, and only in order.
+ * Whether the old gallery showed a group. The rivals of an adventure live in
+ * a hidden group (`lib/adventure/adventures/*`). Since 2026-10-25 there is no
+ * gallery: every game against a bot is an encounter of an adventure, started
+ * only by `startAdventureEncounter` and only in order, so the listed bots are
+ * no longer offered either. The column stays, with its data, for the day a
+ * gallery comes back.
  */
 export const BOT_GROUP_LISTED: Record<BotGroupCode, boolean> = {
   CHARACTERS: true,

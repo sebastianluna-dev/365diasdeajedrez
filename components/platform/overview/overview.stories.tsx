@@ -4,7 +4,6 @@ import Link from "next/link";
 import { AdventureCover } from "@/components/adventure/cover/adventure-cover/adventure-cover.comp";
 import { JourneyMiniature } from "@/components/adventure/cover/journey-miniature/journey-miniature.comp";
 import { NotebookCard } from "@/components/adventure/cover/notebook-card/notebook-card.comp";
-import { Ticket } from "@/components/adventure/cover/ticket/ticket.comp";
 import { Keepsake } from "@/components/adventure/keepsakes/keepsake/keepsake.comp";
 import { AdventureMap } from "@/components/adventure/map/adventure-map/adventure-map.comp";
 import { NotePage } from "@/components/adventure/note-page/note-page/note-page.comp";
@@ -29,9 +28,6 @@ import { PiecePlacementBoard } from "@/components/chess/piece-placement-board/pi
 import { PlayerAvatar } from "@/components/chess/player-avatar/player-avatar.comp";
 import { AbandonPopup } from "@/components/platform/sections/play/live-game/abandon-popup/abandon-popup.comp";
 import { LiveGameBanner } from "@/components/platform/sections/play/live-game/live-game-banner/live-game-banner.comp";
-import { BotCard } from "@/components/platform/sections/play/lobby/bot-card/bot-card.comp";
-import { BotSheet } from "@/components/platform/sections/play/lobby/bot-sheet/bot-sheet.comp";
-import { OpenGameNotice } from "@/components/platform/sections/play/lobby/open-game-notice/open-game-notice.comp";
 import { PlayedGamesTimeline } from "@/components/platform/sections/profile/played-games-timeline/played-games-timeline.comp";
 import { PlayedGameCard } from "@/components/platform/shared/played-game-card/played-game-card.comp";
 import { ProfileOverviewSection } from "@/components/platform/sections/profile/profile-overview.section";
@@ -270,13 +266,7 @@ import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { GAME_RESULT } from "@/constants/platform/study-codes.const";
 import { gameMoves } from "@/lib/chess/game-moves";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
-import {
-  FIXTURE_BOT,
-  FIXTURE_STUDENT,
-  FIXTURE_TEAM_BOT,
-  fixtureBotView,
-  fixturePlayedGames,
-} from "@/lib/testing/fixtures/bots";
+import { FIXTURE_BOT, FIXTURE_STUDENT, fixturePlayedGames } from "@/lib/testing/fixtures/bots";
 import { staffRoutes } from "@/lib/platform-routes";
 import { ADVENTURE_ART, COMING_ADVENTURES } from "@/lib/adventure/adventures";
 import { CUADERNO_DEL_VIAJERO } from "@/lib/adventure/adventures/cuaderno-del-viajero";
@@ -920,13 +910,13 @@ function MovedPageFrame({ children }: { children: ReactNode }) {
 /** The teacher's tools, as the shell builds them with everything on. */
 const TEACHER_APPS = buildPlatformApps(
   { isTeacher: true, isStaff: false },
-  { play: true, adventure: true, analysisBoard: true, trainer: true, exercises: "all" },
+  { play: true, analysisBoard: true, trainer: true, exercises: "all" },
 );
 
 /** The student's tools, as «Herramientas» builds them with everything on. */
 const STUDENT_APPS = buildPlatformApps(
   { isTeacher: false, isStaff: false },
-  { play: true, adventure: true, analysisBoard: true, trainer: true, exercises: "all" },
+  { play: true, analysisBoard: true, trainer: true, exercises: "all" },
 );
 
 /** The instant the profile's examples are read from, so «hace 5 horas» stays the same. */
@@ -2613,41 +2603,6 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
           </Section>
 
           <Section title="Play">
-            <Tile name="OpenGameNotice" docs="platform-sections-play-lobby-opengamenotice" width={400} height={136}>
-              <OpenGameNotice
-                game={{
-                  id: "AbC12345",
-                  rival: {
-                    kind: "bot",
-                    botId: 4,
-                    name: FIXTURE_BOT.name,
-                    slug: FIXTURE_BOT.slug,
-                    elo: FIXTURE_BOT.elo,
-                    avatar: FIXTURE_BOT.avatar,
-                    title: null,
-                  },
-                  color: "white",
-                  plyCount: 12,
-                }}
-              />
-            </Tile>
-            <Tile name="BotCard" docs="platform-sections-play-lobby-botcard" width={400} height={216}>
-              <div className="overview__bot-cards">
-                <BotCard
-                  bot={fixtureBotView()}
-                  score={{ botId: 4, wins: 2, losses: 1, draws: 0, open: 0 }}
-                  onPick={() => undefined}
-                />
-                <BotCard bot={FIXTURE_TEAM_BOT} score={null} onPick={() => undefined} />
-              </div>
-            </Tile>
-            <Tile name="BotSheet" docs="platform-sections-play-lobby-botsheet" width={400} height={344}>
-              <BotSheet
-                bot={fixtureBotView()}
-                you={FIXTURE_STUDENT}
-                score={{ botId: 4, wins: 2, losses: 1, draws: 1, open: 0 }}
-              />
-            </Tile>
             <Tile name="AbandonPopup" docs="platform-sections-play-live-game-abandonpopup" width={400} height={112}>
               <AbandonTrigger />
             </Tile>
@@ -3083,8 +3038,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             <Tile name="GameOverActions" docs="chess-game-viewer-gameoveractions" width={400} height={264}>
               <GameOverActions
                 scoreboard={{ you: FIXTURE_STUDENT, rival: FIXTURE_BOT, wins: 3, losses: 1, draws: 0 }}
-                rematch={async () => undefined}
-                otherOpponentHref="/jugar/partida-libre"
+                onwards={{ href: "/jugar/aventura/cuaderno-del-viajero", label: "Volver al mapa" }}
                 analysisBoardHref={null}
                 onSave={() => undefined}
                 onAnalyse={() => undefined}
@@ -3219,33 +3173,6 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             <Tile name="NotebookCard" docs="adventure-cover-notebookcard" width={460} height={560}>
               <div className="adventure" style={{ padding: 28, background: "var(--adventure-cream)" }}>
                 <NotebookCard progress={fixtureAdventureProgress({ attemptsOnNext: 1 })} />
-              </div>
-            </Tile>
-            <Tile name="Ticket" docs="adventure-cover-ticket" width={760} height={340}>
-              <div
-                className="adventure"
-                style={{ display: "flex", gap: 36, padding: 36, background: "var(--adventure-wood)" }}
-              >
-                <div style={{ flex: 1 }}>
-                  <Ticket
-                    tone="free"
-                    eyebrow="Galería de bots"
-                    title="Partida libre"
-                    description="Elige a cualquier bot de la galería y juega sin seguir la historia."
-                    stub="Cualquier bot"
-                    action={{ href: "/jugar/partida-libre", label: "Elegir un bot" }}
-                  />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <Ticket
-                    tone="person"
-                    eyebrow="Partida amistosa"
-                    title="Contra una persona"
-                    description="Reta a otro alumno de la plataforma."
-                    stub="Admite dos"
-                    soon
-                  />
-                </div>
               </div>
             </Tile>
             <Tile name="JourneyMiniature" docs="adventure-cover-journeyminiature" width={400} height={560}>

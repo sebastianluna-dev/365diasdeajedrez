@@ -10,8 +10,8 @@ const meta = {
       description: {
         component: `
 «Jugar» as a desk when the adventure is on: the notebook open in the middle —
-the whole journey on the left page, where the person stands on the right — and
-two tickets, «Partida libre» and «Contra una persona». \`AdventureCoverSection\`
+the whole journey on the left page, where the person stands on the right.
+\`AdventureCoverSection\`
 reads the progress and hands it over; this story hands it a fixture.
 
 Source: \`components/adventure/cover/adventure-cover/adventure-cover.comp.tsx\`.

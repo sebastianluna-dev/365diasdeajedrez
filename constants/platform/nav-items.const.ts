@@ -1,9 +1,8 @@
 import {
-  ADVENTURE_ENABLED,
   ANALYSIS_BOARD_ENABLED,
   EXERCISES_ENABLED,
   MOVE_TRAINER_ENABLED,
-  PLAY_ENABLED,
+  PLAY_PAGE_ENABLED,
 } from "@/constants/platform/features.const";
 import { platformRoutes, staffRoutes, teacherRoutes } from "@/lib/platform-routes";
 
@@ -82,9 +81,11 @@ export const PLATFORM_SHORTCUTS = 6;
 
 /** What is switched on, which decides «Jugar», «Ejercicios» and the tools. */
 export interface PlatformNavFeatures {
+  /**
+   * «Jugar» (`PLAY_PAGE_ENABLED`): both play switches, because every game
+   * against a bot is an encounter of the adventure (2026-10-25).
+   */
   play: boolean;
-  /** The adventure mode, inside «Jugar» (`ADVENTURE_ENABLED`): it only changes that tool's line. */
-  adventure: boolean;
   analysisBoard: boolean;
   trainer: boolean;
   /**
@@ -112,8 +113,7 @@ export interface PlatformNavRoles {
 }
 
 const FEATURES: PlatformNavFeatures = {
-  play: PLAY_ENABLED,
-  adventure: PLAY_ENABLED && ADVENTURE_ENABLED,
+  play: PLAY_PAGE_ENABLED,
   analysisBoard: ANALYSIS_BOARD_ENABLED,
   trainer: MOVE_TRAINER_ENABLED,
   // Since the library (phase 4) every student has «Práctica libre» and the academy's series to solve.
@@ -186,7 +186,7 @@ function studentApps(features: PlatformNavFeatures, studentExercises: boolean): 
     href: platformRoutes.play,
     art: "play",
     group: "practice",
-    description: features.adventure ? "Contra un bot o en el modo aventura." : "Contra un bot, sin reloj.",
+    description: "El modo aventura: un rival por página, sin reloj.",
   };
   const exercises: PlatformApp[] = [
     {

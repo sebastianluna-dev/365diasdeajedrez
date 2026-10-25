@@ -1909,11 +1909,11 @@ model UserStatDaily {
 /// Where a bot belongs (BOT_GROUP, constants/platform/play-codes.const.ts).
 /// `ring` is a BotRingCode (NONE, GOLD, TRICOLOR): the portrait's ring as a
 /// code, never a colour. Seeded; never edited from the interface.
-/// `isListed` is whether the gallery of «Jugar» shows the group (BOT_GROUP_LISTED):
+/// `isListed` is whether the old gallery of «Jugar» showed the group (BOT_GROUP_LISTED):
 /// false for the one that holds an adventure's rivals (lib/adventure/adventures/*).
-/// The gallery omits a hidden group and `startPlayedGame` / `rematchPlayedGame`
-/// refuse its bots, so a game against them starts only from the adventure's own
-/// action, in the order of its story.
+/// Since 2026-10-25 there is no gallery: a game against a bot starts only from
+/// the adventure's own action, in the order of its story, and the listed bots
+/// are no longer offered.
 model BotGroup {
   id       Int     @id @default(autoincrement())
   code     String  @unique

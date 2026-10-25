@@ -49,7 +49,7 @@ const NOT_A_PAIR: Record<string, string> = {
  */
 const TEXT_PAIRS: readonly (readonly [text: string, background: string])[] = [
   ...["ink", "ink-soft", "graphite", "brick"].flatMap((text) =>
-    ["paper", "cream", "cream-bright", "ticket", "ticket-quiet"].map((background) => [text, background] as const),
+    ["paper", "cream", "cream-bright"].map((background) => [text, background] as const),
   ),
   ["ink", "empty"],
   ["graphite", "empty"],

@@ -17,14 +17,12 @@ import {
 
 const ALL_ON: PlatformNavFeatures = {
   play: true,
-  adventure: true,
   analysisBoard: true,
   trainer: true,
   exercises: "all",
 };
 const ALL_OFF: PlatformNavFeatures = {
   play: false,
-  adventure: false,
   analysisBoard: false,
   trainer: false,
   exercises: false,
@@ -307,10 +305,9 @@ describe("groupPlatformApps", () => {
     }
   });
 
-  it("nombra el modo aventura en «Jugar» sólo si está encendido", () => {
-    const play = (adventure: boolean) =>
-      buildPlatformApps(STUDENT, { ...ALL_ON, adventure }).shortcuts.find((app) => app.label === "Jugar");
-    expect(play(true)?.description).toContain("aventura");
-    expect(play(false)?.description).not.toContain("aventura");
+  it("describe «Jugar» como el modo aventura: no hay partidas libres", () => {
+    const play = buildPlatformApps(STUDENT, ALL_ON).shortcuts.find((app) => app.label === "Jugar");
+    expect(play?.description).toContain("aventura");
+    expect(play?.description).not.toMatch(/contra un bot/i);
   });
 });

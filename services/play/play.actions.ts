@@ -1,6 +1,5 @@
 "use server";
 
-import { randomInt } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { notFound, redirect } from "next/navigation";
 import { z } from "zod";
@@ -13,18 +12,20 @@ import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
-import { formCheckbox, formCode, formOptionalText, formText, parseForm } from "@/services/shared/form-schema";
+import { formOptionalText, formText, parseForm } from "@/services/shared/form-schema";
 import type { AutosaveResult } from "@/services/shared/game-record";
 import { writePlayedGameRecord } from "@/services/shared/played-game-record";
 import { withErrorParam } from "@/services/shared/safe-return-to";
 import { checkAppend } from "./append-rules";
-import { openGame } from "./open-game";
 import { gameEndOfCodes } from "./play.mapper";
 import { currentViewer } from "./play.service";
 import { playedGameVisibleWhere, seatOf } from "./play-rules";
 import type { AppendMoveResult } from "./play.types";
 
-// What a person does with a game against a bot. Each action resolves the user
+// What a person does with a game against a bot. A game is opened only by
+// `startAdventureEncounter` (services/adventure): since 2026-10-25 every game
+// against a bot is an encounter of the adventure, and there is no free game
+// to start nor a rematch to ask for. Each action resolves the user
 // in the DAL, checks the switch and its rate, validates with zod, keeps the
 // ownership INSIDE its `where`, and writes only through
 // `writePlayedGameRecord` (services/shared/played-game-record.ts), in a
@@ -36,13 +37,6 @@ import type { AppendMoveResult } from "./play.types";
 // browser, so the server demands legality and turn, not authorship. The
 // scoreboard is therefore a record, never a rating (isRated is false, by a
 // CHECK).
-
-const START_SCHEMA = z.object({
-  bot: formText(60),
-  color: formCode(["white", "black", "random"]),
-  /** Close the open game against a bot (abandoned, or aborted) and start this one. */
-  replace: formCheckbox(),
-});
 
 const MOVE_SCHEMA = z.object({
   gameId: z.string().min(1).max(20),
@@ -59,60 +53,6 @@ const COPY_SCHEMA = z.object({
   study: formText(20),
   title: formOptionalText(120),
 });
-
-/** «Jugar» against a bot, from its sheet: the bot, the colour, and whether to replace the open game. */
-export async function startPlayedGame(formData: FormData): Promise<void> {
-  if (!PLAY_ENABLED) notFound();
-  const user = await getCurrentUser();
-  if (!(await allowAction(`${user.id}:play-start`, 20, 60_000)))
-    redirect(withErrorParam(platformRoutes.freePlay, "throttled"));
-
-  const form = parseForm(START_SCHEMA, formData);
-  if (!form.ok) redirect(withErrorParam(platformRoutes.freePlay, "invalid"));
-  // A hidden group's bots (an adventure's rivals) are not for the gallery: refusing
-  // them here is what keeps `?rival=` from skipping the story.
-  const bot = await getPlatformDb().bot.findFirst({
-    where: { slug: form.data.bot, isActive: true, group: { isListed: true } },
-    select: { id: true, name: true, elo: true },
-  });
-  if (!bot) redirect(withErrorParam(platformRoutes.freePlay, "botNotFound"));
-
-  const color = form.data.color === "random" ? (randomInt(2) === 0 ? "white" : "black") : form.data.color;
-  const gameId = await openGame(user.id, user.displayName, bot, color, form.data.replace);
-
-  revalidatePath(platformRoutes.freePlay);
-  revalidatePath(platformRoutes.play);
-  redirect(platformRoutes.playedGame(gameId));
-}
-
-/** «Revancha»: the same bot with the colours swapped. The game it comes from is already over. */
-export async function rematchPlayedGame(gameId: string): Promise<void> {
-  if (!PLAY_ENABLED) notFound();
-  const user = await getCurrentUser();
-  if (!(await allowAction(`${user.id}:play-start`, 20, 60_000)))
-    redirect(withErrorParam(platformRoutes.playedGame(gameId), "throttled"));
-
-  const db = getPlatformDb();
-  const previous = await db.playedGame.findFirst({
-    where: { id: gameId, OR: [{ whiteUserId: user.id }, { blackUserId: user.id }] },
-    select: {
-      whiteUserId: true,
-      blackUserId: true,
-      whiteBot: { select: { id: true, name: true, elo: true, isActive: true, group: { select: { isListed: true } } } },
-      blackBot: { select: { id: true, name: true, elo: true, isActive: true, group: { select: { isListed: true } } } },
-    },
-  });
-  const bot = previous?.whiteBot ?? previous?.blackBot;
-  if (!previous || !bot?.isActive || !bot.group.isListed)
-    redirect(withErrorParam(platformRoutes.freePlay, "botNotFound"));
-
-  const color = seatOf(previous, user.id) === "white" ? "black" : "white";
-  const next = await openGame(user.id, user.displayName, bot, color, true);
-
-  revalidatePath(platformRoutes.freePlay);
-  revalidatePath(platformRoutes.play);
-  redirect(platformRoutes.playedGame(next));
-}
 
 /**
  * THE door of every move — the person's and the bot's alike, and tomorrow an

@@ -10,7 +10,7 @@ The opponents of «Jugar» are Stockfish — the same lite single-threaded build
 
 ## Who they are — `roster.ts`
 
-`BOT_ROSTER` is the one source of the 45 bots: the seed reads it, the SQL of the migrations is generated from it, and the calibration takes its slugs and Elos from it. Each `BotSeed` has a `slug` (its address, `/jugar/partida-libre?rival=<slug>`), `name`, `elo`, `group`, `order` inside the group, `bio`, favourite `openings`, `country` (a FIDE code, for the flag), and for real players `fideTitle`, `fideElo` and `ratingAsOf`.
+`BOT_ROSTER` is the one source of the 45 bots: the seed reads it, the SQL of the migrations is generated from it, and the calibration takes its slugs and Elos from it. Each `BotSeed` has a `slug` (its key, which the profile's rival filter reads; it was the address of its popup in the old gallery, removed on 2026-10-25), `name`, `elo`, `group`, `order` inside the group, `bio`, favourite `openings`, `country` (a FIDE code, for the flag), and for real players `fideTitle`, `fideElo` and `ratingAsOf`.
 
 | Group (`BOT_GROUP`)                         | Bots                                                                      | Ring      |
 | ------------------------------------------- | ------------------------------------------------------------------------- | --------- |

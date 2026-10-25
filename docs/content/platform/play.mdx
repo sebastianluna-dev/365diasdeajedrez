@@ -6,9 +6,9 @@ description: "«Jugar»: games against the bots and the person's profile — the
 
 Games against Stockfish bots of 400–2 800, saved and listed on the person's profile (`/perfil/<slug>`), and the «Tablero de análisis» in the tools menu. Being built in phases since 2026-10-08. Both switches in `constants/platform/features.const.ts` stay off (`PLAY_ENABLED`, `ANALYSIS_BOARD_ENABLED`) until the bots are calibrated and the owner has checked the screens: off, every page answers 404 — also a game opened by its id —, every action `notFound()` or `disabled`, and «Jugar» is not in the menu.
 
-What is in place: the engine client, the bots and their strength ([Bots](/chess/bots)), the rules of a live game (`lib/chess/game-end.ts`, `lib/chess/live-game.ts`, `lib/play/`), the tables ([Data model → Played games](/platform/data-model#played-games-jugar)), the services and actions below, the lobby ([`PlayLobbySection`](/components/platform/sections/play/lobby/play-lobby-section)) and the game itself ([`LiveGameSection`](/components/platform/sections/play/live-game/live-game-section)), played on the one [`GameViewer`](/components/chess/game-viewer/game-viewer), the profile ([`ProfileHeaderSection`](/components/platform/sections/profile/profile-header-section), [`ProfileOverviewSection`](/components/platform/sections/profile/profile-overview-section), [`ProfileGamesSection`](/components/platform/sections/profile/profile-games-section)), the profile's fields in «Ajustes» and the teacher's «Partidas jugadas». The analysis board lives under «Herramientas», behind `ANALYSIS_BOARD_ENABLED`: [Analysis board](/chess/analysis-board).
+What is in place: the engine client, the bots and their strength ([Bots](/chess/bots)), the rules of a live game (`lib/chess/game-end.ts`, `lib/chess/live-game.ts`, `lib/play/`), the tables ([Data model → Played games](/platform/data-model#played-games-jugar)), the services and actions below and the game itself ([`LiveGameSection`](/components/platform/sections/play/live-game/live-game-section)), played on the one [`GameViewer`](/components/chess/game-viewer/game-viewer), the profile ([`ProfileHeaderSection`](/components/platform/sections/profile/profile-header-section), [`ProfileOverviewSection`](/components/platform/sections/profile/profile-overview-section), [`ProfileGamesSection`](/components/platform/sections/profile/profile-games-section)), the profile's fields in «Ajustes» and the teacher's «Partidas jugadas». The analysis board lives under «Herramientas», behind `ANALYSIS_BOARD_ENABLED`: [Analysis board](/chess/analysis-board).
 
-The illustrated way in, **«Modo aventura»**, has [its own page](/platform/adventure); «Partida libre» (below) is the gallery it sits beside.
+**Every game against a bot is an encounter of the adventure** (2026-10-25, the owner: «todas las partidas contra bots serán en modo aventura»). «Modo aventura» has [its own page](/platform/adventure); «Partida libre», the gallery of 45 bots it used to sit beside, and «Revancha» went away with free play — see [Free play, removed](#free-play-removed). Playing against a person does not exist in the platform; the owner's canvas draws a «Contra una persona» card on `/jugar`, and it is left out on purpose until there is something behind it.
 
 ## Rules that do not bend
 
@@ -18,18 +18,18 @@ The illustrated way in, **«Modo aventura»**, has [its own page](/platform/adve
 
 ## Routes
 
-| Route                               | What it is                                                                                                                                     |
-| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/jugar`                            | The way in: the adventure's cover (the notebook and two tickets) when `ADVENTURE_ENABLED` is on, the lobby while it is off.                    |
-| `/jugar/partida-libre`              | «Partida libre», the lobby: the bots by group, «Continuar» for the open game.                                                                  |
-| `/jugar/aventura`                   | The adventure's shelf, behind `ADVENTURE_ENABLED` (404 while it is off).                                                                       |
-| `/jugar/aventura/<slug>`            | An adventure's map, behind `ADVENTURE_ENABLED`; 404 for an unknown slug. `?victoria=<1..12>` and `?error=`.                                    |
-| `/jugar/partidas/<id>`              | A game: played while it is open and the viewer holds a seat; read-only for everyone else.                                                      |
-| `/perfil/<slug>`                    | The profile, «Visión general» (new design system since 2026-10-25): the sheet, then study minutes, streak, level, each bot and the last games. |
-| `/perfil/<slug>/partidas`           | Every game, twenty a page, filtered by rival and result.                                                                                       |
-| `/herramientas/tablero-de-analisis` | The analysis board (phase 4).                                                                                                                  |
+| Route                               | What it is                                                                                                                                              |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/jugar`                            | The way in, the adventure's (behind `PLAY_PAGE_ENABLED`: `PLAY_ENABLED` and `ADVENTURE_ENABLED`, since there is nothing to play without the adventure). |
+| `/jugar/partida-libre`              | The old gallery: redirects to `/jugar` (also with `?rival=`), for old links.                                                                            |
+| `/jugar/aventura`                   | The adventure's shelf, behind `ADVENTURE_ENABLED` (404 while it is off).                                                                                |
+| `/jugar/aventura/<slug>`            | An adventure's map, behind `ADVENTURE_ENABLED`; 404 for an unknown slug. `?victoria=<1..12>` and `?error=`.                                             |
+| `/jugar/partidas/<id>`              | A game: played while it is open and the viewer holds a seat; read-only for everyone else.                                                               |
+| `/perfil/<slug>`                    | The profile, «Visión general» (new design system since 2026-10-25): the sheet, then study minutes, streak, level, each bot and the last games.          |
+| `/perfil/<slug>/partidas`           | Every game, twenty a page, filtered by rival and result.                                                                                                |
+| `/herramientas/tablero-de-analisis` | The analysis board (phase 4).                                                                                                                           |
 
-The three prefixes are in `PROTECTED_PATH_PREFIXES` and in the proxy's matcher; `lib/platform-routes.ts` builds every address (`play`, `freePlay`, `playAgainst`, `playedGame`, `profile`, `userProfile`, `userProfileGames`, `analysisBoard`).
+The three prefixes are in `PROTECTED_PATH_PREFIXES` and in the proxy's matcher; `lib/platform-routes.ts` builds every address (`play`, `adventures`, `adventureMap`, `playedGame`, `profile`, `userProfile`, `userProfileGames`, `analysisBoard`).
 
 ## Who may see what
 
@@ -45,7 +45,7 @@ Reading is not writing: every action demands a seat (`seatOf`), and a teacher or
 
 ## Services
 
-- `services/bots/` — `listBotGroups()` (the lobby, by group and order) and `getBotBySlug(slug)`; only active bots of a listed group (`isListed`).
+- `services/bots/` — `listBotsById(ids)`: the rivals of games already played, whatever their group, for the profile. (`listBotGroups` and `getBotBySlug` fed the gallery and went with it.)
 - `services/play/play.service.ts` — `getOpenPlayedGame()` (the viewer's open game against a bot), `getPlayedGame(id)`, `listPlayedGamesOf(userId, { page, rival?, result? })` (open first, then the last move, then the start; `PLAYED_GAMES_PAGE_SIZE` 20), `recentPlayedGamesOf(userId)` (`PROFILE_RECENT_GAMES` 8), `botScoreboardOf(userId)`, `botScoreAgainst(userId, botId)` and `botLevelSummaryOf(userId)`.
 - `services/profile/` — `getProfileOf(slug)` (the whole profile, for «Visión general»: the head, the record and the record against each bot named by `listBotsById` of `services/bots`, the streak's sixteen weeks and this month's minutes against the last, `studyOverviewOf`, and the last games), `getProfileHeadOf(slug)` (only its head — the person, the figures and the level —, for «Partidas»), `getOwnSlug()` and `getOwnPlayerCard()` (the person's own name and portrait, from the session).
 - `services/study-goal` — `streakSummaryOf(userId)`, `streakOverviewOf(userId)` and `studyMonthComparisonOf(userId)`: the streak, its sixteen weeks and the month's study minutes shown on a profile (read, never written by playing; they live outside `services/profile` so `no-activity.test.ts` keeps watching that folder whole).
@@ -54,16 +54,14 @@ Reading is not writing: every action demands a seat (`seatOf`), and a teacher or
 
 ## Actions
 
-`services/play/play.actions.ts`. Each one checks the switch, resolves the user in the DAL, goes through `allowAction`, validates with zod, keeps the seat inside its `where` and writes only through `writePlayedGameRecord`, in a transaction.
+`services/play/play.actions.ts`. None of them opens a game: the one action that does is the adventure's `startAdventureEncounter` ([Adventure mode](/platform/adventure)), through `openGame` (`services/play/open-game.ts`), which keeps one open game against a bot per person — two partial unique indexes, one per colour, back it, and two tabs pressing at once land on the same game through their `P2002` — and, with `replace`, closes the open one first (abandoned after two moves of one's own, aborted before). `services/play/open-game-callers.test.ts` keeps `openGame` to that one caller. Each action here checks the switch, resolves the user in the DAL, goes through `allowAction`, validates with zod, keeps the seat inside its `where` and writes only through `writePlayedGameRecord`, in a transaction.
 
-| Action                                           | What it does                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `startPlayedGame(formData)`                      | Opens a game against a bot of the gallery (`bot`, `color` white/black/random; a bot of a hidden group is `botNotFound`). With `replace`, the open game against a bot is closed first — abandoned after two moves of one's own, aborted before — else the open game is returned. A person keeps one open game against a bot, which the database backs with two partial unique indexes (one per colour); two tabs pressing at once land on the same game through their `P2002`. |
-| `rematchPlayedGame(gameId)`                      | The same bot, colours swapped. Refused (`botNotFound`) for a bot of a hidden group.                                                                                                                                                                                                                                                                                                                                                                                           |
-| `appendPlayedMove(gameId, { expectedPly, san })` | One move, versioned by the ply the browser saw: `ok` with the server's reading of the board (`gameEnd`), `retry` answered as written, `stale` (another tab moved first), `invalid` (illegal) or `finished`.                                                                                                                                                                                                                                                                   |
-| `abandonPlayedGame(gameId, { expectedPly })`     | «Abandonar»: lost by whoever presses it, versioned like a move.                                                                                                                                                                                                                                                                                                                                                                                                               |
-| `storePlayedGameReview(gameId, pgn)`             | The review's evaluations into a finished game; refused if one move differs.                                                                                                                                                                                                                                                                                                                                                                                                   |
-| `copyPlayedGameToStudy(gameId, formData)`        | «Guardar en un estudio»: a `Game` with source `PLATFORM_GAME` in one of one's studies, indexed in the same transaction.                                                                                                                                                                                                                                                                                                                                                       |
+| Action                                           | What it does                                                                                                                                                                                                |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `appendPlayedMove(gameId, { expectedPly, san })` | One move, versioned by the ply the browser saw: `ok` with the server's reading of the board (`gameEnd`), `retry` answered as written, `stale` (another tab moved first), `invalid` (illegal) or `finished`. |
+| `abandonPlayedGame(gameId, { expectedPly })`     | «Abandonar»: lost by whoever presses it, versioned like a move.                                                                                                                                             |
+| `storePlayedGameReview(gameId, pgn)`             | The review's evaluations into a finished game; refused if one move differs.                                                                                                                                 |
+| `copyPlayedGameToStudy(gameId, formData)`        | «Guardar en un estudio»: a `Game` with source `PLATFORM_GAME` in one of one's studies, indexed in the same transaction.                                                                                     |
 
 `services/account/account.actions.ts` adds `setUserSlug` (the user name: the CHECK's pattern, not reserved, `slugTaken` on the unique index) and `setProfileDetails` (`statusLine`, `country`). A slug is proposed from the name before every account is created (`proposeUserSlug`); changing it leaves the old address answering 404.
 
@@ -71,12 +69,20 @@ The rules the actions apply are pure and tested without a database: `checkAppend
 
 ## Modo aventura
 
-An adventure is a journey of twelve rivals, each a bot of a hidden group with the strength of a calibrated gallery bot, with its progress **derived** from the person's `PlayedGame`s: the story, the rules, `startAdventureEncounter`, `getAdventureProgress`, the map, the art and the switch `ADVENTURE_ENABLED` are in [Adventure mode](/platform/adventure). What «Jugar» keeps of it:
+An adventure is a journey of twelve rivals, each a bot of a hidden group with the strength of a calibrated bot of the roster, with its progress **derived** from the person's `PlayedGame`s: the story, the rules, `startAdventureEncounter`, `getAdventureProgress`, the map, the art and the switch `ADVENTURE_ENABLED` are in [Adventure mode](/platform/adventure). What «Jugar» keeps of it:
 
-- `/jugar` is the adventure's cover when `ADVENTURE_ENABLED` is on, and `/jugar/partida-libre` is always the gallery described here.
-- `startPlayedGame` and `rematchPlayedGame` refuse the rivals' bots (`botNotFound`) and `listBotGroups` / `getBotBySlug` leave their group out, so `?rival=` cannot skip the story; these rules hold with the switch off.
-- A game against a rival is an ordinary `PlayedGame`; it is drawn in a paper frame and ends with «Volver al mapa» instead of «Revancha» and «Otro rival».
+- `/jugar` is the adventure's, and needs `ADVENTURE_ENABLED`: without it «Jugar» is off (`PLAY_PAGE_ENABLED`: no page, no tile in the tools menu, no «Jugar» on the profile), while the games already played still open from the profile.
+- `startAdventureEncounter` is the only way to open a game against a bot, and it checks the story on the server first.
+- A game against a rival is an ordinary `PlayedGame`; it ends with «Volver al mapa».
 - **Playing still never counts toward the streak:** `services/adventure` is one of the folders `no-activity.test.ts` walks.
+
+## Free play, removed
+
+Until 2026-10-25 «Partida libre» (`/jugar/partida-libre`) was a gallery of the 45 bots by group, with a suggested rival and a popup per bot (`?rival=<slug>`), and a game over offered «Revancha» (`rematchPlayedGame`) and «Otro rival». The owner chose to make every game against a bot an encounter of the adventure, so all of that went: the gallery's components (`PlayLobbySection`, `BotGallery`, `BotCard`, `BotSheet`, `OpenGameNotice`, `StartGameForm`), `startPlayedGame`, `rematchPlayedGame`, `listBotGroups`, `getBotBySlug`, `suggestedBot`, the route builders `freePlay` and `playAgainst`, and the cover's two tickets. **No data went**: the bots, their groups (`isListed` included) and the migrations stay, and the 45 listed bots are simply no longer offered.
+
+- **Old free games** stay in the history and the profile: `/jugar/partidas/<id>` shows any `PlayedGame`, and the level against bots and the record against each bot count them as before.
+- **An open free game**, if one was left, is not lost and does not block the adventure: its page still plays it — moves and «Abandonar» are the same actions —, and once it is over it goes on to «Ir a Jugar». Starting an encounter while it is open asks to replace it, as before, and `openGame` closes it (abandoned or aborted) in the same transaction. This was chosen as the least surprising path: nothing the person started disappears, and nothing new can be started outside the story.
+- `/jugar/partida-libre` (with or without `?rival=`) redirects to `/jugar`, which answers 404 while «Jugar» is off.
 
 ## What the server cannot check
 
@@ -92,13 +98,13 @@ The pages have a query budget (`/jugar` ≤ 3, `/perfil/<slug>` ≤ 7, without t
 
 What was checked on 2026-10-08 with the switch on in a local copy, against `next dev` and the seeded local database, driving system Chrome with Playwright and the demo accounts (`constants/platform/demo-user.const.ts`). The seed leaves `alumno.demo` a game won against Tere, one lost against Don Chuy and one open against Lupita on their turn; repeat the steps after `npm run db:seed` on a database where the student has played nothing.
 
-1. `alumno.demo` opens `/jugar/partida-libre`: «Tienes una partida en curso contra Lupita» with «Continuar», the suggested rival «después de Tere» (Beto), the record on Tere's and Don Chuy's cards, «Partida en curso» on Lupita's.
-2. «Continuar» opens the game with «Te toca mover»; a move on the board shows «Pensando…» and the turning arc on Lupita's strip, and her move arrives after its delay.
+1. (Until 2026-10-25, from the gallery; now from the seeded open game's address, or from the profile.) `alumno.demo` opens their open game against Lupita.
+2. It opens with «Te toca mover»; a move on the board shows «Pensando…» and the turning arc on Lupita's strip, and her move arrives after its delay.
 3. Reloading the page keeps every move: they were saved one by one.
-4. «Abandonar» opens «¿Abandonas la partida?»; confirming tints Lupita's strip «Ganó» and the student's «Perdió», both «por abandono», with «Revancha», «Otro rival», «Analizar», «Guardar en un estudio» and the scoreboard (0 – 1) under the board.
-5. `/jugar/partida-libre?rival=beto` opens Beto's popup; «Negras» and «Jugar» open a game in which Beto moves first.
+4. «Abandonar» opens «¿Abandonas la partida?»; confirming tints Lupita's strip «Ganó» and the student's «Perdió», both «por abandono», with the way on, «Analizar», «Guardar en un estudio» and the scoreboard (0 – 1) under the board (in 2026-10-08 it was «Revancha» and «Otro rival», gone with free play).
+5. (Gone with free play: `/jugar/partida-libre?rival=beto` now redirects to `/jugar`.)
 6. The same game in a second tab: after a move in the first, a move in the second brings «Esta partida cambió en otra pestaña.» with «Recargar».
-7. `profesor.demo`, the student's teacher, opens the finished game: the board, the moves and the strips, with no «Abandonar» and no «Revancha».
+7. `profesor.demo`, the student's teacher, opens the finished game: the board, the moves and the strips, with no «Abandonar» and nothing under the board.
 
 8. `/perfil` takes `alumno.demo` to `/perfil/alumno-demo`: the side column with «Jugar», «Visión general», «Partidas» and «Lo tuyo»; the sheet with the pen to «Editar perfil»; the four chapters (minutes, streak, level and each bot, the last games); «Partidas» lists them as a timeline grouped by day, with both filters.
 9. In «Ajustes», a new user name opens the profile at the new address and leaves the old one on the not-found page; a name already taken comes back with «Ese nombre de usuario ya está en uso»; a status line and a country appear under the name and beside it. (Put back afterwards.)
