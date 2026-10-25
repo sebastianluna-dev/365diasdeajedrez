@@ -1,0 +1,55 @@
+---
+description: "The streak's calendar: a pill per week, a dot per day as deep a blue as what was done, the current streak hatched, today ringed and the months over their weeks, drawn at its own size."
+---
+
+# `PlatformStreakCalendar`
+
+|            |                                                                                                                                                     |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-streak-calendar/platform-streak-calendar.comp.tsx`                                                             |
+| Kind       | Server Component                                                                                                                                    |
+| Stylesheet | `platform-streak-calendar.comp.css` → block `.platform-streak-calendar`                                                                             |
+| Story      | `platform-streak-calendar.stories.tsx` (`platform/shared/PlatformStreakCalendar`): on a streak, today still to study, mid-week and no streak at all |
+| Used by    | [`ProfileOverviewSection`](/components/platform/sections/profile/profile-overview-section) (the streak's chapter)                                   |
+
+## Purpose
+
+Chart 8 of the owner's «Gráficas del perfil» (2026-10-25): the weeks of `StreakOverview` (sixteen of them, Monday to Sunday) as pills of the panel's white, one per week, Monday on top. Each day is a dot as deep a blue as what was done that day (`activityLevel`: `--platform-m3-heat-1` to `-3`), a grey speck for a day of nothing; the days still to come this week are left empty. The current streak is hatched across the weeks it spans, back from today — or from yesterday, when today is still to study —, today is ringed, the months' first three letters sit over their first week and every other day's letter at the left. A tag over this week's column says the streak.
+
+## Props
+
+| Prop     | Type                                | Required | Meaning                                      |
+| -------- | ----------------------------------- | -------- | -------------------------------------------- |
+| `weeks`  | `readonly (readonly StreakDay[])[]` | yes      | `StreakOverview.weeks`.                      |
+| `streak` | `StudyStreak`                       | yes      | `{ days, studiedToday }`: what is hatched.   |
+| `label`  | `string`                            | yes      | The calendar in words, its `aria-label`.     |
+| `tag`    | `string`                            | no       | The pill over this week's column: «12 días». |
+
+## Behaviour
+
+None. It is drawn at its own size (22px a week) and only shrinks, never grows, because its letters are SVG text. The hatch is an SVG `<pattern>` with its id from `useId`. Its legend is [`PlatformStreakLegend`](/components/platform/shared/platform-streak-legend), placed by the host.
+
+## Markup & styling
+
+Block `.platform-streak-calendar` (77 lines).
+
+**Elements:** `.platform-streak-calendar__svg`, `.platform-streak-calendar__text`, `.platform-streak-calendar__pill`, `.platform-streak-calendar__hatch-ground`, `.platform-streak-calendar__hatch-stripe`, `.platform-streak-calendar__streak`, `.platform-streak-calendar__day`, `.platform-streak-calendar__today`, `.platform-streak-calendar__tag`
+
+**Modifiers:** `.platform-streak-calendar__day_level_0` to `_level_3`
+
+**Tokens:** `--platform-m3-panel` (the pills, unless the host sets `--chart-ground`), `--platform-m3-chart-hatch`, `--platform-m3-chart-hatch-soft`, `--platform-m3-outline-variant`, `--platform-m3-heat-1` to `-3`, `--platform-m3-chart-mark`, `--platform-m3-chart-tag`, `--platform-m3-on-chart-tag`, `--platform-m3-on-surface-variant`
+
+## Usage
+
+```tsx
+<PlatformStreakCalendar
+  weeks={overview.weeks}
+  streak={overview.streak}
+  tag="12 días"
+  label="Tus últimas 16 semanas: …"
+/>
+```
+
+## Related
+
+- `StreakBand` of «Mis cursos» draws the same weeks as a grid of squares.

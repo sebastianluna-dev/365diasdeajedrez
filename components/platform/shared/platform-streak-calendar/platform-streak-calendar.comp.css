@@ -1,0 +1,77 @@
+/* The streak's calendar: a pill per week, a dot per day, the streak hatched, today ringed. */
+.platform-streak-calendar {
+  position: relative;
+  flex: none;
+  /* As wide as the drawing, so the tag's percentages are of the drawing. */
+  width: fit-content;
+  max-width: 100%;
+
+  /* At its own size, never larger: its letters are drawn inside it. */
+  & .platform-streak-calendar__svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  & .platform-streak-calendar__text {
+    font-size: var(--platform-type-2xs);
+    fill: var(--platform-m3-on-surface-variant);
+  }
+
+  & .platform-streak-calendar__pill {
+    fill: var(--chart-ground, var(--platform-m3-panel));
+  }
+
+  & .platform-streak-calendar__hatch-ground {
+    fill: var(--chart-ground, var(--platform-m3-panel));
+  }
+
+  & .platform-streak-calendar__hatch-stripe {
+    fill: var(--platform-m3-chart-hatch-soft);
+  }
+
+  & .platform-streak-calendar__streak {
+    stroke: var(--platform-m3-chart-hatch);
+    stroke-width: 1;
+  }
+
+  & .platform-streak-calendar__day_level_0 {
+    fill: var(--platform-m3-outline-variant);
+  }
+
+  & .platform-streak-calendar__day_level_1 {
+    fill: var(--platform-m3-heat-1);
+  }
+
+  & .platform-streak-calendar__day_level_2 {
+    fill: var(--platform-m3-heat-2);
+  }
+
+  & .platform-streak-calendar__day_level_3 {
+    fill: var(--platform-m3-heat-3);
+  }
+
+  & .platform-streak-calendar__today {
+    fill: none;
+    stroke: var(--platform-m3-chart-mark);
+    stroke-width: 1.5;
+  }
+
+  & .platform-streak-calendar__tag {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 var(--platform-space-2);
+    border-radius: 1000px;
+    background: var(--platform-m3-chart-tag);
+    color: var(--platform-m3-on-chart-tag);
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    transform: translate(-50%, -100%);
+    box-sizing: border-box;
+  }
+}

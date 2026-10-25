@@ -1,0 +1,54 @@
+---
+description: "Columns side by side with their figure inside the top, each as tall as its value against the largest, its name and caption under it, one highlighted in the primary."
+---
+
+# `PlatformCompareBars`
+
+|            |                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-compare-bars/platform-compare-bars.comp.tsx`                                                     |
+| Kind       | Server Component                                                                                                                      |
+| Stylesheet | `platform-compare-bars.comp.css` → block `.platform-compare-bars`                                                                     |
+| Story      | `platform-compare-bars.stories.tsx` (`platform/shared/PlatformCompareBars`): one highlighted, plain, a single column and a taller one |
+| Used by    | [`ProfileOverviewSection`](/components/platform/sections/profile/profile-overview-section) («Contra cada bot»)                        |
+
+## Purpose
+
+Chart 5 of the owner's «Gráficas del perfil» (2026-10-25): a few amounts of the same kind side by side, each written inside its column's top — the large figure and, under it, a detail («3–2–1») — with the name and a caption under the column. One column can be highlighted, filled with the primary; the rest are the cool grey `--platform-m3-chart-neutral`. A column is never shorter than its figure needs (60px).
+
+## Props
+
+| Prop     | Type                            | Required           | Meaning                                                  |
+| -------- | ------------------------------- | ------------------ | -------------------------------------------------------- |
+| `bars`   | `readonly PlatformCompareBar[]` | yes                | `{ key, name, caption?, value, detail?, highlighted? }`. |
+| `label`  | `string`                        | yes                | The chart in words, its `aria-label`.                    |
+| `height` | `number`                        | no · default `120` | The tallest column's height, in px.                      |
+
+## Behaviour
+
+None. It is HTML, not SVG: the container is `role="img"` with the label and every column is `aria-hidden`.
+
+## Markup & styling
+
+Block `.platform-compare-bars` (79 lines). The top corners are `--md-sys-shape-corner-lg-increased`, the bottom ones `-sm`.
+
+**Elements:** `.platform-compare-bars__column`, `.platform-compare-bars__stage`, `.platform-compare-bars__bar`, `.platform-compare-bars__value`, `.platform-compare-bars__detail`, `.platform-compare-bars__name`, `.platform-compare-bars__caption`
+
+**Modifiers:** `.platform-compare-bars__bar_state_highlighted`
+
+**Tokens:** `--platform-m3-chart-neutral` with `--platform-m3-on-surface` and `-on-surface-variant` on it, `--platform-m3-primary` with `--platform-m3-on-primary`.
+
+## Usage
+
+```tsx
+<PlatformCompareBars
+  bars={bots.map((bot) => ({
+    key: bot.slug,
+    name: bot.name,
+    caption: String(bot.elo),
+    value: bot.games,
+    detail: "3–2–1",
+  }))}
+  label="Partidas contra cada bot: …"
+/>
+```

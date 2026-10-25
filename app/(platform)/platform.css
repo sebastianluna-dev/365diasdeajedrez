@@ -263,6 +263,24 @@
   --platform-m3-heat-1: light-dark(#7cacf8, #3d6bb3);
   --platform-m3-heat-2: light-dark(#4285f4, #6f9be8);
   --platform-m3-heat-3: light-dark(#0b57d0, #a8c7fa);
+  /* The charts (2026-10-25, the owner's «Gráficas del perfil»): what is
+     highlighted is hatched — stripes of `-hatch` on `-hatch-ground`, or on
+     the panel's wash where a chart sits on a blue card (`-hatch-soft` the
+     paler stripe of a calendar's streak) —; the columns that are not are
+     the cool grey `-neutral`; a series is the `-line` over its `-area`, the
+     period it is set against the grey `-previous`, and the point a chart
+     points at a `-mark`, with its tag in `-tag` and `-on-tag`. A step
+     dimmer in the dark theme, so nothing glares on the dark panel. */
+  --platform-m3-chart-hatch: light-dark(#0b57d0, #a8c7fa);
+  --platform-m3-chart-hatch-ground: light-dark(#c2e7ff, #0b3d6b);
+  --platform-m3-chart-hatch-soft: light-dark(#c2e7ff, #2b4a73);
+  --platform-m3-chart-neutral: light-dark(#d5dce6, #3c4350);
+  --platform-m3-chart-line: light-dark(#0842a0, #a8c7fa);
+  --platform-m3-chart-area: light-dark(#d3e3fd, #183a6e);
+  --platform-m3-chart-previous: light-dark(#5f6368, #9aa0a6);
+  --platform-m3-chart-mark: light-dark(#041e49, #e8f0fe);
+  --platform-m3-chart-tag: light-dark(#d3e3fd, #284a80);
+  --platform-m3-on-chart-tag: light-dark(#041e49, #e8f0fe);
   /* The inverse roles: a snackbar, dark on the light theme and light on the dark. */
   --platform-m3-inverse-surface: light-dark(#303030, #e3e3e3);
   --platform-m3-inverse-on-surface: light-dark(#f2f2f2, #303030);

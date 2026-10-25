@@ -1,0 +1,57 @@
+---
+description: "Two running totals and the hatched band between them — this period solid, the one before dashed — with a marker on today and the change in a tag, stretched to its container's width."
+---
+
+# `PlatformBandChart`
+
+|            |                                                                                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-band-chart/platform-band-chart.comp.tsx`                                                                        |
+| Kind       | Server Component                                                                                                                                     |
+| Stylesheet | `platform-band-chart.comp.css` → block `.platform-band-chart`                                                                                        |
+| Story      | `platform-band-chart.stories.tsx` (`platform/shared/PlatformBandChart`): ahead of last month, behind it, the first day, and nothing the month before |
+| Used by    | [`ProfileOverviewSection`](/components/platform/sections/profile/profile-overview-section) («Minutos de estudio», this month against the last)       |
+
+## Purpose
+
+Chart 2 of the owner's «Gráficas del perfil» (2026-10-25): this period against the one before, both as running totals day by day. This period is a solid line in the primary, the one before a dashed grey line drawn whole as the reference; the stretch between them, up to today, is hatched — the difference is what is highlighted —; a marker drops on today, with both values dotted on it and the change in a tag over it. Every fifth day is dotted on each line.
+
+## Props
+
+| Prop       | Type                                       | Required           | Meaning                                                                                       |
+| ---------- | ------------------------------------------ | ------------------ | --------------------------------------------------------------------------------------------- |
+| `current`  | `readonly number[]`                        | yes                | Running totals of this period, index 0 its first day; may stop short (today).                 |
+| `previous` | `readonly number[]`                        | yes                | Running totals of the period before, whole. Shorter than `current` is held at its last value. |
+| `length`   | `number`                                   | yes                | Days on the axis (31 for a month).                                                            |
+| `ticks`    | `readonly { at: number; label: string }[]` | yes                | The days the axis names, 1-based.                                                             |
+| `label`    | `string`                                   | yes                | The chart in words, its `aria-label`.                                                         |
+| `tag`      | `string \| null`                           | no                 | The pill over the marker; `changeLabel(now, before)` writes «+12 %».                          |
+| `width`    | `number`                                   | no · default `432` | The viewBox; the drawing stretches to its container's width keeping this ratio.               |
+| `height`   | `number`                                   | no · default `120` | Its height.                                                                                   |
+
+## Behaviour
+
+None. The top of the scale is the larger of the two totals plus 4 %, so neither line touches the tag's room (34 px of the box). The SVG keeps its ratio as it stretches (`width: 100%; height: auto`), so the tag and the ticks, which are HTML, are placed in percentages of the same box; the lines keep their width (`vector-effect: non-scaling-stroke`). The hatch is an SVG `<pattern>` whose id comes from `useId`, one per chart.
+
+## Markup & styling
+
+Block `.platform-band-chart` (99 lines).
+
+**Elements:** `.platform-band-chart__stage`, `.platform-band-chart__svg`, `.platform-band-chart__hatch-ground`, `.platform-band-chart__hatch-stripe`, `.platform-band-chart__previous`, `.platform-band-chart__current`, `.platform-band-chart__marker`, `.platform-band-chart__previous-dots`, `.platform-band-chart__current-dots`, `.platform-band-chart__end`, `.platform-band-chart__tag`, `.platform-band-chart__ticks`, `.platform-band-chart__tick`
+
+**Tokens:** `--platform-m3-primary`, `--platform-m3-primary-wash` (the hatch's ground, unless the host sets `--chart-ground`), `--platform-m3-chart-hatch`, `--platform-m3-chart-previous`, `--platform-m3-chart-mark`, `--platform-m3-chart-tag`, `--platform-m3-on-chart-tag`, `--platform-m3-panel`, `--platform-m3-on-surface-variant`
+
+## Usage
+
+```tsx
+<PlatformBandChart
+  current={cumulative(month.current.days.map((day) => day.minutes))}
+  previous={cumulative(month.previous.days.map((day) => day.minutes))}
+  length={31}
+  ticks={[1, 8, 15, 22, 29].map((at) => ({ at, label: at === 1 ? "1 oct" : String(at) }))}
+  tag={changeLabel(now, before)}
+  label="Minutos de estudio acumulados: …"
+/>
+```
+
+The data: [`studyMonthComparisonOf`](/platform/student) in `services/study-goal`.

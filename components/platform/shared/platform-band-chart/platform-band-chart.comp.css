@@ -1,0 +1,99 @@
+/* Two running totals and the hatched band between them, a marker with its tag, and the days under it. */
+.platform-band-chart {
+  min-width: 0;
+
+  & .platform-band-chart__stage {
+    position: relative;
+  }
+
+  /* As wide as its container, as tall as its ratio says: the tag and the
+     ticks are placed in percentages of the same box. */
+  & .platform-band-chart__svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  & .platform-band-chart__hatch-ground {
+    fill: var(--chart-ground, var(--platform-m3-primary-wash));
+  }
+
+  & .platform-band-chart__hatch-stripe {
+    fill: var(--platform-m3-chart-hatch);
+  }
+
+  & .platform-band-chart__previous {
+    fill: none;
+    stroke: var(--platform-m3-chart-previous);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 4;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  & .platform-band-chart__current {
+    fill: none;
+    stroke: var(--platform-m3-primary);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  & .platform-band-chart__marker {
+    fill: none;
+    stroke: var(--platform-m3-chart-mark);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  & .platform-band-chart__previous-dots {
+    fill: var(--platform-m3-panel);
+    stroke: var(--platform-m3-chart-previous);
+    stroke-width: 1.5;
+  }
+
+  & .platform-band-chart__current-dots {
+    fill: var(--platform-m3-primary);
+  }
+
+  & .platform-band-chart__end {
+    fill: var(--platform-m3-chart-mark);
+    stroke: var(--platform-m3-panel);
+    stroke-width: 2;
+  }
+
+  & .platform-band-chart__tag {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 var(--platform-space-2);
+    border-radius: 1000px;
+    background: var(--platform-m3-chart-tag);
+    color: var(--platform-m3-on-chart-tag);
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    transform: translate(-50%, -100%);
+    box-sizing: border-box;
+  }
+
+  & .platform-band-chart__ticks {
+    position: relative;
+    height: 16px;
+    margin-top: var(--platform-space-1);
+  }
+
+  & .platform-band-chart__tick {
+    position: absolute;
+    top: 0;
+    font-size: var(--platform-type-2xs);
+    line-height: 16px;
+    color: var(--platform-m3-on-surface-variant);
+    white-space: nowrap;
+    transform: translateX(-50%);
+  }
+}

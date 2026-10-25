@@ -1,0 +1,31 @@
+---
+description: "«Menos ● ● ● ● Más»: the four depths of the streak's calendar, decorative, for beside it."
+---
+
+# `PlatformStreakLegend`
+
+|            |                                                                                                |
+| ---------- | ---------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-streak-legend/platform-streak-legend.comp.tsx`            |
+| Kind       | Server Component                                                                               |
+| Stylesheet | `platform-streak-legend.comp.css` → block `.platform-streak-legend`                            |
+| Story      | `platform-streak-legend.stories.tsx` (`platform/shared/PlatformStreakLegend`): the four depths |
+| Used by    | [`ProfileOverviewSection`](/components/platform/sections/profile/profile-overview-section)     |
+
+## Purpose
+
+The legend of [`PlatformStreakCalendar`](/components/platform/shared/platform-streak-calendar): a grey speck for a day of nothing and the three blues, between «Menos» and «Más». A piece of its own so the host puts it where its layout wants it (beside the calendar on the profile). `aria-hidden`: the calendar's label says the data.
+
+## Props
+
+None.
+
+## Markup & styling
+
+Block `.platform-streak-legend` (33 lines).
+
+**Elements:** `.platform-streak-legend__dot`
+
+**Modifiers:** `.platform-streak-legend__dot_level_0` to `_level_3`
+
+**Tokens:** `--platform-m3-outline-variant`, `--platform-m3-heat-1` to `-3`, `--platform-m3-on-surface-variant`

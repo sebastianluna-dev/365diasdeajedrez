@@ -38,6 +38,21 @@ import { LevelSparkline } from "@/components/platform/sections/profile/level-spa
 import { PlayedGamesTimeline } from "@/components/platform/sections/profile/played-games-timeline/played-games-timeline.comp";
 import { StudyStreakCard } from "@/components/platform/sections/profile/study-streak-card/study-streak-card.comp";
 import { PlayedGameCard } from "@/components/platform/shared/played-game-card/played-game-card.comp";
+import { PlatformBandChart } from "@/components/platform/shared/platform-band-chart/platform-band-chart.comp";
+import { PlatformBigNumber } from "@/components/platform/shared/platform-big-number/platform-big-number.comp";
+import { PlatformCompareBars } from "@/components/platform/shared/platform-compare-bars/platform-compare-bars.comp";
+import { PlatformLineChart } from "@/components/platform/shared/platform-line-chart/platform-line-chart.comp";
+import { PlatformSparkline } from "@/components/platform/shared/platform-sparkline/platform-sparkline.comp";
+import { PlatformStreakCalendar } from "@/components/platform/shared/platform-streak-calendar/platform-streak-calendar.comp";
+import { PlatformStreakLegend } from "@/components/platform/shared/platform-streak-legend/platform-streak-legend.comp";
+import {
+  SAMPLE_BOT_BARS,
+  SAMPLE_LEVEL_POINTS,
+  SAMPLE_OCTOBER_TOTALS,
+  SAMPLE_SEPTEMBER_TOTALS,
+  SAMPLE_STREAK,
+  SAMPLE_STREAK_WEEKS,
+} from "@/constants/platform/chart-samples.const";
 import { MoveTree } from "@/components/chess/game-viewer/move-tree.comp";
 import { MoveNotes } from "@/components/chess/game-viewer/move-notes.comp";
 import { PlayerStrip } from "@/components/chess/game-viewer/player-strip.comp";
@@ -2521,6 +2536,58 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   />
                 )}
               />
+            </Tile>
+          </Section>
+
+          <Section title="Charts">
+            <Tile name="PlatformBigNumber" docs="platform-shared-platformbignumber" width={320} height={200}>
+              <div className="overview__stack">
+                <PlatformBigNumber label="Racha de estudio" value={12} unit="días" note="Hoy ya estudiaste" />
+                <PlatformBigNumber
+                  label="Nivel contra bots"
+                  value={850}
+                  prefix="≈"
+                  trend={{ values: SAMPLE_LEVEL_POINTS.map((point) => point.value), label: "De ≈ 796 a ≈ 850" }}
+                />
+              </div>
+            </Tile>
+            <Tile name="PlatformSparkline" docs="platform-shared-platformsparkline" width={240} height={96}>
+              <PlatformSparkline
+                values={SAMPLE_LEVEL_POINTS.map((point) => point.value)}
+                label="De ≈ 796 a ≈ 850 en 10 partidas"
+              />
+            </Tile>
+            <Tile name="PlatformBandChart" docs="platform-shared-platformbandchart" width={480} height={200}>
+              <PlatformBandChart
+                current={SAMPLE_OCTOBER_TOTALS}
+                previous={SAMPLE_SEPTEMBER_TOTALS}
+                length={31}
+                ticks={[1, 8, 15, 22, 29].map((at) => ({ at, label: at === 1 ? "1 oct" : String(at) }))}
+                tag="+12 %"
+                label="Minutos de estudio de octubre contra septiembre"
+              />
+            </Tile>
+            <Tile name="PlatformLineChart" docs="platform-shared-platformlinechart" width={480} height={240}>
+              <PlatformLineChart
+                points={SAMPLE_LEVEL_POINTS}
+                valuePrefix="≈ "
+                sliderLabel="Partida elegida"
+                label="Nivel contra bots en las últimas 10 partidas"
+              />
+            </Tile>
+            <Tile name="PlatformCompareBars" docs="platform-shared-platformcomparebars" width={480} height={200}>
+              <PlatformCompareBars bars={SAMPLE_BOT_BARS} label="Partidas contra cada bot" />
+            </Tile>
+            <Tile name="PlatformStreakCalendar" docs="platform-shared-platformstreakcalendar" width={400} height={200}>
+              <PlatformStreakCalendar
+                weeks={SAMPLE_STREAK_WEEKS}
+                streak={SAMPLE_STREAK}
+                tag="12 días"
+                label="Las últimas 16 semanas, con una racha de 12 días"
+              />
+            </Tile>
+            <Tile name="PlatformStreakLegend" docs="platform-shared-platformstreaklegend" width={240} height={64}>
+              <PlatformStreakLegend />
             </Tile>
           </Section>
 
