@@ -9,9 +9,11 @@ import { ChessBoardIcon } from "@/components/icons/chess-board-icon.comp";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
 import { CircleQuestionIcon } from "@/components/icons/circle-question-icon.comp";
 import { ClockIcon } from "@/components/icons/clock-icon.comp";
+import { EyeIcon } from "@/components/icons/eye-icon.comp";
 import { GraduationCapIcon } from "@/components/icons/graduation-cap-icon.comp";
 import type { IconProps } from "@/components/icons/icon-variant.const";
 import { LayerGroupIcon } from "@/components/icons/layer-group-icon.comp";
+import { PenIcon } from "@/components/icons/pen-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { RotateLeftIcon } from "@/components/icons/rotate-left-icon.comp";
 import { ShuffleIcon } from "@/components/icons/shuffle-icon.comp";
@@ -33,8 +35,10 @@ const ICONS = {
   "circle-check": CircleCheckIcon,
   "circle-question": CircleQuestionIcon,
   clock: ClockIcon,
+  eye: EyeIcon,
   "graduation-cap": GraduationCapIcon,
   "layer-group": LayerGroupIcon,
+  pen: PenIcon,
   play: PlayIcon,
   "rotate-left": RotateLeftIcon,
   shuffle: ShuffleIcon,
