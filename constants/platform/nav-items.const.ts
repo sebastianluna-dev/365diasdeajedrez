@@ -23,7 +23,6 @@ import { platformRoutes, staffRoutes, teacherRoutes } from "@/lib/platform-route
 export type PlatformNavArt =
   | "play"
   | "exercises"
-  | "topics"
   | "rush"
   | "learn"
   | "studies"
@@ -67,8 +66,9 @@ export interface PlatformNavFeatures {
   trainer: boolean;
   /**
    * «Ejercicios» (`EXERCISES_ENABLED`). Off: nobody's. On, the teacher's bank,
-   * the staff's (with its review, series and import) and the student's three
-   * ways to solve: for every student (`"all"`, since phase 4: the library's
+   * the staff's (with its review, series and import) and the student's two
+   * tools, «Ejercicios» (its topics in its side column since 2026-10-23) and
+   * «Puzzle Rush»: for every student (`"all"`, since phase 4: the library's
    * practice and the academy's series give anyone something to solve) or only
    * for one who has something there (`"withTeacher"`, phases 1–3: an active
    * teacher or a series given to them, resolved per request by
@@ -117,8 +117,10 @@ function explorerApps(features: PlatformNavFeatures): PlatformApp[] {
 }
 
 /**
- * The student's (2026-10-19): «Jugar» and the three ways to solve first, then
- * the courses, the classes and the studies, and the tools at the end.
+ * The student's (2026-10-19): «Jugar» and the two ways to solve first, then
+ * the courses, the classes and the studies, and the tools at the end. Since
+ * 2026-10-25 «Ejercicios por tema» is no tool of its own: the topic is chosen
+ * in «Ejercicios»' side column, and its old address redirects there.
  */
 function studentApps(features: PlatformNavFeatures, studentExercises: boolean): PlatformApp[] {
   return [
@@ -126,7 +128,6 @@ function studentApps(features: PlatformNavFeatures, studentExercises: boolean): 
     ...(studentExercises
       ? [
           { label: "Ejercicios", href: platformRoutes.exercises, art: "exercises" as const },
-          { label: "Ejercicios por tema", href: platformRoutes.exercisePractice(), art: "topics" as const },
           { label: "Puzzle Rush", href: platformRoutes.exerciseStorm, art: "rush" as const },
         ]
       : []),

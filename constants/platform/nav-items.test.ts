@@ -28,7 +28,6 @@ describe("buildPlatformApps", () => {
     expect(labels(STUDENT, ALL_ON)).toEqual([
       "Jugar",
       "Ejercicios",
-      "Ejercicios por tema",
       "Puzzle Rush",
       "Cursos",
       "Clases",
@@ -37,7 +36,8 @@ describe("buildPlatformApps", () => {
       "Explorador",
       "Entrenador",
     ]);
-    expect(hrefsOf(buildPlatformApps(STUDENT, ALL_ON))).toContain("/ejercicios/temas");
+    // «Ejercicios por tema» is «Ejercicios» itself since 2026-10-25: its old address only redirects.
+    expect(hrefsOf(buildPlatformApps(STUDENT, ALL_ON))).not.toContain("/ejercicios/temas");
   });
 
   it("parte la lista en «Tus atajos», dos filas de tres, y el resto", () => {
@@ -46,10 +46,10 @@ describe("buildPlatformApps", () => {
     expect(apps.shortcuts.map((app) => app.label)).toEqual([
       "Jugar",
       "Ejercicios",
-      "Ejercicios por tema",
       "Puzzle Rush",
       "Cursos",
       "Clases",
+      "Estudiar",
     ]);
     // With less switched on, the shortcuts are what there is, and nothing is left under them.
     const few = buildPlatformApps(STUDENT, ALL_OFF);
@@ -188,7 +188,7 @@ describe("activeApp", () => {
     expect(hrefOf(profesor, "/profesor")).toBe("/profesor");
     expect(hrefOf(profesor, "/profesor/ejercicios/abc")).toBe("/profesor/ejercicios");
     expect(hrefOf(alumno, "/ejercicios/series/abc/2")).toBe("/ejercicios");
-    expect(hrefOf(alumno, "/ejercicios/temas")).toBe("/ejercicios/temas");
+    expect(hrefOf(alumno, "/ejercicios/temas")).toBe("/ejercicios");
     expect(hrefOf(staff, "/administracion/cursos/abc/capitulos/def")).toBe("/administracion/cursos");
     expect(hrefOf(staff, "/administracion/ejercicios/revision")).toBe("/administracion/ejercicios/revision");
     expect(hrefOf(staff, "/administracion/ejercicios/abc")).toBe("/administracion/ejercicios");

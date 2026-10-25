@@ -95,26 +95,6 @@ function ExercisesArt({ clipId }: { clipId: string }) {
   );
 }
 
-/** «Ejercicios por tema»: two labels, the red one on top. */
-function TopicsArt() {
-  return (
-    <>
-      <g transform="rotate(12 130 110)">
-        <path d="M70 84 H160 L188 112 L160 140 H70 Z" fill="#a57c52" />
-        <circle cx="86" cy="112" r="7" fill="#fbf4e6" />
-      </g>
-      <g className="nav-art__move">
-        <g transform="rotate(-8 120 126)">
-          <path d="M56 96 H150 L180 126 L150 156 H56 Z" fill="#a81e22" />
-          <circle cx="72" cy="126" r="7" fill="#fbf4e6" />
-          <rect x="92" y="117" width="56" height="8" rx="3" fill="#fbf4e6" opacity="0.85" />
-          <rect x="92" y="131" width="36" height="6" rx="3" fill="#fbf4e6" opacity="0.6" />
-        </g>
-      </g>
-    </>
-  );
-}
-
 /** «Puzzle Rush»: a stopwatch with the red slice of the time gone. */
 function RushArt() {
   return (
@@ -535,7 +515,6 @@ function HomeArt() {
 const VIEW_BOXES: Record<PlatformNavArt, string> = {
   play: "14 26 212 168",
   exercises: "28 -4 222 234",
-  topics: "40 52 164 136",
   rush: "46 36 148 170",
   learn: "40 36 270 176",
   studies: "28 56 184 160",
@@ -578,7 +557,6 @@ export function NavArt({ art, className }: NavArtProps) {
     >
       {art === "play" && <PlayArt />}
       {art === "exercises" && <ExercisesArt clipId={clipId} />}
-      {art === "topics" && <TopicsArt />}
       {art === "rush" && <RushArt />}
       {art === "learn" && <LearnArt />}
       {art === "studies" && <StudiesArt />}
