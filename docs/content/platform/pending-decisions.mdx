@@ -1,0 +1,50 @@
+---
+description: "Decisions the owner has taken but not built yet, and work paused on purpose: the new split of roles between teachers and staff, the paused new design of their areas, and the adventure's game board."
+---
+
+# Pending decisions
+
+What the owner has decided and is still to be built, and what is paused on purpose. Each section says what is settled, what is still open and what it touches in the code today. Nothing here is built yet; when a section is built, its text moves to the page of its area and leaves this one.
+
+## Teachers register their students and their payments (2026-10-25)
+
+**Settled by the owner:**
+
+- **A teacher's seats** («asientos») are how many student accounts the teacher may hold: a teacher with 10 seats can have 10 different students. Staff grants the seats.
+- **A seat is spent by each active teacher–student relation**, not by the account. A student with one teacher uses one seat of that teacher; when the student changes teacher, the seat moves to the new teacher and is freed from the old one; a student with two teachers uses one seat of each.
+- **The teacher** creates their students' accounts, creates and schedules classes for their students, records the payments of their classes, and may give free classes.
+- **Staff** registers teachers and their seats, sees every payment the teachers record, and can also create classes — above all group classes and webinars with titled teachers —, paid or free.
+- **The student** takes classes with a teacher, and still never sees amounts.
+- **Existing data:** the payments already recorded by staff are assigned to the teachers.
+
+**Still open:**
+
+- What happens at the cap: a teacher with no free seat cannot add a student, nor be assigned an existing one? Do seats expire?
+- Who may change a student's teacher (the teacher, staff, both), and whether the old teacher keeps the history.
+- Attendance changes with a reason: still staff only, or also the teacher on their own classes.
+- Whether staff can still create student accounts (for its group classes and webinars) and whose seat they use.
+- The migration: which teacher gets each existing payment and student, and the first seat count of each teacher.
+
+**What it touches today:** the students' accounts (`createStudentAccount`, `updateStudent`, `resetStudentPassword` in `services/staff-students/`, `/administracion/alumnos/nuevo`, `npm run user:create`); the classes (`createClassRecord`, `syncClassSchedule`, `syncClassMeeting`, `/administracion/clases/nueva`); the payments (`/administracion/alumnos/[userId]/pagos`, «Registrar pago», the «sin pago» queue, `paymentSeats`, `isUnpaidSeat`/`unpaidSeatWhere`, `syncClassSeat`/`moveClassSeat`); the teacher–student assignment, which must allow several active teachers per student; and the role boundary (AGENTS.md «Clases → Quién hace qué», `class-roles.test.ts`, `class-writers.test.ts`, `exercise-roles.test.ts`). Note the clash of words: a class «plaza» (`ClassSeat`, the participation) is not a teacher's «asiento» (the account quota), so the code needs two distinct names.
+
+## The new design of the teacher's and staff's areas, paused (2026-10-25)
+
+The owner paused moving `/profesor` and `/administracion` to the new design system («M4», [the new design system](/ui/styling#the-new-design-system-material-3-expressive)). It resumes only when the owner asks, and after the split of roles above is settled, because it changes what both areas show. Until then both keep the old design (`.platform-button`, the green board).
+
+- On the owner's design canvas there are three proposals of each area's home, none chosen: «Profesor · A · La agenda primero», «B · El día en una línea», «C · Tus alumnos y sus ejercicios»; «Administración · A · Bandeja», «B · Tablero», «C · Semana». They still show staff recording payments and adding students.
+- Not designed yet: the teacher's classes and a class (roll call, finish, summary, recording), calendar, students and a student's file, exercises (list, editor, series, import), class library and the teacher's own file; staff's classes, a class and a new class, students with their file and payments, teachers, the exercise bank with its review, series and import, and courses with the chapter editor.
+
+## The adventure's game board (2026-10-25)
+
+Every game against a bot is an encounter of the adventure ([Play](/platform/play)). The owner chose, among five proposals on the design canvas, **«Tablero A · De cartón sobre la escena»** for the screen of an encounter: full screen like the map, the zone's cut-paper scene behind, a cardboard board in the zone's frame and squares, the rival's card beside it and a ruled notebook page with the moves written by hand. Each zone has its own squares and frame (Plaza de las Jacarandas lilac on stone with jacaranda flowers, Club La Torre sage on grained wood with brass corners, Biblioteca Central leather on book cloth with a dotted gold line, Abierto del Malecón sea blue on sand with red rope, Gran Hotel Alameda velvet purple with a double gold line, Palacio de los Escaques night blue with gold stars).
+
+**On hold** until the zone scenes can be illustrated with the Anidoodle plugin, which the owner wants for them. Settled for when it is built: no «Ofrecer tablas» (against a bot there is only «Abandonar»); the end of the game under the board and in the players' strips, never over it; per-zone tokens as `light-dark()` pairs in `adventure.css`, with a night version of each zone; a paper piece set; each zone's scene a replaceable SVG file in `public/aventuras/<slug>/`, referenced by name.
+
+## Smaller pending work
+
+- **Play against a person**: designed on the canvas (challenges and the game), not built; the platform has no games between people.
+- **The trainer** (`/entrenador`) and **a profile's games** (`/perfil/[slug]/partidas`) are not moved to the new design yet.
+- **Reviewing the exercises due today**: the statistics show how many are due, but there is no page to work through them.
+- **Statistics on a phone**: in the minutes chart the goal's label can overlap today's value.
+- **Thin figures**: the profile's big numbers are not Poppins Light, which would need a new font file.
+- **Storybook**: the icon gallery's «Large In Accent» times out, and the Overview times out in a full parallel run (alone it passes).

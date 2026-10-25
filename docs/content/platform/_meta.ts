@@ -9,6 +9,7 @@ const meta: MetaRecord = {
   play: "Play",
   adventure: "Adventure mode",
   "teacher-and-staff": "Teacher & staff panels",
+  "pending-decisions": "Pending decisions",
 };
 
 export default meta;
