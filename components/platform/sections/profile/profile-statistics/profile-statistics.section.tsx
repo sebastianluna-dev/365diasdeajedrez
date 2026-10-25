@@ -146,7 +146,7 @@ export function ProfileStatisticsSection({ statistics, tab, continueHref, profil
     <div className="platform-workspace profile-statistics">
       <div className="platform-workspace__side profile-statistics__side">
         <PlatformSideNav
-          label="Tu perfil"
+          label="Tu perfil y el periodo de tus estadísticas"
           action={{ label: "Seguir estudiando", href: continueHref, icon: "play" }}
           groups={groups}
         />

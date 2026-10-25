@@ -79,6 +79,9 @@ export function ProfileOverviewSection({ profile, now = new Date() }: ProfileOve
       title: profile.isOwn ? "Perfil" : `Perfil de ${firstName}`,
       links: [
         { label: "Visión general", href: platformRoutes.userProfile(profile.slug), icon: "user", current: true },
+        ...(profile.isOwn
+          ? [{ label: "Estadísticas", href: platformRoutes.profileStatistics(), icon: "chart-simple" as const }]
+          : []),
         {
           label: "Partidas",
           href: platformRoutes.userProfileGames(profile.slug),

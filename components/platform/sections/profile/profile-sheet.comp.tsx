@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { PlayerAvatar } from "@/components/chess/player-avatar/player-avatar.comp";
+import { ChartSimpleIcon } from "@/components/icons/chart-simple-icon.comp";
 import { PenIcon } from "@/components/icons/pen-icon.comp";
 import { PlatformBigNumber } from "@/components/platform/shared/platform-big-number/platform-big-number.comp";
-import { mdIconButton } from "@/lib/material/material-classes";
+import { mdButton, mdIconButton } from "@/lib/material/material-classes";
 import { platformRoutes } from "@/lib/platform-routes";
 import type { ProfileView } from "@/services/profile/profile.types";
 import type { PlayWords } from "./profile-words";
@@ -129,6 +130,16 @@ export function ProfileSheet({ profile, streakNote, play }: ProfileSheetProps) {
           }
         />
       </div>
+
+      {profile.isOwn && (
+        <Link
+          href={platformRoutes.profileStatistics()}
+          className={`${mdButton("tonal", "sm")} profile-sheet__statistics`}
+        >
+          <ChartSimpleIcon variant="classic-solid" className="platform-md-icon" />
+          Ver estadísticas
+        </Link>
+      )}
     </aside>
   );
 }

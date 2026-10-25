@@ -134,6 +134,11 @@
     }
   }
 
+  /* «Ver estadísticas», only on one's own profile: the way to the whole of it. */
+  & .profile-sheet__statistics {
+    align-self: flex-start;
+  }
+
   @media (width < 1024px) {
     position: static;
 
