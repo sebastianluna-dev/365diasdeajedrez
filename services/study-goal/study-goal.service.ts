@@ -3,8 +3,18 @@ import { DEFAULT_GOAL_MINUTES } from "@/constants/platform/study-goal.const";
 import { STUDY_DAY_TIMEZONE } from "@/constants/platform/timezones.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
+import { MONTHS_ES } from "@/lib/format-spanish-date";
+import { dayAfter, daysBetween, daysInMonthOf, monthStartOf, previousMonthStartOf } from "@/lib/study-minutes";
 import { activityLevel, dayKey, longestStreak, mondayOf, startOfDay, streakOf, weeksUpTo } from "@/lib/study-streak";
-import type { StreakOverview, StreakSummary, StudyGoal, StudyStreak } from "./study-goal.types";
+import type {
+  StreakOverview,
+  StreakSummary,
+  StudyGoal,
+  StudyMinutesDay,
+  StudyMonth,
+  StudyMonthComparison,
+  StudyStreak,
+} from "./study-goal.types";
 
 // Streak and daily goal: the two figures of the day. The dashboard shows both;
 // "Mis cursos", the streak.
@@ -97,12 +107,20 @@ export const getStudyGoal = cache(async (): Promise<StudyGoal> => {
  * day by day, and the figures under them. One read of the activity log (the
  * same window as the streak's) and one of this week's finished lessons.
  */
-export const getStreakOverview = cache(async (): Promise<StreakOverview> => {
-  const user = await getCurrentUser();
+export const getStreakOverview = cache(async (): Promise<StreakOverview> =>
+  streakOverviewOf((await getCurrentUser()).id),
+);
+
+/**
+ * The same overview for anyone, by their id: the profile draws its sixteen
+ * weeks for whoever it shows (its owner, their teacher, the staff). It only
+ * READS the activity, which playing never writes (no-activity.test.ts).
+ */
+export async function streakOverviewOf(userId: string): Promise<StreakOverview> {
   const now = new Date();
   const today = dayKey(now, STUDY_DAY_TIMEZONE);
   const monday = mondayOf(today);
-  const [counts, minutesThisWeek] = await Promise.all([activityByDayOf(user.id, now), minutesSince(user.id, monday)]);
+  const [counts, minutesThisWeek] = await Promise.all([activityByDayOf(userId, now), minutesSince(userId, monday)]);
 
   const weeks = weeksUpTo(today, OVERVIEW_WEEKS).map((week) =>
     week.map((day) => {
@@ -120,7 +138,62 @@ export const getStreakOverview = cache(async (): Promise<StreakOverview> => {
     daysThisWeek: days.filter((day) => day.day >= monday && day.count > 0).length,
     minutesThisWeek,
   };
-});
+}
+
+/**
+ * The minutes studied each day from `from` to `to` (both "yyyy-mm-dd" keys,
+ * both included), the days of nothing as zeros: the estimated duration of
+ * the lessons finished on each, as today's minutes are counted. One read of
+ * the finished lessons, by anyone's id — the profile reads it for whoever it
+ * shows. It never reads the games: playing is not studying.
+ */
+export async function studyMinutesByDayOf(userId: string, from: string, to: string): Promise<StudyMinutesDay[]> {
+  const rows = await getPlatformDb().lessonProgress.findMany({
+    where: {
+      userId,
+      completedAt: {
+        gte: startOfDay(from, STUDY_DAY_TIMEZONE),
+        lt: startOfDay(dayAfter(to), STUDY_DAY_TIMEZONE),
+      },
+    },
+    select: { completedAt: true, lesson: { select: { estimatedDuration: true } } },
+  });
+  const byDay = new Map<string, number>();
+  for (const row of rows) {
+    if (!row.completedAt) continue;
+    const day = dayKey(row.completedAt, STUDY_DAY_TIMEZONE);
+    byDay.set(day, (byDay.get(day) ?? 0) + (row.lesson.estimatedDuration ?? 0));
+  }
+  return daysBetween(from, to).map((day) => ({ day, minutes: byDay.get(day) ?? 0 }));
+}
+
+/** A month of `days`, named and measured from its first day. */
+function studyMonth(start: string, days: StudyMinutesDay[]): StudyMonth {
+  return { start, name: MONTHS_ES[Number(start.slice(5, 7)) - 1] ?? "", length: daysInMonthOf(start), days };
+}
+
+/**
+ * This month up to today against the whole of the last one, day by day: the
+ * profile's «Minutos de estudio». One read (`studyMinutesByDayOf`) from the
+ * first of last month to today, split at the turn of the month.
+ */
+export async function studyMonthComparisonOf(userId: string): Promise<StudyMonthComparison> {
+  const today = dayKey(new Date(), STUDY_DAY_TIMEZONE);
+  const currentStart = monthStartOf(today);
+  const previousStart = previousMonthStartOf(today);
+  const days = await studyMinutesByDayOf(userId, previousStart, today);
+  return {
+    today,
+    previous: studyMonth(
+      previousStart,
+      days.filter((day) => day.day < currentStart),
+    ),
+    current: studyMonth(
+      currentStart,
+      days.filter((day) => day.day >= currentStart),
+    ),
+  };
+}
 
 /**
  * Anyone's streak and this week's figures, by their id: the profile reads it

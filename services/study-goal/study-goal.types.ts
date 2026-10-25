@@ -45,6 +45,38 @@ export interface StreakOverview {
   minutesThisWeek: number;
 }
 
+/** The minutes of the lessons finished on one study day. */
+export interface StudyMinutesDay {
+  /** "yyyy-mm-dd", in the study day's time zone. */
+  day: string;
+  minutes: number;
+}
+
+/** A month of study minutes, day by day from its first. */
+export interface StudyMonth {
+  /** Its first day, "yyyy-mm-01". */
+  start: string;
+  /** «octubre», lower case as a date writes it. */
+  name: string;
+  /** How many days the month has, whether or not they are all in `days`. */
+  length: number;
+  /** One per day from the 1st: up to today in the current month, every day in a past one. */
+  days: StudyMinutesDay[];
+}
+
+/**
+ * This month so far against the whole of the last one (the profile's
+ * «Minutos de estudio», 2026-10-25): the minutes of the lessons finished each
+ * day, as today's minutes are counted. Derived, nothing is stored, and games
+ * never count here.
+ */
+export interface StudyMonthComparison {
+  /** The study day it was read on. */
+  today: string;
+  current: StudyMonth;
+  previous: StudyMonth;
+}
+
 /** A person's streak and this week's figures, for their profile. */
 export interface StreakSummary {
   streak: StudyStreak;
