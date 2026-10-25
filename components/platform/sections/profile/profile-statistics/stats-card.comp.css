@@ -1,0 +1,88 @@
+/* A card of «Estadísticas»: its head, the chart, and the line that says what the chart reads. */
+.stats-card {
+  /* What a chart's labels sit on, so the goal's name hides the dashes under it. */
+  --chart-ground: var(--platform-m3-container);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-3);
+  min-width: 0;
+  padding: var(--platform-space-4) var(--platform-space-5);
+  border-radius: var(--md-sys-shape-corner-xl);
+  background: var(--platform-m3-container);
+  color: var(--platform-m3-on-surface);
+
+  & .stats-card__head {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+  }
+
+  & .stats-card__icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--platform-m3-outline-variant);
+    border-radius: 50%;
+    color: var(--platform-m3-on-surface-variant);
+    box-sizing: border-box;
+
+    &.stats-card__icon_name_fire {
+      color: var(--platform-m3-warning);
+    }
+  }
+
+  & .stats-card__glyph {
+    width: 16px;
+    height: 16px;
+  }
+
+  & .stats-card__titles {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & .stats-card__title {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    font-weight: 600;
+    line-height: 20px;
+  }
+
+  & .stats-card__subtitle {
+    margin: 0;
+    overflow: hidden;
+    color: var(--platform-m3-on-surface-variant);
+    font-size: var(--platform-type-2xs);
+    line-height: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .stats-card__link {
+    flex: none;
+    background: var(--platform-m3-panel);
+  }
+
+  & .stats-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-width: 0;
+  }
+
+  & .stats-card__reads {
+    margin: 0;
+    color: var(--platform-m3-on-surface-variant);
+    font-size: var(--platform-type-2xs);
+    line-height: 16px;
+  }
+
+  &.stats-card_size_hero {
+    padding: var(--platform-space-5) var(--platform-space-6);
+  }
+}

@@ -1,0 +1,35 @@
+---
+description: "A ring of separate rounded segments with gaps, the first hatched with a white tag, and its legend: what a period was about, how the attempts went, the record."
+---
+
+# `PlatformDonut`
+
+|            |                                                                                                                                                                                           |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-donut/platform-donut.comp.tsx`                                                                                                                       |
+| Kind       | Server Component                                                                                                                                                                          |
+| Stylesheet | `platform-donut.comp.css` → block `.platform-donut` (162 lines)                                                                                                                           |
+| Story      | `platform-donut.stories.tsx` (`platform/shared/PlatformDonut`): the topics, the attempts, the record with an open game and its own tag, and nothing yet                                     |
+| Used by    | [`ProfileStatisticsSection`](/components/platform/sections/profile/profile-statistics-section): «Por tema», «Tus intentos» and «Tus partidas» (2026-10-25)                                  |
+| Uses       | `f1`, `percentOf` · `lib/charts/chart-geometry.ts`; `useId` for the hatch's pattern                                                                                                       |
+
+## Purpose
+
+The segmented donut of the owner's «Estadísticas · C» (2026-10-25): each segment a separate piece of the ring with round corners and a 7° gap to the next, the first one hatched in the primary with a white tag on its middle — its share («56 %») or the `tag` given («6 de 10», the wins of the finished games) — and the legend beside it, each label with its figure at the right. A segment of nothing is left out of the ring but kept in the legend, so the four outcomes are always named; with nothing at all the ring is a grey track and no tag is drawn.
+
+A segment's fill is named by what it is, never by its colour (`tone`): `hatch` the one to look at, `deep`, `mid` and `light` the blues after it, `ink` the dark grey of what went wrong, `neutral` the light grey of the rest, `open` an outline only, for what is not over yet (a game in progress).
+
+The ring is one image (`role="img"`, `aria-label` = `label`, which says the total and every segment); the legend is a list a screen reader reads too, its swatches hidden.
+
+## Props
+
+| Prop        | Type                                                         | Required | Meaning                                                              |
+| ----------- | ------------------------------------------------------------ | -------- | -------------------------------------------------------------------- |
+| `segments`  | `{ key, label, value, tone }[]`                              | yes      | In order round the ring from the top, clockwise.                     |
+| `label`     | `string`                                                     | yes      | The chart in words.                                                  |
+| `tag`       | `string`                                                     | no       | The white tag on the first segment; its share in % when not given.   |
+| `size`, `thickness` | `number`                                             | no       | The drawing's side and the ring's thickness, in px (112 and 20).     |
+
+## Markup & styling
+
+Each segment is a path drawn a corner's radius (5px) inside its arc and stroked 10px wide with round joins, which gives it back its size with round corners — the drawing of the owner's sheet. The hatch is a `<pattern>` with its id from `useId`; the legend's hatched swatch is the same stripes as a `repeating-linear-gradient`. The colours are the charts' roles and the streak's blues: `--platform-m3-chart-hatch` on `-chart-hatch-ground`, `-chart-line` (deep), `-heat-2` (mid), `-heat-0` (light), `-on-surface-variant` (ink), `-outline-variant` (neutral), the panel with the primary's outline (open), and the track `-chart-neutral`.

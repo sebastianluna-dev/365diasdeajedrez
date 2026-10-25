@@ -1,0 +1,36 @@
+---
+description: "A pill per value, the one to look at hatched with its tag, and the daily goal as a dashed line across: «Estadísticas»' minutes day by day."
+---
+
+# `PlatformPillColumns`
+
+|            |                                                                                                                                                                                                                 |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-pill-columns/platform-pill-columns.comp.tsx`                                                                                                                               |
+| Kind       | Server Component                                                                                                                                                                                                |
+| Stylesheet | `platform-pill-columns.comp.css` → block `.platform-pill-columns` (99 lines)                                                                                                                                    |
+| Story      | `platform-pill-columns.stories.tsx` (`platform/shared/PlatformPillColumns`): a month with the goal, a week, without a goal (the exercises passed per week, wider columns) and today empty                         |
+| Used by    | [`ProfileStatisticsSection`](/components/platform/sections/profile/profile-statistics-section): «Estudio»'s minutes of the period and «Ejercicios»' passed per week (2026-10-25)                                  |
+| Uses       | `capsule`, `dot`, `f1`, `percentOf` · `lib/charts/chart-geometry.ts`; `useId` for the hatch's pattern                                                                                                            |
+
+## Purpose
+
+The hero chart of the owner's «Estadísticas · C» (2026-10-25), in the chart vocabulary of «Gráficas del perfil»: one column per value — a day, a month, a week — each a pill (a capsule never shorter than it is wide) in the neutral grey with a dot on its top, the column to look at hatched in the primary with its value in a tag over it, and a dot on the axis for a column of nothing, so an empty day still has its place. With `goal`, a dashed line crosses at that value with its name at the right («meta 20 min»), on the card's own grey (`--chart-ground`) so the dashes stop short of the words; the scale reaches the goal even when no column does.
+
+It is one image: the SVG carries `role="img"` and an `aria-label` made of `label`, the goal and every column's `long` name with its value and `unit` («Minutos de estudio cada día…: jueves 1 20 min, viernes 2 25 min, …»). The tag, the goal's name and the axis are hidden from a screen reader, which reads the label.
+
+## Props
+
+| Prop        | Type                                     | Required | Meaning                                                                                                  |
+| ----------- | ---------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------- |
+| `columns`   | `{ key, axis, long, value }[]`           | yes      | Oldest first. `axis` is what goes under the column (empty leaves it unnamed); `long` what is said for it. |
+| `unit`      | `string`                                 | yes      | After every value, in the tag and in words: «min», «superados».                                          |
+| `label`     | `string`                                 | yes      | What the chart is, before its values in words.                                                           |
+| `highlight` | `number`                                 | no       | The index of the column to look at; the last (today) by default.                                         |
+| `goal`      | `{ value: number; label: string }`       | no       | The dashed line across and its name.                                                                     |
+| `width`, `height` | `number`                           | no       | The drawing's box (712 × 170): it stretches to its container's width keeping this ratio.                 |
+| `maxColumn` | `number`                                 | no       | The widest a column gets in the box's units (24); a few columns read better wider (40).                  |
+
+## Markup & styling
+
+The SVG draws the grey columns in one path, the hatched one with a `<pattern>` whose id comes from `useId`, the goal and the dots; the tag, the goal's name and the axis labels are HTML placed in percentages of the same box, as `PlatformBandChart` does. The colours are the charts' roles: `--platform-m3-chart-neutral`, `-chart-hatch` on `-chart-hatch-ground`, `-chart-previous` for the dashes, `-chart-mark` for the lit dot and the lit day's name, `-chart-tag` with `-on-chart-tag`.

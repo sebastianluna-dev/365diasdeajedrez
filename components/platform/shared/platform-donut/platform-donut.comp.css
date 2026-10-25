@@ -1,0 +1,162 @@
+/* A ring of rounded segments with gaps, a white tag on the first, the legend beside it. */
+.platform-donut {
+  display: flex;
+  align-items: center;
+  gap: var(--platform-space-4);
+  min-width: 0;
+
+  & .platform-donut__chart {
+    position: relative;
+    flex: none;
+  }
+
+  & .platform-donut__svg {
+    display: block;
+    overflow: visible;
+  }
+
+  & .platform-donut__hatch-ground {
+    fill: var(--platform-m3-chart-hatch-ground);
+  }
+
+  & .platform-donut__hatch-stripe {
+    fill: var(--platform-m3-chart-hatch);
+  }
+
+  & .platform-donut__track {
+    fill: none;
+    stroke: var(--platform-m3-chart-neutral);
+  }
+
+  /* The path is drawn a corner's radius inside its segment; a stroke as
+     wide as two of them gives the segment back its size, its corners round. */
+  & .platform-donut__segment {
+    stroke-width: 10;
+    stroke-linejoin: round;
+
+    &.platform-donut__segment_tone_deep {
+      fill: var(--platform-m3-chart-line);
+      stroke: var(--platform-m3-chart-line);
+    }
+
+    &.platform-donut__segment_tone_mid {
+      fill: var(--platform-m3-heat-2);
+      stroke: var(--platform-m3-heat-2);
+    }
+
+    &.platform-donut__segment_tone_light {
+      fill: var(--platform-m3-heat-0);
+      stroke: var(--platform-m3-heat-0);
+    }
+
+    &.platform-donut__segment_tone_ink {
+      fill: var(--platform-m3-on-surface-variant);
+      stroke: var(--platform-m3-on-surface-variant);
+    }
+
+    &.platform-donut__segment_tone_neutral {
+      fill: var(--platform-m3-outline-variant);
+      stroke: var(--platform-m3-outline-variant);
+    }
+
+    &.platform-donut__segment_tone_open {
+      fill: var(--platform-m3-panel);
+      stroke: var(--platform-m3-primary);
+      stroke-width: 2;
+    }
+  }
+
+  & .platform-donut__tag {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 var(--platform-space-2);
+    border-radius: 1000px;
+    background: var(--platform-m3-panel);
+    color: var(--platform-m3-on-surface);
+    box-shadow: 0 1px 3px color-mix(in srgb, var(--platform-m3-row-shadow) 30%, transparent);
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+  }
+
+  & .platform-donut__legend {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .platform-donut__item {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    font-size: var(--platform-type-2xs);
+    line-height: 16px;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .platform-donut__name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .platform-donut__value {
+    margin-left: auto;
+    padding-left: var(--platform-space-2);
+    color: var(--platform-m3-on-surface);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .platform-donut__swatch {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-sizing: border-box;
+
+    &.platform-donut__swatch_tone_hatch {
+      background: repeating-linear-gradient(
+        45deg,
+        var(--platform-m3-chart-hatch) 0 2px,
+        var(--platform-m3-chart-hatch-ground) 2px 5px
+      );
+    }
+
+    &.platform-donut__swatch_tone_deep {
+      background: var(--platform-m3-chart-line);
+    }
+
+    &.platform-donut__swatch_tone_mid {
+      background: var(--platform-m3-heat-2);
+    }
+
+    &.platform-donut__swatch_tone_light {
+      background: var(--platform-m3-heat-0);
+    }
+
+    &.platform-donut__swatch_tone_ink {
+      background: var(--platform-m3-on-surface-variant);
+    }
+
+    &.platform-donut__swatch_tone_neutral {
+      background: var(--platform-m3-outline-variant);
+    }
+
+    &.platform-donut__swatch_tone_open {
+      border: 2px solid var(--platform-m3-primary);
+      background: var(--platform-m3-panel);
+    }
+  }
+}

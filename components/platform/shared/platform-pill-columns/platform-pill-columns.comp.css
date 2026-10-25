@@ -1,0 +1,99 @@
+/* A pill per value, the one to look at hatched with its tag, a dashed goal across, the axis under them. */
+.platform-pill-columns {
+  min-width: 0;
+
+  & .platform-pill-columns__stage {
+    position: relative;
+  }
+
+  /* As wide as its container, as tall as its ratio says: the tag, the goal's
+     name and the axis are placed in percentages of the same box. */
+  & .platform-pill-columns__svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  & .platform-pill-columns__hatch-ground {
+    fill: var(--platform-m3-chart-hatch-ground);
+  }
+
+  & .platform-pill-columns__hatch-stripe {
+    fill: var(--platform-m3-chart-hatch);
+  }
+
+  & .platform-pill-columns__base {
+    fill: var(--platform-m3-chart-neutral);
+  }
+
+  & .platform-pill-columns__dots {
+    fill: var(--platform-m3-on-surface-variant);
+  }
+
+  & .platform-pill-columns__lit-dot {
+    fill: var(--platform-m3-chart-mark);
+    stroke: var(--platform-m3-panel);
+    stroke-width: 2;
+  }
+
+  & .platform-pill-columns__goal {
+    fill: none;
+    stroke: var(--platform-m3-chart-previous);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 4;
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* The goal's name sits on the line at the right, on the card's own grey so
+     the dashes stop short of it. */
+  & .platform-pill-columns__goal-label {
+    position: absolute;
+    right: 0;
+    padding-left: var(--platform-space-1);
+    background: var(--chart-ground, var(--platform-m3-container));
+    color: var(--platform-m3-on-surface);
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    line-height: 16px;
+    white-space: nowrap;
+  }
+
+  & .platform-pill-columns__tag {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 var(--platform-space-2);
+    border-radius: 1000px;
+    background: var(--platform-m3-chart-tag);
+    color: var(--platform-m3-on-chart-tag);
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    transform: translate(-50%, -100%);
+    box-sizing: border-box;
+  }
+
+  & .platform-pill-columns__axis {
+    position: relative;
+    height: 16px;
+    margin-top: var(--platform-space-1);
+  }
+
+  & .platform-pill-columns__axis-label {
+    position: absolute;
+    top: 0;
+    font-size: var(--platform-type-2xs);
+    line-height: 16px;
+    color: var(--platform-m3-on-surface-variant);
+    white-space: nowrap;
+    transform: translateX(-50%);
+
+    &.platform-pill-columns__axis-label_state_on {
+      color: var(--platform-m3-chart-mark);
+      font-weight: 700;
+    }
+  }
+}

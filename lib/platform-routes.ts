@@ -172,6 +172,19 @@ export const platformRoutes = {
     const search = params.toString();
     return `/perfil/${slug}/partidas${search ? `?${search}` : ""}`;
   },
+  /**
+   * «Estadísticas» (2026-10-25): the own person's only, so it takes no user
+   * name; `periodo` (semana, mes, anio, todo) and `seccion` (estudio,
+   * ejercicios, jugar) live in the address, each left out at its default
+   * (the month, «Estudio»).
+   */
+  profileStatistics: (query?: { periodo?: string; seccion?: string }) => {
+    const params = new URLSearchParams();
+    if (query?.periodo && query.periodo !== "mes") params.set("periodo", query.periodo);
+    if (query?.seccion && query.seccion !== "estudio") params.set("seccion", query.seccion);
+    const search = params.toString();
+    return `/perfil/estadisticas${search ? `?${search}` : ""}`;
+  },
   /** «Herramientas»: every tool of the role, by what it is for, with what each one does (the menu's, at length). */
   tools: "/herramientas",
   /** «Herramientas»: the analysis board, with a position, a played game or a study's game to start from. */
