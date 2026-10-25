@@ -18,16 +18,16 @@ The illustrated way in, **«Modo aventura»**, has [its own page](/platform/adve
 
 ## Routes
 
-| Route                               | What it is                                                                                                                  |
-| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `/jugar`                            | The way in: the adventure's cover (the notebook and two tickets) when `ADVENTURE_ENABLED` is on, the lobby while it is off. |
-| `/jugar/partida-libre`              | «Partida libre», the lobby: the bots by group, «Continuar» for the open game.                                               |
-| `/jugar/aventura`                   | The adventure's shelf, behind `ADVENTURE_ENABLED` (404 while it is off).                                                    |
-| `/jugar/aventura/<slug>`            | An adventure's map, behind `ADVENTURE_ENABLED`; 404 for an unknown slug. `?victoria=<1..12>` and `?error=`.                 |
-| `/jugar/partidas/<id>`              | A game: played while it is open and the viewer holds a seat; read-only for everyone else.                                   |
-| `/perfil/<slug>`                    | The profile: header, streak, level against bots, scoreboard by bot and the last eight games.                                |
-| `/perfil/<slug>/partidas`           | Every game, twenty a page, filtered by rival and result.                                                                    |
-| `/herramientas/tablero-de-analisis` | The analysis board (phase 4).                                                                                               |
+| Route                               | What it is                                                                                                                                     |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/jugar`                            | The way in: the adventure's cover (the notebook and two tickets) when `ADVENTURE_ENABLED` is on, the lobby while it is off.                    |
+| `/jugar/partida-libre`              | «Partida libre», the lobby: the bots by group, «Continuar» for the open game.                                                                  |
+| `/jugar/aventura`                   | The adventure's shelf, behind `ADVENTURE_ENABLED` (404 while it is off).                                                                       |
+| `/jugar/aventura/<slug>`            | An adventure's map, behind `ADVENTURE_ENABLED`; 404 for an unknown slug. `?victoria=<1..12>` and `?error=`.                                    |
+| `/jugar/partidas/<id>`              | A game: played while it is open and the viewer holds a seat; read-only for everyone else.                                                      |
+| `/perfil/<slug>`                    | The profile, «Visión general» (new design system since 2026-10-25): the sheet, then study minutes, streak, level, each bot and the last games. |
+| `/perfil/<slug>/partidas`           | Every game, twenty a page, filtered by rival and result.                                                                                       |
+| `/herramientas/tablero-de-analisis` | The analysis board (phase 4).                                                                                                                  |
 
 The three prefixes are in `PROTECTED_PATH_PREFIXES` and in the proxy's matcher; `lib/platform-routes.ts` builds every address (`play`, `freePlay`, `playAgainst`, `playedGame`, `profile`, `userProfile`, `userProfileGames`, `analysisBoard`).
 
@@ -47,7 +47,7 @@ Reading is not writing: every action demands a seat (`seatOf`), and a teacher or
 
 - `services/bots/` — `listBotGroups()` (the lobby, by group and order) and `getBotBySlug(slug)`; only active bots of a listed group (`isListed`).
 - `services/play/play.service.ts` — `getOpenPlayedGame()` (the viewer's open game against a bot), `getPlayedGame(id)`, `listPlayedGamesOf(userId, { page, rival?, result? })` (open first, then the last move, then the start; `PLAYED_GAMES_PAGE_SIZE` 20), `recentPlayedGamesOf(userId)` (`PROFILE_RECENT_GAMES` 8), `botScoreboardOf(userId)`, `botScoreAgainst(userId, botId)` and `botLevelSummaryOf(userId)`.
-- `services/profile/` — `getProfileOf(slug)` (the whole profile, for «Visión general»), `getProfileHeadOf(slug)` (only its head — the person, the figures and the level —, for «Partidas»), `getOwnSlug()` and `getOwnPlayerCard()` (the person's own name and portrait, from the session).
+- `services/profile/` — `getProfileOf(slug)` (the whole profile, for «Visión general»: the head, the record and the record against each bot named by `listBotsById` of `services/bots`, the streak's sixteen weeks and this month's minutes against the last, `studyOverviewOf`, and the last games), `getProfileHeadOf(slug)` (only its head — the person, the figures and the level —, for «Partidas»), `getOwnSlug()` and `getOwnPlayerCard()` (the person's own name and portrait, from the session).
 - `services/study-goal` — `streakSummaryOf(userId)`, `streakOverviewOf(userId)` and `studyMonthComparisonOf(userId)`: the streak, its sixteen weeks and the month's study minutes shown on a profile (read, never written by playing; they live outside `services/profile` so `no-activity.test.ts` keeps watching that folder whole).
 
 **«Nivel contra bots»** (`botLevelOf`, `levelSeries`): over the last ten finished games against bots, the average of the bots' Elo plus 400 per net win spread over the games, rounded to 25 and kept within 400–2 800; nothing under five games. An aborted game counts for nothing (`countsForScore`); a resignation or an abandonment is a loss. Computed when read, never stored, and never a rating: `isRated` is false against a bot, by a CHECK.
@@ -86,7 +86,7 @@ Both moves of a game against a bot leave the same browser: the server demands le
 
 `prisma/seed-play.ts`, called by the seed: the three catalogs and the 57 bots (45 of the gallery and the 12 rivals of the adventure) upserted from the same `allBotSeeds()` the migrations' SQL is generated from, and the demo student's games, written through the single writer: three in the gallery — won against Tere, lost by resignation against Don Chuy, and one open against Lupita on the student's turn — only when they have played none, and nine in the adventure (`DEMO_ADVENTURE_GAMES`) only when they have played none against its rivals, which leave the map at 4 of 12 (★★★, ★★ after a loss, ★ after three, ★★★, and one lost game against the fifth, «Intento 2»). `prisma/seed-play.test.ts` replays them, the adventure's with `encounterStatesOf`.
 
-The pages have a query budget (`/jugar` ≤ 3, `/perfil/<slug>` ≤ 7, without the session). `PLATFORM_DB_LOG=query` makes `getPlatformDb()` print every query, and the figure that counts is the one of `npm run build && npm run start`, one load at a time: `/ajustes`, whose page read one row, gave two, that row and the session (since 2026-10-25 it also reads today's minutes against the goal, `getStudyGoal`, as the home page does). Measured that way on 2026-10-09, with the demo seed, the same on every load: `/jugar` 3 (the open game, the groups with their bots, and the record against each; the person's own card comes with the session), `/perfil/<slug>` 6 (the profile with its counts, the last games, the level, the scoreboard, the activity by day and this week's minutes) and `/perfil/<slug>/partidas` 5 (the profile and the level for its head — `getProfileHeadOf`, not the whole profile —, the page's rows and count, and the rivals).
+The pages have a query budget (`/jugar` ≤ 3, `/perfil/<slug>` ≤ 7, without the session). `PLATFORM_DB_LOG=query` makes `getPlatformDb()` print every query, and the figure that counts is the one of `npm run build && npm run start`, one load at a time: `/ajustes`, whose page read one row, gave two, that row and the session (since 2026-10-25 it also reads today's minutes against the goal, `getStudyGoal`, as the home page does). Measured that way on 2026-10-09, with the demo seed, the same on every load: `/jugar` 3 (the open game, the groups with their bots, and the record against each; the person's own card comes with the session), `/perfil/<slug>` 6 (the profile with its counts, the last games, the level, the scoreboard, the activity by day and this week's minutes; since 2026-10-25, by reading the code and not yet measured, 7: the week's minutes became the minutes of each day of this month and the last, `studyOverviewOf`, and the bots the scoreboard names, `listBotsById`, were added) and `/perfil/<slug>/partidas` 5 (the profile and the level for its head — `getProfileHeadOf`, not the whole profile —, the page's rows and count, and the rivals).
 
 ## Verification in the app
 
@@ -100,7 +100,7 @@ What was checked on 2026-10-08 with the switch on in a local copy, against `next
 6. The same game in a second tab: after a move in the first, a move in the second brings «Esta partida cambió en otra pestaña.» with «Recargar».
 7. `profesor.demo`, the student's teacher, opens the finished game: the board, the moves and the strips, with no «Abandonar» and no «Revancha».
 
-8. `/perfil` takes `alumno.demo` to `/perfil/alumno-demo`: the head with «Editar perfil» and «Jugar», the five tabs, the three cards and the games as cards; «Partidas» lists them as a timeline grouped by day, with both filters.
+8. `/perfil` takes `alumno.demo` to `/perfil/alumno-demo`: the side column with «Jugar», «Visión general», «Partidas» and «Lo tuyo»; the sheet with the pen to «Editar perfil»; the four chapters (minutes, streak, level and each bot, the last games); «Partidas» lists them as a timeline grouped by day, with both filters.
 9. In «Ajustes», a new user name opens the profile at the new address and leaves the old one on the not-found page; a name already taken comes back with «Ese nombre de usuario ya está en uso»; a status line and a country appear under the name and beside it. (Put back afterwards.)
-10. `profesor.demo` opens the student's profile without «Editar perfil» and with only «Visión general» and «Partidas»; their student's page shows «Partidas jugadas» with «Ver su perfil». `staff.demo` opens the same profile, read-only.
+10. `profesor.demo` opens the student's profile without «Editar perfil», «Jugar» or «Lo tuyo», with only «Visión general» and «Partidas» and every sentence in the third person; their student's page shows «Partidas jugadas» with «Ver su perfil». `staff.demo` opens the same profile, read-only.
 11. The student's activity on `/inicio` does not change after playing: no game writes it.

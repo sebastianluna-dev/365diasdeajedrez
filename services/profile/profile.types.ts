@@ -1,6 +1,6 @@
 import type { PlayerAvatarData } from "@/lib/avatar-tone";
 import type { BotLevelSummary, PlayedGameCard } from "@/services/play/play.types";
-import type { StreakSummary } from "@/services/study-goal/study-goal.types";
+import type { StreakOverview, StudyMonthComparison } from "@/services/study-goal/study-goal.types";
 
 /** A person as a side of a scoreboard or a strip: the name and the portrait. */
 export interface PlayerCard {
@@ -27,10 +27,32 @@ export interface ProfileHead {
   rating: null;
 }
 
-/** A person's profile, as its head, its three cards and its last games read it («Visión general»). */
+/** The record against one bot, named: a column of «Contra cada bot». */
+export interface ProfileBotRecord {
+  botId: number;
+  slug: string;
+  name: string;
+  /** Its label today, «≈» as the gallery shows it. */
+  elo: number;
+  wins: number;
+  losses: number;
+  draws: number;
+  /** Games against it still open (at most one). */
+  open: number;
+}
+
+/**
+ * A person's profile as «Visión general» reads it (2026-10-25, the owner's
+ * «Perfil E2»): the head, the study — this month's minutes against the last
+ * one's and the streak's sixteen weeks —, the play — the record, the level and
+ * the record against each bot — and the last games.
+ */
 export interface ProfileView extends ProfileHead {
   /** The record against every bot together. */
   record: { wins: number; losses: number; draws: number; open: number };
-  streak: StreakSummary;
+  /** The record against each bot, weakest first. */
+  botRecords: ProfileBotRecord[];
+  streak: StreakOverview;
+  studyMonths: StudyMonthComparison;
   recentGames: PlayedGameCard[];
 }

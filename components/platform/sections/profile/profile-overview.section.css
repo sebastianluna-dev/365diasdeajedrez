@@ -1,67 +1,311 @@
-/* «Visión general»: the three cards in a row, then the last games, four to a row. */
+/* «Visión general» in the new design system: the sheet at the left, the story of four chapters at the right. */
 .profile-overview {
-  display: grid;
-  gap: var(--platform-space-8);
-
-  & .profile-overview__cards {
+  & .profile-overview__layout {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--platform-space-4);
+    grid-template-columns: 296px minmax(0, 1fr);
+    align-items: start;
+    gap: var(--platform-space-6);
   }
 
-  & .profile-overview__games {
-    display: grid;
-    gap: var(--platform-space-4);
-  }
-
-  & .profile-overview__games-head {
+  & .profile-overview__story {
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: var(--platform-space-8);
+    min-width: 0;
+  }
+
+  & .profile-overview__chapter {
+    display: flex;
+    flex-direction: column;
     gap: var(--platform-space-3);
   }
 
-  & .profile-overview__games-title {
+  & .profile-overview__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--platform-space-4);
+  }
+
+  & .profile-overview__head-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+    min-width: 0;
+  }
+
+  & .profile-overview__eyebrow {
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+    color: var(--platform-m3-primary);
+  }
+
+  & .profile-overview__heading {
     margin: 0;
     font-family: var(--platform-font-display);
     font-size: var(--platform-type-xl);
-    font-weight: 700;
-  }
-
-  & .profile-overview__count {
-    font-family: var(--platform-font);
-    font-size: var(--platform-type-sm);
-    font-weight: 400;
-    color: var(--platform-text-muted);
-  }
-
-  & .profile-overview__all {
-    color: var(--platform-accent-ink);
-    font-size: var(--platform-type-sm);
     font-weight: 600;
-    text-decoration: none;
+    line-height: 1.35;
+    color: var(--platform-m3-on-surface);
+  }
 
-    &:hover {
-      text-decoration: underline;
+  & .profile-overview__lead {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    line-height: 1.45;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .profile-overview__go {
+    flex: none;
+  }
+
+  /* A chart's card: the container, or the panel's blue wash for the minutes. */
+  & .profile-overview__card {
+    --chart-ground: var(--platform-m3-container);
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    min-width: 0;
+    padding: var(--platform-space-4) var(--platform-space-5);
+    border-radius: var(--md-sys-shape-corner-xl);
+    background: var(--platform-m3-container);
+    color: var(--platform-m3-on-surface);
+
+    &.profile-overview__card_tone_blue {
+      --chart-ground: var(--platform-m3-primary-wash);
+      background: var(--platform-m3-primary-wash);
+    }
+
+    &.profile-overview__card_layout_row {
+      flex-direction: row;
+      align-items: flex-end;
+      gap: var(--platform-space-6);
     }
   }
 
-  & .profile-overview__grid {
+  & .profile-overview__aside {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+    width: 148px;
+    padding-bottom: var(--platform-space-5);
+
+    &.profile-overview__aside_kind_week {
+      flex: 1;
+      width: auto;
+      min-width: 140px;
+      padding-bottom: var(--platform-space-1);
+    }
+  }
+
+  & .profile-overview__chart {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & .profile-overview__legend {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .profile-overview__legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+  }
+
+  /* The two lines of the band chart, as its legend draws them. */
+  & .profile-overview__swatch {
+    width: 18px;
+    flex: none;
+    border-top: 2px solid var(--platform-m3-primary);
+
+    &.profile-overview__swatch_kind_previous {
+      border-top-style: dashed;
+      border-top-color: var(--platform-m3-chart-previous);
+    }
+  }
+
+  & .profile-overview__reads {
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    line-height: 1.35;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .profile-overview__card-head {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+  }
+
+  & .profile-overview__disc {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--platform-space-4);
+    place-items: center;
+    flex: none;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--platform-m3-outline-variant);
+    border-radius: 50%;
+    box-sizing: border-box;
+  }
+
+  & .profile-overview__disc-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .profile-overview__card-title {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & .profile-overview__card-heading {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    font-weight: 600;
+  }
+
+  & .profile-overview__card-sub {
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .profile-overview__games {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  @media (width < 1024px) {
-    & .profile-overview__cards {
-      grid-template-columns: minmax(0, 1fr);
+  & .profile-overview__game {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-1);
+    border-radius: var(--md-sys-shape-corner-md);
+    color: var(--platform-m3-on-surface);
+    text-decoration: none;
+
+    &:hover {
+      background: var(--platform-m3-container);
+    }
+  }
+
+  & .profile-overview__board {
+    display: block;
+    flex: none;
+    width: 64px;
+  }
+
+  & .profile-overview__game-text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+    min-width: 0;
+  }
+
+  & .profile-overview__game-name {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    min-width: 0;
+    font-weight: 600;
+  }
+
+  & .profile-overview__rival {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .profile-overview__game-facts {
+    overflow: hidden;
+    font-size: var(--platform-type-2xs);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .profile-overview__result {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 var(--platform-space-1);
+    border-radius: 1000px;
+    font-size: var(--platform-type-2xs);
+    font-weight: 800;
+    box-sizing: border-box;
+
+    &.profile-overview__result_result_win {
+      background: var(--platform-m3-success-container);
+      color: var(--platform-m3-on-success-container);
     }
 
-    & .profile-overview__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    &.profile-overview__result_result_loss {
+      background: var(--platform-m3-error-container);
+      color: var(--platform-m3-on-error-container);
+    }
+
+    &.profile-overview__result_result_draw {
+      background: var(--platform-m3-container-high);
+      color: var(--platform-m3-on-surface);
+    }
+
+    &.profile-overview__result_result_aborted {
+      background: var(--platform-m3-container-high);
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    &.profile-overview__result_result_open {
+      background: var(--platform-m3-secondary-container);
+      color: var(--platform-m3-on-secondary-container);
+    }
+  }
+
+  @media (width < 1280px) {
+    & .profile-overview__card.profile-overview__card_layout_row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    & .profile-overview__aside {
+      width: auto;
+      padding-bottom: 0;
+    }
+
+    /* In a column, the chart takes its own height, not the card's. */
+    & .profile-overview__chart {
+      flex: none;
+    }
+  }
+
+  /* The sheet goes on top, as a block, and the story under it. */
+  @media (width < 1024px) {
+    & .profile-overview__layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (width < 640px) {
+    & .profile-overview__card {
+      padding: var(--platform-space-4);
     }
   }
 }

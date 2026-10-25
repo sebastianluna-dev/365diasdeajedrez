@@ -4,13 +4,13 @@ description: "A profile's head (N5): the square portrait with the flag, the name
 
 # `ProfileHeaderSection`
 
-|            |                                                                                              |
-| ---------- | -------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/profile/profile-header.section.tsx`                            |
-| Kind       | Server Component                                                                             |
-| Stylesheet | `profile-header.section.css` → block `.profile-header`                                       |
-| Used by    | `app/(platform)/perfil/[slug]/page.tsx`, `app/(platform)/perfil/[slug]/partidas/page.tsx`    |
-| Uses       | [`PlayerAvatar`](/components/chess/player-avatar) (`xl`), `federationFlag`, `platformRoutes` |
+|            |                                                                                                                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/profile/profile-header.section.tsx`                                                                                                                                                                |
+| Kind       | Server Component                                                                                                                                                                                                                 |
+| Stylesheet | `profile-header.section.css` → block `.profile-header`                                                                                                                                                                           |
+| Used by    | `app/(platform)/perfil/[slug]/partidas/page.tsx` («Visión general» drew it until 2026-10-25, when it moved to the new design system: [`ProfileOverviewSection`](/components/platform/sections/profile/profile-overview-section)) |
+| Uses       | [`PlayerAvatar`](/components/chess/player-avatar) (`xl`), `federationFlag`, `platformRoutes`                                                                                                                                     |
 
 ## Purpose
 
@@ -20,10 +20,10 @@ N5, after the reference the owner sent (Chess.com's profile): a 120px square por
 
 ## Props
 
-| Prop      | Type                    | Required | Meaning                                                                                                 |
-| --------- | ----------------------- | -------- | ------------------------------------------------------------------------------------------------------- |
-| `profile` | `ProfileHead`           | yes      | The head only: `getProfileHeadOf(slug)` on «Partidas»; «Visión general» passes its whole `ProfileView`. |
-| `active`  | `"overview" \| "games"` | yes      | Which tab is the page being shown.                                                                      |
+| Prop      | Type                    | Required | Meaning                                                |
+| --------- | ----------------------- | -------- | ------------------------------------------------------ |
+| `profile` | `ProfileHead`           | yes      | The head only: `getProfileHeadOf(slug)` on «Partidas». |
+| `active`  | `"overview" \| "games"` | yes      | Which tab is the page being shown.                     |
 
 ## Markup & styling
 

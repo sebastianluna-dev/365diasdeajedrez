@@ -5,16 +5,20 @@ import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { BOT_RING } from "@/constants/platform/play-codes.const";
 import { avatarToneOf, initialsOf } from "@/lib/avatar-tone";
 import { botLevelSummaryOf, botScoreboardOf, currentViewer, recentPlayedGamesOf } from "@/services/play/play.service";
-import { streakSummaryOf } from "@/services/study-goal/study-goal.service";
+import { listBotsById } from "@/services/bots/bots.service";
+import { studyOverviewOf } from "@/services/study-goal/study-goal.service";
 import { PROFILE_SELECT, profileHead, profileView } from "./profile.mapper";
 import { profileVisibleWhere } from "./profile-rules";
 import type { PlayerCard, ProfileHead, ProfileView } from "./profile.types";
 
 // A person's profile, read: only what the viewer may see (`profileVisibleWhere`
-// inside the `where`). «Visión general» makes six queries besides the session —
-// the profile with its counts, the last games, the level, the scoreboard, the
-// activity by day and this week's minutes —; «Partidas» draws only the head, so
-// it reads two of them, the profile and the level. None of them writes.
+// inside the `where`). «Visión general» makes seven queries besides the session —
+// the profile with its counts, the last games, the level, the scoreboard and
+// the bots it names, the activity by day, and the minutes of each day of this
+// month and the last (this week's are added up from them) —; «Partidas» draws only the head, so it reads two of
+// them, the profile and the level. None of them writes, and the study figures
+// come from services/study-goal: nothing here names the activity tables
+// (no-activity.test.ts).
 
 /** The row of the profile at `slug`, if the viewer may see it: one query, shared by both pages' reads. */
 const visibleProfileRow = cache(async (slug: string) => {
@@ -37,13 +41,22 @@ export const getProfileHeadOf = cache(async (slug: string): Promise<ProfileHead 
 export const getProfileOf = cache(async (slug: string): Promise<ProfileView | null> => {
   const found = await visibleProfileRow(slug);
   if (!found) return null;
-  const [recentGames, botLevel, scoreboard, streak] = await Promise.all([
+  const [recentGames, botLevel, scoreboard, study] = await Promise.all([
     recentPlayedGamesOf(found.row.id),
     botLevelSummaryOf(found.row.id),
     botScoreboardOf(found.row.id),
-    streakSummaryOf(found.row.id),
+    studyOverviewOf(found.row.id),
   ]);
-  return profileView(found.row, { viewerId: found.viewerId, botLevel, scoreboard, streak, recentGames });
+  const bots = await listBotsById(scoreboard.map((score) => score.botId));
+  return profileView(found.row, {
+    viewerId: found.viewerId,
+    botLevel,
+    scoreboard,
+    bots,
+    streak: study.streak,
+    studyMonths: study.months,
+    recentGames,
+  });
 });
 
 /** The current person's user name, for `/perfil` to redirect to their own profile: the session carries it. */
