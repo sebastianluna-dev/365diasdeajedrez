@@ -3,8 +3,9 @@ import { avatarToneOf, initialsOf } from "@/lib/avatar-tone";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import type { BotLevelSummary, BotScore, PlayedGameCard } from "@/services/play/play.types";
-import type { StreakSummary } from "@/services/study-goal/study-goal.types";
-import type { ProfileHead, ProfileView } from "./profile.types";
+import type { BotView } from "@/services/bots/bots.types";
+import type { StreakOverview, StudyMonthComparison } from "@/services/study-goal/study-goal.types";
+import type { ProfileBotRecord, ProfileHead, ProfileView } from "./profile.types";
 
 // A `User` row and what its profile gathers → `ProfileHead`, or the whole `ProfileView`. Pure.
 
@@ -50,14 +51,24 @@ export function profileHead(row: ProfileRow, parts: { viewerId: string; botLevel
   };
 }
 
-/** The whole profile: the head, the record summed from the scoreboard, the streak and the last games. */
+/** Each score named by its bot, in the bots' order (weakest first); a score whose bot is gone is left out. */
+export function botRecordsOf(scoreboard: readonly BotScore[], bots: readonly BotView[]): ProfileBotRecord[] {
+  return bots.flatMap((bot) => {
+    const score = scoreboard.find((entry) => entry.botId === bot.id);
+    return score ? [{ ...score, slug: bot.slug, name: bot.name, elo: bot.elo }] : [];
+  });
+}
+
+/** The whole profile: the head, the record summed from the scoreboard and named per bot, the study and the last games. */
 export function profileView(
   row: ProfileRow,
   parts: {
     viewerId: string;
     botLevel: BotLevelSummary;
     scoreboard: BotScore[];
-    streak: StreakSummary;
+    bots: BotView[];
+    streak: StreakOverview;
+    studyMonths: StudyMonthComparison;
     recentGames: PlayedGameCard[];
   },
 ): ProfileView {
@@ -70,5 +81,12 @@ export function profileView(
     }),
     { wins: 0, losses: 0, draws: 0, open: 0 },
   );
-  return { ...profileHead(row, parts), record, streak: parts.streak, recentGames: parts.recentGames };
+  return {
+    ...profileHead(row, parts),
+    record,
+    botRecords: botRecordsOf(parts.scoreboard, parts.bots),
+    streak: parts.streak,
+    studyMonths: parts.studyMonths,
+    recentGames: parts.recentGames,
+  };
 }

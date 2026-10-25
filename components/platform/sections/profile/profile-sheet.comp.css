@@ -1,0 +1,150 @@
+/* The profile's sheet: who, the counts and three big figures, on the container, stuck while the story scrolls. */
+.profile-sheet {
+  /* The sparkline's and the figures' rings are of the sheet's fill. */
+  --chart-ground: var(--platform-m3-container);
+  position: sticky;
+  top: calc(70px + var(--platform-space-3));
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-4);
+  padding: var(--platform-space-5);
+  border-radius: var(--md-sys-shape-corner-xl);
+  background: var(--platform-m3-container);
+  color: var(--platform-m3-on-surface);
+  box-sizing: border-box;
+
+  & .profile-sheet__who {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-4);
+  }
+
+  /* The portrait at the canvas's 72px, its corners Material's. */
+  & .profile-sheet__portrait .player-avatar.player-avatar_size_xl {
+    --player-avatar-size: 72px;
+    border-radius: var(--md-sys-shape-corner-xl);
+    font-size: var(--platform-type-2xl);
+  }
+
+  & .profile-sheet__identity {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--platform-space-1);
+    min-width: 0;
+  }
+
+  & .profile-sheet__name {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-xl);
+    font-weight: 600;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  & .profile-sheet__badge {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 var(--platform-space-3);
+    border-radius: 1000px;
+    background: var(--platform-m3-primary-container);
+    color: var(--platform-m3-on-primary-container);
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+  }
+
+  & .profile-sheet__edit {
+    align-self: flex-start;
+    flex: none;
+  }
+
+  & .profile-sheet__about {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+  }
+
+  & .profile-sheet__status {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+
+    &.profile-sheet__status_state_empty {
+      color: var(--platform-m3-primary);
+      font-weight: 600;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  & .profile-sheet__joined {
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .profile-sheet__counts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--platform-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .profile-sheet__count {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: var(--platform-space-2) var(--platform-space-3);
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--platform-m3-panel);
+    color: var(--platform-m3-on-surface-variant);
+    font-size: var(--platform-type-2xs);
+    text-decoration: none;
+    box-sizing: border-box;
+
+    &.profile-sheet__count_kind_link:hover {
+      background: var(--platform-m3-primary-wash);
+    }
+  }
+
+  & .profile-sheet__count-figure {
+    font-size: var(--platform-type-2xl);
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+    color: var(--platform-m3-on-surface);
+  }
+
+  /* The three figures, a hairline between each. */
+  & .profile-sheet__figures {
+    display: flex;
+    flex-direction: column;
+
+    & > * {
+      padding: var(--platform-space-3) 0;
+      border-top: 1px solid var(--platform-m3-outline-variant);
+    }
+  }
+
+  @media (width < 1024px) {
+    position: static;
+
+    & .profile-sheet__figures {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: var(--platform-space-4);
+
+      & > * {
+        flex: 1 1 180px;
+      }
+    }
+  }
+}

@@ -33,3 +33,18 @@ export const getBotBySlug = cache(async (slug: string): Promise<BotView | null> 
   });
   return row ? botView(row) : null;
 });
+
+/**
+ * The bots of these ids, whatever their group or whether they are still
+ * active, weakest first: a profile names the rivals of games already played,
+ * an adventure's among them.
+ */
+export async function listBotsById(ids: readonly number[]): Promise<BotView[]> {
+  if (ids.length === 0) return [];
+  const rows = await getPlatformDb().bot.findMany({
+    where: { id: { in: [...ids] } },
+    orderBy: { elo: "asc" },
+    select: BOT_VIEW_SELECT,
+  });
+  return rows.map(botView);
+}

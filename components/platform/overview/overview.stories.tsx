@@ -32,12 +32,10 @@ import { LiveGameBanner } from "@/components/platform/sections/play/live-game/li
 import { BotCard } from "@/components/platform/sections/play/lobby/bot-card/bot-card.comp";
 import { BotSheet } from "@/components/platform/sections/play/lobby/bot-sheet/bot-sheet.comp";
 import { OpenGameNotice } from "@/components/platform/sections/play/lobby/open-game-notice/open-game-notice.comp";
-import { BotLevelCard } from "@/components/platform/sections/profile/bot-level-card/bot-level-card.comp";
-import { GamesSummaryCard } from "@/components/platform/sections/profile/games-summary-card/games-summary-card.comp";
-import { LevelSparkline } from "@/components/platform/sections/profile/level-sparkline/level-sparkline.comp";
 import { PlayedGamesTimeline } from "@/components/platform/sections/profile/played-games-timeline/played-games-timeline.comp";
-import { StudyStreakCard } from "@/components/platform/sections/profile/study-streak-card/study-streak-card.comp";
 import { PlayedGameCard } from "@/components/platform/shared/played-game-card/played-game-card.comp";
+import { ProfileOverviewSection } from "@/components/platform/sections/profile/profile-overview.section";
+import { PROFILE_FIXTURE_NOW, fixtureProfileView } from "@/lib/testing/fixtures/profile";
 import { PlatformBandChart } from "@/components/platform/shared/platform-band-chart/platform-band-chart.comp";
 import { PlatformBigNumber } from "@/components/platform/shared/platform-big-number/platform-big-number.comp";
 import { PlatformCompareBars } from "@/components/platform/shared/platform-compare-bars/platform-compare-bars.comp";
@@ -928,12 +926,6 @@ const STUDENT_APPS = buildPlatformApps(
 
 /** The instant the profile's examples are read from, so «hace 5 horas» stays the same. */
 const PROFILE_NOW = new Date("2026-10-08T18:00:00Z");
-
-/** A level that climbed over six games, for the profile's tiles. */
-const LEVEL_SERIES = [800, 825, 825, 850, 850, 875].map((level, index) => ({
-  at: new Date(Date.UTC(2026, 8, index + 1)),
-  level,
-}));
 
 /** «Guardar en un estudio» and its popup, as a played game and the analysis board mount them. */
 function SaveToStudyTrigger() {
@@ -2681,22 +2673,15 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   ))}
               </div>
             </Tile>
-            <Tile name="BotLevelCard" docs="platform-sections-profile-botlevelcard" width={400} height={216}>
-              <BotLevelCard level={{ level: 875, sampleSize: 10, series: LEVEL_SERIES }} isOwn />
-            </Tile>
-            <Tile name="LevelSparkline" docs="platform-sections-profile-levelsparkline" width={400} height={96}>
-              <div style={{ width: 240 }}>
-                <LevelSparkline points={LEVEL_SERIES} />
+            <Tile
+              name="ProfileOverviewSection"
+              docs="platform-sections-profile-profileoverviewsection"
+              width={1200}
+              height={1560}
+            >
+              <div className="platform-page platform-page_width_full platform-page_frame_bleed">
+                <ProfileOverviewSection profile={fixtureProfileView()} now={PROFILE_FIXTURE_NOW} />
               </div>
-            </Tile>
-            <Tile name="GamesSummaryCard" docs="platform-sections-profile-gamessummarycard" width={400} height={160}>
-              <GamesSummaryCard record={{ wins: 5, losses: 3, draws: 1, open: 1 }} />
-            </Tile>
-            <Tile name="StudyStreakCard" docs="platform-sections-profile-studystreakcard" width={400} height={160}>
-              <StudyStreakCard
-                streak={{ streak: { days: 21, studiedToday: true }, daysThisWeek: 4, minutesThisWeek: 95 }}
-                isOwn
-              />
             </Tile>
             <Tile
               name="PlayedGamesTimeline"
