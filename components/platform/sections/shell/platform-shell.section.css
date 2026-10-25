@@ -30,6 +30,14 @@
     }
   }
 
+  /* A page that is the whole window (`platform-page_chrome_none`, the
+     adventure's map since 2026-10-25, the owner's «Modo aventura a pantalla
+     completa: sin el header de la plataforma, el mapa es el juego»): no bar
+     at all; the page brings its own way out. */
+  &:has(.platform-page_chrome_none) .platform-shell__bar {
+    display: none;
+  }
+
   /* The page's drawing and name take the wordmark's place, as a Google
      product names itself; where no tool names the page (a lesson), the
      wordmark stays. */

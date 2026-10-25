@@ -18,11 +18,14 @@ interface MapHudProps {
 }
 
 /**
- * What stays on the window over the map, under the platform's bar: the way back
- * to «Jugar» (which holds the shelf of notebooks since 2026-10-25), the zone one is in (it changes as the map
- * scrolls and the screen reader hears it) and how far the person is. It is
- * laid out as a row of paper tags; the row lets the map's clicks through
- * and only its tags catch them.
+ * What stays on the window over the map: the way out, the zone one is in (it
+ * changes as the map scrolls and the screen reader hears it) and how far the
+ * person is. Since 2026-10-25 the map is the whole window — the owner's
+ * «Modo aventura a pantalla completa: sin el header de la plataforma, el mapa
+ * es el juego» —, so the row sits at its top and «Salir del modo aventura» is
+ * the way back to «Jugar», which holds the shelf of notebooks too. It is laid
+ * out as a row of paper tags; the row lets the map's clicks through and only
+ * its tags catch them.
  */
 export function MapHud({ zone, beaten, total, stars, isRising = false }: MapHudProps) {
   return (
@@ -31,7 +34,7 @@ export function MapHud({ zone, beaten, total, stars, isRising = false }: MapHudP
         <div className="map-hud__links">
           <Link href={platformRoutes.play} className="platform-button platform-button_size_sm">
             <ChevronLeftIcon variant="classic-solid" className="platform-button__icon" />
-            <span className="map-hud__link-text">Jugar</span>
+            <span className="map-hud__link-text">Salir del modo aventura</span>
           </Link>
         </div>
 

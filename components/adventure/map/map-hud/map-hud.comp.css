@@ -1,6 +1,8 @@
-/* The row over the map. It sticks under the platform's bar (`--map-bar`,
-   which the map measures) and takes no height of its own: the map's first
-   pixel is under it. Its tags are paper; the buttons are the platform's. */
+/* The row over the map. It sticks to the window's top — under the
+   platform's bar where there is one (`--map-bar`, which the map measures;
+   the map page hides the bar since 2026-10-25, so it is 0) — and takes no
+   height of its own: the map's first pixel is under it. Its tags are paper;
+   the buttons are the platform's. */
 .map-hud {
   position: sticky;
   top: var(--map-bar, 70px);

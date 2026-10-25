@@ -1,5 +1,5 @@
 ---
-description: "The row over the map: the way back to «Jugar» and to the shelf, the zone one is in and how far the person is."
+description: "The row over the map: «Salir del modo aventura» back to «Jugar», the zone one is in and how far the person is."
 ---
 
 # `MapHud`
@@ -11,11 +11,11 @@ description: "The row over the map: the way back to «Jugar» and to the shelf, 
 | Stylesheet | `map-hud.comp.css` → block `.map-hud`                                                                                            |
 | Story      | none of its own: drawn by the stories of [`AdventureMap`](/components/adventure/map/adventure-map) (`adventure-map.stories.tsx`) |
 | Used by    | [`AdventureMap`](/components/adventure/map/adventure-map)                                                                        |
-| Uses       | `ChevronLeftIcon`, `BooksIcon`, `StampIcon`, `StarIcon`, `platformRoutes.play` and `platformRoutes.adventures`                   |
+| Uses       | `ChevronLeftIcon`, `StampIcon`, `StarIcon`, `platformRoutes.play`                                                                |
 
 ## Purpose
 
-What stays on the window over the map, under the platform's bar: «Jugar» and «Cuadernos» (platform buttons, small, with their icon on the left; on a phone only the icon shows and the text stays for a screen reader), the zone the middle of the window is over (a kraft tag with its kind and name, announced politely as it changes) and «4/12 rivales · ★ 9 estrellas» (read to a screen reader as a sentence). The row is sticky under the bar (`top: var(--map-bar, 70px)`, which `AdventureMap` measures) and takes no height, so the map's first pixel is under it; the row lets clicks through and only its tags catch them.
+What stays on the window over the map: «Salir del modo aventura» (a platform button, small, with its icon on the left; on a phone only the icon shows and the text stays for a screen reader), the zone the middle of the window is over (a kraft tag with its kind and name, announced politely as it changes) and «4/12 rivales · ★ 9 estrellas» (read to a screen reader as a sentence). Since 2026-10-25 the map is the whole window — the owner's «Modo aventura a pantalla completa: sin el header de la plataforma, el mapa es el juego»: its page carries `platform-page_chrome_none`, the shell hides its bar, and «Salir del modo aventura» is the way back to «Jugar» (which holds the shelf too, so «Cuadernos» went). The row is sticky at the top (`top: var(--map-bar, 70px)`, which `AdventureMap` measures from the bar, 0 when it is hidden) and takes no height, so the map's first pixel is under it; the row lets clicks through and only its tags catch them.
 
 ## Props
 
@@ -29,7 +29,7 @@ What stays on the window over the map, under the platform's bar: «Jugar» and �
 
 ## Markup & styling
 
-Block `.map-hud` (194 lines).
+Block `.map-hud` (196 lines).
 
 **Elements:** `.map-hud__row`, `__links`, `__link-text`, `__zone`, `__zone-kind`, `__zone-name`, `__score`, `__figure`, `__icon`, `__sr-only`
 

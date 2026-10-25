@@ -25,7 +25,13 @@ function victoryOf(value: string | undefined): number | null {
   return order >= 1 && order <= 12 ? order : null;
 }
 
-/** The map of an adventure: the journey drawn on paper, with the person's place on it. */
+/**
+ * The map of an adventure: the journey drawn on paper, with the person's place
+ * on it. Since 2026-10-25 it is the whole window, without the platform's bar
+ * (`platform-page_chrome_none`, the owner's «Modo aventura a pantalla
+ * completa»): the map is the game, and its row's «Salir del modo aventura»
+ * leads back to «Jugar».
+ */
 export default async function AdventureMapPage({ params, searchParams }: AdventureMapPageProps) {
   // Both switches before anything else: the adventure lives inside «Jugar».
   if (!PLAY_ENABLED || !ADVENTURE_ENABLED) notFound();
@@ -36,7 +42,7 @@ export default async function AdventureMapPage({ params, searchParams }: Adventu
   const errorMessage = studentErrorMessage(error);
 
   return (
-    <div className="platform-page platform-page_width_full platform-page_frame_bleed">
+    <div className="platform-page platform-page_width_full platform-page_frame_bleed platform-page_chrome_none">
       {errorMessage && <PlatformNotice message={errorMessage} />}
       <AdventureMapSection slug={adventureSlug} victory={victoryOf(victoria)} autoScroll={!errorMessage} />
     </div>

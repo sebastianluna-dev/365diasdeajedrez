@@ -42,7 +42,7 @@ It reads the session **only to show** who is logged in and which menu they get. 
 
 ## Markup & styling
 
-Block `.platform-shell` (196 lines). On a page of the new design system (`:has(.platform-workspace)`) the shell and its bar take Material 3's canvas (`--platform-m3-canvas`) and the bar loses its hairline, so bar, side column and canvas read as one ground.
+Block `.platform-shell` (204 lines). On a page of the new design system (`:has(.platform-workspace)`) the shell and its bar take Material 3's canvas (`--platform-m3-canvas`) and the bar loses its hairline, so bar, side column and canvas read as one ground. A page that is the whole window (`platform-page_chrome_none`: the adventure's map since 2026-10-25, the owner's «Modo aventura a pantalla completa») hides the bar altogether and brings its own way out.
 
 **Elements:** `.platform-shell__bar`, `.platform-shell__bar-inner`, `.platform-shell__logo` (the link), `.platform-shell__logo-image` (the `<svg>`, 20 px tall like the site's on desktop), `.platform-shell__logo-accent` (the "365", `--platform-logo-accent`: the red of the blog's header, the wordmark's accent on a light background), `.platform-shell__logo-word` and `.platform-shell__logo-marks` (`fill: currentColor`, the link's `--platform-text`), `.platform-shell__context` (the page's slot, which takes the room between the name and the tools), `.platform-shell__tools` (the tools menu and the avatar, pushed to the right edge by `margin-left: auto`), `.platform-shell__content`
 
