@@ -16,8 +16,6 @@ export interface BotScoreboardProps {
   wins: number;
   losses: number;
   draws: number;
-  /** `sm` for a card or a sheet, `md` under the board. */
-  size?: "sm" | "md";
 }
 
 /** «1 tabla», «3 tablas». */
@@ -28,16 +26,16 @@ const drawsText = (draws: number) => `${draws} ${draws === 1 ? "tabla" : "tablas
  * rival with your portraits and «2 – 1» large between them, the draws small
  * underneath. Only finished games with a result count (`countsForScore`).
  */
-export function BotScoreboard({ you, rival, wins, losses, draws, size = "md" }: BotScoreboardProps) {
+export function BotScoreboard({ you, rival, wins, losses, draws }: BotScoreboardProps) {
   const played = wins + losses + draws;
   return (
     <div
-      className={`bot-scoreboard bot-scoreboard_size_${size}`}
+      className="bot-scoreboard"
       role="group"
       aria-label={`Marcador contra ${rival.name}: ${wins} ganadas, ${losses} perdidas, ${drawsText(draws)}`}
     >
       <div className="bot-scoreboard__side">
-        <PlayerAvatar {...you.avatar} size={size === "sm" ? "md" : "lg"} />
+        <PlayerAvatar {...you.avatar} size="lg" />
         <span className="bot-scoreboard__name">{you.name}</span>
       </div>
 
@@ -51,7 +49,7 @@ export function BotScoreboard({ you, rival, wins, losses, draws, size = "md" }: 
       </div>
 
       <div className="bot-scoreboard__side">
-        <PlayerAvatar {...rival.avatar} size={size === "sm" ? "md" : "lg"} />
+        <PlayerAvatar {...rival.avatar} size="lg" />
         <span className="bot-scoreboard__name">
           {rival.name}
           {rival.elo !== undefined && <span className="bot-scoreboard__elo"> ≈ {rival.elo}</span>}

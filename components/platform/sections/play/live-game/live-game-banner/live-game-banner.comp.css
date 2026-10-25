@@ -1,12 +1,12 @@
-/* A warning band above the board: the reason, and «Recargar». */
+/* A warning band above the board, in the new design system's amber: the reason, and «Recargar». */
 .live-game-banner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--platform-space-3);
   padding: var(--platform-space-2) var(--platform-space-2) var(--platform-space-2) var(--platform-space-4);
-  border-radius: 8px;
-  background: var(--platform-warning-soft);
-  color: var(--platform-warning-ink);
+  border-radius: var(--md-sys-shape-corner-lg);
+  background: var(--platform-m3-warning-container);
+  color: var(--platform-m3-on-warning-container);
   font-size: var(--platform-type-sm);
 }

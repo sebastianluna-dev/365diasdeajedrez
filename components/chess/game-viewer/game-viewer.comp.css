@@ -787,6 +787,62 @@
       background: transparent;
     }
 
+    /* A game against a bot (2026-10-25): its end is said in the strips, in
+       Material's containers — won green, lost red, a draw grey —, the label
+       filled in the role's own colour; whose turn it is, a dot of the
+       primary. Never over the board. */
+    & .game-viewer__player_ending_win {
+      background: var(--platform-m3-success-container);
+
+      & .player-strip__status {
+        color: var(--platform-m3-on-success-container);
+      }
+    }
+
+    & .game-viewer__player_ending_loss {
+      background: var(--platform-m3-error-container);
+
+      & .player-strip__status {
+        color: var(--platform-m3-on-error-container);
+      }
+    }
+
+    & .game-viewer__player_ending_draw {
+      background: var(--platform-m3-container-high);
+    }
+
+    & .player-strip__ending {
+      border-radius: 1000px;
+
+      &.player-strip__ending_kind_win {
+        background: var(--platform-m3-success);
+        color: var(--platform-m3-on-success);
+      }
+
+      &.player-strip__ending_kind_loss {
+        background: var(--platform-m3-error);
+        color: var(--platform-m3-on-error);
+      }
+
+      &.player-strip__ending_kind_draw {
+        background: var(--platform-m3-panel);
+        color: var(--platform-m3-on-surface-variant);
+      }
+    }
+
+    & .player-strip__turn {
+      background: var(--platform-m3-outline-variant);
+
+      &.player-strip__turn_state_on {
+        background: var(--platform-m3-primary);
+      }
+    }
+
+    & .player-strip__elo,
+    & .player-strip__status {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
     & .game-viewer__board-footer {
       border-radius: var(--md-sys-shape-corner-lg);
       background: var(--platform-m3-container);

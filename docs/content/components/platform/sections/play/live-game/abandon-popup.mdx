@@ -17,6 +17,8 @@ description: "«¿Abandonas la partida?»: a small popup over a game against a b
 
 P1 + P3, chosen on 2026-10-08. Abandoning is not a destruction — the game stays, lost — so it is a `PlatformPopup` and not the bin's `PlatformConfirmPopup`, whose verbs are only «Eliminar» and «Quitar». «Seguir jugando» closes it; «Abandonar» (`_variant_danger`, «Abandonando…» while it runs) is a `<form>` over `onAbandon`, and the popup closes once the server has closed the game. «Rendirse» is never written: one verb, «Abandonar».
 
+On a game's page, in the new design system since 2026-10-25, the popup opens as Material's dialog (`lookOf`) and its answers are read from inside it (`usePlatformLook`): «Seguir jugando» `popupButton(look, "exit")`, «Abandonar» Material's text button in the error's red (`platform-md-error`), as a confirmation draws its action.
+
 ## Props
 
 | Prop        | Type                       | Required | Meaning                       |

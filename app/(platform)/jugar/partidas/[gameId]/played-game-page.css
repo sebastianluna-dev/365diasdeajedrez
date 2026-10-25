@@ -1,49 +1,81 @@
-/* A game being played is a workspace, as a study's game is: no big title, it
-   starts right under the bar and the board takes the height that is left —
-   the shell's bar (70px), the air under it less what is recovered here, the
-   compact head, and the two strips of a played game (a 40px portrait and
-   their padding). The floor keeps the board from becoming a stamp. */
+/* A game against a bot in the new design system, on `.platform-workspace`:
+   the panel holds what the game is — the eyebrow of an adventure's game, the
+   two names and a row of facts — over the viewer in its material look. */
 .played-game-page {
-  --played-game-head: calc(1.3 * var(--platform-type-lg) + var(--platform-space-3));
+  /* The board is measured by the window's height: all of it but the bar,
+     the canvas under the panel, the panel's padding, the head, the two
+     strips of a played game (a 40px portrait and their padding) and the
+     air between them. The floor keeps it from becoming a stamp. */
   --viewer-board-max: max(
     320px,
     calc(
-      100vh - 70px - (var(--platform-space-12) - var(--platform-space-5)) - var(--played-game-head) - 2 *
+      100vh - 70px - var(--platform-space-3) - 2 * var(--platform-space-6) - 64px - 2 *
         (40px + 2 * var(--platform-space-2)) - var(--platform-space-6)
     )
   );
-  margin-top: calc(-1 * var(--platform-space-5));
-  gap: var(--platform-space-3);
+  --viewer-panel-max: 440px;
+  --viewer-column-gap: var(--platform-space-6);
+
+  & .played-game-page__panel {
+    gap: var(--platform-space-4);
+  }
 
   & .played-game-page__head {
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--platform-space-1) var(--platform-space-3);
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--platform-space-2) var(--platform-space-4);
+  }
+
+  & .played-game-page__heading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+    min-width: 0;
+  }
+
+  & .played-game-page__eyebrow {
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--platform-m3-on-surface-variant);
   }
 
   & .played-game-page__title {
     margin: 0;
     font-family: var(--platform-font-display);
-    font-size: var(--platform-type-lg);
-    font-weight: 700;
+    font-size: var(--platform-type-xl);
+    font-weight: 600;
     line-height: 1.3;
+    color: var(--platform-m3-on-surface);
   }
 
-  & .played-game-page__meta {
-    font-size: var(--platform-type-xs);
-    color: var(--platform-text-muted);
+  /* The facts as small pills of the container: the page and attempt, the colour, the clock, the day. */
+  & .played-game-page__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
-  /* A game on a page of the notebook has no head of its own: the sheet's is
-     taller than this one, and its padding takes some of the height. */
-  &.played-game-page_framed {
-    --viewer-board-max: max(
-      320px,
-      calc(
-        100vh - 70px - (var(--platform-space-12) - var(--platform-space-5)) - 72px - 2 *
-          (40px + 2 * var(--platform-space-2)) - var(--platform-space-6) - 48px
-      )
-    );
+  & .played-game-page__fact {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 var(--platform-space-3);
+    border-radius: 1000px;
+    background: var(--platform-m3-container);
+    color: var(--platform-m3-on-surface-variant);
+    font-size: var(--platform-type-2xs);
+    white-space: nowrap;
+  }
+
+  @media (width < 1024px) {
+    --viewer-board-max: 600px;
   }
 }

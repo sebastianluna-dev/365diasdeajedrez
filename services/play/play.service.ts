@@ -184,12 +184,6 @@ export async function botScoreboardOf(userId: string, since: Date | null = null)
   return [...byBot.values()];
 }
 
-/** `userId`'s record against one bot. */
-export async function botScoreAgainst(userId: string, botId: number): Promise<BotScore> {
-  const scores = await botScoreboardOf(userId);
-  return scores.find((score) => score.botId === botId) ?? { botId, wins: 0, losses: 0, draws: 0, open: 0 };
-}
-
 /** «Nivel contra bots ≈ 850» and its sparkline (research/puntuacion.md §5). */
 export async function botLevelSummaryOf(userId: string): Promise<BotLevelSummary> {
   const viewer = await currentViewer();

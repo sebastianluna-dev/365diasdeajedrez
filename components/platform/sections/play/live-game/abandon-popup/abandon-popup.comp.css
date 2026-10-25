@@ -9,6 +9,20 @@
     color: var(--platform-text-muted);
   }
 
+  /* Inside Material's dialog (a game's page): its variant ink, and the two
+     text buttons close together at the right. */
+  .platform-popup_look_material & {
+    padding-top: 0;
+
+    & .abandon-popup__text {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    & .abandon-popup__foot {
+      gap: var(--platform-space-2);
+    }
+  }
+
   & .abandon-popup__foot {
     display: flex;
     justify-content: flex-end;

@@ -385,6 +385,15 @@ export const PlayOver: Story = {
   },
 };
 
+/**
+ * The same game over on a game's page in the new design system (`look="material"`, 2026-10-25): the strips tinted in
+ * Material's containers, the labels filled in the role's colour, and Material's buttons under the board.
+ */
+export const PlayOverMaterial: Story = {
+  name: "Play: over, material",
+  args: { ...PlayOver.args, look: "material" },
+};
+
 /** The analysis board's viewer in the new design system (`look="material"`), on the workspace's white panel. */
 const ANALYSIS_ARGS: Partial<ComponentProps<typeof GameViewer>> = {
   ...STUDY_ARGS,

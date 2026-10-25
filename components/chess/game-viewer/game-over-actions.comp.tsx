@@ -7,6 +7,7 @@ import { ArrowRightIcon } from "@/components/icons/arrow-right-icon.comp";
 import { ChessBoardIcon } from "@/components/icons/chess-board-icon.comp";
 import { FloppyDiskIcon } from "@/components/icons/floppy-disk-icon.comp";
 import { MagnifyingGlassChartIcon } from "@/components/icons/magnifying-glass-chart-icon.comp";
+import { mdButton } from "@/lib/material/material-classes";
 import "./game-over-actions.comp.css";
 
 /** What the game's page gives the viewer for when a game against a bot is over. */
@@ -36,32 +37,34 @@ interface GameOverActionsProps extends GameOverActionsData {
  * What can be done once a game against a bot is over, UNDER the board (G6):
  * nothing covers the board, the result is already in the strips, and the game
  * stays there to be gone through. The way on (`onwards`) is the one main
- * action, and the scoreboard against that rival closes it.
+ * action, and the scoreboard against that rival closes it. In the new design
+ * system, as the game's page is (2026-10-25): Material's buttons — the way on
+ * filled, «Analizar» tonal, the rest outlined.
  */
 export function GameOverActions({ scoreboard, onwards, analysisBoardHref, onSave, onAnalyse }: GameOverActionsProps) {
   return (
     <div className="game-over-actions">
       <div className="game-over-actions__buttons">
         {onwards && (
-          <Link href={onwards.href} className="platform-button platform-button_variant_accent">
+          <Link href={onwards.href} className={mdButton("filled", "sm")}>
             {onwards.label}
-            <ArrowRightIcon variant="classic-solid" className="platform-button__icon" />
+            <ArrowRightIcon variant="classic-solid" className="platform-md-icon" />
           </Link>
         )}
         {onAnalyse && (
-          <button type="button" className="platform-button" onClick={onAnalyse}>
-            <MagnifyingGlassChartIcon variant="classic-solid" className="platform-button__icon" />
+          <button type="button" className={mdButton("tonal", "sm")} onClick={onAnalyse}>
+            <MagnifyingGlassChartIcon variant="classic-solid" className="platform-md-icon" />
             Analizar
           </button>
         )}
         {analysisBoardHref && (
-          <Link href={analysisBoardHref} className="platform-button">
-            <ChessBoardIcon variant="classic-solid" className="platform-button__icon" />
+          <Link href={analysisBoardHref} className={mdButton("outlined", "sm")}>
+            <ChessBoardIcon variant="classic-solid" className="platform-md-icon" />
             Tablero de análisis
           </Link>
         )}
-        <button type="button" className="platform-button" onClick={onSave}>
-          <FloppyDiskIcon variant="classic-solid" className="platform-button__icon" />
+        <button type="button" className={mdButton("outlined", "sm")} onClick={onSave}>
+          <FloppyDiskIcon variant="classic-solid" className="platform-md-icon" />
           Guardar en un estudio
         </button>
       </div>

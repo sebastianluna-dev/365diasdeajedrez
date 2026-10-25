@@ -8,5 +8,9 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--platform-space-2);
+
+    & a {
+      text-decoration: none;
+    }
   }
 }

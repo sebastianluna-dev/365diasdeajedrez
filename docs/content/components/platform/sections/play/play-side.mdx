@@ -6,12 +6,12 @@ description: "The side column of «Jugar» in the new design system: the main ac
 
 Also exports the type `PlaySideAction`.
 
-|            |                                                                       |
-| ---------- | --------------------------------------------------------------------- |
-| File       | `components/platform/sections/play/play-side/play-side.comp.tsx`      |
-| Kind       | Server Component                                                      |
-| Stylesheet | `play-side.comp.css` → block `.play-side`                             |
-| Used by    | [`PlayHome`](/components/platform/sections/play/play-home) (`/jugar`) |
+|            |                                                                                                                                                                       |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/play/play-side/play-side.comp.tsx`                                                                                                      |
+| Kind       | Server Component                                                                                                                                                      |
+| Stylesheet | `play-side.comp.css` → block `.play-side`                                                                                                                             |
+| Used by    | [`PlayHome`](/components/platform/sections/play/play-home) (`/jugar`) and `app/(platform)/jugar/partidas/[gameId]/page.tsx` (a game's page, for whoever holds a seat) |
 
 It has no story of its own: [`PlayHome`](/components/platform/sections/play/play-home)'s stories draw it whole, with and without a FAB and with no games.
 
@@ -19,7 +19,7 @@ It has no story of its own: [`PlayHome`](/components/platform/sections/play/play
 
 The owner's «M4 · /jugar» side column (2026-10-25), drawn on the workspace's canvas as `PlatformSideNav` draws its own — but its rows are games, two lines each with a result's disc, which the nav's links do not carry:
 
-- **The main action**, Material's extended FAB (`mdFab("primary-container")`), flat at rest and onto a shadow under the pointer, with a line under it: «Continuar la partida» on `/jugar` while a game is open («En curso contra … · con blancas · 14 jugadas»). None when there is nothing to go on with.
+- **The main action**, Material's extended FAB (`mdFab("primary-container")`), flat at rest and onto a shadow under the pointer, with a line under it: «Continuar la partida» on `/jugar` while a game is open («En curso contra … · con blancas · 14 jugadas»); «Volver al mapa» on a game of an adventure, with the notebook and the place under it, or «Ir a Jugar» on an old free game. None when there is nothing to go on with.
 - **«Tus partidas»**: the last games, each a link to its page — the disc (G green, P red, T grey, a dot for one in course, a dash for one cancelled; the letter is said to a screen reader as «Ganada», «Perdida», «Tablas»), «Ganaste contra Tere», «Perdiste contra …», «Tablas con …», and when and how many moves. The game on screen is lit in the secondary container (`aria-current`). Under them the record of every game — «8 G 5 P 2 T», said as «8 ganadas, 5 perdidas, 2 tablas» — and «Ver todas en tu perfil», a text button to the profile's «Partidas». With no games, one line says they will appear.
 
 ## Props

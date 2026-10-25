@@ -11,7 +11,7 @@ const meta = {
         component: `
 The record against one rival as a match's scoreboard (H6): the two portraits at
 the ends, «2 – 1» large between them, the draws small underneath. Under the
-board once a game ends, and in a bot's sheet before starting one.
+board once a game ends, in the new design system's container.
 
 Source: \`components/chess/bot-scoreboard/bot-scoreboard.comp.tsx\`.
 Reference page: [Components › BotScoreboard](/components/chess/bot-scoreboard) in the docs site.
@@ -25,11 +25,10 @@ Reference page: [Components › BotScoreboard](/components/chess/bot-scoreboard)
     wins: 2,
     losses: 1,
     draws: 1,
-    size: "md",
   },
   decorators: [
     (Story) => (
-      <div style={{ maxWidth: 420, padding: "var(--platform-space-3)", background: "var(--platform-bg)" }}>
+      <div style={{ maxWidth: 420, padding: "var(--platform-space-3)", background: "var(--platform-m3-panel)" }}>
         <Story />
       </div>
     ),
@@ -44,6 +43,3 @@ export const Default: Story = {};
 
 /** Before the first game against a bot: 0 – 0 and «Primera partida». */
 export const FirstGame: Story = { args: { wins: 0, losses: 0, draws: 0 } };
-
-/** The small one, inside a bot's sheet. */
-export const Small: Story = { args: { size: "sm" } };

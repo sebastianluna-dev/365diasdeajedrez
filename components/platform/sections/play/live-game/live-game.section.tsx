@@ -129,6 +129,7 @@ export function LiveGameSection({
         pgn={pgn}
         initialPath={leafPath(state.sans.length)}
         orientation={game.viewerSeat ?? "white"}
+        look="material"
         controls="panel"
         players={players}
         interaction={seated && !over ? "play" : "read"}

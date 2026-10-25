@@ -1089,13 +1089,22 @@ export function GameViewer({
             {isPlaying && play?.onAbandon && play.status !== "over" && (
               <div className="game-viewer__toolbar">
                 <div className="game-viewer__toolbar-end">
+                  {/* In the material look (a game's page, 2026-10-25), Material's
+                      outlined button in the error's red. */}
                   <button
                     type="button"
-                    className="platform-button platform-button_variant_danger platform-button_size_sm"
+                    className={
+                      material
+                        ? `${mdButton("outlined", "sm")} platform-md-error`
+                        : "platform-button platform-button_variant_danger platform-button_size_sm"
+                    }
                     onClick={play.onAbandon}
                     disabled={play.status === "halted"}
                   >
-                    <FlagIcon variant="classic-solid" className="platform-button__icon" />
+                    <FlagIcon
+                      variant="classic-solid"
+                      className={material ? "platform-md-icon" : "platform-button__icon"}
+                    />
                     Abandonar
                   </button>
                 </div>
