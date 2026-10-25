@@ -1,0 +1,25 @@
+/* «Herramientas»' panel: the rows of tools, and the strip about «Atajo» at
+   the panel's foot (the panel is as tall as the window at least). */
+.tools-launcher {
+  & .tools-launcher__hint {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    margin-top: auto;
+    padding: var(--platform-space-3) var(--platform-space-4);
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--platform-m3-primary-wash);
+    color: var(--platform-m3-on-surface);
+  }
+
+  & .tools-launcher__hint-icon {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    color: var(--platform-m3-primary);
+  }
+
+  & .tools-launcher__hint-text {
+    margin: 0;
+  }
+}

@@ -1,0 +1,290 @@
+/* «Herramientas»: the title with the search at its right, and the rows of
+   tools under it, each a column saying what they are for beside its tiles.
+   Under 1024px the column goes above its tiles; under 768px the search goes
+   under the title. */
+.tools-finder {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-5);
+
+  & .tools-finder__top {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--platform-space-6);
+  }
+
+  & .tools-finder__head {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & .tools-finder__title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-3xl);
+    font-weight: 500;
+    line-height: 1.25;
+  }
+
+  & .tools-finder__subtitle {
+    margin: var(--platform-space-0-5) 0 0;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* Material's search bar, as the catalog's: a pill in the container's grey.
+     A filter, not a form, so it never shows an error; the pill itself says
+     where the focus is. */
+  & .tools-finder__search {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    width: 360px;
+    height: 48px;
+    padding: 0 var(--platform-space-5);
+    border-radius: 1000px;
+    box-sizing: border-box;
+    background: var(--platform-m3-container-high);
+    color: var(--platform-m3-on-surface-variant);
+
+    &:focus-within {
+      background: var(--platform-m3-panel);
+      box-shadow: var(--platform-shadow-card);
+    }
+  }
+
+  & .tools-finder__search-icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+  }
+
+  & .tools-finder__input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    color: var(--platform-m3-on-surface);
+    font: inherit;
+    font-size: var(--platform-type-sm);
+
+    &::placeholder {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  & .tools-finder__groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-5);
+  }
+
+  & .tools-finder__group {
+    display: grid;
+    grid-template-columns: 184px minmax(0, 1fr);
+    gap: var(--platform-space-6);
+
+    & + .tools-finder__group {
+      padding-top: var(--platform-space-5);
+      border-top: 1px solid var(--platform-m3-divider);
+    }
+  }
+
+  & .tools-finder__group-title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-lg);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  & .tools-finder__group-line {
+    margin: var(--platform-space-1) 0 0;
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .tools-finder__count {
+    margin: var(--platform-space-2) 0 0;
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+  }
+
+  & .tools-finder__tiles {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--platform-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .tools-finder__item {
+    display: flex;
+    min-width: 0;
+  }
+
+  & .tools-finder__tile {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-3) var(--platform-space-3) var(--platform-space-4);
+    border: 1px solid var(--platform-m3-row-edge);
+    border-radius: var(--md-sys-shape-corner-md);
+    color: var(--platform-m3-on-surface);
+    text-decoration: none;
+
+    &:hover {
+      background: var(--platform-m3-container);
+    }
+
+    &:focus-visible {
+      outline: 3px solid var(--platform-m3-primary);
+      outline-offset: 2px;
+    }
+  }
+
+  & .tools-finder__well {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 60px;
+    margin-bottom: var(--platform-space-2);
+    border-radius: var(--md-sys-shape-corner-md);
+    background: var(--platform-m3-container);
+  }
+
+  & .tools-finder__tile:hover .tools-finder__well {
+    background: var(--platform-m3-panel);
+  }
+
+  & .tools-finder__art {
+    width: 48px;
+    height: 40px;
+    transition: transform 200ms ease-out;
+  }
+
+  /* Pointed at, the drawing tilts and rises and its moving piece bobs, as in the menu. */
+  & .tools-finder__tile:hover .tools-finder__art,
+  & .tools-finder__tile:focus-visible .tools-finder__art {
+    transform: translateY(-3px) rotate(-4deg) scale(1.06);
+  }
+
+  & .tools-finder__tile:hover .nav-art__move,
+  & .tools-finder__tile:focus-visible .nav-art__move {
+    animation: tools-finder-bob 900ms ease-in-out infinite;
+  }
+
+  & .tools-finder__pin {
+    position: absolute;
+    top: var(--platform-space-2);
+    right: var(--platform-space-2);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-0-5) var(--platform-space-2);
+    border-radius: 1000px;
+    background: var(--platform-m3-panel);
+    color: var(--platform-m3-primary);
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+  }
+
+  & .tools-finder__pin-icon {
+    width: 10px;
+    height: 10px;
+  }
+
+  & .tools-finder__name {
+    font-size: var(--platform-type-sm);
+    font-weight: 700;
+  }
+
+  & .tools-finder__line {
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .tools-finder__empty {
+    margin: 0;
+    color: var(--platform-m3-on-surface-variant);
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .tools-finder__art {
+      transition: none;
+    }
+
+    & .tools-finder__tile:hover .tools-finder__art,
+    & .tools-finder__tile:focus-visible .tools-finder__art {
+      transform: none;
+    }
+
+    & .tools-finder__tile:hover .nav-art__move,
+    & .tools-finder__tile:focus-visible .nav-art__move {
+      animation: none;
+    }
+  }
+
+  @media (width < 1280px) {
+    & .tools-finder__tiles {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (width < 1024px) {
+    & .tools-finder__group {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--platform-space-3);
+    }
+  }
+
+  @media (width < 768px) {
+    & .tools-finder__top {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    & .tools-finder__search {
+      width: auto;
+    }
+
+    & .tools-finder__tiles {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* On a phone, one tile to a row: two would leave «Atajo» over the drawing. */
+  @media (width < 640px) {
+    & .tools-finder__title {
+      font-size: var(--platform-type-2xl);
+    }
+
+    & .tools-finder__tiles {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}
+
+/* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */
+@keyframes tools-finder-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6%);
+  }
+}

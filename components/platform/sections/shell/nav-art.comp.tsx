@@ -95,26 +95,6 @@ function ExercisesArt({ clipId }: { clipId: string }) {
   );
 }
 
-/** «Ejercicios por tema»: two labels, the red one on top. */
-function TopicsArt() {
-  return (
-    <>
-      <g transform="rotate(12 130 110)">
-        <path d="M70 84 H160 L188 112 L160 140 H70 Z" fill="#a57c52" />
-        <circle cx="86" cy="112" r="7" fill="#fbf4e6" />
-      </g>
-      <g className="nav-art__move">
-        <g transform="rotate(-8 120 126)">
-          <path d="M56 96 H150 L180 126 L150 156 H56 Z" fill="#a81e22" />
-          <circle cx="72" cy="126" r="7" fill="#fbf4e6" />
-          <rect x="92" y="117" width="56" height="8" rx="3" fill="#fbf4e6" opacity="0.85" />
-          <rect x="92" y="131" width="36" height="6" rx="3" fill="#fbf4e6" opacity="0.6" />
-        </g>
-      </g>
-    </>
-  );
-}
-
 /** «Puzzle Rush»: a stopwatch with the red slice of the time gone. */
 function RushArt() {
   return (
@@ -531,11 +511,32 @@ function HomeArt() {
   );
 }
 
+/** One square of «Herramientas»' nine, by its column and row. */
+function ToolsSquare({ column, row, fill }: { column: number; row: number; fill: string }) {
+  return <rect x={1 + column * 12} y={1 + row * 12} width="10" height="10" rx="2" fill={fill} />;
+}
+
+/**
+ * «Herramientas», the page of every tool: nine squares, as the menu's button
+ * draws them, in the board's cream and wood, the accent's red at two corners
+ * and the ink in the middle. It names a page and is in no tile, so nothing of
+ * it moves.
+ */
+function ToolsArt() {
+  const fills = ["#a81e22", "#d2a46f", "#8f6a45", "#d2a46f", "#2a2420", "#d2a46f", "#8f6a45", "#d2a46f", "#a81e22"];
+  return (
+    <>
+      {fills.map((fill, index) => (
+        <ToolsSquare key={index} column={index % 3} row={Math.floor(index / 3)} fill={fill} />
+      ))}
+    </>
+  );
+}
+
 /** Each drawing's frame: cut close to what it draws, so it fills its slot. */
 const VIEW_BOXES: Record<PlatformNavArt, string> = {
   play: "14 26 212 168",
   exercises: "28 -4 222 234",
-  topics: "40 52 164 136",
   rush: "46 36 148 170",
   learn: "40 36 270 176",
   studies: "28 56 184 160",
@@ -554,6 +555,7 @@ const VIEW_BOXES: Record<PlatformNavArt, string> = {
   series: "34 40 180 160",
   import: "38 26 164 184",
   home: "36 36 168 168",
+  tools: "0 0 36 36",
 };
 
 /**
@@ -578,7 +580,6 @@ export function NavArt({ art, className }: NavArtProps) {
     >
       {art === "play" && <PlayArt />}
       {art === "exercises" && <ExercisesArt clipId={clipId} />}
-      {art === "topics" && <TopicsArt />}
       {art === "rush" && <RushArt />}
       {art === "learn" && <LearnArt />}
       {art === "studies" && <StudiesArt />}
@@ -597,6 +598,7 @@ export function NavArt({ art, className }: NavArtProps) {
       {art === "series" && <SeriesArt />}
       {art === "import" && <ImportArt />}
       {art === "home" && <HomeArt />}
+      {art === "tools" && <ToolsArt />}
     </svg>
   );
 }

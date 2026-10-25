@@ -107,6 +107,7 @@ import { SAMPLE_EXERCISES } from "@/constants/platform/exercise-samples.const";
 import { PlatformAppsMenu } from "@/components/platform/sections/shell/platform-apps-menu.comp";
 import { SaveToStudyPopup } from "@/components/platform/shared/save-to-study-popup/save-to-study-popup.comp";
 import { PlayVsEngine } from "@/components/platform/sections/tools/analysis-board/play-vs-engine/play-vs-engine.comp";
+import { ToolsLauncherSection } from "@/components/platform/sections/tools/launcher/tools-launcher.section";
 import { PositionInput } from "@/components/platform/sections/tools/analysis-board/position-input/position-input.comp";
 import { AuthorAvatar } from "@/components/platform/sections/staff/courses/authors-manager/author-avatar.comp";
 import { CourseSourceForm } from "@/components/platform/sections/staff/courses/course-sources/course-source-form.comp";
@@ -901,7 +902,13 @@ function MovedPageFrame({ children }: { children: ReactNode }) {
 /** The teacher's tools, as the shell builds them with everything on. */
 const TEACHER_APPS = buildPlatformApps(
   { isTeacher: true, isStaff: false },
-  { play: true, analysisBoard: true, trainer: true, exercises: "all" },
+  { play: true, adventure: true, analysisBoard: true, trainer: true, exercises: "all" },
+);
+
+/** The student's tools, as «Herramientas» builds them with everything on. */
+const STUDENT_APPS = buildPlatformApps(
+  { isTeacher: false, isStaff: false },
+  { play: true, adventure: true, analysisBoard: true, trainer: true, exercises: "all" },
 );
 
 /** The instant the profile's examples are read from, so «hace 5 horas» stays the same. */
@@ -2581,6 +2588,18 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   onStart={() => undefined}
                   onStop={() => undefined}
                 />
+              </div>
+            </Tile>
+            <Tile
+              name="ToolsLauncherSection"
+              docs="platform-sections-tools-launcher-toolslaunchersection"
+              width={1100}
+              height={760}
+            >
+              <div className="platform-page platform-page_width_full platform-page_frame_bleed">
+                <div className="platform-workspace platform-workspace_side_none">
+                  <ToolsLauncherSection apps={STUDENT_APPS} />
+                </div>
               </div>
             </Tile>
             <Tile name="SaveToStudyPopup" docs="platform-shared-savetostudypopup" width={400} height={112}>

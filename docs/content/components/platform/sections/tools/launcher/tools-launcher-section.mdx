@@ -1,0 +1,76 @@
+---
+description: "«Herramientas» (/herramientas), in the new design system: every tool of the role in rows by what it is for, each tile with its drawing, its name and its line, «Atajo» on the ones of the menu's «Tus atajos», and a search that narrows them as one types."
+---
+
+# `ToolsLauncherSection`
+
+|            |                                                                                                                                                                                                                                                |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/tools/launcher/tools-launcher.section.tsx`                                                                                                                                                                       |
+| Pieces     | `tools-finder.comp.tsx` (`ToolsFinder`: the title, the search and the rows)                                                                                                                                                                    |
+| Kind       | Server Component; `ToolsFinder` is the client leaf, whose state is the query                                                                                                                                                                   |
+| Stylesheet | `tools-launcher.section.css` → block `.tools-launcher`; `tools-finder.comp.css` → block `.tools-finder`                                                                                                                                        |
+| Story      | `tools-launcher.stories.tsx` (`platform/sections/tools/launcher/ToolsLauncherSection`): the student with everything on and with everything off, the teacher, the staff, a search («analisis», without its accent) and a search nothing matches |
+| Used by    | `/herramientas` (`app/(platform)/herramientas/page.tsx`)                                                                                                                                                                                       |
+| Composes   | [`NavArt`](/components/platform/sections/shell/nav-art)                                                                                                                                                                                        |
+| Uses       | `groupPlatformApps`, `PlatformApps`, `PlatformToolGroup` from `constants/platform/nav-items.const`; `GridIcon`, `MagnifyingGlassIcon`, `CheckIcon`                                                                                             |
+
+## Purpose
+
+The page of every tool, as the owner drew it on 2026-10-25 («Herramientas A · Lanzador», in the new design system). Until then `/herramientas` only redirected to the analysis board, which keeps its own address (`/herramientas/tablero-de-analisis`). The page bleeds onto the canvas on `.platform-workspace` with **no side column** (`platform-workspace_side_none`), and the bar names it «Herramientas» with the nine squares (`TOOLS_PAGE`, [`PlatformPageName`](/components/platform/sections/shell/platform-page-name)). It is reached from «Ver todas las herramientas» at the foot of the tools menu ([`PlatformAppsMenu`](/components/platform/sections/shell/platform-apps-menu)).
+
+**Its tools are the menu's.** The page composes them exactly as the shell does — `buildPlatformApps({ ...roles, hasExerciseSource })`, the widest role's list behind the same switches (`EXERCISES_ENABLED`, `PLAY_ENABLED`, `ADVENTURE_ENABLED`, `ANALYSIS_BOARD_ENABLED`, `MOVE_TRAINER_ENABLED`) — so a teacher or the staff see here what their menu lists, and no tile is a tool the menu does not have. Each tool of that list carries its row (`group`) and its one line (`description`), and `groupPlatformApps` sorts them into the rows of `PLATFORM_APP_GROUPS`, leaving out a row with nothing in it:
+
+- **Student:** «Practicar» («Jugar», «Ejercicios», «Puzzle Rush»), «Aprender» («Cursos», «Clases», «Estudiar») and «Analizar» («Tablero de análisis», «Explorador», «Entrenador»).
+- **Teacher:** «Enseñar» (the panel, the classes, the calendar, the students, the bank, the academy's classes and «Mi ficha»), «Aprender» and «Analizar».
+- **Staff:** «Administrar» (the panel, the classes, the students, the teachers and the courses) and «Banco de ejercicios» («Ejercicios», «Revisión», «Series», «Importar»).
+
+In the panel (`ToolsFinder`):
+
+- **The title**, «Todas tus herramientas», and «Las mismas del botón de cuadritos, con lo que hace cada una.», with **the search** at its right: Material's search bar, as the catalog's (a pill in the container's grey that turns white with a shadow while it has the focus). It is a filter, not a form: it narrows the tiles as one types, by the tool's name or its line, ignoring case and accents («analisis» finds «Tablero de análisis»), never validates nor errs. A row with nothing left goes; with nothing left at all, «Ninguna herramienta coincide con «…».» (in a `role="status"`, always in the page so it is announced).
+- **The rows**, in a `<nav aria-label="Herramientas">`: at the left a column with what the row is for («Para resolver y jugar, a tu ritmo.») and how many tools it shows («3 herramientas»), and the tiles four to a row. A tile is a link, the whole of it: the tool's drawing ([`NavArt`](/components/platform/sections/shell/nav-art), the one of its tile in the menu) on a grey well, its name and its line. Pointed at or focused, the well turns white and the drawing tilts and its moving piece bobs, as in the menu; stilled under reduced motion.
+- **«Atajo»**, a white pill with a check at the well's corner, on the tools of the menu's «Tus atajos» (`isShortcut`: the role's first `PLATFORM_SHORTCUTS`), and at the panel's foot a strip in the primary's wash with the nine squares: «Las marcadas como **Atajo** son las seis que ves primero al abrir el menú de cuadritos de la barra.» (the count is the shortcuts' own).
+
+**From the design, adapted** (2026-10-25): «Ejercicios» and «Ejercicios por tema» are one tool, «Ejercicios» (the owner's change: the topic is chosen in «Ejercicios»' side column, and `/ejercicios/temas` redirects there), so «Practicar» holds three tools and «Estudiar» is now among «Tus atajos». «Jugar»'s line says «Contra un bot o en el modo aventura.» (the canvas also said «otra persona», which the platform does not have) and drops the adventure with its switch off. The canvas drew only the student's page; the teacher's and the staff's rows are named from what their tools are for.
+
+## Props
+
+| Prop   | Type           | Required | Meaning                                                                              |
+| ------ | -------------- | -------- | ------------------------------------------------------------------------------------ |
+| `apps` | `PlatformApps` | yes      | The role's tools, `{ shortcuts, more }`, as the menu has them (`buildPlatformApps`). |
+
+## Markup & styling
+
+Block `.tools-launcher` (25 lines), on `.platform-workspace__panel`: `__hint`, `__hint-icon`, `__hint-text`.
+
+Block `.tools-finder` (290 lines).
+
+**Elements:** `.tools-finder__top`, `.tools-finder__head`, `.tools-finder__title`, `.tools-finder__subtitle`, `.tools-finder__search`, `.tools-finder__search-icon`, `.tools-finder__input`, `.tools-finder__groups`, `.tools-finder__group`, `.tools-finder__what`, `.tools-finder__group-title`, `.tools-finder__group-line`, `.tools-finder__count`, `.tools-finder__tiles`, `.tools-finder__item`, `.tools-finder__tile`, `.tools-finder__well`, `.tools-finder__art`, `.tools-finder__pin`, `.tools-finder__pin-icon`, `.tools-finder__name`, `.tools-finder__line`, `.tools-finder__empty`
+
+**Other classes it renders:** `.platform-workspace__panel`, `.nav-art__move` (animated on the tile's hover).
+
+**Breakpoints:** `(width < 1280px)` — three tiles to a row. `(width < 1024px)` — each row's column above its tiles. `(width < 768px)` — the search under the title and as wide, two tiles to a row. `(width < 640px)` — the title a step down, one tile to a row.
+
+**Tokens:** `--platform-m3-*` (panel, containers, divider, row edge, primary and its wash, on-surface and its variant), `--platform-shadow-card`, `--md-sys-shape-corner-md`/`-lg`, `--platform-font-display`.
+
+## Usage
+
+From `app/(platform)/herramientas/page.tsx`:
+
+```tsx
+await getCurrentUser();
+const roles = await getSessionRoles();
+const hasExerciseSource = needsStudentExerciseAccess(roles) ? await getStudentExerciseAccess() : false;
+const apps = buildPlatformApps({ ...roles, hasExerciseSource });
+
+<div className="platform-page platform-page_width_full platform-page_frame_bleed">
+  <div className="platform-workspace platform-workspace_side_none">
+    <ToolsLauncherSection apps={apps} />
+  </div>
+</div>;
+```
+
+## Related
+
+- [`PlatformAppsMenu`](/components/platform/sections/shell/platform-apps-menu), the same tools in the bar's menu.
+- `constants/platform/nav-items.const.ts` and its test, which cover the rows, the shortcuts and that each role's page shows what its menu does.

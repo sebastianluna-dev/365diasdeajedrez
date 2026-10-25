@@ -1,19 +1,34 @@
 import { describe, expect, it } from "vitest";
 import {
   activeApp,
+  groupPlatformApps,
   buildPlatformApps,
   HOME_PAGE,
   needsStudentExerciseAccess,
   pageNameOf,
+  PLATFORM_APP_GROUPS,
   SETTINGS_PAGE,
   PLATFORM_SHORTCUTS,
+  TOOLS_PAGE,
   type PlatformApps,
   type PlatformNavFeatures,
   type PlatformNavRoles,
 } from "./nav-items.const";
 
-const ALL_ON: PlatformNavFeatures = { play: true, analysisBoard: true, trainer: true, exercises: "all" };
-const ALL_OFF: PlatformNavFeatures = { play: false, analysisBoard: false, trainer: false, exercises: false };
+const ALL_ON: PlatformNavFeatures = {
+  play: true,
+  adventure: true,
+  analysisBoard: true,
+  trainer: true,
+  exercises: "all",
+};
+const ALL_OFF: PlatformNavFeatures = {
+  play: false,
+  adventure: false,
+  analysisBoard: false,
+  trainer: false,
+  exercises: false,
+};
 const STUDENT = { isTeacher: false, isStaff: false };
 const TEACHER = { isTeacher: true, isStaff: false };
 const STAFF = { isTeacher: false, isStaff: true };
@@ -29,7 +44,6 @@ describe("buildPlatformApps", () => {
     expect(labels(STUDENT, ALL_ON)).toEqual([
       "Jugar",
       "Ejercicios",
-      "Ejercicios por tema",
       "Puzzle Rush",
       "Cursos",
       "Clases",
@@ -38,7 +52,8 @@ describe("buildPlatformApps", () => {
       "Explorador",
       "Entrenador",
     ]);
-    expect(hrefsOf(buildPlatformApps(STUDENT, ALL_ON))).toContain("/ejercicios/temas");
+    // «Ejercicios por tema» is «Ejercicios» itself since 2026-10-25: its old address only redirects.
+    expect(hrefsOf(buildPlatformApps(STUDENT, ALL_ON))).not.toContain("/ejercicios/temas");
   });
 
   it("parte la lista en «Tus atajos», dos filas de tres, y el resto", () => {
@@ -47,10 +62,10 @@ describe("buildPlatformApps", () => {
     expect(apps.shortcuts.map((app) => app.label)).toEqual([
       "Jugar",
       "Ejercicios",
-      "Ejercicios por tema",
       "Puzzle Rush",
       "Cursos",
       "Clases",
+      "Estudiar",
     ]);
     // With less switched on, the shortcuts are what there is, and nothing is left under them.
     const few = buildPlatformApps(STUDENT, ALL_OFF);
@@ -189,7 +204,7 @@ describe("activeApp", () => {
     expect(hrefOf(profesor, "/profesor")).toBe("/profesor");
     expect(hrefOf(profesor, "/profesor/ejercicios/abc")).toBe("/profesor/ejercicios");
     expect(hrefOf(alumno, "/ejercicios/series/abc/2")).toBe("/ejercicios");
-    expect(hrefOf(alumno, "/ejercicios/temas")).toBe("/ejercicios/temas");
+    expect(hrefOf(alumno, "/ejercicios/temas")).toBe("/ejercicios");
     expect(hrefOf(staff, "/administracion/cursos/abc/capitulos/def")).toBe("/administracion/cursos");
     expect(hrefOf(staff, "/administracion/ejercicios/revision")).toBe("/administracion/ejercicios/revision");
     expect(hrefOf(staff, "/administracion/ejercicios/abc")).toBe("/administracion/ejercicios");
@@ -227,5 +242,75 @@ describe("pageNameOf", () => {
   it("no nombra nada donde no hay herramienta ni es el inicio", () => {
     expect(pageNameOf(alumno, "/inicio/otra")).toBeNull();
     expect(pageNameOf(alumno, "/lecciones/abc")).toBeNull();
+  });
+
+  it("nombra «Herramientas» en su página, sin encender la del tablero", () => {
+    expect(pageNameOf(alumno, "/herramientas")).toEqual(TOOLS_PAGE);
+    expect(TOOLS_PAGE.art).toBe("tools");
+    expect(activeApp(alumno, "/herramientas")).toBeNull();
+    expect(pageNameOf(alumno, "/herramientas/tablero-de-analisis")?.label).toBe("Tablero de análisis");
+  });
+});
+
+describe("groupPlatformApps", () => {
+  /** Each row of «Herramientas» by its name, with its tools by theirs. */
+  const rows = (roles: PlatformNavRoles, features: PlatformNavFeatures) =>
+    groupPlatformApps(buildPlatformApps(roles, features)).map((group) => [
+      group.label,
+      group.tools.map((tool) => tool.label),
+    ]);
+
+  it("ordena las del alumno por para qué sirven: practicar, aprender y analizar", () => {
+    expect(rows(STUDENT, ALL_ON)).toEqual([
+      ["Practicar", ["Jugar", "Ejercicios", "Puzzle Rush"]],
+      ["Aprender", ["Cursos", "Clases", "Estudiar"]],
+      ["Analizar", ["Tablero de análisis", "Explorador", "Entrenador"]],
+    ]);
+  });
+
+  it("deja fuera la fila sin herramientas", () => {
+    expect(rows(STUDENT, ALL_OFF)).toEqual([
+      ["Aprender", ["Cursos", "Clases", "Estudiar"]],
+      ["Analizar", ["Explorador"]],
+    ]);
+  });
+
+  it("enseña al profesor y a administración lo mismo que su menú", () => {
+    for (const roles of [TEACHER, STAFF]) {
+      for (const features of [ALL_ON, ALL_OFF]) {
+        const apps = buildPlatformApps(roles, features);
+        const shown = groupPlatformApps(apps).flatMap((group) => group.tools.map((tool) => tool.href));
+        expect([...shown].sort()).toEqual(hrefsOf(apps).sort());
+      }
+    }
+    expect(rows(TEACHER, ALL_ON).map(([label]) => label)).toEqual(["Enseñar", "Aprender", "Analizar"]);
+    expect(rows(STAFF, ALL_ON).map(([label]) => label)).toEqual(["Administrar", "Banco de ejercicios"]);
+  });
+
+  it("marca como atajo justo las de «Tus atajos»", () => {
+    const apps = buildPlatformApps(STUDENT, ALL_ON);
+    const marked = groupPlatformApps(apps)
+      .flatMap((group) => group.tools)
+      .filter((tool) => tool.isShortcut)
+      .map((tool) => tool.href);
+    expect(marked.sort()).toEqual(apps.shortcuts.map((app) => app.href).sort());
+  });
+
+  it("da a cada herramienta su línea y una fila que existe", () => {
+    const keys = PLATFORM_APP_GROUPS.map((group) => group.key);
+    for (const roles of [STUDENT, TEACHER, STAFF]) {
+      const apps = buildPlatformApps(roles, ALL_ON);
+      for (const app of [...apps.shortcuts, ...apps.more]) {
+        expect(app.description.length).toBeGreaterThan(0);
+        expect(keys).toContain(app.group);
+      }
+    }
+  });
+
+  it("nombra el modo aventura en «Jugar» sólo si está encendido", () => {
+    const play = (adventure: boolean) =>
+      buildPlatformApps(STUDENT, { ...ALL_ON, adventure }).shortcuts.find((app) => app.label === "Jugar");
+    expect(play(true)?.description).toContain("aventura");
+    expect(play(false)?.description).not.toContain("aventura");
   });
 });

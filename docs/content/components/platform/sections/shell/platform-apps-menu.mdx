@@ -12,7 +12,7 @@ description: "The nine squares at the right of the bar and the panel they open: 
 | Story      | `platform-apps-menu.stories.tsx` (`platform/sections/shell/PlatformAppsMenu`): the closed button, and the teacher's, the student's and the staff's tools open (`play`), each on one of their pages, and a student with everything off |
 | Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)                                                                                                                                                         |
 | Composes   | [`NavArt`](/components/platform/sections/shell/nav-art), Radix `Popover`                                                                                                                                                              |
-| Uses       | `activeApp`, `PlatformApps` from `constants/platform/nav-items.const`<br />`usePathname` from `next/navigation`<br />`GridIcon` · `components/icons/grid-icon.comp.tsx`                                                               |
+| Uses       | `activeApp`, `PlatformApps` from `constants/platform/nav-items.const`<br />`usePathname` from `next/navigation`<br />`GridIcon` · `components/icons/grid-icon.comp.tsx`<br />`platformRoutes.tools`                                   |
 
 ## Purpose
 
@@ -29,6 +29,7 @@ The Google-style header (2026-10-19, option A1 of the calendar canvas): every pa
 - **The button** is Material's standard icon button (`mdIconButton("standard", "sm")`, 40px, since 2026-10-22; before, a quiet square `.platform-button`) with the nine squares (`GridIcon`, Classic Solid), named «Herramientas».
 - **The panel** opens under it, aligned to its right edge, portalled to `<body>`: a grey tray (`--platform-bg`) with «Tus atajos» on a white card — the first `PLATFORM_SHORTCUTS` (six) tools of the role, two rows of three — and the rest under the card, three to a row. Each tool is a tile: its drawing at 48px and its name. «Tus atajos» cannot be edited yet: the six are the role's first six.
 - **The page's tile is marked** (`aria-current="page"`, the accent's wash and ink): `activeApp(apps, pathname)` gives the tool whose address is the longest that starts the page's, so `/profesor` and `/profesor/alumnos` never both light up, and the staff's «Revisión» wins over «Ejercicios» on the review queue.
+- **«Ver todas las herramientas»** (2026-10-25), a row in the accent's ink at the tray's foot, leads to `/herramientas`, the page that shows the same tools with what each one does, by what they are for ([`ToolsLauncherSection`](/components/platform/sections/tools/launcher/tools-launcher-section)); it is `aria-current` there, and closes the panel as a tile does.
 - **A tile closes the panel** as it leads away (the open state is the component's). Escape and a click outside close it too; the focus moves into the panel and back to the button, with the primitive.
 - **Pointed at or focused**, a tile's drawing tilts and rises and its moving piece bobs (`.nav-art__move`); all of it is stilled under reduced motion. The panel unfolds in 160 ms and folds in 120.
 
@@ -36,7 +37,7 @@ The Google-style header (2026-10-19, option A1 of the calendar canvas): every pa
 
 `buildPlatformApps(roles, features)` in `constants/platform/nav-items.const.ts`, the widest role's list:
 
-- **Student:** «Jugar» (with `PLAY_ENABLED`), «Ejercicios», «Ejercicios por tema» and «Puzzle Rush» (with `EXERCISES_ENABLED`: for every student with `"all"`, or only one who has something there with `"withTeacher"`, asked of `getStudentExerciseAccess()` only then), «Cursos», «Clases», «Estudiar», and the tools: «Tablero de análisis» (with `ANALYSIS_BOARD_ENABLED`), «Explorador» and «Entrenador» (with the board and `MOVE_TRAINER_ENABLED`).
+- **Student:** «Jugar» (with `PLAY_ENABLED`), «Ejercicios» and «Puzzle Rush» (with `EXERCISES_ENABLED`: for every student with `"all"`, or only one who has something there with `"withTeacher"`, asked of `getStudentExerciseAccess()` only then), «Cursos», «Clases», «Estudiar», and the tools: «Tablero de análisis» (with `ANALYSIS_BOARD_ENABLED`), «Explorador» and «Entrenador» (with the board and `MOVE_TRAINER_ENABLED`). «Ejercicios por tema» was a tool of its own until 2026-10-25, when the owner made it one with «Ejercicios»: the topic is chosen in «Ejercicios»' side column, and `/ejercicios/temas` redirects there. «Puzzle Rush» stays its own.
 - **Teacher:** «Panel del profesor», «Clases que imparto», «Calendario», «Mis alumnos», «Ejercicios» (with its switch), «Tablero de análisis», then «Clases prediseñadas», «Cursos», «Estudiar», «Explorador», «Entrenador» and «Mi ficha». No «Jugar».
 - **Staff:** «Administración», «Clases», «Alumnos», «Profesores», «Cursos», and with the exercises' switch «Ejercicios», «Revisión», «Series» and «Importar», each page of the bank reached straight from the menu.
 
@@ -44,9 +45,9 @@ Hiding a tool authorises nothing: every page and action checks the role again.
 
 ## Markup & styling
 
-Block `.platform-apps-menu` (174 lines).
+Block `.platform-apps-menu` (195 lines).
 
-**Elements:** `.platform-apps-menu__nav`, `.platform-apps-menu__shortcuts` (the white card), `.platform-apps-menu__title`, `.platform-apps-menu__grid`, `.platform-apps-menu__tile`, `.platform-apps-menu__art`, `.platform-apps-menu__label`
+**Elements:** `.platform-apps-menu__nav`, `.platform-apps-menu__shortcuts` (the white card), `.platform-apps-menu__title`, `.platform-apps-menu__grid`, `.platform-apps-menu__tile`, `.platform-apps-menu__art`, `.platform-apps-menu__label`, `.platform-apps-menu__all` (the foot's link)
 
 **Modifiers and states:** `.platform-apps-menu__grid_place_more` (the tools under the card), `.platform-apps-menu__tile_state_current`, `[data-state="open"|"closed"]`
 
@@ -55,4 +56,5 @@ Block `.platform-apps-menu` (174 lines).
 ## Related
 
 - [`NavArt`](/components/platform/sections/shell/nav-art), the drawings.
+- [`ToolsLauncherSection`](/components/platform/sections/tools/launcher/tools-launcher-section), the same list as a page (`/herramientas`): each tool of `buildPlatformApps` also carries its row (`group`) and its one line (`description`) for it.
 - `constants/platform/nav-items.const.ts` and its test, which cover each role's list, the switches and the longest-prefix rule.

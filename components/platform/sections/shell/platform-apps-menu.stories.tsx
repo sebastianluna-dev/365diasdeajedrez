@@ -7,7 +7,13 @@ import { PlatformAppsMenu } from "./platform-apps-menu.comp";
 /** The address a story stands on, as Storybook's router reports it to `usePathname`. */
 const at = (pathname: string) => ({ nextjs: { navigation: { pathname } } });
 
-const ALL_ON: PlatformNavFeatures = { play: true, analysisBoard: true, trainer: true, exercises: "all" };
+const ALL_ON: PlatformNavFeatures = {
+  play: true,
+  adventure: true,
+  analysisBoard: true,
+  trainer: true,
+  exercises: "all",
+};
 
 const meta = {
   title: "platform/sections/shell/PlatformAppsMenu",
@@ -89,7 +95,7 @@ export const FewTools: Story = {
   args: {
     apps: buildPlatformApps(
       { isTeacher: false, isStaff: false },
-      { play: false, analysisBoard: false, trainer: false, exercises: false },
+      { play: false, adventure: false, analysisBoard: false, trainer: false, exercises: false },
     ),
   },
   parameters: at(platformRoutes.settings),

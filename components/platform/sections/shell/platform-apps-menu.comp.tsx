@@ -7,6 +7,7 @@ import { useId, useState } from "react";
 import { mdIconButton } from "@/lib/material/material-classes";
 import { GridIcon } from "@/components/icons/grid-icon.comp";
 import { activeApp, type PlatformApp, type PlatformApps } from "@/constants/platform/nav-items.const";
+import { platformRoutes } from "@/lib/platform-routes";
 import { NavArt } from "./nav-art.comp";
 import "./platform-apps-menu.comp.css";
 
@@ -19,7 +20,9 @@ interface PlatformAppsMenuProps {
  * The platform's tools menu (2026-10-19, the Google-style header): the button
  * of nine squares at the right of the bar, beside the avatar, and the panel it
  * opens — «Tus atajos», the role's first six tools, on a white card, and the
- * rest under it, each a tile with its drawing and its name. It is the whole
+ * rest under it, each a tile with its drawing and its name, and at its foot
+ * «Ver todas las herramientas», the page that shows them with what each one
+ * does (`/herramientas`, 2026-10-25). It is the whole
  * navigation: the bar keeps for itself only the page's name and what the page
  * puts there (`PlatformHeaderContext`).
  *
@@ -73,6 +76,14 @@ export function PlatformAppsMenu({ apps }: PlatformAppsMenuProps) {
             {apps.more.length > 0 && (
               <ul className="platform-apps-menu__grid platform-apps-menu__grid_place_more">{apps.more.map(tile)}</ul>
             )}
+            <Link
+              href={platformRoutes.tools}
+              className="platform-apps-menu__all"
+              aria-current={pathname === platformRoutes.tools ? "page" : undefined}
+              onClick={() => setOpen(false)}
+            >
+              Ver todas las herramientas
+            </Link>
           </nav>
         </Popover.Content>
       </Popover.Portal>

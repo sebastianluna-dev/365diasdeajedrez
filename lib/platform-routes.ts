@@ -172,6 +172,8 @@ export const platformRoutes = {
     const search = params.toString();
     return `/perfil/${slug}/partidas${search ? `?${search}` : ""}`;
   },
+  /** «Herramientas»: every tool of the role, by what it is for, with what each one does (the menu's, at length). */
+  tools: "/herramientas",
   /** «Herramientas»: the analysis board, with a position, a played game or a study's game to start from. */
   analysisBoard: (source?: { fen?: string; partida?: string; estudio?: string }) => {
     const params = new URLSearchParams();

@@ -145,7 +145,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/entrenador` (the Move Trainer; **switched off**: it answers 404 while `MOVE_TRAINER_ENABLED` in `constants/platform/features.const.ts` is `false`)
 - `/explorador` (search for games by position; student and teacher share it; `?origen=alumnos|cursos|profesorado` narrows it to one origin; in the new design system)
 - `/jugar` (the way in: the adventure's cover while `ADVENTURE_ENABLED` is on, the gallery of bots while it is off), `/jugar/partida-libre` (the gallery of bots, «Partida libre»), `/jugar/aventura` (the adventure's shelf, behind `ADVENTURE_ENABLED`), `/jugar/aventura/[adventureSlug]` (its map; `?victoria=` and `?error=encounterLocked`; behind `ADVENTURE_ENABLED`, which needs `PLAY_ENABLED`; docs → Platform → Adventure mode), `/jugar/partidas/[gameId]` (games against the bots), `/perfil`, `/perfil/[slug]`, `/perfil/[slug]/partidas` (a person's profile and every game they played; seen by them, their teachers and the staff) — **switched off** while `PLAY_ENABLED` is `false`
-- `/herramientas` (goes to the board) and `/herramientas/tablero-de-analisis` — **switched off** while `ANALYSIS_BOARD_ENABLED` is `false`; once on, the tools menu offers the board beside the explorer
+- `/herramientas` (every tool of the role with what each one does, by what it is for, with a search: the tools menu's list; «Ver todas las herramientas» at the menu's foot leads there; in the new design system) and `/herramientas/tablero-de-analisis` — the board **switched off** while `ANALYSIS_BOARD_ENABLED` is `false`; once on, the tools menu offers the board beside the explorer
 
 **Platform — teacher** (requires an active `Teacher` row)
 
