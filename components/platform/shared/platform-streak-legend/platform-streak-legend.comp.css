@@ -1,0 +1,33 @@
+/* «Menos ● ● ● ● Más». */
+.platform-streak-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--platform-space-1);
+  font-size: var(--platform-type-2xs);
+  color: var(--platform-m3-on-surface-variant);
+
+  & .platform-streak-legend__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex: none;
+
+    &.platform-streak-legend__dot_level_0 {
+      width: 6px;
+      height: 6px;
+      background: var(--platform-m3-outline-variant);
+    }
+
+    &.platform-streak-legend__dot_level_1 {
+      background: var(--platform-m3-heat-1);
+    }
+
+    &.platform-streak-legend__dot_level_2 {
+      background: var(--platform-m3-heat-2);
+    }
+
+    &.platform-streak-legend__dot_level_3 {
+      background: var(--platform-m3-heat-3);
+    }
+  }
+}

@@ -1,0 +1,24 @@
+/* A mini line beside a figure: the area, the line over it and the last point marked. */
+.platform-sparkline {
+  display: block;
+  flex: none;
+  overflow: visible;
+
+  & .platform-sparkline__area {
+    fill: var(--platform-m3-chart-area);
+  }
+
+  & .platform-sparkline__line {
+    fill: none;
+    stroke: var(--platform-m3-chart-line);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+
+  & .platform-sparkline__end {
+    fill: var(--platform-m3-chart-mark);
+    /* A ring of whatever it is drawn on: the panel, unless the host says otherwise. */
+    stroke: var(--chart-ground, var(--platform-m3-panel));
+    stroke-width: 2;
+  }
+}

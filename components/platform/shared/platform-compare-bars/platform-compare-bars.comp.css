@@ -1,0 +1,79 @@
+/* Columns side by side, the figure inside the top, the name under each; one in the primary. */
+.platform-compare-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--platform-space-2);
+
+  & .platform-compare-bars__column {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  & .platform-compare-bars__stage {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+  }
+
+  & .platform-compare-bars__bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-top: var(--platform-space-2);
+    border-radius: var(--md-sys-shape-corner-lg-increased) var(--md-sys-shape-corner-lg-increased)
+      var(--md-sys-shape-corner-sm) var(--md-sys-shape-corner-sm);
+    background: var(--platform-m3-chart-neutral);
+    color: var(--platform-m3-on-surface);
+    box-sizing: border-box;
+
+    & .platform-compare-bars__detail {
+      color: var(--platform-m3-on-surface-variant);
+    }
+
+    &.platform-compare-bars__bar_state_highlighted {
+      background: var(--platform-m3-primary);
+      color: var(--platform-m3-on-primary);
+
+      & .platform-compare-bars__detail {
+        color: var(--platform-m3-on-primary);
+      }
+    }
+  }
+
+  & .platform-compare-bars__value {
+    font-size: var(--platform-type-2xl);
+    font-weight: 400;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .platform-compare-bars__detail {
+    font-size: var(--platform-type-2xs);
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .platform-compare-bars__name {
+    max-width: 100%;
+    margin-top: var(--platform-space-1);
+    overflow: hidden;
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--platform-m3-on-surface);
+  }
+
+  & .platform-compare-bars__caption {
+    font-size: var(--platform-type-2xs);
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+    color: var(--platform-m3-on-surface-variant);
+  }
+}

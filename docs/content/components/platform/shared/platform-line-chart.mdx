@@ -1,0 +1,52 @@
+---
+description: "A series in time over its filled area with a slider under it that picks a point: the chosen one marked, a hatched slice under it and its value in a tag; Radix's slider, from the keyboard or the pointer."
+---
+
+# `PlatformLineChart`
+
+|            |                                                                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-line-chart/platform-line-chart.comp.tsx`                                                                                 |
+| Kind       | Client Component (the chosen point is state)                                                                                                                  |
+| Stylesheet | `platform-line-chart.comp.css` → block `.platform-line-chart`                                                                                                 |
+| Story      | `platform-line-chart.stories.tsx` (`platform/shared/PlatformLineChart`): the last point, moved back with the keyboard (a `play`), few points and a wide range |
+| Used by    | [`ProfileOverviewSection`](/components/platform/sections/profile/profile-overview-section) (the level against bots after each of the last ten games)          |
+
+## Purpose
+
+Chart 4 of the owner's «Gráficas del perfil» (2026-10-25): a series in time and a slider that chooses one of its points. The line runs over its filled area, with a dashed grid line every `gridStep` and its value at the left; the chosen point is marked, a hatched slice drops from it to the axis, and its value rides in a tag over it. Under the chart, the slider — a gradient track from the panel's wash to the primary — with the first date at its left and the chosen one under its thumb. It starts on the last point.
+
+## Props
+
+| Prop          | Type                           | Required           | Meaning                                                                |
+| ------------- | ------------------------------ | ------------------ | ---------------------------------------------------------------------- |
+| `points`      | `readonly PlatformLinePoint[]` | yes                | `{ label, value }`, oldest first; fewer than two draw nothing.         |
+| `label`       | `string`                       | yes                | The chart in words, its `aria-label`: every point with its value.      |
+| `sliderLabel` | `string`                       | yes                | The slider's name («Partida elegida»).                                 |
+| `valuePrefix` | `string`                       | no · default `""`  | Before a value in the tag and the slider's text: «≈ ».                 |
+| `gridStep`    | `number`                       | no · default `50`  | Every how much a grid line crosses.                                    |
+| `width`       | `number`                       | no · default `580` | The viewBox; it stretches to its container's width keeping this ratio. |
+| `height`      | `number`                       | no · default `120` | Its height.                                                            |
+
+## Behaviour
+
+The slider is Radix's (`Slider` of `radix-ui`, no styles of its own): the arrows move a point, Inicio and Fin go to either end, and the pointer drags or clicks; its thumb says «13 oct, ≈ 850» (`aria-valuetext`). The control is inset by the chart's side padding, so its ends line up with the first and last points. Nothing animates.
+
+## Markup & styling
+
+Block `.platform-line-chart` (137 lines).
+
+**Elements:** `.platform-line-chart__stage`, `.platform-line-chart__svg`, `.platform-line-chart__hatch-ground`, `.platform-line-chart__hatch-stripe`, `.platform-line-chart__grid`, `.platform-line-chart__area`, `.platform-line-chart__line`, `.platform-line-chart__dots`, `.platform-line-chart__chosen`, `.platform-line-chart__grid-label`, `.platform-line-chart__tag`, `.platform-line-chart__control`, `.platform-line-chart__slider`, `.platform-line-chart__track`, `.platform-line-chart__thumb`, `.platform-line-chart__dates`, `.platform-line-chart__first`, `.platform-line-chart__date`
+
+**Tokens:** `--platform-m3-chart-hatch`, `--platform-m3-chart-hatch-ground`, `--platform-m3-chart-area`, `--platform-m3-chart-line`, `--platform-m3-chart-mark`, `--platform-m3-chart-tag`, `--platform-m3-on-chart-tag`, `--platform-m3-outline-variant`, `--platform-m3-primary`, `--platform-m3-primary-wash`, `--platform-m3-panel`, `--platform-m3-on-surface-variant`, `--platform-m3-on-secondary-container`
+
+## Usage
+
+```tsx
+<PlatformLineChart
+  points={series.map((point) => ({ label: shortDate(point.at), value: point.level }))}
+  valuePrefix="≈ "
+  sliderLabel="Partida elegida"
+  label="Nivel contra bots después de cada una de tus últimas 10 partidas: …"
+/>
+```

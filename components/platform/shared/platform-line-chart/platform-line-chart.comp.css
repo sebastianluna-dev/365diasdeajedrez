@@ -1,0 +1,137 @@
+/* A series over its area, the chosen point's hatched slice and tag, and the slider that chooses it. */
+.platform-line-chart {
+  min-width: 0;
+
+  & .platform-line-chart__stage {
+    position: relative;
+  }
+
+  & .platform-line-chart__svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  & .platform-line-chart__hatch-ground {
+    fill: var(--platform-m3-chart-hatch-ground);
+  }
+
+  & .platform-line-chart__hatch-stripe {
+    fill: var(--platform-m3-chart-hatch);
+  }
+
+  & .platform-line-chart__grid {
+    fill: none;
+    stroke: var(--platform-m3-outline-variant);
+    stroke-width: 1;
+    stroke-dasharray: 2 4;
+    vector-effect: non-scaling-stroke;
+  }
+
+  & .platform-line-chart__area {
+    fill: var(--platform-m3-chart-area);
+  }
+
+  & .platform-line-chart__line {
+    fill: none;
+    stroke: var(--platform-m3-chart-line);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  & .platform-line-chart__dots {
+    fill: var(--platform-m3-chart-line);
+  }
+
+  & .platform-line-chart__chosen {
+    fill: var(--platform-m3-chart-mark);
+    stroke: var(--chart-ground, var(--platform-m3-panel));
+    stroke-width: 2;
+  }
+
+  & .platform-line-chart__grid-label {
+    position: absolute;
+    left: 0;
+    font-size: var(--platform-type-2xs);
+    line-height: 14px;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .platform-line-chart__tag {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 var(--platform-space-2);
+    border-radius: 1000px;
+    background: var(--platform-m3-chart-tag);
+    color: var(--platform-m3-on-chart-tag);
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    transform: translate(-50%, -100%);
+    box-sizing: border-box;
+  }
+
+  & .platform-line-chart__control {
+    padding: var(--platform-space-3) 0 var(--platform-space-5);
+  }
+
+  & .platform-line-chart__slider {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 16px;
+    touch-action: none;
+    user-select: none;
+    cursor: pointer;
+  }
+
+  & .platform-line-chart__track {
+    position: relative;
+    flex: 1;
+    height: 6px;
+    border-radius: 1000px;
+    background: linear-gradient(
+      90deg,
+      var(--platform-m3-primary-wash) 0%,
+      var(--platform-m3-chart-hatch-ground) 55%,
+      var(--platform-m3-primary) 100%
+    );
+  }
+
+  & .platform-line-chart__thumb {
+    display: block;
+    width: 16px;
+    height: 16px;
+    border: 3px solid var(--platform-m3-primary);
+    border-radius: 50%;
+    background: var(--platform-m3-panel);
+    box-sizing: border-box;
+  }
+
+  & .platform-line-chart__dates {
+    position: relative;
+    height: 14px;
+    margin-top: var(--platform-space-1);
+    font-size: var(--platform-type-2xs);
+    line-height: 14px;
+    white-space: nowrap;
+  }
+
+  & .platform-line-chart__first {
+    position: absolute;
+    left: 0;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .platform-line-chart__date {
+    position: absolute;
+    font-weight: 700;
+    color: var(--platform-m3-on-secondary-container);
+    transform: translateX(-50%);
+  }
+}

@@ -286,6 +286,12 @@ export const TEXT_PAIRS: readonly (readonly [text: string, background: string])[
   // primary (a text button, a focused field's label, a section's title) and
   // its error (the destructive button, an invalid field) on its surface.
   ...["m3-on-surface", "m3-on-surface-variant", "m3-primary", "m3-error"].map((text) => [text, "m3-dialog"] as const),
+  // The charts: a tag's figure on its pill, a column's figure and its detail
+  // on the grey column, and a chart's labels on the white tag beside a mark.
+  ["m3-on-chart-tag", "m3-chart-tag"],
+  ["m3-on-surface", "m3-chart-neutral"],
+  ["m3-on-surface-variant", "m3-chart-neutral"],
+  ["m3-on-chart-tag", "m3-panel"],
 ];
 
 /**

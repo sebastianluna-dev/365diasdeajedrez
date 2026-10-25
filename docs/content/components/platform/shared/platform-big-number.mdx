@@ -1,0 +1,58 @@
+---
+description: "A big thin figure with its label: the integer large in tabular figures, the decimals and the unit small and grey, a note under it, and optionally its series as a sparkline."
+---
+
+# `PlatformBigNumber`
+
+|            |                                                                                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-big-number/platform-big-number.comp.tsx`                                                                                                   |
+| Kind       | Server Component                                                                                                                                                                |
+| Stylesheet | `platform-big-number.comp.css` → block `.platform-big-number`                                                                                                                   |
+| Story      | `platform-big-number.stories.tsx` (`platform/shared/PlatformBigNumber`): with a unit, with decimals, with its trend, empty, and the medium size                                 |
+| Used by    | [`ProfileOverviewSection`](/components/platform/sections/profile/profile-overview-section) (the sheet's streak, level and share of games won, and the week beside the calendar) |
+
+## Purpose
+
+Chart 6 of the owner's «Gráficas del perfil» (2026-10-25): a figure read at a glance. The label is small and bold over it; the integer is large and light, in tabular figures; what is not the integer — the decimals, the unit, «≈» before an approximate figure — is small and grey, so the eye lands on the number. Mexican Spanish writes the decimals with a point: «56.5 %».
+
+The canvas draws the figure in Poppins Light (300). The platform loads Poppins at 600 and 700 only (`app/(platform)/fonts.ts`), so the figure is drawn in the platform's font at 400, the lightest it has, until a light cut is added.
+
+## Props
+
+| Prop             | Type                                           | Required            | Meaning                                                                               |
+| ---------------- | ---------------------------------------------- | ------------------- | ------------------------------------------------------------------------------------- |
+| `label`          | `string`                                       | yes                 | What the figure is: «Racha de estudio».                                               |
+| `value`          | `number \| null`                               | yes                 | The figure; `null` draws a dash, and the note says why.                               |
+| `fractionDigits` | `number`                                       | no · default `0`    | Decimals shown, small with the unit.                                                  |
+| `prefix`         | `string`                                       | no                  | Before the figure, small and grey: «≈».                                               |
+| `unit`           | `string`                                       | no                  | After it, small and grey: «días», «%».                                                |
+| `note`           | `string`                                       | no                  | A line under it.                                                                      |
+| `size`           | `"md" \| "lg"`                                 | no · default `"lg"` | `lg` a sheet's figure (`--platform-type-4xl`), `md` one inside a block (`3xl`).       |
+| `trend`          | `{ values: readonly number[]; label: string }` | no                  | A [`PlatformSparkline`](/components/platform/shared/platform-sparkline) at its right. |
+
+## Behaviour
+
+None: `value.toFixed(fractionDigits)` split at the point.
+
+## Markup & styling
+
+Block `.platform-big-number` (66 lines).
+
+**Elements:** `.platform-big-number__label`, `.platform-big-number__row`, `.platform-big-number__figure`, `.platform-big-number__prefix`, `.platform-big-number__tail`, `.platform-big-number__note`
+
+**Modifiers:** `.platform-big-number_size_lg`, `.platform-big-number_size_md`
+
+**Tokens:** `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`; it is drawn on the panel or a container, both of which they read on.
+
+## Usage
+
+```tsx
+<PlatformBigNumber
+  label="Nivel contra bots"
+  value={850}
+  prefix="≈"
+  note="Aproximado, sobre tus últimas 10 partidas"
+  trend={{ values: series, label: "De ≈ 796 a ≈ 850" }}
+/>
+```

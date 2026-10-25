@@ -1,0 +1,51 @@
+---
+description: "A mini line beside a figure: the series over its filled area with its last point marked, no axes and no labels, as one image named by its label."
+---
+
+# `PlatformSparkline`
+
+|            |                                                                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-sparkline/platform-sparkline.comp.tsx`                                                                                                                             |
+| Kind       | Server Component                                                                                                                                                                                        |
+| Stylesheet | `platform-sparkline.comp.css` → block `.platform-sparkline`                                                                                                                                             |
+| Story      | `platform-sparkline.stories.tsx` (`platform/shared/PlatformSparkline`): rising, falling, flat and wide                                                                                                  |
+| Used by    | [`PlatformBigNumber`](/components/platform/shared/platform-big-number) (its `trend`), and through it [`ProfileOverviewSection`](/components/platform/sections/profile/profile-overview-section)'s sheet |
+
+## Purpose
+
+Chart 7 of the owner's «Gráficas del perfil» (2026-10-25), the vocabulary of the profile's charts in the new design system: a mini line that goes with a figure and says only which way it went. The figure beside it says the number, so it has no axes, no grid and no labels.
+
+## Props
+
+| Prop     | Type                | Required          | Meaning                                                                  |
+| -------- | ------------------- | ----------------- | ------------------------------------------------------------------------ |
+| `values` | `readonly number[]` | yes               | The series, oldest first; fewer than two points draw nothing (`null`).   |
+| `label`  | `string`            | yes               | The line in words, the image's `aria-label`: where it started and ended. |
+| `width`  | `number`            | no · default `96` | The drawing's width in px; it is drawn at that size.                     |
+| `height` | `number`            | no · default `36` | Its height in px.                                                        |
+
+## Behaviour
+
+None. The values are scaled between their own minimum and maximum, with 4px of room on every side; a flat series sits at the top instead of dividing by zero. The paths come from `lib/charts/chart-geometry.ts` (`polyline`, `dot`).
+
+## Markup & styling
+
+Block `.platform-sparkline` (24 lines): one `<svg role="img">`.
+
+**Elements:** `.platform-sparkline__area`, `.platform-sparkline__line`, `.platform-sparkline__end`
+
+**Tokens:** `--platform-m3-chart-area`, `--platform-m3-chart-line`, `--platform-m3-chart-mark`, `--platform-m3-panel` (the end's ring, unless the host sets `--chart-ground` to what it is drawn on).
+
+## Usage
+
+```tsx
+import { PlatformSparkline } from "@/components/platform/shared/platform-sparkline/platform-sparkline.comp";
+
+<PlatformSparkline values={series.map((point) => point.level)} label="De ≈ 796 el 13 oct a ≈ 850 el 25 oct" />;
+```
+
+## Related
+
+- [`PlatformLineChart`](/components/platform/shared/platform-line-chart): the same series at full size, with its slider.
+- `LevelSparkline` drew the level on the profile's old card until the profile moved to the new design system (2026-10-25).
