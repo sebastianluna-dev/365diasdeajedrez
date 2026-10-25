@@ -267,6 +267,9 @@ export const TEXT_PAIRS: readonly (readonly [text: string, background: string])[
   ["m3-on-success", "m3-success"],
   ["m3-on-success-container", "m3-success-container"],
   ["m3-on-warning-container", "m3-warning-container"],
+  // «Jugar»'s stamps: a beaten rival's initials in the amber turned round, the one to play on white.
+  ["m3-warning-container", "m3-on-warning-container"],
+  ["m3-on-warning-container", "m3-panel"],
   ["m3-on-info-container", "m3-info-container"],
   ["m3-on-class-container", "m3-class-container"],
   // A continuation's move, count and share, written over its bar.

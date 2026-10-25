@@ -1,0 +1,304 @@
+/* «Jugar» in the new design system: the adventure big on an amber block of
+   the panel, and the shelf of notebooks under it. */
+.play-home {
+  & .play-home__panel {
+    gap: var(--platform-space-8);
+  }
+
+  /* Said to a screen reader, not drawn: the bar already names the page. */
+  & .play-home__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  /* The notebook the person is in: its journey at the left, its story at the right. */
+  & .play-home__adventure {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-8);
+    padding: var(--platform-space-6);
+    border-radius: var(--md-sys-shape-corner-xl);
+    background: var(--platform-m3-warning-container);
+    color: var(--platform-m3-on-warning-container);
+  }
+
+  /* The journey in one picture, the adventure's own art on its own paper. */
+  & .play-home__art {
+    flex: none;
+    width: 360px;
+    aspect-ratio: 400 / 276;
+    overflow: hidden;
+    border-radius: var(--md-sys-shape-corner-lg);
+  }
+
+  & .play-home__story {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    min-width: 0;
+  }
+
+  & .play-home__eyebrow {
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  & .play-home__title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-3xl);
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--platform-m3-on-surface);
+  }
+
+  & .play-home__premise {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    line-height: 1.45;
+  }
+
+  /* A stamp per rival: filled once beaten, framed the one to play, a padlock the rest. */
+  /* One row of twelve, each up to 34px, narrowing with the story. */
+  & .play-home__stamps {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 34px));
+    gap: var(--platform-space-1);
+    margin: var(--platform-space-1) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .play-home__stamp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: var(--platform-type-2xs);
+    font-weight: 800;
+
+    &.play-home__stamp_state_beaten {
+      background: var(--platform-m3-on-warning-container);
+      color: var(--platform-m3-warning-container);
+    }
+
+    &.play-home__stamp_state_available {
+      border: 2px solid var(--platform-m3-on-warning-container);
+      background: var(--platform-m3-panel);
+      color: var(--platform-m3-on-warning-container);
+    }
+
+    &.play-home__stamp_state_locked {
+      border: 1px dashed var(--platform-m3-on-warning-container);
+    }
+  }
+
+  & .play-home__stamp-lock {
+    width: 12px;
+    height: 12px;
+    opacity: 0.7;
+  }
+
+  & .play-home__count {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+  }
+
+  /* The next rival, on a white card of its own with its portrait. */
+  & .play-home__next {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    margin: 0;
+    padding: var(--platform-space-3) var(--platform-space-4);
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--platform-m3-panel);
+    color: var(--platform-m3-on-surface);
+
+    &.play-home__next_state_done {
+      font-size: var(--platform-type-xs);
+      font-weight: 600;
+    }
+  }
+
+  & .play-home__portrait {
+    flex: none;
+    width: 48px;
+    height: 54px;
+    border-radius: 8px;
+  }
+
+  & .play-home__next-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+    min-width: 0;
+  }
+
+  & .play-home__next-label,
+  & .play-home__next-facts {
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .play-home__next-label {
+    font-weight: 600;
+  }
+
+  & .play-home__next-name {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    font-weight: 700;
+  }
+
+  & .play-home__next-role {
+    font-size: var(--platform-type-xs);
+    font-weight: 400;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .play-home__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-2);
+    margin-top: var(--platform-space-1);
+
+    & a {
+      text-decoration: none;
+    }
+  }
+
+  /* The shelf: the notebooks that can be opened and the ones that are coming. */
+  & .play-home__shelf {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+    scroll-margin-top: calc(70px + var(--platform-space-4));
+  }
+
+  & .play-home__shelf-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+  }
+
+  & .play-home__shelf-title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-xl);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface);
+  }
+
+  & .play-home__shelf-lead {
+    margin: 0;
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .play-home__notebooks {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--platform-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .play-home__notebook {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-4);
+
+    & a {
+      margin-top: var(--platform-space-2);
+      text-decoration: none;
+    }
+
+    /* A notebook that is not open yet: no action, its words in the variant ink. */
+    &.play-home__notebook_state_coming .play-home__notebook-title {
+      color: var(--platform-m3-on-surface-variant);
+    }
+  }
+
+  & .play-home__notebook-icon {
+    width: 22px;
+    height: 22px;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .play-home__notebook-title {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-md);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface);
+  }
+
+  & .play-home__notebook-text {
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    line-height: 1.4;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .play-home__soon {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 var(--platform-space-2);
+    border-radius: 1000px;
+    background: var(--platform-m3-container-high);
+    color: var(--platform-m3-on-surface-variant);
+    font-size: var(--platform-type-2xs);
+    font-weight: 600;
+  }
+
+  @media (width < 1280px) {
+    & .play-home__adventure {
+      align-items: flex-start;
+      gap: var(--platform-space-6);
+    }
+
+    & .play-home__art {
+      width: 280px;
+    }
+  }
+
+  @media (width < 1024px) {
+    & .play-home__adventure {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    & .play-home__art {
+      width: 100%;
+      max-width: 480px;
+    }
+  }
+
+  @media (width < 640px) {
+    & .play-home__adventure {
+      padding: var(--platform-space-4);
+    }
+
+    & .play-home__title {
+      font-size: var(--platform-type-2xl);
+    }
+  }
+}

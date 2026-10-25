@@ -1,0 +1,190 @@
+/* The side column of «Jugar» on the workspace's canvas: the FAB with its
+   line under it, and «Tus partidas» as Gmail's labels, square at the left
+   and round at the right. */
+.play-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-4);
+  padding: var(--platform-space-1) 0 var(--platform-space-4);
+  color: var(--platform-m3-on-surface);
+
+  & .play-side__action {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-2);
+  }
+
+  /* Material's extended FAB, as `PlatformSideNav` draws its action: flat at
+     rest, onto a shadow under the pointer. */
+  & .play-side__fab {
+    --container-elevation: none;
+
+    align-self: flex-start;
+    margin-left: var(--platform-space-2);
+    text-decoration: none;
+
+    &:hover {
+      --container-elevation: var(--md-sys-elevation-shadow-3);
+      --ripple-hover-opacity: 0%;
+    }
+  }
+
+  & .play-side__note {
+    margin: 0;
+    padding: 0 var(--platform-space-3) 0 var(--platform-space-6);
+    font-size: var(--platform-type-2xs);
+    line-height: 1.4;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .play-side__group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+  }
+
+  & .play-side__title {
+    margin: 0;
+    padding: var(--platform-space-1) var(--platform-space-6);
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .play-side__empty {
+    margin: 0;
+    padding: 0 var(--platform-space-3) 0 var(--platform-space-6);
+    font-size: var(--platform-type-2xs);
+    line-height: 1.4;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .play-side__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .play-side__game {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-2) var(--platform-space-3) var(--platform-space-2) var(--platform-space-5);
+    border-radius: 0 1000px 1000px 0;
+    color: var(--platform-m3-on-surface);
+    text-decoration: none;
+    transition: background-color 160ms ease-out;
+
+    &:hover {
+      background: var(--platform-m3-container-high);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--platform-m3-primary);
+      outline-offset: -2px;
+    }
+
+    &.play-side__game_state_current {
+      background: var(--platform-m3-secondary-container);
+      color: var(--platform-m3-on-secondary-container);
+    }
+  }
+
+  /* The result in a disc: green won, red lost, grey a draw. */
+  & .play-side__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: var(--platform-type-2xs);
+    font-weight: 800;
+
+    &.play-side__badge_result_win {
+      background: var(--platform-m3-success-container);
+      color: var(--platform-m3-on-success-container);
+    }
+
+    &.play-side__badge_result_loss {
+      background: var(--platform-m3-error-container);
+      color: var(--platform-m3-on-error-container);
+    }
+
+    &.play-side__badge_result_draw {
+      background: var(--platform-m3-container-high);
+      color: var(--platform-m3-on-surface);
+    }
+
+    &.play-side__badge_result_open {
+      background: var(--platform-m3-secondary-container);
+      color: var(--platform-m3-on-secondary-container);
+    }
+
+    &.play-side__badge_result_aborted {
+      background: var(--platform-m3-container-high);
+      color: var(--platform-m3-on-surface-variant);
+    }
+  }
+
+  & .play-side__game-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  & .play-side__game-title {
+    overflow: hidden;
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  & .play-side__game-facts {
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .play-side__game_state_current .play-side__game-facts {
+    color: inherit;
+  }
+
+  & .play-side__record {
+    display: flex;
+    gap: var(--platform-space-3);
+    margin: 0;
+    padding: var(--platform-space-3) var(--platform-space-3) 0 var(--platform-space-5);
+    font-size: var(--platform-type-xs);
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  & .play-side__tally-figure {
+    color: var(--platform-m3-on-surface);
+
+    &.play-side__tally-figure_result_win {
+      color: var(--platform-m3-success);
+    }
+
+    &.play-side__tally-figure_result_loss {
+      color: var(--platform-m3-error);
+    }
+  }
+
+  /* Said to a screen reader, not drawn: the letters are the eye's. */
+  & .play-side__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  & .play-side__more {
+    align-self: flex-start;
+    margin: var(--platform-space-2) 0 0 var(--platform-space-2);
+    text-decoration: none;
+  }
+}

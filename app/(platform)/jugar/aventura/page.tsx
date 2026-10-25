@@ -1,31 +1,13 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { AdventureShelfSection } from "@/components/adventure/shelf/adventure-shelf/adventure-shelf.section";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
-import { ADVENTURE_ENABLED, PLAY_ENABLED } from "@/constants/platform/features.const";
-import { studentErrorMessage } from "@/constants/platform/student-messages.const";
-import { getCurrentUser } from "@/lib/platform-auth/current-user";
+import { redirect } from "next/navigation";
+import { platformRoutes } from "@/lib/platform-routes";
 
-export const metadata: Metadata = {
-  title: "Modo aventura",
-};
-
-interface AdventurePageProps {
-  /** `?error=` is what an action of the adventure bounced back with. */
-  searchParams: Promise<{ error?: string }>;
-}
-
-/** The shelf of notebooks: the adventure that can be opened and the ones that are coming. */
-export default async function AdventurePage({ searchParams }: AdventurePageProps) {
-  // Both switches before anything else: the adventure lives inside «Jugar».
-  if (!PLAY_ENABLED || !ADVENTURE_ENABLED) notFound();
-  await getCurrentUser();
-  const errorMessage = studentErrorMessage((await searchParams).error);
-
-  return (
-    <div className="platform-page platform-page_width_full platform-page_height_screen platform-page_frame_bleed">
-      {errorMessage && <PlatformNotice message={errorMessage} />}
-      <AdventureShelfSection />
-    </div>
-  );
+/**
+ * The adventure's shelf. Since 2026-10-25 it is the lower half of «Jugar»
+ * (`/jugar#cuadernos`): every game against a bot is an encounter, so «Jugar»
+ * is the adventure's page, and one page holds the notebook the person is in
+ * and the others. The address is kept for old links (`?error=` from an old
+ * form is dropped: the notice would have nothing to say there).
+ */
+export default function AdventureShelfPage() {
+  redirect(`${platformRoutes.play}#cuadernos`);
 }

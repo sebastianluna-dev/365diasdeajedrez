@@ -1,18 +1,13 @@
 import { type ComponentProps, type CSSProperties, Fragment, useRef, useState, type ReactNode } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import Link from "next/link";
-import { AdventureCover } from "@/components/adventure/cover/adventure-cover/adventure-cover.comp";
 import { JourneyMiniature } from "@/components/adventure/cover/journey-miniature/journey-miniature.comp";
-import { NotebookCard } from "@/components/adventure/cover/notebook-card/notebook-card.comp";
 import { Keepsake } from "@/components/adventure/keepsakes/keepsake/keepsake.comp";
 import { AdventureMap } from "@/components/adventure/map/adventure-map/adventure-map.comp";
 import { NotePage } from "@/components/adventure/note-page/note-page/note-page.comp";
 import { PaperFrame } from "@/components/adventure/paper-frame/paper-frame/paper-frame.comp";
 import { RivalCard } from "@/components/adventure/rival-card/rival-card/rival-card.comp";
 import { EncounterStamp } from "@/components/adventure/stamp/encounter-stamp/encounter-stamp.comp";
-import { AdventureShelf } from "@/components/adventure/shelf/adventure-shelf/adventure-shelf.comp";
-import { NotebookSpine } from "@/components/adventure/shelf/notebook-spine/notebook-spine.comp";
-import { OpenNotebook } from "@/components/adventure/shelf/open-notebook/open-notebook.comp";
 import { BotScoreboard } from "@/components/chess/bot-scoreboard/bot-scoreboard.comp";
 import { ChessBoard } from "@/components/chess/chess-board.comp";
 import { ChessMoveQualityIcon } from "@/components/chess/chess-move-quality-icon.comp";
@@ -31,6 +26,7 @@ import { LiveGameBanner } from "@/components/platform/sections/play/live-game/li
 import { PlayedGamesTimeline } from "@/components/platform/sections/profile/played-games-timeline/played-games-timeline.comp";
 import { PlayedGameCard } from "@/components/platform/shared/played-game-card/played-game-card.comp";
 import { ProfileOverviewSection } from "@/components/platform/sections/profile/profile-overview.section";
+import { PlayHome } from "@/components/platform/sections/play/play-home/play-home.comp";
 import { PROFILE_FIXTURE_NOW, fixtureProfileView } from "@/lib/testing/fixtures/profile";
 import { PlatformBandChart } from "@/components/platform/shared/platform-band-chart/platform-band-chart.comp";
 import { PlatformBigNumber } from "@/components/platform/shared/platform-big-number/platform-big-number.comp";
@@ -268,9 +264,9 @@ import { gameMoves } from "@/lib/chess/game-moves";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { FIXTURE_BOT, FIXTURE_STUDENT, fixturePlayedGames } from "@/lib/testing/fixtures/bots";
 import { staffRoutes } from "@/lib/platform-routes";
-import { ADVENTURE_ART, COMING_ADVENTURES } from "@/lib/adventure/adventures";
+import { ADVENTURE_ART } from "@/lib/adventure/adventures";
 import { CUADERNO_DEL_VIAJERO } from "@/lib/adventure/adventures/cuaderno-del-viajero";
-import { fixtureAdventureProgress } from "@/lib/testing/fixtures/adventure";
+import { fixtureAdventureProgress, fixtureAdventureShelf } from "@/lib/testing/fixtures/adventure";
 import { readTokens, type Theme, tokenContrast } from "@/lib/platform-tokens";
 import type { CourseLevelItem } from "@/services/courses/courses.types";
 import { formatEloRange } from "@/services/courses/level-rules";
@@ -281,6 +277,9 @@ import "@/components/platform/sections/staff/courses/course-sources/course-sourc
 import "@/components/platform/sections/staff/courses/new-course/new-course.comp.css";
 import "@/components/platform/sections/studies/studies-list/new-study/new-study.comp.css";
 import "./overview.css";
+
+/** «Jugar»'s notebook in its tile: four of twelve, a game open against the fifth. */
+const PLAY_HOME_PROGRESS = fixtureAdventureProgress({ attemptsOnNext: 1, openGame: "adventure" });
 
 /**
  * A tile, drawn as a frame on a design canvas: the piece's name, its size and
@@ -2603,6 +2602,18 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
           </Section>
 
           <Section title="Play">
+            <Tile name="PlayHome" docs="platform-sections-play-playhome" width={1200} height={900}>
+              <div className="platform-page platform-page_width_full platform-page_frame_bleed">
+                <PlayHome
+                  progress={PLAY_HOME_PROGRESS}
+                  shelf={fixtureAdventureShelf(PLAY_HOME_PROGRESS)}
+                  games={fixturePlayedGames(PROFILE_NOW)}
+                  record={{ wins: 8, losses: 5, draws: 2 }}
+                  gamesHref="/perfil/alumno-demo/partidas"
+                  now={PROFILE_NOW}
+                />
+              </div>
+            </Tile>
             <Tile name="AbandonPopup" docs="platform-sections-play-live-game-abandonpopup" width={400} height={112}>
               <AbandonTrigger />
             </Tile>
@@ -3167,14 +3178,6 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
           </Section>
 
           <Section title="Adventure">
-            <Tile name="AdventureCover" docs="adventure-cover-adventurecover" width={1240} height={800}>
-              <AdventureCover progress={fixtureAdventureProgress({ attemptsOnNext: 1 })} />
-            </Tile>
-            <Tile name="NotebookCard" docs="adventure-cover-notebookcard" width={460} height={560}>
-              <div className="adventure" style={{ padding: 28, background: "var(--adventure-cream)" }}>
-                <NotebookCard progress={fixtureAdventureProgress({ attemptsOnNext: 1 })} />
-              </div>
-            </Tile>
             <Tile name="JourneyMiniature" docs="adventure-cover-journeyminiature" width={400} height={560}>
               <div className="adventure" style={{ background: "var(--adventure-cream-bright)", padding: 12 }}>
                 <JourneyMiniature
@@ -3185,45 +3188,6 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   label="El viaje entero: el camino sube de la plaza del barrio al Palacio de los Escaques"
                 />
               </div>
-            </Tile>
-            <Tile name="AdventureShelf" docs="adventure-shelf-adventureshelf" width={1240} height={880}>
-              <AdventureShelf
-                shelf={{
-                  notebooks: [
-                    {
-                      slug: "cuaderno-del-viajero",
-                      title: "El cuaderno del viajero",
-                      place: "La ciudad",
-                      total: 12,
-                      beaten: 4,
-                      stars: 9,
-                    },
-                  ],
-                  coming: COMING_ADVENTURES,
-                }}
-              />
-            </Tile>
-            <Tile name="OpenNotebook" docs="adventure-shelf-opennotebook" width={460} height={500}>
-              <div className="adventure" style={{ padding: 28, background: "var(--adventure-wood)" }}>
-                <OpenNotebook
-                  notebook={{
-                    slug: "cuaderno-del-viajero",
-                    title: "El cuaderno del viajero",
-                    place: "La ciudad",
-                    total: 12,
-                    beaten: 4,
-                    stars: 9,
-                  }}
-                />
-              </div>
-            </Tile>
-            <Tile name="NotebookSpine" docs="adventure-shelf-notebookspine" width={260} height={380}>
-              <ul
-                className="adventure"
-                style={{ margin: 0, padding: "32px 20px 8px", listStyle: "none", background: "var(--adventure-wood)" }}
-              >
-                <NotebookSpine notebook={COMING_ADVENTURES[0]!} />
-              </ul>
             </Tile>
             <Tile name="AdventureMap" docs="adventure-map-adventuremap" width={1240} height={760}>
               {/* The map is seven thousand units tall: the tile shows the part around the fifth stamp. */}

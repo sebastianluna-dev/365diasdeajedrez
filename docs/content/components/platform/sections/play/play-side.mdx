@@ -1,0 +1,47 @@
+---
+description: "The side column of «Jugar» in the new design system: the main action as the extended FAB, and «Tus partidas» with their G, P or T, the record and «Ver todas en tu perfil»."
+---
+
+# `PlaySide`
+
+Also exports the type `PlaySideAction`.
+
+|            |                                                                       |
+| ---------- | --------------------------------------------------------------------- |
+| File       | `components/platform/sections/play/play-side/play-side.comp.tsx`      |
+| Kind       | Server Component                                                      |
+| Stylesheet | `play-side.comp.css` → block `.play-side`                             |
+| Used by    | [`PlayHome`](/components/platform/sections/play/play-home) (`/jugar`) |
+
+It has no story of its own: [`PlayHome`](/components/platform/sections/play/play-home)'s stories draw it whole, with and without a FAB and with no games.
+
+## Purpose
+
+The owner's «M4 · /jugar» side column (2026-10-25), drawn on the workspace's canvas as `PlatformSideNav` draws its own — but its rows are games, two lines each with a result's disc, which the nav's links do not carry:
+
+- **The main action**, Material's extended FAB (`mdFab("primary-container")`), flat at rest and onto a shadow under the pointer, with a line under it: «Continuar la partida» on `/jugar` while a game is open («En curso contra … · con blancas · 14 jugadas»). None when there is nothing to go on with.
+- **«Tus partidas»**: the last games, each a link to its page — the disc (G green, P red, T grey, a dot for one in course, a dash for one cancelled; the letter is said to a screen reader as «Ganada», «Perdida», «Tablas»), «Ganaste contra Tere», «Perdiste contra …», «Tablas con …», and when and how many moves. The game on screen is lit in the secondary container (`aria-current`). Under them the record of every game — «8 G 5 P 2 T», said as «8 ganadas, 5 perdidas, 2 tablas» — and «Ver todas en tu perfil», a text button to the profile's «Partidas». With no games, one line says they will appear.
+
+## Props
+
+| Prop            | Type                                              | Required | Meaning                                                    |
+| --------------- | ------------------------------------------------- | -------- | ---------------------------------------------------------- |
+| `label`         | `string`                                          | yes      | The `<nav>`'s accessible name.                             |
+| `action`        | `PlaySideAction \| null`                          | yes      | `{ label, href, icon: "play" \| "map" \| "back", note? }`. |
+| `games`         | `PlayedGameCard[]`                                | yes      | The last games, newest first.                              |
+| `record`        | `{ wins: number; losses: number; draws: number }` | yes      | Every game together.                                       |
+| `gamesHref`     | `string`                                          | yes      | The profile's «Partidas».                                  |
+| `currentGameId` | `string`                                          | no       | The game on screen, lit.                                   |
+| `now`           | `Date`                                            | no       | What «hace 2 horas» counts from; for the stories.          |
+
+## Markup & styling
+
+Block `.play-side` (190 lines).
+
+**Elements:** `.play-side__action`, `__fab`, `__note`, `__group`, `__title`, `__empty`, `__list`, `__game`, `__badge`, `__game-text`, `__game-title`, `__game-facts`, `__record`, `__tally`, `__tally-figure`, `__sr`, `__more`
+
+**Modifiers and states:** `.play-side__game_state_current`, `.play-side__badge_result_win|loss|draw|open|aborted`, `.play-side__tally-figure_result_win|loss`
+
+**Tokens:** `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-container-high`, `--platform-m3-primary`, `--platform-m3-secondary-container`, `--platform-m3-on-secondary-container`, `--platform-m3-success-container`, `--platform-m3-on-success-container`, `--platform-m3-error-container`, `--platform-m3-on-error-container`, `--platform-m3-success`, `--platform-m3-error`, `--md-sys-elevation-shadow-3`
+
+**Media queries:** none (the workspace moves the column above the panel under 1024px).

@@ -1,7 +1,12 @@
 import { CUADERNO_DEL_VIAJERO } from "@/lib/adventure/adventures/cuaderno-del-viajero";
-import { adventureBotSlug } from "@/lib/adventure/adventures";
+import { adventureBotSlug, COMING_ADVENTURES } from "@/lib/adventure/adventures";
 import { botSeedOf } from "@/lib/chess/bots/roster";
-import type { AdventureProgressView, EncounterStars, EncounterView } from "@/services/adventure/adventure.types";
+import type {
+  AdventureProgressView,
+  AdventureShelfView,
+  EncounterStars,
+  EncounterView,
+} from "@/services/adventure/adventure.types";
 import type { OpenGameSummary } from "@/services/play/play.types";
 import { avatarOf } from "./bots";
 
@@ -111,5 +116,24 @@ export function fixtureAdventureProgress({
     isComplete: beaten === encounters.length,
     openGame: open,
     openGameEncounter: openGame === "adventure" && current ? current.order : null,
+  };
+}
+
+/** The shelf as «Jugar» reads it (`getAdventureShelf`): the one notebook, where `progress` stands, and the ones coming. */
+export function fixtureAdventureShelf(
+  progress: AdventureProgressView = fixtureAdventureProgress(),
+): AdventureShelfView {
+  return {
+    notebooks: [
+      {
+        slug: progress.slug,
+        title: progress.title,
+        place: CUADERNO_DEL_VIAJERO.shelf.place,
+        beaten: progress.beaten,
+        total: progress.total,
+        stars: progress.stars,
+      },
+    ],
+    coming: COMING_ADVENTURES,
   };
 }

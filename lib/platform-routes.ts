@@ -90,8 +90,6 @@ export const platformRoutes = {
   explorer: "/explorador",
   /** «Jugar»: the way in, the adventure's. `/jugar/partida-libre`, the old gallery, redirects here. */
   play: "/jugar",
-  /** The adventure shelf: the notebooks to open and the ones that are coming. */
-  adventures: "/jugar/aventura",
   /**
    * An adventure's map, by the adventure's slug. `victoria` is the order of the
    * encounter just beaten for the first time: the map plays its victory once

@@ -44,11 +44,11 @@ export async function startAdventureEncounter(formData: FormData): Promise<void>
   if (!PLAY_ENABLED || !ADVENTURE_ENABLED) notFound();
   const user = await getCurrentUser();
   if (!(await allowAction(`${user.id}:play-start`, 20, 60_000)))
-    redirect(withErrorParam(platformRoutes.adventures, "throttled"));
+    redirect(withErrorParam(platformRoutes.play, "throttled"));
 
   const form = parseForm(START_SCHEMA, formData);
   const adventure = form.ok ? adventureOf(form.data.adventure) : undefined;
-  if (!form.ok || !adventure) redirect(withErrorParam(platformRoutes.adventures, "invalid"));
+  if (!form.ok || !adventure) redirect(withErrorParam(platformRoutes.play, "invalid"));
   const back = platformRoutes.adventureMap(adventure.slug);
 
   const encounter = adventure.encounters.find((candidate) => candidate.order === form.data.encounter);
@@ -72,7 +72,6 @@ export async function startAdventureEncounter(formData: FormData): Promise<void>
   const gameId = await openGame(user.id, user.displayName, bot, color, form.data.replace);
 
   revalidatePath(back);
-  revalidatePath(platformRoutes.adventures);
   revalidatePath(platformRoutes.play);
   redirect(platformRoutes.playedGame(gameId));
 }
