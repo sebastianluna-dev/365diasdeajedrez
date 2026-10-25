@@ -5,6 +5,7 @@ import {
   HOME_PAGE,
   needsStudentExerciseAccess,
   pageNameOf,
+  SETTINGS_PAGE,
   PLATFORM_SHORTCUTS,
   type PlatformApps,
   type PlatformNavFeatures,
@@ -217,6 +218,10 @@ describe("pageNameOf", () => {
   it("nombra «Inicio» en la página de inicio, que no es una herramienta", () => {
     expect(pageNameOf(alumno, "/inicio")).toEqual(HOME_PAGE);
     expect(HOME_PAGE.art).toBe("home");
+  });
+
+  it("nombra «Ajustes» en los ajustes, que tampoco son una herramienta", () => {
+    expect(pageNameOf(alumno, "/ajustes")).toEqual(SETTINGS_PAGE);
   });
 
   it("no nombra nada donde no hay herramienta ni es el inicio", () => {

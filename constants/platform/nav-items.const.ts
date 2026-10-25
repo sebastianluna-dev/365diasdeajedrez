@@ -222,6 +222,16 @@ export function buildPlatformApps(roles: PlatformNavRoles, features: PlatformNav
 export const HOME_PAGE: PlatformApp = { label: "Inicio", href: platformRoutes.dashboard, art: "home" };
 
 /**
+ * «Ajustes» in the bar (2026-10-25, the new design system's «Ajustes A»): no
+ * tool either — the avatar's menu leads to it —, named with the academy's
+ * mark, as the home page is.
+ */
+export const SETTINGS_PAGE: PlatformApp = { label: "Ajustes", href: platformRoutes.settings, art: "home" };
+
+/** The pages the bar names that are no tool's, by their address. */
+const PAGES_OF_NO_TOOL: readonly PlatformApp[] = [HOME_PAGE, SETTINGS_PAGE];
+
+/**
  * The tool of the page on screen, or null: the one whose address is the
  * page's or the LONGEST that starts it — `/profesor` and `/profesor/alumnos`
  * are different tools and a plain prefix would light up both at once. Its
@@ -240,10 +250,11 @@ export function activeApp(apps: PlatformApps, pathname: string): PlatformApp | n
 
 /**
  * What the bar names the page on screen with: its tool (`activeApp`), or
- * «Inicio» on the home page itself, which is no tool's. Null elsewhere (a
+ * «Inicio» on the home page itself and «Ajustes» on the settings, which are
+ * no tool's. Null elsewhere (a
  * lesson), where the wordmark stays. The menu marks a tile by `activeApp`
  * alone, so no tile lights up on the home page.
  */
 export function pageNameOf(apps: PlatformApps, pathname: string): PlatformApp | null {
-  return activeApp(apps, pathname) ?? (pathname === HOME_PAGE.href ? HOME_PAGE : null);
+  return activeApp(apps, pathname) ?? PAGES_OF_NO_TOOL.find((page) => page.href === pathname) ?? null;
 }
