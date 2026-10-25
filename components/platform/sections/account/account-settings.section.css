@@ -1,155 +1,310 @@
-/* «Ajustes»: one card per thing that is decided, in a column the width of a
-   form and not of the page — a field of settings is read down, not across. */
+/* «Ajustes» on the new design system: the workspace (`platform.css`) draws
+   the canvas, the side column and the panel; this block lays out the panel's
+   heading and its four outlined cards, two columns of two, every section
+   open at once. */
 .account-settings {
-  display: flex;
-  flex-direction: column;
-  gap: var(--platform-space-6);
-  max-width: 620px;
+  & .account-settings__panel {
+    gap: var(--platform-space-5);
+  }
+
+  & .account-settings__heading {
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-2xl);
+    font-weight: 400;
+    line-height: 1.33;
+  }
+
+  & .account-settings__lead {
+    margin: var(--platform-space-0-5) 0 0;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* Two columns, each a stack: a card as tall as what it holds, and the next
+     one right under it, not at the height of its neighbour. */
+  & .account-settings__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--platform-space-4);
+
+    @media (width < 768px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  & .account-settings__column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+  }
 
   & .account-settings__card {
-    padding: var(--platform-space-8) var(--platform-space-8);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    box-shadow: var(--platform-shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-4) var(--platform-space-5) var(--platform-space-5);
+    border-radius: var(--md-sys-shape-corner-md);
+
+    @media (width < 640px) {
+      padding: var(--platform-space-4);
+    }
+  }
+
+  & .account-settings__card-head {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+  }
+
+  /* The card's drawing, on a disc of the secondary container; the goal's in
+     amber, the streak's colour. */
+  & .account-settings__disc {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--platform-m3-secondary-container);
+    color: var(--platform-m3-on-secondary-container);
+  }
+
+  & .account-settings__disc_tone_warning {
+    background: var(--platform-m3-warning-container);
+    color: var(--platform-m3-on-warning-container);
+  }
+
+  & .account-settings__disc-icon {
+    width: 18px;
+    height: 18px;
   }
 
   & .account-settings__title {
-    margin: 0 0 var(--platform-space-5);
-    font-size: var(--platform-type-xl);
-    font-weight: 700;
-    color: var(--platform-text);
+    margin: 0;
+    font-family: var(--platform-font-display);
+    font-size: var(--platform-type-lg);
+    font-weight: 500;
+    line-height: 1.33;
   }
 
   /* The details, as a list of terms: what they are called on the left, what
-     they say on the right, so three facts read as three and not as a
-     paragraph. */
+     they say on the right, a hairline over each row. */
   & .account-settings__facts {
-    display: grid;
-    grid-template-columns: minmax(0, 190px) minmax(0, 1fr);
-    gap: 0;
+    display: flex;
+    flex-direction: column;
     margin: 0;
   }
 
   & .account-settings__fact {
-    display: contents;
-  }
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    align-items: center;
+    gap: var(--platform-space-3);
+    min-height: 44px;
+    border-top: 1px solid var(--platform-m3-divider);
 
-  & .account-settings__term,
-  & .account-settings__value {
-    padding: var(--platform-space-3) 0;
-    border-top: 1px solid var(--platform-border);
-    font-size: var(--platform-type-lg);
+    /* Two columns do not fit a phone: the term goes over its value. */
+    @media (width < 640px) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+      padding: var(--platform-space-2) 0;
+    }
   }
 
   & .account-settings__term {
-    color: var(--platform-text-subtle);
+    font-size: var(--platform-type-2xs);
+    color: var(--platform-m3-on-surface-variant);
   }
 
   & .account-settings__value {
     margin: 0;
-    color: var(--platform-text);
+    font-size: var(--platform-type-sm);
     overflow-wrap: anywhere;
   }
 
-  /* The first row has the title above it: a line there would close the
-     heading instead of separating two facts. */
-  & .account-settings__fact:first-child {
-    & .account-settings__term,
-    & .account-settings__value {
-      border-top: none;
+  & .account-settings__note {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    margin: 0;
+    font-size: var(--platform-type-2xs);
+    line-height: 1.4;
+    color: var(--platform-m3-on-surface-variant);
+  }
+
+  /* Under a heading, the note says what the card is for: closer to it. */
+  & .account-settings__card-head + .account-settings__note {
+    margin-top: calc(-1 * var(--platform-space-1));
+  }
+
+  & .account-settings__note-icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+  }
+
+  /* The outlined fields sit on the panel's white, so the notch behind their
+     label is that white and not a dialog's. */
+  & .account-settings__card .platform-form__field.platform-form__field_look_material {
+    --field-notch: var(--platform-m3-panel);
+  }
+
+  /* A field and its «Guardar» side by side: the button centred on the 56px
+     box, not on the box and its supporting line. */
+  & .account-settings__form_layout_row,
+  & .account-settings__row {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--platform-space-3);
+
+    & > .platform-form__field {
+      flex: 1;
+    }
+
+    & > button[type="submit"] {
+      margin-top: var(--platform-space-2);
+    }
+
+    /* A phone has no room for both: the button goes under its field, at
+       the right. */
+    @media (width < 640px) {
+      flex-direction: column;
+      align-items: stretch;
+
+      & > button[type="submit"] {
+        align-self: flex-end;
+        margin-top: 0;
+      }
     }
   }
 
-  & .account-settings__note {
-    margin: var(--platform-space-4) 0 0;
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-subtle);
+  & .account-settings__row {
+    display: flex;
   }
 
-  /* The three themes, as a row of cards: three short answers read side by
-     side, and each is its own form. */
+  & .account-settings__split {
+    width: 100%;
+    margin: 0;
+    border: 0;
+    border-top: 1px solid var(--platform-m3-outline-variant);
+  }
+
+  /* The three themes, as picture cards: what each looks like, a radio's ring
+     and its name, and what it does. Each is its own form. */
   & .account-settings__themes {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--platform-space-3);
-    margin-top: var(--platform-space-5);
+
+    @media (width < 640px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 
   & .account-settings__theme {
     display: flex;
     flex-direction: column;
-    gap: var(--platform-space-1);
+    gap: var(--platform-space-2);
     width: 100%;
-    padding: var(--platform-space-4) var(--platform-space-4);
-    border: 1px solid var(--platform-border-strong);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    color: var(--platform-text);
+    height: 100%;
+    padding: var(--platform-space-2) var(--platform-space-2) var(--platform-space-3);
+    border: 1px solid var(--platform-m3-outline-variant);
+    border-radius: var(--md-sys-shape-corner-md);
+    background: var(--platform-m3-panel);
+    color: var(--platform-m3-on-surface);
     font: inherit;
     text-align: left;
     cursor: pointer;
+    transition:
+      border-color 120ms ease-out,
+      background-color 120ms ease-out;
 
     &:hover {
-      border-color: var(--platform-accent);
+      border-color: var(--platform-m3-outline);
     }
 
-    /* The one that is chosen: the accent's wash and its ink, the same way a
-       chosen thing is drawn everywhere else on the platform. */
+    /* The one chosen: the primary's outline at 2px (the border and an inset
+       line, so nothing moves) on the container, and its ring filled. */
     &[aria-pressed="true"] {
-      border-color: var(--platform-accent);
-      background: var(--platform-accent-wash);
-      color: var(--platform-accent-ink);
+      border-color: var(--platform-m3-primary);
+      background: var(--platform-m3-container);
+      box-shadow: inset 0 0 0 1px var(--platform-m3-primary);
     }
   }
 
   & .account-settings__theme-label {
-    font-size: var(--platform-type-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    padding: 0 var(--platform-space-1);
+    font-size: var(--platform-type-xs);
     font-weight: 600;
   }
 
+  & .account-settings__theme-mark {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--platform-m3-on-surface-variant);
+    border-radius: 50%;
+    box-sizing: border-box;
+  }
+
+  & .account-settings__theme[aria-pressed="true"] .account-settings__theme-mark {
+    border-color: var(--platform-m3-primary);
+    background: var(--platform-m3-primary);
+    box-shadow: inset 0 0 0 3px var(--platform-m3-container);
+  }
+
   & .account-settings__theme-note {
-    font-size: var(--platform-type-xs);
-    color: var(--platform-text-subtle);
+    padding: 0 var(--platform-space-1);
+    font-size: var(--platform-type-2xs);
+    line-height: 1.33;
+    color: var(--platform-m3-on-surface-variant);
   }
 
-  /* On the accent's wash the subtle grey falls under 4.5:1; the muted one
-     does not. */
-  & .account-settings__theme[aria-pressed="true"] .account-settings__theme-note {
-    color: var(--platform-text-muted);
+  /* Today against the goal, on the container: the flame, the figures and
+     the bar of the primary. */
+  & .account-settings__today {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-3) var(--platform-space-4);
+    border-radius: var(--md-sys-shape-corner-md);
+    background: var(--platform-m3-container);
+    color: var(--platform-m3-on-surface);
   }
 
-  /* A `PlatformForm`: its fields one under another, the button at the end
-     of the last row. */
-  & .account-settings__form {
-    margin-top: var(--platform-space-5);
-
-    & > button[type="submit"] {
-      align-self: flex-end;
-    }
+  & .account-settings__flame {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    color: var(--platform-flame);
   }
 
-  @media (width < 640px) {
-    & .account-settings__card {
-      padding: var(--platform-space-6);
-    }
+  & .account-settings__flame-core {
+    color: var(--platform-flame-core);
+  }
 
-    /* Three cards do not fit a phone's width: they stack. */
-    & .account-settings__themes {
-      grid-template-columns: minmax(0, 1fr);
-    }
+  & .account-settings__today-text {
+    white-space: nowrap;
+  }
 
-    /* Two columns of 190px do not fit a phone: the term goes over its value. */
-    & .account-settings__facts {
-      grid-template-columns: minmax(0, 1fr);
-    }
+  & .account-settings__meter {
+    flex: 1 1 80px;
+    height: 8px;
+    overflow: hidden;
+    border-radius: 1000px;
+    background: var(--platform-m3-container-high);
+  }
 
-    & .account-settings__term {
-      padding-bottom: 0;
-    }
-
-    & .account-settings__value {
-      padding-top: var(--platform-space-1);
-      border-top: none;
-    }
+  & .account-settings__meter-fill {
+    display: block;
+    height: 100%;
+    border-radius: 1000px;
+    background: var(--platform-m3-primary);
   }
 }

@@ -1,46 +1,61 @@
 ---
-description: "«Ajustes»: the student's details, which are read and not edited; their profile's user name, status line and flag; the theme; and the daily goal."
+description: "«Ajustes» in the new design system: every section open at once in four outlined cards — the person's details, read and not edited; their profile's user name, status line and flag; the theme as three picture cards; the daily goal with today's minutes against it — and «Ver mi perfil» and the page's anchors in the side column."
 ---
 
 # `AccountSettingsSection`
 
-|            |                                                                                                                                                                                                                                                            |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/account/account-settings.section.tsx`                                                                                                                                                                                        |
-| Kind       | Server Component                                                                                                                                                                                                                                           |
-| Stylesheet | `account-settings.section.css` → block `.account-settings`                                                                                                                                                                                                 |
-| Used by    | `/ajustes`                                                                                                                                                                                                                                                 |
-| Composes   | [`PlatformForm`](/components/platform/shared/platform-form), [`PlatformSelect`](/components/platform/shared/platform-select), [`SubmitButton`](/components/platform/shared/submit-button), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Reads      | `getAccountSettings()` · `services/account/account.service.ts`                                                                                                                                                                                             |
-| Writes     | `updateDailyGoal()` · `services/study-goal/study-goal.actions.ts`                                                                                                                                                                                          |
+|            |                                                                                                                                                                                                                                                                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/account/account-settings.section.tsx`                                                                                                                                                                                                                                                            |
+| Pieces     | `theme-art.comp.tsx`, `material-fields.comp.tsx`, `account-settings-skeleton.comp.tsx`                                                                                                                                                                                                                                         |
+| Kind       | Server Component (`MaterialFields` is a Client Component that only renders a context)                                                                                                                                                                                                                                          |
+| Stylesheet | `account-settings.section.css` → block `.account-settings`; `theme-art.comp.css` → block `.theme-art`; `account-settings-skeleton.comp.css` → block `.account-settings-skeleton`                                                                                                                                               |
+| Used by    | `/ajustes`; `AccountSettingsSkeleton` by `app/(platform)/ajustes/loading.tsx`                                                                                                                                                                                                                                                  |
+| Composes   | [`PlatformSideNav`](/components/platform/shared/platform-side-nav), [`PlatformForm`](/components/platform/shared/platform-form), [`PlatformSelect`](/components/platform/shared/platform-select), [`SubmitButton`](/components/platform/shared/submit-button), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Reads      | `getAccountSettings()` · `services/account/account.service.ts`; `getStudyGoal()` · `services/study-goal/study-goal.service.ts`                                                                                                                                                                                                 |
+| Writes     | `setUserSlug()`, `setProfileDetails()`, `setTheme()` · `services/account/account.actions.ts`; `updateDailyGoal()` · `services/study-goal/study-goal.actions.ts`                                                                                                                                                                |
 
 ## Purpose
 
-Where «Ajustes» leads, from the menu of the bar. Two cards: who they are, and the one thing they decide.
+Where «Ajustes» leads, from the menu of the avatar. Moved whole to the new design system on 2026-10-25 (the owner's «Ajustes A · Todo a la vista», `MaterialM4AjustesA`): the page bleeds onto the canvas and the section draws the workspace (`.platform-workspace`); the bar names it «Ajustes» with the academy's mark (`SETTINGS_PAGE`, `pageNameOf`), as it names «Inicio».
 
-Three cards: who they are, how it looks, and the one thing they decide about studying.
+- **The side column**: [`PlatformSideNav`](/components/platform/shared/platform-side-nav) with «Ver mi perfil» as the extended FAB (to `/perfil/<slug>`, while `PLAY_ENABLED` is on; there is no profile otherwise) and «En esta página», the four cards as anchors (`#cuenta`, `#perfil`, `#apariencia`, `#objetivo`). They are plain jumps on the page: the root's `scroll-padding-top` leaves them under the bar, and they glide only under `prefers-reduced-motion: no-preference` (`globals.css`). None is lit: every card is on screen at once.
+- **The panel**: «Ajustes» and «Tu cuenta y cómo quieres estudiar.», the notice of `?error=` if there is one, and the four cards in two columns of Material's outlined card (`mdCard("outlined")`), each with its drawing on a disc of the secondary container (the goal's in amber). Under 768px the columns become one.
 
-**Their details are shown and not edited.** A name and an email are changed by whoever runs the academy, so the card says so instead of offering a form that would fail. **The daily goal is theirs**, and it is the same setting the dashboard offers beside the streak — the same action, `updateDailyGoal`, with the page it sits on carried in a hidden `returnTo` so a failure comes back here and not there.
+**Their details are shown and not edited** («Tu cuenta»): name, email and «En la academia desde», a list of terms with a hairline over each row, and «Para cambiar tu nombre o tu correo, escríbele a tu profesor.» beside the "i".
 
-**Their profile** (while `PLAY_ENABLED` is on): the user name, which is the profile's address (`setUserSlug`: the CHECK's pattern, not a reserved word, «Ese nombre de usuario ya está en uso» on the unique index; the hint says the old address stops working), and the status line and the flag (`setProfileDetails`, a `PlatformSelect` over `federationOptions()` with «Sin bandera» as its empty option). Two `PlatformForm`s, each with its «Guardar».
+**Their profile** («Tu perfil», while `PLAY_ENABLED` is on): the user name, which is the profile's address (`setUserSlug`: the CHECK's pattern, not a reserved word, «Ese nombre de usuario ya está en uso» on the unique index; the hint gives the address and says the old one stops working) with its own «Guardar» (Material's filled button), and under a hairline the status line and the flag (`setProfileDetails`, a `PlatformSelect` over `federationOptions()` with «Sin bandera» as its empty option) sharing a tonal «Guardar». Each field and its button sit side by side; on a phone the button goes under the field, at its right.
 
-**The theme is chosen here in full**: «El del sistema», «Claro» and «Oscuro», one form each with the answer bound into `setTheme` so no field travels that could be forged. What is marked is what was **chosen** — with «El del sistema» the theme on screen is the machine's, which the server cannot know (see [Themes](/architecture/themes)).
+**The fields are Material's outlined ones.** `PlatformFormField` and `PlatformSelect` know the look only from `PlatformLookContext`, which until this page only a popup set; `MaterialFields` sets it for the four cards, and the section's sheet sets the label's notch (`--field-notch`) to the panel's white. «Opcional» still comes from the control's `required`, on the supporting line.
+
+**The theme is chosen here in full** («Apariencia», «Cómo se ve la plataforma en este navegador. Cambia al instante.»): «El del sistema», «Claro» and «Oscuro» as three picture cards, one form each with the answer bound into `setTheme` so no field travels that could be forged, and the cookie and redirect as before. Each card shows the platform in miniature (`ThemeArt`), a radio's ring and its name, and what it does; the one **chosen** has the primary's outline on the container and its ring filled — with «El del sistema» the theme on screen is the machine's, which the server cannot know (see [Themes](/architecture/themes)). The machine's picture fades from light to dark and back; under `prefers-reduced-motion: reduce` it stands still, half of each.
+
+**The daily goal** («Objetivo diario»): the 10–120 minutes select and «Guardar» (`updateDailyGoal`, with this page in a hidden `returnTo`), and under them «Hoy llevas **12 de 20 min**» with the flame and a bar of the primary: `getStudyGoal()`, the same figures the home page shows, derived from the lessons finished today; nothing new is stored.
+
+While it loads, `AccountSettingsSkeleton` draws the same workspace in the containers' greys (markup and CSS only, as a `loading.tsx` needs).
+
+**Left out from the design**: «Volver a Inicio» at the foot of the side column (the column holds the page's own things, never the platform's navigation, which the tools menu and the avatar have); the `/perfil/` prefix inside the user name's field and the status line's «30/120» count (`PlatformFormField` has neither; the hint gives the address instead); the flag inside the country's select (`PlatformSelect` draws labels only); the lit anchor (a scroll spy would need a Client Component for no gain, with every card in view).
 
 ## Props
 
-| Prop        | Type                | Required | Meaning                                                                      |
-| ----------- | ------------------- | -------- | ---------------------------------------------------------------------------- |
-| `account`   | `AccountSettings`   | yes      | `displayName`, `email`, `memberSinceLabel`, `goalMinutes`.                   |
-| `theme`     | `"light" \| "dark"` | no       | What they chose, from the `tema` cookie; absent means «El del sistema».      |
-| `errorCode` | `string`            | no       | Code from `?error=`, translated with `STUDENT_ERROR_MESSAGES` into a notice. |
+| Prop        | Type                | Required | Meaning                                                                                     |
+| ----------- | ------------------- | -------- | ------------------------------------------------------------------------------------------- |
+| `account`   | `AccountSettings`   | yes      | `displayName`, `email`, `memberSinceLabel`, `goalMinutes`, `slug`, `statusLine`, `country`. |
+| `goal`      | `StudyGoal`         | yes      | Today's minutes against the goal, and the share of it done (`getStudyGoal()`).              |
+| `theme`     | `"light" \| "dark"` | no       | What they chose, from the `tema` cookie; absent means «El del sistema».                     |
+| `errorCode` | `string`            | no       | Code from `?error=`, translated with `STUDENT_ERROR_MESSAGES` into a notice.                |
 
 ## Markup & styling
 
-Block `.account-settings`: a column of cards capped at 620px — a field of settings is read down, not across. The details are a `<dl>` laid out as a two-column grid (`display: contents` on each pair), with a hairline over every row but the first, since a line under the heading would close it instead of separating two facts. At `(width < 640px)` the grid becomes one column and the term goes over its value.
+Block `.account-settings` (310 lines), on `.platform-workspace`. The cards are a grid of two columns, each a flex stack, so a card is as tall as what it holds. The details are a `<dl>` whose rows are a 150px grid each; under 640px the term goes over its value.
 
-**Elements:** `.account-settings__card`, `__title`, `__facts`, `__fact`, `__term`, `__value`, `__note`, `__themes`, `__theme`, `__theme-label`, `__theme-note`, `__form` (a `PlatformForm`, its submit at the end of the last row; the goal's form was moved onto it on 2026-10-08, and with it went `__field` and `__field-label`)
+**Elements:** `.account-settings__panel`, `__head`, `__heading`, `__lead`, `__grid`, `__column`, `__card` (on Material's `card card-outlined`), `__card-head`, `__disc` (`_tone_warning`), `__disc-icon`, `__title`, `__facts`, `__fact`, `__term`, `__value`, `__note`, `__note-icon`, `__form` (a `PlatformForm`; `_layout_row` puts its field and its button side by side), `__row`, `__split`, `__themes`, `__theme`, `__theme-label`, `__theme-mark`, `__theme-note`, `__today`, `__flame`, `__flame-core`, `__today-text`, `__meter`, `__meter-fill`
+
+Block `.theme-art` (83 lines): `__scheme` (`_tone_light`, `_tone_dark`), `__canvas`, `__panel`, `__nav`, `__line`, `__ink`; `_scheme_system` (the fade, `@keyframes theme-art-night`). Its colours are the `--platform-m3-preview-light-*` and `-dark-*` tokens, the same in both themes.
+
+Block `.account-settings-skeleton` (136 lines), the loading shape.
 
 ## Related
 
 - [`PlatformUserMenu`](/components/platform/sections/shell/platform-user-menu), which links here.
-- [`HomeSection`](/components/platform/sections/dashboard/home/home-section), which shows the goal against today's minutes; since 2026-10-23 this is the one place it is changed.
+- [`HomeSection`](/components/platform/sections/dashboard/home/home-section), which shows the goal against today's minutes; this is the one place it is changed.

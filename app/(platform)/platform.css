@@ -281,6 +281,22 @@
      themes, since they name the pieces and not a surface. */
   --platform-m3-piece-white: light-dark(#ffffff, #ffffff);
   --platform-m3-piece-black: light-dark(#1f1f1f, #1f1f1f);
+  /* The two themes in miniature, as «Ajustes» offers them (2026-10-25,
+     `ThemeArt`): the light one's canvas, panel, edge, side link, lines and
+     ink, and the dark one's. The same in both themes, since each draws one
+     theme whichever is on screen. */
+  --platform-m3-preview-light-canvas: light-dark(#f8fafd, #f8fafd);
+  --platform-m3-preview-light-panel: light-dark(#ffffff, #ffffff);
+  --platform-m3-preview-light-edge: light-dark(#e3e3e3, #e3e3e3);
+  --platform-m3-preview-light-nav: light-dark(#c2e7ff, #c2e7ff);
+  --platform-m3-preview-light-line: light-dark(#c4c7c5, #c4c7c5);
+  --platform-m3-preview-light-ink: light-dark(#1f1f1f, #1f1f1f);
+  --platform-m3-preview-dark-canvas: light-dark(#1b1c1e, #1b1c1e);
+  --platform-m3-preview-dark-panel: light-dark(#2b2c2f, #2b2c2f);
+  --platform-m3-preview-dark-edge: light-dark(#3c4043, #3c4043);
+  --platform-m3-preview-dark-nav: light-dark(#004a77, #004a77);
+  --platform-m3-preview-dark-line: light-dark(#5e5e5e, #5e5e5e);
+  --platform-m3-preview-dark-ink: light-dark(#e3e3e3, #e3e3e3);
 
   /* MATERIAL'S OWN ROLES (`@material/web`, its Expressive components of
      `labs/gb`, 2026-10-22): its stylesheets read `--md-sys-*`, which it

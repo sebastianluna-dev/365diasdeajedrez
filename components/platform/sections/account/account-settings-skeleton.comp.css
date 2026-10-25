@@ -1,0 +1,136 @@
+.account-settings-skeleton {
+  /* Said to a screen reader only: on screen the shapes say it. */
+  & .account-settings-skeleton__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Every shape pulses, together. */
+  & .account-settings-skeleton__shape {
+    display: block;
+    flex: none;
+    background: var(--platform-m3-container);
+    animation: account-settings-skeleton-pulse 1200ms ease-in-out infinite alternate;
+  }
+
+  /* The side column, with `PlatformSideNav`'s rhythm. */
+  & .account-settings-skeleton__side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+    padding: var(--platform-space-1) 0 var(--platform-space-4);
+
+    & .account-settings-skeleton__shape {
+      background: var(--platform-m3-container-high);
+    }
+  }
+
+  & .account-settings-skeleton__fab {
+    width: 160px;
+    height: 56px;
+    margin: 0 0 var(--platform-space-4) var(--platform-space-2);
+    border-radius: var(--md-sys-shape-corner-lg);
+  }
+
+  & .account-settings-skeleton__row {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    height: 36px;
+    padding: 0 var(--platform-space-4) 0 var(--platform-space-6);
+  }
+
+  & .account-settings-skeleton__icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+  }
+
+  & .account-settings-skeleton__text {
+    flex: 1;
+    max-width: 120px;
+    height: 12px;
+    border-radius: 1000px;
+  }
+
+  & .account-settings-skeleton__panel {
+    gap: var(--platform-space-5);
+  }
+
+  & .account-settings-skeleton__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--platform-space-4);
+
+    @media (width < 768px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  & .account-settings-skeleton__column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+  }
+
+  /* An outlined card of the page. */
+  & .account-settings-skeleton__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-4) var(--platform-space-5) var(--platform-space-5);
+    border: 1px solid var(--platform-m3-container-high);
+    border-radius: var(--md-sys-shape-corner-md);
+  }
+
+  & .account-settings-skeleton__card-head {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+  }
+
+  & .account-settings-skeleton__disc {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+  }
+
+  & .account-settings-skeleton__field {
+    height: 56px;
+    border-radius: var(--md-sys-shape-corner-xs);
+  }
+
+  & .account-settings-skeleton__bar {
+    height: 12px;
+    border-radius: 1000px;
+  }
+
+  & .account-settings-skeleton__bar_size_heading {
+    width: 140px;
+    height: 24px;
+  }
+
+  & .account-settings-skeleton__bar_size_title {
+    width: 120px;
+    height: 18px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .account-settings-skeleton__shape {
+      animation: none;
+    }
+  }
+}
+
+/* `@keyframes` cannot be nested inside a style rule. */
+@keyframes account-settings-skeleton-pulse {
+  to {
+    opacity: 0.45;
+  }
+}

@@ -1,0 +1,83 @@
+/* The platform in miniature on each theme's card: every shape reads its
+   tone's colour, which stays the same whichever theme is on screen. */
+.theme-art {
+  display: block;
+  border-radius: var(--md-sys-shape-corner-sm);
+
+  & .theme-art__scheme_tone_light {
+    & .theme-art__canvas {
+      fill: var(--platform-m3-preview-light-canvas);
+    }
+
+    & .theme-art__panel {
+      fill: var(--platform-m3-preview-light-panel);
+      stroke: var(--platform-m3-preview-light-edge);
+    }
+
+    & .theme-art__nav {
+      fill: var(--platform-m3-preview-light-nav);
+    }
+
+    & .theme-art__line {
+      fill: var(--platform-m3-preview-light-line);
+    }
+
+    & .theme-art__ink {
+      fill: var(--platform-m3-preview-light-ink);
+    }
+  }
+
+  & .theme-art__scheme_tone_dark {
+    & .theme-art__canvas {
+      fill: var(--platform-m3-preview-dark-canvas);
+    }
+
+    & .theme-art__panel {
+      fill: var(--platform-m3-preview-dark-panel);
+      stroke: var(--platform-m3-preview-dark-edge);
+    }
+
+    & .theme-art__nav {
+      fill: var(--platform-m3-preview-dark-nav);
+    }
+
+    & .theme-art__line {
+      fill: var(--platform-m3-preview-dark-line);
+    }
+
+    & .theme-art__ink {
+      fill: var(--platform-m3-preview-dark-ink);
+    }
+  }
+
+  /* The machine's: the dark one, over the light one, comes and goes. */
+  &.theme-art_scheme_system .theme-art__scheme_tone_dark {
+    animation: theme-art-night 4s ease-in-out infinite;
+  }
+
+  /* Still, it shows half of each: the dark one over the right half. */
+  @media (prefers-reduced-motion: reduce) {
+    &.theme-art_scheme_system .theme-art__scheme_tone_dark {
+      animation: none;
+      clip-path: inset(0 0 0 50%);
+    }
+  }
+}
+
+/* `@keyframes` cannot be nested inside a style rule. */
+@keyframes theme-art-night {
+  0%,
+  30% {
+    opacity: 0;
+  }
+
+  45%,
+  80% {
+    opacity: 1;
+  }
+
+  95%,
+  100% {
+    opacity: 0;
+  }
+}
