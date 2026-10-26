@@ -1,0 +1,55 @@
+.mate-in-one {
+  /* The material board reads the platform's board tokens; the site holds the
+     same squares under its own names (site-m4.css) and hands them over here,
+     with the coordinates' inks and the danger colour of a wrong move. */
+  --platform-m3-board-light: var(--color-m4-board-light);
+  --platform-m3-board-dark: var(--color-m4-board-dark);
+  --platform-m3-board-last-move: var(--color-m4-board-last-move);
+  --platform-m3-board-ink-light: var(--color-m4-primary);
+  --platform-m3-board-ink-dark: var(--color-m4-board-light);
+  --platform-danger: var(--color-m4-error);
+
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  & .mate-in-one__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  & .mate-in-one__title {
+    font-family: var(--font-site-display);
+    font-weight: 500;
+    font-size: 15px;
+  }
+
+  & .mate-in-one__tools {
+    display: flex;
+  }
+
+  & .mate-in-one__board {
+    overflow: hidden;
+    border-radius: 8px;
+  }
+
+  & .mate-in-one__status {
+    min-height: 51px;
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 17px;
+    color: var(--color-m4-on-surface-variant);
+
+    &.mate-in-one__status_tone_success {
+      color: var(--color-m4-on-success-container);
+      font-weight: 600;
+    }
+
+    &.mate-in-one__status_tone_error {
+      color: var(--color-m4-on-error-container);
+    }
+  }
+}

@@ -1,0 +1,231 @@
+.school-week {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  & .school-week__picker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 16px;
+  }
+
+  & .school-week__picker-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .school-week__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  & .school-week__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 16px 0 6px;
+    border: 1px solid var(--color-m4-outline-variant);
+    border-radius: 1000px;
+    background: var(--color-m4-panel);
+    color: var(--color-m4-on-surface);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background: var(--color-m4-container);
+    }
+
+    &.school-week__chip_selected,
+    &.school-week__chip_selected:hover {
+      border-color: var(--color-m4-primary);
+      background: var(--color-m4-secondary-container);
+      color: var(--color-m4-on-secondary-container);
+    }
+
+    &.school-week__chip_soon {
+      padding: 0 16px;
+      border-color: var(--color-m4-divider);
+      background: var(--color-m4-container);
+      color: var(--color-m4-on-surface-variant);
+      cursor: default;
+    }
+  }
+
+  & .school-week__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    color: var(--color-m4-on-primary);
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 700;
+
+    &.school-week__avatar_teacher_laura {
+      background: var(--color-m4-primary);
+    }
+
+    &.school-week__avatar_teacher_diego {
+      background: var(--color-m4-success);
+    }
+
+    &.school-week__avatar_teacher_monica {
+      background: var(--color-m4-error);
+    }
+  }
+
+  & .school-week__calendar {
+    padding: 20px 24px 24px;
+    border-radius: 28px;
+    background: var(--color-m4-panel);
+  }
+
+  & .school-week__calendar-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 16px;
+    margin-bottom: 12px;
+  }
+
+  & .school-week__calendar-title {
+    font-family: var(--font-site-display);
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 26px;
+  }
+
+  & .school-week__count {
+    font-size: 13px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  /* The day headers, the hour labels and the classes share one grid; the
+     classes' list is `display: contents` so its items are placed on it. */
+  & .school-week__grid {
+    display: grid;
+    grid-template-columns: 56px repeat(6, minmax(0, 1fr));
+    grid-template-rows: 36px repeat(5, 64px);
+    column-gap: 8px;
+    background: linear-gradient(var(--color-m4-divider), var(--color-m4-divider)) 0 36px / 100% 1px no-repeat;
+  }
+
+  & .school-week__corner {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  & .school-week__day {
+    display: flex;
+    grid-row: 1;
+    grid-column: var(--school-week-column);
+    align-items: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .school-week__hour {
+    grid-row: var(--school-week-row);
+    grid-column: 1 / -1;
+    padding-top: 2px;
+    border-top: 1px solid var(--color-m4-divider);
+    font-size: 12px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .school-week__classes {
+    display: contents;
+  }
+
+  & .school-week__class {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    grid-row: var(--school-week-row) / span var(--school-week-span);
+    grid-column: var(--school-week-column);
+    margin: 4px 0;
+    padding: 8px 10px;
+    overflow: hidden;
+    border-radius: 12px;
+    font-size: 12px;
+    line-height: 16px;
+
+    &.school-week__class_teacher_laura {
+      background: var(--color-m4-secondary-container);
+      color: var(--color-m4-on-secondary-container);
+    }
+
+    &.school-week__class_teacher_diego {
+      background: var(--color-m4-success-container);
+      color: var(--color-m4-on-success-container);
+    }
+
+    &.school-week__class_teacher_monica {
+      background: var(--color-m4-error-container);
+      color: var(--color-m4-on-error-container);
+    }
+  }
+
+  /* On the grid the day and the hour are where the class sits; read aloud,
+     and on a phone, they are said. */
+  & .school-week__when {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  & .school-week__class-title {
+    font-size: 13px;
+    line-height: 17px;
+  }
+
+  @media (width < 768px) {
+    & .school-week__calendar {
+      padding: 16px;
+      border-radius: 24px;
+    }
+
+    & .school-week__grid {
+      display: block;
+      background: none;
+    }
+
+    & .school-week__corner,
+    & .school-week__day,
+    & .school-week__hour {
+      display: none;
+    }
+
+    & .school-week__classes {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    & .school-week__class {
+      margin: 0;
+    }
+
+    & .school-week__when {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip-path: none;
+      font-weight: 600;
+    }
+  }
+}

@@ -1,0 +1,246 @@
+.teachers-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  & .teachers-comparison__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px 48px;
+  }
+
+  & .teachers-comparison__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 720px;
+  }
+
+  & .teachers-comparison__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+  }
+
+  & .teachers-comparison__caption,
+  & .teachers-comparison__hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  & .teachers-comparison__corner {
+    width: 280px;
+  }
+
+  & .teachers-comparison__column {
+    height: 76px;
+    padding: 0 20px;
+    font-family: var(--font-site-display);
+    font-weight: 500;
+    font-size: 19px;
+    line-height: 24px;
+    text-align: left;
+    vertical-align: middle;
+
+    &.teachers-comparison__column_ours {
+      width: 360px;
+      border: 2px solid var(--color-m4-primary);
+      border-bottom: 0;
+      border-radius: 28px 28px 0 0;
+      background: var(--color-m4-panel);
+    }
+  }
+
+  & .teachers-comparison__column-note {
+    display: block;
+    margin-top: 2px;
+    font-family: var(--font-site-text);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .teachers-comparison__feature {
+    padding: 10px 20px 10px 0;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  & .teachers-comparison__feature-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin-right: 12px;
+    border-radius: 12px;
+    background: var(--color-m4-container-high);
+    color: var(--color-m4-primary);
+    vertical-align: middle;
+  }
+
+  & .teachers-comparison__feature-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  & .teachers-comparison__cell {
+    height: 80px;
+    padding: 10px 20px;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--color-m4-on-surface-variant);
+    vertical-align: middle;
+
+    &.teachers-comparison__cell_ours {
+      border-right: 2px solid var(--color-m4-primary);
+      border-left: 2px solid var(--color-m4-primary);
+      background: var(--color-m4-panel);
+      color: var(--color-m4-on-surface);
+    }
+  }
+
+  & .teachers-comparison__row + .teachers-comparison__row {
+    & .teachers-comparison__feature,
+    & .teachers-comparison__cell {
+      border-top: 1px solid var(--color-m4-divider);
+    }
+  }
+
+  & .teachers-comparison__row:last-child .teachers-comparison__cell_ours {
+    border-bottom: 2px solid var(--color-m4-primary);
+    border-radius: 0 0 28px 28px;
+  }
+
+  & .teachers-comparison__mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 28px;
+    margin-bottom: 6px;
+    padding: 0 10px 0 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+
+    &.teachers-comparison__mark_value_yes {
+      background: var(--color-m4-success-container);
+      color: var(--color-m4-on-success-container);
+    }
+
+    &.teachers-comparison__mark_value_no {
+      background: var(--color-m4-error-container);
+      color: var(--color-m4-on-error-container);
+    }
+
+    &.teachers-comparison__mark_value_part {
+      background: var(--color-m4-container-high);
+      color: var(--color-m4-on-surface);
+    }
+
+    &.teachers-comparison__mark_value_soon {
+      background: var(--color-m4-secondary-container);
+      color: var(--color-m4-on-secondary-container);
+    }
+  }
+
+  & .teachers-comparison__mark-icon {
+    width: 11px;
+    height: 11px;
+  }
+
+  & .teachers-comparison__cell-text {
+    display: block;
+  }
+
+  & .teachers-comparison__foot {
+    font-size: 13px;
+    line-height: 19px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  /* Below 1024 px the table turns into one card per feature: the columns'
+     names go next to each answer (`data-column`). */
+  @media (width < 1024px) {
+    gap: 28px;
+
+    & .teachers-comparison__table,
+    & .teachers-comparison__table tbody,
+    & .teachers-comparison__row,
+    & .teachers-comparison__feature,
+    & .teachers-comparison__cell {
+      display: block;
+    }
+
+    & .teachers-comparison__thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+
+    & .teachers-comparison__table tbody {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    & .teachers-comparison__row {
+      padding: 16px;
+      border-radius: 24px;
+      background: var(--color-m4-panel);
+    }
+
+    & .teachers-comparison__row + .teachers-comparison__row {
+      & .teachers-comparison__feature,
+      & .teachers-comparison__cell {
+        border-top: 0;
+      }
+    }
+
+    & .teachers-comparison__feature {
+      padding: 0 0 8px;
+    }
+
+    & .teachers-comparison__cell {
+      height: auto;
+      padding: 10px 0 0;
+
+      &::before {
+        content: attr(data-column);
+        display: block;
+        margin-bottom: 4px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--color-m4-on-surface);
+      }
+
+      &.teachers-comparison__cell_ours,
+      .teachers-comparison__row:last-child &.teachers-comparison__cell_ours {
+        margin-top: 10px;
+        padding: 12px;
+        border: 2px solid var(--color-m4-primary);
+        border-radius: 16px;
+      }
+    }
+
+    & .teachers-comparison__mark {
+      margin-right: 8px;
+      margin-bottom: 4px;
+    }
+
+    & .teachers-comparison__cell-text {
+      display: inline;
+    }
+  }
+}

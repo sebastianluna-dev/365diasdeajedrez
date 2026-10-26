@@ -119,6 +119,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 **Public site** — `app/(frontend)`
 
 - `/`
+- `/para-profesores` — the teachers' landing, «Plataforma Ajedrez 365» (`/para-maestros` answers a 308 to it)
 - `/blog`, `/blog/[slug]`
 - `/nosotros`
 - `/mentor/[slug]`

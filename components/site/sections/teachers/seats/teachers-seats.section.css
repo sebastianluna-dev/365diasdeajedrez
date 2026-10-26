@@ -1,0 +1,61 @@
+.teachers-seats {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  & .teachers-seats__head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    max-width: 900px;
+  }
+
+  & .teachers-seats__soon {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 32px;
+    padding: 4px 14px 4px 10px;
+    border-radius: 1000px;
+    background: var(--color-m4-container-high);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  & .teachers-seats__soon-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  & .teachers-seats__rules {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  & .teachers-seats__rule {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-radius: 16px;
+    background: var(--color-m4-panel);
+    font-size: 13px;
+  }
+
+  & .teachers-seats__rule-icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    color: var(--color-m4-primary);
+  }
+
+  @media (width < 1024px) {
+    gap: 28px;
+
+    & .teachers-seats__rules {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}
