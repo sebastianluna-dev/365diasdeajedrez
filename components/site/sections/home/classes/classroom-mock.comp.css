@@ -1,0 +1,374 @@
+.home-classroom {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--md-sys-shape-corner-xl);
+  border: 1px solid var(--color-m4-divider);
+  background: var(--color-m4-container);
+  box-shadow: var(--shadow-m4-2);
+
+  & .home-classroom__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    min-height: 56px;
+    padding: 8px 16px 8px 20px;
+    border-bottom: 1px solid var(--color-m4-divider);
+    background: var(--color-m4-panel);
+  }
+
+  & .home-classroom__title {
+    font-family: var(--font-site-display);
+    font-weight: 500;
+    font-size: 16px;
+  }
+
+  & .home-classroom__meta {
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .home-classroom__rec {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 26px;
+    padding: 0 10px;
+    border-radius: 1000px;
+    background: var(--color-m4-error-container);
+    color: var(--color-m4-on-error-container);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  & .home-classroom__rec-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-m4-error);
+  }
+
+  & .home-classroom__soon {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 24px;
+    margin-left: auto;
+    padding: 0 10px;
+    border-radius: 1000px;
+    border: 1px solid var(--color-m4-outline-variant);
+    background: var(--color-m4-container);
+    color: var(--color-m4-on-surface-variant);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  & .home-classroom__soon-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  & .home-classroom__body {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  & .home-classroom__stage {
+    display: flex;
+    flex: 1;
+    gap: 20px;
+    min-width: 0;
+    padding: 16px;
+    border-radius: var(--md-sys-shape-corner-lg-increased);
+    background: var(--color-m4-panel);
+  }
+
+  & .home-classroom__board {
+    flex: none;
+    width: 416px;
+  }
+
+  & .home-classroom__side {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  & .home-classroom__turn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--color-m4-secondary-container);
+    color: var(--color-m4-on-secondary-container);
+    font-weight: 600;
+  }
+
+  & .home-classroom__turn-dot {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--color-m4-on-surface);
+    box-shadow: 0 0 0 2px var(--color-m4-panel);
+  }
+
+  & .home-classroom__topic {
+    font-size: 13px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .home-classroom__moves {
+    display: grid;
+    grid-template-columns: 28px 1fr 1fr;
+    row-gap: 4px;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .home-classroom__move {
+    padding: 4px 8px;
+    border-radius: var(--md-sys-shape-corner-sm);
+  }
+
+  & .home-classroom__move_kind_number {
+    padding: 4px 0;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .home-classroom__move_state_current {
+    background: var(--color-m4-primary);
+    color: var(--color-m4-on-primary);
+    font-weight: 700;
+  }
+
+  & .home-classroom__tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+  }
+
+  & .home-classroom__tool {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: var(--md-sys-shape-corner-sm);
+    border: 1px solid var(--color-m4-outline-variant);
+    background: var(--color-m4-panel);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  & .home-classroom__tool-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  & .home-classroom__tiles {
+    display: grid;
+    grid-template-columns: 145px 145px;
+    grid-template-rows: 200px;
+    grid-auto-rows: 114px;
+    gap: 10px;
+    flex: none;
+    align-content: start;
+  }
+
+  & .home-classroom__tile {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: linear-gradient(165deg, var(--color-m4-secondary-container) 0%, var(--color-m4-container-high) 80%);
+    color: var(--color-m4-on-secondary-container);
+  }
+
+  /* The teacher's video, the one who speaks: wider, and ringed in blue. */
+  & .home-classroom__tile_size_main {
+    grid-column: span 2;
+    box-shadow: inset 0 0 0 3px var(--color-m4-primary);
+  }
+
+  & .home-classroom__tile-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  & .home-classroom__tile_size_main .home-classroom__tile-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  & .home-classroom__who {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 8px;
+    border-radius: 1000px;
+    background: var(--color-m4-panel);
+    color: var(--color-m4-on-surface);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  & .home-classroom__muted {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--color-m4-panel);
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .home-classroom__muted-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  & .home-classroom__captions {
+    margin: 0 12px;
+    padding: 10px 16px;
+    border-radius: var(--md-sys-shape-corner-lg);
+    background: var(--color-m4-panel);
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  & .home-classroom__captions-who {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .home-classroom__controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 72px;
+    padding: 0 16px;
+  }
+
+  & .home-classroom__clock {
+    width: 120px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .home-classroom__keys {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  & .home-classroom__aside {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    width: 120px;
+  }
+
+  & .home-classroom__key {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 1000px;
+    background: var(--color-m4-panel);
+    color: var(--color-m4-on-surface);
+  }
+
+  & .home-classroom__key_state_on {
+    background: var(--color-m4-secondary-container);
+    color: var(--color-m4-on-secondary-container);
+  }
+
+  & .home-classroom__hang {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 48px;
+    border-radius: 1000px;
+    background: var(--color-m4-error);
+    color: var(--color-m4-on-primary);
+  }
+
+  & .home-classroom__key-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  @media (width < 1280px) {
+    & .home-classroom__board {
+      width: 340px;
+    }
+
+    & .home-classroom__tiles {
+      grid-template-columns: 120px 120px;
+      grid-template-rows: 160px;
+      grid-auto-rows: 96px;
+    }
+  }
+
+  /* Narrower, the videos go: the board and its moves are what the picture is about. */
+  @media (width < 1024px) {
+    & .home-classroom__tiles,
+    & .home-classroom__aside,
+    & .home-classroom__key_kind_extra {
+      display: none;
+    }
+
+    & .home-classroom__board {
+      width: 50%;
+    }
+  }
+
+  @media (width < 640px) {
+    & .home-classroom__stage {
+      flex-direction: column;
+    }
+
+    & .home-classroom__board {
+      width: 100%;
+    }
+
+    & .home-classroom__tools,
+    & .home-classroom__clock,
+    & .home-classroom__meta {
+      display: none;
+    }
+
+    & .home-classroom__controls {
+      justify-content: center;
+    }
+
+    & .home-classroom__keys {
+      gap: 8px;
+    }
+  }
+}

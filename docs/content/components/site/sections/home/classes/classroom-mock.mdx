@@ -1,0 +1,33 @@
+---
+description: "The classroom the platform will have, drawn as one picture marked «Próximamente»: the shared board, the moves, the tools, the videos, the captions and the call's keys."
+---
+
+# `ClassroomMock`
+
+|            |                                                                            |
+| ---------- | -------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/classes/classroom-mock.comp.tsx`            |
+| Kind       | Server Component                                                           |
+| Stylesheet | `classroom-mock.comp.css` → block `.home-classroom`                        |
+| Used by    | [`ClassesSection`](/components/site/sections/home/classes/classes-section) |
+| Composes   | [`SiteBoard`](/components/site/shared/site-board)                          |
+
+## Purpose
+
+The canvas's «room»: a Philidor rook ending on the shared board, the student whose turn it is, the moves with the current one lit, the teacher's tools, the videos, the captions and the controls of the call. The classroom is not built, so nothing here can be pressed: the whole mock is one `role="img"` named by `room.label` («Así será el aula dentro de la plataforma, próximamente»), its keys are spans and its icons are Font Awesome's (Classic Solid inside the round keys).
+
+## Props
+
+| Prop   | Type                      | Required | Meaning                        |
+| ------ | ------------------------- | -------- | ------------------------------ |
+| `room` | `HomeClassesCopy["room"]` | yes      | Everything the picture writes. |
+
+## Markup & styling
+
+Block `.home-classroom` (374 lines).
+
+**Elements:** `__top`, `__title`, `__meta`, `__rec`, `__rec-dot`, `__soon`, `__soon-icon`, `__body`, `__stage`, `__board`, `__side`, `__turn`, `__turn-dot`, `__topic`, `__moves`, `__move`, `__tools`, `__tool`, `__tool-icon`, `__tiles`, `__tile`, `__tile-icon`, `__who`, `__muted`, `__muted-icon`, `__captions`, `__captions-who`, `__controls`, `__clock`, `__keys`, `__key`, `__hang`, `__key-icon`, `__aside`
+
+**Modifiers:** `.home-classroom__move_kind_number`, `.home-classroom__move_state_current`, `.home-classroom__tile_size_main`, `.home-classroom__key_state_on`, `.home-classroom__key_kind_extra`
+
+**Breakpoints:** `(width < 1280px)` narrows the board and the videos; `(width < 1024px)` drops the videos and the extra keys; `(width < 640px)` stacks the board over the moves and keeps four keys.

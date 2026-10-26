@@ -1,0 +1,30 @@
+---
+description: "A team of teachers, not one face: how a teacher is assigned in three steps and the trial-class button; the teachers' portraits only once the owner gives them."
+---
+
+# `TeamSection`
+
+|            |                                                                                                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/team/team.section.tsx`                                                                                                                              |
+| Kind       | Server Component                                                                                                                                                                   |
+| Stylesheet | `team.section.css` → block `.home-team`                                                                                                                                            |
+| Design     | `AcadEquipoA`                                                                                                                                                                      |
+| Composes   | [`SiteSection`](/components/site/shared/site-section), [`SiteHeading`](/components/site/shared/site-heading), [`SiteWhatsappButton`](/components/site/shared/site-whatsapp-button) |
+| Reads      | `academyHome.team`, `academyHome.booking`                                                                                                                                          |
+
+## Purpose
+
+`#equipo`: «Un equipo de maestros, _no una sola cara_» (the owner's decision: the academy is a team, never one teacher as a brand), the panel «Te asignamos un maestro del equipo» with its three steps and «Agenda tu clase de prueba».
+
+**The teachers.** The canvas draws five portraits with «[Foto]», «[Nombre]» and «[Título FIDE]». No one is invented: `academyHome.team.members` is empty and the list is not drawn. When the owner fills it (name, title, one line), each teacher takes the canvas's frames in turn — an arch, a ringed circle, a cookie, a rounded square, a clover — with an icon in place of the photo until there are photos (a photo would go through `next/image`).
+
+## Markup & styling
+
+Block `.home-team` (217 lines).
+
+**Elements:** `__head`, `__members`, `__member`, `__portrait`, `__shape`, `__portrait-icon`, `__name`, `__title`, `__line`, `__assign`, `__assign-title`, `__steps`, `__step`, `__number`, `__step-title`, `__step-text`, `__cta`
+
+**Modifiers:** `.home-team__member_frame_arch`, `_frame_circle`, `_frame_cookie`, `_frame_square`, `_frame_clover`
+
+**Breakpoints:** `(width < 1280px)` centres the portraits and stacks the panel; `(width < 768px)` puts the steps one under another; `(width < 640px)` stretches the button.
