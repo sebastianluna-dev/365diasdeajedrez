@@ -1,0 +1,25 @@
+---
+description: "The paragraph under a section's heading, a step bigger than the text and in its grey."
+---
+
+# `SiteLead`
+
+|            |                                                       |
+| ---------- | ----------------------------------------------------- |
+| File       | `components/site/shared/site-lead/site-lead.comp.tsx` |
+| Kind       | Server Component                                      |
+| Stylesheet | `site-lead.comp.css` → block `.site-lead`             |
+| Used by    | every section of the home page                        |
+
+## Props
+
+| Prop    | Type                  | Required      | Meaning                        |
+| ------- | --------------------- | ------------- | ------------------------------ |
+| `text`  | `string`              | yes           | The paragraph.                 |
+| `align` | `"start" \| "center"` | no, `"start"` | Centred under a centred title. |
+
+## Markup & styling
+
+Block `.site-lead` (17 lines): 18/28 px in `--color-m4-on-surface-variant` (7.7:1 on the canvas), 16/25 below 640 px, at most 62 characters wide.
+
+**Modifiers:** `.site-lead_align_start`, `.site-lead_align_center`

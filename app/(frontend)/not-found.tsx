@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Header } from "@/components/site/sections/shell/header/header.section";
-import { Footer } from "@/components/site/sections/shell/footer/footer.section";
+import { SiteHeader } from "@/components/site/sections/shell/site-header/site-header.section";
+import { SiteFooter } from "@/components/site/sections/shell/site-footer/site-footer.section";
 import { SiteMessage } from "@/components/site/sections/shell/site-message/site-message.section";
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <>
-      <Header />
+      <SiteHeader />
       <main id="contenido">
         <SiteMessage
           eyebrow="Error 404"
@@ -29,7 +29,7 @@ export default function NotFound() {
           </Link>
         </SiteMessage>
       </main>
-      <Footer />
+      <SiteFooter />
     </>
   );
 }

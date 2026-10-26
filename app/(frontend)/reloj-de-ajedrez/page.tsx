@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Header } from "@/components/site/sections/shell/header/header.section";
+import { SiteHeader } from "@/components/site/sections/shell/site-header/site-header.section";
 import { ChessClock } from "@/components/site/sections/chess-clock/chess-clock.comp";
 import "./reloj-page.css";
 
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function RelojDeAjedrezPage() {
   return (
     <div className="reloj-page">
-      <Header />
+      <SiteHeader />
       <main id="contenido">
         <ChessClock />
       </main>

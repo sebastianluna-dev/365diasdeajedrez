@@ -2,11 +2,10 @@ import { unstable_cache } from "next/cache";
 import { cache } from "react";
 import { CACHE_TAGS } from "@/lib/payload/cache-tags";
 import { getPayload } from "@/lib/payload/get-payload";
-import { mapCta, mapFaq, mapHeader, mapHero, mapPackages, mapProgram, mapReviews, mapTeacher } from "./home.mapper";
+import { mapCta, mapFaq, mapHero, mapPackages, mapProgram, mapReviews, mapTeacher } from "./home.mapper";
 import type {
   CtaContent,
   FaqContent,
-  HeaderContent,
   HeroContent,
   PackagesContent,
   ProgramContent,
@@ -52,23 +51,6 @@ const readHomeGlobals = unstable_cache(
   { tags: [CACHE_TAGS.home], revalidate: CACHE_REVALIDATE_SECONDS },
 );
 const getHomeGlobals = cache(readHomeGlobals);
-
-// Header renders on every page, not just the Home, so it's kept as its own
-// cached fetch separate from the rest of the Home globals.
-const readHeaderGlobal = unstable_cache(
-  async () => {
-    const payload = await getPayload();
-    return payload.findGlobal({ slug: "home-header" });
-  },
-  ["home-header"],
-  { tags: [CACHE_TAGS.header], revalidate: CACHE_REVALIDATE_SECONDS },
-);
-const getHeaderGlobal = cache(readHeaderGlobal);
-
-export async function getHeaderData(): Promise<HeaderContent> {
-  const header = await getHeaderGlobal();
-  return mapHeader(header);
-}
 
 export async function getHeroData(): Promise<HeroContent> {
   const { hero } = await getHomeGlobals();

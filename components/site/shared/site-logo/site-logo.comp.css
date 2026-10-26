@@ -1,0 +1,33 @@
+.site-logo {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  border-radius: 4px;
+  color: var(--color-m4-on-surface);
+
+  /* The height is the only measurement: the wordmark keeps its 703×72 ratio. */
+  & .site-logo__image {
+    display: block;
+    width: auto;
+    height: 22px;
+  }
+
+  &.site-logo_size_sm .site-logo__image {
+    height: 19px;
+  }
+
+  & .site-logo__accent {
+    fill: var(--color-m4-primary);
+  }
+
+  & .site-logo__word,
+  & .site-logo__marks {
+    fill: currentColor;
+  }
+
+  @media (width < 640px) {
+    & .site-logo__image {
+      height: 18px;
+    }
+  }
+}

@@ -1,0 +1,34 @@
+---
+description: "A position on the new look's board (the platform's material StaticDiagram) as a picture with its name: no chessground, the site's boards are shown, not played."
+---
+
+# `SiteBoard`
+
+|            |                                                                            |
+| ---------- | -------------------------------------------------------------------------- |
+| File       | `components/site/shared/site-board/site-board.comp.tsx`                    |
+| Kind       | Server Component                                                           |
+| Stylesheet | `site-board.comp.css` → block `.site-board`                                |
+| Composes   | [`StaticDiagram`](/components/chess/static-diagram) with `look="material"` |
+| Used by    | the home page's hero, classes, courses, platform and closing sections      |
+
+## Purpose
+
+The canvas's mock-ups draw their boards with the M4 blue board (`TableroM4`). On the site every one of those boards is a still position, so it is the platform's static material board — the blue squares, the amber of the last move and the «elegida» pieces — and not the live `ChessBoard`, which would bring chessground into a static page. The squares say nothing to a screen reader, so the board is `role="img"` with the position said in its `label`.
+
+The material board reads `--platform-m3-board-*`, which only the platform declares; the site holds the same values as `--color-m4-board-*` and the block hands them over.
+
+## Props
+
+| Prop          | Type                 | Required      | Meaning                                    |
+| ------------- | -------------------- | ------------- | ------------------------------------------ |
+| `fen`         | `string`             | yes           | The position.                              |
+| `label`       | `string`             | yes           | What the board shows, for a screen reader. |
+| `lastMove`    | `{ from, to }`       | no            | The two squares lit in amber.              |
+| `orientation` | `"white" \| "black"` | no, `"white"` | Which side is at the bottom.               |
+
+## Markup & styling
+
+Block `.site-board` (13 lines): it fills the width it is given (the diagram's 420 px cap is lifted).
+
+**Tokens:** `--color-m4-board-light`, `--color-m4-board-dark`, `--color-m4-board-last-move`

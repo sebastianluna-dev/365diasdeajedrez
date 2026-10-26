@@ -1,0 +1,120 @@
+.site-footer {
+  background: var(--color-m4-panel);
+  border-top: 1px solid var(--color-m4-divider);
+  color: var(--color-m4-on-surface);
+  font-family: var(--font-site-text);
+
+  & .site-footer__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 28px 72px 24px;
+  }
+
+  & .site-footer__top {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px 32px;
+  }
+
+  & .site-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  & .site-footer__link {
+    display: inline-flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 12px;
+    border-radius: 1000px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-m4-on-surface);
+
+    &:hover {
+      background: var(--color-m4-container);
+    }
+  }
+
+  & .site-footer__ways {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  & .site-footer__way {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 16px 0 12px;
+    border-radius: 1000px;
+    background: var(--color-m4-container);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-m4-on-surface);
+
+    &:hover {
+      background: var(--color-m4-container-high);
+    }
+  }
+
+  & .site-footer__way-icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    color: var(--color-m4-primary);
+  }
+
+  & .site-footer__legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 24px;
+    margin-top: 20px;
+    font-size: 13px;
+    line-height: 19px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .site-footer__language {
+    margin-left: auto;
+  }
+
+  @media (width < 1024px) {
+    & .site-footer__inner {
+      padding: 28px 32px 24px;
+    }
+
+    & .site-footer__ways {
+      margin-left: 0;
+    }
+  }
+
+  @media (width < 640px) {
+    & .site-footer__inner {
+      padding: 24px 16px;
+    }
+
+    & .site-footer__top {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    & .site-footer__links {
+      margin-left: -12px;
+    }
+
+    & .site-footer__legal {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    & .site-footer__language {
+      margin-left: 0;
+    }
+  }
+}

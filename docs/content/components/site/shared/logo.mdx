@@ -4,16 +4,16 @@ description: "The wordmark as a link to the home page: an inline SVG whose '365'
 
 # `Logo`
 
-|            |                                                                                                                                      |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/site/shared/logo.comp.tsx`                                                                                               |
-| Kind       | Server Component                                                                                                                     |
-| Stylesheet | `logo.comp.css` → block `.logo`                                                                                                      |
-| Used by    | [`Header`](/components/site/sections/shell/header/header-section), [`Footer`](/components/site/sections/shell/footer/footer-section) |
+|            |                                                                   |
+| ---------- | ----------------------------------------------------------------- |
+| File       | `components/site/shared/logo.comp.tsx`                            |
+| Kind       | Server Component                                                  |
+| Stylesheet | `logo.comp.css` → block `.logo`                                   |
+| Used by    | the icon gallery's story (`components/icons/gallery.stories.tsx`) |
 
 ## Purpose
 
-The one place the wordmark is drawn. The header and the footer render it on different backgrounds and with different accents (orange on the home page, red on the blog), so the variation is expressed as two BEM modifiers rather than two components.
+The old look's wordmark. Since the site moved to the blue look (2026-10-26) the header and the footer draw [`SiteLogo`](/components/site/shared/site-logo) instead, and this one is left to the icon gallery, which shows the wordmark in its old accents. The old header and footer rendered it on different backgrounds and with different accents (orange on the home page, red on the blog), so the variation is expressed as two BEM modifiers rather than two components.
 
 The drawing is the brand SVG (`viewBox="0 0 703 72"`), inlined as the shared [`LogoWordmarkIcon`](#logowordmarkicon) instead of an exported file: inline paths can be recoloured from CSS, while an `<img>` or a `next/image` would need one exported file per theme/accent combination. It is the same wordmark on every screen size — only the height changes.
 
@@ -42,25 +42,13 @@ Block `.logo` (64 lines).
 
 How the colours reach the paths: `.logo__word` and `.logo__marks` are `fill: currentColor`, so they follow the `color` the theme modifier sets, and only `.logo__accent` is filled by the accent modifier. The height is the only measurement — the width follows from the `viewBox` — and it is read from the `--site-logo-height` token rather than written here, because the header is measured from it: the fixed menu toggle centres itself on the logo and `--site-header-height` is made of it (see [Styling › Tokens](/ui/styling#tokens)). The `<svg>` is `display: block` so no line box is added under it, which is what keeps that measurement exact. On desktop the block is nudged 4 px down (`position: relative`, which changes nothing in the layout) to sit on the optical centre of the header's pill; on mobile there is no pill and the offset is dropped.
 
-## Usage
-
-From `components/site/sections/shell/header/header.section.tsx`:
-
-```tsx
-import { Logo } from "@/components/site/shared/logo.comp";
-
-{
-  theme === "light" ? <Logo theme="light" accent="red" /> : <Logo theme="dark" accent="orange" />;
-}
-```
-
 ## `LogoWordmarkIcon`
 
 `components/icons/logo-wordmark-icon.comp.tsx`. The wordmark's `<svg>` on its own, `aria-hidden`, with its three groups ("365", the word, the two squares) each classed by a prop — `className` for the `<svg>`, `accentClassName`, `wordClassName` and `marksClassName` — so every user paints it from its own BEM block: `fill: currentColor` on the word and the marks, the accent colour on the "365". It paints nothing by itself. The file also exports `LOGO_LABEL`, the accessible name every link that wraps it uses.
 
-Its two users are this `Logo` (public site, `--color-*` tokens) and the platform's [`PlatformShell`](/components/platform/sections/shell/platform-shell-section) bar (`--platform-*` tokens, `.platform-shell__logo-*`). The two squares are also available alone as `LogoMarkIcon` (`logo-mark-icon.comp.tsx`) for the platform's study cards.
+Its users are this `Logo` (`--color-*` tokens), the site's [`SiteLogo`](/components/site/shared/site-logo) (`--color-m4-*` tokens) and the platform's [`PlatformShell`](/components/platform/sections/shell/platform-shell-section) bar (`--platform-*` tokens, `.platform-shell__logo-*`). The two squares are also available alone as `LogoMarkIcon` (`logo-mark-icon.comp.tsx`) for the platform's study cards.
 
 ## Related
 
-- [`Header`](/components/site/sections/shell/header/header-section) and [`Footer`](/components/site/sections/shell/footer/footer-section) pick the variant from their own `theme` and `accent` props.
+- [`SiteLogo`](/components/site/shared/site-logo), the wordmark of the new look.
 - [`PlatformShell`](/components/platform/sections/shell/platform-shell-section) draws the same wordmark in the platform's bar.

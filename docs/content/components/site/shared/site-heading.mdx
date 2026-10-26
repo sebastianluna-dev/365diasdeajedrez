@@ -1,0 +1,38 @@
+---
+description: "A heading of the site's new look in Poppins: the words in ink and the words in blue after them."
+---
+
+# `SiteHeading`
+
+|            |                                                             |
+| ---------- | ----------------------------------------------------------- |
+| File       | `components/site/shared/site-heading/site-heading.comp.tsx` |
+| Kind       | Server Component                                            |
+| Stylesheet | `site-heading.comp.css` → block `.site-heading`             |
+| Used by    | every section of the home page                              |
+
+## Purpose
+
+Every title of the new look reads the same way: some words in ink and, after them, the words in the primary's blue that carry the idea («Tu clase, _dentro de tu plataforma_»). It takes them as two strings, so no section writes the `<em>` by hand. A `hero` heading is the page's `h1` and puts its blue words on a line of their own; every other size is an `h2`.
+
+## Props
+
+| Prop       | Type                               | Required        | Meaning                                         |
+| ---------- | ---------------------------------- | --------------- | ----------------------------------------------- |
+| `id`       | `string`                           | yes             | What the section's `aria-labelledby` points at. |
+| `text`     | `string`                           | yes             | The words in ink.                               |
+| `emphasis` | `string`                           | no              | The words in blue.                              |
+| `size`     | `"section" \| "display" \| "hero"` | no, `"section"` | 44, 64 or 72 px on a desktop.                   |
+| `align`    | `"start" \| "center"`              | no, `"start"`   | Centred under a centred eyebrow.                |
+
+## Markup & styling
+
+Block `.site-heading` (72 lines).
+
+**Elements:** `.site-heading__emphasis`
+
+**Modifiers:** `.site-heading_size_section`, `.site-heading_size_display`, `.site-heading_size_hero`, `.site-heading_align_start`, `.site-heading_align_center`
+
+**Tokens:** `--font-site-display`, `--color-m4-on-surface`, `--color-m4-primary`
+
+**Breakpoints:** `(width < 1280px)`, `(width < 1024px)` and `(width < 640px)` step each size down (the section title is 30 px on a phone).
