@@ -1,17 +1,17 @@
 ---
-description: "A label/value grid for ratings and titles (EloTable with its EloTable.EloItem rows), used by the home teacher section and the mentor page."
+description: "A label/value grid for ratings and titles (EloTable with its EloTable.EloItem rows), used by the mentor page."
 ---
 
 # `EloTable`
 
 Also exports `EloTable.EloItem`, attached as a static property.
 
-|            |                                                                                              |
-| ---------- | -------------------------------------------------------------------------------------------- |
-| File       | `components/chess/elo-table.comp.tsx`                                                        |
-| Kind       | Server Component                                                                             |
-| Stylesheet | `elo-table.comp.css` → blocks `.elo-table` and `.elo-item`                                   |
-| Used by    | `/mentor/[slug]`, [`TeacherSection`](/components/site/sections/home/teacher/teacher-section) |
+|            |                                                            |
+| ---------- | ---------------------------------------------------------- |
+| File       | `components/chess/elo-table.comp.tsx`                      |
+| Kind       | Server Component                                           |
+| Stylesheet | `elo-table.comp.css` → blocks `.elo-table` and `.elo-item` |
+| Used by    | `/mentor/[slug]`                                           |
 
 ## Purpose
 
@@ -23,11 +23,11 @@ It lives in `chess/` rather than in `site/` because it belongs to the chess doma
 
 ### `EloTable`
 
-| Prop        | Type          | Required         | Meaning                                                                                     |
-| ----------- | ------------- | ---------------- | ------------------------------------------------------------------------------------------- |
-| `children`  | `ReactNode`   | yes              | `EloTable.EloItem` elements.                                                                |
-| `columns`   | `2 \| 3 \| 4` | no · default `3` | Grid columns; becomes the `_columns_` modifier.                                             |
-| `className` | `string`      | no               | Extra class for the caller's layout hook (the teacher section passes `teacher__elo-table`). |
+| Prop        | Type          | Required         | Meaning                                                                                        |
+| ----------- | ------------- | ---------------- | ---------------------------------------------------------------------------------------------- |
+| `children`  | `ReactNode`   | yes              | `EloTable.EloItem` elements.                                                                   |
+| `columns`   | `2 \| 3 \| 4` | no · default `3` | Grid columns; becomes the `_columns_` modifier.                                                |
+| `className` | `string`      | no               | Extra class for the caller's layout hook (the mentor page passes `mentor-profile__elo-table`). |
 
 ### `EloTable.EloItem`
 
@@ -52,18 +52,17 @@ Two blocks in one sheet (46 lines), because the item is its own component and is
 
 ## Usage
 
-From `components/site/sections/home/teacher/teacher.section.tsx`:
+From `app/(frontend)/mentor/[slug]/page.tsx`:
 
 ```tsx
 import { EloTable } from "@/components/chess/elo-table.comp";
 
-<EloTable className="teacher__elo-table" columns={4}>
-  {content.eloRatings.map((rating) => (
-    <EloTable.EloItem key={rating.label} label={rating.label} value={rating.value} />
-  ))}
+<EloTable className="mentor-profile__elo-table" columns={2}>
+  <EloTable.EloItem label="Estándar" value={mentor.fideInfo.standardElo} />
+  <EloTable.EloItem label="Rápidas" value={mentor.fideInfo.rapidElo} />
 </EloTable>;
 ```
 
 ## Related
 
-- [`TeacherSection`](/components/site/sections/home/teacher/teacher-section) and the mentor page in [Pages & sections](/public-site/pages).
+- The mentor page in [Pages & sections](/public-site/pages). The home page's teacher section, its other user, left with the old home on 2026-10-26.

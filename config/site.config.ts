@@ -5,13 +5,17 @@ export const siteConfig: SiteConfig = {
     enabled: true,
     sections: {
       hero: true,
-      program: true,
-      teacher: true,
-      mentors: false,
-      plans: true,
-      resources: false,
-      reviews: true,
+      // Shown only once every figure has a real value (config/academy-home.config.ts).
+      figures: true,
+      classes: true,
+      team: true,
+      courses: true,
+      platform: true,
+      adventure: true,
+      information: true,
+      testimonials: true,
       faq: true,
+      closing: true,
     },
   },
   // The header and the footer of the site's new look (2026-10-26). They live
@@ -42,24 +46,3 @@ export const siteConfig: SiteConfig = {
     contactEmail: "contacto@365diasdeajedrez.com",
   },
 };
-
-/**
- * `teacher` and `mentors` occupy the same slot in Home, so at most
- * one of them can be shown at a time. `teacher` wins if both are
- * enabled by mistake.
- */
-export type HomeMentorsSlot = "teacher" | "mentors" | null;
-
-export function getHomeMentorsSlot(): HomeMentorsSlot {
-  const { teacher, mentors } = siteConfig.home.sections;
-
-  if (teacher && mentors && process.env.NODE_ENV !== "production") {
-    console.warn(
-      "[siteConfig] `teacher` y `mentors` están activos a la vez; solo se mostrará `teacher`. Desactiva uno de los dos en config/site.config.ts.",
-    );
-  }
-
-  if (teacher) return "teacher";
-  if (mentors) return "mentors";
-  return null;
-}

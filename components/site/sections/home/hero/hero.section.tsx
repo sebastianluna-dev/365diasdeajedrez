@@ -1,66 +1,93 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { FloatBadge } from "./float-badge.comp";
-import { Orbit } from "./orbit.comp";
-import { CHESS_PIECE_UNICODE } from "@/constants/chess-pieces.const";
-import { getHeroData } from "@/services/home/home.service";
+import { ChalkboardUserIcon } from "@/components/icons/chalkboard-user-icon.comp";
+import { ChessBoardIcon } from "@/components/icons/chess-board-icon.comp";
+import { SiteBoard } from "@/components/site/shared/site-board/site-board.comp";
+import { SiteChips } from "@/components/site/shared/site-chips/site-chips.comp";
+import { SiteEyebrow } from "@/components/site/shared/site-eyebrow/site-eyebrow.comp";
+import { SiteHeading } from "@/components/site/shared/site-heading/site-heading.comp";
+import { SiteWhatsappButton } from "@/components/site/shared/site-whatsapp-button/site-whatsapp-button.comp";
+import { academyHome } from "@/config/academy-home.config";
+import { mdButton } from "@/lib/material/material-classes";
+import { squareClipShape, wavyClipShape, wavyPath } from "@/lib/site/wavy-shape";
 import "./hero.section.css";
 
-export async function HeroSection() {
-  const content = await getHeroData();
+/** The board's box in the canvas's units: the outlines are measured in it and drawn in percentages of it. */
+const BOARD = 528;
+
+/** The cookie the board is cut into: nine lobes. A quarter of a lobe is 2π/9/4 rad. */
+const cookie = (turn: number) =>
+  wavyClipShape({ cx: BOARD / 2, cy: BOARD / 2, radius: 248, amplitude: 16, lobes: 9, turn }, BOARD);
+const LOBE = (Math.PI * 2) / 9;
+
+// Computed once, when the module loads on the server: the page is static.
+const CUT_STYLE = {
+  "--home-hero-cut-from": cookie(0),
+  "--home-hero-cut-r1": cookie(LOBE / 4),
+  "--home-hero-cut-r2": cookie(LOBE / 2),
+  "--home-hero-cut-r3": cookie((LOBE * 3) / 4),
+  "--home-hero-cut-to": squareClipShape(BOARD),
+} as CSSProperties;
+const HALO = wavyPath({ cx: 320, cy: 320, radius: 296, amplitude: 16, lobes: 9, turn: 0.17 });
+const SEAL = wavyPath({ cx: 150, cy: 150, radius: 132, amplitude: 14, lobes: 12 });
+
+/**
+ * The opening of the academy's home (`HeroAcademiaDA`): the page's `h1`, the
+ * three promises, the button that books a trial class on WhatsApp and, beside
+ * them, the board cut into a cookie that spins once and opens into the whole
+ * board, where it stays (hero.section.css; reduced motion shows the board
+ * open from the start).
+ */
+export function HeroSection() {
+  const { hero, booking } = academyHome;
 
   return (
-    <section id="inicio" className="hero">
-      <div className="hero__inner">
-        <div className="hero__glow" />
-
-        <div className="hero__grid">
-          <div className="hero__copy">
-            <h1 className="hero__title">{content.title}</h1>
-            <p className="hero__text">{content.description}</p>
-            <div className="hero__actions">
-              <Link href={content.cta.href} className="button button_variant_primary button_size_hero">
-                {content.cta.label}
-              </Link>
-            </div>
+    <section id="inicio" className="home-hero" aria-labelledby="inicio-titulo">
+      <div className="home-hero__inner">
+        <div className="home-hero__copy">
+          <SiteEyebrow>
+            <ChalkboardUserIcon />
+            {hero.eyebrow}
+          </SiteEyebrow>
+          <SiteHeading id="inicio-titulo" size="hero" text={hero.heading.text} emphasis={hero.heading.emphasis} />
+          <p className="home-hero__lead">{hero.lead}</p>
+          <SiteChips label="Así son las clases" chips={hero.chips.map((text) => ({ icon: "check", text }))} />
+          <div className="home-hero__actions">
+            <SiteWhatsappButton
+              label={booking.label}
+              message={booking.message}
+              color="filled"
+              size="md"
+              icon="calendar"
+            />
+            <Link href={hero.secondary.href} className={mdButton("outlined", "md")}>
+              {hero.secondary.label}
+            </Link>
           </div>
+          <p className="home-hero__note">{hero.note}</p>
+        </div>
 
-          <div className="hero__visual">
-            <div>
-              <div className="hero__stage">
-                <div className="hero__card">
-                  <div className="hero__card-inner">
-                    {/* It is the LCP: `preload` announces it in the <head> and `fetchPriority`
-                        raises its priority in that preload and in the <img>. `sizes` is
-                        what actually renders (the card), not the viewport width: without
-                        it, mobile requested twice the pixels. */}
-                    <Image
-                      src={content.image.src}
-                      alt={content.image.alt}
-                      width={520}
-                      height={640}
-                      preload
-                      fetchPriority="high"
-                      sizes="(max-width: 1024px) 300px, 420px"
-                    />
-                  </div>
-                </div>
-                <Orbit />
-              </div>
-            </div>
-
-            <div className="hero__badges">
-              <FloatBadge text="Cálculo" piece={CHESS_PIECE_UNICODE.BLACK_KNIGHT} className="float-badge_offset_1" />
-              <FloatBadge
-                text="Visualización"
-                piece={CHESS_PIECE_UNICODE.BLACK_QUEEN}
-                className="float-badge_offset_2"
-              />
-              <FloatBadge text="Estrategia" piece={CHESS_PIECE_UNICODE.BLACK_BISHOP} className="float-badge_offset_3" />
-              <FloatBadge text="Finales" piece={CHESS_PIECE_UNICODE.BLACK_KING} className="float-badge_offset_3" />
-              <FloatBadge text="Aperturas" piece={CHESS_PIECE_UNICODE.BLACK_PAWN} className="float-badge_offset_2" />
-              <FloatBadge text="Partidas" piece={CHESS_PIECE_UNICODE.BLACK_ROOK} className="float-badge_offset_1" />
-            </div>
+        <div className="home-hero__stage">
+          <svg className="home-hero__halo" viewBox="0 0 640 640" aria-hidden="true">
+            <path d={HALO} />
+          </svg>
+          <div className="home-hero__cut" style={CUT_STYLE}>
+            <SiteBoard fen={hero.board.fen} lastMove={hero.board.lastMove} label={hero.board.label} />
+          </div>
+          <span className="home-hero__badge" aria-hidden="true">
+            <svg className="home-hero__seal" viewBox="0 0 300 300">
+              <path d={SEAL} />
+            </svg>
+            <ChessBoardIcon variant="classic-solid" className="home-hero__badge-icon" />
+          </span>
+          <div className="home-hero__caption">
+            <span className="home-hero__move" aria-hidden="true">
+              {hero.caption.move}
+            </span>
+            <span>
+              <b className="home-hero__caption-title">{hero.caption.title}</b>
+              <small className="home-hero__caption-text">{hero.caption.text}</small>
+            </span>
           </div>
         </div>
       </div>

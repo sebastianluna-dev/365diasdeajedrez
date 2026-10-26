@@ -1,58 +1,36 @@
 ---
-description: "Opening block of the home page: title, description, the CTA and the portrait that is the page's LCP, preloaded with high fetch priority and sizes matched to the card."
+description: "The opening of the academy's home: the page's h1, three promises, the WhatsApp button that books a trial class and the board cut into a cookie that spins once and opens."
 ---
 
 # `HeroSection`
 
-|            |                                                                                                                          |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/site/sections/home/hero/hero.section.tsx`                                                                    |
-| Kind       | Server Component (async)                                                                                                 |
-| Stylesheet | `hero.section.css` → block `.hero`                                                                                       |
-| Used by    | `app/(frontend)/landing-page.tsx` (`sections.hero`)                                                                      |
-| Composes   | [`FloatBadge`](/components/site/sections/home/hero/float-badge) ×6, [`Orbit`](/components/site/sections/home/hero/orbit) |
-| Reads      | `getHeroData()` · `services/home/home.service.ts` (the `home-hero` Global)                                               |
-| Uses       | `CHESS_PIECE_UNICODE` from `constants/chess-pieces.const`, `next/image`                                                  |
+|            |                                                                                                                                                                                                                                                                                          |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/hero/hero.section.tsx`                                                                                                                                                                                                                                    |
+| Kind       | Server Component                                                                                                                                                                                                                                                                         |
+| Stylesheet | `hero.section.css` → block `.home-hero`                                                                                                                                                                                                                                                  |
+| Design     | `HeroAcademiaDA` (the owner's canvas)                                                                                                                                                                                                                                                    |
+| Composes   | [`SiteEyebrow`](/components/site/shared/site-eyebrow), [`SiteHeading`](/components/site/shared/site-heading), [`SiteChips`](/components/site/shared/site-chips), [`SiteWhatsappButton`](/components/site/shared/site-whatsapp-button), [`SiteBoard`](/components/site/shared/site-board) |
+| Reads      | `academyHome.hero`, `academyHome.booking` (`config/academy-home.config.ts`); `wavyClipShape`, `squareClipShape`, `wavyPath` (`lib/site/wavy-shape.ts`)                                                                                                                                   |
 
 ## Purpose
 
-The first screen of `/`. Its image is the Largest Contentful Paint of the whole site, so the section is where the LCP work lives: `preload` announces the image in the `<head>`, `fetchPriority="high"` raises its priority in that preload and in the `<img>`, and `sizes` describes what actually renders (the card: 300 px under 1024 px, 420 px above) rather than the viewport width. Without `sizes`, mobile requested twice the pixels.
-
-## Props
-
-None.
+The first screen of `/` (`#inicio`): the eyebrow, the `h1` «Aprende ajedrez con un maestro, _todos los días_», the lead, the three promises, «Agenda tu clase de prueba» (WhatsApp, with the booking message) and «Ve cómo funciona» (`#como-funciona`), and the note that the main button opens WhatsApp. Beside them, the Spanish Opening after 3.Ab5 on the material board, with a seal and a caption that names the move.
 
 ## Behaviour
 
-- Awaits `getHeroData()`; the title, description, CTA (`label`, `href`) and image (`src`, `alt`) come from the CMS.
-- The six badges ("Cálculo", "Visualización", "Estrategia", "Finales", "Aperturas", "Partidas") are fixed in code, each with a black piece glyph and one of three offset modifiers.
-- `id="inicio"` so the header can link back to the top.
+- **The cookie.** The board is clipped to a nine-lobed cookie that turns a lobe in four steps, comes back to its first shape and opens into the whole board, in 4.7 s after a 0.4 s pause; the halo behind it turns with it and fades. It plays **once**, on load, and stays open (`animation-fill-mode: both`). The outlines are CSS `shape()`s in percentages of the board, computed on the server with the same 181 points each so the browser can morph one into the next, and handed over as custom properties on the element; `path()` would be in pixels and would not follow the column as it narrows.
+- **Where `shape()` is not drawn** (`@supports`), the board is simply whole and the halo stays still.
+- **Reduced motion** shows the board open from the start and no halo.
 
 ## Markup & styling
 
-Block `.hero` (223 lines).
+Block `.home-hero` (253 lines).
 
-**Elements:** `.hero__inner`, `.hero__glow`, `.hero__grid`, `.hero__copy`, `.hero__title`, `.hero__text`, `.hero__actions`, `.hero__visual`, `.hero__stage`, `.hero__card`, `.hero__card-inner`, `.hero__badges`
+**Elements:** `.home-hero__inner`, `.home-hero__copy`, `.home-hero__lead`, `.home-hero__actions`, `.home-hero__note`, `.home-hero__stage`, `.home-hero__halo`, `.home-hero__cut`, `.home-hero__badge`, `.home-hero__seal`, `.home-hero__badge-icon`, `.home-hero__caption`, `.home-hero__move`, `.home-hero__caption-title`, `.home-hero__caption-text`
 
-**Tokens:** `--font-gramatika`, `--site-header-height`
+**Tokens:** `--color-m4-canvas`, `--color-m4-on-surface-variant`, `--color-m4-secondary-container`, `--color-m4-primary`, `--color-m4-on-primary`, `--color-m4-panel`, `--color-m4-primary-container`, `--color-m4-on-primary-container`, `--shadow-m4-1`
 
-**Breakpoints:** `(max-width: 1024px)` stacks the grid and shrinks the card; `(max-width: 1023px)` scales the portrait to 1.25 and adds 20 px under it, which `(max-width: 419px)` undoes because the narrowest screens have no room for the bigger circle; `(max-width: 720px)` hides the badges, drops the vertical padding and gives the section `min-height: calc(100svh - var(--site-header-height))` so it covers the whole first screen under the header, with its content centred in that space (`100vh` is declared first as the fallback for browsers without `svh`).
+**Keyframes:** `home-hero-open` (the cookie), `home-hero-halo`
 
-**Other classes:** `.button.button_variant_primary.button_size_hero` from `globals.css`.
-
-## Usage
-
-From `app/(frontend)/landing-page.tsx`:
-
-```tsx
-import { HeroSection } from "@/components/site/sections/home/hero/hero.section";
-
-{
-  sections.hero && <HeroSection />;
-}
-```
-
-## Related
-
-- [`FloatBadge`](/components/site/sections/home/hero/float-badge), [`Orbit`](/components/site/sections/home/hero/orbit).
-- How the LCP was measured: [Pages › Accessibility and performance notes](/public-site/pages#accessibility-and-performance-notes).
+**Breakpoints:** `(width < 1280px)` narrows the board's column; `(width < 1024px)` puts the board under the copy; `(width < 640px)` stretches the buttons and moves the caption under the board.

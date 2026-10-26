@@ -1,12 +1,16 @@
+/** The sections of the home page, in the order of the owner's design; each one can be switched off. */
 export interface HomeSectionsConfig {
   hero: boolean;
-  program: boolean;
-  teacher: boolean;
-  mentors: boolean;
-  plans: boolean;
-  resources: boolean;
-  reviews: boolean;
+  figures: boolean;
+  classes: boolean;
+  team: boolean;
+  courses: boolean;
+  platform: boolean;
+  adventure: boolean;
+  information: boolean;
+  testimonials: boolean;
   faq: boolean;
+  closing: boolean;
 }
 
 export interface HomePageConfig {

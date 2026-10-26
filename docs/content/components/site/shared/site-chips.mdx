@@ -1,0 +1,31 @@
+---
+description: "A row of short promises drawn as outlined chips on white, each with its blue icon: a list, not buttons."
+---
+
+# `SiteChips`
+
+|            |                                                         |
+| ---------- | ------------------------------------------------------- |
+| File       | `components/site/shared/site-chips/site-chips.comp.tsx` |
+| Kind       | Server Component                                        |
+| Stylesheet | `site-chips.comp.css` → block `.site-chips`             |
+| Used by    | the home page's hero and closing                        |
+
+## Purpose
+
+«Clases que no caducan», «Individual o grupal»: things a page promises, in the shape of Material's outlined chip (8 px corners, a hairline, white), each with a 14 px icon in the primary. Nothing is pressed, so it is a `<ul>` named by `label`, and each chip is an `<li>`.
+
+## Props
+
+| Prop    | Type                                                            | Required | Meaning                              |
+| ------- | --------------------------------------------------------------- | -------- | ------------------------------------ |
+| `label` | `string`                                                        | yes      | The list's name for a screen reader. |
+| `chips` | `{ icon: "check" \| "clock" \| "calendar" \| "users"; text }[]` | yes      | Each chip's icon and words.          |
+
+## Markup & styling
+
+Block `.site-chips` (27 lines).
+
+**Elements:** `.site-chips__chip`, `.site-chips__icon`
+
+**Tokens:** `--color-m4-outline-variant`, `--color-m4-panel`, `--color-m4-on-surface`, `--color-m4-primary`

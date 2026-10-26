@@ -5,6 +5,7 @@ const meta: MetaRecord = {
   "site-eyebrow": "SiteEyebrow",
   "site-heading": "SiteHeading",
   "site-lead": "SiteLead",
+  "site-chips": "SiteChips",
   "site-whatsapp-button": "SiteWhatsappButton",
   "site-logo": "SiteLogo",
   "site-board": "SiteBoard",
