@@ -12,7 +12,7 @@ What the owner has decided and is still to be built, and what is paused on purpo
 
 - **A teacher's seats** («asientos») are how many student accounts the teacher may hold: a teacher with 10 seats can have 10 different students. Staff grants the seats.
 - **A seat is spent by each active teacher–student relation**, not by the account. A student with one teacher uses one seat of that teacher; when the student changes teacher, the seat moves to the new teacher and is freed from the old one; a student with two teachers uses one seat of each.
-- **The teacher** creates their students' accounts, creates and schedules classes for their students, records the payments of their classes, and may give free classes.
+- **The teacher** creates their students' accounts, creates and schedules classes for their students, records the payments of their classes, and may give free classes. Recording is keeping track only: payments never go through the platform (2026-10-26) — the teacher charges outside it and notes there who paid and how many classes are left.
 - **Staff** registers teachers and their seats, sees every payment the teachers record, and can also create classes — above all group classes and webinars with titled teachers —, paid or free.
 - **The student** takes classes with a teacher, and still never sees amounts.
 - **Existing data:** the payments already recorded by staff are assigned to the teachers.
@@ -26,6 +26,20 @@ What the owner has decided and is still to be built, and what is paused on purpo
 - The migration: which teacher gets each existing payment and student, and the first seat count of each teacher.
 
 **What it touches today:** the students' accounts (`createStudentAccount`, `updateStudent`, `resetStudentPassword` in `services/staff-students/`, `/administracion/alumnos/nuevo`, `npm run user:create`); the classes (`createClassRecord`, `syncClassSchedule`, `syncClassMeeting`, `/administracion/clases/nueva`); the payments (`/administracion/alumnos/[userId]/pagos`, «Registrar pago», the «sin pago» queue, `paymentSeats`, `isUnpaidSeat`/`unpaidSeatWhere`, `syncClassSeat`/`moveClassSeat`); the teacher–student assignment, which must allow several active teachers per student; and the role boundary (AGENTS.md «Clases → Quién hace qué», `class-roles.test.ts`, `class-writers.test.ts`, `exercise-roles.test.ts`). Note the clash of words: a class «plaza» (`ClassSeat`, the participation) is not a teacher's «asiento» (the account quota), so the code needs two distinct names.
+
+## The public site and the sales landing (2026-10-26)
+
+**Settled by the owner:**
+
+- **Two landings.** The academy's home «365 días de ajedrez», moved to the new design, and a new landing that sells the platform to teachers, clubs and schools, under the name **«Plataforma Ajedrez 365»** (suggested route `/para-profesores`).
+- **The brand moves to the blue of the new design** on both: no orange and no dark theme.
+- **The academy is a team of teachers**, never one teacher as a personal brand.
+- **No public price packages for the academy**: whoever is interested asks for information (WhatsApp).
+- **The adventure is not presented as «for kids»**; a section for children comes later.
+- **The academy's content** (courses, library, academy series) is seen by anyone with access to the platform, the students of an external teacher included.
+- **Classes inside the platform**: the owner wants live classes taken in the platform itself, without Zoom or Meet — a built-in classroom with the shared board as protagonist. Not built yet; the landings show it as «Próximamente» wherever they claim it.
+
+**Still open:** which hero and which option of each section, the form backend for leads (none exists), the privacy notice (no page yet), and whether the landings ship before or with the next production deploy.
 
 ## The new design of the teacher's and staff's areas, paused (2026-10-25)
 
