@@ -3,7 +3,7 @@ import { SITE_URL } from "@/lib/site-url";
 import { getArticleLinks } from "@/services/articles/articles.service";
 
 // Static public routes of the site (platform routes stay out of the sitemap).
-const STATIC_ROUTES = ["/", "/blog", "/nosotros", "/reloj-de-ajedrez"] as const;
+const STATIC_ROUTES = ["/", "/para-profesores", "/blog", "/nosotros", "/reloj-de-ajedrez"] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Only slug and date: the sitemap does not need the articles' content.

@@ -1,0 +1,80 @@
+.teachers-academy {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+  align-items: center;
+  gap: 64px;
+
+  & .teachers-academy__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    max-width: 640px;
+  }
+
+  & .teachers-academy__shelf {
+    padding: 28px;
+    border-radius: 28px;
+    background: var(--color-m4-panel);
+    box-shadow: var(--shadow-m4-2);
+  }
+
+  & .teachers-academy__shelf-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .teachers-academy__shelf-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  & .teachers-academy__shelf-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  & .teachers-academy__shelf-icon-wrap {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--color-m4-secondary-container);
+    color: var(--color-m4-primary);
+  }
+
+  & .teachers-academy__shelf-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  & .teachers-academy__shelf-note {
+    margin-top: 16px;
+    font-size: 13px;
+    line-height: 19px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  @media (width < 1024px) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+
+  @media (width < 640px) {
+    & .teachers-academy__shelf {
+      padding: 20px;
+      border-radius: 24px;
+    }
+  }
+}

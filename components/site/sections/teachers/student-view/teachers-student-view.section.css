@@ -1,0 +1,57 @@
+.teachers-student-view {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  & .teachers-student-view__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 48px;
+  }
+
+  & .teachers-student-view__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 720px;
+  }
+
+  & .teachers-student-view__promises {
+    display: flex;
+    flex: 0 1 520px;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  & .teachers-student-view__promise {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: var(--color-m4-panel);
+    font-size: 14px;
+  }
+
+  & .teachers-student-view__promise-icon {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    color: var(--color-m4-primary);
+  }
+
+  @media (width < 1024px) {
+    gap: 28px;
+
+    & .teachers-student-view__head {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 20px;
+    }
+
+    & .teachers-student-view__promises {
+      flex-basis: auto;
+    }
+  }
+}

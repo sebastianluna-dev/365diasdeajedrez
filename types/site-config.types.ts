@@ -62,7 +62,20 @@ export interface SiteFooterCrossLink {
   note: string;
 }
 
+/**
+ * The shell of the teachers' landing (`/para-profesores`): the same header and
+ * footer, with links to its own sections and its own main button.
+ */
+export interface TeachersShellConfig {
+  nav: SiteNavLink[];
+  headerCta: SiteWhatsappAction;
+  footerNav: SiteNavLink[];
+  /** The footer's band back to the academy, the reverse of the academy's. */
+  footerCrossLink: SiteFooterCrossLink;
+}
+
 export interface SiteConfig {
   home: HomePageConfig;
   shell: SiteShellConfig;
+  teachersShell: TeachersShellConfig;
 }

@@ -28,6 +28,11 @@ const nextConfig: NextConfig = {
     // characters that take more than one byte.
     serverActions: { bodySizeLimit: "3mb" },
   },
+  // The teachers' landing answers at /para-profesores; /para-maestros is the
+  // other word people use, and gets a 308 to it.
+  async redirects() {
+    return [{ source: "/para-maestros", destination: "/para-profesores", permanent: true }];
+  },
   // The headers Vercel does not add on its own (it does add HSTS), and the
   // Content-Security-Policy of the site and of Payload's panel. The platform's
   // carries a nonce, so proxy.ts sets it per request and the site's rule

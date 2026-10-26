@@ -1,0 +1,233 @@
+.teachers-problem {
+  display: grid;
+  grid-template-columns: minmax(0, 520px) minmax(0, 1fr);
+  gap: 64px;
+
+  & .teachers-problem__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  /* Three loose pieces of the apps a teacher juggles today, a little askew. */
+  & .teachers-problem__fragments {
+    position: relative;
+    height: 340px;
+    margin-top: 16px;
+  }
+
+  & .teachers-problem__fragment {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 16px;
+    border: 1px solid var(--color-m4-divider);
+    border-radius: 16px;
+    background: var(--color-m4-panel);
+    box-shadow: var(--shadow-m4-2);
+
+    &.teachers-problem__fragment_place_chat {
+      top: 0;
+      left: 0;
+      width: 300px;
+      transform: rotate(-3deg);
+    }
+
+    &.teachers-problem__fragment_place_sheet {
+      top: 96px;
+      left: 220px;
+      width: 300px;
+      transform: rotate(2deg);
+    }
+
+    &.teachers-problem__fragment_place_study {
+      top: 210px;
+      left: 40px;
+      width: 330px;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+      transform: rotate(-1deg);
+    }
+  }
+
+  & .teachers-problem__fragment-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .teachers-problem__fragment-text {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .teachers-problem__bubble {
+    width: fit-content;
+    padding: 8px 12px;
+    border-radius: 14px;
+    background: var(--color-m4-container);
+
+    &.teachers-problem__bubble_side_mine {
+      background: var(--color-m4-secondary-container);
+      color: var(--color-m4-on-secondary-container);
+    }
+  }
+
+  & .teachers-problem__sheet {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    overflow: hidden;
+    border: 1px solid var(--color-m4-divider);
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
+  & .teachers-problem__cell {
+    padding: 6px 8px;
+
+    &.teachers-problem__cell_tone_doubt {
+      background: var(--color-m4-error-container);
+      color: var(--color-m4-on-error-container);
+      font-weight: 600;
+    }
+  }
+
+  & .teachers-problem__mini-board {
+    flex: none;
+    width: 72px;
+  }
+
+  & .teachers-problem__answers-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .teachers-problem__list {
+    margin-top: 14px;
+    border-bottom: 1px solid var(--color-m4-divider);
+  }
+
+  & .teachers-problem__row {
+    display: grid;
+    grid-template-columns: minmax(0, 260px) 32px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding: 20px 0;
+    border-top: 1px solid var(--color-m4-divider);
+  }
+
+  & .teachers-problem__question {
+    font-family: var(--font-site-display);
+    font-weight: 500;
+    font-size: 19px;
+    line-height: 26px;
+  }
+
+  & .teachers-problem__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--color-m4-secondary-container);
+    color: var(--color-m4-on-secondary-container);
+  }
+
+  & .teachers-problem__arrow-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  & .teachers-problem__answer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 14px 16px;
+    border-radius: 20px;
+    background: var(--color-m4-panel);
+  }
+
+  & .teachers-problem__detail {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .teachers-problem__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 28px;
+    padding: 4px 12px 4px 9px;
+    border-radius: 1000px;
+    font-size: 12px;
+    font-weight: 600;
+
+    &.teachers-problem__tag_state_today {
+      background: var(--color-m4-success-container);
+      color: var(--color-m4-on-success-container);
+    }
+
+    &.teachers-problem__tag_state_soon {
+      background: var(--color-m4-container-high);
+      color: var(--color-m4-on-surface);
+    }
+  }
+
+  & .teachers-problem__tag-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  @media (width < 1280px) {
+    gap: 40px;
+
+    & .teachers-problem__row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 10px;
+    }
+
+    & .teachers-problem__arrow {
+      display: none;
+    }
+  }
+
+  @media (width < 1024px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (width < 640px) {
+    /* On a phone the three pieces stack instead of lying over each other. */
+    & .teachers-problem__fragments {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: auto;
+    }
+
+    & .teachers-problem__fragment {
+      position: static;
+
+      &.teachers-problem__fragment_place_chat,
+      &.teachers-problem__fragment_place_sheet,
+      &.teachers-problem__fragment_place_study {
+        width: auto;
+        transform: none;
+      }
+    }
+
+    & .teachers-problem__question {
+      font-size: 17px;
+      line-height: 24px;
+    }
+  }
+}

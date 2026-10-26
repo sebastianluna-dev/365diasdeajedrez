@@ -68,10 +68,32 @@ export const siteConfig: SiteConfig = {
     footerCrossLink: {
       question: "¿Eres maestro?",
       label: "Conoce Plataforma Ajedrez 365",
-      // The teachers' landing (the «Plataforma Ajedrez 365» branch adds the route).
       href: "/para-profesores",
       note: "Cursos, ejercicios y clases para enseñar ajedrez.",
     },
     contactEmail: "contacto@365diasdeajedrez.com",
+  },
+  teachersShell: {
+    nav: [
+      { label: "Cómo funciona", href: "/para-profesores#como-funciona" },
+      { label: "Qué incluye", href: "/para-profesores#incluye" },
+      { label: "Preguntas", href: "/para-profesores#preguntas" },
+    ],
+    headerCta: {
+      label: "Agenda una demo",
+      message: "Hola, soy profesor de ajedrez y quiero agendar una demo de Plataforma Ajedrez 365.",
+    },
+    footerNav: [
+      { label: "La academia 365 días de ajedrez", href: "/" },
+      { label: "Cómo funciona", href: "/para-profesores#como-funciona" },
+      { label: "Preguntas", href: "/para-profesores#preguntas" },
+      { label: "Blog", href: "/blog" },
+    ],
+    footerCrossLink: {
+      question: "¿Buscas clases de ajedrez?",
+      label: "Conoce la academia 365 días de ajedrez",
+      href: "/",
+      note: "Clases en vivo con un equipo de maestros.",
+    },
   },
 };

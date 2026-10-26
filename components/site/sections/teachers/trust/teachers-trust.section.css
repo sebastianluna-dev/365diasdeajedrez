@@ -1,0 +1,233 @@
+.teachers-trust {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  & .teachers-trust__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 460px);
+    align-items: end;
+    gap: 64px;
+  }
+
+  & .teachers-trust__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  & .teachers-trust__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  & .teachers-trust__card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 196px;
+    padding: 24px 26px;
+    border-radius: 28px;
+    background: var(--color-m4-panel);
+
+    &.teachers-trust__card_wide {
+      grid-column: span 2;
+      flex-direction: row;
+      align-items: stretch;
+      gap: 24px;
+    }
+
+    &.teachers-trust__card_tone_accent {
+      align-items: center;
+      gap: 32px;
+      padding: 32px 36px;
+      background: var(--color-m4-primary);
+      color: var(--color-m4-on-primary);
+
+      & .teachers-trust__card-text {
+        color: var(--color-m4-on-primary);
+        font-size: 16px;
+        line-height: 25px;
+      }
+
+      & .teachers-trust__icon-wrap {
+        background: var(--color-m4-panel);
+      }
+    }
+  }
+
+  & .teachers-trust__feature {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  & .teachers-trust__icon-wrap {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 6px;
+    border-radius: 16px;
+    background: var(--color-m4-secondary-container);
+    color: var(--color-m4-primary);
+  }
+
+  & .teachers-trust__icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  & .teachers-trust__card-title {
+    font-family: var(--font-site-display);
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 26px;
+
+    &.teachers-trust__card-title_size_large {
+      font-size: 30px;
+      line-height: 38px;
+    }
+  }
+
+  & .teachers-trust__card-text {
+    font-size: 15px;
+    line-height: 23px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  /* The login screen as it is: no way to create an account. */
+  & .teachers-trust__login {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    gap: 10px;
+    width: 300px;
+    padding: 22px 22px 18px;
+    border-radius: 24px;
+    background: var(--color-m4-panel);
+    color: var(--color-m4-on-surface);
+  }
+
+  & .teachers-trust__login-title {
+    font-family: var(--font-site-display);
+    font-weight: 500;
+    font-size: 18px;
+  }
+
+  & .teachers-trust__login-field {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--color-m4-outline);
+    border-radius: 12px;
+    font-size: 13px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .teachers-trust__login-enter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    border-radius: 1000px;
+    background: var(--color-m4-primary);
+    color: var(--color-m4-on-primary);
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  & .teachers-trust__login-none {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .teachers-trust__login-none-icon {
+    width: 12px;
+    height: 12px;
+    color: var(--color-m4-on-error-container);
+  }
+
+  & .teachers-trust__sample {
+    margin-top: auto;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: var(--color-m4-container);
+    font-size: 13px;
+    line-height: 19px;
+
+    &.teachers-trust__sample_kind_hash {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+      min-width: 0;
+      margin-top: 0;
+    }
+  }
+
+  & .teachers-trust__hash-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .teachers-trust__hash {
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    word-break: break-all;
+  }
+
+  @media (width < 1024px) {
+    gap: 28px;
+
+    & .teachers-trust__head {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    & .teachers-trust__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (width < 768px) {
+    & .teachers-trust__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    & .teachers-trust__card {
+      min-height: 0;
+      padding: 20px;
+
+      &.teachers-trust__card_wide {
+        grid-column: auto;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      &.teachers-trust__card_tone_accent {
+        padding: 24px 20px;
+      }
+    }
+
+    & .teachers-trust__login {
+      width: auto;
+    }
+
+    & .teachers-trust__card-title.teachers-trust__card-title_size_large {
+      font-size: 24px;
+      line-height: 30px;
+    }
+  }
+}

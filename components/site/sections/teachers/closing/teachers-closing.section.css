@@ -1,0 +1,117 @@
+.teachers-closing {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
+  align-items: start;
+  gap: 64px;
+  padding: 64px;
+  scroll-margin-top: 16px;
+  border-radius: 48px;
+  background: var(--color-m4-primary);
+  color: var(--color-m4-on-primary);
+
+  & :focus-visible {
+    outline-color: var(--color-m4-on-primary);
+  }
+
+  & .teachers-closing__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  & .teachers-closing__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+    padding: 4px 14px 4px 10px;
+    border-radius: 1000px;
+    background: var(--color-m4-panel);
+    color: var(--color-m4-primary);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  & .teachers-closing__eyebrow-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  & .teachers-closing__title {
+    margin-top: 20px;
+    font-family: var(--font-site-display);
+    font-weight: 500;
+    font-size: 52px;
+    line-height: 60px;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  & .teachers-closing__lede {
+    margin-top: 18px;
+    font-size: 18px;
+    line-height: 28px;
+  }
+
+  & .teachers-closing__promises {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  & .teachers-closing__promise {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  & .teachers-closing__promise-icon-wrap {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--color-m4-panel);
+    color: var(--color-m4-primary);
+  }
+
+  & .teachers-closing__promise-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  @media (width < 1280px) {
+    gap: 40px;
+    padding: 48px;
+  }
+
+  @media (width < 1024px) {
+    grid-template-columns: minmax(0, 1fr);
+    border-radius: 32px;
+
+    & .teachers-closing__title {
+      font-size: 40px;
+      line-height: 48px;
+    }
+  }
+
+  @media (width < 640px) {
+    padding: 28px 16px 16px;
+    border-radius: 28px;
+
+    & .teachers-closing__title {
+      font-size: 30px;
+      line-height: 38px;
+    }
+
+    & .teachers-closing__lede {
+      font-size: 16px;
+      line-height: 25px;
+    }
+  }
+}

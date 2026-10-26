@@ -1,0 +1,805 @@
+/* A drawing of the platform as the student sees it: its bar, its menu as
+   tabs and its panel, in the colours of the new look. */
+.student-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 620px;
+  overflow: hidden;
+  border: 1px solid var(--color-m4-divider);
+  border-radius: 24px;
+  background: var(--color-m4-canvas);
+  box-shadow: var(--shadow-m4-3);
+  font-size: 14px;
+  line-height: 20px;
+
+  & .student-app__bar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 10px;
+    min-height: 56px;
+    padding: 8px 14px;
+  }
+
+  & .student-app__bar-title {
+    width: 150px;
+    font-family: var(--font-site-display);
+    font-size: 19px;
+  }
+
+  & .student-app__search {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 10px;
+    max-width: 520px;
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 1000px;
+    background: var(--color-m4-container-high);
+    font-size: 13px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .student-app__search-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  & .student-app__bar-streak {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 34px;
+    margin-left: auto;
+    padding: 0 12px 0 10px;
+    border-radius: 1000px;
+    background: var(--color-m4-container-high);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  & .student-app__fire {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    color: var(--color-m4-streak);
+  }
+
+  & .student-app__avatar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--color-m4-success);
+    color: var(--color-m4-on-primary);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  & .student-app__body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+  }
+
+  & .student-app__nav {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    gap: 16px;
+    width: 220px;
+    padding: 4px 12px 16px 0;
+  }
+
+  & .student-app__tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  & .student-app__tab {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    padding: 0 16px 0 20px;
+    border: 0;
+    border-radius: 0 1000px 1000px 0;
+    background: transparent;
+    color: var(--color-m4-on-surface);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--color-m4-container);
+    }
+
+    &.student-app__tab_selected {
+      background: var(--color-m4-secondary-container);
+      color: var(--color-m4-on-secondary-container);
+      font-weight: 700;
+    }
+  }
+
+  & .student-app__tab-icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+  }
+
+  & .student-app__caption {
+    margin-top: auto;
+    padding-left: 20px;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .student-app__panel {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+    margin: 0 12px 12px 0;
+    padding: 22px 26px;
+    border-radius: 16px;
+    background: var(--color-m4-panel);
+  }
+
+  /* The pieces the five screens are drawn with. */
+  & .student-app__small {
+    display: block;
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  & .student-app__muted {
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .student-app__strong {
+    font-weight: 600;
+  }
+
+  & .student-app__label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .student-app__link {
+    color: var(--color-m4-primary);
+  }
+
+  & .student-app__icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  & .student-app__greeting,
+  & .student-app__lesson-title {
+    font-family: var(--font-site-display);
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 28px;
+  }
+
+  & .student-app__focus {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 26px;
+    border-radius: 24px;
+    background: var(--color-m4-primary);
+    color: var(--color-m4-on-primary);
+  }
+
+  & .student-app__focus-copy {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & .student-app__focus-title {
+    margin: 6px 0 4px;
+    font-family: var(--font-site-display);
+    font-weight: 500;
+    font-size: 34px;
+    line-height: 40px;
+  }
+
+  & .student-app__focus-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    margin-top: 16px;
+  }
+
+  & .student-app__white-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 18px 0 14px;
+    border-radius: 1000px;
+    background: var(--color-m4-panel);
+    color: var(--color-m4-primary);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  & .student-app__pill-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  & .student-app__countdown {
+    position: relative;
+    flex: none;
+    width: 112px;
+    height: 112px;
+  }
+
+  & .student-app__countdown-ring {
+    width: 112px;
+    height: 112px;
+  }
+
+  & .student-app__countdown-track,
+  & .student-app__countdown-left {
+    fill: none;
+    stroke: var(--color-m4-on-primary);
+    stroke-width: 10;
+  }
+
+  & .student-app__countdown-track {
+    stroke-opacity: 0.25;
+  }
+
+  & .student-app__countdown-left {
+    stroke-linecap: round;
+    stroke-dasharray: 49 364;
+  }
+
+  & .student-app__countdown-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+
+  & .student-app__countdown-number {
+    font-family: var(--font-site-display);
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  & .student-app__later-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  & .student-app__later {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: var(--color-m4-container);
+  }
+
+  & .student-app__later-title {
+    display: block;
+    font-size: 13px;
+  }
+
+  & .student-app__later-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+
+    &.student-app__later-icon_tone_success {
+      background: var(--color-m4-success-container);
+      color: var(--color-m4-on-success-container);
+    }
+
+    &.student-app__later-icon_tone_warning {
+      background: var(--color-m4-container-high);
+      color: var(--color-m4-streak);
+    }
+  }
+
+  & .student-app__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 18px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-m4-container);
+    font-size: 13px;
+  }
+
+  & .student-app__streak-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  & .student-app__today {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 10px;
+    min-width: 160px;
+  }
+
+  & .student-app__progress {
+    display: block;
+    flex: 1;
+    height: 6px;
+    overflow: hidden;
+    border-radius: 1000px;
+    background: var(--color-m4-divider);
+
+    &.student-app__progress_place_end {
+      flex: none;
+      margin-top: auto;
+    }
+  }
+
+  & .student-app__progress-fill {
+    display: block;
+    height: 100%;
+    background: var(--color-m4-primary);
+
+    &.student-app__progress-fill_value_40 {
+      width: 40%;
+    }
+
+    &.student-app__progress-fill_value_60 {
+      width: 60%;
+    }
+  }
+
+  /* Clases */
+  & .student-app__classes {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  & .student-app__classes-side,
+  & .student-app__classes-list,
+  & .student-app__exercises,
+  & .student-app__streak {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  & .student-app__filter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 36px;
+    padding: 0 16px;
+    border-radius: 1000px;
+
+    &.student-app__filter_selected {
+      background: var(--color-m4-secondary-container);
+      color: var(--color-m4-on-secondary-container);
+      font-weight: 700;
+    }
+  }
+
+  & .student-app__balance {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 14px 16px;
+    border: 1px solid var(--color-m4-divider);
+    border-radius: 16px;
+  }
+
+  & .student-app__balance-number {
+    font-family: var(--font-site-display);
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 32px;
+  }
+
+  & .student-app__seats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 8px 0 6px;
+  }
+
+  & .student-app__seat {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+
+    &.student-app__seat_state_taken {
+      background: var(--color-m4-success-container);
+    }
+
+    &.student-app__seat_state_scheduled {
+      background: var(--color-m4-secondary-container);
+    }
+
+    &.student-app__seat_state_open {
+      border: 2px dashed var(--color-m4-outline);
+    }
+  }
+
+  & .student-app__day-title,
+  & .student-app__panel-title {
+    font-family: var(--font-site-display);
+    font-size: 17px;
+  }
+
+  & .student-app__panel-title {
+    font-size: 20px;
+  }
+
+  & .student-app__ticket-today {
+    display: flex;
+    overflow: hidden;
+    border-radius: 20px;
+    background: var(--color-m4-container);
+  }
+
+  & .student-app__ticket-time {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    justify-content: center;
+    width: 120px;
+    padding: 16px;
+    background: var(--color-m4-secondary-container);
+    color: var(--color-m4-on-secondary-container);
+  }
+
+  & .student-app__ticket-hour {
+    font-family: var(--font-site-display);
+    font-size: 26px;
+    line-height: 32px;
+  }
+
+  & .student-app__ticket-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    padding: 14px 18px;
+  }
+
+  & .student-app__badge {
+    width: fit-content;
+    padding: 2px 10px;
+    border-radius: 8px;
+    background: var(--color-m4-panel);
+    color: var(--color-m4-primary);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  & .student-app__ticket-title {
+    font-family: var(--font-site-display);
+    font-size: 20px;
+  }
+
+  & .student-app__ticket-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  & .student-app__mock-button {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 16px;
+    border-radius: 1000px;
+    font-size: 13px;
+    font-weight: 700;
+
+    &.student-app__mock-button_variant_filled {
+      background: var(--color-m4-primary);
+      color: var(--color-m4-on-primary);
+    }
+
+    &.student-app__mock-button_variant_tonal {
+      background: var(--color-m4-primary-container);
+      color: var(--color-m4-on-primary-container);
+    }
+  }
+
+  & .student-app__ticket {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+    border: 1px solid var(--color-m4-divider);
+    border-radius: 16px;
+
+    &.student-app__ticket_tone_class {
+      border-color: var(--color-m4-secondary-container);
+      background: var(--color-m4-canvas);
+    }
+  }
+
+  & .student-app__ticket-start {
+    flex: none;
+    width: 56px;
+  }
+
+  & .student-app__ticket-main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  & .student-app__state {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 6px;
+    min-height: 26px;
+    padding: 0 10px;
+    border-radius: 8px;
+    background: var(--color-m4-container);
+    color: var(--color-m4-on-surface-variant);
+    font-size: 12px;
+    font-weight: 600;
+
+    &.student-app__state_tone_success {
+      background: var(--color-m4-success-container);
+      color: var(--color-m4-on-success-container);
+    }
+
+    &.student-app__state_tone_danger {
+      background: var(--color-m4-error-container);
+      color: var(--color-m4-on-error-container);
+    }
+  }
+
+  & .student-app__state-icon {
+    width: 11px;
+    height: 11px;
+  }
+
+  & .student-app__unscheduled {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 12px;
+    padding: 12px 16px;
+    border-radius: 16px;
+    background: var(--color-m4-container);
+  }
+
+  & .student-app__mini-board {
+    flex: none;
+    width: 72px;
+  }
+
+  /* Lección */
+  & .student-app__lesson {
+    display: grid;
+    grid-template-columns: minmax(0, 384px) minmax(0, 1fr);
+    gap: 22px;
+  }
+
+  & .student-app__lesson-board {
+    overflow: hidden;
+    border-radius: 8px;
+  }
+
+  & .student-app__lesson-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  & .student-app__moves {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 6px;
+    font-size: 13px;
+    line-height: 22px;
+  }
+
+  & .student-app__move-current {
+    padding: 0 6px;
+    border-radius: 4px;
+    background: var(--color-m4-secondary-container);
+    color: var(--color-m4-on-secondary-container);
+  }
+
+  & .student-app__lesson-text {
+    line-height: 21px;
+  }
+
+  /* Racha */
+  & .student-app__streak-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  & .student-app__streak-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--color-m4-container-high);
+    color: var(--color-m4-streak);
+
+    & .student-app__icon {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  & .student-app__streak-days {
+    display: block;
+    font-family: var(--font-site-display);
+    font-size: 30px;
+    line-height: 34px;
+  }
+
+  & .student-app__heat {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 6px;
+    max-width: 420px;
+  }
+
+  & .student-app__heat-day {
+    aspect-ratio: 1;
+    border-radius: 8px;
+
+    &.student-app__heat-day_level_0 {
+      background: var(--color-m4-container-high);
+    }
+
+    &.student-app__heat-day_level_1 {
+      background: var(--color-m4-primary-container);
+    }
+
+    &.student-app__heat-day_level_2 {
+      background: var(--color-m4-primary-mid);
+    }
+
+    &.student-app__heat-day_level_3 {
+      background: var(--color-m4-primary);
+    }
+  }
+
+  & .student-app__stat {
+    font-family: var(--font-site-display);
+    font-size: 20px;
+  }
+
+  @media (width < 1024px) {
+    & .student-app__bar-title {
+      width: auto;
+    }
+
+    & .student-app__classes,
+    & .student-app__lesson {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    & .student-app__lesson-board {
+      max-width: 384px;
+    }
+  }
+
+  /* Below 768 px the menu becomes a row of tabs over the panel. */
+  @media (width < 768px) {
+    min-height: 0;
+
+    & .student-app__search,
+    & .student-app__bar-streak {
+      display: none;
+    }
+
+    & .student-app__avatar {
+      margin-left: auto;
+    }
+
+    & .student-app__body {
+      flex-direction: column;
+    }
+
+    & .student-app__nav {
+      width: auto;
+      gap: 8px;
+      padding: 0 12px 12px;
+    }
+
+    & .student-app__tabs {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    & .student-app__tab {
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 12px;
+      border-radius: 1000px;
+      font-size: 13px;
+    }
+
+    & .student-app__tab-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    & .student-app__caption {
+      margin-top: 0;
+      padding-left: 4px;
+    }
+
+    & .student-app__panel {
+      margin: 0 8px 8px;
+      padding: 16px;
+    }
+
+    & .student-app__focus {
+      padding: 18px;
+    }
+
+    & .student-app__focus-title {
+      font-size: 26px;
+      line-height: 32px;
+    }
+
+    & .student-app__countdown {
+      display: none;
+    }
+
+    & .student-app__later-row {
+      flex-direction: column;
+    }
+
+    & .student-app__ticket-today {
+      flex-direction: column;
+    }
+
+    & .student-app__ticket-time {
+      width: auto;
+    }
+
+    & .student-app__ticket {
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  }
+}

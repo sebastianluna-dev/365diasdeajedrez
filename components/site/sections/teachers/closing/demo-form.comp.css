@@ -1,0 +1,209 @@
+.demo-form {
+  padding: 32px 32px 28px;
+  border-radius: 32px;
+  background: var(--color-m4-panel);
+  color: var(--color-m4-on-surface);
+
+  /* Inside the form, the focus is the primary's blue, not the band's white. */
+  & :focus-visible {
+    outline-color: var(--color-m4-primary);
+  }
+
+  & .demo-form__title {
+    margin-bottom: 18px;
+    font-family: var(--font-site-display);
+    font-weight: 500;
+    font-size: 24px;
+  }
+
+  & .demo-form__form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  & .demo-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  & .demo-form__group {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  & .demo-form__label {
+    padding: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .demo-form__input {
+    min-height: 52px;
+    padding: 0 16px;
+    border: 1px solid var(--color-m4-outline);
+    border-radius: 12px;
+    background: var(--color-m4-panel);
+    color: var(--color-m4-on-surface);
+    font: inherit;
+    font-size: 16px;
+
+    &:focus-visible {
+      border-color: var(--color-m4-primary);
+      outline: 2px solid var(--color-m4-primary);
+      outline-offset: 0;
+    }
+  }
+
+  & .demo-form__cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  & .demo-form__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  /* The radio itself is hidden; its label is the card or the pill, and takes
+     its focus ring. */
+  & .demo-form__radio {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+  }
+
+  & .demo-form__card,
+  & .demo-form__pill {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--color-m4-outline);
+    background: var(--color-m4-panel);
+    font-weight: 600;
+    cursor: pointer;
+
+    &:has(.demo-form__radio:focus-visible) {
+      outline: 3px solid var(--color-m4-primary);
+      outline-offset: 2px;
+    }
+  }
+
+  & .demo-form__card {
+    min-height: 52px;
+    padding: 0 14px;
+    border-radius: 12px;
+    font-size: 15px;
+
+    &:has(.demo-form__radio:checked) {
+      padding: 0 13px;
+      border: 2px solid var(--color-m4-primary);
+      background: var(--color-m4-secondary-container);
+      color: var(--color-m4-on-secondary-container);
+    }
+  }
+
+  & .demo-form__card-icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    color: var(--color-m4-primary);
+  }
+
+  & .demo-form__pill {
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 8px;
+    font-size: 14px;
+
+    &:has(.demo-form__radio:checked) {
+      border-color: var(--color-m4-primary);
+      background: var(--color-m4-primary);
+      color: var(--color-m4-on-primary);
+    }
+  }
+
+  & .demo-form__note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .demo-form__note-icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+  }
+
+  & .demo-form__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  &.demo-form_state_sent {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  & .demo-form__done-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--color-m4-success-container);
+    color: var(--color-m4-on-success-container);
+  }
+
+  & .demo-form__done-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  & .demo-form__done-title {
+    font-family: var(--font-site-display);
+    font-weight: 500;
+    font-size: 26px;
+    line-height: 32px;
+  }
+
+  & .demo-form__done-text {
+    font-size: 16px;
+    line-height: 25px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .demo-form__done-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (width < 640px) {
+    padding: 20px 16px;
+    border-radius: 24px;
+
+    & .demo-form__cards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}
