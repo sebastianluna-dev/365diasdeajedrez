@@ -1,3 +1,4 @@
+import { LOGIN_PATH } from "@/constants/platform/auth.const";
 import type { SiteConfig } from "@/types/site-config.types";
 
 export const siteConfig: SiteConfig = {
@@ -36,13 +37,41 @@ export const siteConfig: SiteConfig = {
       label: "Agenda tu clase",
       message: "Hola, quiero información sobre las clases de ajedrez y agendar una clase de prueba.",
     },
-    footerNav: [
-      { label: "Clases", href: "/#como-funciona" },
-      { label: "Aventura", href: "/#aventura" },
-      { label: "Blog", href: "/blog" },
-      { label: "Reloj de ajedrez", href: "/reloj-de-ajedrez" },
-      { label: "Nosotros", href: "/nosotros" },
+    // The footer of the owner's «Cierre y pie B» (2026-10-26): three columns
+    // of links, the contact, and the band to the teachers' landing.
+    footerColumns: [
+      {
+        title: "Academia",
+        links: [
+          { label: "Clases", href: "/#como-funciona" },
+          { label: "Cursos", href: "/#cursos" },
+          { label: "Plataforma", href: "/#plataforma" },
+          { label: "Aventura", href: "/#aventura" },
+          { label: "Preguntas frecuentes", href: "/#preguntas" },
+        ],
+      },
+      {
+        title: "Recursos",
+        links: [
+          { label: "Blog", href: "/blog" },
+          { label: "Reloj de ajedrez", href: "/reloj-de-ajedrez" },
+        ],
+      },
+      {
+        title: "La academia",
+        links: [
+          { label: "Nosotros", href: "/nosotros" },
+          { label: "Iniciar sesión", href: LOGIN_PATH },
+        ],
+      },
     ],
+    footerCrossLink: {
+      question: "¿Eres maestro?",
+      label: "Conoce Plataforma Ajedrez 365",
+      // The teachers' landing (the «Plataforma Ajedrez 365» branch adds the route).
+      href: "/para-profesores",
+      note: "Cursos, ejercicios y clases para enseñar ajedrez.",
+    },
     contactEmail: "contacto@365diasdeajedrez.com",
   },
 };

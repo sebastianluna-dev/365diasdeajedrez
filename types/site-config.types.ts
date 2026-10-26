@@ -40,10 +40,26 @@ export interface SiteShellConfig {
   nav: SiteNavLink[];
   /** The header's main button, which opens WhatsApp. */
   headerCta: SiteWhatsappAction;
-  /** The footer's links, in order. */
-  footerNav: SiteNavLink[];
+  /** The footer's columns of links, in order (the contact column is always added after them). */
+  footerColumns: SiteFooterColumn[];
+  /** The footer's band that sends someone to the other landing («¿Eres maestro?…»). */
+  footerCrossLink: SiteFooterCrossLink;
   /** The academy's address, written in the footer. */
   contactEmail: string;
+}
+
+/** A column of the footer: its heading and its links. */
+export interface SiteFooterColumn {
+  title: string;
+  links: SiteNavLink[];
+}
+
+/** The footer's band to the other landing: a question, the link and a line about where it leads. */
+export interface SiteFooterCrossLink {
+  question: string;
+  label: string;
+  href: string;
+  note: string;
 }
 
 export interface SiteConfig {
