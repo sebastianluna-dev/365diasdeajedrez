@@ -1,0 +1,194 @@
+.home-adventure {
+  display: grid;
+  grid-template-columns: 440px minmax(0, 1fr);
+  gap: 56px;
+
+  & .home-adventure__copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 22px;
+  }
+
+  & .home-adventure__facts {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  & .home-adventure__fact {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+  }
+
+  & .home-adventure__fact-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--md-sys-shape-corner-md);
+    border: 1px solid var(--color-m4-divider);
+    background: var(--color-m4-panel);
+    color: var(--color-m4-primary);
+
+    & svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  & .home-adventure__fact-title {
+    display: block;
+    font-family: var(--font-site-display);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  & .home-adventure__fact-text {
+    display: block;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .home-adventure__streak {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 18px 8px 10px;
+    border-radius: var(--md-sys-shape-corner-lg);
+    border: 1px solid var(--color-m4-divider);
+    background: var(--color-m4-panel);
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  & .home-adventure__streak-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--color-m4-primary-container);
+    color: var(--color-m4-on-primary-container);
+
+    & svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  & .home-adventure__ask {
+    align-self: flex-start;
+  }
+
+  & .home-adventure__right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  & .home-adventure__rivals {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  & .home-adventure__rival {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 16px;
+    padding: 16px 18px;
+    border-radius: var(--md-sys-shape-corner-xl);
+    border: 1px solid var(--color-m4-divider);
+    background: var(--color-m4-panel);
+  }
+
+  & .home-adventure__face {
+    overflow: hidden;
+    width: 72px;
+    height: 84px;
+    border-radius: var(--md-sys-shape-corner-sm);
+    outline: 2px solid var(--color-m4-on-surface);
+  }
+
+  & .home-adventure__face-art {
+    width: 100%;
+    height: 100%;
+  }
+
+  & .home-adventure__rival-body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  & .home-adventure__rival-name {
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-weight: 600;
+    font-size: 19px;
+    line-height: 23px;
+  }
+
+  & .home-adventure__rival-role {
+    font-size: 12px;
+    line-height: 17px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .home-adventure__quote {
+    margin-top: 4px;
+    font-family: var(--font-caveat), cursive;
+    font-size: 21px;
+    line-height: 22px;
+    quotes: "«" "»";
+  }
+
+  & .home-adventure__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  & .home-adventure__tag {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 10px;
+    border-radius: 1000px;
+    background: var(--color-m4-container-high);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  & .home-adventure__tag_state_next {
+    background: var(--color-m4-primary);
+    color: var(--color-m4-on-primary);
+    font-weight: 700;
+  }
+
+  & .home-adventure__tag_state_won {
+    background: var(--color-m4-secondary-container);
+    color: var(--color-m4-on-secondary-container);
+  }
+
+  @media (width < 1280px) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+
+  @media (width < 768px) {
+    & .home-adventure__rivals {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}

@@ -7,6 +7,7 @@ const meta: MetaRecord = {
   team: "team/",
   courses: "courses/",
   platform: "platform/",
+  adventure: "adventure/",
 };
 
 export default meta;

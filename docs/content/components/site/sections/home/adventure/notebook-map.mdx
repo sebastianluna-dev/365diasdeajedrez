@@ -1,0 +1,25 @@
+---
+description: "The notebook's map at the Club La Torre: a crop of the adventure's exported art with the seam, the stamps, the torn page and the token drawn over it in one scaling SVG."
+---
+
+# `NotebookMap`
+
+|            |                                                                                  |
+| ---------- | -------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/adventure/notebook-map.comp.tsx`                  |
+| Kind       | Server Component                                                                 |
+| Stylesheet | `notebook-map.comp.css` → block `.home-notebook`                                 |
+| Used by    | [`AdventureSection`](/components/site/sections/home/adventure/adventure-section) |
+| Reads      | `MAP` (`notebook-map.const.ts`)                                                  |
+
+## Purpose
+
+The canvas's window onto the adventure's map, rebuilt from the real art: the scenery is `public/aventuras/cuaderno-del-viajero/escritorio.svg`, the adventure's desktop export, as a CSS background cropped to the Club La Torre (its size and position are percentages computed in `notebook-map.const.ts` from the art's viewBox, the 0.68 scale and the crop's origin, so the crop holds at any width). Over it, one SVG of 800 × 640 units, which scales with the window, draws the seam walked up to Toñito Garza and still to sew (Catmull-Rom curves through the roster's waypoints, as the canvas computes them), the torn page and its pencil note, the keepsake, the two stamps with the rivals' portraits, the three stars, «¡me toca!» and the token; the hud names the adventure, the rivals and the stars.
+
+It is an illustration with its own colours, the notebook's paper, navy and red, declared once as the block's custom properties (`--notebook-*`): the adventure's `--adventure-*` tokens belong to its own pages. The whole map is one `role="img"` with its name.
+
+## Markup & styling
+
+Block `.home-notebook` (282 lines).
+
+**Breakpoints:** `(width < 640px)` keeps only the adventure's name in the hud.
