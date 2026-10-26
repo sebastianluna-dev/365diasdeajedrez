@@ -8,6 +8,10 @@ const meta: MetaRecord = {
   courses: "courses/",
   platform: "platform/",
   adventure: "adventure/",
+  information: "information/",
+  testimonials: "testimonials/",
+  faq: "faq/",
+  closing: "closing/",
 };
 
 export default meta;

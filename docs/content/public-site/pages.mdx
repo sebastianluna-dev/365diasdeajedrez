@@ -21,17 +21,21 @@ On 2026-10-26 the owner moved the public site to the blue of the platform's new 
 
 `app/(frontend)/page.tsx` is statically prerendered (`revalidate = 3600`) and renders `landing-page.tsx`, which composes the sections enabled in `config/site.config.ts`:
 
-| Section          | Component                                    | Content source                                                                                                   |
-| ---------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Header           | `components/site/sections/shell/site-header` | `config/site.config.ts` (`shell.nav`, `shell.headerCta`) + WhatsApp number from `site-settings`                  |
-| HeroSection      | `components/site/sections/home/hero`         | `academyHome.hero`                                                                                               |
-| FiguresSection   | `components/site/sections/home/figures`      | `academyHome.figures`                                                                                            |
-| ClassesSection   | `components/site/sections/home/classes`      | `academyHome.classes`                                                                                            |
-| TeamSection      | `components/site/sections/home/team`         | `academyHome.team`                                                                                               |
-| CoursesSection   | `components/site/sections/home/courses`      | `academyHome.courses`                                                                                            |
-| PlatformSection  | `components/site/sections/home/platform`     | `academyHome.platform`                                                                                           |
-| AdventureSection | `components/site/sections/home/adventure`    | `academyHome.adventure`                                                                                          |
-| Footer           | `components/site/sections/shell/site-footer` | `config/site.config.ts` (`shell.footerColumns`, `shell.footerCrossLink`, `shell.contactEmail`) + `site-settings` |
+| Section             | Component                                    | Content source                                                                                                   |
+| ------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Header              | `components/site/sections/shell/site-header` | `config/site.config.ts` (`shell.nav`, `shell.headerCta`) + WhatsApp number from `site-settings`                  |
+| HeroSection         | `components/site/sections/home/hero`         | `academyHome.hero`                                                                                               |
+| FiguresSection      | `components/site/sections/home/figures`      | `academyHome.figures`                                                                                            |
+| ClassesSection      | `components/site/sections/home/classes`      | `academyHome.classes`                                                                                            |
+| TeamSection         | `components/site/sections/home/team`         | `academyHome.team`                                                                                               |
+| CoursesSection      | `components/site/sections/home/courses`      | `academyHome.courses`                                                                                            |
+| PlatformSection     | `components/site/sections/home/platform`     | `academyHome.platform`                                                                                           |
+| AdventureSection    | `components/site/sections/home/adventure`    | `academyHome.adventure`                                                                                          |
+| InformationSection  | `components/site/sections/home/information`  | `academyHome.information`                                                                                        |
+| TestimonialsSection | `components/site/sections/home/testimonials` | Global `home-reviews` + `academyHome.testimonials`                                                               |
+| FaqSection          | `components/site/sections/home/faq`          | Global `home-faq` (questions) + `academyHome.faq`                                                                |
+| ClosingSection      | `components/site/sections/home/closing`      | `academyHome.closing`                                                                                            |
+| Footer              | `components/site/sections/shell/site-footer` | `config/site.config.ts` (`shell.footerColumns`, `shell.footerCrossLink`, `shell.contactEmail`) + `site-settings` |
 
 Since 2026-10-26 the home page is the academy's «365 días de ajedrez» in the site's new look, section by section as the owner assembled it on the canvas (`LandingAcademiaParte1` and `2`). Its copy is `academyHome` (`config/academy-home.config.ts`, typed in `types/academy-home.types.ts`): new copy goes there and not into Payload, which would need a migration. The CMS keeps feeding what it fed — the FAQ's questions (`getFaqData()`), the testimonials (`getReviewsData()`) and the WhatsApp number — through `services/home` and `services/site-settings`, deduplicated per request and cached between requests (see [Caching](/architecture/caching-errors-logging)). The old sections (hero with its photo, programme, teacher, packages with prices, resources, the chat-style reviews, the sticky bar with the 15-minute countdown) are gone with their components; their Globals (`home-hero`, `home-program`, `home-teacher`, `home-packages`, `home-cta`, `home-mentors`) stay in Payload, unread by the home page.
 

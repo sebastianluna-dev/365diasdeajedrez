@@ -1,0 +1,219 @@
+.home-info {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 560px;
+  gap: 72px;
+  align-items: center;
+
+  & .home-info__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  & .home-info__steps {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+  }
+
+  & .home-info__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 20px;
+    padding-bottom: 28px;
+  }
+
+  & .home-info__step:last-child {
+    padding-bottom: 0;
+  }
+
+  /* The line that joins one step's number to the next. */
+  & .home-info__step:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 27px;
+    top: 56px;
+    bottom: 0;
+    width: 2px;
+    background: var(--color-m4-primary-container);
+  }
+
+  & .home-info__number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--md-sys-shape-corner-lg);
+    border: 1px solid var(--color-m4-divider);
+    background: var(--color-m4-panel);
+    color: var(--color-m4-primary);
+    font-family: var(--font-site-display);
+    font-weight: 600;
+    font-size: 22px;
+  }
+
+  & .home-info__step:first-child .home-info__number {
+    border-color: var(--color-m4-primary);
+    background: var(--color-m4-primary);
+    color: var(--color-m4-on-primary);
+  }
+
+  & .home-info__step-title {
+    display: block;
+    margin-top: 4px;
+    font-family: var(--font-site-display);
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  & .home-info__step-text {
+    display: block;
+    max-width: 520px;
+    margin-top: 4px;
+    font-size: 15px;
+    line-height: 23px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  /* The blue card, with the disc in its corner. */
+  & .home-info__card {
+    position: relative;
+    overflow: hidden;
+    padding: 44px 44px 40px;
+    border-radius: var(--md-sys-shape-corner-xxl);
+    background: var(--color-m4-primary);
+    color: var(--color-m4-on-primary);
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: -90px;
+      right: -90px;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: var(--color-m4-primary-tint);
+    }
+
+    & > * {
+      position: relative;
+    }
+  }
+
+  & .home-info__card-title {
+    font-family: var(--font-site-display);
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  & .home-info__card-text {
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  & .home-info__message {
+    margin-top: 28px;
+    padding: 18px 20px;
+    border-radius: var(--md-sys-shape-corner-xl);
+    background: var(--color-m4-panel);
+    color: var(--color-m4-on-surface);
+  }
+
+  & .home-info__message-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .home-info__message-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  & .home-info__message-text {
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  /* The white button on the blue: Material's filled button, its colours turned. */
+  & .home-info__whatsapp {
+    --container-color: var(--color-m4-panel);
+    --label-text-color: var(--color-m4-primary);
+    --icon-color: var(--color-m4-primary);
+    --state-layer-color: var(--color-m4-primary);
+
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  & .home-info__number-line {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-m4-secondary-container);
+  }
+
+  & .home-info__promises {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-m4-primary-line);
+  }
+
+  & .home-info__promise {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  & .home-info__promise-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--color-m4-secondary-container);
+    color: var(--color-m4-on-secondary-container);
+
+    & svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  @media (width < 1280px) {
+    grid-template-columns: minmax(0, 1fr) 480px;
+    gap: 48px;
+  }
+
+  @media (width < 1024px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (width < 640px) {
+    & .home-info__card {
+      padding: 32px 20px 28px;
+      border-radius: var(--md-sys-shape-corner-xl);
+    }
+
+    & .home-info__card-title {
+      font-size: 26px;
+      line-height: 32px;
+    }
+  }
+}

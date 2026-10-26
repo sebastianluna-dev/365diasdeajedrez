@@ -1,0 +1,24 @@
+---
+description: "The page's last call: the Italian Game with black to move, «La siguiente jugada es tuya», the trial-class and information buttons and three promises."
+---
+
+# `ClosingSection`
+
+|            |                                                                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/closing/closing.section.tsx`                                                                                                                |
+| Kind       | Server Component                                                                                                                                                           |
+| Stylesheet | `closing.section.css` → block `.home-closing`                                                                                                                              |
+| Design     | the band of `AcadCierreC`                                                                                                                                                  |
+| Composes   | [`SiteBoard`](/components/site/shared/site-board), [`SiteChips`](/components/site/shared/site-chips), [`SiteWhatsappButton`](/components/site/shared/site-whatsapp-button) |
+| Reads      | `academyHome.closing`, `academyHome.booking`                                                                                                                               |
+
+## Purpose
+
+`#contacto`: the board card (3.Ac4, black to move), «La siguiente jugada _es tuya_» in the display size, «Agenda tu clase de prueba» and «Pide información» (both WhatsApp, each with its own message) and the three promises as chips. The canvas's «Cierre C» had its own slim footer under this band; the owner chose «Cierre y pie B»'s footer instead, which is the shared [`SiteFooter`](/components/site/sections/shell/site-footer/site-footer-section).
+
+## Markup & styling
+
+Block `.home-closing` (82 lines).
+
+**Breakpoints:** `(width < 1280px)` narrows the board; `(width < 1024px)` puts it over the copy; `(width < 640px)` stretches the buttons.

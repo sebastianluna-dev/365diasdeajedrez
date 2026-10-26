@@ -1,0 +1,25 @@
+---
+description: "How to start, without public prices: three steps and the blue card that opens WhatsApp with the booking message written."
+---
+
+# `InformationSection`
+
+|            |                                                                           |
+| ---------- | ------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/information/information.section.tsx`       |
+| Kind       | Server Component (async)                                                  |
+| Stylesheet | `information.section.css` → block `.home-info`                            |
+| Design     | `AcadInfoA`                                                               |
+| Reads      | `academyHome.information`, `academyHome.booking`; `getSiteSettingsData()` |
+
+## Purpose
+
+`#informacion`, the header's «Información»: «Empieza con una _clase de prueba_». The academy publishes no packages (the owner's decision), so the section says how to start — write on WhatsApp, take the trial class, choose individual or group — and the blue card shows the very message WhatsApp will open with (`academyHome.booking.message`, the same as every booking button and the header's), the white button that opens it and the CMS's number under it. There is no form and nothing is stored. The canvas's «Te respondemos [horario de atención]» is left out until the owner gives the hours.
+
+## Markup & styling
+
+Block `.home-info` (219 lines). The white button is Material's filled button with its colours turned through its own custom properties (`--container-color`, `--label-text-color`, `--icon-color`).
+
+**Tokens:** besides the surfaces and the blue, `--color-m4-primary-tint` (the card's disc) and `--color-m4-primary-line` (its divider).
+
+**Breakpoints:** `(width < 1280px)` narrows the card; `(width < 1024px)` puts it under the steps; `(width < 640px)` tightens its padding and corners.

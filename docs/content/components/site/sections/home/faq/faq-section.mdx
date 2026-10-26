@@ -1,0 +1,24 @@
+---
+description: "The questions of the home-faq Global in an accordion, beside the heading and the «¿No está tu pregunta?» card."
+---
+
+# `FaqSection`
+
+|            |                                                                      |
+| ---------- | -------------------------------------------------------------------- |
+| File       | `components/site/sections/home/faq/faq.section.tsx`                  |
+| Kind       | Server Component (async)                                             |
+| Stylesheet | `faq.section.css` → block `.home-faq`                                |
+| Design     | `AcadFaqA`                                                           |
+| Composes   | [`FaqAccordion`](/components/site/sections/home/faq/faq-accordion)   |
+| Reads      | `getFaqData()` (Global `home-faq`: its questions), `academyHome.faq` |
+
+## Purpose
+
+`#preguntas`: «Lo que más _nos preguntan_». The questions and answers are the CMS's, as before; the Global's own eyebrow, title, description and button label are no longer read, because the new heading carries its words in blue and the help card is new. The answers are the owner's to keep in line with the page — today a class is joined with its link, and the classroom inside the platform is «Próximamente» (the canvas's answer to «¿Cómo son las clases?» says exactly that). With no question in the CMS the section returns nothing.
+
+## Markup & styling
+
+Block `.home-faq` (45 lines).
+
+**Breakpoints:** `(width < 1280px)` narrows the side column; `(width < 1024px)` puts the questions under it.
