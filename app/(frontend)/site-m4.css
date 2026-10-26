@@ -73,6 +73,18 @@
   --color-m4-board-dark: #9db7de;
   --color-m4-board-last-move: #f2c14e;
 
+  /* THE COURSES' COVERS — each course's own two colours, the ones the
+     platform's «Tus cursos» draws them in (the Sicilian's night red, Fischer's
+     grey, the rook endings' navy and gold, Kotov's paper). */
+  --color-m4-cover-siciliana: #1d0d0e;
+  --color-m4-on-cover-siciliana: #ffffff;
+  --color-m4-cover-fischer: #262626;
+  --color-m4-on-cover-fischer: #ffffff;
+  --color-m4-cover-torre: #14273b;
+  --color-m4-on-cover-torre: #f4d27a;
+  --color-m4-cover-kotov: #ece5d3;
+  --color-m4-on-cover-kotov: #14273b;
+
   /* SHADOWS — Material's grey shadow at three heights: a resting card, a card
      that floats over another, and a window shown as a screenshot. */
   --color-m4-shadow: #3c4043;

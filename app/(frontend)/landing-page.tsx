@@ -5,6 +5,8 @@ import { HeroSection } from "@/components/site/sections/home/hero/hero.section";
 import { FiguresSection } from "@/components/site/sections/home/figures/figures.section";
 import { ClassesSection } from "@/components/site/sections/home/classes/classes.section";
 import { TeamSection } from "@/components/site/sections/home/team/team.section";
+import { CoursesSection } from "@/components/site/sections/home/courses/courses.section";
+import { PlatformSection } from "@/components/site/sections/home/platform/platform.section";
 
 /**
  * The academy's home («365 días de ajedrez»), in the order of the owner's
@@ -23,6 +25,8 @@ export default function LandingPage() {
         {sections.figures && <FiguresSection />}
         {sections.classes && <ClassesSection />}
         {sections.team && <TeamSection />}
+        {sections.courses && <CoursesSection />}
+        {sections.platform && <PlatformSection />}
       </main>
       <SiteFooter />
     </div>

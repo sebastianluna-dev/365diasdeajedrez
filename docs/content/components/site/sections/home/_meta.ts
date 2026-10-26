@@ -5,6 +5,8 @@ const meta: MetaRecord = {
   figures: "figures/",
   classes: "classes/",
   team: "team/",
+  courses: "courses/",
+  platform: "platform/",
 };
 
 export default meta;

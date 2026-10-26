@@ -1,0 +1,54 @@
+.home-courses {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  & .home-courses__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px 48px;
+  }
+
+  & .home-courses__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  & .home-courses__aside {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    max-width: 680px;
+  }
+
+  & .home-courses__ask {
+    flex: none;
+  }
+
+  @media (width < 1280px) {
+    & .home-courses__head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  @media (width < 768px) {
+    & .home-courses__aside {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+  }
+
+  @media (width < 640px) {
+    & .home-courses__ask {
+      width: 100%;
+    }
+
+    & .home-courses__aside {
+      align-items: stretch;
+    }
+  }
+}

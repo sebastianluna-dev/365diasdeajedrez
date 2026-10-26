@@ -1,0 +1,34 @@
+---
+description: "The four course cards as toggles, and under them the chosen course as the platform shows it: index, cover, chapters and the next lesson."
+---
+
+# `CourseShowcase`
+
+|            |                                                                            |
+| ---------- | -------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/courses/course-showcase.comp.tsx`           |
+| Kind       | Client Component                                                           |
+| Stylesheet | `course-showcase.comp.css` → block `.course-showcase`                      |
+| Used by    | [`CoursesSection`](/components/site/sections/home/courses/courses-section) |
+| Composes   | [`SiteBoard`](/components/site/shared/site-board)                          |
+
+## Purpose
+
+The section's client leaf: its only state is which course is open. Each card is a `<button aria-pressed aria-controls="curso-por-dentro">` with the course's cover in its own colours, its name, its topic and levels and its count of chapters and lessons; the chosen one is ringed in blue and says «Abierto abajo». Under the cards, a `<figure>` draws the chosen course inside the platform: the index with its chapters, the big cover, the title and meta line, the chapter cards and «Siguiente lección», on the board when the course has one (the Poisoned Pawn of the Najdorf, the Philidor defence).
+
+What the canvas drew of one student's progress (60 %, «Repasar 2», the done marks) is left out: the inside shows the course, not someone's account. Nothing in the screen is pressed; it is text.
+
+## Props
+
+| Prop      | Type                        | Required | Meaning                      |
+| --------- | --------------------------- | -------- | ---------------------------- |
+| `courses` | `HomeCourseCopy[]`          | yes      | The four courses.            |
+| `inside`  | `HomeCoursesCopy["inside"]` | yes      | The caption over the screen. |
+
+## Markup & styling
+
+Block `.course-showcase` (567 lines).
+
+**Modifiers:** `.course-showcase__card_state_open`, `.course-showcase__tag_kind_level`, and one per cover: `.course-showcase__cover_course_siciliana`, `_fischer`, `_torre`, `_kotov`, reading `--color-m4-cover-*` and `--color-m4-on-cover-*`.
+
+**Breakpoints:** `(width < 1280px)` drops the index; `(width < 1024px)` lays the cards two by two and puts the next lesson under the chapters; `(width < 640px)` one card per row, one chapter per row, no search.

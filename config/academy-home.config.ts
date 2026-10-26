@@ -135,7 +135,7 @@ export const academyHome: AcademyHomeCopy = {
     },
     inside: {
       say: "Así lo ves dentro de tu plataforma",
-      note: "El índice a la izquierda, los capítulos al centro y la lección que sigue, en el tablero.",
+      note: "El índice a la izquierda, los capítulos al centro y, a la derecha, la lección que sigue.",
     },
     // The four courses of the platform (prisma/seed-data.ts and
     // prisma/seed-courses/), copied as static data: the site never reads the

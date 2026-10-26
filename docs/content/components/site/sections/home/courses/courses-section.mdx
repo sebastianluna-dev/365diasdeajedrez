@@ -1,0 +1,26 @@
+---
+description: "The academy's four courses: the heading, «Pregunta por los cursos» on WhatsApp and the cards with the inside of the chosen one."
+---
+
+# `CoursesSection`
+
+|            |                                                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/site/sections/home/courses/courses.section.tsx`                                                                                      |
+| Kind       | Server Component                                                                                                                                 |
+| Stylesheet | `courses.section.css` → block `.home-courses`                                                                                                    |
+| Design     | `AcadCursos3`                                                                                                                                    |
+| Composes   | [`CourseShowcase`](/components/site/sections/home/courses/course-showcase), [`SiteWhatsappButton`](/components/site/shared/site-whatsapp-button) |
+| Reads      | `academyHome.courses`                                                                                                                            |
+
+## Purpose
+
+`#cursos`: «Cuatro cursos, _y así se ven por dentro_». The four courses are the platform's — the Sicilian, Fischer's 60 games, the rook endings and Kotov — with their real chapters and lesson counts copied as static data in `config/academy-home.config.ts` (the owner's decision: the site never reads the platform's database). When a course changes on the platform, its card is updated there by hand.
+
+## Markup & styling
+
+Block `.home-courses` (54 lines).
+
+**Elements:** `.home-courses__head`, `.home-courses__copy`, `.home-courses__aside`, `.home-courses__ask`
+
+**Breakpoints:** `(width < 1280px)` stacks the heading over the lead; `(width < 768px)` and `(width < 640px)` stack the lead over the button and stretch it.
