@@ -68,7 +68,9 @@ export function TeachersHeroSection() {
           </span>
           <span className="teachers-hero__soon">
             <ClockIcon className="teachers-hero__soon-icon" />
-            <strong>Próximamente:</strong> asientos para tus alumnos
+            <span>
+              <strong>Próximamente:</strong> asientos para tus alumnos
+            </span>
           </span>
         </div>
       </div>

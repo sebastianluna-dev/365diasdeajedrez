@@ -41,6 +41,23 @@ export const siteConfig: SiteConfig = {
     ],
     contactEmail: "contacto@365diasdeajedrez.com",
   },
+  teachersShell: {
+    nav: [
+      { label: "Cómo funciona", href: "/para-profesores#como-funciona" },
+      { label: "Qué incluye", href: "/para-profesores#incluye" },
+      { label: "Preguntas", href: "/para-profesores#preguntas" },
+    ],
+    headerCta: {
+      label: "Agenda una demo",
+      message: "Hola, soy profesor de ajedrez y quiero agendar una demo de Plataforma Ajedrez 365.",
+    },
+    footerNav: [
+      { label: "La academia 365 días de ajedrez", href: "/" },
+      { label: "Cómo funciona", href: "/para-profesores#como-funciona" },
+      { label: "Preguntas", href: "/para-profesores#preguntas" },
+      { label: "Blog", href: "/blog" },
+    ],
+  },
 };
 
 /**

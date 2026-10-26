@@ -42,7 +42,18 @@ export interface SiteShellConfig {
   contactEmail: string;
 }
 
+/**
+ * The shell of the teachers' landing (`/para-profesores`): the same header and
+ * footer, with links to its own sections and its own main button.
+ */
+export interface TeachersShellConfig {
+  nav: SiteNavLink[];
+  headerCta: SiteWhatsappAction;
+  footerNav: SiteNavLink[];
+}
+
 export interface SiteConfig {
   home: HomePageConfig;
   shell: SiteShellConfig;
+  teachersShell: TeachersShellConfig;
 }

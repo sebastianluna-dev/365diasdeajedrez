@@ -515,5 +515,13 @@
     & .class-week__card {
       padding: 16px;
     }
+
+    & .class-week__row {
+      align-items: flex-start;
+    }
+
+    & .class-week__row-title {
+      white-space: normal;
+    }
   }
 }

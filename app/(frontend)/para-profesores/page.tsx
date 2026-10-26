@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { SiteFooter } from "@/components/site/sections/shell/site-footer/site-footer.section";
+import { SiteHeader } from "@/components/site/sections/shell/site-header/site-header.section";
 import { TeachersAcademySection } from "@/components/site/sections/teachers/academy/teachers-academy.section";
 import { TeachersCalendarSection } from "@/components/site/sections/teachers/calendar/teachers-calendar.section";
 import { TeachersClassroomSection } from "@/components/site/sections/teachers/classroom/teachers-classroom.section";
@@ -11,8 +13,8 @@ import { TeachersSchoolsSection } from "@/components/site/sections/teachers/scho
 import { TeachersSeatsSection } from "@/components/site/sections/teachers/seats/teachers-seats.section";
 import { TeachersStudentViewSection } from "@/components/site/sections/teachers/student-view/teachers-student-view.section";
 import { TeachersTrustSection } from "@/components/site/sections/teachers/trust/teachers-trust.section";
+import { siteConfig } from "@/config/site.config";
 import { getSiteSettingsData } from "@/services/site-settings/site-settings.service";
-import "./teachers-page.css";
 
 const TITLE = "Plataforma Ajedrez 365 | La plataforma para dar clases de ajedrez";
 const DESCRIPTION =
@@ -42,7 +44,8 @@ export default async function TeachersPage() {
   const { whatsappNumber } = await getSiteSettingsData();
 
   return (
-    <div className="teachers-page">
+    <div className="site-page">
+      <SiteHeader links={siteConfig.teachersShell.nav} cta={siteConfig.teachersShell.headerCta} />
       <main id="contenido">
         <TeachersHeroSection />
         <TeachersProblemSection />
@@ -57,6 +60,7 @@ export default async function TeachersPage() {
         <TeachersFaqSection whatsappNumber={whatsappNumber} />
         <TeachersClosingSection whatsappNumber={whatsappNumber} />
       </main>
+      <SiteFooter links={siteConfig.teachersShell.footerNav} />
     </div>
   );
 }
