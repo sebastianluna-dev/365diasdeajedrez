@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Header } from "@/components/site/sections/shell/header/header.section";
+import { SiteHeader } from "@/components/site/sections/shell/site-header/site-header.section";
 import { ArticleContent } from "@/components/site/sections/blog/article-content/article-content.section";
 import { RelatedArticles } from "@/components/site/sections/blog/related-articles/related-articles.section";
-import { Footer } from "@/components/site/sections/shell/footer/footer.section";
+import { SiteFooter } from "@/components/site/sections/shell/site-footer/site-footer.section";
 import { getArticleBySlug, getArticleSummaries } from "@/services/articles/articles.service";
 import "../blog.css";
 import "./article-page.css";
@@ -48,12 +48,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <div className="article-page__glow article-page__glow_position_mid-right" />
       <div className="article-page__glow article-page__glow_position_top-left" />
 
-      <Header theme="light" />
+      <SiteHeader />
       <main id="contenido">
         <ArticleContent article={article} />
         <RelatedArticles articles={relatedArticles} />
       </main>
-      <Footer accent="red" />
+      <SiteFooter />
     </div>
   );
 }

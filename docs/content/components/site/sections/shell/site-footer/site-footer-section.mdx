@@ -1,0 +1,52 @@
+---
+description: "The footer of the site's new look: one white band with the wordmark, the site's links, WhatsApp, e-mail and the login, and the academy's contact line."
+---
+
+# `SiteFooter`
+
+|            |                                                                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/shell/site-footer/site-footer.section.tsx`                                                   |
+| Kind       | Server Component (async)                                                                                               |
+| Stylesheet | `site-footer.section.css` → block `.site-footer`                                                                       |
+| Used by    | `/`, `/nosotros`, `/blog`, `/blog/[slug]`, `/mentor/[slug]`, `not-found.tsx`                                           |
+| Composes   | [`SiteLogo`](/components/site/shared/site-logo)                                                                        |
+| Reads      | `siteConfig.shell` (`config/site.config.ts`) · `getSiteSettingsData()`, `getWhatsappHref()` (`services/site-settings`) |
+
+## Purpose
+
+The closing band of every public page except the chess clock. Its links and the academy's e-mail are fixed in `config/site.config.ts`; the WhatsApp number and the message its link opens with are the `site-settings` Global's. There is no «Aviso de privacidad» link: the page does not exist yet (it is one of the owner's open points).
+
+## Props
+
+| Prop    | Type            | Required                         | Meaning             |
+| ------- | --------------- | -------------------------------- | ------------------- |
+| `links` | `SiteNavLink[]` | no, `siteConfig.shell.footerNav` | The footer's links. |
+
+## Behaviour
+
+- Three ways in, as pills: WhatsApp (a new tab, said to a screen reader), e-mail (`mailto:`) and «Iniciar sesión».
+- The legal line writes the year it is rendered in, the e-mail, the WhatsApp number and «Clases en línea · Español».
+
+## Markup & styling
+
+Block `.site-footer` (120 lines).
+
+**Elements:** `.site-footer__inner`, `.site-footer__top`, `.site-footer__links`, `.site-footer__link`, `.site-footer__ways`, `.site-footer__way`, `.site-footer__way-icon`, `.site-footer__legal`, `.site-footer__language`
+
+**Tokens:** `--color-m4-panel`, `--color-m4-divider`, `--color-m4-on-surface`, `--color-m4-on-surface-variant`, `--color-m4-container`, `--color-m4-container-high`, `--color-m4-primary`, `--font-site-text`
+
+**Breakpoints:** `(width < 1024px)` narrows the gutter; `(width < 640px)` stacks the wordmark, the links and the pills, and the legal line.
+
+## Usage
+
+```tsx
+import { SiteFooter } from "@/components/site/sections/shell/site-footer/site-footer.section";
+
+<SiteFooter />;
+```
+
+## Related
+
+- [`SiteHeader`](/components/site/sections/shell/site-header/site-header-section).
+- The `site-settings` Global in [CMS](/public-site/cms).

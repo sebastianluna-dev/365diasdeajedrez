@@ -1,0 +1,45 @@
+---
+description: "The header's menu below 1024 px: a Material icon button that opens, under the bar, the links, «Iniciar sesión» and the WhatsApp button."
+---
+
+# `SiteHeaderMenu`
+
+|            |                                                                                 |
+| ---------- | ------------------------------------------------------------------------------- |
+| File       | `components/site/sections/shell/site-header/site-header-menu.comp.tsx`          |
+| Kind       | Client Component                                                                |
+| Stylesheet | `site-header-menu.comp.css` → block `.site-header-menu`                         |
+| Used by    | [`SiteHeader`](/components/site/sections/shell/site-header/site-header-section) |
+| Uses       | `useLingering` (`components/chess/game-viewer/use-lingering.hook.ts`)           |
+
+## Purpose
+
+The narrow screens' version of the bar. It holds the open state, which is the only thing of the header that needs the browser; the header itself stays on the server and passes it data (the links, the login and the WhatsApp link it already built).
+
+## Props
+
+| Prop         | Type            | Required | Meaning                                         |
+| ------------ | --------------- | -------- | ----------------------------------------------- |
+| `links`      | `SiteNavLink[]` | yes      | The same links as the bar.                      |
+| `loginLabel` | `string`        | yes      | «Iniciar sesión».                               |
+| `loginHref`  | `string`        | yes      | `LOGIN_PATH`.                                   |
+| `cta`        | `string`        | yes      | The main button's words.                        |
+| `ctaHref`    | `string`        | yes      | The WhatsApp link, already built by the header. |
+
+## Behaviour
+
+- The toggle is `aria-expanded` and `aria-controls` the panel; its name says what it does («Abrir el menú», «Cerrar el menú»).
+- The panel enters in 160 ms (`ease-out`) and leaves in 120 (`ease-in`): `useLingering` keeps it mounted with `_state_closing` while it goes. Under reduced motion it appears and disappears at once.
+- Escape closes it and gives the focus back to the toggle; following any of its links closes it.
+
+## Markup & styling
+
+Block `.site-header-menu` (87 lines), shown only below 1024 px.
+
+**Elements:** `.site-header-menu__toggle` (`mdIconButton("standard", "sm")`), `.site-header-menu__panel`, `.site-header-menu__links`, `.site-header-menu__link`, `.site-header-menu__actions`
+
+**Modifiers:** `.site-header-menu__panel_state_closing`
+
+**Tokens:** `--color-m4-canvas`, `--color-m4-divider`, `--color-m4-container-high`, `--color-m4-on-surface`, `--shadow-m4-2`
+
+**Keyframes:** `site-header-menu-in`, `site-header-menu-out`

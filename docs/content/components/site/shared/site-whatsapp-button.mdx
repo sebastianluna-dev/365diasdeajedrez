@@ -1,0 +1,41 @@
+---
+description: "A Material button that opens the academy's WhatsApp with its message already written, to the number of the site-settings Global."
+---
+
+# `SiteWhatsappButton`
+
+|         |                                                                             |
+| ------- | --------------------------------------------------------------------------- |
+| File    | `components/site/shared/site-whatsapp-button/site-whatsapp-button.comp.tsx` |
+| Kind    | Server Component (async)                                                    |
+| Used by | the home page's sections                                                    |
+| Reads   | `getWhatsappHref()` · `services/site-settings/site-settings.service.ts`     |
+
+## Purpose
+
+The site has no form backend and no leads table (the owner's decision of 2026-10-26): asking for a class, for prices or for information is always a WhatsApp chat. This is the button that opens it, with the message the caller writes (or the CMS's default message), in a new tab, saying so to a screen reader. Its look is Material's (`mdButton(color, size)`) and its icon sits in `.site-md-icon`; it has no stylesheet of its own.
+
+## Props
+
+| Prop        | Type                       | Required         | Meaning                                                           |
+| ----------- | -------------------------- | ---------------- | ----------------------------------------------------------------- |
+| `label`     | `string`                   | yes              | What the button says.                                             |
+| `message`   | `string`                   | no               | The message the chat opens with; the CMS's default when left out. |
+| `color`     | `MaterialButtonColor`      | yes              | `filled` the page's main action, `tonal`, `outlined`, `text`.     |
+| `size`      | `MaterialSize`             | no, `"sm"`       | `sm` 40 px, `md` 56 px.                                           |
+| `icon`      | `"calendar" \| "whatsapp"` | no, `"whatsapp"` | `calendar` for booking a class.                                   |
+| `className` | `string`                   | no               | The caller's block class, for where it sits.                      |
+
+## Usage
+
+```tsx
+<SiteWhatsappButton
+  label="Agenda tu clase de prueba"
+  message={academyHome.booking.message}
+  color="filled"
+  size="md"
+  icon="calendar"
+/>
+```
+
+A form that composes its message from fields (the teachers' landing) builds the link in the browser with `buildWhatsappUrl(number, message)` from `lib/build-whatsapp-url.ts`, the number coming from `getSiteSettingsData()` on the server.

@@ -1,8 +1,8 @@
 import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
-  header: "header/",
-  footer: "footer/",
+  "site-header": "site-header/",
+  "site-footer": "site-footer/",
   "site-message": "site-message/",
 };
 

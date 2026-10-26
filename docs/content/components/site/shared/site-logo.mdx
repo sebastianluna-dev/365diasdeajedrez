@@ -1,0 +1,34 @@
+---
+description: "The wordmark of the site's new look as a link to the home page: the '365' in the primary's blue, the word and the marks in ink."
+---
+
+# `SiteLogo`
+
+|            |                                                                                                                                                                  |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/shared/site-logo/site-logo.comp.tsx`                                                                                                            |
+| Kind       | Server Component                                                                                                                                                 |
+| Stylesheet | `site-logo.comp.css` → block `.site-logo`                                                                                                                        |
+| Used by    | [`SiteHeader`](/components/site/sections/shell/site-header/site-header-section), [`SiteFooter`](/components/site/sections/shell/site-footer/site-footer-section) |
+
+## Purpose
+
+The shared inline wordmark (`LogoWordmarkIcon`, `viewBox="0 0 703 72"`) coloured for the blue look. The old pages' [`Logo`](/components/site/shared/logo), with its orange and its red, stays for the icon gallery. The link's name is `LOGO_LABEL` followed by «, inicio».
+
+## Props
+
+| Prop   | Type           | Required   | Meaning                                     |
+| ------ | -------------- | ---------- | ------------------------------------------- |
+| `size` | `"md" \| "sm"` | no, `"md"` | 22 px tall in the header, 19 in the footer. |
+
+## Markup & styling
+
+Block `.site-logo` (33 lines).
+
+**Elements:** `.site-logo__image`, `.site-logo__accent`, `.site-logo__word`, `.site-logo__marks`
+
+**Modifiers:** `.site-logo_size_md`, `.site-logo_size_sm`
+
+**Tokens:** `--color-m4-primary`, `--color-m4-on-surface`
+
+**Breakpoints:** `(width < 640px)` draws it 18 px tall.

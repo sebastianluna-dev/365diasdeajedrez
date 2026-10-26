@@ -1,19 +1,9 @@
-import type {
-  HomeHeader,
-  HomeHero,
-  HomeProgram,
-  HomeTeacher,
-  HomePackage,
-  HomeFaq,
-  HomeCta,
-  HomeReviews,
-} from "@/payload-types";
+import type { HomeHero, HomeProgram, HomeTeacher, HomePackage, HomeFaq, HomeCta, HomeReviews } from "@/payload-types";
 import type { MoveAnnotations } from "@/lib/chess/types";
 import { mapContentImage } from "@/services/shared/map-content-image";
 import type {
   CtaContent,
   FaqContent,
-  HeaderContent,
   HeroContent,
   PackagePlanContent,
   PackagesContent,
@@ -21,21 +11,6 @@ import type {
   ReviewsContent,
   TeacherContent,
 } from "./home.types";
-
-export function mapHeader(header: HomeHeader): HeaderContent {
-  return {
-    ctaLabel: header.ctaLabel,
-    navItems: (header.navItems ?? []).map((item) =>
-      item.blockType === "navLink"
-        ? { type: "link" as const, label: item.label, href: item.href }
-        : {
-            type: "dropdown" as const,
-            label: item.label,
-            links: item.links.map((link) => ({ label: link.label, href: link.href })),
-          },
-    ),
-  };
-}
 
 export function mapHero(hero: HomeHero): HeroContent {
   return {

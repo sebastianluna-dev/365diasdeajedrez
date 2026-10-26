@@ -1,0 +1,31 @@
+---
+description: "The pale blue pill over a section's heading that says what the section is about."
+---
+
+# `SiteEyebrow`
+
+|            |                                                             |
+| ---------- | ----------------------------------------------------------- |
+| File       | `components/site/shared/site-eyebrow/site-eyebrow.comp.tsx` |
+| Kind       | Server Component                                            |
+| Stylesheet | `site-eyebrow.comp.css` → block `.site-eyebrow`             |
+| Used by    | every section of the home page                              |
+
+## Purpose
+
+The small label above a heading («Clases en vivo», «Cursos»), in the secondary container's blue. It places what it is given: an icon of `components/icons/` (drawn at 16 px) and the words.
+
+## Props
+
+| Prop       | Type                  | Required      | Meaning                               |
+| ---------- | --------------------- | ------------- | ------------------------------------- |
+| `align`    | `"start" \| "center"` | no, `"start"` | Its place in a column (`align-self`). |
+| `children` | `ReactNode`           | yes           | Its icon and its words.               |
+
+## Markup & styling
+
+Block `.site-eyebrow` (28 lines).
+
+**Modifiers:** `.site-eyebrow_align_start`, `.site-eyebrow_align_center`
+
+**Tokens:** `--color-m4-secondary-container`, `--color-m4-on-secondary-container`

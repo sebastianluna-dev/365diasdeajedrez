@@ -1,25 +1,6 @@
 import type { MoveAnnotations } from "@/lib/chess/types";
 import type { ContentImage } from "@/services/shared/content-image.types";
 
-export interface HeaderNavLink {
-  type: "link";
-  label: string;
-  href: string;
-}
-
-export interface HeaderNavDropdown {
-  type: "dropdown";
-  label: string;
-  links: { label: string; href: string }[];
-}
-
-export type HeaderNavItem = HeaderNavLink | HeaderNavDropdown;
-
-export interface HeaderContent {
-  ctaLabel: string;
-  navItems: HeaderNavItem[];
-}
-
 export interface HeroContent {
   title: string;
   description: string;

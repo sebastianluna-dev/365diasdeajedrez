@@ -67,3 +67,47 @@ export const chessGlyph = localFont({
   display: "swap",
   preload: false,
 });
+
+/**
+ * The titles of the site's new look (Material 3 Expressive, «M4», 2026-10-26):
+ * Poppins, as on the platform's moved pages, under the SIL Open Font License
+ * 1.1 (`public/fonts/poppins-OFL.txt`). The platform's own definition
+ * (app/(platform)/fonts.ts) carries only 600 and 700; the site's sections also
+ * draw 500 (a card's title) and 800 (a course's cover), so the site declares
+ * its own four weights over the same files. The two extra ones are Google
+ * Fonts' Latin subset (`fonts.gstatic.com/s/poppins/v24`, the `/* latin *\/`
+ * block of `css2?family=Poppins:wght@500;800`), which covers every accent and
+ * the inverted marks Spanish asks for.
+ *
+ * Not preloaded, for the reason given above SF Pro's: with Turbopack a
+ * preloaded font is preloaded on every page of the project, the platform's
+ * included. The heading paints in the fallback with `swap` while it arrives.
+ */
+export const sitePoppins = localFont({
+  src: [
+    {
+      path: "../../public/fonts/poppins-medium.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/poppins-semibold.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/poppins-bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/poppins-extrabold.woff2",
+      weight: "800",
+      style: "normal",
+    },
+  ],
+  variable: "--font-site-poppins",
+  display: "swap",
+  preload: false,
+  fallback: ["Arial", "sans-serif"],
+});

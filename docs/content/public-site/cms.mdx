@@ -42,18 +42,18 @@ The Lexical editor for articles enables headings, paragraphs, bold/italic, links
 
 All Globals are readable by anyone and writable by any logged-in CMS user; each one's `afterChange` hook revalidates the pages that show it.
 
-| Slug            | File                              | Content                                                                            | Hook                     |
-| --------------- | --------------------------------- | ---------------------------------------------------------------------------------- | ------------------------ |
-| `home-header`   | `payload/globals/HomeHeader.ts`   | `navItems` blocks: `navLink` (label, href) and `navDropdown` (label + links)       | `revalidateHeader`       |
-| `home-hero`     | `payload/globals/HomeHero.ts`     | H1, description, image, CTA                                                        | `revalidateHome`         |
-| `home-program`  | `payload/globals/HomeProgram.ts`  | Section title/description and modules                                              | `revalidateHome`         |
-| `home-teacher`  | `payload/globals/HomeTeacher.ts`  | Tabs with the teacher's info, photo and a featured game (PGN)                      | `revalidateHome`         |
-| `home-packages` | `payload/globals/HomePackages.ts` | Pricing packages (name, price, previous price, currency, period, features…)        | `revalidateHome`         |
-| `home-faq`      | `payload/globals/HomeFaq.ts`      | Eyebrow, title and Q&A items                                                       | `revalidateHome`         |
-| `home-mentors`  | `payload/globals/HomeMentors.ts`  | Mentors with short/long FIDE titles, slugs, bios and games; feeds `/mentor/[slug]` | `revalidateHome`         |
-| `home-reviews`  | `payload/globals/HomeReviews.ts`  | Testimonials                                                                       | `revalidateHome`         |
-| `home-cta`      | `payload/globals/HomeCta.ts`      | Floating CTA texts                                                                 | `revalidateHome`         |
-| `site-settings` | `payload/globals/SiteSettings.ts` | WhatsApp country code, local number and default message (footer and CTA)           | `revalidateSiteSettings` |
+| Slug            | File                              | Content                                                                                                                                                                | Hook                     |
+| --------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `home-header`   | `payload/globals/HomeHeader.ts`   | `navItems` blocks: `navLink` (label, href) and `navDropdown` (label + links). **Not read since 2026-10-26**: the new header's links are code (`config/site.config.ts`) | `revalidateHeader`       |
+| `home-hero`     | `payload/globals/HomeHero.ts`     | H1, description, image, CTA                                                                                                                                            | `revalidateHome`         |
+| `home-program`  | `payload/globals/HomeProgram.ts`  | Section title/description and modules                                                                                                                                  | `revalidateHome`         |
+| `home-teacher`  | `payload/globals/HomeTeacher.ts`  | Tabs with the teacher's info, photo and a featured game (PGN)                                                                                                          | `revalidateHome`         |
+| `home-packages` | `payload/globals/HomePackages.ts` | Pricing packages (name, price, previous price, currency, period, features…)                                                                                            | `revalidateHome`         |
+| `home-faq`      | `payload/globals/HomeFaq.ts`      | Eyebrow, title and Q&A items                                                                                                                                           | `revalidateHome`         |
+| `home-mentors`  | `payload/globals/HomeMentors.ts`  | Mentors with short/long FIDE titles, slugs, bios and games; feeds `/mentor/[slug]`                                                                                     | `revalidateHome`         |
+| `home-reviews`  | `payload/globals/HomeReviews.ts`  | Testimonials                                                                                                                                                           | `revalidateHome`         |
+| `home-cta`      | `payload/globals/HomeCta.ts`      | Floating CTA texts                                                                                                                                                     | `revalidateHome`         |
+| `site-settings` | `payload/globals/SiteSettings.ts` | WhatsApp country code, local number and default message: the number of every WhatsApp button of the site (`getWhatsappHref`), the footer's contact                     | `revalidateSiteSettings` |
 
 ## Blocks
 

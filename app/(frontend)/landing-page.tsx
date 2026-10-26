@@ -1,6 +1,6 @@
 import { siteConfig, getHomeMentorsSlot } from "@/config/site.config";
-import { Header } from "@/components/site/sections/shell/header/header.section";
-import { Footer } from "@/components/site/sections/shell/footer/footer.section";
+import { SiteHeader } from "@/components/site/sections/shell/site-header/site-header.section";
+import { SiteFooter } from "@/components/site/sections/shell/site-footer/site-footer.section";
 import { HeroSection } from "@/components/site/sections/home/hero/hero.section";
 import { ProgramSection } from "@/components/site/sections/home/program/program.section";
 import { MentorsSection } from "@/components/site/sections/home/mentors/mentors.section";
@@ -17,7 +17,7 @@ export default function LandingPage() {
 
   return (
     <div className="landing-page">
-      <Header />
+      <SiteHeader />
       {/* The sticky CTA and the footer stay outside <main>: they are complementary, not the content. */}
       <main id="contenido">
         {sections.hero && <HeroSection />}
@@ -30,7 +30,7 @@ export default function LandingPage() {
         {sections.reviews && <ReviewsSection />}
       </main>
       <CtaSection />
-      <Footer />
+      <SiteFooter />
     </div>
   );
 }
