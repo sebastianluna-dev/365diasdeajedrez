@@ -1,0 +1,116 @@
+/* The shelf: a block of dark wood with the open notebook on the left and the
+   closed ones on two boards. Since 2026-10-26 it sits inside «Jugar»'s
+   Material panel, so it is a block of the panel with the new design system's
+   corner for a highlighted block, and it no longer fills the window. */
+.adventure-shelf {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-6);
+  overflow: hidden;
+  padding: var(--platform-space-8) var(--platform-space-8) var(--platform-space-10);
+  border-radius: var(--md-sys-shape-corner-xl);
+  color: var(--adventure-on-wood);
+  font-family: var(--adventure-font-data);
+  background:
+    radial-gradient(ellipse 70% 60% at 30% 10%, rgba(255, 214, 150, 0.18), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 55%, rgba(20, 10, 4, 0.45)), var(--adventure-wood);
+
+  & .adventure-shelf__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-1);
+  }
+
+  & .adventure-shelf__title {
+    margin: 0;
+    font-family: var(--adventure-font-title);
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--adventure-on-wood);
+  }
+
+  & .adventure-shelf__lead {
+    margin: 0;
+    font-family: var(--adventure-font-title);
+    font-size: 17px;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--adventure-on-wood-soft);
+  }
+
+  & .adventure-shelf__shelves {
+    display: grid;
+    grid-template-columns: 360px minmax(0, 1fr);
+    gap: var(--platform-space-8);
+    align-items: start;
+  }
+
+  /* The two boards the closed notebooks stand on. */
+  & .adventure-shelf__closed {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 42px var(--platform-space-6);
+    margin: 0;
+    padding: var(--platform-space-6) var(--platform-space-4) 0;
+    list-style: none;
+    background:
+      linear-gradient(
+        transparent calc(50% - 21px),
+        var(--adventure-shelf-edge) calc(50% - 21px),
+        var(--adventure-leather-deep) calc(50% - 17px),
+        var(--adventure-shelf-edge) calc(50% - 4px),
+        transparent calc(50% - 4px)
+      ),
+      linear-gradient(
+        transparent calc(100% - 18px),
+        var(--adventure-shelf-edge) calc(100% - 18px),
+        var(--adventure-leather-deep) calc(100% - 14px),
+        var(--adventure-shelf-edge) 100%
+      );
+  }
+
+  /* The panel is narrower than the window by the side column: from here down
+     the open notebook stands over the boards. */
+  @media (width < 1280px) {
+    & .adventure-shelf__shelves {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (width < 640px) {
+    padding: var(--platform-space-6) var(--platform-space-4) var(--platform-space-8);
+
+    & .adventure-shelf__title {
+      font-size: 30px;
+    }
+
+    & .adventure-shelf__closed {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 34px var(--platform-space-4);
+      padding: var(--platform-space-4) var(--platform-space-1) 0;
+      background:
+        linear-gradient(
+          transparent calc(33.3% - 20px),
+          var(--adventure-shelf-edge) calc(33.3% - 20px),
+          var(--adventure-leather-deep) calc(33.3% - 16px),
+          var(--adventure-shelf-edge) calc(33.3% - 6px),
+          transparent calc(33.3% - 6px)
+        ),
+        linear-gradient(
+          transparent calc(66.6% - 20px),
+          var(--adventure-shelf-edge) calc(66.6% - 20px),
+          var(--adventure-leather-deep) calc(66.6% - 16px),
+          var(--adventure-shelf-edge) calc(66.6% - 6px),
+          transparent calc(66.6% - 6px)
+        ),
+        linear-gradient(
+          transparent calc(100% - 18px),
+          var(--adventure-shelf-edge) calc(100% - 18px),
+          var(--adventure-leather-deep) calc(100% - 14px),
+          var(--adventure-shelf-edge) 100%
+        );
+    }
+  }
+}

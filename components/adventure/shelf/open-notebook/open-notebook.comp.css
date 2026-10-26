@@ -1,0 +1,142 @@
+/* A notebook of the shelf that can be opened: leather around a picture of the
+   journey and a page with the person's progress. */
+.open-notebook {
+  display: grid;
+  gap: 0;
+  padding: 10px;
+  border-radius: 8px 12px 12px 8px;
+  color: var(--adventure-ink);
+  font-family: var(--adventure-font-data);
+  background: linear-gradient(
+    90deg,
+    var(--adventure-leather-deep),
+    var(--adventure-leather) 48%,
+    var(--adventure-leather-deep) 50%,
+    var(--adventure-leather) 52%,
+    var(--adventure-leather-deep)
+  );
+  box-shadow: 0 26px 36px -14px rgba(0, 0, 0, 0.6);
+  transform: rotate(-1deg);
+
+  & .open-notebook__picture {
+    aspect-ratio: 400 / 300;
+    padding: 12px;
+    border-radius: 4px 4px 0 0;
+    background: var(--adventure-cream-bright);
+
+    & .journey-miniature {
+      border-radius: 3px;
+    }
+  }
+
+  & .open-notebook__page {
+    display: grid;
+    justify-items: start;
+    gap: 6px;
+    padding: 18px 20px 20px;
+    border-radius: 0 0 4px 4px;
+    background-color: var(--adventure-cream);
+    background-image: radial-gradient(circle, var(--adventure-grain) 1px, transparent 1.5px);
+    background-size: 22px 22px;
+  }
+
+  & .open-notebook__eyebrow {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--adventure-brick);
+  }
+
+  & .open-notebook__title {
+    margin: 4px 0 0;
+    font-family: var(--adventure-font-title);
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    color: var(--adventure-ink);
+  }
+
+  & .open-notebook__progress {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 6px 0 0;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--adventure-graphite);
+
+    & strong {
+      font-weight: 600;
+      color: var(--adventure-ink);
+    }
+  }
+
+  & .open-notebook__stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 4px;
+    font-weight: 600;
+    color: var(--adventure-ink);
+  }
+
+  & .open-notebook__star {
+    width: 16px;
+    height: 16px;
+    color: var(--adventure-ochre);
+  }
+
+  & .open-notebook__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Twelve segments, one for each rival: written, the next one, locked. */
+  & .open-notebook__bar {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 4px;
+    width: 100%;
+    margin: 4px 0 8px;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .open-notebook__segment {
+    height: 8px;
+    border-radius: 2px;
+    background: var(--adventure-empty);
+  }
+
+  & .open-notebook__segment_state_beaten {
+    background: var(--adventure-brick-fill);
+  }
+
+  & .open-notebook__segment_state_available {
+    background: repeating-linear-gradient(45deg, var(--adventure-brick-fill) 0 3px, var(--adventure-cream) 3px 5px);
+    outline: 1.5px solid var(--adventure-brick-fill);
+  }
+
+  /* Material's button: the link keeps no underline. */
+  & .open-notebook__action {
+    margin-top: 4px;
+    text-decoration: none;
+  }
+
+  /* Where the shelf stands it over the boards (under 1280px), it is centred. */
+  @media (width < 1280px) {
+    width: 100%;
+    max-width: 420px;
+    justify-self: center;
+  }
+}

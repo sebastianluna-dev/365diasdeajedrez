@@ -1,0 +1,73 @@
+/* A closed notebook standing on the shelf. */
+.notebook-spine {
+  position: relative;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 6px;
+  padding-bottom: 30px;
+  color: var(--adventure-on-wood);
+  font-family: var(--adventure-font-title);
+  text-align: center;
+
+  /* 150px wide, or the width of its place on the board when that is less. */
+  & .notebook-spine__cover {
+    position: relative;
+    width: min(150px, 100%);
+  }
+
+  & .notebook-spine__art {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 132 / 176;
+    filter: drop-shadow(0 14px 12px rgba(0, 0, 0, 0.45)) saturate(0.9);
+  }
+
+  /* The stamp across the cover. */
+  & .notebook-spine__soon {
+    position: absolute;
+    top: 18%;
+    left: 50%;
+    padding: 6px 12px 5px;
+    transform: translate(-50%, -50%) rotate(-8deg);
+    border: 2px solid var(--adventure-brick);
+    font-family: var(--adventure-font-data);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--adventure-brick);
+    background: var(--adventure-cream-bright);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
+  }
+
+  & .notebook-spine__name {
+    margin: 8px 0 0;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--adventure-on-wood);
+  }
+
+  & .notebook-spine__reason {
+    max-width: 22ch;
+    margin: 0;
+    font-size: 14px;
+    font-style: italic;
+    line-height: 1.3;
+    color: var(--adventure-on-wood-soft);
+  }
+
+  @media (width < 768px) {
+    & .notebook-spine__cover {
+      width: min(124px, 100%);
+    }
+
+    & .notebook-spine__reason {
+      font-size: 13px;
+    }
+  }
+}

@@ -1,5 +1,5 @@
 /* «Jugar» in the new design system: the adventure big on an amber block of
-   the panel, and the shelf of notebooks under it. */
+   the panel, and the adventure's paper shelf of notebooks under it. */
 .play-home {
   & .play-home__panel {
     gap: var(--platform-space-8);
@@ -181,92 +181,10 @@
     }
   }
 
-  /* The shelf: the notebooks that can be opened and the ones that are coming. */
+  /* The shelf, the adventure's own paper (`AdventureShelf`): here only the
+     place «Ver los cuadernos» scrolls to, clear of the bar. */
   & .play-home__shelf {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-4);
     scroll-margin-top: calc(70px + var(--platform-space-4));
-  }
-
-  & .play-home__shelf-head {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-0-5);
-  }
-
-  & .play-home__shelf-title {
-    margin: 0;
-    font-family: var(--platform-font-display);
-    font-size: var(--platform-type-xl);
-    font-weight: 600;
-    color: var(--platform-m3-on-surface);
-  }
-
-  & .play-home__shelf-lead {
-    margin: 0;
-    font-size: var(--platform-type-xs);
-    color: var(--platform-m3-on-surface-variant);
-  }
-
-  & .play-home__notebooks {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: var(--platform-space-3);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  & .play-home__notebook {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--platform-space-2);
-    padding: var(--platform-space-4);
-
-    & a {
-      margin-top: var(--platform-space-2);
-      text-decoration: none;
-    }
-
-    /* A notebook that is not open yet: no action, its words in the variant ink. */
-    &.play-home__notebook_state_coming .play-home__notebook-title {
-      color: var(--platform-m3-on-surface-variant);
-    }
-  }
-
-  & .play-home__notebook-icon {
-    width: 22px;
-    height: 22px;
-    color: var(--platform-m3-on-surface-variant);
-  }
-
-  & .play-home__notebook-title {
-    margin: 0;
-    font-family: var(--platform-font-display);
-    font-size: var(--platform-type-md);
-    font-weight: 600;
-    color: var(--platform-m3-on-surface);
-  }
-
-  & .play-home__notebook-text {
-    margin: 0;
-    font-size: var(--platform-type-2xs);
-    line-height: 1.4;
-    color: var(--platform-m3-on-surface-variant);
-  }
-
-  & .play-home__soon {
-    display: inline-flex;
-    align-items: center;
-    height: 24px;
-    padding: 0 var(--platform-space-2);
-    border-radius: 1000px;
-    background: var(--platform-m3-container-high);
-    color: var(--platform-m3-on-surface-variant);
-    font-size: var(--platform-type-2xs);
-    font-weight: 600;
   }
 
   @media (width < 1280px) {

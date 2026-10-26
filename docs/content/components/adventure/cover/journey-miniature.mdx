@@ -4,18 +4,18 @@ description: "The whole journey in one small drawing: cut-paper scenery, the pat
 
 # `JourneyMiniature`
 
-|            |                                                                                                                               |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/adventure/cover/journey-miniature/journey-miniature.comp.tsx`                                                     |
-| Kind       | Server Component (inline SVG)                                                                                                 |
-| Stylesheet | `journey-miniature.comp.css` → block `.journey-miniature`                                                                     |
-| Story      | `journey-miniature.stories.tsx` (`adventure/cover/JourneyMiniature`): tall at four of twelve, tall fresh, tall complete, wide |
-| Used by    | [`PlayHome`](/components/platform/sections/play/play-home) (the wide one, on «Jugar»'s amber block)                           |
-| Uses       | `AdventureMiniature` (`lib/adventure/adventure.types`)                                                                        |
+|            |                                                                                                                                                                                               |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/adventure/cover/journey-miniature/journey-miniature.comp.tsx`                                                                                                                     |
+| Kind       | Server Component (inline SVG)                                                                                                                                                                 |
+| Stylesheet | `journey-miniature.comp.css` → block `.journey-miniature`                                                                                                                                     |
+| Story      | `journey-miniature.stories.tsx` (`adventure/cover/JourneyMiniature`): tall at four of twelve, tall fresh, tall complete, wide                                                                 |
+| Used by    | [`PlayHome`](/components/platform/sections/play/play-home) (the wide one, on «Jugar»'s amber block), [`OpenNotebook`](/components/adventure/shelf/open-notebook) (the wide one, on its cover) |
+| Uses       | `AdventureMiniature` (`lib/adventure/adventure.types`)                                                                                                                                        |
 
 ## Purpose
 
-The picture of «Jugar»'s adventure block (2026-10-25, the new design system, where it sits under a `.adventure` wrapper so its paper's tokens are declared): the journey from the plaza to the palace, small. Two variants: **wide**, the one «Jugar» draws, and **tall**, which the old cover's open notebook drew (the cover and the shelf went on 2026-10-25) and which the art still exports. The scenery is the adventure's exported art, `public/aventuras/<slug>/miniatura-alta.svg` and `miniatura-ancha.svg` (made by `npm run adventure:art`, with no path), drawn as an `<image>` over the viewBox; it keeps its own colours in both themes (it is art), and the path, the stamps and everything that says where the person is read the paper's tokens.
+The picture of «Jugar»'s adventure block (2026-10-25, the new design system, where it sits under a `.adventure` wrapper so its paper's tokens are declared): the journey from the plaza to the palace, small. Two variants: **wide**, the one «Jugar» draws, on its amber block and on the cover of the shelf's open notebook, and **tall**, which the old cover's open notebook drew (the cover went on 2026-10-25) and which the art still exports. The scenery is the adventure's exported art, `public/aventuras/<slug>/miniatura-alta.svg` and `miniatura-ancha.svg` (made by `npm run adventure:art`, with no path), drawn as an `<image>` over the viewBox; it keeps its own colours in both themes (it is art), and the path, the stamps and everything that says where the person is read the paper's tokens.
 
 The path comes from the adventure's art file (`miniature.tall` and `miniature.wide`): its stops are the stamps' places, and a stop with a third value is the rival whose stamp sits there. It is smoothed with a Catmull-Rom curve, printed as a tape with a dashed red thread over it, and sewn solid as far as the stop of the available rival (a solid copy with `pathLength={100}` and a `stroke-dasharray` of the progress). Beaten stamps are filled and postmarked, the available one is larger and framed in brick with a pin, a locked one shows a padlock, and the last is a wax seal that carries a tick when it is written.
 
@@ -51,4 +51,4 @@ From `components/adventure/cover/adventure-cover/adventure-cover.comp.tsx`:
 
 ## Related
 
-[`AdventureCover`](/components/adventure/cover/adventure-cover), [`OpenNotebook`](/components/adventure/shelf/open-notebook).
+[`PlayHome`](/components/platform/sections/play/play-home), [`OpenNotebook`](/components/adventure/shelf/open-notebook).

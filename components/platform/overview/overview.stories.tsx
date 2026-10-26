@@ -6,6 +6,9 @@ import { Keepsake } from "@/components/adventure/keepsakes/keepsake/keepsake.com
 import { AdventureMap } from "@/components/adventure/map/adventure-map/adventure-map.comp";
 import { NotePage } from "@/components/adventure/note-page/note-page/note-page.comp";
 import { RivalCard } from "@/components/adventure/rival-card/rival-card/rival-card.comp";
+import { AdventureShelf } from "@/components/adventure/shelf/adventure-shelf/adventure-shelf.comp";
+import { NotebookSpine } from "@/components/adventure/shelf/notebook-spine/notebook-spine.comp";
+import { OpenNotebook } from "@/components/adventure/shelf/open-notebook/open-notebook.comp";
 import { EncounterStamp } from "@/components/adventure/stamp/encounter-stamp/encounter-stamp.comp";
 import { BotScoreboard } from "@/components/chess/bot-scoreboard/bot-scoreboard.comp";
 import { ChessBoard } from "@/components/chess/chess-board.comp";
@@ -263,7 +266,7 @@ import { gameMoves } from "@/lib/chess/game-moves";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { FIXTURE_BOT, FIXTURE_STUDENT, fixturePlayedGames } from "@/lib/testing/fixtures/bots";
 import { staffRoutes } from "@/lib/platform-routes";
-import { ADVENTURE_ART } from "@/lib/adventure/adventures";
+import { ADVENTURE_ART, COMING_ADVENTURES } from "@/lib/adventure/adventures";
 import { CUADERNO_DEL_VIAJERO } from "@/lib/adventure/adventures/cuaderno-del-viajero";
 import { fixtureAdventureProgress, fixtureAdventureShelf } from "@/lib/testing/fixtures/adventure";
 import { readTokens, type Theme, tokenContrast } from "@/lib/platform-tokens";
@@ -2601,7 +2604,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
           </Section>
 
           <Section title="Play">
-            <Tile name="PlayHome" docs="platform-sections-play-playhome" width={1200} height={900}>
+            <Tile name="PlayHome" docs="platform-sections-play-playhome" width={1200} height={1560}>
               <div className="platform-page platform-page_width_full platform-page_frame_bleed">
                 <PlayHome
                   progress={PLAY_HOME_PROGRESS}
@@ -3187,6 +3190,22 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   label="El viaje entero: el camino sube de la plaza del barrio al Palacio de los Escaques"
                 />
               </div>
+            </Tile>
+            <Tile name="AdventureShelf" docs="adventure-shelf-adventureshelf" width={1000} height={900}>
+              <AdventureShelf shelf={fixtureAdventureShelf()} />
+            </Tile>
+            <Tile name="OpenNotebook" docs="adventure-shelf-opennotebook" width={420} height={500}>
+              <div className="adventure" style={{ padding: 28, background: "var(--adventure-wood)" }}>
+                <OpenNotebook notebook={fixtureAdventureShelf().notebooks[0]!} />
+              </div>
+            </Tile>
+            <Tile name="NotebookSpine" docs="adventure-shelf-notebookspine" width={260} height={380}>
+              <ul
+                className="adventure"
+                style={{ margin: 0, padding: "32px 20px 8px", listStyle: "none", background: "var(--adventure-wood)" }}
+              >
+                <NotebookSpine notebook={COMING_ADVENTURES[0]!} />
+              </ul>
             </Tile>
             <Tile name="AdventureMap" docs="adventure-map-adventuremap" width={1240} height={760}>
               {/* The map is seven thousand units tall: the tile shows the part around the fifth stamp. */}

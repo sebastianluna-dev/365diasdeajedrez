@@ -1,16 +1,16 @@
 import Link from "next/link";
 import type { ComponentType } from "react";
+import { AdventureShelf } from "@/components/adventure/shelf/adventure-shelf/adventure-shelf.comp";
 import { JourneyMiniature } from "@/components/adventure/cover/journey-miniature/journey-miniature.comp";
 import { ADVENTURE_PORTRAITS } from "@/components/adventure/adventure-art.const";
 import { ArrowDownIcon } from "@/components/icons/arrow-down-icon.comp";
-import { BookIcon } from "@/components/icons/book-icon.comp";
 import { LockIcon } from "@/components/icons/lock-icon.comp";
 import { MapIcon } from "@/components/icons/map-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { PlaySide, type PlaySideAction } from "@/components/platform/sections/play/play-side/play-side.comp";
 import { ADVENTURE_ART } from "@/lib/adventure/adventures";
 import { initialsOf } from "@/lib/avatar-tone";
-import { mdButton, mdCard } from "@/lib/material/material-classes";
+import { mdButton } from "@/lib/material/material-classes";
 import { platformRoutes } from "@/lib/platform-routes";
 import type { AdventureProgressView, AdventureShelfView, EncounterView } from "@/services/adventure/adventure.types";
 import type { OpenGameSummary, PlayedGameCard } from "@/services/play/play.types";
@@ -67,7 +67,10 @@ function stampLabel(encounter: EncounterView): string {
  * person is in big — its journey, the stamps of the rivals beaten, the next
  * one and «Continuar la aventura» to its map — and under it the shelf, the
  * notebooks that can be opened and the ones that are coming, which used to
- * be a page of their own (`/jugar/aventura` redirects here).
+ * be a page of their own (`/jugar/aventura` redirects here). The shelf is the
+ * adventure's own paper (`AdventureShelf`, its wood, covers and fonts), an
+ * island of that look inside the Material panel, as it was before the page
+ * moved (brought back on 2026-10-26).
  *
  * The owner's design also has «Partida libre» (gone with free play) and
  * «Contra una persona» (playing a person does not exist): neither is drawn.
@@ -77,7 +80,6 @@ export function PlayHome({ progress, shelf, games, record, gamesHref, now }: Pla
   const next = progress.current;
   const mapHref = platformRoutes.adventureMap(progress.slug);
   const Portrait: ComponentType | undefined = next ? ADVENTURE_PORTRAITS[progress.slug]?.[next.slug] : undefined;
-  const others = shelf.notebooks.filter((notebook) => notebook.slug !== progress.slug);
 
   return (
     <div className="platform-workspace play-home">
@@ -182,40 +184,11 @@ export function PlayHome({ progress, shelf, games, record, gamesHref, now }: Pla
           </div>
         </section>
 
-        <section id={SHELF_ID} className="play-home__shelf" aria-labelledby="play-home-shelf">
-          <div className="play-home__shelf-head">
-            <h2 id="play-home-shelf" className="play-home__shelf-title">
-              Cuadernos
-            </h2>
-            <p className="play-home__shelf-lead">Cada cuaderno es una aventura: una ciudad, sus torneos y su gente.</p>
-          </div>
-
-          <ul className="play-home__notebooks">
-            {others.map((notebook) => (
-              <li key={notebook.slug} className={`${mdCard("outlined")} play-home__notebook`}>
-                <BookIcon className="play-home__notebook-icon" />
-                <p className="play-home__notebook-title">{notebook.title}</p>
-                <p className="play-home__notebook-text">
-                  {notebook.place} · {notebook.beaten} de {notebook.total} rivales
-                </p>
-                <Link href={platformRoutes.adventureMap(notebook.slug)} className={mdButton("tonal", "sm")}>
-                  <MapIcon variant="classic-solid" className="platform-md-icon" />
-                  Abrir el mapa
-                </Link>
-              </li>
-            ))}
-            {shelf.coming.map((notebook) => (
-              <li
-                key={notebook.slug}
-                className={`${mdCard("outlined")} play-home__notebook play-home__notebook_state_coming`}
-              >
-                <span className="play-home__soon">Próximamente</span>
-                <p className="play-home__notebook-title">{notebook.title}</p>
-                <p className="play-home__notebook-text">{notebook.reason}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
+        {/* The adventure's paper shelf (2026-10-26, the owner's earlier design brought back): every
+            notebook, the ones that can be opened standing open and the ones coming closed on the boards. */}
+        <div id={SHELF_ID} className="play-home__shelf">
+          <AdventureShelf shelf={shelf} />
+        </div>
       </div>
     </div>
   );

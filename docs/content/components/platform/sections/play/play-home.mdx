@@ -1,20 +1,20 @@
 ---
-description: "«Jugar» in the new design system: «Continuar la partida» and «Tus partidas» in the side column, the notebook the person is in big on the panel, and the shelf of notebooks under it."
+description: "«Jugar» in the new design system: «Continuar la partida» and «Tus partidas» in the side column, the notebook the person is in big on the panel, and the adventure's paper shelf of notebooks under it."
 ---
 
 # `PlayHome`
 
 Also exports the type `PlayHomeData`, and `PlayHomeSection` (`play-home.section.tsx`), the Server Component that reads the data and renders it.
 
-|            |                                                                                                                                                                                                              |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Files      | `components/platform/sections/play/play-home/play-home.comp.tsx`, `play-home.section.tsx`                                                                                                                    |
-| Kind       | Server Components (no client leaf: the page is read-only and its actions are links)                                                                                                                          |
-| Stylesheet | `play-home.comp.css` → block `.play-home`                                                                                                                                                                    |
-| Story      | `play-home.stories.tsx` (`platform/sections/play/PlayHome`): four of twelve with a game open, nothing played yet, the notebook finished                                                                      |
-| Used by    | `app/(platform)/jugar/page.tsx`                                                                                                                                                                              |
-| Composes   | [`PlaySide`](/components/platform/sections/play/play-side), [`JourneyMiniature`](/components/adventure/cover/journey-miniature), the rivals' portraits (`ADVENTURE_PORTRAITS`), Material's buttons and cards |
-| Reads      | `getAdventureShelf()`, `getAdventureProgress(slug)` (`services/adventure`), `recentPlayedGamesOf(userId, 4)` and `botScoreboardOf(userId)` (`services/play`)                                                 |
+|            |                                                                                                                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/platform/sections/play/play-home/play-home.comp.tsx`, `play-home.section.tsx`                                                                                                                                                                           |
+| Kind       | Server Components (no client leaf: the page is read-only and its actions are links)                                                                                                                                                                                 |
+| Stylesheet | `play-home.comp.css` → block `.play-home`                                                                                                                                                                                                                           |
+| Story      | `play-home.stories.tsx` (`platform/sections/play/PlayHome`): four of twelve with a game open, nothing played yet, the notebook finished                                                                                                                             |
+| Used by    | `app/(platform)/jugar/page.tsx`                                                                                                                                                                                                                                     |
+| Composes   | [`PlaySide`](/components/platform/sections/play/play-side), [`JourneyMiniature`](/components/adventure/cover/journey-miniature), [`AdventureShelf`](/components/adventure/shelf/adventure-shelf), the rivals' portraits (`ADVENTURE_PORTRAITS`), Material's buttons |
+| Reads      | `getAdventureShelf()`, `getAdventureProgress(slug)` (`services/adventure`), `recentPlayedGamesOf(userId, 4)` and `botScoreboardOf(userId)` (`services/play`)                                                                                                        |
 
 ## Purpose
 
@@ -22,7 +22,7 @@ The owner's «M4 · /jugar: el modo aventura en grande, partida libre y contra u
 
 - **The side column** is [`PlaySide`](/components/platform/sections/play/play-side): «Continuar la partida» as the extended FAB while a game against a bot is open, with «En curso contra Chayo Ríos · con blancas · 14 jugadas» under it (an old free game left open counts too); then «Tus partidas», the last four games with their G, P or T, the record of them all and «Ver todas en tu perfil». With no game open there is no FAB: the panel's own button is the way in.
 - **The adventure, big**, on an amber block (`--platform-m3-warning-container`, `--md-sys-shape-corner-xl`): the journey's picture at the left ([`JourneyMiniature`](/components/adventure/cover/journey-miniature), the wide one, on the adventure's own paper, `--md-sys-shape-corner-lg`); at the right «Modo aventura», the notebook's title and premise, a stamp per rival — filled with its initials once beaten, framed in white the one to play, dashed with a padlock the rest —, «4 de 12 rivales superados · 9 estrellas», the next rival on a white card with its portrait («Próximo rival · N.º 05 · Intento 2», name and role, «≈ 783 · Fácil · Club La Torre»), and «Continuar la aventura» (filled, to the map) with «Ver los cuadernos» (text, to the shelf below). A finished notebook says so instead of the next rival, and its button is «Abrir el mapa».
-- **The shelf** (`#cuadernos`), which was `/jugar/aventura` and its paper bookshelf until 2026-10-25 (that address redirects here): «Cuadernos», the notebooks that can be opened other than the one above as outlined cards with their count and «Abrir el mapa», and the ones that are coming as outlined cards with «Próximamente», their place and what they will explore, and no action.
+- **The shelf** (`#cuadernos`), which was `/jugar/aventura` until 2026-10-25 (that address redirects here): [`AdventureShelf`](/components/adventure/shelf/adventure-shelf), «Elige tu cuaderno», the adventure's paper bookshelf, **an island of the adventure's look inside the Material panel** (its wood, its covers, its fonts and its tokens). Every notebook that can be opened stands open at the left ([`OpenNotebook`](/components/adventure/shelf/open-notebook): its journey, its place, «4 de 12 rivales» with the stars, a bar of twelve and «Abrir el mapa»), the one drawn big above included, and the ones that are coming stand closed on two boards ([`NotebookSpine`](/components/adventure/shelf/notebook-spine): the cloth cover with the motif of its state, «Próximamente», its name and what it will explore, and no action). From 2026-10-25 to 2026-10-26 the shelf was drawn as Material's outlined cards; the owner preferred the paper one, and it came back. The amber block stayed as it is: it already says more than the old cover's page did (the next rival's portrait among it), and the shelf's open notebook is the notebook's place among the others.
 
 The notebook drawn big is the first that is not finished, or the first of all when every one is. The page's `h1` («Jugar») is said to a screen reader only: the bar already names the page.
 
@@ -41,17 +41,17 @@ The notebook drawn big is the first that is not finished, or the first of all wh
 
 Server only. The section makes four reads on top of the session — the games against each notebook's rivals (shared by the shelf and the progress, `cache`), the open game, the last games and the scoreboard; nothing is written. **Playing never counts toward the streak**: nothing it reaches names the activity log (`services/play/no-activity.test.ts`).
 
-**Reflow.** Under 1280px the picture narrows to 280px; under 1024px the block stacks the picture over the story; under 640px the title steps down.
+**Reflow.** Under 1280px the picture narrows to 280px and the shelf stands its open notebook over the boards; under 1024px the block stacks the picture over the story; under 640px the title steps down.
 
 ## Markup & styling
 
-Block `.play-home` (304 lines).
+Block `.play-home` (222 lines); the shelf's own block is `.adventure-shelf`.
 
-**Elements:** `.play-home__panel`, `__sr`, `__adventure`, `__art`, `__story`, `__eyebrow`, `__title`, `__premise`, `__stamps`, `__stamp`, `__stamp-lock`, `__count`, `__next`, `__portrait`, `__next-text`, `__next-label`, `__next-name`, `__next-role`, `__next-facts`, `__actions`, `__shelf`, `__shelf-head`, `__shelf-title`, `__shelf-lead`, `__notebooks`, `__notebook`, `__notebook-icon`, `__notebook-title`, `__notebook-text`, `__soon`
+**Elements:** `.play-home__panel`, `__sr`, `__adventure`, `__art`, `__story`, `__eyebrow`, `__title`, `__premise`, `__stamps`, `__stamp`, `__stamp-lock`, `__count`, `__next`, `__portrait`, `__next-text`, `__next-label`, `__next-name`, `__next-role`, `__next-facts`, `__actions`, `__shelf` (only where «Ver los cuadernos» scrolls to)
 
-**Modifiers and states:** `.play-home__stamp_state_beaten|available|locked`, `.play-home__next_state_done`, `.play-home__notebook_state_coming`
+**Modifiers and states:** `.play-home__stamp_state_beaten|available|locked`, `.play-home__next_state_done`
 
-**Tokens:** `--platform-m3-warning-container`, `--platform-m3-on-warning-container`, `--platform-m3-panel`, `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--platform-m3-container-high`, `--md-sys-shape-corner-xl`, `--md-sys-shape-corner-lg`, the type and space scales, `--platform-font-display`
+**Tokens:** `--platform-m3-warning-container`, `--platform-m3-on-warning-container`, `--platform-m3-panel`, `--platform-m3-on-surface`, `--platform-m3-on-surface-variant`, `--md-sys-shape-corner-xl`, `--md-sys-shape-corner-lg`, the type and space scales, `--platform-font-display`
 
 **Media queries:** `(width < 1280px)`, `(width < 1024px)`, `(width < 640px)`. No animation.
 

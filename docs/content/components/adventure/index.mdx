@@ -4,7 +4,7 @@ description: "Index of components/adventure: the paper world of «Jugar»'s adve
 
 # Adventure components
 
-`components/adventure/` is the adventure of «Jugar» («El cuaderno del viajero»): a notebook drawn in cut paper — its map, its rivals and the picture of its journey; «Jugar» itself is a page of the new design system. It mirrors no folder of `app/` of its own, because its screens live under `app/(platform)/jugar/`; it has a palette and four fonts of its own (`adventure.css`, described in [Styling](/ui/styling#the-adventures-paper)) and the platform's buttons and popups. What stays of the rest of the platform is the shell: the bar above, the session and the routes.
+`components/adventure/` is the adventure of «Jugar» («El cuaderno del viajero»): a notebook drawn in cut paper — its map, its rivals, the picture of its journey and the shelf of notebooks; «Jugar» itself is a page of the new design system, and the shelf is an island of the paper inside it. It mirrors no folder of `app/` of its own, because its screens live under `app/(platform)/jugar/`; it has a palette and four fonts of its own (`adventure.css`, described in [Styling](/ui/styling#the-adventures-paper)) and the platform's buttons and popups. What stays of the rest of the platform is the shell: the bar above, the session and the routes.
 
 Every piece sits under an element with the class `.adventure`, which declares the tokens, and every colour is a pair of light and dark, tested by `components/adventure/adventure-tokens.test.ts`.
 
@@ -14,7 +14,17 @@ Every piece sits under an element with the class `.adventure`, which declares th
 | ------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------- |
 | [`JourneyMiniature`](/components/adventure/cover/journey-miniature) | server | The whole journey in one drawing, with the stamps in their state: the art of «Jugar»'s block. |
 
-The cover of «Jugar» (`AdventureCover`, `NotebookCard`, `Ticket`) and the shelf (`AdventureShelf`, `OpenNotebook`, `NotebookSpine`) went on 2026-10-25: «Jugar» moved to the new design system ([`PlayHome`](/components/platform/sections/play/play-home)) and holds the notebook the person is in and the shelf on one page, so `/jugar/aventura` redirects to `/jugar#cuadernos`. Only the journey's picture stays, inside that page.
+The cover of «Jugar» (`AdventureCover`, `NotebookCard`, `Ticket`) went on 2026-10-25: «Jugar» moved to the new design system ([`PlayHome`](/components/platform/sections/play/play-home)), whose amber block draws the notebook the person is in, and holds the shelf on the same page, so `/jugar/aventura` redirects to `/jugar#cuadernos`.
+
+## `shelf/`
+
+| Page                                                            | Kind   | What it is                                                                            |
+| --------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------- |
+| [`AdventureShelf`](/components/adventure/shelf/adventure-shelf) | server | «Elige tu cuaderno»: the bookshelf, the paper half of «Jugar» (`#cuadernos`).         |
+| [`OpenNotebook`](/components/adventure/shelf/open-notebook)     | server | A notebook that can be opened, with the person's count and «Abrir el mapa».           |
+| [`NotebookSpine`](/components/adventure/shelf/notebook-spine)   | server | A closed notebook with its state's motif and «Próximamente». Also `NotebookCoverArt`. |
+
+The shelf went with the cover on 2026-10-25, when «Jugar» drew Material cards in its place, and came back on 2026-10-26 at the owner's ask, as the lower half of «Jugar».
 
 ## `map/`
 

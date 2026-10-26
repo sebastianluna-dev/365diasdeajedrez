@@ -1,0 +1,55 @@
+---
+description: "«Elige tu cuaderno»: the bookshelf with the notebook that can be opened and the ones that are coming, the paper half of «Jugar»."
+---
+
+# `AdventureShelf`
+
+|            |                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/adventure/shelf/adventure-shelf/adventure-shelf.comp.tsx`                                                      |
+| Kind       | Server Component                                                                                                           |
+| Stylesheet | `adventure-shelf.comp.css` → block `.adventure-shelf`                                                                      |
+| Story      | `adventure-shelf.stories.tsx` (`adventure/shelf/AdventureShelf`): four of twelve, fresh, complete                          |
+| Used by    | [`PlayHome`](/components/platform/sections/play/play-home) (`/jugar#cuadernos`, behind `PLAY_PAGE_ENABLED`)                |
+| Composes   | [`OpenNotebook`](/components/adventure/shelf/open-notebook), [`NotebookSpine`](/components/adventure/shelf/notebook-spine) |
+| Reads      | nothing: `PlayHomeSection` reads `getAdventureShelf()` (`services/adventure`) and hands the shelf down                     |
+
+## Purpose
+
+The way to choose an adventure: a block of dark wood with the notebooks that can be opened at the left — open, with the person's progress — and the six that are coming on two boards at the right, each with its cloth cover, «Próximamente» and no action. The shelf is built for several playable adventures: `shelf.notebooks` is a list, and every one of them stands open, the one «Jugar» draws big above included.
+
+**History.** Until 2026-10-25 the shelf was a page of its own, `/jugar/aventura`, a wooden room that filled the window under the bar, with a «Jugar» button back to the cover. That day «Jugar» moved to the new design system and the shelf became Material cards on it, and these components went. On 2026-10-26 the owner asked for the paper shelf back: it is now the lower half of «Jugar» ([`PlayHome`](/components/platform/sections/play/play-home), `#cuadernos`, where `/jugar/aventura` still redirects), **an island of the adventure's paper inside the Material panel** — its wood, its covers, its fonts and its `--adventure-*` tokens, as [Adventure mode](/platform/adventure) allows —, so it lost the room's height and its way back, took the corner of a highlighted block of the panel (`--md-sys-shape-corner-xl`) and its heading became an `h2` («Elige tu cuaderno») under the page's `h1`. Its one button, the open notebook's «Abrir el mapa», is Material's, as on the rest of the page.
+
+## Props
+
+| Prop    | Type                 | Required | Meaning                                                       |
+| ------- | -------------------- | -------- | ------------------------------------------------------------- |
+| `shelf` | `AdventureShelfView` | yes      | The notebooks to open with their counts, and the ones coming. |
+
+## Behaviour
+
+Server only, and it reads nothing itself: `PlayHomeSection` asks `getAdventureShelf()`, one query for all the playable adventures' games, shared (`cache`) with the progress of the notebook drawn above. Nothing is written. It is a block under its `h2`, not a landmark of its own (a second shelf on the same sheet, as on the Storybook overview, would repeat the landmark's name), and the closed notebooks are a list, «Cuadernos que vienen».
+
+## Markup & styling
+
+Block `.adventure-shelf` (116 lines); the root also carries `.adventure`, which declares the paper's tokens.
+
+**Elements:** `.adventure-shelf__head`, `__title`, `__lead`, `__shelves`, `__open`, `__closed`
+
+**Tokens:** `--adventure-wood`, `--adventure-shelf-edge`, `--adventure-leather-deep`, `--adventure-on-wood`, `--adventure-on-wood-soft`, `--adventure-font-title`, `--adventure-font-data`; the panel's `--md-sys-shape-corner-xl` and the platform's space scale
+
+**Media queries:** `(width < 1280px)` (the panel is narrower by the side column: the open notebook stands over the boards), `(width < 640px)` (two notebooks to a board, three boards). No animation.
+
+## Usage
+
+From `components/platform/sections/play/play-home/play-home.comp.tsx`:
+
+```tsx
+<div id={SHELF_ID} className="play-home__shelf">
+  <AdventureShelf shelf={shelf} />
+</div>
+```
+
+## Related
+
+[`OpenNotebook`](/components/adventure/shelf/open-notebook), [`NotebookSpine`](/components/adventure/shelf/notebook-spine), [`PlayHome`](/components/platform/sections/play/play-home), [Adventure mode](/platform/adventure).

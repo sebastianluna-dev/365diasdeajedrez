@@ -59,8 +59,12 @@
   --adventure-on-brick: light-dark(#fff7ea, #fff7ea);
   --adventure-ochre: light-dark(#d39f45, #e2b25a);
 
-  /* The desk and what is written on the wood. */
+  /* The desk, the shelf's boards and the open notebook's leather, and what is
+     written on the wood. */
   --adventure-wood: light-dark(#5a3b2a, #2b1d15);
+  --adventure-leather: light-dark(#845639, #54392a);
+  --adventure-leather-deep: light-dark(#6e4630, #3f2a1f);
+  --adventure-shelf-edge: light-dark(#3a2418, #1a100b);
   --adventure-on-wood: light-dark(#f6ead2, #efe3c9);
   --adventure-on-wood-soft: light-dark(#e7d6b8, #cdbd9f);
 
