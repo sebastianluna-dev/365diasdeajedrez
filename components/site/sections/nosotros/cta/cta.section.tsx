@@ -11,7 +11,7 @@ export function NosotrosCtaSection() {
             Agenda tu primera clase de diagnóstico y define un plan de estudio a tu medida.
           </p>
         </div>
-        <Link href="/#planes" className="button button_variant_primary">
+        <Link href="/#informacion" className="button button_variant_primary">
           Únete a la academia
         </Link>
       </div>

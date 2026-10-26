@@ -1,0 +1,58 @@
+---
+description: "The header of the site's new look: the blue wordmark, the links to the home page's sections and to the blog, «Iniciar sesión» and the WhatsApp button that books a class."
+---
+
+# `SiteHeader`
+
+|            |                                                                                                                                   |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/shell/site-header/site-header.section.tsx`                                                              |
+| Kind       | Server Component (async)                                                                                                          |
+| Stylesheet | `site-header.section.css` → block `.site-header`                                                                                  |
+| Used by    | every page of `app/(frontend)`: `/`, `/nosotros`, `/blog`, `/blog/[slug]`, `/mentor/[slug]`, `/reloj-de-ajedrez`, `not-found.tsx` |
+| Composes   | [`SiteLogo`](/components/site/shared/site-logo), [`SiteHeaderMenu`](/components/site/sections/shell/site-header/site-header-menu) |
+| Reads      | `siteConfig.shell` (`config/site.config.ts`) · `getWhatsappHref()` (`services/site-settings/site-settings.service.ts`)            |
+
+## Purpose
+
+The bar every public page opens with since the site moved to the blue «M4» look (2026-10-26). Its links point at the sections of the home page (`/#como-funciona`, `/#cursos`, `/#plataforma`, `/#aventura`, `/#informacion`) and at `/blog`; they live in `config/site.config.ts` and not in the CMS, because the anchors they jump to are code. The `home-header` Global that fed the old header is no longer read.
+
+«Iniciar sesión» is the entrance to the platform (`LOGIN_PATH`), fixed in code as before. The main button opens WhatsApp with its message already written, to the number of the `site-settings` Global: there is no form backend, so booking a class is a chat.
+
+## Props
+
+| Prop    | Type                 | Required                         | Meaning                                                                             |
+| ------- | -------------------- | -------------------------------- | ----------------------------------------------------------------------------------- |
+| `links` | `SiteNavLink[]`      | no, `siteConfig.shell.nav`       | The bar's links. Another landing (`/para-profesores`) passes its own.               |
+| `cta`   | `SiteWhatsappAction` | no, `siteConfig.shell.headerCta` | The main button's label and the WhatsApp message it opens with («Agenda tu clase»). |
+
+## Behaviour
+
+- Awaits the WhatsApp link once and hands it, with the links and the login, to [`SiteHeaderMenu`](/components/site/sections/shell/site-header/site-header-menu), so both menus agree.
+- Below 1024 px the links and the login leave the bar for the menu; below 640 px the main button does too, and the bar is the wordmark and the toggle.
+- The links of the header are not sticky: the bar scrolls away with the page.
+
+## Markup & styling
+
+Block `.site-header` (85 lines).
+
+**Elements:** `.site-header__bar`, `.site-header__nav`, `.site-header__links`, `.site-header__link`, `.site-header__actions`, `.site-header__login`, `.site-header__cta`. The two buttons are Material's (`mdButton("text", "sm")`, `mdButton("filled", "sm")`), with their icon in `.site-md-icon`.
+
+**Tokens:** `--color-m4-canvas`, `--color-m4-on-surface`, `--color-m4-container-high`, `--font-site-text`
+
+**Breakpoints:** `(width < 1280px)` narrows the gaps and the links; `(width < 1024px)` hides the links and the login; `(width < 640px)` hides the main button and lowers the bar to 64 px.
+
+## Usage
+
+From `app/(frontend)/blog/page.tsx`:
+
+```tsx
+import { SiteHeader } from "@/components/site/sections/shell/site-header/site-header.section";
+
+<SiteHeader />;
+```
+
+## Related
+
+- [`SiteFooter`](/components/site/sections/shell/site-footer/site-footer-section).
+- [Pages › The site's new look](/public-site/pages#the-sites-new-look-m4).

@@ -2,14 +2,16 @@ import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
   hero: "hero/",
-  program: "program/",
-  teacher: "teacher/",
-  mentors: "mentors/",
-  plans: "plans/",
-  resources: "resources/",
-  reviews: "reviews/",
+  figures: "figures/",
+  classes: "classes/",
+  team: "team/",
+  courses: "courses/",
+  platform: "platform/",
+  adventure: "adventure/",
+  information: "information/",
+  testimonials: "testimonials/",
   faq: "faq/",
-  cta: "cta/",
+  closing: "closing/",
 };
 
 export default meta;

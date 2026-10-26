@@ -1,0 +1,28 @@
+---
+description: "The adventure mode: playing the computer inside a story, the two facts, the streak rule, the notebook's map and two rivals."
+---
+
+# `AdventureSection`
+
+|            |                                                                                                                                                                                                             |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/adventure/adventure.section.tsx`                                                                                                                                             |
+| Kind       | Server Component                                                                                                                                                                                            |
+| Stylesheet | `adventure.section.css` → block `.home-adventure`                                                                                                                                                           |
+| Design     | `AcadAventura2A`                                                                                                                                                                                            |
+| Composes   | [`NotebookMap`](/components/site/sections/home/adventure/notebook-map), the adventure's `ProfeLealPortrait` and `TonitoGarzaPortrait`, [`SiteWhatsappButton`](/components/site/shared/site-whatsapp-button) |
+| Reads      | `academyHome.adventure`                                                                                                                                                                                     |
+
+## Purpose
+
+`#aventura`: «Juega contra la computadora _dentro de una historia_» — the platform's «El cuaderno del viajero», never sold as «for kids» (the owner's decision). Two facts (winning opens the next page; stars and keepsakes), the platform's rule that playing does not count for the streak, «Pregunta por la plataforma» (tonal, WhatsApp) and, beside them, the map at the Club La Torre and its two rivals with their engraved portraits, quotes and tags: Profe Leal, beaten with three stars, and Toñito Garza, the next one.
+
+The rivals' names, roles, quotes and openings are the roster's (`lib/adventure/adventures/cuaderno-del-viajero.ts`), copied into the home's copy. The fonts of the notebook — Fraunces, Caveat and IBM Plex Mono, the platform's `app/(platform)/fonts.ts`, none preloaded — are opened on the page's wrapper by `landing-page.tsx`.
+
+## Markup & styling
+
+Block `.home-adventure` (194 lines).
+
+**Modifiers:** `.home-adventure__tag_state_won`, `.home-adventure__tag_state_next`
+
+**Breakpoints:** `(width < 1280px)` puts the map under the copy; `(width < 768px)` one rival per row.

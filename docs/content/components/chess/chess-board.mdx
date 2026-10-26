@@ -104,10 +104,10 @@ import { ChessBoard } from "@/components/chess/chess-board.comp";
 />;
 ```
 
-Standalone, from `components/site/sections/home/teacher/teacher.section.tsx` (through the lazy wrapper):
+Standalone, from `app/(frontend)/mentor/[slug]/page.tsx` (through the lazy wrapper):
 
 ```tsx
-<ChessBoardLazy flipBoard={content.game.flipBoard} pgn={content.game.moves} annotations={content.game.annotations} />
+<ChessBoardLazy pgn={mentor.featuredGame.moves} flipBoard={mentor.featuredGame.flipBoard} />
 ```
 
 ## Related

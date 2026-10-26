@@ -1,0 +1,28 @@
+---
+description: "How the classes work: individual or group, the platform's classroom drawn as «Próximamente», three steps and two promises; today a class is joined with its link."
+---
+
+# `ClassesSection`
+
+|            |                                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/classes/classes.section.tsx`                                                                     |
+| Kind       | Server Component                                                                                                                |
+| Stylesheet | `classes.section.css` → block `.home-classes`                                                                                   |
+| Design     | `AcadClasesA`                                                                                                                   |
+| Composes   | [`SiteSection`](/components/site/shared/site-section), [`ClassroomMock`](/components/site/sections/home/classes/classroom-mock) |
+| Reads      | `academyHome.classes` (`config/academy-home.config.ts`)                                                                         |
+
+## Purpose
+
+`#como-funciona`, the header's «Clases»: the two formats, the classroom, the three steps (book on WhatsApp, join from the platform, review the summary, recording and exercises) and the two promises (paid classes do not expire; a missed class gets another date).
+
+**The facts over the canvas.** The canvas titled it «Tu clase, _dentro de tu plataforma_» and opened with «Sin Zoom ni Meet», which contradicted its own FAQ. Today a class is joined with its link from the platform and the built-in classroom is «Próximamente» (the owner's decision), so the heading says «Tu clase, _desde tu plataforma_», the lead says the classroom is coming, step 2 says «con el enlace de tu clase», and the classroom mock carries its «Próximamente».
+
+## Markup & styling
+
+Block `.home-classes` (158 lines).
+
+**Elements:** `.home-classes__head`, `.home-classes__copy`, `.home-classes__formats`, `.home-classes__format`, `.home-classes__format-icon`, `.home-classes__format-title`, `.home-classes__text`, `.home-classes__foot`, `.home-classes__steps`, `.home-classes__step`, `.home-classes__step-title`, `.home-classes__number`, `.home-classes__promises`, `.home-classes__promise`, `.home-classes__promise-icon`, `.home-classes__promise-title`, `.home-classes__promise-text`, `.home-classes__note`
+
+**Breakpoints:** `(width < 1280px)` stacks the head and the foot; `(width < 768px)` puts the formats and the steps one under another.

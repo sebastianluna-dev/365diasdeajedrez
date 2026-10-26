@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Header } from "@/components/site/sections/shell/header/header.section";
-import { Footer } from "@/components/site/sections/shell/footer/footer.section";
+import { SiteHeader } from "@/components/site/sections/shell/site-header/site-header.section";
+import { SiteFooter } from "@/components/site/sections/shell/site-footer/site-footer.section";
 import { NosotrosHeroSection } from "@/components/site/sections/nosotros/hero/hero.section";
 import { ValoresSection } from "@/components/site/sections/nosotros/values/values.section";
 import { NosotrosCtaSection } from "@/components/site/sections/nosotros/cta/cta.section";
@@ -16,13 +16,13 @@ export const metadata: Metadata = {
 export default function NosotrosPage() {
   return (
     <div className="nosotros-page">
-      <Header />
+      <SiteHeader />
       <main id="contenido">
         <NosotrosHeroSection />
         <ValoresSection />
         <NosotrosCtaSection />
       </main>
-      <Footer />
+      <SiteFooter />
     </div>
   );
 }

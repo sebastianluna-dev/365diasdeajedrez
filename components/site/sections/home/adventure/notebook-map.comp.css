@@ -1,0 +1,282 @@
+/* The adventure's map, an illustration with its own colours: the notebook's
+   paper, its navy ink and its red, the ones of components/adventure/ (the
+   adventure's `--adventure-*` tokens live on its own pages, which this home
+   page is not), named once here as the block's own. */
+.home-notebook {
+  --notebook-paper: #fbf6ea;
+  --notebook-ground: #efe4cc;
+  --notebook-ink: #26344f;
+  --notebook-red: #a93c2b;
+  --notebook-gold: #b07a12;
+  --notebook-line: #d9ccae;
+  --notebook-green: #8ab17d;
+  --notebook-next: #90be6d;
+  --notebook-tape: #e9d6aa;
+
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 800 / 640;
+  border-radius: var(--md-sys-shape-corner-xl);
+  background-color: var(--notebook-ground);
+  background-image: url("/aventuras/cuaderno-del-viajero/escritorio.svg");
+  background-repeat: no-repeat;
+  color: var(--notebook-ink);
+  box-shadow: var(--shadow-m4-2);
+
+  & .home-notebook__layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  & .home-notebook__tape {
+    fill: none;
+    stroke: color-mix(in srgb, var(--notebook-paper) 60%, transparent);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  & .home-notebook__tape_state_walked {
+    stroke: color-mix(in srgb, var(--notebook-paper) 92%, transparent);
+  }
+
+  & .home-notebook__stitch-ahead {
+    fill: none;
+    stroke: var(--notebook-ink);
+    stroke-opacity: 0.5;
+    stroke-width: 2;
+    stroke-dasharray: 3 10;
+    stroke-linecap: round;
+  }
+
+  & .home-notebook__stitch {
+    fill: none;
+    stroke: var(--notebook-red);
+    stroke-width: 3;
+    stroke-dasharray: 12 9;
+    stroke-linecap: round;
+  }
+
+  & .home-notebook__arrow {
+    fill: none;
+    stroke: var(--notebook-ink);
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  & .home-notebook__page {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    height: 100%;
+    padding: 12px 14px 18px;
+    background: var(--notebook-paper);
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 82%,
+      92% 88%,
+      84% 83%,
+      75% 91%,
+      66% 85%,
+      57% 92%,
+      47% 86%,
+      38% 93%,
+      28% 87%,
+      18% 94%,
+      9% 88%,
+      0 93%
+    );
+  }
+
+  & .home-notebook__page-kicker {
+    font-family: var(--font-plex-mono), ui-monospace, monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--notebook-red);
+  }
+
+  & .home-notebook__page-title {
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 19px;
+  }
+
+  & .home-notebook__page-text {
+    font-family: var(--font-caveat), cursive;
+    font-size: 15px;
+    line-height: 16px;
+  }
+
+  & .home-notebook__pencil-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  & .home-notebook__pencil {
+    padding: 0 6px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--notebook-paper) 82%, transparent);
+    font-family: var(--font-caveat), cursive;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 24px;
+    white-space: nowrap;
+  }
+
+  & .home-notebook__pencil_tone_red {
+    font-size: 26px;
+    line-height: 28px;
+    color: var(--notebook-red);
+  }
+
+  & .home-notebook__keepsake {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    border-radius: 4px;
+    background: var(--notebook-paper);
+  }
+
+  & .home-notebook__keepsake-photo {
+    flex: none;
+    width: 34%;
+    aspect-ratio: 3 / 4;
+    border-radius: 2px;
+    background: var(--notebook-green);
+  }
+
+  & .home-notebook__keepsake-lines {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  & .home-notebook__keepsake-title {
+    font-family: var(--font-plex-mono), ui-monospace, monospace;
+    font-size: 7px;
+    line-height: 8px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--notebook-red);
+  }
+
+  & .home-notebook__keepsake-line {
+    display: block;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--notebook-line);
+  }
+
+  & .home-notebook__keepsake-line_size_short {
+    width: 60%;
+  }
+
+  & .home-notebook__stamp {
+    fill: var(--notebook-paper);
+  }
+
+  & .home-notebook__stamp_state_won {
+    stroke: var(--notebook-red);
+    stroke-width: 3;
+    stroke-dasharray: 6 4;
+  }
+
+  & .home-notebook__stamp_state_next {
+    fill: var(--notebook-next);
+    stroke: var(--notebook-red);
+    stroke-width: 4;
+  }
+
+  & .home-notebook__post {
+    fill: var(--notebook-red);
+  }
+
+  & .home-notebook__post-check {
+    fill: none;
+    stroke: var(--notebook-paper);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  & .home-notebook__stars {
+    fill: var(--notebook-paper);
+  }
+
+  & .home-notebook__star {
+    fill: var(--notebook-gold);
+  }
+
+  & .home-notebook__token {
+    fill: var(--notebook-red);
+    stroke: var(--notebook-paper);
+    stroke-width: 2;
+  }
+
+  & .home-notebook__hud {
+    position: absolute;
+    right: 16px;
+    bottom: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  & .home-notebook__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 32px;
+    padding: 0 14px;
+    border-radius: 1000px;
+    background: color-mix(in srgb, var(--notebook-paper) 96%, transparent);
+    font-family: var(--font-plex-mono), ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  & .home-notebook__chip_kind_title {
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  & .home-notebook__chip-star {
+    width: 14px;
+    height: 14px;
+    fill: var(--notebook-gold);
+  }
+
+  /* On a phone the window is small: the hud keeps only the adventure's name. */
+  @media (width < 640px) {
+    & .home-notebook__hud {
+      right: 8px;
+      bottom: 8px;
+    }
+
+    & .home-notebook__chip {
+      display: none;
+    }
+
+    & .home-notebook__chip_kind_title {
+      display: inline-flex;
+      height: 26px;
+      font-size: 13px;
+    }
+  }
+}

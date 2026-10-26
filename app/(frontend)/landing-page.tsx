@@ -1,36 +1,48 @@
-import { siteConfig, getHomeMentorsSlot } from "@/config/site.config";
-import { Header } from "@/components/site/sections/shell/header/header.section";
-import { Footer } from "@/components/site/sections/shell/footer/footer.section";
+import { siteConfig } from "@/config/site.config";
+import { caveat, fraunces, plexMono } from "@/app/(platform)/fonts";
+import { SiteHeader } from "@/components/site/sections/shell/site-header/site-header.section";
+import { SiteFooter } from "@/components/site/sections/shell/site-footer/site-footer.section";
 import { HeroSection } from "@/components/site/sections/home/hero/hero.section";
-import { ProgramSection } from "@/components/site/sections/home/program/program.section";
-import { MentorsSection } from "@/components/site/sections/home/mentors/mentors.section";
-import { TeacherSection } from "@/components/site/sections/home/teacher/teacher.section";
-import { PlansSection } from "@/components/site/sections/home/plans/plans.section";
-import { ResourcesSection } from "@/components/site/sections/home/resources/resources.section";
-import { ReviewsSection } from "@/components/site/sections/home/reviews/reviews.section";
+import { FiguresSection } from "@/components/site/sections/home/figures/figures.section";
+import { ClassesSection } from "@/components/site/sections/home/classes/classes.section";
+import { TeamSection } from "@/components/site/sections/home/team/team.section";
+import { CoursesSection } from "@/components/site/sections/home/courses/courses.section";
+import { PlatformSection } from "@/components/site/sections/home/platform/platform.section";
+import { AdventureSection } from "@/components/site/sections/home/adventure/adventure.section";
+import { InformationSection } from "@/components/site/sections/home/information/information.section";
+import { TestimonialsSection } from "@/components/site/sections/home/testimonials/testimonials.section";
 import { FaqSection } from "@/components/site/sections/home/faq/faq.section";
-import { CtaSection } from "@/components/site/sections/home/cta/cta.section";
+import { ClosingSection } from "@/components/site/sections/home/closing/closing.section";
 
+/**
+ * The academy's home («365 días de ajedrez»), in the order of the owner's
+ * assembled design (2026-10-26), each section behind its switch in
+ * config/site.config.ts. Its copy is config/academy-home.config.ts; the CMS
+ * feeds the FAQ's questions, the testimonials and the WhatsApp number.
+ */
 export default function LandingPage() {
   const { sections } = siteConfig.home;
-  const mentorsSlot = getHomeMentorsSlot();
 
   return (
-    <div className="landing-page">
-      <Header />
-      {/* The sticky CTA and the footer stay outside <main>: they are complementary, not the content. */}
+    // The adventure's own three fonts (the notebook's print, hand and typed
+    // data), for its map and rivals; none is preloaded, so only this page,
+    // where they are drawn, downloads them.
+    <div className={`site-page ${fraunces.variable} ${caveat.variable} ${plexMono.variable}`}>
+      <SiteHeader />
       <main id="contenido">
         {sections.hero && <HeroSection />}
-        {sections.program && <ProgramSection />}
-        {mentorsSlot === "teacher" && <TeacherSection />}
-        {mentorsSlot === "mentors" && <MentorsSection />}
-        {sections.plans && <PlansSection />}
-        {sections.resources && <ResourcesSection />}
+        {sections.figures && <FiguresSection />}
+        {sections.classes && <ClassesSection />}
+        {sections.team && <TeamSection />}
+        {sections.courses && <CoursesSection />}
+        {sections.platform && <PlatformSection />}
+        {sections.adventure && <AdventureSection />}
+        {sections.information && <InformationSection />}
+        {sections.testimonials && <TestimonialsSection />}
         {sections.faq && <FaqSection />}
-        {sections.reviews && <ReviewsSection />}
+        {sections.closing && <ClosingSection />}
       </main>
-      <CtaSection />
-      <Footer />
+      <SiteFooter />
     </div>
   );
 }

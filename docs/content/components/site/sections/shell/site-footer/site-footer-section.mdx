@@ -1,0 +1,50 @@
+---
+description: "The footer of the site's new look (the owner's «Cierre y pie B»): the large blue wordmark, columns of links, the contact, the band to «Plataforma Ajedrez 365» and the copyright."
+---
+
+# `SiteFooter`
+
+|            |                                                                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/shell/site-footer/site-footer.section.tsx`                                                   |
+| Kind       | Server Component (async)                                                                                               |
+| Stylesheet | `site-footer.section.css` → block `.site-footer`                                                                       |
+| Used by    | `/`, `/nosotros`, `/blog`, `/blog/[slug]`, `/mentor/[slug]`, `not-found.tsx`                                           |
+| Reads      | `siteConfig.shell` (`config/site.config.ts`) · `getSiteSettingsData()`, `getWhatsappHref()` (`services/site-settings`) |
+
+## Purpose
+
+The closing band of every public page except the chess clock. On 2026-10-26 the owner chose the footer of «Cierre y pie B» (`AcadCierreB`) over the slim one-row footer of «Cierre C» (the home page keeps Cierre C's last call above it): a white sheet with rounded top corners lying on the canvas, the wordmark drawn large with its "365" in blue, three columns of links (Academia, Recursos, La academia) and the contact column, the band «¿Eres maestro? Conoce Plataforma Ajedrez 365» to `/para-profesores`, and the copyright.
+
+The columns, the band and the e-mail live in `config/site.config.ts` (`shell.footerColumns`, `shell.footerCrossLink`, `shell.contactEmail`); the WhatsApp number and the message its link opens with are the `site-settings` Global's. There is no «Aviso de privacidad» link: the page does not exist yet (one of the owner's open points).
+
+## Props
+
+| Prop        | Type                          | Required                               | Meaning                                                                                      |
+| ----------- | ----------------------------- | -------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `links`     | `SiteNavLink[]`               | no                                     | A flat list shown as one column («Enlaces»), in place of `columns`; the footer's first prop. |
+| `columns`   | `SiteFooterColumn[]`          | no, `siteConfig.shell.footerColumns`   | The columns of links; the contact column always follows them.                                |
+| `crossLink` | `SiteFooterCrossLink \| null` | no, `siteConfig.shell.footerCrossLink` | The band to the other landing; `null` leaves it out (the teachers' landing passes its own).  |
+
+## Markup & styling
+
+Block `.site-footer` (178 lines).
+
+**Elements:** `__inner`, `__brand`, `__wordmark`, `__wordmark-accent`, `__wordmark-word`, `__wordmark-marks`, `__grid`, `__column`, `__heading`, `__links`, `__link`, `__icon`, `__language`, `__cross`, `__cross-icon`, `__cross-question`, `__cross-link`, `__cross-chevron`, `__cross-note`, `__legal`
+
+**Tokens:** `--color-m4-canvas`, `--color-m4-panel`, `--color-m4-primary`, `--color-m4-on-surface`, `--color-m4-on-surface-variant`, `--color-m4-container`, `--color-m4-secondary-container`, `--color-m4-on-secondary-container`, `--color-m4-divider`, `--font-site-text`
+
+**Breakpoints:** `(width < 1024px)` narrows the gutter; `(width < 640px)` lays the columns two by two with the contact across and rounds the sheet less.
+
+## Usage
+
+```tsx
+import { SiteFooter } from "@/components/site/sections/shell/site-footer/site-footer.section";
+
+<SiteFooter />;
+```
+
+## Related
+
+- [`SiteHeader`](/components/site/sections/shell/site-header/site-header-section).
+- The `site-settings` Global in [CMS](/public-site/cms).

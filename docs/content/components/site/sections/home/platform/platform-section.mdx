@@ -1,0 +1,28 @@
+---
+description: "What a student does between classes: the platform's six tools, with Puzzle Rush lit and drawn, and the streak and daily goal card."
+---
+
+# `PlatformSection`
+
+|            |                                                                                                          |
+| ---------- | -------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/platform/platform.section.tsx`                                            |
+| Kind       | Server Component                                                                                         |
+| Stylesheet | `platform.section.css` → block `.home-platform`                                                          |
+| Design     | `AcadPlataformaC`                                                                                        |
+| Composes   | [`SiteSection`](/components/site/shared/site-section), [`SiteBoard`](/components/site/shared/site-board) |
+| Reads      | `academyHome.platform`                                                                                   |
+
+## Purpose
+
+`#plataforma`: «Lo que haces _entre clases_». Six things the account brings (the teacher's exercises, the academy's series, practice by theme and level, Puzzle Rush, studies and explorer, streak and statistics); the one at `platform.shown` is lit as a chosen row and drawn beside the list: Puzzle Rush in its 3-minute mode, with the clock, the count and the run of solved and missed puzzles. The window is one `role="img"` with its name; the card of the streak and the daily goal (a ring) floats over its bottom right corner, where it hides no square.
+
+## Markup & styling
+
+Block `.home-platform` (441 lines).
+
+**Modifiers:** `.home-platform__feature_state_shown`, `.home-platform__item_state_on`, `.home-platform__mode_state_on`, `.home-platform__counter_tone_primary`, `.home-platform__slot_state_solved`, `_missed`, `_current`, `_empty`
+
+**Tokens:** besides the surfaces and the blue, `--color-m4-success-container`, `--color-m4-on-success-container`, `--color-m4-error-container`, `--color-m4-on-error-container`, `--color-m4-streak`, `--shadow-m4-2`, `--shadow-m4-3`
+
+**Breakpoints:** `(width < 1280px)` puts the window under the list, now two columns; `(width < 768px)` one column and no side menu in the window; `(width < 640px)` the board over the score, and the goal card under the window.

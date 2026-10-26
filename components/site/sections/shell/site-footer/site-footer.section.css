@@ -1,0 +1,178 @@
+.site-footer {
+  background: var(--color-m4-canvas);
+  color: var(--color-m4-on-surface);
+  font-family: var(--font-site-text);
+
+  /* The white sheet, its top corners rounded, lying on the canvas. */
+  & .site-footer__inner {
+    max-width: 1440px;
+    margin: 56px auto 0;
+    padding: 48px 72px 32px;
+    border-radius: var(--md-sys-shape-corner-xxl) var(--md-sys-shape-corner-xxl) 0 0;
+    background: var(--color-m4-panel);
+  }
+
+  & .site-footer__brand {
+    display: inline-flex;
+    max-width: 100%;
+    border-radius: 4px;
+  }
+
+  /* The wordmark, large: the "365" in blue, the word and the marks in ink. */
+  & .site-footer__wordmark {
+    display: block;
+    width: 560px;
+    max-width: 100%;
+    height: auto;
+  }
+
+  & .site-footer__wordmark-accent {
+    fill: var(--color-m4-primary);
+  }
+
+  & .site-footer__wordmark-word,
+  & .site-footer__wordmark-marks {
+    fill: currentColor;
+  }
+
+  & .site-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 32px;
+    margin-top: 40px;
+  }
+
+  & .site-footer__heading {
+    margin-bottom: 14px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .site-footer__links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  & .site-footer__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 4px;
+    font-size: 15px;
+    line-height: 22px;
+    color: var(--color-m4-on-surface);
+    overflow-wrap: anywhere;
+
+    &:hover {
+      color: var(--color-m4-primary);
+    }
+  }
+
+  & .site-footer__icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    color: var(--color-m4-primary);
+  }
+
+  & .site-footer__language {
+    font-size: 14px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .site-footer__cross {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+    margin-top: 36px;
+    padding: 16px 20px;
+    border-radius: var(--md-sys-shape-corner-lg-increased);
+    background: var(--color-m4-container);
+  }
+
+  & .site-footer__cross-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--md-sys-shape-corner-md);
+    background: var(--color-m4-secondary-container);
+    color: var(--color-m4-on-secondary-container);
+
+    & svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  & .site-footer__cross-question,
+  & .site-footer__cross-note {
+    font-size: 14px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  & .site-footer__cross-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-m4-primary);
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  & .site-footer__cross-chevron {
+    width: 14px;
+    height: 14px;
+  }
+
+  & .site-footer__cross-note {
+    margin-left: auto;
+  }
+
+  & .site-footer__legal {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-m4-divider);
+    font-size: 13px;
+    color: var(--color-m4-on-surface-variant);
+  }
+
+  @media (width < 1024px) {
+    & .site-footer__inner {
+      padding: 40px 32px 28px;
+    }
+  }
+
+  @media (width < 640px) {
+    & .site-footer__inner {
+      margin-top: 40px;
+      padding: 32px 16px 24px;
+      border-radius: var(--md-sys-shape-corner-xl) var(--md-sys-shape-corner-xl) 0 0;
+    }
+
+    & .site-footer__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px 16px;
+    }
+
+    & .site-footer__column:last-child {
+      grid-column: 1 / -1;
+    }
+
+    & .site-footer__cross-note {
+      margin-left: 0;
+    }
+  }
+}

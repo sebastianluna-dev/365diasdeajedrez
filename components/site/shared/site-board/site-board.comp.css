@@ -1,0 +1,13 @@
+.site-board {
+  /* The material board reads the platform's board tokens; the site holds the
+     same values under its own names (site-m4.css) and hands them over here. */
+  --platform-m3-board-light: var(--color-m4-board-light);
+  --platform-m3-board-dark: var(--color-m4-board-dark);
+  --platform-m3-board-last-move: var(--color-m4-board-last-move);
+
+  width: 100%;
+
+  & .static-diagram__grid {
+    max-width: none;
+  }
+}

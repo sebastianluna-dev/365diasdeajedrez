@@ -1,0 +1,27 @@
+---
+description: "The testimonials of the home-reviews Global as a wall of quotes in three columns; not on the page while the CMS has none."
+---
+
+# `TestimonialsSection`
+
+|            |                                                                        |
+| ---------- | ---------------------------------------------------------------------- |
+| File       | `components/site/sections/home/testimonials/testimonials.section.tsx`  |
+| Kind       | Server Component (async)                                               |
+| Stylesheet | `testimonials.section.css` → block `.home-testimonials`                |
+| Design     | `AcadTestimoniosA`                                                     |
+| Reads      | `getReviewsData()` (Global `home-reviews`), `academyHome.testimonials` |
+
+## Purpose
+
+`#testimonios`: «Lo que cuentan _nuestros alumnos_». The testimonials stay the CMS's, as the old chat-style reviews were, mapped onto the canvas's cards: a review's messages are its quote, its initial is the avatar, its name the signature and its highlighted figure («Torneos: 3») the chip. They are laid round-robin into three columns, and the first card of the middle one is tinted and bigger.
+
+The canvas's «[Cita]», «[Nombre]», «[Nivel]» and «desde [año]» are never drawn, nor its line «Publicados con permiso de cada alumno»: the CMS's reviews have no field for any of them, and the page does not claim what it cannot back. With no review in the CMS the section returns nothing.
+
+## Markup & styling
+
+Block `.home-testimonials` (127 lines).
+
+**Modifiers:** `.home-testimonials__card_tone_tint`
+
+**Breakpoints:** `(width < 1024px)` one column, the lead under the heading.

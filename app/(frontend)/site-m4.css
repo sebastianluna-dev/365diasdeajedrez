@@ -1,0 +1,198 @@
+/* ---------------------------------------------------------------------------
+   The public site's new look: «M4», Material 3 Expressive in Google's blue
+   (2026-10-26, the owner's decision for both landings: blue everywhere, no
+   orange and no dark theme on the pages that move to it).
+
+   Only the site's root layout imports this sheet, and every rule hangs from
+   `.site-m4`, the class that layout puts on its `<html>`: the platform, the
+   login and `/admin` have root layouts of their own and never see it, and the
+   platform's `platform.css` — which also points Material's `--md-sys-*` at
+   its own roles — never meets it either. The pages that have not moved yet
+   (the blog, /nosotros, /mentor, the clock) keep reading the `--color-*` of
+   globals.css; these tokens are new names beside them, so nothing of theirs
+   changes colour.
+
+   `color-scheme` sits on the same element as the tokens, as on the platform:
+   the site has a single, light theme, so it says `light` and Material's own
+   sheet (which asks for `light dark` from a cascade layer) does not turn its
+   components dark on a machine set to dark.
+   --------------------------------------------------------------------------- */
+
+.site-m4 {
+  color-scheme: light;
+
+  /* SURFACES — the canvas the page lies on, the white panel of a card, and
+     the two greys of a container inside one. */
+  --color-m4-canvas: #f8fafd;
+  --color-m4-panel: #ffffff;
+  --color-m4-container: #f0f4f9;
+  --color-m4-container-high: #e9eef6;
+
+  /* TEXT AND LINES — the ink, the grey of secondary copy (7.7:1 on the
+     canvas), the line of an outlined control, the hairline of a card, and the
+     divider between rows. */
+  --color-m4-on-surface: #1f1f1f;
+  --color-m4-on-surface-variant: #444746;
+  --color-m4-outline: #747775;
+  --color-m4-outline-variant: #c4c7c5;
+  --color-m4-divider: #e1e3e1;
+
+  /* THE BLUE — the primary (a filled button, an emphasised word), its pressed
+     tone, the pale blue of the primary container (a figure's disc, a step's
+     number) and the paler secondary container (an eyebrow, a chosen row),
+     each with the ink that reads on it. */
+  --color-m4-primary: #0b57d0;
+  --color-m4-primary-hover: #0a4cb8;
+  --color-m4-on-primary: #ffffff;
+  --color-m4-primary-container: #c2e7ff;
+  --color-m4-on-primary-container: #001d35;
+  --color-m4-secondary-container: #d3e3fd;
+  --color-m4-on-secondary-container: #041e49;
+  /* Two tones only the blue card uses: the disc that sits in its corner and
+     the line that splits it. */
+  --color-m4-primary-tint: #1a65dc;
+  --color-m4-primary-line: #4a82e0;
+  /* The steps of a heat map and of a bar chart drawn inside a mock-up. */
+  --color-m4-primary-soft: #a8c7fa;
+  --color-m4-primary-mid: #7cacf8;
+
+  /* STATES — a solved exercise, a mistake or a recording, and the fire of a
+     streak. */
+  --color-m4-success: #188038;
+  --color-m4-success-container: #e6f4ea;
+  --color-m4-on-success-container: #0d652d;
+  --color-m4-error: #b3261e;
+  --color-m4-error-container: #fce8e6;
+  --color-m4-on-error-container: #8c1d18;
+  --color-m4-streak: #b06000;
+
+  /* THE BOARD — the blue squares and the amber of the last move of the
+     platform's material board (its board tokens in platform.css, the
+     same values): `SiteBoard` hands them to the board it draws. */
+  --color-m4-board-light: #eef3fb;
+  --color-m4-board-dark: #9db7de;
+  --color-m4-board-last-move: #f2c14e;
+
+  /* THE COURSES' COVERS — each course's own two colours, the ones the
+     platform's «Tus cursos» draws them in (the Sicilian's night red, Fischer's
+     grey, the rook endings' navy and gold, Kotov's paper). */
+  --color-m4-cover-siciliana: #1d0d0e;
+  --color-m4-on-cover-siciliana: #ffffff;
+  --color-m4-cover-fischer: #262626;
+  --color-m4-on-cover-fischer: #ffffff;
+  --color-m4-cover-torre: #14273b;
+  --color-m4-on-cover-torre: #f4d27a;
+  --color-m4-cover-kotov: #ece5d3;
+  --color-m4-on-cover-kotov: #14273b;
+
+  /* SHADOWS — Material's grey shadow at three heights: a resting card, a card
+     that floats over another, and a window shown as a screenshot. */
+  --color-m4-shadow: #3c4043;
+  --shadow-m4-1:
+    0 1px 2px color-mix(in srgb, var(--color-m4-shadow) 12%, transparent),
+    0 2px 8px color-mix(in srgb, var(--color-m4-shadow) 6%, transparent);
+  --shadow-m4-2:
+    0 1px 3px color-mix(in srgb, var(--color-m4-shadow) 14%, transparent),
+    0 8px 24px color-mix(in srgb, var(--color-m4-shadow) 10%, transparent);
+  --shadow-m4-3:
+    0 2px 6px color-mix(in srgb, var(--color-m4-shadow) 16%, transparent),
+    0 10px 28px color-mix(in srgb, var(--color-m4-shadow) 12%, transparent);
+
+  /* TYPE — Poppins for titles and figures, the system's own sans-serif for
+     the text (the canvas draws it in SF Pro Text, which is what an Apple
+     device has; any other device uses its own). */
+  --font-site-display: var(--font-site-poppins), Arial, sans-serif;
+  --font-site-text:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* MATERIAL'S OWN ROLES — its components read `--md-sys-*`, which its sheet
+     declares in the purple of its baseline; here each one points at the blue
+     above, as platform.css does on the platform: its secondary is our
+     primary, so no component of the library paints purple. */
+  --md-sys-color-primary: var(--color-m4-primary);
+  --md-sys-color-on-primary: var(--color-m4-on-primary);
+  --md-sys-color-primary-container: var(--color-m4-primary-container);
+  --md-sys-color-on-primary-container: var(--color-m4-on-primary-container);
+  --md-sys-color-secondary: var(--color-m4-primary);
+  --md-sys-color-on-secondary: var(--color-m4-on-primary);
+  --md-sys-color-secondary-container: var(--color-m4-secondary-container);
+  --md-sys-color-on-secondary-container: var(--color-m4-on-secondary-container);
+  --md-sys-color-tertiary: var(--color-m4-primary);
+  --md-sys-color-on-tertiary: var(--color-m4-on-primary);
+  --md-sys-color-tertiary-container: var(--color-m4-primary-container);
+  --md-sys-color-on-tertiary-container: var(--color-m4-on-primary-container);
+  --md-sys-color-surface: var(--color-m4-panel);
+  --md-sys-color-surface-container-low: var(--color-m4-canvas);
+  --md-sys-color-surface-container: var(--color-m4-container);
+  --md-sys-color-surface-container-high: var(--color-m4-container-high);
+  --md-sys-color-surface-container-highest: var(--color-m4-container-high);
+  --md-sys-color-on-surface: var(--color-m4-on-surface);
+  --md-sys-color-on-surface-variant: var(--color-m4-on-surface-variant);
+  --md-sys-color-outline: var(--color-m4-outline);
+  --md-sys-color-outline-variant: var(--color-m4-outline-variant);
+  --md-ref-typeface-plain: var(--font-site-text);
+  --md-ref-typeface-brand: var(--font-site-display);
+
+  /* The global focus of globals.css is the old orange, drawn for the dark
+     pages; on the blue look it is the primary. Material's components draw
+     their own ring (`.focus-ring-outer`/`-inner`), which this must not paint
+     over. Only the blocks of the new look ask for it: a page that has not
+     moved keeps its orange ring on its dark background. */
+  & :is(.site-page, .site-header, .site-footer) :focus-visible:not(.focus-ring-outer, .focus-ring-inner) {
+    outline-color: var(--color-m4-primary);
+  }
+
+  /* A page of the new look: the canvas from edge to edge, the body included,
+     so the bounce of a trackpad does not show the old dark background. */
+  & body:has(.site-page) {
+    background: var(--color-m4-canvas);
+    color: var(--color-m4-on-surface);
+
+    & .skip-link {
+      background: var(--color-m4-primary);
+      color: var(--color-m4-on-primary);
+    }
+  }
+
+  & .site-page {
+    min-height: 100vh;
+    background: var(--color-m4-canvas);
+    color: var(--color-m4-on-surface);
+    font-family: var(--font-site-text);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* An SVG icon inside one of Material's buttons sits where its icon font
+     would: the library sizes and colours `md-icon` through `--md-icon-size`
+     and `--md-icon-color`, and this reads the same two (as `.platform-md-icon`
+     does on the platform). */
+  & .site-md-icon {
+    flex: none;
+    width: var(--md-icon-size, 20px);
+    height: var(--md-icon-size, 20px);
+    color: var(--md-icon-color, currentColor);
+  }
+
+  /* Text only a screen reader reads: what a link that leaves for WhatsApp
+     says about it. */
+  & .site-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Material's ripple and focus ring animate when they appear; whoever asked
+     for less motion sees them appear and go without moving. */
+  @media (prefers-reduced-motion: reduce) {
+    & :is(.ripple, .focus-ring-outer, .focus-ring-inner) {
+      animation: none;
+    }
+  }
+}

@@ -6,24 +6,42 @@ description: "The public pages, how the home page is assembled from CMS Globals,
 
 All public pages live in `app/(frontend)` and share the root layout there: `metadataBase` from `lib/site-url.ts`, default Open Graph and Twitter card metadata, a skip link to `#contenido`, Google Analytics and the Meta Pixel (only when `NEXT_PUBLIC_APP_ENV=production` and the ids are set) and Vercel Analytics (only when `VERCEL=1`, otherwise the script 404s locally).
 
+## The site's new look («M4»)
+
+On 2026-10-26 the owner moved the public site to the blue of the platform's new design: Material 3 Expressive, no orange and no dark theme. The home page is built in it, the teachers' landing reuses it, and every public page wears its header and footer; the blog, `/nosotros`, `/mentor/[slug]` and the clock keep their own dark or light body until each is redone.
+
+- **Tokens.** `app/(frontend)/site-m4.css`, imported only by the site's root layout, declares the `--color-m4-*` roles (canvas, panel, the two containers, the inks, the blue and its containers, success, error, the streak, the board, three shadows) and the two families (`--font-site-display`, Poppins; `--font-site-text`, the system's sans-serif) on `html.site-m4`, with `color-scheme: light` on the same element. It points Material's `--md-sys-color-*` and typefaces at them, as `platform.css` does on the platform. Because the rules hang from the class the site's layout writes, `/admin` (Payload's own root layout) and the platform (whose layout imports `globals.css` but not this sheet) never see them, and the old pages' `--color-*` keep their values.
+- **Material.** `app/(frontend)/material-styles.ts` imports `@material/web`'s `labs/gb` system sheet and the button, chip, icon button, ripple and focus ring sheets: only CSS, in cascade layers that sit above `globals.css`'s `@layer reset`, so the page stays static. Buttons are written with `mdButton(color, size)` from `lib/material/material-classes.ts`; an SVG icon inside one is `.site-md-icon`.
+- **Type.** Poppins (500, 600, 700, 800; `sitePoppins` in `app/(frontend)/fonts.ts`, not preloaded) for titles and figures; text in the system's sans-serif, as the canvas draws it.
+- **A page** of the new look wraps its content in `.site-page` (the canvas, the text font, and the body's background through `:has()`), so the focus ring turns blue and the skip link too.
+- **Shared pieces.** [`SiteHeader`](/components/site/sections/shell/site-header/site-header-section), [`SiteFooter`](/components/site/sections/shell/site-footer/site-footer-section), [`SiteSection`](/components/site/shared/site-section), [`SiteEyebrow`](/components/site/shared/site-eyebrow), [`SiteHeading`](/components/site/shared/site-heading), [`SiteLead`](/components/site/shared/site-lead), [`SiteWhatsappButton`](/components/site/shared/site-whatsapp-button), [`SiteLogo`](/components/site/shared/site-logo) and [`SiteBoard`](/components/site/shared/site-board).
+- **Leads.** There is no form backend: every «Agenda…», «Pide…» or «Pregunta…» opens WhatsApp with a written message, to the number of the `site-settings` Global (`getWhatsappHref(message)` in `services/site-settings`).
+
 ## Home — `/`
 
 `app/(frontend)/page.tsx` is statically prerendered (`revalidate = 3600`) and renders `landing-page.tsx`, which composes the sections enabled in `config/site.config.ts`:
 
-| Section                | Component                               | Content source                                                                                      |
-| ---------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| Header                 | `components/site/sections/shell/header` | Global `home-header` (nav links and dropdown blocks)                                                |
-| Hero                   | `homepage/hero`                         | Global `home-hero` (title, description, image with `preload` and `fetchPriority="high"`)            |
-| Program                | `homepage/program`                      | Global `home-program` (modules list)                                                                |
-| Teacher **or** Mentors | `homepage/teacher` / `homepage/mentors` | Globals `home-teacher` / `home-mentors`; they share one slot and `teacher` wins if both are enabled |
-| Plans                  | `homepage/plans`                        | Global `home-packages`                                                                              |
-| Resources              | `homepage/resources`                    | Latest article summaries (`getArticleSummaries`)                                                    |
-| Reviews                | `homepage/reviews`                      | Global `home-reviews`                                                                               |
-| FAQ                    | `homepage/faq`                          | Global `home-faq`                                                                                   |
-| Sticky CTA             | `homepage/cta`                          | Global `home-cta` + WhatsApp number from `site-settings`; sits outside `<main>`                     |
-| Footer                 | `common/footer`                         | `site-settings`                                                                                     |
+| Section             | Component                                    | Content source                                                                                                   |
+| ------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Header              | `components/site/sections/shell/site-header` | `config/site.config.ts` (`shell.nav`, `shell.headerCta`) + WhatsApp number from `site-settings`                  |
+| HeroSection         | `components/site/sections/home/hero`         | `academyHome.hero`                                                                                               |
+| FiguresSection      | `components/site/sections/home/figures`      | `academyHome.figures`                                                                                            |
+| ClassesSection      | `components/site/sections/home/classes`      | `academyHome.classes`                                                                                            |
+| TeamSection         | `components/site/sections/home/team`         | `academyHome.team`                                                                                               |
+| CoursesSection      | `components/site/sections/home/courses`      | `academyHome.courses`                                                                                            |
+| PlatformSection     | `components/site/sections/home/platform`     | `academyHome.platform`                                                                                           |
+| AdventureSection    | `components/site/sections/home/adventure`    | `academyHome.adventure`                                                                                          |
+| InformationSection  | `components/site/sections/home/information`  | `academyHome.information`                                                                                        |
+| TestimonialsSection | `components/site/sections/home/testimonials` | Global `home-reviews` + `academyHome.testimonials`                                                               |
+| FaqSection          | `components/site/sections/home/faq`          | Global `home-faq` (questions) + `academyHome.faq`                                                                |
+| ClosingSection      | `components/site/sections/home/closing`      | `academyHome.closing`                                                                                            |
+| Footer              | `components/site/sections/shell/site-footer` | `config/site.config.ts` (`shell.footerColumns`, `shell.footerCrossLink`, `shell.contactEmail`) + `site-settings` |
 
-Each section calls its own `getXData()` from `services/home/home.service.ts`; the underlying Payload reads are deduplicated per request and cached between requests (see [Caching](/architecture/caching-errors-logging)). The teacher section shows a game on `ChessBoardLazy`, so chessground and chessops are not part of the initial bundle.
+Since 2026-10-26 the home page is the academy's «365 días de ajedrez» in the site's new look, section by section as the owner assembled it on the canvas (`LandingAcademiaParte1` and `2`). Its copy is `academyHome` (`config/academy-home.config.ts`, typed in `types/academy-home.types.ts`): new copy goes there and not into Payload, which would need a migration. The CMS keeps feeding what it fed — the FAQ's questions (`getFaqData()`), the testimonials (`getReviewsData()`) and the WhatsApp number — through `services/home` and `services/site-settings`, deduplicated per request and cached between requests (see [Caching](/architecture/caching-errors-logging)). The old sections (hero with its photo, programme, teacher, packages with prices, resources, the chat-style reviews, the sticky bar with the 15-minute countdown) are gone with their components; their Globals (`home-hero`, `home-program`, `home-teacher`, `home-packages`, `home-cta`, `home-mentors`) stay in Payload, unread by the home page.
+
+Every board on the page is a still position on the material board ([`SiteBoard`](/components/site/shared/site-board), a Server Component), so the page loads no chessground. Its only client pieces are the header's menu, the course cards' toggles and the FAQ's accordion.
+
+**What the owner still has to give.** The page draws nothing it cannot back: the four figures (`academyHome.figures`, hidden until all four are real), the teachers of the team (`academyHome.team.members`, empty: the section shows how a teacher is assigned and no faces), and the testimonials come only from the CMS.
 
 ## Blog — `/blog` and `/blog/[slug]`
 

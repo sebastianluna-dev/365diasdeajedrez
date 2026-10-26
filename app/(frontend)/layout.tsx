@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
+// The order is the cascade's: globals.css declares the `reset` layer first, so
+// Material's layers (material-styles) land above it, and site-m4.css, without
+// a layer, above both.
 import "./globals.css";
-import { chessGlyph, gramatika, suisseIntl } from "./fonts";
+import "./material-styles";
+import "./site-m4.css";
+import { chessGlyph, gramatika, sitePoppins, suisseIntl } from "./fonts";
 import { GoogleAnalytics } from "@/components/site/shared/google-analytics.comp";
 import { MetaPixel } from "@/components/site/shared/meta-pixel.comp";
 import { SITE_URL } from "@/lib/site-url";
@@ -12,14 +17,15 @@ import { SITE_URL } from "@/lib/site-url";
 // declare its own, as the blog does.
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "365 Días de Ajedrez | Academia de ajedrez",
+  title: "365 días de ajedrez | Academia de ajedrez en línea",
   description:
-    "Academia de ajedrez en línea con un método progresivo, cursos personalizados y seguimiento para mejorar tu juego.",
+    "Academia de ajedrez en línea: clases en vivo, individuales o grupales, con un equipo de maestros, y una plataforma para estudiar entre clases.",
   keywords: ["ajedrez", "academia", "entrenamiento", "clases de ajedrez"],
   openGraph: {
-    siteName: "365 Días de Ajedrez",
-    title: "365 Días de Ajedrez",
-    description: "Un método progresivo para mejorar tu ajedrez con clases guiadas, seguimiento y recursos de estudio.",
+    siteName: "365 días de ajedrez",
+    title: "365 días de ajedrez",
+    description:
+      "Clases de ajedrez en vivo con un equipo de maestros, y tu plataforma para estudiar entre una clase y otra.",
     type: "website",
     locale: "es_MX",
   },
@@ -29,11 +35,13 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  // `site-m4` opens the new look's tokens (site-m4.css) for every public page;
+  // only the pages that moved to it draw with them.
   return (
     <html
       lang="es"
       data-scroll-behavior="smooth"
-      className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable}`}
+      className={`site-m4 ${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable} ${sitePoppins.variable}`}
     >
       <body>
         <a className="skip-link" href="#contenido">

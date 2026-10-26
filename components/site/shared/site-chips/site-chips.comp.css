@@ -1,0 +1,27 @@
+.site-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  & .site-chips__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 36px;
+    padding: 6px 16px 6px 12px;
+    border-radius: var(--md-sys-shape-corner-sm);
+    border: 1px solid var(--color-m4-outline-variant);
+    background: var(--color-m4-panel);
+    color: var(--color-m4-on-surface);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+  }
+
+  & .site-chips__icon {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    color: var(--color-m4-primary);
+  }
+}

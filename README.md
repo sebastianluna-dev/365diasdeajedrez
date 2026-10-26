@@ -118,7 +118,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 
 **Public site** — `app/(frontend)`
 
-- `/`
+- `/` — the academy's home «365 días de ajedrez» (copy in `config/academy-home.config.ts`; the CMS feeds its FAQ, testimonials and WhatsApp number)
 - `/blog`, `/blog/[slug]`
 - `/nosotros`
 - `/mentor/[slug]`

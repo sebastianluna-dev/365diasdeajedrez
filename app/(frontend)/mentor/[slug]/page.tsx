@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Header } from "@/components/site/sections/shell/header/header.section";
-import { Footer } from "@/components/site/sections/shell/footer/footer.section";
+import { SiteHeader } from "@/components/site/sections/shell/site-header/site-header.section";
+import { SiteFooter } from "@/components/site/sections/shell/site-footer/site-footer.section";
 import { EloTable } from "@/components/chess/elo-table.comp";
 import { ChessBoardLazy } from "@/components/chess/chess-board-lazy.comp";
 import { getMentorBySlug, getMentorsData } from "@/services/mentors/mentors.service";
@@ -37,7 +37,7 @@ export default async function MentorPage({ params }: MentorPageProps) {
 
   return (
     <div className="mentor-page">
-      <Header />
+      <SiteHeader />
 
       <main id="contenido">
         <section className="section section_theme_dark mentor-profile">
@@ -114,7 +114,7 @@ export default async function MentorPage({ params }: MentorPageProps) {
         </section>
       </main>
 
-      <Footer />
+      <SiteFooter />
     </div>
   );
 }

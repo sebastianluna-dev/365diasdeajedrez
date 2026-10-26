@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Header } from "@/components/site/sections/shell/header/header.section";
+import { SiteHeader } from "@/components/site/sections/shell/site-header/site-header.section";
 import { BlogArticles } from "@/components/site/sections/blog/blog-articles/blog-articles.section";
-import { Footer } from "@/components/site/sections/shell/footer/footer.section";
+import { SiteFooter } from "@/components/site/sections/shell/site-footer/site-footer.section";
 import { categoriesOf, listingHref, parseListingQuery } from "@/services/articles/article-listing";
 import { getArticleSummaries } from "@/services/articles/articles.service";
 import "./blog.css";
@@ -35,11 +35,11 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     <div className="blog-page">
       <div className="blog-page__shell">
         <div className="blog-page__glow" />
-        <Header theme="light" />
+        <SiteHeader />
         <main id="contenido">
           <BlogArticles articles={articles} query={query} />
         </main>
-        <Footer accent="red" />
+        <SiteFooter />
       </div>
     </div>
   );

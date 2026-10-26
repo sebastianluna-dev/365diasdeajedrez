@@ -4,12 +4,12 @@ description: "An analogue clock face: twelve numbers, three hands driven by a CS
 
 # `ClockDial`
 
-|            |                                                                                                                                                                                                                              |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/site/sections/chess-clock/clock-dial.comp.tsx`                                                                                                                                                                   |
-| Kind       | Server Component (no hooks; rendered inside client trees)                                                                                                                                                                    |
-| Stylesheet | `clock-dial.comp.css` → blocks `.clock-dial-column`, `.clock-dial`, `.clock-face`, `.clock-hand`, `.clock-flag`, `.clock-readout`                                                                                            |
-| Used by    | [`ChessClockDesktop`](/components/site/sections/chess-clock/chess-clock-desktop), [`ChessClockMobile`](/components/site/sections/chess-clock/chess-clock-mobile), [`CtaClock`](/components/site/sections/home/cta/cta-clock) |
+|            |                                                                                                                                                                  |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/chess-clock/clock-dial.comp.tsx`                                                                                                       |
+| Kind       | Server Component (no hooks; rendered inside client trees)                                                                                                        |
+| Stylesheet | `clock-dial.comp.css` → blocks `.clock-dial-column`, `.clock-dial`, `.clock-face`, `.clock-hand`, `.clock-flag`, `.clock-readout`                                |
+| Used by    | [`ChessClockDesktop`](/components/site/sections/chess-clock/chess-clock-desktop), [`ChessClockMobile`](/components/site/sections/chess-clock/chess-clock-mobile) |
 
 ## Purpose
 
@@ -42,7 +42,7 @@ No media queries; the mobile clock restyles the dial from its own sheet.
 
 ## Usage
 
-From `components/site/sections/home/cta/cta-clock.comp.tsx`:
+The compact dial (`compact`) was the old home page's 15-minute countdown, which left with the price packages on 2026-10-26; the two clocks draw the full one:
 
 ```tsx
 import { ClockDial } from "@/components/site/sections/chess-clock/clock-dial.comp";

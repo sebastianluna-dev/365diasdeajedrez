@@ -1,0 +1,17 @@
+.site-lead {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 18px;
+  line-height: 28px;
+  color: var(--color-m4-on-surface-variant);
+
+  &.site-lead_align_center {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  @media (width < 640px) {
+    font-size: 16px;
+    line-height: 25px;
+  }
+}

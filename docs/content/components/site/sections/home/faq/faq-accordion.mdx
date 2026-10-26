@@ -1,0 +1,30 @@
+---
+description: "The FAQ's accordion: one question open at a time, each a button with aria-expanded controlling its answer."
+---
+
+# `FaqAccordion`
+
+|            |                                                                |
+| ---------- | -------------------------------------------------------------- |
+| File       | `components/site/sections/home/faq/faq-accordion.comp.tsx`     |
+| Kind       | Client Component                                               |
+| Stylesheet | `faq-accordion.comp.css` → block `.faq-accordion`              |
+| Used by    | [`FaqSection`](/components/site/sections/home/faq/faq-section) |
+
+## Purpose
+
+The section's only state: which question is open (the first, on load; none after closing it). Each question is an `h3` holding a `button` with `aria-expanded` and `aria-controls` its answer, which is `hidden` while closed; the open one is lit with the canvas and its round icon turns from the plus to the blue cross.
+
+## Props
+
+| Prop        | Type                   | Required | Meaning              |
+| ----------- | ---------------------- | -------- | -------------------- |
+| `questions` | `FaqQuestionContent[]` | yes      | The CMS's questions. |
+
+## Markup & styling
+
+Block `.faq-accordion` (83 lines).
+
+**Modifiers:** `.faq-accordion__item_state_open`
+
+**Breakpoints:** `(width < 640px)` tightens the paddings.

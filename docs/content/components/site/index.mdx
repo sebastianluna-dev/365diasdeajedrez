@@ -8,53 +8,52 @@ description: "Index of components/site: the three shared pieces and every sectio
 
 ## `shared/`
 
-| Page                                                          | Kind   | What it is                                                                |
-| ------------------------------------------------------------- | ------ | ------------------------------------------------------------------------- |
-| [`Logo`](/components/site/shared/logo)                        | server | The wordmark as a link to `/`, with theme and accent modifiers.           |
-| [`GoogleAnalytics`](/components/site/shared/google-analytics) | server | The gtag scripts, `lazyOnload`, only in production with a measurement id. |
-| [`MetaPixel`](/components/site/shared/meta-pixel)             | client | The Meta Pixel snippet plus a `PageView` on every navigation.             |
+The pieces named `Site…` are the site's new look («M4», Material 3 Expressive in blue, 2026-10-26), drawn with the `--color-m4-*` tokens of `app/(frontend)/site-m4.css`; the landing for teachers reuses them.
+
+| Page                                                                 | Kind   | What it is                                                                |
+| -------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------- |
+| [`SiteSection`](/components/site/shared/site-section)                | server | A section's band and the shared 1440 px column.                           |
+| [`SiteEyebrow`](/components/site/shared/site-eyebrow)                | server | The pale blue pill over a heading.                                        |
+| [`SiteHeading`](/components/site/shared/site-heading)                | server | A title in ink with its words in blue; the hero's is the `h1`.            |
+| [`SiteLead`](/components/site/shared/site-lead)                      | server | The paragraph under a heading.                                            |
+| [`SiteChips`](/components/site/shared/site-chips)                    | server | A row of promises drawn as outlined chips.                                |
+| [`SiteWhatsappButton`](/components/site/shared/site-whatsapp-button) | server | A Material button that opens WhatsApp with its message written.           |
+| [`SiteLogo`](/components/site/shared/site-logo)                      | server | The blue wordmark as a link to `/`.                                       |
+| [`SiteBoard`](/components/site/shared/site-board)                    | server | A still position on the material board, as a named picture.               |
+| [`Logo`](/components/site/shared/logo)                               | server | The old wordmark with theme and accent modifiers (the icon gallery's).    |
+| [`GoogleAnalytics`](/components/site/shared/google-analytics)        | server | The gtag scripts, `lazyOnload`, only in production with a measurement id. |
+| [`MetaPixel`](/components/site/shared/meta-pixel)                    | client | The Meta Pixel snippet plus a `PageView` on every navigation.             |
 
 ## `sections/shell/`
 
-| Page                                                                               | Kind   | What it is                                                                       |
-| ---------------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------- |
-| [`Header`](/components/site/sections/shell/header/header-section)                  | server | Top navigation from the `home-header` Global; the login button is fixed in code. |
-| [`HeaderDropdown`](/components/site/sections/shell/header/header-dropdown)         | client | A navigation dropdown: hover through CSS, keyboard and `aria` through state.     |
-| [`HeaderMobileMenu`](/components/site/sections/shell/header/header-mobile-menu)    | client | The hamburger menu with the flattened links and the same login button.           |
-| [`Footer`](/components/site/sections/shell/footer/footer-section)                  | server | Footer with the academy links and the WhatsApp contact from site settings.       |
-| [`SiteMessage`](/components/site/sections/shell/site-message/site-message-section) | server | The notice screen (404, error) with no hooks and no data.                        |
+| Page                                                                               | Kind   | What it is                                                                |
+| ---------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------- |
+| [`SiteHeader`](/components/site/sections/shell/site-header/site-header-section)    | server | The blue bar: links from `config/site.config.ts`, the login and WhatsApp. |
+| [`SiteHeaderMenu`](/components/site/sections/shell/site-header/site-header-menu)   | client | The header's menu below 1024 px.                                          |
+| [`SiteFooter`](/components/site/sections/shell/site-footer/site-footer-section)    | server | The slim white footer with the links, WhatsApp, e-mail and the login.     |
+| [`SiteMessage`](/components/site/sections/shell/site-message/site-message-section) | server | The notice screen (404, error) with no hooks and no data.                 |
 
 ## `sections/home/`
 
-Rendered by `app/(frontend)/landing-page.tsx` in the order fixed there, each behind its switch in `config/site.config.ts`; the teacher and mentors sections share one slot.
+The academy's home in the site's new look, rendered by `app/(frontend)/landing-page.tsx` in the order of the owner's design, each behind its switch in `config/site.config.ts` and with its copy in `config/academy-home.config.ts`.
 
-| Page                                                                                       | Kind   | What it is                                                                |
-| ------------------------------------------------------------------------------------------ | ------ | ------------------------------------------------------------------------- |
-| [`HeroSection`](/components/site/sections/home/hero/hero-section)                          | server | Title, description, CTA and the image that is the page's LCP.             |
-| [`FloatBadge`](/components/site/sections/home/hero/float-badge)                            | server | A floating chip with a piece glyph and a word.                            |
-| [`Orbit`](/components/site/sections/home/hero/orbit)                                       | server | The decorative rings around the hero image.                               |
-| [`ProgramSection`](/components/site/sections/home/program/program-section)                 | server | The course programme from the `home-program` Global.                      |
-| [`ProgramInteractive`](/components/site/sections/home/program/program-interactive)         | client | The module list and the active module's panel.                            |
-| [`ProgramModuleListItem`](/components/site/sections/home/program/program-module-list-item) | server | One module button, numbered with two digits.                              |
-| [`TeacherSection`](/components/site/sections/home/teacher/teacher-section)                 | server | The teacher's profile, ratings and an annotated game on the lazy board.   |
-| [`TeacherStat`](/components/site/sections/home/teacher/teacher-stat)                       | server | A value with its label.                                                   |
-| [`MentorsSection`](/components/site/sections/home/mentors/mentors-section)                 | server | The alternative to the teacher section, from `services/mentors`.          |
-| [`MentorList`](/components/site/sections/home/mentors/mentor-list)                         | server | The grid of mentor cards.                                                 |
-| [`Mentor`](/components/site/sections/home/mentors/mentor)                                  | server | One mentor card linking to `/mentor/[slug]`.                              |
-| [`PlansSection`](/components/site/sections/home/plans/plans-section)                       | server | Pricing from the `home-packages` Global: grid on desktop, tabs on mobile. |
-| [`PlanCard`](/components/site/sections/home/plans/plan-card)                               | server | One pricing card.                                                         |
-| [`PlansMobileSection`](/components/site/sections/home/plans/plans-mobile)                  | client | The tabbed version of the plans for narrow screens.                       |
-| [`ResourcesSection`](/components/site/sections/home/resources/resources-section)           | server | The three latest posts as cards.                                          |
-| [`BlogResourceCard`](/components/site/sections/home/resources/blog-resource-card)          | server | One post card.                                                            |
-| [`ReviewsSection`](/components/site/sections/home/reviews/reviews-section)                 | server | Testimonials from the `home-reviews` Global.                              |
-| [`ReviewsInteractive`](/components/site/sections/home/reviews/reviews-interactive)         | client | The auto-advancing carousel.                                              |
-| [`ReviewChat`](/components/site/sections/home/reviews/review-chat)                         | server | A testimonial drawn as a chat.                                            |
-| [`ReviewStatCard`](/components/site/sections/home/reviews/review-stat-card)                | server | The stat card that travels with the carousel.                             |
-| [`ReviewSlideDot`](/components/site/sections/home/reviews/review-slide-dot)                | server | One pagination dot with a 24 px press area.                               |
-| [`FaqSection`](/components/site/sections/home/faq/faq-section)                             | server | Questions from the `home-faq` Global and the WhatsApp CTA.                |
-| [`FaqAccordionItem`](/components/site/sections/home/faq/faq-accordion-item)                | client | One expandable question.                                                  |
-| [`CtaSection`](/components/site/sections/home/cta/cta-section)                             | server | The sticky call to action, outside `<main>`.                              |
-| [`CtaClock`](/components/site/sections/home/cta/cta-clock)                                 | client | A 15-minute countdown on a compact clock dial.                            |
+| Page                                                                                      | Kind   | What it is                                                                                         |
+| ----------------------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------- |
+| [`HeroSection`](/components/site/sections/home/hero/hero-section)                         | server | `#inicio`: the `h1`, the promises, the trial-class button and the cookie board that opens once.    |
+| [`FiguresSection`](/components/site/sections/home/figures/figures-section)                | server | `#cifras`: four figures on Material's shapes, hidden until every value is real.                    |
+| [`ClassesSection`](/components/site/sections/home/classes/classes-section)                | server | `#como-funciona`: individual or group, the classroom «Próximamente», three steps and two promises. |
+| [`ClassroomMock`](/components/site/sections/home/classes/classroom-mock)                  | server | The classroom inside the platform as it will be, drawn as a picture.                               |
+| [`TeamSection`](/components/site/sections/home/team/team-section)                         | server | `#equipo`: a team of teachers and how one is assigned.                                             |
+| [`CoursesSection`](/components/site/sections/home/courses/courses-section)                | server | `#cursos`: the four courses and the inside of the chosen one.                                      |
+| [`CourseShowcase`](/components/site/sections/home/courses/course-showcase)                | client | The four course cards as toggles and the inside of the chosen one.                                 |
+| [`PlatformSection`](/components/site/sections/home/platform/platform-section)             | server | `#plataforma`: what the platform has between classes, with Puzzle Rush drawn.                      |
+| [`AdventureSection`](/components/site/sections/home/adventure/adventure-section)          | server | `#aventura`: the adventure mode, its map and two rivals.                                           |
+| [`NotebookMap`](/components/site/sections/home/adventure/notebook-map)                    | server | The notebook's map at the Club La Torre, drawn over the adventure's art.                           |
+| [`InformationSection`](/components/site/sections/home/information/information-section)    | server | `#informacion`: three steps to start and the blue WhatsApp card.                                   |
+| [`TestimonialsSection`](/components/site/sections/home/testimonials/testimonials-section) | server | `#testimonios`: the testimonials of the `home-reviews` Global as a wall of quotes.                 |
+| [`FaqSection`](/components/site/sections/home/faq/faq-section)                            | server | `#preguntas`: the questions of the `home-faq` Global in an accordion.                              |
+| [`FaqAccordion`](/components/site/sections/home/faq/faq-accordion)                        | client | The accordion: one question open at a time.                                                        |
+| [`ClosingSection`](/components/site/sections/home/closing/closing-section)                | server | `#contacto`: the last call, with the board and the two WhatsApp buttons.                           |
 
 ## `sections/nosotros/`
 

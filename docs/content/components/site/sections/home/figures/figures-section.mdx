@@ -1,0 +1,30 @@
+---
+description: "The academy in four figures on Material's shapes, drawn only once the owner has given every real value."
+---
+
+# `FiguresSection`
+
+|            |                                                                                                                                                                                                                      |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/figures/figures.section.tsx`                                                                                                                                                          |
+| Kind       | Server Component                                                                                                                                                                                                     |
+| Stylesheet | `figures.section.css` → block `.home-figures`                                                                                                                                                                        |
+| Design     | `AcadCifrasB`                                                                                                                                                                                                        |
+| Composes   | [`SiteSection`](/components/site/shared/site-section), [`SiteEyebrow`](/components/site/shared/site-eyebrow), [`SiteHeading`](/components/site/shared/site-heading), [`SiteLead`](/components/site/shared/site-lead) |
+| Reads      | `academyHome.figures` (`config/academy-home.config.ts`)                                                                                                                                                              |
+
+## Purpose
+
+Students, classes given, titled teachers and years teaching (`#cifras`), each on a shape of its own — the cookie, the arch, the clover and the rounded square — with «Conoce al equipo» (`#equipo`).
+
+**No figure is invented** (the owner's decision): the canvas has «[N]» in each, and the config keeps `value: null` until the owner gives the real one. The section renders nothing while any value is null, so today it is not on the page; it appears, as drawn, the day the four values are written in `config/academy-home.config.ts`.
+
+## Markup & styling
+
+Block `.home-figures` (161 lines).
+
+**Elements:** `.home-figures__copy`, `.home-figures__link`, `.home-figures__row`, `.home-figures__figure`, `.home-figures__disc`, `.home-figures__shape`, `.home-figures__icon`, `.home-figures__value`, `.home-figures__label`, `.home-figures__note`
+
+**Modifiers:** `.home-figures__figure_shape_cookie`, `_shape_arch`, `_shape_clover`, `_shape_square`, each with its colours: the primary, the secondary container, the primary container and the white panel with its line.
+
+**Breakpoints:** `(width < 1280px)` puts the figures under the copy; `(width < 1024px)` lays them out two by two without the steps; `(width < 640px)` shrinks the shapes.

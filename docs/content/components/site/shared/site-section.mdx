@@ -1,0 +1,38 @@
+---
+description: "A section of a page of the site's new look: the band in its tone and the shared 1440 px column with the canvas's gutter."
+---
+
+# `SiteSection`
+
+|            |                                                             |
+| ---------- | ----------------------------------------------------------- |
+| File       | `components/site/shared/site-section/site-section.comp.tsx` |
+| Kind       | Server Component                                            |
+| Stylesheet | `site-section.comp.css` → block `.site-section`             |
+| Used by    | every section of the home page                              |
+
+## Purpose
+
+The container every section of the new look sits in, so they all share the column (1440 px at most) and the gutter: 72 px on a desktop, 48 below 1280, 32 below 1024 and 16 on a phone. It is a `<section>` named by its heading (`aria-labelledby`) and, when it has an `id`, the place a header link jumps to. It only places its children.
+
+## Props
+
+| Prop         | Type                   | Required        | Meaning                                    |
+| ------------ | ---------------------- | --------------- | ------------------------------------------ |
+| `id`         | `string`               | no              | The anchor (`como-funciona`, `cursos`…).   |
+| `labelledBy` | `string`               | yes             | The id of the section's heading.           |
+| `tone`       | `"canvas" \| "panel"`  | no, `"canvas"`  | The canvas's grey-blue or the white panel. |
+| `spacing`    | `"regular" \| "tight"` | no, `"regular"` | `tight` for a band such as the figures.    |
+| `children`   | `ReactNode`            | yes             | The section's content.                     |
+
+## Markup & styling
+
+Block `.site-section` (52 lines).
+
+**Elements:** `.site-section__inner`
+
+**Modifiers:** `.site-section_tone_canvas`, `.site-section_tone_panel`, `.site-section_spacing_regular`, `.site-section_spacing_tight`
+
+**Tokens:** `--color-m4-canvas`, `--color-m4-panel`
+
+**Breakpoints:** `(width < 1280px)`, `(width < 1024px)`, `(width < 640px)` narrow the gutter and the vertical space.
